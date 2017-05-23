@@ -5,12 +5,12 @@
 * [Google Espresso docs](https://google.github.io/android-testing-support-library/docs/espresso/)
 * [Idling Resource](https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/)
 * [Espresso vs. UIAutomator](https://stackoverflow.com/questions/31076228/android-testing-uiautomator-vs-espresso)
-* [Espresso + UIAutomator]http://alexzh.com/tutorials/android-testing-espresso-uiautomator-together/
+* [Espresso + UIAutomator](http://alexzh.com/tutorials/android-testing-espresso-uiautomator-together/)
 
 ## Notes
 
 * Many of the Espresso tests will map to Appium
-  * e.g.) 
+  * e.g.)
     ```java
       onView(withId(R.id.name_field))
         .perform(typeText("Steve"));
@@ -32,4 +32,159 @@
 
 ## Sample Code
 
-* `adb shell am instrument -w -r   -e debug false com.example.android.testing.espresso.BasicSample.test/android.support.test.runner.AndroidJUnitRunner`
+How to run an espresso testcase from the command line:
+
+* `adb shell am instrument -w -r -e debug false com.example.android.testing.espresso.BasicSample.test/android.support.test.runner.AndroidJUnitRunner`
+
+## Most relevant bits of the Espresso API
+
+* `UiController` interface has methods like `injectKeyEvent` and `injectMotionEvent` which allow building arbitrary actions
+* `EspressoKey.Builder` for building key codes with meta states
+* `GeneralClickAction` for taking tapper, coordinates, and precision and getting a click action
+* `GeneralSwipeAction`
+* `KeyEventAction` for turning EspressoKey into an action
+* `MotionEvents` for sending events to a UiController. Events include up, down, move, and cancel
+* `ReplaceTextAction` for setting value of an EditText
+* `ScrollToAction`
+* `TypeTextAction` (includes option for tapping to focus)
+* Pre-baked `ViewActions`:
+    * `clearText`
+    * `click`
+    * `closeSoftKeyboard`
+    * `doubleClick`
+    * `longClick`
+    * `pressBack`
+    * `pressImeActionButton`
+    * `pressKey`
+    * `pressMenuKey`
+    * `replaceText`
+    * `scrollTo`
+    * `swipeDown`
+    * `swipeLeft`
+    * `swipeRight`
+    * `swipeUp`
+    * `typeText`
+    * `typeTextIntoFocusedView`
+* `ViewMatchers`
+    * `hasContentDescription`
+    * `hasDescendant`
+    * `hasSibling` (matches based on sibling)
+    * `isChecked`
+    * `isClickable`
+    * `isCompletelyDisplayed`
+    * `isDescendantOfA`
+    * `isDisplayed`
+    * `isEnabled`
+    * `isFocusable`
+    * `isNotChecked`
+    * `isRoot`
+    * `isSelected`
+    * `withChild`
+    * `withClassName`
+    * `withContentDescription`
+    * `withHint`
+    * `withId` (need to use ResourceName instead since string)
+    * `withInputType`
+    * `withParent`
+    * `withResourceName`
+    * `withSpinnerText`
+    * `withTagKey`
+    * `withTagValue`
+    * `withText`
+
+## Full(er) Espresso API
+
+* `UiController` (`android.support.test.espresso.UiController`): an interface for base-level UI operations. Note that there is a restriction such that these injected events can only interact with the AUT, not other apps.
+    * `injectKeyEvent` (could be useful for sending non-standard keys)
+    * `injectMotionEvent` (for swipes, gestures, etc)
+    * `injectString` (series of key events)
+* `ViewAction` (`android.support.test.espresso.ViewAction`): an interface for performing interactions with view elements
+    * `perform`
+* `ViewAssertion` (`android.support.test.espresso.ViewAssertion`): an interface for making assertions on views
+    * `check`
+* `ViewFinder` (`android.support.test.espresso.ViewFinder`): an interface for finding views
+    * `getView` (finds a single view within the hierarchy; throws if multiple views or no views are found)
+* `Espresso` (`android.support.test.espresso.Espresso`)
+    * `closeSoftKeyboard`
+    * `onData` (creates a DataInteraction)
+    * `onView` (creates a ViewInteraction)
+    * `openActionBarOverflowOrOptionsMenu`
+    * `openContextualActionModeOverflowMenu`
+    * `pressBack`
+* `ViewInteraction` (`android.support.test.espresso.ViewInteraction`): primary interface for providing action or assert on a view
+    * `check`
+    * `perform`
+    * `inRoot` (scope the ViewInteraction to the root selected by a given root matcher)
+* `LayoutMatchers` (`android.support.test.espresso.matcher.LayoutMatchers`)
+    * `hasEllipsizedText` (matches text views which have elided text)
+    * `hasMultilineText` (matches multiline text views)
+* `RootMatchers` (`android.support.test.espresso.matcher.RootMatchers`)
+    * `isDialog` (matches roots which are dialogs)
+    * `isFocusable`
+    * `isPlatformPopup`
+    * `isTouchable`
+    * `withDecorView`
+* `ViewMatchers` (`android.support.test.espresso.matcher.ViewMatchers`)
+    * `hasContentDescription`
+    * `hasDescendant`
+    * `hasErrorText` (matches EditText based on error string value)
+    * `hasFocus`
+    * `hasImeAction`
+    * `hasLinks`
+    * `hasSibling` (matches based on sibling)
+    * `isChecked`
+    * `isClickable`
+    * `isCompletelyDisplayed`
+    * `isDescendantOfA`
+    * `isDisplayed`
+    * `isDisplayingAtLeast`
+    * `isEnabled`
+    * `isFocusable`
+    * `isJavascriptEnabled` (for webviews)
+    * `isNotChecked`
+    * `isRoot`
+    * `isSelected`
+    * `supportsInputMethods`
+    * `withChild`
+    * `withClassName`
+    * `withContentDescription`
+    * `withEffectiveVisibility`
+    * `withHint`
+    * `withId` (need to use ResourceName instead since string)
+    * `withInputType`
+    * `withParent`
+    * `withResourceName`
+    * `withSpinnerText`
+    * `withTagKey`
+    * `withTagValue`
+    * `withText`
+* `DrawerActions` (`android.support.test.espresso.contrib.DrawerActions`)
+    * `close`
+    * `open`
+* `DrawerMatchers` (`android.support.test.espresso.contrib.DrawerMatchers`)
+    * `isClosed`
+    * `isOpen`
+* `NavigationViewActions` (`android.support.test.espresso.contrib.NavigationViewActions`)
+    * `navigateTo` (navigate to a menu item using a menu item resource id)
+* `PickerActions` (`android.support.test.espresso.contrib.PickerActions`)
+    * `setDate`
+    * `setTime`
+* `RecyclerViewActions` (`android.support.test.espresso.contrib.RecyclerViewAction`)
+    * `actionOnHolderItem`
+    * `actionOnItem`
+    * `actionOnItemAtPosition`
+    * `scrollTo`
+    * `scrollToHolder`
+    * `scrollToPosition`
+* `ActiveRootLister` (`android.support.test.espresso.base.ActiveRootLister`)
+    * `listActiveRoots` (could be nice for building XML?)
+* `RootViewPicker` (`android.support.test.espresso.base.RootViewPicker`)
+    * `get` (gets the root view of the top-most window with which the user can interact)
+* `EspressoKey.Builder` for building key codes with meta states
+* `GeneralClickAction` for taking tapper, coordinates, and precision and getting a click action
+* `GeneralSwipeAction`
+* `KeyEventAction` for turning EspressoKey into an action
+* `MotionEvents` for sending events to a UiController. Events include up, down, move, and cancel
+* `ReplaceTextAction` for setting value of an EditText
+* `ScrollToAction`
+* `TypeTextAction` (includes option for tapping to focus)
