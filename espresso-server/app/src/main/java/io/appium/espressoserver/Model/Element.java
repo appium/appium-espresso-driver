@@ -5,10 +5,6 @@ import android.support.test.espresso.ViewInteraction;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by danielgraham on 5/24/17.
- */
-
 public class Element {
     private int id;
     private static int autoId = 0;
@@ -21,5 +17,9 @@ public class Element {
 
     public int getId() {
         return id;
+    }
+
+    public static Map<Integer, ViewInteraction> getCache() {
+        return cache;
     }
 }

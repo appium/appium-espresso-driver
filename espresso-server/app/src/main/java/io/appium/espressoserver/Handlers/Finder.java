@@ -19,7 +19,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 public class Finder implements RequestHandler {
 
-    public AppiumResponse handle(NanoHTTPD.IHTTPSession session) {
+    public AppiumResponse handle(NanoHTTPD.IHTTPSession session, Map<String, String> uriParams) {
         AppiumResponse response = new AppiumResponse();
         Map<String, List<String>> parameters = session.getParameters();
 
