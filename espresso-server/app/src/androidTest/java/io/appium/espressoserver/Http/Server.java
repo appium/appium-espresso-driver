@@ -13,9 +13,6 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
-/**
- * Created by danielgraham on 5/24/17.
- */
 public class Server extends NanoHTTPD {
 
     public Server() throws IOException {

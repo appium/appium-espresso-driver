@@ -1,9 +1,5 @@
 package io.appium.espressoserver.Http;
 
-/**
- * Created by danielgraham on 5/24/17.
- */
-
 public class AppiumResponse {
     private boolean success;
     private String message;
