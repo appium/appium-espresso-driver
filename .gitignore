@@ -1,0 +1,10 @@
+espresso-server/*.iml
+espresso-server/.gradle
+espresso-server/local.properties
+espresso-server/.idea/workspace.xml
+espresso-server/.idea/libraries
+espresso-server/.DS_Store
+espresso-server/build
+espresso-server/captures
+espresso-server/.externalNativeBuild
+espresso-server/.idea/
