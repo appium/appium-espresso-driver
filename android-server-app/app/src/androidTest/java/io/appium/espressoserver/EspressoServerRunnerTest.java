@@ -19,8 +19,9 @@ import fi.iki.elonen.NanoHTTPD;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
+
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -29,7 +30,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class ExampleInstrumentedTest {
+public class EspressoServerRunnerTest {
 
     public class AppiumResponse {
         private boolean success;
@@ -53,12 +54,6 @@ public class ExampleInstrumentedTest {
             Gson gson = new Gson();
 
             try {
-                onView(withId(-100)).perform(click());
-            } catch (Exception e) {
-                response.message = e.getMessage();
-            }
-
-            /*try {
                 ViewInteraction viewInteraction = onView(withText(text));
                 viewInteraction.perform(click());
                 response.success = true;
@@ -66,7 +61,7 @@ public class ExampleInstrumentedTest {
             } catch (Exception e) {
                 response.success = false;
                 response.message = "No element found with text: " + text;
-            }*/
+            }
             return newFixedLengthResponse(gson.toJson(response));
         }
     }
@@ -87,7 +82,7 @@ public class ExampleInstrumentedTest {
             MainActivity.class);
 
     @Test
-    public void changeText_newActivity() throws InterruptedException, IOException {
+    public void startEspressoServer() throws InterruptedException, IOException {
         new App();
         Thread.sleep(300000);
     }
