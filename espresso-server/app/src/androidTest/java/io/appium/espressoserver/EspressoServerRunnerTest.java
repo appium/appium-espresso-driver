@@ -1,11 +1,9 @@
 package io.appium.espressoserver;
 
-import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
-import com.google.gson.Gson;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -13,15 +11,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Map;
 
-import fi.iki.elonen.NanoHTTPD;
-
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
-
-
+import io.appium.espressoserver.Http.Server;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -31,40 +22,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class EspressoServerRunnerTest {
-
-    public class AppiumResponse {
-        private boolean success;
-        private String message;
-    }
-
-    public class App extends NanoHTTPD {
-
-        public App() throws IOException {
-            super(8080);
-            start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
-            System.out.println("\nRunning! Point your browsers to http://localhost:8080/ \n");
-        }
-
-        @Override
-        public Response serve(IHTTPSession session) {
-            Map<String, String> parms = session.getParms();
-            String text = parms.get("text");
-            AppiumResponse response = new AppiumResponse();
-
-            Gson gson = new Gson();
-
-            try {
-                ViewInteraction viewInteraction = onView(withText(text));
-                viewInteraction.perform(click());
-                response.success = true;
-                response.message = "Found element with text: " + text;
-            } catch (Exception e) {
-                response.success = false;
-                response.message = "No element found with text: " + text;
-            }
-            return newFixedLengthResponse(gson.toJson(response));
-        }
-    }
 
     /**
      * A JUnit {@link Rule @Rule} to launch your activity under test. This is a replacement
@@ -83,7 +40,7 @@ public class EspressoServerRunnerTest {
 
     @Test
     public void startEspressoServer() throws InterruptedException, IOException {
-        new App();
+        new Server();
         Thread.sleep(300000);
     }
 }
