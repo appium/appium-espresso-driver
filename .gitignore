@@ -8,3 +8,4 @@ espresso-server/build
 espresso-server/captures
 espresso-server/.externalNativeBuild
 espresso-server/.idea/
+espresso-server/app/build
