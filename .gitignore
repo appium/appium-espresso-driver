@@ -9,3 +9,5 @@ espresso-server/captures
 espresso-server/.externalNativeBuild
 espresso-server/.idea/
 espresso-server/app/build
+node_modules
+build
