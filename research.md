@@ -188,3 +188,48 @@ How to run an espresso testcase from the command line:
 * `ReplaceTextAction` for setting value of an EditText
 * `ScrollToAction`
 * `TypeTextAction` (includes option for tapping to focus)
+
+
+## Instrumenting an app that is not the one the tests are associated with
+
+### App under test (AUT)
+* Resign with the same certificate as the test runner will be signed
+* Install
+
+### Appium test runner
+
+* `apktool d app-debug-androidTest.apk`
+* edit `AndroidManifest.xml` to set the instrumentation `android:targetPackage` to the package for the AUT
+* `apktool b app-debug-androidTest -o a.apk`
+* `zipalign` the `a.apk` file (`zipalign -v -p 4 a.apk a-aligned.apk`)
+* sign the aligned file (`apksigner sign --ks my-release-key.jks --out a-release.apk a-aligned.apk`)
+* remove the old runner (`adb uninstall io.appium.espresso.BasicSample.test`)
+* install the new runner (`adb push a-release.apk /data/local/tmp/io.appium.espresso.BasicSample.test && adb shell pm install -t -r "/data/local/tmp/io.appium.espresso.BasicSample.test"`)
+
+Within the test the package/activity that is passed in can be launched:
+```java
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.app.Instrumentation.ActivityMonitor;
+import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
+
+// ...
+
+final String CLASS_NAME = "io.appium.android.apis.ApiDemos";
+
+Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
+ActivityMonitor mSessionMonitor = mInstrumentation.addMonitor(CLASS_NAME, null, false);
+Intent intent = new Intent(Intent.ACTION_MAIN);
+intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+intent.setClassName(i.getTargetContext(), CLASS_NAME);
+mInstrumentation.startActivitySync(intent);
+
+Activity mCurrentActivity = mInstrumentation.waitForMonitor(mSessionMonitor);
+assertNotNull(mCurrentActivity);
+
+```
+
+### Running the test
+
+`adb shell am instrument -w -r -e debug false io.appium.espresso.BasicSample.test/android.support.test.runner.AndroidJUnitRunner`
