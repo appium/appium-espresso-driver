@@ -6,17 +6,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Element {
-    private String id;
+public class Element extends Appium {
+    private String ELEMENT;
     private static Map<String, ViewInteraction> cache = new HashMap<String, ViewInteraction>();
 
     public Element (ViewInteraction interaction) {
-        id = UUID.randomUUID().toString();
-        cache.put(id, interaction);
+        ELEMENT = UUID.randomUUID().toString();
+        cache.put(ELEMENT, interaction);
     }
 
-    public String getId() {
-        return id;
+    public String getElementId() {
+        return ELEMENT;
     }
 
     public static Map<String, ViewInteraction> getCache() {
