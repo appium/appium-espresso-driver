@@ -1,12 +1,12 @@
-package io.appium.espressoserver.Http;
+package io.appium.espressoserver.lib.Http;
 
 import com.google.gson.Gson;
 
 import java.io.IOException;
 
 import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.Exceptions.DuplicateRouteException;
-import io.appium.espressoserver.Exceptions.ServerErrorException;
+import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
+import io.appium.espressoserver.lib.Exceptions.ServerErrorException;
 
 public class Server extends NanoHTTPD {
 

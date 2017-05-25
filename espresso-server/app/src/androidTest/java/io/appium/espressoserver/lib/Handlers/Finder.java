@@ -1,15 +1,14 @@
-package io.appium.espressoserver.Handlers;
+package io.appium.espressoserver.lib.Handlers;
 
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
-import android.support.test.espresso.matcher.ViewMatchers;
 
 import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.Http.AppiumResponse;
-import io.appium.espressoserver.Model.Element;
+import io.appium.espressoserver.lib.Http.AppiumResponse;
+import io.appium.espressoserver.lib.Model.Element;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;

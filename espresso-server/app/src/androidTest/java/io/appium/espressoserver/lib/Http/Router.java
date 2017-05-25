@@ -1,16 +1,14 @@
-package io.appium.espressoserver.Http;
+package io.appium.espressoserver.lib.Http;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
-import io.appium.espressoserver.Exceptions.DuplicateRouteException;
-import io.appium.espressoserver.Handlers.Click;
-import io.appium.espressoserver.Handlers.Finder;
-import io.appium.espressoserver.Handlers.RequestHandler;
+import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
+import io.appium.espressoserver.lib.Handlers.Click;
+import io.appium.espressoserver.lib.Handlers.Finder;
+import io.appium.espressoserver.lib.Handlers.RequestHandler;
 
 
 public class Router {

@@ -1,4 +1,4 @@
-package io.appium.espressoserver.Model;
+package io.appium.espressoserver.lib.Model;
 
 import android.support.test.espresso.ViewInteraction;
 

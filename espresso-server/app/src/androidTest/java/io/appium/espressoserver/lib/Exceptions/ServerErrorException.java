@@ -1,4 +1,4 @@
-package io.appium.espressoserver.Exceptions;
+package io.appium.espressoserver.lib.Exceptions;
 
 public class ServerErrorException extends Throwable {
 }

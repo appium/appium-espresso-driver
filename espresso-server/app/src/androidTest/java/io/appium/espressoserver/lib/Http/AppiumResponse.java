@@ -1,4 +1,4 @@
-package io.appium.espressoserver.Http;
+package io.appium.espressoserver.lib.Http;
 
 import fi.iki.elonen.NanoHTTPD.Response;
 
