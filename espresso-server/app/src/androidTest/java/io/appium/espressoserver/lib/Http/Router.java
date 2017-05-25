@@ -10,7 +10,6 @@ import io.appium.espressoserver.lib.Handlers.Click;
 import io.appium.espressoserver.lib.Handlers.Finder;
 import io.appium.espressoserver.lib.Handlers.RequestHandler;
 import io.appium.espressoserver.lib.Handlers.CreateSession;
-import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Http.Response.NotFoundResponse;
 import io.appium.espressoserver.lib.Http.Response.InternalErrorResponse;
@@ -22,9 +21,10 @@ public class Router {
 
     public Router() throws DuplicateRouteException {
         routerMap = new HashMap<Method, HashMap<String, RequestHandler>>();
-        addRoute(Method.GET, "/session", new CreateSession()); // TODO: Change this to POST
-        addRoute(Method.GET, "/sessions/:sessionId/elements", new Finder());
-        addRoute(Method.GET, "/elements/:sessionId/click", new Click()); // TODO: Change this to POST later
+
+        addRoute(Method.POST, "/session", new CreateSession()); // TODO: Change this to POST
+        addRoute(Method.POST, "/sessions/:sessionId/elements", new Finder());
+        addRoute(Method.POST, "/elements/:sessionId/click", new Click()); // TODO: Change this to POST later
     }
 
     private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
@@ -45,6 +45,10 @@ public class Router {
         try {
             String uri = session.getUri();
             Method method = session.getMethod();
+
+            if (!routerMap.containsKey(method)) {
+                routerMap.put(method, new HashMap<String, RequestHandler>());
+            }
 
             // By default, set handler to NotFound until we find a matching handler
             handler = new RequestHandler() {
