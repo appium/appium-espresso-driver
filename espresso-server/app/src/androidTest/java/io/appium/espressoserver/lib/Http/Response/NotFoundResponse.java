@@ -12,4 +12,9 @@ public class NotFoundResponse extends BaseResponse {
         this.setHttpStatus(NanoHTTPD.Response.Status.NOT_FOUND);
         this.setResponse(new Error("Resource not found"));
     }
+
+    public NotFoundResponse (String reason) {
+        this.setHttpStatus(NanoHTTPD.Response.Status.NOT_FOUND);
+        this.setResponse(new Error(reason));
+    }
 }

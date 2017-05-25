@@ -1,8 +1,10 @@
 package io.appium.espressoserver.lib.Http;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
@@ -91,10 +93,11 @@ public class Router {
                     break;
                 }
             }
+
+            return handler.handle(session, uriParams);
         } catch (Exception e) {
+            // TODO: Don't show internal error messages in production server
             return new InternalErrorResponse(e.getMessage());
         }
-
-        return handler.handle(session, uriParams);
     }
 }

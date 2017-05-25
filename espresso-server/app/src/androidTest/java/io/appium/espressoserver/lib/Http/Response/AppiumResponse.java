@@ -4,11 +4,11 @@ import io.appium.espressoserver.lib.Model.Appium;
 
 public class AppiumResponse extends BaseResponse {
     public AppiumResponse() {
-        response = new Appium();
+        setResponse(new Appium());
     }
 
-    public void setValue(Object value) {
-        this.setResponse(value);
+    public void setValue(Appium value) {
+        ((Appium)response).setValue(value);
     }
 
     public void setAppiumStatus(int status) {
