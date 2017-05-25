@@ -12,6 +12,7 @@ import io.appium.espressoserver.lib.Handlers.Click;
 import io.appium.espressoserver.lib.Handlers.Finder;
 import io.appium.espressoserver.lib.Handlers.RequestHandler;
 import io.appium.espressoserver.lib.Handlers.CreateSession;
+import io.appium.espressoserver.lib.Handlers.SendKeys;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Http.Response.NotFoundResponse;
 import io.appium.espressoserver.lib.Http.Response.InternalErrorResponse;
@@ -27,6 +28,7 @@ public class Router {
         addRoute(Method.POST, "/session", new CreateSession()); // TODO: Change this to POST
         addRoute(Method.POST, "/sessions/:sessionId/elements", new Finder());
         addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/click", new Click()); // TODO: Change this to POST later
+        addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/value", new SendKeys()); // TODO: Change this to POST later
     }
 
     private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
