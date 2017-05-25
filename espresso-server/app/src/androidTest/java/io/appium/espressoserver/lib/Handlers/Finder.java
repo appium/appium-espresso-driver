@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.lib.Http.AppiumResponse;
-import io.appium.espressoserver.lib.Http.InvalidSessionResponse;
+import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
+import io.appium.espressoserver.lib.Http.Response.InvalidSessionResponse;
 import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.Session;
 

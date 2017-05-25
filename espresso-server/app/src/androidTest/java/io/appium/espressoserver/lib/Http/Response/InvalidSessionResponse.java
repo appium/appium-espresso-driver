@@ -1,4 +1,4 @@
-package io.appium.espressoserver.lib.Http;
+package io.appium.espressoserver.lib.Http.Response;
 
 /**
  * Created by danielgraham on 5/25/17.

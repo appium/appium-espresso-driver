@@ -4,7 +4,7 @@ import java.util.Map;
 import io.appium.espressoserver.lib.Model.Session;
 
 import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.lib.Http.AppiumResponse;
+import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 
 /**
  * Created by danielgraham on 5/25/17.

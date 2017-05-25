@@ -7,6 +7,7 @@ import java.io.IOException;
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.Exceptions.ServerErrorException;
+import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 
 public class Server extends NanoHTTPD {
 
