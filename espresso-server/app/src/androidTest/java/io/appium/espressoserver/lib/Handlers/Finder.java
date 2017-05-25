@@ -55,6 +55,7 @@ public class Finder implements RequestHandler {
             // Test the selector
             ViewInteraction matcher;
             switch (strategy) {
+                // TODO: Change this to resource-name
                 case "id":
                     matcher = onView(withContentDescription(selector));
                     break;
