@@ -9,6 +9,7 @@ import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.Handlers.Click;
 import io.appium.espressoserver.lib.Handlers.Finder;
 import io.appium.espressoserver.lib.Handlers.RequestHandler;
+import io.appium.espressoserver.lib.Handlers.CreateSession;
 
 
 public class Router {
@@ -17,6 +18,7 @@ public class Router {
 
     public Router() throws DuplicateRouteException {
         routerMap = new HashMap<Method, HashMap<String, RequestHandler>>();
+        addRoute(Method.GET, "/session", new CreateSession()); // TODO: Change this to POST
         addRoute(Method.GET, "/elements", new Finder());
         addRoute(Method.GET, "/elements/:id/click", new Click()); // TODO: Change this to POST later
     }
