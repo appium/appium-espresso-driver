@@ -17,6 +17,11 @@ public class Session {
             this.id = Session.ID;
         } else {
             this.id = UUID.randomUUID().toString();
+            Session.ID = this.id;
         }
+    }
+
+    public static String getGlobalSessionId() {
+        return Session.ID;
     }
 }

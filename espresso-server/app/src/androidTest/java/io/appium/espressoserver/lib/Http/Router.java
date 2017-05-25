@@ -19,8 +19,8 @@ public class Router {
     public Router() throws DuplicateRouteException {
         routerMap = new HashMap<Method, HashMap<String, RequestHandler>>();
         addRoute(Method.GET, "/session", new CreateSession()); // TODO: Change this to POST
-        addRoute(Method.GET, "/elements", new Finder());
-        addRoute(Method.GET, "/elements/:id/click", new Click()); // TODO: Change this to POST later
+        addRoute(Method.GET, "/sessions/:sessionId/elements", new Finder());
+        addRoute(Method.GET, "/elements/:sessionId/click", new Click()); // TODO: Change this to POST later
     }
 
     private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
@@ -38,16 +38,14 @@ public class Router {
         String uri = session.getUri();
         Method method = session.getMethod();
 
-        // TODO: Make this into a generic 404 Appium Response
         RequestHandler handler = new RequestHandler() {
             @Override
             public AppiumResponse handle(IHTTPSession session, Map<String, String> uriParams) {
-                return null;
+                return new NotFoundResponse();
             }
         };
 
         // Get a matching handler
-        String routeUri;
         Map<String, String> uriParams = new HashMap<String, String>();
 
         for (Map.Entry<String, RequestHandler> entry : routerMap.get(method).entrySet()) {
