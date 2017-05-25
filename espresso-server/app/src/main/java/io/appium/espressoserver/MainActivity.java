@@ -7,8 +7,6 @@ import android.os.Bundle;
 
 import java.io.IOException;
 
-import fi.iki.elonen.NanoHTTPD;
-
 import static android.content.Context.WIFI_SERVICE;
 
 public class MainActivity extends AppCompatActivity {

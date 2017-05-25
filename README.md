@@ -6,6 +6,13 @@ Note: this is an experimental work in progress and is not ready for use.
 
 ## Developers
 
+### Building Espresso Server
+
+```
+cd espresso-server
+./gradlew clean assembleDebug assembleAndroidTest
+```
+
 ### Layout
 
 * `espresso-server`: Java code that gets built into a test apk, which contains the WebDriver-based server to be run in the Espresso context.
