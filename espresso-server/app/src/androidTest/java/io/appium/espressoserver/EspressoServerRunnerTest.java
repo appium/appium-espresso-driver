@@ -12,7 +12,8 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import io.appium.espressoserver.Http.Server;
+import io.appium.espressoserver.lib.Http.Server;
+import io.appium.espressoserver.lib.Exceptions.ServerErrorException;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -23,7 +24,7 @@ import io.appium.espressoserver.Http.Server;
 @LargeTest
 public class EspressoServerRunnerTest {
     @Test
-    public void startEspressoServer() throws InterruptedException, IOException {
+    public void startEspressoServer() throws InterruptedException, IOException, ServerErrorException {
         new Server();
         Thread.sleep(300000);
     }
