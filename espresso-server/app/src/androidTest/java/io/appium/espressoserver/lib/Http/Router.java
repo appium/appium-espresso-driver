@@ -11,7 +11,9 @@ import io.appium.espressoserver.lib.Handlers.Finder;
 import io.appium.espressoserver.lib.Handlers.RequestHandler;
 import io.appium.espressoserver.lib.Handlers.CreateSession;
 import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
+import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Http.Response.NotFoundResponse;
+import io.appium.espressoserver.lib.Http.Response.InternalErrorResponse;
 
 
 public class Router {
@@ -36,46 +38,57 @@ public class Router {
         routerMap.get(method).put(uri, handler);
     }
 
-    public AppiumResponse route(IHTTPSession session) {
-        String uri = session.getUri();
-        Method method = session.getMethod();
+    public BaseResponse route(IHTTPSession session) {
+        RequestHandler handler;
+        Map<String, String> uriParams;
 
-        RequestHandler handler = new RequestHandler() {
-            @Override
-            public AppiumResponse handle(IHTTPSession session, Map<String, String> uriParams) {
-                return new NotFoundResponse();
-            }
-        };
+        try {
+            String uri = session.getUri();
+            Method method = session.getMethod();
 
-        // Get a matching handler
-        Map<String, String> uriParams = new HashMap<String, String>();
-
-        for (Map.Entry<String, RequestHandler> entry : routerMap.get(method).entrySet()) {
-            String testUri = entry.getKey();
-            String testRegex = "^";
-            Map<Integer, String> wildcardIndices = new HashMap<Integer, String>();
-
-            int index = 0;
-            for (String uriToken : testUri.split("/")) {
-                if (uriToken.startsWith(":")) {
-                   testRegex += "/[\\w\\W]*";
-                   wildcardIndices.put(index, uriToken.substring(1));
-                } else if (!uriToken.equals("")) {
-                    testRegex += "/" + uriToken;
+            // By default, set handler to NotFound until we find a matching handler
+            handler = new RequestHandler() {
+                @Override
+                public BaseResponse handle(IHTTPSession session, Map<String, String> uriParams) {
+                    return new NotFoundResponse();
                 }
-                index++;
-            }
-            testRegex += "$";
+            };
 
-            if (uri.matches(testRegex)) {
-                String[] uriTokens = uri.split("/");
-                for (Map.Entry<Integer, String> wildcardIndexEntry : wildcardIndices.entrySet()) {
-                    int wildcardIndex = wildcardIndexEntry.getKey();
-                    uriParams.put(wildcardIndexEntry.getValue(), uriTokens[wildcardIndex]);
+            // Get a matching handler
+            uriParams = new HashMap<String, String>();
+
+            // Look for a matching route
+            for (Map.Entry<String, RequestHandler> entry : routerMap.get(method).entrySet()) {
+                String testUri = entry.getKey();
+                String testRegex = "^";
+                Map<Integer, String> wildcardIndices = new HashMap<Integer, String>();
+
+                // Convert route to a regex to test incoming URI against
+                int index = 0;
+                for (String uriToken : testUri.split("/")) {
+                    if (uriToken.startsWith(":")) {
+                        testRegex += "/[\\w\\W]*";
+                        wildcardIndices.put(index, uriToken.substring(1));
+                    } else if (!uriToken.equals("")) {
+                        testRegex += "/" + uriToken;
+                    }
+                    index++;
                 }
-                handler = routerMap.get(method).get(entry.getKey());
-                break;
+                testRegex += "$";
+
+                // If we have a match, parse the URI params and call that handler
+                if (uri.matches(testRegex)) {
+                    String[] uriTokens = uri.split("/");
+                    for (Map.Entry<Integer, String> wildcardIndexEntry : wildcardIndices.entrySet()) {
+                        int wildcardIndex = wildcardIndexEntry.getKey();
+                        uriParams.put(wildcardIndexEntry.getValue(), uriTokens[wildcardIndex]);
+                    }
+                    handler = routerMap.get(method).get(entry.getKey());
+                    break;
+                }
             }
+        } catch (Exception e) {
+            return new InternalErrorResponse(e.getMessage());
         }
 
         return handler.handle(session, uriParams);

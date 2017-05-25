@@ -6,7 +6,7 @@ import fi.iki.elonen.NanoHTTPD;
  * Created by danielgraham on 5/25/17.
  */
 
-public class BaseResponse {
+public abstract class BaseResponse {
 
     private NanoHTTPD.Response.Status status;
     private Object response;

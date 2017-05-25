@@ -8,6 +8,7 @@ import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
+import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Http.Response.InvalidSessionResponse;
 import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.Session;
@@ -20,7 +21,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 public class Finder implements RequestHandler {
 
-    public AppiumResponse handle(NanoHTTPD.IHTTPSession session, Map<String, String> uriParams) {
+    public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, String> uriParams) {
 
         // If the SessionID is invalid, return InvalidSessionResponse
         if (!uriParams.get("sessionId").equals(Session.getGlobalSessionId())) {
