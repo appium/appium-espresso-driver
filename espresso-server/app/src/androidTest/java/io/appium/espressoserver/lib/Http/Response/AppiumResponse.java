@@ -18,5 +18,9 @@ public class AppiumResponse extends BaseResponse {
     public void setSessionId(String sessionId) {
         ((Appium)response).setSessionId(sessionId);
     }
+
+    public void setAppiumId(String id) {
+        ((Appium)response).setId(id);
+    }
 }
 

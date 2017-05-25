@@ -8,6 +8,7 @@ public class Appium {
     private int status;
     private String sessionId;
     private Object value;
+    private String id; // UUID transaction ID
 
     public Appium() {
         value = new Object(); // Default is empty object {}
@@ -35,5 +36,13 @@ public class Appium {
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

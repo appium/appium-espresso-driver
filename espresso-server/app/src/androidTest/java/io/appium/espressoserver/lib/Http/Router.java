@@ -26,7 +26,7 @@ public class Router {
 
         addRoute(Method.POST, "/session", new CreateSession()); // TODO: Change this to POST
         addRoute(Method.POST, "/sessions/:sessionId/elements", new Finder());
-        addRoute(Method.POST, "/elements/:sessionId/click", new Click()); // TODO: Change this to POST later
+        addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/click", new Click()); // TODO: Change this to POST later
     }
 
     private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
