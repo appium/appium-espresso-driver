@@ -7,7 +7,7 @@ public class AppiumResponse extends BaseResponse {
         setResponse(new Appium());
     }
 
-    public void setValue(Appium value) {
+    public void setValue(Object value) {
         ((Appium)response).setValue(value);
     }
 

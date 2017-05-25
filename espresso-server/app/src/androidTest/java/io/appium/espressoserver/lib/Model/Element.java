@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Element extends Appium {
+public class Element {
     private String ELEMENT;
     private static Map<String, ViewInteraction> cache = new HashMap<String, ViewInteraction>();
 

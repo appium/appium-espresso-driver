@@ -9,6 +9,10 @@ public class Appium {
     private String sessionId;
     private Object value;
 
+    public Appium() {
+        value = new Object(); // Default is empty object {}
+    }
+
     public Object getValue() {
         return value;
     }
