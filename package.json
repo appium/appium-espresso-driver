@@ -65,6 +65,7 @@
     "eslint-plugin-mocha": "^4.9.0",
     "eslint-plugin-promise": "^3.5.0",
     "gulp": "^3.9.1",
+    "pre-commit": "^1.2.2",
     "sample-apps": "^2.0.4",
     "sinon": "^2.3.1",
     "wd": "^1.2.0"
