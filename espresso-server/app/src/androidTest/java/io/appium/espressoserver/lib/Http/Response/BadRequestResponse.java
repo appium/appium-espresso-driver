@@ -9,7 +9,7 @@ import fi.iki.elonen.NanoHTTPD;
 
 public class BadRequestResponse extends BaseResponse {
     public BadRequestResponse(String reason) {
-        this.setStatus(NanoHTTPD.Response.Status.BAD_REQUEST);
+        this.setHttpStatus(NanoHTTPD.Response.Status.BAD_REQUEST);
         this.setResponse(new Error(reason));
     }
 }

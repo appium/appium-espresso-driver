@@ -8,12 +8,12 @@ import fi.iki.elonen.NanoHTTPD;
 
 public abstract class BaseResponse {
 
-    private NanoHTTPD.Response.Status status;
-    private Object response;
+    protected NanoHTTPD.Response.Status httpStatus;
+    protected Object response;
 
     public BaseResponse() {
         super();
-        status = NanoHTTPD.Response.Status.OK;
+        httpStatus = NanoHTTPD.Response.Status.OK;
     }
 
     public Object getResponse() {
@@ -24,11 +24,11 @@ public abstract class BaseResponse {
         this.response = response;
     }
 
-    public NanoHTTPD.Response.Status getStatus() {
-        return status;
+    public NanoHTTPD.Response.Status getHttpStatus() {
+        return httpStatus;
     }
 
-    public void setStatus(NanoHTTPD.Response.Status status) {
-        this.status = status;
+    public void setHttpStatus(NanoHTTPD.Response.Status httpStatus) {
+        this.httpStatus = httpStatus;
     }
 }

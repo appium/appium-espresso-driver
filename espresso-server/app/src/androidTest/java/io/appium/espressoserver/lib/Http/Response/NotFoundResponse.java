@@ -9,7 +9,7 @@ import io.appium.espressoserver.lib.Model.Error;
 
 public class NotFoundResponse extends BaseResponse {
     public NotFoundResponse () {
-        this.setStatus(NanoHTTPD.Response.Status.NOT_FOUND);
+        this.setHttpStatus(NanoHTTPD.Response.Status.NOT_FOUND);
         this.setResponse(new Error("Resource not found"));
     }
 }

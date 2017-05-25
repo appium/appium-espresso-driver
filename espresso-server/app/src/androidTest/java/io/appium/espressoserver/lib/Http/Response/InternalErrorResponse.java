@@ -1,8 +1,6 @@
 package io.appium.espressoserver.lib.Http.Response;
 
 import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
-import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Model.Error;
 
 /**
@@ -11,7 +9,7 @@ import io.appium.espressoserver.lib.Model.Error;
 
 public class InternalErrorResponse extends BaseResponse {
     public InternalErrorResponse(String reason) {
-        this.setStatus(NanoHTTPD.Response.Status.INTERNAL_ERROR);
+        this.setHttpStatus(NanoHTTPD.Response.Status.INTERNAL_ERROR);
         this.setResponse(new Error(reason));
     }
 }

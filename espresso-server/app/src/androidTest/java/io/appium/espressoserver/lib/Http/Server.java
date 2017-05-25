@@ -7,7 +7,6 @@ import java.io.IOException;
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.Exceptions.ServerErrorException;
-import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 
 public class Server extends NanoHTTPD {
@@ -29,6 +28,6 @@ public class Server extends NanoHTTPD {
     public Response serve(IHTTPSession session) {
         BaseResponse response = router.route(session);
         Gson gson = new Gson();
-        return newFixedLengthResponse(response.getStatus(), "application/json", gson.toJson(response.getResponse()));
+        return newFixedLengthResponse(response.getHttpStatus(), "application/json", gson.toJson(response.getResponse()));
     }
 }
