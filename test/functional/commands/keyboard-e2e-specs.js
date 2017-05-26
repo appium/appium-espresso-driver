@@ -22,9 +22,15 @@ describe('createSession', function () {
   });
 
   it('should start android session focusing on default activity', async () => {
-    let el = await driver.elementById('edit1');
+    let el = await driver.elementById('id/edit1');
     await el.click();
 
-    await el.type('hello');
+    try {
+      await el.click();
+    } catch (err) {
+      console.log(err); // eslint-disable-line
+    }
+
+    await el.sendKeys('hello');
   });
 });

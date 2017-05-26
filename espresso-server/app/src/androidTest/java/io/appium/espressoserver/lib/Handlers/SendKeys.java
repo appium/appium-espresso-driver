@@ -3,6 +3,8 @@ package io.appium.espressoserver.lib.Handlers;
 import android.support.test.espresso.PerformException;
 import android.support.test.espresso.ViewInteraction;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import io.appium.espressoserver.lib.Http.Response.BadRequestResponse;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Http.Response.InternalErrorResponse;
 import io.appium.espressoserver.lib.Http.Response.InvalidSessionResponse;
+import io.appium.espressoserver.lib.Model.AppiumStatus;
 import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.Session;
 
@@ -35,8 +38,13 @@ public class SendKeys implements RequestHandler {
 
         // NanoHTTP requires call to parse body before we can get the parameters
         // TODO: Move parameter parsing into Router.java
+        Map<String, List<String>> parameters;
         try {
-            session.parseBody(new HashMap<String, String>());
+            Map<String, String> files = new HashMap<String, String>();
+            session.parseBody(files);
+
+            Gson gson = new Gson();
+            parameters = gson.fromJson(files.get("postData"), Map.class);
         } catch (NanoHTTPD.ResponseException e) {
             return new BadRequestResponse("Could not parse parameters");
         } catch (IOException e) {
@@ -44,7 +52,6 @@ public class SendKeys implements RequestHandler {
         }
 
         AppiumResponse response = new AppiumResponse();
-        Map<String, List<String>> parameters = session.getParameters();
         String textValue = parameters.get("value").get(0);
 
         if (viewInteraction != null) {
@@ -58,6 +65,8 @@ public class SendKeys implements RequestHandler {
         } else {
             return new BadRequestResponse("Could not find element with ID: " + id);
         }
+
+        response.setAppiumStatus(AppiumStatus.SUCCESS);
 
         return response;
     }

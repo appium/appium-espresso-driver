@@ -10,6 +10,7 @@ import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 import io.appium.espressoserver.lib.Http.Response.BadRequestResponse;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Http.Response.InvalidSessionResponse;
+import io.appium.espressoserver.lib.Model.AppiumStatus;
 import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.Session;
 
@@ -34,6 +35,7 @@ public class Click implements RequestHandler {
                 viewInteraction.perform(click());
                 response.setAppiumId(UUID.randomUUID().toString());
                 response.setSessionId(uriParams.get("sessionId")); // TODO: Automate this, too redundant
+                response.setAppiumStatus(AppiumStatus.SUCCESS);
             } catch (Exception e) {
                 return new BadRequestResponse("Could not find element with ID: " + id);
             }
