@@ -9,6 +9,11 @@ import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.Handlers.Click;
 import io.appium.espressoserver.lib.Handlers.Finder;
 import io.appium.espressoserver.lib.Handlers.RequestHandler;
+import io.appium.espressoserver.lib.Handlers.CreateSession;
+import io.appium.espressoserver.lib.Handlers.SendKeys;
+import io.appium.espressoserver.lib.Http.Response.BaseResponse;
+import io.appium.espressoserver.lib.Http.Response.NotFoundResponse;
+import io.appium.espressoserver.lib.Http.Response.InternalErrorResponse;
 
 
 public class Router {
@@ -17,8 +22,11 @@ public class Router {
 
     public Router() throws DuplicateRouteException {
         routerMap = new HashMap<Method, HashMap<String, RequestHandler>>();
-        addRoute(Method.GET, "/elements", new Finder());
-        addRoute(Method.GET, "/elements/:id/click", new Click()); // TODO: Change this to POST later
+
+        addRoute(Method.POST, "/session", new CreateSession());
+        addRoute(Method.POST, "/sessions/:sessionId/elements", new Finder());
+        addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/click", new Click());
+        addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/value", new SendKeys());
     }
 
     private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
@@ -32,50 +40,69 @@ public class Router {
         routerMap.get(method).put(uri, handler);
     }
 
-    public AppiumResponse route(IHTTPSession session) {
-        String uri = session.getUri();
-        Method method = session.getMethod();
+    public BaseResponse route(IHTTPSession session) {
+        RequestHandler handler;
+        Map<String, String> uriParams;
 
-        // TODO: Make this into a generic 404 Appium Response
-        RequestHandler handler = new RequestHandler() {
-            @Override
-            public AppiumResponse handle(IHTTPSession session, Map<String, String> uriParams) {
-                return null;
+        try {
+            String uri = session.getUri();
+            Method method = session.getMethod();
+
+            if (!routerMap.containsKey(method)) {
+                routerMap.put(method, new HashMap<String, RequestHandler>());
             }
-        };
 
-        // Get a matching handler
-        String routeUri;
-        Map<String, String> uriParams = new HashMap<String, String>();
-
-        for (Map.Entry<String, RequestHandler> entry : routerMap.get(method).entrySet()) {
-            String testUri = entry.getKey();
-            String testRegex = "^";
-            Map<Integer, String> wildcardIndices = new HashMap<Integer, String>();
-
-            int index = 0;
-            for (String uriToken : testUri.split("/")) {
-                if (uriToken.startsWith(":")) {
-                   testRegex += "/[\\w\\W]*";
-                   wildcardIndices.put(index, uriToken.substring(1));
-                } else if (!uriToken.equals("")) {
-                    testRegex += "/" + uriToken;
+            // By default, set handler to NotFound until we find a matching handler
+            handler = new RequestHandler() {
+                @Override
+                public BaseResponse handle(IHTTPSession session, Map<String, String> uriParams) {
+                    return new NotFoundResponse();
                 }
-                index++;
-            }
-            testRegex += "$";
+            };
 
-            if (uri.matches(testRegex)) {
-                String[] uriTokens = uri.split("/");
-                for (Map.Entry<Integer, String> wildcardIndexEntry : wildcardIndices.entrySet()) {
-                    int wildcardIndex = wildcardIndexEntry.getKey();
-                    uriParams.put(wildcardIndexEntry.getValue(), uriTokens[wildcardIndex]);
+            // Get a matching handler
+            uriParams = new HashMap<String, String>();
+
+            // Look for a matching route
+            // TODO: Move this to a separate method 'isRouteMatch'.
+            for (Map.Entry<String, RequestHandler> entry : routerMap.get(method).entrySet()) {
+                String testUri = entry.getKey();
+
+                // TODO: Use StringBuilder to construct the Test Regexes
+                String testRegex = "^";
+                Map<Integer, String> wildcardIndices = new HashMap<Integer, String>();
+
+                // Convert route to a regex to test incoming URI against
+                // TODO: Cache these regexes instead of re-creating them every time
+                int index = 0;
+                for (String uriToken : testUri.split("/")) {
+                    if (uriToken.startsWith(":")) {
+                        testRegex += "/[\\w\\W]*";
+                        wildcardIndices.put(index, uriToken.substring(1));
+                    } else if (!uriToken.equals("")) {
+                        testRegex += "/" + uriToken;
+                    }
+                    index++;
                 }
-                handler = routerMap.get(method).get(entry.getKey());
-                break;
+                testRegex += "$";
+
+                // If we have a match, parse the URI params and call that handler
+                if (uri.matches(testRegex)) {
+                    // TODO: Move this to a separate method 'parseUriParams'
+                    String[] uriTokens = uri.split("/");
+                    for (Map.Entry<Integer, String> wildcardIndexEntry : wildcardIndices.entrySet()) {
+                        int wildcardIndex = wildcardIndexEntry.getKey();
+                        uriParams.put(wildcardIndexEntry.getValue(), uriTokens[wildcardIndex]);
+                    }
+                    handler = routerMap.get(method).get(entry.getKey());
+                    break;
+                }
             }
+
+            return handler.handle(session, uriParams);
+        } catch (Exception e) {
+            // TODO: Don't show internal error messages in production, only show them in dev
+            return new InternalErrorResponse(e.getMessage());
         }
-
-        return handler.handle(session, uriParams);
     }
 }

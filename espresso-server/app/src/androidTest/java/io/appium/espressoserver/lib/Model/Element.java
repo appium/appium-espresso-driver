@@ -4,22 +4,22 @@ import android.support.test.espresso.ViewInteraction;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Element {
-    private int id;
-    private static int autoId = 0;
-    private static Map<Integer, ViewInteraction> cache = new HashMap<Integer, ViewInteraction>();
+    private final String ELEMENT;
+    private static Map<String, ViewInteraction> cache = new HashMap<String, ViewInteraction>();
 
     public Element (ViewInteraction interaction) {
-        id = autoId++; // TODO: Make this a UUID
-        cache.put(id, interaction);
+        ELEMENT = UUID.randomUUID().toString();
+        cache.put(ELEMENT, interaction);
     }
 
-    public int getId() {
-        return id;
+    public String getElementId() {
+        return ELEMENT;
     }
 
-    public static Map<Integer, ViewInteraction> getCache() {
+    public static Map<String, ViewInteraction> getCache() {
         return cache;
     }
 }

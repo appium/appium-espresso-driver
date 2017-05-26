@@ -23,9 +23,16 @@ import io.appium.espressoserver.lib.Exceptions.ServerErrorException;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class EspressoServerRunnerTest {
+
+    // TODO: Can we make this rule optional via ENV variable?
+    /*@Rule
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
+            MainActivity.class);*/
+
     @Test
     public void startEspressoServer() throws InterruptedException, IOException, ServerErrorException {
         new Server();
+        // TODO: Figure out how to keep Runner open forever
         Thread.sleep(300000);
     }
 }

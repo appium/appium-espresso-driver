@@ -1,21 +1,25 @@
 package io.appium.espressoserver.lib.Handlers;
 
-import android.app.Application;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 
-import org.hamcrest.Matchers;
-
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.Exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.Exceptions.ServerErrorException;
-import io.appium.espressoserver.lib.Http.AppiumResponse;
+import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.Strategy;
+import io.appium.espressoserver.lib.Http.Response.BadRequestResponse;
+import io.appium.espressoserver.lib.Http.Response.BaseResponse;
+import io.appium.espressoserver.lib.Http.Response.InternalErrorResponse;
+import io.appium.espressoserver.lib.Http.Response.InvalidSessionResponse;
+import io.appium.espressoserver.lib.Model.Session;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -28,7 +32,24 @@ import static org.hamcrest.Matchers.endsWith;
 
 public class Finder implements RequestHandler {
 
-    public AppiumResponse handle(NanoHTTPD.IHTTPSession session, Map<String, String> uriParams) {
+    public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, String> uriParams)  {
+
+        // If the SessionID is invalid, return InvalidSessionResponse
+        // TODO: Fix SessionID handling redundancies.
+        if (!uriParams.get("sessionId").equals(Session.getGlobalSessionId())) {
+            return new InvalidSessionResponse(uriParams.get("sessionId"));
+        }
+
+        // NanoHTTP requires call to parse body before we can get the parameters
+        // TODO: Move parameter parsing into Router.java
+        try {
+            session.parseBody(new HashMap<String, String>());
+        } catch (NanoHTTPD.ResponseException e) {
+            return new BadRequestResponse("Could not parse parameters");
+        } catch (IOException e) {
+            return new InternalErrorResponse("Internal server error has occurred");
+        }
+
         AppiumResponse response = new AppiumResponse();
         Map<String, List<String>> parameters = session.getParameters();
 
@@ -53,7 +74,8 @@ public class Finder implements RequestHandler {
 
             // If we have a match, return success
             Element element = new Element(matcher);
-            response.setResponse(element);
+            response.setValue(element);
+            response.setSessionId(uriParams.get("sessionId"));
             return response;
         } catch (NoMatchingViewException e) {
             response.setResponse(new Object()); // TODO: Make an EmptyJSON model
