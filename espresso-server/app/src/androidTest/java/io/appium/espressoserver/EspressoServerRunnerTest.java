@@ -25,9 +25,9 @@ import io.appium.espressoserver.lib.Exceptions.ServerErrorException;
 public class EspressoServerRunnerTest {
 
     // TODO: Can we make this rule optional via ENV variable?
-    /*@Rule
+    @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
-            MainActivity.class);*/
+            MainActivity.class);
 
     @Test
     public void startEspressoServer() throws InterruptedException, IOException, ServerErrorException {

@@ -2,10 +2,6 @@ package io.appium.espressoserver.lib.Http.Response;
 
 import fi.iki.elonen.NanoHTTPD;
 
-/**
- * Created by danielgraham on 5/25/17.
- */
-
 public abstract class BaseResponse {
 
     protected NanoHTTPD.Response.Status httpStatus;

@@ -20,9 +20,6 @@ import io.appium.espressoserver.lib.Model.Session;
 
 import static android.support.test.espresso.action.ViewActions.typeText;
 
-/**
- * Created by danielgraham on 5/25/17.
- */
 
 public class SendKeys implements RequestHandler {
 
