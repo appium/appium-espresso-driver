@@ -7,7 +7,6 @@ public class InvalidStrategyException extends Exception {
    *
    * @param msg
    *          A descriptive message describing the error.
-   * @see {@link Strategy}
    */
   public InvalidStrategyException(final String msg) {
     super(msg);
