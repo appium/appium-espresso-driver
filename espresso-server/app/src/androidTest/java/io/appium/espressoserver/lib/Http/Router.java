@@ -11,6 +11,7 @@ import io.appium.espressoserver.lib.Handlers.Finder;
 import io.appium.espressoserver.lib.Handlers.RequestHandler;
 import io.appium.espressoserver.lib.Handlers.CreateSession;
 import io.appium.espressoserver.lib.Handlers.SendKeys;
+import io.appium.espressoserver.lib.Handlers.Status;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Http.Response.NotFoundResponse;
 import io.appium.espressoserver.lib.Http.Response.InternalErrorResponse;
@@ -24,6 +25,7 @@ public class Router {
         routerMap = new HashMap<Method, HashMap<String, RequestHandler>>();
 
         addRoute(Method.POST, "/session", new CreateSession());
+        addRoute(Method.GET, "/status", new Status());
         addRoute(Method.POST, "/sessions/:sessionId/elements", new Finder());
         addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/click", new Click());
         addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/value", new SendKeys());
