@@ -6,9 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class Element {
     private final String ELEMENT;
-    private static Map<String, ViewInteraction> cache = new HashMap<String, ViewInteraction>();
+    private final static Map<String, ViewInteraction> cache = new HashMap<>();
 
     public Element (ViewInteraction interaction) {
         ELEMENT = UUID.randomUUID().toString();

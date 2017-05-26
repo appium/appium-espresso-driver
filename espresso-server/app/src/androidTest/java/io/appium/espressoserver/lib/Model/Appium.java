@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.Model;
 
+@SuppressWarnings("unused")
 public class Appium {
     private AppiumStatus status;
     private String sessionId;

@@ -12,8 +12,8 @@ import java.lang.reflect.Type;
 public class AppiumStatusAdapter implements JsonSerializer<AppiumStatus> {
 
     @Override
-    public JsonElement serialize(AppiumStatus src, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(src.getStatusCode());
+    public JsonElement serialize(AppiumStatus status, Type typeOfSrc, JsonSerializationContext context) {
+        return new JsonPrimitive(status.getCode());
     }
 
 }

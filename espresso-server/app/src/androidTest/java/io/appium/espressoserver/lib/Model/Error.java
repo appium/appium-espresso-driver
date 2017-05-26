@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.Model;
 
+@SuppressWarnings("unused")
 public class Error extends Appium {
     private String reason;
 
@@ -14,4 +15,5 @@ public class Error extends Appium {
     public void setReason(String reason) {
         this.reason = reason;
     }
+
 }

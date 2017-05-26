@@ -3,6 +3,7 @@ package io.appium.espressoserver.lib.Model;
 import java.util.UUID;
 
 
+@SuppressWarnings("unused")
 public class Session {
     private final String id;
 
