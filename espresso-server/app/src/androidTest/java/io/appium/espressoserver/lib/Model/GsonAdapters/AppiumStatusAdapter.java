@@ -9,7 +9,6 @@ import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
 
-
 public class AppiumStatusAdapter implements JsonSerializer<AppiumStatus> {
 
     @Override
