@@ -27,9 +27,9 @@ public class Router {
         addRoute(Method.POST, "/session", new CreateSession());
         addRoute(Method.DELETE, "/session/:sessionId", new DeleteSession());
         addRoute(Method.GET, "/status", new Status());
-        addRoute(Method.POST, "/sessions/:sessionId/elements", new Finder());
-        addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/click", new Click());
-        addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/value", new SendKeys());
+        addRoute(Method.POST, "/session/:sessionId/element", new Finder());
+        addRoute(Method.POST, "/session/:sessionId/element/:elementId/click", new Click());
+        addRoute(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys());
     }
 
     private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
@@ -50,6 +50,8 @@ public class Router {
         try {
             String uri = session.getUri();
             Method method = session.getMethod();
+
+            System.out.println("Received " + method + " request for '" + uri + "'");
 
             if (!routerMap.containsKey(method)) {
                 routerMap.put(method, new HashMap<String, RequestHandler>());
