@@ -1,7 +1,5 @@
 package io.appium.espressoserver.lib.Http;
 
-import android.content.res.Resources;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,11 +18,10 @@ import io.appium.espressoserver.lib.Http.Response.InternalErrorResponse;
 
 
 public class Router {
-    private Map<Method, HashMap<String, RequestHandler>> routerMap;
-    private Map<String, RequestHandler> regexRouterMap;
+    private final Map<Method, HashMap<String, RequestHandler>> routerMap;
 
     public Router() throws DuplicateRouteException {
-        routerMap = new HashMap<Method, HashMap<String, RequestHandler>>();
+        routerMap = new HashMap<>();
 
         addRoute(Method.POST, "/session", new CreateSession());
         addRoute(Method.GET, "/status", new Status());
@@ -38,7 +35,7 @@ public class Router {
             routerMap.put(method, new HashMap<String, RequestHandler>());
         }
         if (routerMap.get(method).containsKey(uri)) {
-            throw new DuplicateRouteException("Duplicate router declaration for " + method.toString() + ": " + uri);
+            throw new DuplicateRouteException();
         }
 
         routerMap.get(method).put(uri, handler);
@@ -65,7 +62,7 @@ public class Router {
             };
 
             // Get a matching handler
-            uriParams = new HashMap<String, String>();
+            uriParams = new HashMap<>();
 
             // Look for a matching route
             // TODO: Move this to a separate method 'isRouteMatch'.
@@ -74,7 +71,7 @@ public class Router {
 
                 // TODO: Use StringBuilder to construct the Test Regexes
                 String testRegex = "^";
-                Map<Integer, String> wildcardIndices = new HashMap<Integer, String>();
+                Map<Integer, String> wildcardIndices = new HashMap<>();
 
                 // Convert route to a regex to test incoming URI against
                 // TODO: Cache these regexes instead of re-creating them every time

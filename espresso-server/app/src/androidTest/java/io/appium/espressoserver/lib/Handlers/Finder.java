@@ -56,7 +56,7 @@ public class Finder implements RequestHandler {
 
         final Strategy strategy;
         try {
-            strategy = Strategy.fromString((String) parameters.get("using").get(0));
+            strategy = Strategy.fromString(parameters.get("using").get(0));
         } catch (final InvalidStrategyException e) {
             response.setResponse(new Appium());
             return response;
