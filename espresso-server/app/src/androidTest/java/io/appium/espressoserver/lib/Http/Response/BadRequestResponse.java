@@ -4,9 +4,9 @@ import io.appium.espressoserver.lib.Model.Error;
 import fi.iki.elonen.NanoHTTPD;
 
 
-public class BadRequestResponse extends BaseResponse {
+public class BadRequestResponse extends AppiumResponse {
     public BadRequestResponse(String reason) {
         this.setHttpStatus(NanoHTTPD.Response.Status.BAD_REQUEST);
-        this.setResponse(new Error(reason));
+        this.setValue(new Error(reason));
     }
 }
