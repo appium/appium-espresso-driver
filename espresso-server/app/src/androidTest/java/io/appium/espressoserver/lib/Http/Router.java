@@ -10,6 +10,7 @@ import io.appium.espressoserver.lib.Handlers.Click;
 import io.appium.espressoserver.lib.Handlers.Finder;
 import io.appium.espressoserver.lib.Handlers.RequestHandler;
 import io.appium.espressoserver.lib.Handlers.CreateSession;
+import io.appium.espressoserver.lib.Handlers.DeleteSession;
 import io.appium.espressoserver.lib.Handlers.SendKeys;
 import io.appium.espressoserver.lib.Handlers.Status;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
@@ -24,6 +25,7 @@ public class Router {
         routerMap = new HashMap<>();
 
         addRoute(Method.POST, "/session", new CreateSession());
+        addRoute(Method.DELETE, "/session/:sessionId", new DeleteSession());
         addRoute(Method.GET, "/status", new Status());
         addRoute(Method.POST, "/sessions/:sessionId/elements", new Finder());
         addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/click", new Click());

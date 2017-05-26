@@ -26,4 +26,8 @@ public class Session {
     public static String getGlobalSessionId() {
         return Session.ID;
     }
+
+    public static void deleteGlobalSession() {
+        Session.ID = null;
+    }
 }
