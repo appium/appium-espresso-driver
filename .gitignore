@@ -1,4 +1,5 @@
 espresso-server/*.iml
+espresso-server/app/*.iml
 espresso-server/.gradle
 espresso-server/local.properties
 espresso-server/.idea/workspace.xml
