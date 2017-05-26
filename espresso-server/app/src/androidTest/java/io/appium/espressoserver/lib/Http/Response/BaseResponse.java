@@ -1,22 +1,24 @@
 package io.appium.espressoserver.lib.Http.Response;
 
 import fi.iki.elonen.NanoHTTPD;
+import io.appium.espressoserver.lib.Model.Appium;
 
 public abstract class BaseResponse {
 
-    protected NanoHTTPD.Response.Status httpStatus;
-    protected Object response;
+    private NanoHTTPD.Response.Status httpStatus;
+    private Appium response;
+
 
     public BaseResponse() {
         super();
         httpStatus = NanoHTTPD.Response.Status.OK;
     }
 
-    public Object getResponse() {
+    public Appium getResponse() {
         return response;
     }
 
-    public void setResponse(Object response) {
+    public void setResponse(Appium response) {
         this.response = response;
     }
 

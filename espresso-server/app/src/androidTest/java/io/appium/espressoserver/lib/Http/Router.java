@@ -1,5 +1,7 @@
 package io.appium.espressoserver.lib.Http;
 
+import android.content.res.Resources;
+
 import java.util.HashMap;
 import java.util.Map;
 

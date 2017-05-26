@@ -9,19 +9,19 @@ public class AppiumResponse extends BaseResponse {
     }
 
     public void setValue(Object value) {
-        ((Appium)response).setValue(value);
+        getResponse().setValue(value);
     }
 
     public void setAppiumStatus(AppiumStatus status) {
-        ((Appium)response).setStatus(status);
+        getResponse().setStatus(status);
     }
 
     public void setSessionId(String sessionId) {
-        ((Appium)response).setSessionId(sessionId);
+        getResponse().setSessionId(sessionId);
     }
 
     public void setAppiumId(String id) {
-        ((Appium)response).setId(id);
+        getResponse().setId(id);
     }
 }
 

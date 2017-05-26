@@ -1,6 +1,6 @@
 package io.appium.espressoserver.lib.Model;
 
-public class Error {
+public class Error extends Appium {
     private String reason;
 
     public Error(String reason) {

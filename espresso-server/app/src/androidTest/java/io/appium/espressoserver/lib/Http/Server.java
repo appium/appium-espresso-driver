@@ -1,6 +1,5 @@
 package io.appium.espressoserver.lib.Http;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
@@ -32,6 +31,7 @@ public class Server extends NanoHTTPD {
         BaseResponse response = router.route(session);
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(AppiumStatus.class, new AppiumStatusAdapter());
-        return newFixedLengthResponse(response.getHttpStatus(), "application/json", gsonBuilder.create().toJson(response.getResponse()));
+        // TODO: Don't harcode application/json change it to MediaType http://docs.oracle.com/javaee/6/api/javax/ws/rs/core/MediaType.html
+        return newFixedLengthResponse(response.getHttpStatus(),  "application/json", gsonBuilder.create().toJson(response.getResponse()));
     }
 }
