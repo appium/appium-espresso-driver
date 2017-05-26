@@ -13,6 +13,7 @@ import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.Exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.Exceptions.ServerErrorException;
 import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
+import io.appium.espressoserver.lib.Model.Appium;
 import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.Strategy;
 import io.appium.espressoserver.lib.Http.Response.BadRequestResponse;
@@ -57,7 +58,7 @@ public class Finder implements RequestHandler {
         try {
             strategy = Strategy.fromString((String) parameters.get("using").get(0));
         } catch (final InvalidStrategyException e) {
-            response.setResponse(new Object());
+            response.setResponse(new Appium());
             return response;
         }
 
@@ -75,13 +76,13 @@ public class Finder implements RequestHandler {
             response.setSessionId(uriParams.get("sessionId"));
             return response;
         } catch (NoMatchingViewException e) {
-            response.setResponse(new Object());
+            response.setResponse(new Appium());
             return response;
         } catch (InvalidStrategyException e) {
-            response.setResponse(new Object());
+            response.setResponse(new Appium());
             return response;
         } catch (ServerErrorException e) {
-            response.setResponse(new Object());
+            response.setResponse(new Appium());
             return response;
         }
     }
