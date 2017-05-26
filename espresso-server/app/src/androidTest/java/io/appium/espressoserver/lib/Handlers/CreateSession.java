@@ -13,7 +13,7 @@ public class CreateSession implements RequestHandler {
     public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, String> uriParams) {
         Session appiumSession = new Session();
         AppiumResponse appiumResponse = new AppiumResponse();
-        appiumResponse.setAppiumStatus(0);
+        appiumResponse.setAppiumStatus(0); // TODO: Create an enum to set Appium status
         appiumResponse.setSessionId(appiumSession.getId());
         return appiumResponse;
     }

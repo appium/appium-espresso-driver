@@ -33,7 +33,6 @@ public class Click implements RequestHandler {
         if (viewInteraction != null) {
             try {
                 viewInteraction.perform(click());
-                Appium appium = new Appium();
                 response.setAppiumId(UUID.randomUUID().toString());
                 response.setSessionId(uriParams.get("sessionId")); // TODO: Automate this, too redundant
             } catch (Exception e) {

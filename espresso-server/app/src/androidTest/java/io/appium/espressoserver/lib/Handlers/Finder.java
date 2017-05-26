@@ -29,12 +29,13 @@ public class Finder implements RequestHandler {
     public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, String> uriParams)  {
 
         // If the SessionID is invalid, return InvalidSessionResponse
-        // TODO: Fix SessionID handling redundancies
+        // TODO: Fix SessionID handling redundancies.
         if (!uriParams.get("sessionId").equals(Session.getGlobalSessionId())) {
             return new InvalidSessionResponse(uriParams.get("sessionId"));
         }
 
         // NanoHTTP requires call to parse body before we can get the parameters
+        // TODO: Move parameter parsing into Router.java
         try {
             session.parseBody(new HashMap<String, String>());
         } catch (NanoHTTPD.ResponseException e) {

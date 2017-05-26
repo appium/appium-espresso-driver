@@ -4,9 +4,9 @@ import java.util.UUID;
 
 
 public class Session {
-    private String id;
+    private final String id;
 
-    // Only one session per test, keep this id globally
+    // Only one session can run at a time so globally cache the current Session ID
     private static String ID;
 
     public Session() {

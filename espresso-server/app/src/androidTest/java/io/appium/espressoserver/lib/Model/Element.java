@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Element {
-    private String ELEMENT;
+    private final String ELEMENT;
     private static Map<String, ViewInteraction> cache = new HashMap<String, ViewInteraction>();
 
     public Element (ViewInteraction interaction) {

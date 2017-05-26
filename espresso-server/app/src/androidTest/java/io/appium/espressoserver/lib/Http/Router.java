@@ -1,10 +1,8 @@
 package io.appium.espressoserver.lib.Http;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
@@ -25,10 +23,10 @@ public class Router {
     public Router() throws DuplicateRouteException {
         routerMap = new HashMap<Method, HashMap<String, RequestHandler>>();
 
-        addRoute(Method.POST, "/session", new CreateSession()); // TODO: Change this to POST
+        addRoute(Method.POST, "/session", new CreateSession());
         addRoute(Method.POST, "/sessions/:sessionId/elements", new Finder());
-        addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/click", new Click()); // TODO: Change this to POST later
-        addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/value", new SendKeys()); // TODO: Change this to POST later
+        addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/click", new Click());
+        addRoute(Method.POST, "/sessions/:sessionId/elements/:elementId/value", new SendKeys());
     }
 
     private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
@@ -66,12 +64,16 @@ public class Router {
             uriParams = new HashMap<String, String>();
 
             // Look for a matching route
+            // TODO: Move this to a separate method 'isRouteMatch'.
             for (Map.Entry<String, RequestHandler> entry : routerMap.get(method).entrySet()) {
                 String testUri = entry.getKey();
+
+                // TODO: Use StringBuilder to construct the Test Regexes
                 String testRegex = "^";
                 Map<Integer, String> wildcardIndices = new HashMap<Integer, String>();
 
                 // Convert route to a regex to test incoming URI against
+                // TODO: Cache these regexes instead of re-creating them every time
                 int index = 0;
                 for (String uriToken : testUri.split("/")) {
                     if (uriToken.startsWith(":")) {
@@ -86,6 +88,7 @@ public class Router {
 
                 // If we have a match, parse the URI params and call that handler
                 if (uri.matches(testRegex)) {
+                    // TODO: Move this to a separate method 'parseUriParams'
                     String[] uriTokens = uri.split("/");
                     for (Map.Entry<Integer, String> wildcardIndexEntry : wildcardIndices.entrySet()) {
                         int wildcardIndex = wildcardIndexEntry.getKey();
@@ -98,7 +101,7 @@ public class Router {
 
             return handler.handle(session, uriParams);
         } catch (Exception e) {
-            // TODO: Don't show internal error messages in production server
+            // TODO: Don't show internal error messages in production, only show them in dev
             return new InternalErrorResponse(e.getMessage());
         }
     }

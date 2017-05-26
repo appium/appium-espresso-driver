@@ -34,6 +34,7 @@ public class SendKeys implements RequestHandler {
         ViewInteraction viewInteraction = Element.getCache().get(id);
 
         // NanoHTTP requires call to parse body before we can get the parameters
+        // TODO: Move parameter parsing into Router.java
         try {
             session.parseBody(new HashMap<String, String>());
         } catch (NanoHTTPD.ResponseException e) {
