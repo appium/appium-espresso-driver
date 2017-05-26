@@ -53,19 +53,16 @@ public class Finder implements RequestHandler {
         AppiumResponse response = new AppiumResponse();
         Map<String, List<String>> parameters = session.getParameters();
 
-        // TODO: Need to have different types of selector strategies
-
         final Strategy strategy;
         try {
-            strategy = Strategy.fromString((String) parameters.get("strategy").get(0));
+            strategy = Strategy.fromString((String) parameters.get("using").get(0));
         } catch (final InvalidStrategyException e) {
             response.setResponse(new Object());
             return response;
         }
 
         // Get the description
-        String selector = parameters.get("selector").get(0);
-        //String contextId = parameters.getString("context").get(0);
+        String selector = parameters.get("value").get(0);
 
         try {
             // Test the selector
@@ -78,13 +75,13 @@ public class Finder implements RequestHandler {
             response.setSessionId(uriParams.get("sessionId"));
             return response;
         } catch (NoMatchingViewException e) {
-            response.setResponse(new Object()); // TODO: Make an EmptyJSON model
+            response.setResponse(new Object());
             return response;
         } catch (InvalidStrategyException e) {
-            response.setResponse(new Object()); // TODO: Make an EmptyJSON model
+            response.setResponse(new Object());
             return response;
         } catch (ServerErrorException e) {
-            response.setResponse(new Object()); // TODO: Make an EmptyJSON model
+            response.setResponse(new Object());
             return response;
         }
     }
@@ -110,6 +107,7 @@ public class Finder implements RequestHandler {
                     break;
                 case TEXT:
                     // with text
+                    // TODO: Should we have different strategies for 'withText' and 'withContentDescription'?
                     matcher = onView(withText(selector));
                     if(matcher == null) {
                         // if text not find, check content description
