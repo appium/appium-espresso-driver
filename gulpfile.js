@@ -8,5 +8,6 @@ boilerplate({
   build: 'appium-espresso-driver',
   jscs: false,
   testTimeout: 120000,
-  e2eTest: { android: true }
+  e2eTest: { android: true },
+  eslint: true,
 });
