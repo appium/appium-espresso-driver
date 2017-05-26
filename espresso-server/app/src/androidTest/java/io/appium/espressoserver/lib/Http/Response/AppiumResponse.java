@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.Http.Response;
 
 import io.appium.espressoserver.lib.Model.Appium;
+import io.appium.espressoserver.lib.Model.AppiumStatus;
 
 public class AppiumResponse extends BaseResponse {
     public AppiumResponse() {
@@ -11,7 +12,7 @@ public class AppiumResponse extends BaseResponse {
         ((Appium)response).setValue(value);
     }
 
-    public void setAppiumStatus(int status) {
+    public void setAppiumStatus(AppiumStatus status) {
         ((Appium)response).setStatus(status);
     }
 
