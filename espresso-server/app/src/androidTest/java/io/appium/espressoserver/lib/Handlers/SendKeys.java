@@ -53,9 +53,7 @@ public class SendKeys implements RequestHandler {
                 response.setSessionId(uriParams.get("sessionId")); // TODO: Automate this, too redundant
                 viewInteraction.perform(typeText(textValue));
             } catch (PerformException e) {
-                return response; // If it's a perform exception, send back empty response
-            } catch (Exception e) {
-                return new BadRequestResponse("Could not send keys to element " + e.getMessage());
+                return new BadRequestResponse("Could not apply sendKeys to element " + id + ": " + e.getMessage());
             }
         } else {
             return new BadRequestResponse("Could not find element with ID: " + id);
