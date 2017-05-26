@@ -1,7 +1,7 @@
 package io.appium.espressoserver.lib.Model;
 
 public class Appium {
-    private int status;
+    private AppiumStatus status;
     private String sessionId;
     private Object value;
     private String id; // UUID transaction ID
@@ -18,11 +18,11 @@ public class Appium {
         this.value = value;
     }
 
-    public int getStatus() {
+    public AppiumStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(AppiumStatus status) {
         this.status = status;
     }
 
