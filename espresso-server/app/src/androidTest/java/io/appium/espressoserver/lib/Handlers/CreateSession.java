@@ -24,7 +24,7 @@ public class CreateSession implements RequestHandler {
         Session appiumSession = new Session();
         AppiumResponse appiumResponse = new AppiumResponse();
 
-        Map<String, String> desiredCaps = (Map<String, String>)params.get("desiredCapabilities");
+        Map<String, Object> desiredCaps = (Map<String, Object>)params.get("desiredCapabilities");
         String appActivity = (String)desiredCaps.get("appActivity");
 
         // TODO: make sure the package is the one we are expecting, erroring out otherwise

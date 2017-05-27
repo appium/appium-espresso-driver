@@ -2,11 +2,14 @@ package io.appium.espressoserver.lib.Http;
 
 import com.google.gson.Gson;
 
+import java.io.IOException;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
+import fi.iki.elonen.NanoHTTPD.ResponseException;
 import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.Handlers.Click;
 import io.appium.espressoserver.lib.Handlers.Finder;
@@ -48,69 +51,64 @@ class Router {
     BaseResponse route(IHTTPSession session) {
         RequestHandler handler;
 
-        try {
-            String uri = session.getUri();
-            Method method = session.getMethod();
+        String uri = session.getUri();
+        Method method = session.getMethod();
 
-            System.out.println("Received " + method + " request for '" + uri + "'");
+        System.out.println("Received " + method + " request for '" + uri + "'");
 
-            if (!routerMap.containsKey(method)) {
-                routerMap.put(method, new HashMap<String, RequestHandler>());
-            }
-
-            // By default, set handler to NotFound until we find a matching handler
-            handler = new RequestHandler() {
-                @Override
-                public BaseResponse handle(IHTTPSession session, Map<String, Object> params) {
-                    return new NotFoundResponse();
-                }
-            };
-
-            Map<String, Object> params = parseBody(session);
-
-            // Look for a matching route
-            // TODO: Move this to a separate method 'isRouteMatch'.
-            for (Map.Entry<String, RequestHandler> entry : routerMap.get(method).entrySet()) {
-                String testUri = entry.getKey();
-
-                // TODO: Use StringBuilder to construct the Test Regexes
-                String testRegex = "^";
-                Map<Integer, String> wildcardIndices = new HashMap<>();
-
-                // Convert route to a regex to test incoming URI against
-                // TODO: Cache these regexes instead of re-creating them every time
-                int index = 0;
-                for (String uriToken : testUri.split("/")) {
-                    if (uriToken.startsWith(":")) {
-                        testRegex = testRegex.concat("/[\\w\\W]*");
-                        wildcardIndices.put(index, uriToken.substring(1));
-                    } else if (!uriToken.equals("")) {
-                        testRegex = testRegex.concat("/" + uriToken);
-                    }
-                    index++;
-                }
-                testRegex += "$";
-
-                // If we have a match, parse the URI params and call that handler
-                if (uri.matches(testRegex)) {
-                    // TODO: Move this to a separate method 'parseUriParams'
-                    String[] uriTokens = uri.split("/");
-                    for (Map.Entry<Integer, String> wildcardIndexEntry : wildcardIndices.entrySet()) {
-                        int wildcardIndex = wildcardIndexEntry.getKey();
-                        params.put(wildcardIndexEntry.getValue(), uriTokens[wildcardIndex]);
-                    }
-                    handler = routerMap.get(method).get(entry.getKey());
-                    break;
-                }
-            }
-
-            BaseResponse res = handler.handle(session, params);
-            System.out.println("Finished processing " + method + " request for '" + uri + "'");
-            return res;
-        } catch (Exception e) {
-            // TODO: Don't show internal error messages in production, only show them in dev
-            return new InternalErrorResponse(e.getMessage());
+        if (!routerMap.containsKey(method)) {
+            routerMap.put(method, new HashMap<String, RequestHandler>());
         }
+
+        // By default, set handler to NotFound until we find a matching handler
+        handler = new RequestHandler() {
+            @Override
+            public BaseResponse handle(IHTTPSession session, Map<String, Object> params) {
+                return new NotFoundResponse();
+            }
+        };
+
+        Map<String, Object> params = parseBody(session);
+
+        // Look for a matching route
+        // TODO: Move this to a separate method 'isRouteMatch'.
+        for (Map.Entry<String, RequestHandler> entry : routerMap.get(method).entrySet()) {
+            String testUri = entry.getKey();
+
+            // TODO: Use StringBuilder to construct the Test Regexes
+            String testRegex = "^";
+            Map<Integer, String> wildcardIndices = new HashMap<>();
+
+            // Convert route to a regex to test incoming URI against
+            // TODO: Cache these regexes instead of re-creating them every time
+            int index = 0;
+            for (String uriToken : testUri.split("/")) {
+                if (uriToken.startsWith(":")) {
+                    testRegex = testRegex.concat("/[\\w\\W]*");
+                    wildcardIndices.put(index, uriToken.substring(1));
+                } else if (!uriToken.equals("")) {
+                    testRegex = testRegex.concat("/" + uriToken);
+                }
+                index++;
+            }
+            testRegex += "$";
+
+            // If we have a match, parse the URI params and call that handler
+            if (uri.matches(testRegex)) {
+                // TODO: Move this to a separate method 'parseUriParams'
+                String[] uriTokens = uri.split("/");
+                for (Map.Entry<Integer, String> wildcardIndexEntry : wildcardIndices.entrySet()) {
+                    int wildcardIndex = wildcardIndexEntry.getKey();
+                    params.put(wildcardIndexEntry.getValue(), uriTokens[wildcardIndex]);
+                }
+                handler = routerMap.get(method).get(entry.getKey());
+                break;
+            }
+        }
+
+        BaseResponse res = handler.handle(session, params);
+        System.out.println("Finished processing " + method + " request for '" + uri + "'");
+        return res;
     }
 
     private Map<String, Object> parseBody (IHTTPSession session) {
@@ -121,8 +119,10 @@ class Router {
 
             Gson gson = new Gson();
             result = gson.fromJson(files.get("postData"), Map.class);
-        } catch (Exception e) {
+        } catch (IOException e) {
             // TODO: error handling
+        } catch (ResponseException e) {
+            // TODO: handle error
         }
 
         return result;

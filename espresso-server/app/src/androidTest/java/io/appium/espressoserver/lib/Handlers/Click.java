@@ -27,7 +27,6 @@ public class Click extends BaseHandler {
         if (viewInteraction != null) {
             try {
                 viewInteraction.perform(click());
-                response.setAppiumId(UUID.randomUUID().toString());
                 response.setAppiumStatus(AppiumStatus.SUCCESS);
             } catch (Exception e) {
                 return new BadRequestResponse("Could not find element with ID: " + id);
