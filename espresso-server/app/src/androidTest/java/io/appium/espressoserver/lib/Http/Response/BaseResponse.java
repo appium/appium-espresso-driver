@@ -9,7 +9,7 @@ public abstract class BaseResponse {
     private Appium response;
 
 
-    public BaseResponse() {
+    BaseResponse() {
         super();
         httpStatus = NanoHTTPD.Response.Status.OK;
     }
@@ -26,7 +26,7 @@ public abstract class BaseResponse {
         return httpStatus;
     }
 
-    public void setHttpStatus(NanoHTTPD.Response.Status httpStatus) {
+    void setHttpStatus(NanoHTTPD.Response.Status httpStatus) {
         this.httpStatus = httpStatus;
     }
 }

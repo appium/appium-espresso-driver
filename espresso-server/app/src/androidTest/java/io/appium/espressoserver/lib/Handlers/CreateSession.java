@@ -26,7 +26,7 @@ public class CreateSession implements RequestHandler {
 
         Map<String, String> appInfo = getDesiredPackageAndActivity(session);
 
-        // TODO: make sure the package is the one we are expecing, erroring out otherwise
+        // TODO: make sure the package is the one we are expecting, erroring out otherwise
 
         startActivity(appInfo.get("appActivity"));
 
@@ -38,7 +38,7 @@ public class CreateSession implements RequestHandler {
     private Map<String, String> getDesiredPackageAndActivity(NanoHTTPD.IHTTPSession session) {
         Map result = new HashMap();
         try {
-            Map<String, String> files = new HashMap<String, String>();
+            Map<String, String> files = new HashMap<>();
             session.parseBody(files);
 
             Gson gson = new Gson();

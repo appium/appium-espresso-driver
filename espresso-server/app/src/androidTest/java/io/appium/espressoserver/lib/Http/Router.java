@@ -18,10 +18,10 @@ import io.appium.espressoserver.lib.Http.Response.NotFoundResponse;
 import io.appium.espressoserver.lib.Http.Response.InternalErrorResponse;
 
 
-public class Router {
+class Router {
     private final Map<Method, HashMap<String, RequestHandler>> routerMap;
 
-    public Router() throws DuplicateRouteException {
+    Router() throws DuplicateRouteException {
         routerMap = new HashMap<>();
 
         addRoute(Method.POST, "/session", new CreateSession());
@@ -43,7 +43,7 @@ public class Router {
         routerMap.get(method).put(uri, handler);
     }
 
-    public BaseResponse route(IHTTPSession session) {
+    BaseResponse route(IHTTPSession session) {
         RequestHandler handler;
         Map<String, String> uriParams;
 
@@ -82,10 +82,10 @@ public class Router {
                 int index = 0;
                 for (String uriToken : testUri.split("/")) {
                     if (uriToken.startsWith(":")) {
-                        testRegex += "/[\\w\\W]*";
+                        testRegex = testRegex.concat("/[\\w\\W]*");
                         wildcardIndices.put(index, uriToken.substring(1));
                     } else if (!uriToken.equals("")) {
-                        testRegex += "/" + uriToken;
+                        testRegex = testRegex.concat("/" + uriToken);
                     }
                     index++;
                 }
