@@ -1,5 +1,7 @@
 package io.appium.espressoserver.lib.Http;
 
+import com.google.gson.Gson;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +47,6 @@ class Router {
 
     BaseResponse route(IHTTPSession session) {
         RequestHandler handler;
-        Map<String, String> uriParams;
 
         try {
             String uri = session.getUri();
@@ -60,13 +61,12 @@ class Router {
             // By default, set handler to NotFound until we find a matching handler
             handler = new RequestHandler() {
                 @Override
-                public BaseResponse handle(IHTTPSession session, Map<String, String> uriParams) {
+                public BaseResponse handle(IHTTPSession session, Map<String, Object> params) {
                     return new NotFoundResponse();
                 }
             };
 
-            // Get a matching handler
-            uriParams = new HashMap<>();
+            Map<String, Object> params = parseBody(session);
 
             // Look for a matching route
             // TODO: Move this to a separate method 'isRouteMatch'.
@@ -97,17 +97,34 @@ class Router {
                     String[] uriTokens = uri.split("/");
                     for (Map.Entry<Integer, String> wildcardIndexEntry : wildcardIndices.entrySet()) {
                         int wildcardIndex = wildcardIndexEntry.getKey();
-                        uriParams.put(wildcardIndexEntry.getValue(), uriTokens[wildcardIndex]);
+                        params.put(wildcardIndexEntry.getValue(), uriTokens[wildcardIndex]);
                     }
                     handler = routerMap.get(method).get(entry.getKey());
                     break;
                 }
             }
 
-            return handler.handle(session, uriParams);
+            BaseResponse res = handler.handle(session, params);
+            System.out.println("Finished processing " + method + " request for '" + uri + "'");
+            return res;
         } catch (Exception e) {
             // TODO: Don't show internal error messages in production, only show them in dev
             return new InternalErrorResponse(e.getMessage());
         }
+    }
+
+    private Map<String, Object> parseBody (IHTTPSession session) {
+        Map<String, Object> result = new HashMap();
+        try {
+            Map<String, String> files = new HashMap();
+            session.parseBody(files);
+
+            Gson gson = new Gson();
+            result = gson.fromJson(files.get("postData"), Map.class);
+        } catch (Exception e) {
+            // TODO: error handling
+        }
+
+        return result;
     }
 }

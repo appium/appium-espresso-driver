@@ -31,39 +31,22 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.endsWith;
 
-public class Finder implements RequestHandler {
+public class Finder extends BaseHandler {
 
-    public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, String> uriParams)  {
-
-        // If the SessionID is invalid, return InvalidSessionResponse
-        // TODO: Fix SessionID handling redundancies.
-        if (!uriParams.get("sessionId").equals(Session.getGlobalSessionId())) {
-            return new InvalidSessionResponse(uriParams.get("sessionId"));
-        }
-
-        // NanoHTTP requires call to parse body before we can get the parameters
-        // TODO: Move parameter parsing into Router.java
-        try {
-            session.parseBody(new HashMap<String, String>());
-        } catch (NanoHTTPD.ResponseException e) {
-            return new BadRequestResponse("Could not parse parameters");
-        } catch (IOException e) {
-            return new InternalErrorResponse("Internal server error has occurred");
-        }
-
-        AppiumResponse response = new AppiumResponse();
-        Map<String, List<String>> parameters = session.getParameters();
+    public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, Object> params)  {
+        AppiumResponse response = (AppiumResponse)super.handle(session, params);
 
         final Strategy strategy;
         try {
-            strategy = Strategy.fromString(parameters.get("using").get(0));
+            String using = (String)params.get("using");
+            strategy = Strategy.fromString(using);
         } catch (final InvalidStrategyException e) {
             response.setResponse(new Appium());
             return response;
         }
 
         // Get the description
-        String selector = parameters.get("value").get(0);
+        String selector = (String)params.get("value");
 
         try {
             // Test the selector
@@ -73,7 +56,6 @@ public class Finder implements RequestHandler {
             // If we have a match, return success
             Element element = new Element(matcher);
             response.setValue(element);
-            response.setSessionId(uriParams.get("sessionId"));
             return response;
         } catch (InvalidStrategyException e) {
             return new BadRequestResponse(e.getMessage());

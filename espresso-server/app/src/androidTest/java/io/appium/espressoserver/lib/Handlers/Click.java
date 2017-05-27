@@ -16,25 +16,18 @@ import io.appium.espressoserver.lib.Model.Session;
 
 import static android.support.test.espresso.action.ViewActions.click;
 
-public class Click implements RequestHandler {
+public class Click extends BaseHandler {
 
-    public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, String> uriParams) {
+    public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, Object> params) {
+        AppiumResponse response = (AppiumResponse)super.handle(session, params);
 
-        // If the SessionID is invalid, return InvalidSessionResponse
-        // TODO: Fix SessionID handling redundancies
-        if (!uriParams.get("sessionId").equals(Session.getGlobalSessionId())) {
-            return new InvalidSessionResponse(uriParams.get("sessionId"));
-        }
-
-        String id = uriParams.get("elementId");
+        String id = (String)params.get("elementId");
         ViewInteraction viewInteraction = Element.getCache().get(id);
 
-        AppiumResponse response = new AppiumResponse();
         if (viewInteraction != null) {
             try {
                 viewInteraction.perform(click());
                 response.setAppiumId(UUID.randomUUID().toString());
-                response.setSessionId(uriParams.get("sessionId")); // TODO: Automate this, too redundant
                 response.setAppiumStatus(AppiumStatus.SUCCESS);
             } catch (Exception e) {
                 return new BadRequestResponse("Could not find element with ID: " + id);
