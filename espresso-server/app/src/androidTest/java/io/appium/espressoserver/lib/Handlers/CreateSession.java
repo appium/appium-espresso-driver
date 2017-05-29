@@ -19,13 +19,13 @@ import android.support.test.InstrumentationRegistry;
 
 public class CreateSession implements RequestHandler<SessionParams> {
 
-    public BaseResponse handle(NanoHTTPD.IHTTPSession session, SessionParams params) {
+    public Session handle(SessionParams params) {
         Session appiumSession = new Session();
-        AppiumResponse appiumResponse = new AppiumResponse();
-        startActivity(params.getDesiredCapabilities().getAppActivity());
-        appiumResponse.setAppiumStatus(AppiumStatus.SUCCESS);
-        appiumResponse.setSessionId(appiumSession.getId());
-        return appiumResponse;
+        String activityName = params.getDesiredCapabilities().getAppActivity();
+        if (activityName != null) { // TODO: Remove this,  using it now for testing purposes
+            startActivity(activityName);
+        }
+        return appiumSession;
     }
 
     private void startActivity(String appActivity) {
