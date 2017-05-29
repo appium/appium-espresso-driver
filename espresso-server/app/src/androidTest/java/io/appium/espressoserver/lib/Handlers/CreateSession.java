@@ -1,9 +1,6 @@
 package io.appium.espressoserver.lib.Handlers;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import com.google.gson.Gson;
 
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
@@ -24,6 +21,8 @@ public class CreateSession implements RequestHandler {
         Session appiumSession = new Session();
         AppiumResponse appiumResponse = new AppiumResponse();
 
+        // TODO: The Router should be deserializing the params as an Object (in this case a DesiredCapabilities object instance)
+        // and if the deserialization fails, return a BadParametersError response
         Map<String, Object> desiredCaps = (Map<String, Object>)params.get("desiredCapabilities");
         String appActivity = (String)desiredCaps.get("appActivity");
 

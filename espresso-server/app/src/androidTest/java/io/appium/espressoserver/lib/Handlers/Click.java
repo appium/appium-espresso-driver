@@ -3,16 +3,13 @@ package io.appium.espressoserver.lib.Handlers;
 import android.support.test.espresso.ViewInteraction;
 
 import java.util.Map;
-import java.util.UUID;
 
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 import io.appium.espressoserver.lib.Http.Response.BadRequestResponse;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
-import io.appium.espressoserver.lib.Http.Response.InvalidSessionResponse;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
 import io.appium.espressoserver.lib.Model.Element;
-import io.appium.espressoserver.lib.Model.Session;
 
 import static android.support.test.espresso.action.ViewActions.click;
 

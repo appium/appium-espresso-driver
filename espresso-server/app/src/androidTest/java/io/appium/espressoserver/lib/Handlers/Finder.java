@@ -3,9 +3,6 @@ package io.appium.espressoserver.lib.Handlers;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -16,11 +13,7 @@ import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 import io.appium.espressoserver.lib.Model.Appium;
 import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.Strategy;
-import io.appium.espressoserver.lib.Http.Response.BadRequestResponse;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
-import io.appium.espressoserver.lib.Http.Response.InternalErrorResponse;
-import io.appium.espressoserver.lib.Http.Response.InvalidSessionResponse;
-import io.appium.espressoserver.lib.Model.Session;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;

@@ -20,8 +20,6 @@ import io.appium.espressoserver.lib.Handlers.SendKeys;
 import io.appium.espressoserver.lib.Handlers.Status;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Http.Response.NotFoundResponse;
-import io.appium.espressoserver.lib.Http.Response.InternalErrorResponse;
-
 
 class Router {
     private final Map<Method, HashMap<String, RequestHandler>> routerMap;
@@ -112,9 +110,9 @@ class Router {
     }
 
     private Map<String, Object> parseBody (IHTTPSession session) {
-        Map<String, Object> result = new HashMap();
+        Map<String, Object> result = new HashMap<>();
         try {
-            Map<String, String> files = new HashMap();
+            Map<String, String> files = new HashMap<>();
             session.parseBody(files);
 
             Gson gson = new Gson();
