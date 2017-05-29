@@ -3,11 +3,13 @@ package io.appium.espressoserver.lib.Handlers;
 import java.util.Map;
 
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
+import io.appium.espressoserver.lib.Model.AppiumParams;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
 import io.appium.espressoserver.lib.Model.Session;
 
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
+import io.appium.espressoserver.lib.Model.SessionParams;
 
 import android.app.Activity;
 import android.app.Instrumentation;
@@ -15,21 +17,12 @@ import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 
-public class CreateSession implements RequestHandler {
+public class CreateSession implements RequestHandler<SessionParams> {
 
-    public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, Object> params) {
+    public BaseResponse handle(NanoHTTPD.IHTTPSession session, SessionParams params) {
         Session appiumSession = new Session();
         AppiumResponse appiumResponse = new AppiumResponse();
-
-        // TODO: The Router should be deserializing the params as an Object (in this case a DesiredCapabilities object instance)
-        // and if the deserialization fails, return a BadParametersError response
-        Map<String, Object> desiredCaps = (Map<String, Object>)params.get("desiredCapabilities");
-        String appActivity = (String)desiredCaps.get("appActivity");
-
-        // TODO: make sure the package is the one we are expecting, erroring out otherwise
-
-        startActivity(appActivity);
-
+        startActivity(params.getDesiredCapabilities().getAppActivity());
         appiumResponse.setAppiumStatus(AppiumStatus.SUCCESS);
         appiumResponse.setSessionId(appiumSession.getId());
         return appiumResponse;

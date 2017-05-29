@@ -1,3 +1,4 @@
+/*
 package io.appium.espressoserver.lib.Handlers;
 
 import java.util.Map;
@@ -18,3 +19,4 @@ public class DeleteSession implements RequestHandler {
         return appiumResponse;
     }
 }
+*/

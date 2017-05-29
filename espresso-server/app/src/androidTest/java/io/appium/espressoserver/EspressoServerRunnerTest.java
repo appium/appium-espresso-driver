@@ -24,6 +24,6 @@ public class EspressoServerRunnerTest {
     public void startEspressoServer() throws InterruptedException, IOException, ServerErrorException {
         new Server();
         // TODO: Figure out how to keep Runner open forever
-        Thread.sleep(300000);
+        Thread.sleep(3000000);
     }
 }

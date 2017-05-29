@@ -1,3 +1,4 @@
+/*
 package io.appium.espressoserver.lib.Handlers;
 
 import android.support.test.InstrumentationRegistry;
@@ -94,3 +95,4 @@ public class Finder extends BaseHandler {
         return matcher;
     }
 }
+*/

@@ -1,4 +1,4 @@
-package io.appium.espressoserver.lib.Handlers;
+/*package io.appium.espressoserver.lib.Handlers;
 
 import android.support.test.espresso.ViewInteraction;
 
@@ -35,3 +35,4 @@ public class Click extends BaseHandler {
         return response;
     }
 }
+*/

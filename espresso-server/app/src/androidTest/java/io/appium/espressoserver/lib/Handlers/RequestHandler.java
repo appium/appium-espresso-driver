@@ -1,10 +1,9 @@
 package io.appium.espressoserver.lib.Handlers;
 
-import java.util.Map;
-
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
+import io.appium.espressoserver.lib.Model.AppiumParams;
 
-public interface RequestHandler {
-    BaseResponse handle(IHTTPSession session, Map<String, Object> params);
+public interface RequestHandler<T extends AppiumParams>{
+    BaseResponse handle(IHTTPSession session, T params);
 }
