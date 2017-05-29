@@ -1,14 +1,7 @@
 package io.appium.espressoserver.lib.Handlers;
 
-import java.util.Map;
-
-import io.appium.espressoserver.lib.Http.Response.BaseResponse;
-import io.appium.espressoserver.lib.Model.AppiumParams;
-import io.appium.espressoserver.lib.Model.AppiumStatus;
 import io.appium.espressoserver.lib.Model.Session;
 
-import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 import io.appium.espressoserver.lib.Model.SessionParams;
 
 import android.app.Activity;

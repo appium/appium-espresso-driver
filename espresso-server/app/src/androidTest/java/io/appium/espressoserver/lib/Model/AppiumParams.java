@@ -1,8 +1,5 @@
 package io.appium.espressoserver.lib.Model;
 
-/**
- * Created by danielgraham on 5/29/17.
- */
 
 @SuppressWarnings("serialize")
 public class AppiumParams {

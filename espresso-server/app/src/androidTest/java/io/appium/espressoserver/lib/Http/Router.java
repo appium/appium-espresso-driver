@@ -5,8 +5,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD.Method;
@@ -20,9 +18,7 @@ import io.appium.espressoserver.lib.Handlers.RequestHandler;
 //import io.appium.espressoserver.lib.Handlers.SendKeys;
 //import io.appium.espressoserver.lib.Handlers.Status;
 import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
-import io.appium.espressoserver.lib.Http.Response.BaseResponse;
-import io.appium.espressoserver.lib.Http.Response.NotFoundResponse;
-import io.appium.espressoserver.lib.Model.Appium;
+import io.appium.espressoserver.lib.Http.Response.ErrorResponse;
 import io.appium.espressoserver.lib.Model.AppiumParams;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
 import io.appium.espressoserver.lib.Model.Session;
@@ -59,7 +55,7 @@ class Router {
         paramClassMap.get(method).put(uri, paramClass);
     }
 
-    BaseResponse route(IHTTPSession session) {
+    AppiumResponse route(IHTTPSession session) {
         RequestHandler handler = null;
 
         String uri = session.getUri();
@@ -120,6 +116,11 @@ class Router {
             appiumParams.setSessionId(uriParams.get("sessionId"));
             appiumParams.setElementId(uriParams.get("elementId"));
 
+            // Validate the sessionId
+            if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSessionId())) {
+                return new ErrorResponse(AppiumStatus.BAD_PARAMETERS_ERROR);
+            }
+
             // TODO: Add a try-catch block here to get appium exceptions and return proper status codes
             // Create the result
             Object handlerResult = handler.handle(appiumParams);
@@ -128,15 +129,11 @@ class Router {
                 sessionId = ((Session) handlerResult).getId();
             }
 
-            AppiumResponse appiumResponse = new AppiumResponse();
-            appiumResponse.setAppiumStatus(AppiumStatus.SUCCESS);
-            appiumResponse.setSessionId(sessionId);
-            appiumResponse.setValue(handlerResult);
-
+            AppiumResponse appiumResponse = new AppiumResponse(AppiumStatus.SUCCESS, handlerResult, sessionId);
             System.out.println("Finished processing " + method + " request for '" + uri + "'");
             return appiumResponse;
         } else {
-            return new NotFoundResponse();
+            return new ErrorResponse(AppiumStatus.UNKNOWN_COMMAND);
         }
     }
 

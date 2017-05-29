@@ -1,9 +1,5 @@
 package io.appium.espressoserver.lib.Model;
 
-/**
- * Created by danielgraham on 5/29/17.
- */
-
 public class SessionParams extends AppiumParams {
     public DesiredCapabilities getDesiredCapabilities() {
         return desiredCapabilities;
