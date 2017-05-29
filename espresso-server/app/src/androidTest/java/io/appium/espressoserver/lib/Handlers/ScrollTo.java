@@ -14,12 +14,7 @@ import io.appium.espressoserver.lib.Model.Session;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
-import static android.support.test.espresso.action.ViewActions.
-import static android.support.test.espresso.matcher.ViewMatchers.withText;;
-
-/**
- * Created by ahmetkocu on 27.05.2017.
- */
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 public class ScrollTo implements RequestHandler {
 
@@ -32,13 +27,13 @@ public class ScrollTo implements RequestHandler {
             return new InvalidSessionResponse(uriParams.get("sessionId"));
         }
 
-        String text = uriParams.get("text").toString();
+        String text = uriParams.get("text");
 
         AppiumResponse response = new AppiumResponse();
         try {
             ViewInteraction viewInteraction = onView(withText(text));
 
-            if(viewInteraction != null) {
+            if (viewInteraction != null) {
                 viewInteraction.perform(scrollTo());
             }
         }

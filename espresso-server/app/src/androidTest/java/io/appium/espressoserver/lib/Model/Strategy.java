@@ -16,7 +16,6 @@ public enum Strategy {
     XPATH("xpath"),
     ACCESSIBILITY_ID("accessibility id"),
     TEXT("text"),
-    CONTENT_DESCRIPTION("content description"),
     ANDROID_UIAUTOMATOR("-android uiautomator");
 
     public static Strategy fromString(final String text) throws InvalidStrategyException {

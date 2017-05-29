@@ -1,7 +1,6 @@
 package io.appium.espressoserver.lib.Handlers;
 
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 
 import java.io.IOException;
@@ -87,7 +86,7 @@ public class Finder implements RequestHandler {
 
     ///Find By different strategies
     private ViewInteraction findBy(Strategy strategy, String selector) throws ServerErrorException, InvalidStrategyException, ElementNotFoundException {
-        ViewInteraction matcher = null;
+        ViewInteraction matcher;
 
         try {
             switch (strategy) {
@@ -107,8 +106,8 @@ public class Finder implements RequestHandler {
                     // with text
                     matcher = onView(withText(selector));
                     break;
-                case CONTENT_DESCRIPTION:
-                    // if text not find, check content description
+                case ACCESSIBILITY_ID:
+                    // with content description
                     matcher = onView(withContentDescription(selector));
                     break;
                 default:
