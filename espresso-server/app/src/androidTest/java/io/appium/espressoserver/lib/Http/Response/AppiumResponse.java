@@ -35,8 +35,11 @@ public class AppiumResponse<T> {
             case UNKNOWN_COMMAND:
                 httpStatus = Status.NOT_FOUND;
                 break;
-            default:
+            case BAD_PARAMETERS_ERROR:
                 httpStatus = Status.BAD_REQUEST;
+                break;
+            default:
+                httpStatus = Status.INTERNAL_ERROR;
                 break;
         }
     }

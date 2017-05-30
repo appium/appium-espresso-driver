@@ -148,12 +148,6 @@ class Router {
             return new ErrorResponse(AppiumStatus.BAD_PARAMETERS_ERROR, "Invalid session ID " + appiumParams.getSessionId());
         }
 
-        // Validate the elementId
-        // TODO: Add a method to check if element is stale
-        if (appiumParams.getElementId() != null && !Element.exists(appiumParams.getElementId())) {
-            return new ErrorResponse(AppiumStatus.NO_SUCH_ELEMENT, "Invalid element ID " + appiumParams.getElementId());
-        }
-
         // Create the result
         try {
             Object handlerResult = handler.handle(appiumParams);

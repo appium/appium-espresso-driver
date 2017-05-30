@@ -3,6 +3,7 @@ package io.appium.espressoserver.lib.Handlers;
 import android.support.test.espresso.PerformException;
 import android.support.test.espresso.ViewInteraction;
 
+import io.appium.espressoserver.lib.Handlers.Exceptions.AppiumException;
 import io.appium.espressoserver.lib.Handlers.Exceptions.BadParametersException;
 import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.TextParams;
@@ -29,7 +30,7 @@ public class SendKeys implements RequestHandler<TextParams, Object> {
         try {
             viewInteraction.perform(typeText(textValue));
         } catch (PerformException e) {
-            return new BadParametersException("Could not apply sendKeys to element " + id + ": " + e.getMessage());
+            return new AppiumException("Could not apply sendKeys to element " + id + ": " + e.getMessage());
         }
 
         return null;
