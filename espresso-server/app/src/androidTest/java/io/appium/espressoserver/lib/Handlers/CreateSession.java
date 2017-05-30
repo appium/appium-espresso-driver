@@ -1,5 +1,7 @@
 package io.appium.espressoserver.lib.Handlers;
 
+import io.appium.espressoserver.lib.Handlers.Exceptions.AppiumException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.SessionNotCreatedException;
 import io.appium.espressoserver.lib.Model.Session;
 
 import io.appium.espressoserver.lib.Model.SessionParams;
@@ -12,11 +14,15 @@ import android.support.test.InstrumentationRegistry;
 
 public class CreateSession implements RequestHandler<SessionParams> {
 
-    public Session handle(SessionParams params) {
+    public Session handle(SessionParams params) throws AppiumException {
         Session appiumSession = new Session();
         String activityName = params.getDesiredCapabilities().getAppActivity();
-        if (activityName != null) { // TODO: Remove this,  using it now for testing purposes
-            startActivity(activityName);
+        try {
+            if (activityName != null) { // TODO: Remove this,  using it now for testing purposes
+                startActivity(activityName);
+            }
+        } catch (RuntimeException e) {
+            throw new SessionNotCreatedException(e.getMessage());
         }
         return appiumSession;
     }

@@ -11,16 +11,23 @@ import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.ResponseException;
 import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
-//import io.appium.espressoserver.lib.Handlers.Click;
-//import io.appium.espressoserver.lib.Handlers.Finder;
+import io.appium.espressoserver.lib.Handlers.Click;
+import io.appium.espressoserver.lib.Handlers.Exceptions.InvalidStrategyException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.SessionNotCreatedException;
+import io.appium.espressoserver.lib.Handlers.Finder;
+import io.appium.espressoserver.lib.Handlers.Exceptions.AppiumException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.BadParametersException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.Handlers.RequestHandler;
-//import io.appium.espressoserver.lib.Handlers.DeleteSession;
-//import io.appium.espressoserver.lib.Handlers.SendKeys;
-//import io.appium.espressoserver.lib.Handlers.Status;
+import io.appium.espressoserver.lib.Handlers.DeleteSession;
+import io.appium.espressoserver.lib.Handlers.SendKeys;
+import io.appium.espressoserver.lib.Handlers.Status;
 import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 import io.appium.espressoserver.lib.Http.Response.ErrorResponse;
 import io.appium.espressoserver.lib.Model.AppiumParams;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
+import io.appium.espressoserver.lib.Model.Element;
+import io.appium.espressoserver.lib.Model.Locator;
 import io.appium.espressoserver.lib.Model.Session;
 import io.appium.espressoserver.lib.Model.SessionParams;
 
@@ -33,11 +40,15 @@ class Router {
         paramClassMap = new HashMap<>();
 
         addRoute(Method.POST, "/session", new io.appium.espressoserver.lib.Handlers.CreateSession(), SessionParams.class);
-        //addRoute(Method.DELETE, "/session/:sessionId", new DeleteSession());
-        //addRoute(Method.GET, "/status", new Status());
-        //addRoute(Method.POST, "/session/:sessionId/element", new Finder());
-        //addRoute(Method.POST, "/session/:sessionId/element/:elementId/click", new Click());
-        //addRoute(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys());
+        addRoute(Method.DELETE, "/session/:sessionId", new DeleteSession());
+        addRoute(Method.GET, "/status", new Status());
+        addRoute(Method.POST, "/session/:sessionId/element", new Finder(), Locator.class);
+        addRoute(Method.POST, "/session/:sessionId/element/:elementId/click", new Click());
+        addRoute(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys());
+    }
+
+    private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
+        addRoute(method, uri, handler, AppiumParams.class);
     }
 
     private void addRoute(Method method, String uri, RequestHandler handler, Class<? extends AppiumParams> paramClass) throws DuplicateRouteException {
@@ -66,11 +77,15 @@ class Router {
         if (!routerMap.containsKey(method)) {
             routerMap.put(method, new HashMap<String, RequestHandler>());
         }
+        if (!paramClassMap.containsKey(method)) {
+            paramClassMap.put(method, new HashMap<String, Class>());
+        }
 
         Map<String, String> uriParams = new HashMap<>();
 
         // Look for a matching route
         // TODO: Move this to a separate method 'isRouteMatch'.
+        Class paramClass = AppiumParams.class;
         for (Map.Entry<String, RequestHandler> entry : routerMap.get(method).entrySet()) {
             String testUri = entry.getKey();
 
@@ -101,39 +116,62 @@ class Router {
                     uriParams.put(wildcardIndexEntry.getValue(), uriTokens[wildcardIndex]);
                 }
                 handler = routerMap.get(method).get(entry.getKey());
+                paramClass = paramClassMap.get(method).get(entry.getKey());
                 break;
             }
         }
 
-        if (handler != null) {
-            // Parse it to an Appium param (TODO: Should have classes that extend AppiumParams)
-            Gson gson = new Gson();
-            String postJson = parseBody(session);
-            Class paramClass = paramClassMap.get(method).get(uri);
+        if (handler == null) {
+            return new ErrorResponse(AppiumStatus.UNKNOWN_COMMAND);
+        }
 
-            // Set the params
-            AppiumParams appiumParams = (AppiumParams) paramClass.cast(gson.fromJson(postJson, paramClass));
-            appiumParams.setSessionId(uriParams.get("sessionId"));
-            appiumParams.setElementId(uriParams.get("elementId"));
+        // Parse it to an Appium param
+        Gson gson = new Gson();
+        String postJson = parseBody(session);
+        AppiumParams appiumParams;
+        // TODO: Need to find a way to specify 'required' fields and throw exception when not provided
+        if (postJson == null) {
+            appiumParams = new AppiumParams();
+        } else {
+            appiumParams = (AppiumParams) paramClass.cast(gson.fromJson(postJson, paramClass));
+        }
+        appiumParams.setSessionId(uriParams.get("sessionId"));
+        appiumParams.setElementId(uriParams.get("elementId"));
 
-            // Validate the sessionId
-            if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSessionId())) {
-                return new ErrorResponse(AppiumStatus.BAD_PARAMETERS_ERROR);
-            }
+        // Validate the sessionId
+        if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSessionId())) {
+            return new ErrorResponse(AppiumStatus.BAD_PARAMETERS_ERROR, "Invalid session ID " + appiumParams.getSessionId());
+        }
 
-            // TODO: Add a try-catch block here to get appium exceptions and return proper status codes
-            // Create the result
+        // Validate the elementId
+        // TODO: Add a method to check if element is stale
+        if (appiumParams.getElementId() != null && !Element.getCache().containsKey(appiumParams.getElementId())) {
+            return new ErrorResponse(AppiumStatus.NO_SUCH_ELEMENT, "Invalid element ID " + appiumParams.getElementId());
+        }
+
+        // Create the result
+        try {
             Object handlerResult = handler.handle(appiumParams);
             String sessionId = appiumParams.getSessionId();
-            if (handlerResult.getClass() == Session.class) {
+
+            // If it's a new session, pull out the newly created Session ID
+            if (handlerResult != null && handlerResult.getClass() == Session.class) {
                 sessionId = ((Session) handlerResult).getId();
             }
 
             AppiumResponse appiumResponse = new AppiumResponse(AppiumStatus.SUCCESS, handlerResult, sessionId);
             System.out.println("Finished processing " + method + " request for '" + uri + "'");
             return appiumResponse;
-        } else {
-            return new ErrorResponse(AppiumStatus.UNKNOWN_COMMAND);
+        } catch (BadParametersException e) {
+            return new ErrorResponse(AppiumStatus.BAD_PARAMETERS_ERROR, e.getMessage());
+        } catch (NoSuchElementException e) {
+            return new ErrorResponse(AppiumStatus.NO_SUCH_ELEMENT, e.getMessage());
+        } catch (SessionNotCreatedException e) {
+            return new ErrorResponse(AppiumStatus.SESSION_NOT_CREATED_EXCEPTION, e.getMessage());
+        } catch(InvalidStrategyException e) {
+            return new ErrorResponse(AppiumStatus.INVALID_SELECTOR, e.getMessage());
+        } catch (AppiumException e) {
+            return new ErrorResponse(AppiumStatus.UNKNOWN_ERROR);
         }
     }
 
