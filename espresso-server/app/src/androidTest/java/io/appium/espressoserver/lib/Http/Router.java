@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
@@ -22,10 +23,10 @@ import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Http.Response.NotFoundResponse;
 
 class Router {
-    private final Map<Method, HashMap<String, RequestHandler>> routerMap;
+    private final Map<Method, ConcurrentHashMap<String, RequestHandler>> routerMap;
 
     Router() throws DuplicateRouteException {
-        routerMap = new HashMap<>();
+        routerMap = new ConcurrentHashMap<>();
 
         addRoute(Method.POST, "/session", new CreateSession());
         addRoute(Method.DELETE, "/session/:sessionId", new DeleteSession());
@@ -37,7 +38,7 @@ class Router {
 
     private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
         if (!routerMap.containsKey(method)) {
-            routerMap.put(method, new HashMap<String, RequestHandler>());
+            routerMap.put(method, new ConcurrentHashMap<String, RequestHandler>());
         }
         if (routerMap.get(method).containsKey(uri)) {
             throw new DuplicateRouteException();
@@ -55,7 +56,7 @@ class Router {
         System.out.println("Received " + method + " request for '" + uri + "'");
 
         if (!routerMap.containsKey(method)) {
-            routerMap.put(method, new HashMap<String, RequestHandler>());
+            routerMap.put(method, new ConcurrentHashMap<String, RequestHandler>());
         }
 
         // By default, set handler to NotFound until we find a matching handler

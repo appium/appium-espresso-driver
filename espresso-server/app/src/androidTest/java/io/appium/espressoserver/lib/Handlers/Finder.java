@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.Handlers;
 
+import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
 
@@ -8,7 +9,6 @@ import java.util.Map;
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.Exceptions.ElementNotFoundException;
 import io.appium.espressoserver.lib.Exceptions.InvalidStrategyException;
-import io.appium.espressoserver.lib.Exceptions.ServerErrorException;
 import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 import io.appium.espressoserver.lib.Http.Response.BadRequestResponse;
 import io.appium.espressoserver.lib.Model.Appium;
@@ -27,6 +27,7 @@ import static org.hamcrest.Matchers.endsWith;
 
 public class Finder extends BaseHandler {
 
+    @Override
     public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, Object> params)  {
         AppiumResponse response = (AppiumResponse)super.handle(session, params);
 
@@ -66,7 +67,8 @@ public class Finder extends BaseHandler {
             case ID: // with ID
 
                 // find id from target context
-                int id = InstrumentationRegistry.getTargetContext().getResources().getIdentifier(selector, "Id",
+                Context context = InstrumentationRegistry.getTargetContext();
+                int id = context.getResources().getIdentifier(selector, "Id",
                         InstrumentationRegistry.getTargetContext().getPackageName());
                 matcher = onView(withId(id));
                 break;

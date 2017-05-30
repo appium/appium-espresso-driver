@@ -17,6 +17,7 @@ import android.support.test.InstrumentationRegistry;
 
 public class CreateSession implements RequestHandler {
 
+    @Override
     public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, Object> params) {
         Session appiumSession = new Session();
         AppiumResponse appiumResponse = new AppiumResponse();

@@ -10,6 +10,7 @@ import io.appium.espressoserver.lib.Model.AppiumStatus;
 
 public class Status implements RequestHandler {
 
+    @Override
     public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, Object> params) {
         AppiumResponse appiumResponse = new AppiumResponse();
         appiumResponse.setAppiumStatus(AppiumStatus.SUCCESS);

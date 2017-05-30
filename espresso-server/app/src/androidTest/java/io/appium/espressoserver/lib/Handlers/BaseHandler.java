@@ -10,6 +10,7 @@ import io.appium.espressoserver.lib.Http.Response.InvalidSessionResponse;
 import io.appium.espressoserver.lib.Model.Session;
 
 public abstract class BaseHandler implements RequestHandler {
+    @Override
     public BaseResponse handle(IHTTPSession session, Map<String, Object> params) {
         if (!params.get("sessionId").equals(Session.getGlobalSessionId())) {
             return new InvalidSessionResponse((String)params.get("sessionId"));

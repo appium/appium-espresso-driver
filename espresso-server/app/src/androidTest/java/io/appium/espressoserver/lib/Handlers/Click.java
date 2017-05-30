@@ -15,6 +15,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 
 public class Click extends BaseHandler {
 
+    @Override
     public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, Object> params) {
         AppiumResponse response = (AppiumResponse)super.handle(session, params);
 

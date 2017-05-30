@@ -18,6 +18,7 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 
 public class SendKeys extends BaseHandler {
 
+    @Override
     public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, Object> params) {
         AppiumResponse response = (AppiumResponse)super.handle(session, params);
 
