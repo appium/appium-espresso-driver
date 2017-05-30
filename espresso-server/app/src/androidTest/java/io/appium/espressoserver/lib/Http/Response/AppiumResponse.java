@@ -6,7 +6,7 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
 
 @SuppressWarnings("unused")
-public class AppiumResponse<T extends Object> {
+public class AppiumResponse<T> {
     private transient Status httpStatus;
     private T value;
     private AppiumStatus status;

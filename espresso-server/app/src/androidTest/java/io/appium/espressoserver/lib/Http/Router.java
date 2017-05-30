@@ -55,7 +55,7 @@ class Router {
      * @param uri URI of endpoint
      * @param handler RequestHandler object that takes params and returns a result based on params
      * @param paramClass Parameters class that the JSON is deserialized to
-     * @throws DuplicateRouteException
+     * @throws DuplicateRouteException If the same route is registered twice, throw an error
      */
     private void addRoute(Method method, String uri, RequestHandler handler, Class<? extends AppiumParams> paramClass) throws DuplicateRouteException {
         if (!routerMap.containsKey(method)) {
@@ -164,7 +164,7 @@ class Router {
                 sessionId = ((Session) handlerResult).getId();
             }
 
-            AppiumResponse appiumResponse = new AppiumResponse(AppiumStatus.SUCCESS, handlerResult, sessionId);
+            AppiumResponse appiumResponse = new AppiumResponse<>(AppiumStatus.SUCCESS, handlerResult, sessionId);
             System.out.println("Finished processing " + method + " request for '" + uri + "'");
             return appiumResponse;
         } catch (BadParametersException e) {

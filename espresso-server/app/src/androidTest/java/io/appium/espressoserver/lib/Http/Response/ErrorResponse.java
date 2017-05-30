@@ -3,7 +3,7 @@ package io.appium.espressoserver.lib.Http.Response;
 
 import io.appium.espressoserver.lib.Model.AppiumStatus;
 
-public class ErrorResponse extends AppiumResponse {
+public class ErrorResponse extends AppiumResponse<String> {
     public ErrorResponse(AppiumStatus status) {
         super(status, status.getMessage());
     }
