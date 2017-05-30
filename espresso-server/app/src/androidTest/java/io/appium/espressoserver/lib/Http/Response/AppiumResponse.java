@@ -22,7 +22,6 @@ public class AppiumResponse {
     }
 
     private void init(AppiumStatus status, Object value, String sessionId) {
-        this.httpStatus = httpStatus;
         this.value = value;
         this.status = status;
         this.sessionId = sessionId;

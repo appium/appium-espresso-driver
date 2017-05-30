@@ -1,7 +1,7 @@
 package io.appium.espressoserver.lib.Model;
 
 
-@SuppressWarnings("serialize")
+@SuppressWarnings("unused")
 public class AppiumParams {
 
     private String sessionId;

@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.Model;
 
+@SuppressWarnings("unused")
 public class ScrollToParams extends AppiumParams {
     private String text;
 

@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.Model;
 
 
+@SuppressWarnings("unused")
 public class Locator extends AppiumParams {
     private Strategy using;
     private String value;

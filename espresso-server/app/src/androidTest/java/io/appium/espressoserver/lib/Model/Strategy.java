@@ -1,5 +1,7 @@
 package io.appium.espressoserver.lib.Model;
 
+import io.appium.espressoserver.lib.Handlers.Exceptions.InvalidStrategyException;
+
 /**
  * Enumerate all possible locator strategies
  */
