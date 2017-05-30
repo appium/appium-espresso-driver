@@ -14,7 +14,7 @@ public class SendKeys implements RequestHandler<TextParams> {
 
     public Object handle(TextParams params) {
         String id = params.getElementId();
-        ViewInteraction viewInteraction = Element.getCache().get(id);
+        ViewInteraction viewInteraction = Element.getById(id);
 
         String textValue = params.getValue();
 

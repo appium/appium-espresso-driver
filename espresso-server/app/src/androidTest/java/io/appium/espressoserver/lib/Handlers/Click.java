@@ -11,7 +11,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 public class Click implements RequestHandler<AppiumParams> {
 
     public Object handle(AppiumParams params) throws AppiumException {
-        ViewInteraction viewInteraction = Element.getCache().get(params.getElementId());
+        ViewInteraction viewInteraction = Element.getById(params.getElementId());
         try {
             viewInteraction.perform(click());
         } catch (Exception e) { // TODO: Can we narrow down these exceptions?

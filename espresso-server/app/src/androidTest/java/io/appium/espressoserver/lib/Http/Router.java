@@ -145,7 +145,7 @@ class Router {
 
         // Validate the elementId
         // TODO: Add a method to check if element is stale
-        if (appiumParams.getElementId() != null && !Element.getCache().containsKey(appiumParams.getElementId())) {
+        if (appiumParams.getElementId() != null && !Element.exists(appiumParams.getElementId())) {
             return new ErrorResponse(AppiumStatus.NO_SUCH_ELEMENT, "Invalid element ID " + appiumParams.getElementId());
         }
 

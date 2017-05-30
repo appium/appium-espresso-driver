@@ -20,7 +20,11 @@ public class Element {
         return ELEMENT;
     }
 
-    public static Map<String, ViewInteraction> getCache() {
-        return cache;
+    public static ViewInteraction getById(String elementId) {
+        return cache.get(elementId);
+    }
+
+    public static boolean exists(String elementId) {
+        return cache.containsKey(elementId);
     }
 }
