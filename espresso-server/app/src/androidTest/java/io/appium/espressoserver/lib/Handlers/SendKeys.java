@@ -40,7 +40,7 @@ public class SendKeys implements RequestHandler {
         // TODO: Move parameter parsing into Router.java
         Map<String, List<String>> parameters;
         try {
-            Map<String, String> files = new HashMap<String, String>();
+            Map<String, String> files = new HashMap<>();
             session.parseBody(files);
 
             Gson gson = new Gson();

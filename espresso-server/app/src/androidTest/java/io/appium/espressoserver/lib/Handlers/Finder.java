@@ -1,7 +1,6 @@
 package io.appium.espressoserver.lib.Handlers;
 
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 
 import java.io.IOException;
@@ -10,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
+import io.appium.espressoserver.lib.Exceptions.ElementNotFoundException;
 import io.appium.espressoserver.lib.Exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.Exceptions.ServerErrorException;
 import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
@@ -75,21 +75,18 @@ public class Finder implements RequestHandler {
             response.setValue(element);
             response.setSessionId(uriParams.get("sessionId"));
             return response;
-        } catch (NoMatchingViewException e) {
-            response.setResponse(new Appium());
-            return response;
         } catch (InvalidStrategyException e) {
-            response.setResponse(new Appium());
-            return response;
+            return new BadRequestResponse(e.getMessage());
         } catch (ServerErrorException e) {
-            response.setResponse(new Appium());
-            return response;
+            return new InternalErrorResponse(e.getMessage());
+        } catch (ElementNotFoundException e) {
+            return new BadRequestResponse("Could not find element with " + strategy.getStrategyName() + ": " + selector);
         }
     }
 
     ///Find By different strategies
-    private ViewInteraction findBy(Strategy strategy, String selector) throws ServerErrorException, InvalidStrategyException {
-        ViewInteraction matcher = null;
+    private ViewInteraction findBy(Strategy strategy, String selector) throws ServerErrorException, InvalidStrategyException, ElementNotFoundException {
+        ViewInteraction matcher;
 
         try {
             switch (strategy) {
@@ -98,7 +95,6 @@ public class Finder implements RequestHandler {
                     // find id from target context
                     int id = InstrumentationRegistry.getTargetContext().getResources().getIdentifier(selector, "Id",
                             InstrumentationRegistry.getTargetContext().getPackageName());
-
                     matcher = onView(withId(id));
                     break;
                 case CLASS_NAME:
@@ -108,15 +104,14 @@ public class Finder implements RequestHandler {
                     break;
                 case TEXT:
                     // with text
-                    // TODO: Should we have different strategies for 'withText' and 'withContentDescription'?
                     matcher = onView(withText(selector));
-                    if(matcher == null) {
-                        // if text not find, check content description
-                        matcher = onView(withContentDescription(selector));
-                    }
+                    break;
+                case ACCESSIBILITY_ID:
+                    // with content description
+                    matcher = onView(withContentDescription(selector));
                     break;
                 default:
-                    break;
+                    throw new InvalidStrategyException("Strategy is not implemented: " + strategy.getStrategyName());
             }
         }
         catch (Exception e) {
@@ -124,7 +119,7 @@ public class Finder implements RequestHandler {
         }
 
         if(matcher == null) {
-            throw new InvalidStrategyException("Strategy is not implemented: " + strategy.getStrategyName());
+            throw new ElementNotFoundException();
         }
 
         return matcher;
