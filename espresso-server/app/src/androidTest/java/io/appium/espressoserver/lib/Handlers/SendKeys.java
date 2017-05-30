@@ -19,9 +19,10 @@ public class SendKeys implements RequestHandler<TextParams> {
         // Convert the array of text to a String
         String[] textArray = params.getValue();
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i=0; i<textArray.length; i++) {
-            stringBuilder.append(textArray[i]);
+        for (String text: textArray) {
+            stringBuilder.append(text);
         }
+
         String textValue = stringBuilder.toString();
 
         try {

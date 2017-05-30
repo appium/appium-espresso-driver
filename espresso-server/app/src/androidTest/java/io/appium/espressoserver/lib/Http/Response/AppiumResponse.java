@@ -5,7 +5,7 @@ import java.util.UUID;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
 
-@SuppressWarnings("serialize")
+@SuppressWarnings("unused")
 public class AppiumResponse {
     private transient Status httpStatus;
     private Object value;
@@ -13,7 +13,7 @@ public class AppiumResponse {
     private String sessionId;
     private String id; // Unique Appium transaction ID
 
-    public AppiumResponse(AppiumStatus status, Object value) {
+    AppiumResponse(AppiumStatus status, Object value) {
         init(status, value, null);
     }
 
@@ -47,5 +47,16 @@ public class AppiumResponse {
         return httpStatus;
     }
 
+    public AppiumStatus getStatus() {
+        return status;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public String getId() {
+        return id;
+    }
 }
 
