@@ -35,24 +35,28 @@ import io.appium.espressoserver.lib.Model.TextParams;
 
 class Router {
     private final Map<Method, Map<String, RequestHandler>> routerMap;
-    private final Map<Method, Map<String, Class>> paramClassMap;
+    private final Map<Method, Map<String, Class<? extends AppiumParams>>> paramClassMap;
 
     Router() throws DuplicateRouteException {
         routerMap = new ConcurrentHashMap<>();
         paramClassMap = new ConcurrentHashMap<>();
 
         addRoute(Method.POST, "/session", new io.appium.espressoserver.lib.Handlers.CreateSession(), SessionParams.class);
-        addRoute(Method.DELETE, "/session/:sessionId", new DeleteSession());
-        addRoute(Method.GET, "/status", new Status());
+        addRoute(Method.DELETE, "/session/:sessionId", new DeleteSession(), AppiumParams.class);
+        addRoute(Method.GET, "/status", new Status(), AppiumParams.class);
         addRoute(Method.POST, "/session/:sessionId/element", new Finder(), Locator.class);
-        addRoute(Method.POST, "/session/:sessionId/element/:elementId/click", new Click());
+        addRoute(Method.POST, "/session/:sessionId/element/:elementId/click", new Click(), AppiumParams.class);
         addRoute(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys(), TextParams.class);
     }
 
-    private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
-        addRoute(method, uri, handler, AppiumParams.class);
-    }
-
+    /**
+     * Registers a route to a handler
+     * @param method HTTP method type
+     * @param uri URI of endpoint
+     * @param handler RequestHandler object that takes params and returns a result based on params
+     * @param paramClass Parameters class that the JSON is deserialized to
+     * @throws DuplicateRouteException
+     */
     private void addRoute(Method method, String uri, RequestHandler handler, Class<? extends AppiumParams> paramClass) throws DuplicateRouteException {
         if (!routerMap.containsKey(method)) {
             routerMap.put(method, new ConcurrentHashMap<String, RequestHandler>());
@@ -61,7 +65,7 @@ class Router {
             throw new DuplicateRouteException();
         }
         if (!paramClassMap.containsKey(method)) {
-            paramClassMap.put(method, new HashMap<String, Class>());
+            paramClassMap.put(method, new ConcurrentHashMap<String, Class<? extends AppiumParams>>());
         }
 
         routerMap.get(method).put(uri, handler);
@@ -80,7 +84,7 @@ class Router {
             routerMap.put(method, new ConcurrentHashMap<String, RequestHandler>());
         }
         if (!paramClassMap.containsKey(method)) {
-            paramClassMap.put(method, new HashMap<String, Class>());
+            paramClassMap.put(method, new ConcurrentHashMap<String, Class<? extends AppiumParams>>());
         }
 
         Map<String, String> uriParams = new HashMap<>();
@@ -128,14 +132,13 @@ class Router {
         }
 
         // Parse it to an Appium param
-        Gson gson = new Gson();
         String postJson = parseBody(session);
         AppiumParams appiumParams;
         // TODO: Need to find a way to specify 'required' fields and throw exception when not provided
         if (postJson == null) {
             appiumParams = new AppiumParams();
         } else {
-            appiumParams = (AppiumParams) paramClass.cast(gson.fromJson(postJson, paramClass));
+            appiumParams = (AppiumParams) paramClass.cast((new Gson()).fromJson(postJson, paramClass));
         }
         appiumParams.setSessionId(uriParams.get("sessionId"));
         appiumParams.setElementId(uriParams.get("elementId"));

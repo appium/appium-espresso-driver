@@ -22,7 +22,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.endsWith;
 
-public class Finder implements RequestHandler<Locator> {
+public class Finder implements RequestHandler<Locator, Element> {
 
     @Override
     public Element handle(Locator locator) throws AppiumException {

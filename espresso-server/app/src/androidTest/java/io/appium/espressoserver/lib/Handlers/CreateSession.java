@@ -12,7 +12,7 @@ import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 
-public class CreateSession implements RequestHandler<SessionParams> {
+public class CreateSession implements RequestHandler<SessionParams, Session> {
 
     @Override
     public Session handle(SessionParams params) throws AppiumException {

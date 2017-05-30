@@ -3,7 +3,7 @@ package io.appium.espressoserver.lib.Handlers;
 import io.appium.espressoserver.lib.Model.AppiumParams;
 import io.appium.espressoserver.lib.Model.Session;
 
-public class DeleteSession implements RequestHandler<AppiumParams> {
+public class DeleteSession implements RequestHandler<AppiumParams, Object> {
 
     @Override
     public Object handle(AppiumParams params) {

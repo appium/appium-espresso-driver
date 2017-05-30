@@ -1,6 +1,6 @@
 package io.appium.espressoserver.lib.Handlers.Exceptions;
 
-public abstract class AppiumException extends Exception {
+public class AppiumException extends Exception {
 
     AppiumException() {
         super();

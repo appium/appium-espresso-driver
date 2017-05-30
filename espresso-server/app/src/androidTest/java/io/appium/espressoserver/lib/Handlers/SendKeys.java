@@ -10,7 +10,7 @@ import io.appium.espressoserver.lib.Model.TextParams;
 import static android.support.test.espresso.action.ViewActions.typeText;
 
 
-public class SendKeys implements RequestHandler<TextParams> {
+public class SendKeys implements RequestHandler<TextParams, Object> {
 
     @Override
     public Object handle(TextParams params) {

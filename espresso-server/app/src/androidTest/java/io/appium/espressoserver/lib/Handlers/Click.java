@@ -8,7 +8,7 @@ import io.appium.espressoserver.lib.Model.Element;
 
 import static android.support.test.espresso.action.ViewActions.click;
 
-public class Click implements RequestHandler<AppiumParams> {
+public class Click implements RequestHandler<AppiumParams, Object> {
 
     @Override
     public Object handle(AppiumParams params) throws AppiumException {
@@ -16,8 +16,7 @@ public class Click implements RequestHandler<AppiumParams> {
         try {
             viewInteraction.perform(click());
         } catch (Exception e) { // TODO: Can we narrow down these exceptions?
-            return new AppiumException("Could not find element " + params.getElementId()) {
-            };
+            throw new AppiumException("Could not click element " + params.getElementId());
         }
         return null;
     }

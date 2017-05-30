@@ -11,7 +11,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
-public class ScrollTo implements RequestHandler<ScrollToParams> {
+public class ScrollTo implements RequestHandler<ScrollToParams, Object> {
 
     @Override
     public Object handle(ScrollToParams params) throws AppiumException {

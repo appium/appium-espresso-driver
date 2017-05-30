@@ -6,22 +6,23 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
 
 @SuppressWarnings("unused")
-public class AppiumResponse {
+public class AppiumResponse<T extends Object> {
     private transient Status httpStatus;
-    private Object value;
+    private T value;
     private AppiumStatus status;
     private String sessionId;
-    private String id; // Unique Appium transaction ID
+    // Unique Appium transaction ID
+    private String id;
 
-    AppiumResponse(AppiumStatus status, Object value) {
+    public AppiumResponse(AppiumStatus status, T value) {
         init(status, value, null);
     }
 
-    public AppiumResponse(AppiumStatus status, Object value, String sessionId) {
+    public AppiumResponse(AppiumStatus status, T value, String sessionId) {
         init(status, value, sessionId);
     }
 
-    private void init(AppiumStatus status, Object value, String sessionId) {
+    private void init(AppiumStatus status, T value, String sessionId) {
         this.value = value;
         this.status = status;
         this.sessionId = sessionId;
@@ -33,6 +34,7 @@ public class AppiumResponse {
                 break;
             case UNKNOWN_COMMAND:
                 httpStatus = Status.NOT_FOUND;
+                break;
             default:
                 httpStatus = Status.BAD_REQUEST;
                 break;
