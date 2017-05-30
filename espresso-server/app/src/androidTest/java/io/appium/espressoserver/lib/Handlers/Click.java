@@ -10,6 +10,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 
 public class Click implements RequestHandler<AppiumParams> {
 
+    @Override
     public Object handle(AppiumParams params) throws AppiumException {
         ViewInteraction viewInteraction = Element.getById(params.getElementId());
         try {

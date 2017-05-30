@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.Handlers;
 
+import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
@@ -23,6 +24,7 @@ import static org.hamcrest.Matchers.endsWith;
 
 public class Finder implements RequestHandler<Locator> {
 
+    @Override
     public Element handle(Locator locator) throws AppiumException {
         try {
             if (locator.getUsing() == null) {
@@ -49,7 +51,8 @@ public class Finder implements RequestHandler<Locator> {
             case ID: // with ID
 
                 // find id from target context
-                int id = InstrumentationRegistry.getTargetContext().getResources().getIdentifier(selector, "Id",
+                Context context = InstrumentationRegistry.getTargetContext();
+                int id = context.getResources().getIdentifier(selector, "Id",
                         InstrumentationRegistry.getTargetContext().getPackageName());
 
                 matcher = onView(withId(id));

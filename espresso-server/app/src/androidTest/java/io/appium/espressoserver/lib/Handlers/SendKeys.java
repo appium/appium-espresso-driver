@@ -12,6 +12,7 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 
 public class SendKeys implements RequestHandler<TextParams> {
 
+    @Override
     public Object handle(TextParams params) {
         String id = params.getElementId();
         ViewInteraction viewInteraction = Element.getById(id);

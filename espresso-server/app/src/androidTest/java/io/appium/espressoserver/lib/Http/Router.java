@@ -6,10 +6,11 @@ import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
-import fi.iki.elonen.NanoHTTPD.ResponseException;
 import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.Handlers.Click;
 import io.appium.espressoserver.lib.Handlers.Exceptions.InvalidStrategyException;
@@ -33,12 +34,12 @@ import io.appium.espressoserver.lib.Model.SessionParams;
 import io.appium.espressoserver.lib.Model.TextParams;
 
 class Router {
-    private final Map<Method, HashMap<String, RequestHandler>> routerMap;
-    private final Map<Method, HashMap<String, Class>> paramClassMap;
+    private final Map<Method, Map<String, RequestHandler>> routerMap;
+    private final Map<Method, Map<String, Class>> paramClassMap;
 
     Router() throws DuplicateRouteException {
-        routerMap = new HashMap<>();
-        paramClassMap = new HashMap<>();
+        routerMap = new ConcurrentHashMap<>();
+        paramClassMap = new ConcurrentHashMap<>();
 
         addRoute(Method.POST, "/session", new io.appium.espressoserver.lib.Handlers.CreateSession(), SessionParams.class);
         addRoute(Method.DELETE, "/session/:sessionId", new DeleteSession());
@@ -54,7 +55,7 @@ class Router {
 
     private void addRoute(Method method, String uri, RequestHandler handler, Class<? extends AppiumParams> paramClass) throws DuplicateRouteException {
         if (!routerMap.containsKey(method)) {
-            routerMap.put(method, new HashMap<String, RequestHandler>());
+            routerMap.put(method, new ConcurrentHashMap<String, RequestHandler>());
         }
         if (routerMap.get(method).containsKey(uri)) {
             throw new DuplicateRouteException();
@@ -76,7 +77,7 @@ class Router {
         System.out.println("Received " + method + " request for '" + uri + "'");
 
         if (!routerMap.containsKey(method)) {
-            routerMap.put(method, new HashMap<String, RequestHandler>());
+            routerMap.put(method, new ConcurrentHashMap<String, RequestHandler>());
         }
         if (!paramClassMap.containsKey(method)) {
             paramClassMap.put(method, new HashMap<String, Class>());
@@ -184,7 +185,7 @@ class Router {
             result = files.get("postData");
         } catch (IOException e) {
             // TODO: error handling
-        } catch (ResponseException e) {
+        } catch (NanoHTTPD.ResponseException e) {
             // TODO: handle error
         }
         return result;

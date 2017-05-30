@@ -5,6 +5,7 @@ import io.appium.espressoserver.lib.Model.Session;
 
 public class DeleteSession implements RequestHandler<AppiumParams> {
 
+    @Override
     public Object handle(AppiumParams params) {
         Session.deleteGlobalSession();
         return null;

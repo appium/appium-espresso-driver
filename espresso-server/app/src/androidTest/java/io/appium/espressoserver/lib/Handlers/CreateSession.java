@@ -14,6 +14,7 @@ import android.support.test.InstrumentationRegistry;
 
 public class CreateSession implements RequestHandler<SessionParams> {
 
+    @Override
     public Session handle(SessionParams params) throws AppiumException {
         Session appiumSession = new Session();
         String activityName = params.getDesiredCapabilities().getAppActivity();
