@@ -10,6 +10,7 @@ import io.appium.espressoserver.lib.Exceptions.ElementNotFoundException;
 import io.appium.espressoserver.lib.Exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.Exceptions.ServerErrorException;
 import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
+import io.appium.espressoserver.lib.Http.Response.BadRequestResponse;
 import io.appium.espressoserver.lib.Model.Appium;
 import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.Strategy;
@@ -52,45 +53,38 @@ public class Finder extends BaseHandler {
             return response;
         } catch (InvalidStrategyException e) {
             return new BadRequestResponse(e.getMessage());
-        } catch (ServerErrorException e) {
-            return new InternalErrorResponse(e.getMessage());
         } catch (ElementNotFoundException e) {
             return new BadRequestResponse("Could not find element with " + strategy.getStrategyName() + ": " + selector);
         }
     }
 
     ///Find By different strategies
-    private ViewInteraction findBy(Strategy strategy, String selector) throws ServerErrorException, InvalidStrategyException, ElementNotFoundException {
+    private ViewInteraction findBy(Strategy strategy, String selector) throws InvalidStrategyException, ElementNotFoundException {
         ViewInteraction matcher;
 
-        try {
-            switch (strategy) {
-                case ID: // with ID
+        switch (strategy) {
+            case ID: // with ID
 
-                    // find id from target context
-                    int id = InstrumentationRegistry.getTargetContext().getResources().getIdentifier(selector, "Id",
-                            InstrumentationRegistry.getTargetContext().getPackageName());
-                    matcher = onView(withId(id));
-                    break;
-                case CLASS_NAME:
-                    // with class name
-                    // TODO: improve this finder with instanceOf
-                    matcher = onView(withClassName(endsWith(selector)));
-                    break;
-                case TEXT:
-                    // with text
-                    matcher = onView(withText(selector));
-                    break;
-                case ACCESSIBILITY_ID:
-                    // with content description
-                    matcher = onView(withContentDescription(selector));
-                    break;
-                default:
-                    throw new InvalidStrategyException("Strategy is not implemented: " + strategy.getStrategyName());
-            }
-        }
-        catch (Exception e) {
-            throw new ServerErrorException();
+                // find id from target context
+                int id = InstrumentationRegistry.getTargetContext().getResources().getIdentifier(selector, "Id",
+                        InstrumentationRegistry.getTargetContext().getPackageName());
+                matcher = onView(withId(id));
+                break;
+            case CLASS_NAME:
+                // with class name
+                // TODO: improve this finder with instanceOf
+                matcher = onView(withClassName(endsWith(selector)));
+                break;
+            case TEXT:
+                // with text
+                matcher = onView(withText(selector));
+                break;
+            case ACCESSIBILITY_ID:
+                // with content description
+                matcher = onView(withContentDescription(selector));
+                break;
+            default:
+                throw new InvalidStrategyException("Strategy is not implemented: " + strategy.getStrategyName());
         }
 
         if(matcher == null) {
