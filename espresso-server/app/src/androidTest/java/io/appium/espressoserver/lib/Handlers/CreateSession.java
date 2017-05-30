@@ -1,9 +1,6 @@
 package io.appium.espressoserver.lib.Handlers;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import com.google.gson.Gson;
 
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
@@ -20,40 +17,23 @@ import android.support.test.InstrumentationRegistry;
 
 public class CreateSession implements RequestHandler {
 
-    public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, String> uriParams) {
+    @Override
+    public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, Object> params) {
         Session appiumSession = new Session();
         AppiumResponse appiumResponse = new AppiumResponse();
 
-        Map<String, String> appInfo = getDesiredPackageAndActivity(session);
+        // TODO: The Router should be deserializing the params as an Object (in this case a DesiredCapabilities object instance)
+        // and if the deserialization fails, return a BadParametersError response
+        Map<String, Object> desiredCaps = (Map<String, Object>)params.get("desiredCapabilities");
+        String appActivity = (String)desiredCaps.get("appActivity");
 
         // TODO: make sure the package is the one we are expecting, erroring out otherwise
 
-        startActivity(appInfo.get("appActivity"));
+        startActivity(appActivity);
 
         appiumResponse.setAppiumStatus(AppiumStatus.SUCCESS);
         appiumResponse.setSessionId(appiumSession.getId());
         return appiumResponse;
-    }
-
-    private Map<String, String> getDesiredPackageAndActivity(NanoHTTPD.IHTTPSession session) {
-        Map result = new HashMap();
-        try {
-            Map<String, String> files = new HashMap<>();
-            session.parseBody(files);
-
-            Gson gson = new Gson();
-            Map<String, Map> data = gson.fromJson(files.get("postData"), Map.class);
-
-            Map<String, String> caps = data.get("desiredCapabilities");
-
-            result.put("appPackage", caps.get("appPackage"));
-            result.put("appActivity", caps.get("appActivity"));
-
-            return result;
-        } catch (Exception e) {
-            // TODO: error handling
-            return result;
-        }
     }
 
     private void startActivity(String appActivity) {

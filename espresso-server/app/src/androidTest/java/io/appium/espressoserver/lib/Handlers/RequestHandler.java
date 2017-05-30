@@ -6,5 +6,5 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 
 public interface RequestHandler {
-    BaseResponse handle(IHTTPSession session, Map<String, String> uriParams);
+    BaseResponse handle(IHTTPSession session, Map<String, Object> params);
 }
