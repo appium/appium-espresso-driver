@@ -1,5 +1,7 @@
 package io.appium.espressoserver.lib.Model;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.appium.espressoserver.lib.Handlers.Exceptions.InvalidStrategyException;
 
 /**
@@ -7,15 +9,25 @@ import io.appium.espressoserver.lib.Handlers.Exceptions.InvalidStrategyException
  */
 @SuppressWarnings("unused")
 public enum Strategy {
+    @SerializedName("class name")
     CLASS_NAME("class name"),
+    @SerializedName("css selector")
     CSS_SELECTOR("css selector"),
+    @SerializedName("id")
     ID("id"),
+    @SerializedName("name")
     NAME("name"),
+    @SerializedName("link text")
     LINK_TEXT("link text"),
+    @SerializedName("partial link text")
     PARTIAL_LINK_TEXT("partial link text"),
+    @SerializedName("xpath")
     XPATH("xpath"),
+    @SerializedName("accessibility id")
     ACCESSIBILITY_ID("accessibility id"),
+    @SerializedName("text")
     TEXT("text"),
+
     ANDROID_UIAUTOMATOR("-android uiautomator");
 
     public static Strategy fromString(final String text) throws InvalidStrategyException {

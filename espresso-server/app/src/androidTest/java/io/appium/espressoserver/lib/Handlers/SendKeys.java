@@ -16,7 +16,13 @@ public class SendKeys implements RequestHandler<TextParams> {
         String id = params.getElementId();
         ViewInteraction viewInteraction = Element.getById(id);
 
-        String textValue = params.getValue();
+        // Convert the array of text to a String
+        String[] textArray = params.getValue();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i=0; i<textArray.length; i++) {
+            stringBuilder.append(textArray[i]);
+        }
+        String textValue = stringBuilder.toString();
 
         try {
             viewInteraction.perform(typeText(textValue));

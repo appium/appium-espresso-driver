@@ -30,6 +30,7 @@ import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.Locator;
 import io.appium.espressoserver.lib.Model.Session;
 import io.appium.espressoserver.lib.Model.SessionParams;
+import io.appium.espressoserver.lib.Model.TextParams;
 
 class Router {
     private final Map<Method, HashMap<String, RequestHandler>> routerMap;
@@ -44,7 +45,7 @@ class Router {
         addRoute(Method.GET, "/status", new Status());
         addRoute(Method.POST, "/session/:sessionId/element", new Finder(), Locator.class);
         addRoute(Method.POST, "/session/:sessionId/element/:elementId/click", new Click());
-        addRoute(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys());
+        addRoute(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys(), TextParams.class);
     }
 
     private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
