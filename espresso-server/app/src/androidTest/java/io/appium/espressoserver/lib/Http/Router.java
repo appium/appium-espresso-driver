@@ -23,7 +23,7 @@ import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Http.Response.NotFoundResponse;
 
 class Router {
-    private final Map<Method, ConcurrentHashMap<String, RequestHandler>> routerMap;
+    private final Map<Method, Map<String, RequestHandler>> routerMap;
 
     Router() throws DuplicateRouteException {
         routerMap = new ConcurrentHashMap<>();
