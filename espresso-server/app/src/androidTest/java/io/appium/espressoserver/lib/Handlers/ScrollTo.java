@@ -1,38 +1,30 @@
 package io.appium.espressoserver.lib.Handlers;
 
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 
-import java.util.Map;
-
-import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
-import io.appium.espressoserver.lib.Http.Response.BaseResponse;
-import io.appium.espressoserver.lib.Http.Response.InvalidSessionResponse;
-import io.appium.espressoserver.lib.Model.AppiumStatus;
-import io.appium.espressoserver.lib.Model.Session;
+import io.appium.espressoserver.lib.Handlers.Exceptions.AppiumException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.NoSuchElementException;
+import io.appium.espressoserver.lib.Model.ScrollToParams;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
-public class ScrollTo extends BaseHandler {
+public class ScrollTo implements RequestHandler<ScrollToParams, Void> {
 
     @Override
-    public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, Object> params) {
+    public Void handle(ScrollToParams params) throws AppiumException {
 
-        AppiumResponse response = (AppiumResponse)super.handle(session, params);
-
-        String text = (String)params.get("text");
-
-        ViewInteraction viewInteraction = onView(withText(text));
-
-        if (viewInteraction != null) {
+        try {
+            ViewInteraction viewInteraction = onView(withText(params.getText()));
             viewInteraction.perform(scrollTo());
+        } catch (NoMatchingViewException e) {
+            throw new NoSuchElementException("Could not find element with text " + params.getText());
         }
 
-        response.setAppiumStatus(AppiumStatus.SUCCESS);
+        return null;
 
-        return response;
     }
 
 

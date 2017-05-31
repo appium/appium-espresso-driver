@@ -1,27 +1,63 @@
 package io.appium.espressoserver.lib.Http.Response;
 
-import io.appium.espressoserver.lib.Model.Appium;
+import java.util.UUID;
+
+import fi.iki.elonen.NanoHTTPD.Response.Status;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
 
-public class AppiumResponse extends BaseResponse {
-    public AppiumResponse() {
-        setResponse(new Appium());
+@SuppressWarnings("unused")
+public class AppiumResponse<T> extends BaseResponse {
+    private T value;
+    private AppiumStatus status;
+    private String sessionId;
+    // Unique Appium transaction ID
+    private String id;
+
+    public AppiumResponse(AppiumStatus status, T value) {
+        init(status, value, null);
     }
 
-    public void setValue(Object value) {
-        getResponse().setValue(value);
+    public AppiumResponse(AppiumStatus status, T value, String sessionId) {
+        init(status, value, sessionId);
     }
 
-    public void setAppiumStatus(AppiumStatus status) {
-        getResponse().setStatus(status);
+    private void init(AppiumStatus status, T value, String sessionId) {
+        this.value = value;
+        this.status = status;
+        this.sessionId = sessionId;
+        id = UUID.randomUUID().toString();
+
+        switch (status) {
+            case SUCCESS:
+                httpStatus = Status.OK;
+                break;
+            case UNKNOWN_COMMAND:
+                httpStatus = Status.NOT_FOUND;
+                break;
+            default:
+                httpStatus = Status.INTERNAL_ERROR;
+                break;
+        }
     }
 
-    public void setSessionId(String sessionId) {
-        getResponse().setSessionId(sessionId);
+    public Object getValue() {
+        return value;
     }
 
-    public void setAppiumId(String id) {
-        getResponse().setId(id);
+    public Status getHttpStatus() {
+        return httpStatus;
+    }
+
+    public AppiumStatus getStatus() {
+        return status;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public String getId() {
+        return id;
     }
 }
 

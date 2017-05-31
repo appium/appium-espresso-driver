@@ -8,47 +8,73 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
-import fi.iki.elonen.NanoHTTPD.ResponseException;
 import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.Handlers.Click;
-import io.appium.espressoserver.lib.Handlers.Finder;
-import io.appium.espressoserver.lib.Handlers.RequestHandler;
 import io.appium.espressoserver.lib.Handlers.CreateSession;
+import io.appium.espressoserver.lib.Handlers.Exceptions.InvalidStrategyException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.SessionNotCreatedException;
+import io.appium.espressoserver.lib.Handlers.Finder;
+import io.appium.espressoserver.lib.Handlers.Exceptions.AppiumException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.MissingCommandsException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.NoSuchElementException;
+import io.appium.espressoserver.lib.Handlers.RequestHandler;
 import io.appium.espressoserver.lib.Handlers.DeleteSession;
 import io.appium.espressoserver.lib.Handlers.SendKeys;
 import io.appium.espressoserver.lib.Handlers.Status;
+import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
 import io.appium.espressoserver.lib.Http.Response.BaseResponse;
-import io.appium.espressoserver.lib.Http.Response.NotFoundResponse;
+import io.appium.espressoserver.lib.Http.Response.ErrorResponse;
+import io.appium.espressoserver.lib.Model.AppiumParams;
+import io.appium.espressoserver.lib.Model.AppiumStatus;
+import io.appium.espressoserver.lib.Model.Locator;
+import io.appium.espressoserver.lib.Model.Session;
+import io.appium.espressoserver.lib.Model.SessionParams;
+import io.appium.espressoserver.lib.Model.TextParams;
 
 class Router {
     private final Map<Method, Map<String, RequestHandler>> routerMap;
+    private final Map<Method, Map<String, Class<? extends AppiumParams>>> paramClassMap;
 
     Router() throws DuplicateRouteException {
         routerMap = new ConcurrentHashMap<>();
+        paramClassMap = new ConcurrentHashMap<>();
 
-        addRoute(Method.POST, "/session", new CreateSession());
-        addRoute(Method.DELETE, "/session/:sessionId", new DeleteSession());
-        addRoute(Method.GET, "/status", new Status());
-        addRoute(Method.POST, "/session/:sessionId/element", new Finder());
-        addRoute(Method.POST, "/session/:sessionId/element/:elementId/click", new Click());
-        addRoute(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys());
+        addRoute(Method.POST, "/session", new CreateSession(), SessionParams.class);
+        addRoute(Method.DELETE, "/session/:sessionId", new DeleteSession(), AppiumParams.class);
+        addRoute(Method.GET, "/status", new Status(), AppiumParams.class);
+        addRoute(Method.POST, "/session/:sessionId/element", new Finder(), Locator.class);
+        addRoute(Method.POST, "/session/:sessionId/element/:elementId/click", new Click(), AppiumParams.class);
+        addRoute(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys(), TextParams.class);
     }
 
-    private void addRoute(Method method, String uri, RequestHandler handler) throws DuplicateRouteException {
+    /**
+     * Registers a route to a handler
+     * @param method HTTP method type
+     * @param uri URI of endpoint
+     * @param handler RequestHandler object that takes params and returns a result based on params
+     * @param paramClass Parameters class that the JSON is deserialized to
+     * @throws DuplicateRouteException If the same route is registered twice, throw an error
+     */
+    private void addRoute(Method method, String uri, RequestHandler<? extends AppiumParams, ?> handler, Class<? extends AppiumParams> paramClass) throws DuplicateRouteException {
         if (!routerMap.containsKey(method)) {
             routerMap.put(method, new ConcurrentHashMap<String, RequestHandler>());
         }
         if (routerMap.get(method).containsKey(uri)) {
             throw new DuplicateRouteException();
         }
+        if (!paramClassMap.containsKey(method)) {
+            paramClassMap.put(method, new ConcurrentHashMap<String, Class<? extends AppiumParams>>());
+        }
 
         routerMap.get(method).put(uri, handler);
+        paramClassMap.get(method).put(uri, paramClass);
     }
 
     BaseResponse route(IHTTPSession session) {
-        RequestHandler handler;
+        RequestHandler handler = null;
 
         String uri = session.getUri();
         Method method = session.getMethod();
@@ -58,19 +84,15 @@ class Router {
         if (!routerMap.containsKey(method)) {
             routerMap.put(method, new ConcurrentHashMap<String, RequestHandler>());
         }
+        if (!paramClassMap.containsKey(method)) {
+            paramClassMap.put(method, new ConcurrentHashMap<String, Class<? extends AppiumParams>>());
+        }
 
-        // By default, set handler to NotFound until we find a matching handler
-        handler = new RequestHandler() {
-            @Override
-            public BaseResponse handle(IHTTPSession session, Map<String, Object> params) {
-                return new NotFoundResponse();
-            }
-        };
-
-        Map<String, Object> params = parseBody(session);
+        Map<String, String> uriParams = new HashMap<>();
 
         // Look for a matching route
         // TODO: Move this to a separate method 'isRouteMatch'.
+        Class<? extends AppiumParams> paramClass = AppiumParams.class;
         for (Map.Entry<String, RequestHandler> entry : routerMap.get(method).entrySet()) {
             String testUri = entry.getKey();
 
@@ -98,32 +120,72 @@ class Router {
                 String[] uriTokens = uri.split("/");
                 for (Map.Entry<Integer, String> wildcardIndexEntry : wildcardIndices.entrySet()) {
                     int wildcardIndex = wildcardIndexEntry.getKey();
-                    params.put(wildcardIndexEntry.getValue(), uriTokens[wildcardIndex]);
+                    uriParams.put(wildcardIndexEntry.getValue(), uriTokens[wildcardIndex]);
                 }
                 handler = routerMap.get(method).get(entry.getKey());
+                paramClass = paramClassMap.get(method).get(entry.getKey());
                 break;
             }
         }
 
-        BaseResponse res = handler.handle(session, params);
-        System.out.println("Finished processing " + method + " request for '" + uri + "'");
-        return res;
+        if (handler == null) {
+            return new ErrorResponse(NanoHTTPD.Response.Status.NOT_FOUND, String.format("No such route %s", uri));
+        }
+
+        // Parse it to an Appium param
+        String postJson = parseBody(session);
+        AppiumParams appiumParams;
+        // TODO: Need to find a way to specify 'required' fields and throw exception when not provided
+        if (postJson == null) {
+            appiumParams = new AppiumParams();
+        } else {
+            appiumParams = (AppiumParams) paramClass.cast((new Gson()).fromJson(postJson, paramClass));
+        }
+        appiumParams.setSessionId(uriParams.get("sessionId"));
+        appiumParams.setElementId(uriParams.get("elementId"));
+
+        // Validate the sessionId
+        if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSessionId())) {
+            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, "Invalid session ID " + appiumParams.getSessionId());
+        }
+
+        // Create the result
+        try {
+            Object handlerResult = handler.handle(appiumParams);
+            String sessionId = appiumParams.getSessionId();
+
+            // If it's a new session, pull out the newly created Session ID
+            if (handlerResult != null && handlerResult.getClass() == Session.class) {
+                sessionId = ((Session) handlerResult).getId();
+            }
+
+            AppiumResponse appiumResponse = new AppiumResponse<>(AppiumStatus.SUCCESS, handlerResult, sessionId);
+            System.out.println("Finished processing " + method + " request for '" + uri + "'");
+            return appiumResponse;
+        } catch (NoSuchElementException e) {
+            return new AppiumResponse<>(AppiumStatus.NO_SUCH_ELEMENT, e.getMessage());
+        } catch (SessionNotCreatedException e) {
+            return new AppiumResponse<>(AppiumStatus.SESSION_NOT_CREATED_EXCEPTION, e.getMessage());
+        } catch(InvalidStrategyException e) {
+            return new AppiumResponse<>(AppiumStatus.INVALID_SELECTOR, e.getMessage());
+        } catch (MissingCommandsException e) {
+            return new ErrorResponse(NanoHTTPD.Response.Status.NOT_FOUND, e.getMessage());
+        } catch (AppiumException e) {
+            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, e.getMessage());
+        }
     }
 
-    private Map<String, Object> parseBody (IHTTPSession session) {
-        Map<String, Object> result = new HashMap<>();
+    private String parseBody (IHTTPSession session) {
+        String result = "{}";
         try {
             Map<String, String> files = new HashMap<>();
             session.parseBody(files);
-
-            Gson gson = new Gson();
-            result = gson.fromJson(files.get("postData"), Map.class);
+            result = files.get("postData");
         } catch (IOException e) {
             // TODO: error handling
-        } catch (ResponseException e) {
+        } catch (NanoHTTPD.ResponseException e) {
             // TODO: handle error
         }
-
         return result;
     }
 }

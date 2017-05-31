@@ -2,19 +2,16 @@ package io.appium.espressoserver.lib.Handlers;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 
-import java.util.Map;
-
-import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.lib.Exceptions.ElementNotFoundException;
-import io.appium.espressoserver.lib.Exceptions.InvalidStrategyException;
-import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
-import io.appium.espressoserver.lib.Http.Response.BadRequestResponse;
-import io.appium.espressoserver.lib.Model.Appium;
+import io.appium.espressoserver.lib.Handlers.Exceptions.AppiumException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.MissingCommandsException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.InvalidStrategyException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.Model.Element;
+import io.appium.espressoserver.lib.Model.Locator;
 import io.appium.espressoserver.lib.Model.Strategy;
-import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -25,42 +22,29 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.endsWith;
 
-public class Finder extends BaseHandler {
+public class Finder implements RequestHandler<Locator, Element> {
 
     @Override
-    public BaseResponse handle(NanoHTTPD.IHTTPSession session, Map<String, Object> params)  {
-        AppiumResponse response = (AppiumResponse)super.handle(session, params);
-
-        final Strategy strategy;
+    public Element handle(Locator locator) throws AppiumException {
         try {
-            String using = (String)params.get("using");
-            strategy = Strategy.fromString(using);
-        } catch (final InvalidStrategyException e) {
-            response.setResponse(new Appium());
-            return response;
-        }
-
-        // Get the description
-        String selector = (String)params.get("value");
-
-        try {
+            if (locator.getUsing() == null) {
+                throw new InvalidStrategyException("Locator strategy cannot be empty");
+            } else if (locator.getValue() == null) {
+                throw new MissingCommandsException("No locator provided");
+            }
             // Test the selector
-            ViewInteraction matcher = findBy(strategy, selector);
+            ViewInteraction matcher = findBy(locator.getUsing(), locator.getValue());
             matcher.check(matches(isDisplayed()));
 
             // If we have a match, return success
-            Element element = new Element(matcher);
-            response.setValue(element);
-            return response;
-        } catch (InvalidStrategyException e) {
-            return new BadRequestResponse(e.getMessage());
-        } catch (ElementNotFoundException e) {
-            return new BadRequestResponse("Could not find element with " + strategy.getStrategyName() + ": " + selector);
+            return new Element(matcher);
+        } catch (NoMatchingViewException e) {
+            throw new NoSuchElementException("Could not find element with strategy " + locator.getUsing() + " and selector " + locator.getValue());
         }
     }
 
     ///Find By different strategies
-    private ViewInteraction findBy(Strategy strategy, String selector) throws InvalidStrategyException, ElementNotFoundException {
+    private ViewInteraction findBy(Strategy strategy, String selector) throws InvalidStrategyException {
         ViewInteraction matcher;
 
         switch (strategy) {
@@ -70,6 +54,7 @@ public class Finder extends BaseHandler {
                 Context context = InstrumentationRegistry.getTargetContext();
                 int id = context.getResources().getIdentifier(selector, "Id",
                         InstrumentationRegistry.getTargetContext().getPackageName());
+
                 matcher = onView(withId(id));
                 break;
             case CLASS_NAME:
@@ -87,10 +72,6 @@ public class Finder extends BaseHandler {
                 break;
             default:
                 throw new InvalidStrategyException("Strategy is not implemented: " + strategy.getStrategyName());
-        }
-
-        if(matcher == null) {
-            throw new ElementNotFoundException();
         }
 
         return matcher;

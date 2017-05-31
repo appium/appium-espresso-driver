@@ -2,14 +2,15 @@ package io.appium.espressoserver.lib.Model;
 
 import android.support.test.espresso.ViewInteraction;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("unused")
 public class Element {
     private final String ELEMENT;
-    private final static Map<String, ViewInteraction> cache = new HashMap<>();
+    private final static Map<String, ViewInteraction> cache = new ConcurrentHashMap<>();
 
     public Element (ViewInteraction interaction) {
         ELEMENT = UUID.randomUUID().toString();
@@ -20,7 +21,14 @@ public class Element {
         return ELEMENT;
     }
 
-    public static Map<String, ViewInteraction> getCache() {
-        return cache;
+    public static ViewInteraction getById(String elementId) throws NoSuchElementException {
+        if (!exists(elementId)) {
+            throw new NoSuchElementException(String.format("Invalid element ID %s", elementId));
+        }
+        return cache.get(elementId);
+    }
+
+    public static boolean exists(String elementId) {
+        return cache.containsKey(elementId);
     }
 }
