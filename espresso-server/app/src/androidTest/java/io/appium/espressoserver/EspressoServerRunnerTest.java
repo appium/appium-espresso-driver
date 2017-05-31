@@ -8,8 +8,8 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
-import io.appium.espressoserver.lib.Http.Server;
+import io.appium.espressoserver.lib.exceptions.DuplicateRouteException;
+import io.appium.espressoserver.lib.http.Server;
 
 /**
  * Instrumentation test, which will execute on an Android device.
