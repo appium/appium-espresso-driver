@@ -11,10 +11,10 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
-public class ScrollTo implements RequestHandler<ScrollToParams, Object> {
+public class ScrollTo implements RequestHandler<ScrollToParams, Void> {
 
     @Override
-    public Object handle(ScrollToParams params) throws AppiumException {
+    public Void handle(ScrollToParams params) throws AppiumException {
 
         try {
             ViewInteraction viewInteraction = onView(withText(params.getText()));

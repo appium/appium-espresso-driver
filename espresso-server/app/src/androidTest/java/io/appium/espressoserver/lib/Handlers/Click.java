@@ -8,10 +8,10 @@ import io.appium.espressoserver.lib.Model.Element;
 
 import static android.support.test.espresso.action.ViewActions.click;
 
-public class Click implements RequestHandler<AppiumParams, Object> {
+public class Click implements RequestHandler<AppiumParams, Void> {
 
     @Override
-    public Object handle(AppiumParams params) throws AppiumException {
+    public Void handle(AppiumParams params) throws AppiumException {
         ViewInteraction viewInteraction = Element.getById(params.getElementId());
         try {
             viewInteraction.perform(click());

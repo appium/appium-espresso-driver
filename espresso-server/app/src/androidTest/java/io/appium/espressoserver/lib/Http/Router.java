@@ -13,6 +13,7 @@ import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import io.appium.espressoserver.lib.Exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.Handlers.Click;
+import io.appium.espressoserver.lib.Handlers.CreateSession;
 import io.appium.espressoserver.lib.Handlers.Exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.Handlers.Exceptions.SessionNotCreatedException;
 import io.appium.espressoserver.lib.Handlers.Finder;
@@ -41,7 +42,7 @@ class Router {
         routerMap = new ConcurrentHashMap<>();
         paramClassMap = new ConcurrentHashMap<>();
 
-        addRoute(Method.POST, "/session", new io.appium.espressoserver.lib.Handlers.CreateSession(), SessionParams.class);
+        addRoute(Method.POST, "/session", new CreateSession(), SessionParams.class);
         addRoute(Method.DELETE, "/session/:sessionId", new DeleteSession(), AppiumParams.class);
         addRoute(Method.GET, "/status", new Status(), AppiumParams.class);
         addRoute(Method.POST, "/session/:sessionId/element", new Finder(), Locator.class);
@@ -57,7 +58,7 @@ class Router {
      * @param paramClass Parameters class that the JSON is deserialized to
      * @throws DuplicateRouteException If the same route is registered twice, throw an error
      */
-    private void addRoute(Method method, String uri, RequestHandler handler, Class<? extends AppiumParams> paramClass) throws DuplicateRouteException {
+    private void addRoute(Method method, String uri, RequestHandler<? extends AppiumParams, ?> handler, Class<? extends AppiumParams> paramClass) throws DuplicateRouteException {
         if (!routerMap.containsKey(method)) {
             routerMap.put(method, new ConcurrentHashMap<String, RequestHandler>());
         }
@@ -91,7 +92,7 @@ class Router {
 
         // Look for a matching route
         // TODO: Move this to a separate method 'isRouteMatch'.
-        Class paramClass = AppiumParams.class;
+        Class<? extends AppiumParams> paramClass = AppiumParams.class;
         for (Map.Entry<String, RequestHandler> entry : routerMap.get(method).entrySet()) {
             String testUri = entry.getKey();
 
