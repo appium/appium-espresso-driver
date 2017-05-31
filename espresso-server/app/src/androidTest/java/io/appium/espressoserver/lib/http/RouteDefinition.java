@@ -15,7 +15,7 @@ class RouteDefinition {
     private final Class<? extends AppiumParams> paramClass;
     private final RequestHandler<? extends AppiumParams, ?> handler;
 
-    public RouteDefinition(Method method, String routeUri, RequestHandler<? extends AppiumParams, ?> handler, Class<? extends AppiumParams> paramClass) {
+    RouteDefinition(Method method, String routeUri, RequestHandler<? extends AppiumParams, ?> handler, Class<? extends AppiumParams> paramClass) {
         testRegex = buildTestRegex(routeUri);
         this.routeUri = routeUri;
         this.method = method;
@@ -23,11 +23,11 @@ class RouteDefinition {
         this.handler = handler;
     }
 
-    boolean isMatch (String uri) {
+    public boolean isMatch (String uri) {
         return uri.matches(testRegex);
     }
 
-    Map<String, String> getUriParams(String uri) {
+    public Map<String, String> getUriParams(String uri) {
         Map<String, String> uriParams = new HashMap<>();
         String[] uriTokens = uri.split("/");
 
@@ -42,19 +42,19 @@ class RouteDefinition {
         return uriParams;
     }
 
-    Class<? extends AppiumParams> getParamClass() {
+    public Class<? extends AppiumParams> getParamClass() {
         return paramClass;
     }
 
-    Method getMethod () {
+    public Method getMethod () {
         return method;
     }
 
-    RequestHandler<? extends AppiumParams, ?> getHandler() {
+    public RequestHandler<? extends AppiumParams, ?> getHandler() {
         return handler;
     }
 
-    String getRouteUri () {
+    public String getRouteUri () {
         return routeUri;
     }
 
@@ -62,15 +62,13 @@ class RouteDefinition {
         StringBuilder testRegex = new StringBuilder("^");
 
         // Convert route to a regex
-        int index = 0;
         for (String uriToken : uri.split("/")) {
             if (uriToken.startsWith(":")) {
                 testRegex.append("/[\\w\\W]*");
-            } else if (!"".equals(uriToken)) {
+            } else if (!uriToken.isEmpty()) {
                 testRegex.append("/");
                 testRegex.append(uriToken);
             }
-            index++;
         }
         testRegex.append("$");
         return testRegex.toString();
