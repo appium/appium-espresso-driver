@@ -2,6 +2,8 @@ package io.appium.espressoserver.lib.model;
 
 @SuppressWarnings("unused")
 public class SessionParams extends AppiumParams {
+    private DesiredCapabilities desiredCapabilities;
+
     public DesiredCapabilities getDesiredCapabilities() {
         return desiredCapabilities;
     }
@@ -14,6 +16,4 @@ public class SessionParams extends AppiumParams {
             return appActivity;
         }
     }
-
-    private DesiredCapabilities desiredCapabilities;
 }
