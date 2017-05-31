@@ -26,6 +26,14 @@ public class Server extends NanoHTTPD {
         router = new Router();
     }
 
+    private String[] getStackTrace(Exception e) {
+        ArrayList<String> stackTrace = new ArrayList<>();
+        for (StackTraceElement ste : e.getStackTrace()) {
+            stackTrace.add(ste.toString());
+        }
+        return (String[])stackTrace.toArray();
+    }
+
     @Override
     public Response serve(IHTTPSession session) {
         GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
@@ -33,11 +41,8 @@ public class Server extends NanoHTTPD {
         try {
             response = router.route(session);
         } catch (Exception e) {
-            ArrayList<String> stackTrace = new ArrayList<>();
-            for (StackTraceElement ste : e.getStackTrace()) {
-                stackTrace.add(ste.toString());
-            }
-            response = new ErrorResponse(Response.Status.INTERNAL_ERROR, "Internal error has occurred", (String[])stackTrace.toArray());
+            String[] stackTrace = getStackTrace(e);
+            response = new ErrorResponse(Response.Status.INTERNAL_ERROR, "Internal error has occurred", stackTrace);
         }
 
         gsonBuilder.registerTypeAdapter(AppiumStatus.class, new AppiumStatusAdapter());
