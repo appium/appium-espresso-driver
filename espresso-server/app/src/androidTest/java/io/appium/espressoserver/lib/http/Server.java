@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.lib.exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.http.response.ErrorResponse;
 import io.appium.espressoserver.lib.model.AppiumStatus;
@@ -16,7 +15,7 @@ public class Server extends NanoHTTPD {
 
     private Router router;
 
-    public Server() throws IOException, DuplicateRouteException {
+    public Server() throws IOException {
         super(8080);
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         System.out.println("\nRunning! Point your browsers to http://localhost:8080/ \n");
