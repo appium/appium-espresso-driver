@@ -30,6 +30,8 @@ public enum Strategy {
 
     ANDROID_UIAUTOMATOR("-android uiautomator");
 
+    private final String strategyName;
+
     public static Strategy fromString(final String text) throws InvalidStrategyException {
         if (text != null) {
             for (final Strategy s : Strategy.values()) {
@@ -41,8 +43,6 @@ public enum Strategy {
         throw new InvalidStrategyException("Locator strategy '" + text
                 + "' is not supported on Android");
     }
-
-    private final String strategyName;
 
     Strategy(final String name) {
         strategyName = name;

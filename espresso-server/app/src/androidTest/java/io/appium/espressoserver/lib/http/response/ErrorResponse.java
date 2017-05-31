@@ -5,7 +5,7 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 @SuppressWarnings("unused")
 public class ErrorResponse extends BaseResponse {
-    private String message;
+    private final String message;
     private String[] stackTrace;
 
     public ErrorResponse(Status status, String message) {
