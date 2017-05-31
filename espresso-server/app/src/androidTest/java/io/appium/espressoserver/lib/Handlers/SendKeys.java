@@ -4,7 +4,6 @@ import android.support.test.espresso.PerformException;
 import android.support.test.espresso.ViewInteraction;
 
 import io.appium.espressoserver.lib.Handlers.Exceptions.AppiumException;
-import io.appium.espressoserver.lib.Handlers.Exceptions.BadParametersException;
 import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.TextParams;
 

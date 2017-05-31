@@ -31,8 +31,7 @@ public enum AppiumStatus {
     SESSION_NOT_CREATED_EXCEPTION(33, "A new session could not be created"),
     MOVE_TARGET_OUT_OF_BOUNDS(34, "Target provided for a move action is out of bounds"),
     JSON_DECODER_ERROR(35, "Could not decode action/params of command, please check format!"),
-    INVALID_CONTEXT_ERROR(36, "The operation could not be performed in the current context"),
-    BAD_PARAMETERS_ERROR(37, "The parameters specified for the operation are incorrect");
+    INVALID_CONTEXT_ERROR(36, "The operation could not be performed in the current context");
 
     private final int code;
     private final String message;

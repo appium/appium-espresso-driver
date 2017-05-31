@@ -6,7 +6,7 @@ import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 
 import io.appium.espressoserver.lib.Handlers.Exceptions.AppiumException;
-import io.appium.espressoserver.lib.Handlers.Exceptions.BadParametersException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.MissingCommandsException;
 import io.appium.espressoserver.lib.Handlers.Exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.Handlers.Exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.Model.Element;
@@ -30,7 +30,7 @@ public class Finder implements RequestHandler<Locator, Element> {
             if (locator.getUsing() == null) {
                 throw new InvalidStrategyException("Locator strategy cannot be empty");
             } else if (locator.getValue() == null) {
-                throw new BadParametersException("No locator provided");
+                throw new MissingCommandsException("No locator provided");
             }
             // Test the selector
             ViewInteraction matcher = findBy(locator.getUsing(), locator.getValue());

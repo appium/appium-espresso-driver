@@ -6,8 +6,7 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
 
 @SuppressWarnings("unused")
-public class AppiumResponse<T> {
-    private transient Status httpStatus;
+public class AppiumResponse<T> extends BaseResponse {
     private T value;
     private AppiumStatus status;
     private String sessionId;
@@ -34,9 +33,6 @@ public class AppiumResponse<T> {
                 break;
             case UNKNOWN_COMMAND:
                 httpStatus = Status.NOT_FOUND;
-                break;
-            case BAD_PARAMETERS_ERROR:
-                httpStatus = Status.BAD_REQUEST;
                 break;
             default:
                 httpStatus = Status.INTERNAL_ERROR;

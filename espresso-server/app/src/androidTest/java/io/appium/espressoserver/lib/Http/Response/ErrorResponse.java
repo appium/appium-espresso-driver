@@ -1,14 +1,30 @@
 package io.appium.espressoserver.lib.Http.Response;
 
 
-import io.appium.espressoserver.lib.Model.AppiumStatus;
+import com.google.gson.annotations.SerializedName;
 
-public class ErrorResponse extends AppiumResponse<String> {
-    public ErrorResponse(AppiumStatus status) {
-        super(status, status.getMessage());
+import fi.iki.elonen.NanoHTTPD.Response.Status;
+
+@SuppressWarnings("unused")
+public class ErrorResponse extends BaseResponse {
+    private String message;
+    private String[] stackTrace;
+
+    public ErrorResponse(Status status, String message) {
+        httpStatus = status;
+        this.message = message;
+    }
+    public ErrorResponse(Status status, String message, String[] stackTrace) {
+        httpStatus = status;
+        this.message = message;
+        this.stackTrace = stackTrace;
     }
 
-    public ErrorResponse(AppiumStatus status, String reason) {
-        super(status, status.getMessage() + ": " + reason);
+    public String getMessage() {
+        return message;
+    }
+
+    public String[] getStackTrace() {
+        return stackTrace;
     }
 }

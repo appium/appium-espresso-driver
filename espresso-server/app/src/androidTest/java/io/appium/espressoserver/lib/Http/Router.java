@@ -17,17 +17,17 @@ import io.appium.espressoserver.lib.Handlers.Exceptions.InvalidStrategyException
 import io.appium.espressoserver.lib.Handlers.Exceptions.SessionNotCreatedException;
 import io.appium.espressoserver.lib.Handlers.Finder;
 import io.appium.espressoserver.lib.Handlers.Exceptions.AppiumException;
-import io.appium.espressoserver.lib.Handlers.Exceptions.BadParametersException;
+import io.appium.espressoserver.lib.Handlers.Exceptions.MissingCommandsException;
 import io.appium.espressoserver.lib.Handlers.Exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.Handlers.RequestHandler;
 import io.appium.espressoserver.lib.Handlers.DeleteSession;
 import io.appium.espressoserver.lib.Handlers.SendKeys;
 import io.appium.espressoserver.lib.Handlers.Status;
 import io.appium.espressoserver.lib.Http.Response.AppiumResponse;
+import io.appium.espressoserver.lib.Http.Response.BaseResponse;
 import io.appium.espressoserver.lib.Http.Response.ErrorResponse;
 import io.appium.espressoserver.lib.Model.AppiumParams;
 import io.appium.espressoserver.lib.Model.AppiumStatus;
-import io.appium.espressoserver.lib.Model.Element;
 import io.appium.espressoserver.lib.Model.Locator;
 import io.appium.espressoserver.lib.Model.Session;
 import io.appium.espressoserver.lib.Model.SessionParams;
@@ -72,7 +72,7 @@ class Router {
         paramClassMap.get(method).put(uri, paramClass);
     }
 
-    AppiumResponse route(IHTTPSession session) {
+    BaseResponse route(IHTTPSession session) {
         RequestHandler handler = null;
 
         String uri = session.getUri();
@@ -128,7 +128,7 @@ class Router {
         }
 
         if (handler == null) {
-            return new ErrorResponse(AppiumStatus.UNKNOWN_COMMAND);
+            return new ErrorResponse(NanoHTTPD.Response.Status.NOT_FOUND, String.format("No such route %s", uri));
         }
 
         // Parse it to an Appium param
@@ -145,7 +145,7 @@ class Router {
 
         // Validate the sessionId
         if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSessionId())) {
-            return new ErrorResponse(AppiumStatus.BAD_PARAMETERS_ERROR, "Invalid session ID " + appiumParams.getSessionId());
+            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, "Invalid session ID " + appiumParams.getSessionId());
         }
 
         // Create the result
@@ -161,16 +161,16 @@ class Router {
             AppiumResponse appiumResponse = new AppiumResponse<>(AppiumStatus.SUCCESS, handlerResult, sessionId);
             System.out.println("Finished processing " + method + " request for '" + uri + "'");
             return appiumResponse;
-        } catch (BadParametersException e) {
-            return new ErrorResponse(AppiumStatus.BAD_PARAMETERS_ERROR, e.getMessage());
         } catch (NoSuchElementException e) {
-            return new ErrorResponse(AppiumStatus.NO_SUCH_ELEMENT, e.getMessage());
+            return new AppiumResponse<>(AppiumStatus.NO_SUCH_ELEMENT, e.getMessage());
         } catch (SessionNotCreatedException e) {
-            return new ErrorResponse(AppiumStatus.SESSION_NOT_CREATED_EXCEPTION, e.getMessage());
+            return new AppiumResponse<>(AppiumStatus.SESSION_NOT_CREATED_EXCEPTION, e.getMessage());
         } catch(InvalidStrategyException e) {
-            return new ErrorResponse(AppiumStatus.INVALID_SELECTOR, e.getMessage());
+            return new AppiumResponse<>(AppiumStatus.INVALID_SELECTOR, e.getMessage());
+        } catch (MissingCommandsException e) {
+            return new ErrorResponse(NanoHTTPD.Response.Status.NOT_FOUND, e.getMessage());
         } catch (AppiumException e) {
-            return new ErrorResponse(AppiumStatus.UNKNOWN_ERROR);
+            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, e.getMessage());
         }
     }
 
