@@ -30,7 +30,7 @@ public class Session {
      * @return Serializable Session object
      * @throws SessionNotCreatedException Thrown if a Session is already running
      */
-    public static Session createGlobalSession() throws SessionNotCreatedException {
+    public synchronized static Session createGlobalSession() throws SessionNotCreatedException {
         if (Session.ID != null) {
             throw new SessionNotCreatedException(String.format("Session %s is already in progress. Appium Espresso Server can only handle one session at a time.", Session.ID));
         }
@@ -38,7 +38,7 @@ public class Session {
         return new Session(Session.ID);
     }
 
-    public static void deleteGlobalSession() {
+    public synchronized static void deleteGlobalSession() {
         Session.ID = null;
     }
 }
