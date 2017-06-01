@@ -49,7 +49,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys(), TextParams.class));
     }
 
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings("unchecked")
     public BaseResponse route(IHTTPSession session) {
         String uri = session.getUri();
         Method method = session.getMethod();
