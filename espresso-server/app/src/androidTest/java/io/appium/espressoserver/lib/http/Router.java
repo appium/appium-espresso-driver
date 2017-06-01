@@ -41,7 +41,7 @@ class Router {
     private final RouteMap routeMap;
 
 
-    Router() throws DuplicateRouteException {
+    Router() {
         System.out.println("Generating routes");
         routeMap = new RouteMap();
 

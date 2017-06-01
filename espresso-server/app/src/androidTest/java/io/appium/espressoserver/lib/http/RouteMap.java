@@ -13,7 +13,7 @@ class RouteMap {
 
     private final Map<Method, Map<String, RouteDefinition>> routeMap = new ConcurrentHashMap<>();
 
-    public void addRoute(RouteDefinition route) throws DuplicateRouteException {
+    public void addRoute(RouteDefinition route) {
         if (!routeMap.containsKey(route.getMethod())) {
             routeMap.put(route.getMethod(), new ConcurrentHashMap<String, RouteDefinition>());
         }
