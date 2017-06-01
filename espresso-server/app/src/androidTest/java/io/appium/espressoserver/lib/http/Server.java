@@ -6,16 +6,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import fi.iki.elonen.NanoHTTPD;
+import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.http.response.ErrorResponse;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.gsonadapters.AppiumStatusAdapter;
+import javax.ws.rs.core.MediaType;
 
 public class Server extends NanoHTTPD {
 
     private Router router;
 
-    public Server() throws IOException {
+    public Server() throws IOException, DuplicateRouteException {
         super(8080);
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         System.out.println("\nRunning! Point your browsers to http://localhost:8080/ \n");
@@ -42,7 +44,6 @@ public class Server extends NanoHTTPD {
         }
 
         gsonBuilder.registerTypeAdapter(AppiumStatus.class, new AppiumStatusAdapter());
-        // TODO: Don't hardcode application/json change it to MediaType http://docs.oracle.com/javaee/6/api/javax/ws/rs/core/MediaType.html
-        return newFixedLengthResponse(response.getHttpStatus(), "application/json", gsonBuilder.create().toJson(response));
+        return newFixedLengthResponse(response.getHttpStatus(), MediaType.APPLICATION_JSON, gsonBuilder.create().toJson(response));
     }
 }

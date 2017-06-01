@@ -19,7 +19,7 @@ public class CreateSession implements RequestHandler<SessionParams, Session> {
         Session appiumSession = Session.createGlobalSession(params.getDesiredCapabilities());
         String activityName = params.getDesiredCapabilities().getAppActivity();
         try {
-            if (activityName != null) { // TODO: Remove this,  using it now for testing purposes
+            if (activityName != null) { // TODO: Remove this, using it now for testing purposes
                 startActivity(activityName);
             }
         } catch (RuntimeException e) {

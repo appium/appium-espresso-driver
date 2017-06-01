@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
+import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.http.Server;
 import static org.junit.Assert.assertEquals;
 
@@ -21,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 public class EspressoServerRunnerTest {
 
     @Test
-    public void startEspressoServer() throws InterruptedException, IOException {
+    public void startEspressoServer() throws InterruptedException, IOException, DuplicateRouteException {
         new Server();
         // TODO: Figure out how to keep Runner open forever
         Thread.sleep(3000000);

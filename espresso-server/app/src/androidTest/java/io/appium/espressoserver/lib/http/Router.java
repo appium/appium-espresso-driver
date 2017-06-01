@@ -15,6 +15,7 @@ import io.appium.espressoserver.lib.handlers.CreateSession;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
 import io.appium.espressoserver.lib.handlers.GetSession;
 import io.appium.espressoserver.lib.handlers.GetSessions;
+import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException;
@@ -40,7 +41,7 @@ class Router {
     private final RouteMap routeMap;
 
 
-    Router() {
+    Router() throws DuplicateRouteException {
         System.out.println("Generating routes");
         routeMap = new RouteMap();
 
@@ -49,7 +50,6 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/sessions", new GetSessions(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId", new GetSession(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId", new DeleteSession(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/status", new Status(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element", new Finder(), Locator.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/click", new Click(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys(), TextParams.class));
@@ -142,7 +142,15 @@ class Router {
         Map<String, String> uriParams = matchingRoute.getUriParams(uri);
 
         // Parse the appium params
-        String postJson = parseBody(session);
+        String postJson;
+        try {
+            postJson = parseBody(session);
+        } catch (IOException e) {
+            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, e.getMessage());
+        } catch (NanoHTTPD.ResponseException e) {
+            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, e.getMessage());
+        }
+
         AppiumParams appiumParams;
         if (postJson == null) {
             appiumParams = new AppiumParams();
@@ -179,23 +187,17 @@ class Router {
         } catch (MissingCommandsException e) {
             return new ErrorResponse(NanoHTTPD.Response.Status.NOT_FOUND, e.getMessage());
         } catch (NotYetImplementedException e) {
-            return new ErrorResponse(NanoHTTPD.Response.Status.NOT_FOUND, e.getMessage());
+            return new ErrorResponse(NanoHTTPD.Response.Status.NOT_IMPLEMENTED, e.getMessage());
         } catch (AppiumException e) {
             return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, e.getMessage());
         }
     }
 
-    private String parseBody (IHTTPSession session) {
-        String result = "{}";
-        try {
-            Map<String, String> files = new HashMap<>();
-            session.parseBody(files);
-            result = files.get("postData");
-        } catch (IOException e) {
-            // TODO: error handling
-        } catch (NanoHTTPD.ResponseException e) {
-            // TODO: handle error
-        }
+    private String parseBody (IHTTPSession session) throws IOException, NanoHTTPD.ResponseException {
+        String result;
+        Map<String, String> files = new HashMap<>();
+        session.parseBody(files);
+        result = files.get("postData");
         return result;
     }
 }
