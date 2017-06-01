@@ -22,6 +22,9 @@ class RouteMap {
 
     @Nullable
     public RouteDefinition findMatchingRoute(Method method, String uri) {
+        if (!routeMap.containsKey(method)) {
+            return null;
+        }
         Map<String, RouteDefinition> methodMap = routeMap.get(method);
         for (Map.Entry<String, RouteDefinition> route: methodMap.entrySet()) {
            RouteDefinition routeDefinition = route.getValue();
