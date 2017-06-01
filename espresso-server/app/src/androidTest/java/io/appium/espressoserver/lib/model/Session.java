@@ -2,29 +2,40 @@ package io.appium.espressoserver.lib.model;
 
 import java.util.UUID;
 
+import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException;
+
 
 @SuppressWarnings("unused")
 public class Session {
+    // Only one session can run at a time so globally cache the current Session ID
+    private static volatile String ID;
+
     private final String id;
 
-    // Only one session can run at a time so globally cache the current Session ID
-    private static String ID;
-
-    public Session() {
-        if (Session.ID != null) {
-            this.id = Session.ID;
-        } else {
-            this.id = UUID.randomUUID().toString();
-            Session.ID = this.id;
-        }
+    private Session(String id) {
+        // Instances of Session are private and only returned by 'createGlobalSession'
+        this.id = id;
     }
 
-    public String getId () {
+    public String getId() {
         return id;
     }
 
     public static String getGlobalSessionId() {
         return Session.ID;
+    }
+
+    /**
+     * Create a global session. Only one session can run per server instance so throw an exception if one already is in progress
+     * @return Serializable Session object
+     * @throws SessionNotCreatedException Thrown if a Session is already running
+     */
+    public synchronized static Session createGlobalSession() throws SessionNotCreatedException {
+        if (Session.ID != null) {
+            throw new SessionNotCreatedException(String.format("Session %s is already in progress. Appium Espresso Server can only handle one session at a time.", Session.ID));
+        }
+        Session.ID = UUID.randomUUID().toString();
+        return new Session(Session.ID);
     }
 
     public static void deleteGlobalSession() {
