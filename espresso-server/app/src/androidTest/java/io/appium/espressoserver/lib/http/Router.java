@@ -193,7 +193,7 @@ class Router {
         }
     }
 
-    private String parseBody (IHTTPSession session) throws IOException, NanoHTTPD.ResponseException {
+    private static String parseBody (IHTTPSession session) throws IOException, NanoHTTPD.ResponseException {
         String result;
         Map<String, String> files = new HashMap<>();
         session.parseBody(files);

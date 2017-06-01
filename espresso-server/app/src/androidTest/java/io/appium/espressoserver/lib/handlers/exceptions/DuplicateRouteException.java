@@ -1,5 +1,8 @@
 package io.appium.espressoserver.lib.handlers.exceptions;
 
-public class DuplicateRouteException extends Throwable {
+/**
+ * Exception is thrown when trying to register the same route
+ */
+public class DuplicateRouteException extends RuntimeException {
 
 }
