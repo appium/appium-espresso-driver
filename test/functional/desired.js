@@ -1,4 +1,4 @@
-import sampleApps from 'sample-apps';
+const app = require.resolve('android-apidemos');
 
 
 const GENERIC_CAPS = {
@@ -8,11 +8,6 @@ const GENERIC_CAPS = {
   forceEspressoRebuild: true,
 };
 
-const APIDEMO_CAPS = Object.assign({},
-  GENERIC_CAPS,
-  {
-    app: sampleApps('ApiDemos-debug'),
-  }
-);
+const APIDEMO_CAPS = Object.assign({}, GENERIC_CAPS, {app});
 
 export { GENERIC_CAPS, APIDEMO_CAPS };

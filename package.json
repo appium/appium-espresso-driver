@@ -53,6 +53,7 @@
     "test"
   ],
   "devDependencies": {
+    "android-apidemos": "^2.0.0",
     "appium-gulp-plugins": "^1.4.13",
     "appium-test-support": "^0.1.0",
     "babel-eslint": "^7.2.3",
@@ -66,7 +67,6 @@
     "eslint-plugin-promise": "^3.5.0",
     "gulp": "^3.9.1",
     "pre-commit": "^1.2.2",
-    "sample-apps": "^2.0.4",
     "sinon": "^2.3.1",
     "wd": "^1.2.0"
   }
