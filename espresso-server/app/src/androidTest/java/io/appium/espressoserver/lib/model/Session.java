@@ -8,7 +8,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedExcepti
 @SuppressWarnings("unused")
 public class Session {
     // Only one session can run at a time so globally cache the current Session ID
-    private static String ID;
+    private static volatile String ID;
 
     private final String id;
 
@@ -38,7 +38,7 @@ public class Session {
         return new Session(Session.ID);
     }
 
-    public synchronized static void deleteGlobalSession() {
+    public static void deleteGlobalSession() {
         Session.ID = null;
     }
 }
