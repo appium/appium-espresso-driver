@@ -16,7 +16,7 @@ class RouteDefinition {
     private final RequestHandler<? extends AppiumParams, ?> handler;
 
     RouteDefinition(Method method, String routeUri, RequestHandler<? extends AppiumParams, ?> handler, Class<? extends AppiumParams> paramClass) {
-        testRegex = buildTestRegex(routeUri);
+        testRegex = RouteDefinition.buildTestRegex(routeUri);
         this.routeUri = routeUri;
         this.method = method;
         this.paramClass = paramClass;
@@ -58,7 +58,7 @@ class RouteDefinition {
         return routeUri;
     }
 
-    private String buildTestRegex(String uri) {
+    private static String buildTestRegex(String uri) {
         StringBuilder testRegex = new StringBuilder("^");
 
         // Convert route to a regex
