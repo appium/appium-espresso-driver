@@ -21,13 +21,12 @@ class RouteMap {
     }
 
     @Nullable
-    public RouteDefinition findMatchingRoute(String uri) {
-        for (Map.Entry<Method, Map<String, RouteDefinition>> methodMap: routeMap.entrySet()) {
-           for (Map.Entry<String, RouteDefinition> route: methodMap.getValue().entrySet()) {
-               RouteDefinition routeDefinition = route.getValue();
-               if (routeDefinition.isMatch(uri)) {
-                   return routeDefinition;
-               }
+    public RouteDefinition findMatchingRoute(Method method, String uri) {
+        Map<String, RouteDefinition> methodMap = routeMap.get(method);
+        for (Map.Entry<String, RouteDefinition> route: methodMap.entrySet()) {
+           RouteDefinition routeDefinition = route.getValue();
+           if (routeDefinition.isMatch(uri)) {
+               return routeDefinition;
            }
         }
 
