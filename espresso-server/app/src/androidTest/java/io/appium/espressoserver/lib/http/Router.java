@@ -12,6 +12,8 @@ import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import io.appium.espressoserver.lib.handlers.Click;
 import io.appium.espressoserver.lib.handlers.CreateSession;
+import io.appium.espressoserver.lib.handlers.GetSession;
+import io.appium.espressoserver.lib.handlers.GetSessions;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException;
 import io.appium.espressoserver.lib.handlers.Finder;
@@ -41,9 +43,11 @@ class Router {
         routeMap = new RouteMap();
 
         // TODO: Map EVERY JSONWP route and have it throw not yet implemented if there's no handler
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session", new CreateSession(), SessionParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId", new DeleteSession(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/status", new Status(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session", new CreateSession(), SessionParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/sessions", new GetSessions(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId", new GetSession(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId", new DeleteSession(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element", new Finder(), Locator.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/click", new Click(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys(), TextParams.class));
@@ -55,7 +59,7 @@ class Router {
         Method method = session.getMethod();
 
         // Look for a route that matches this URL
-        RouteDefinition matchingRoute = routeMap.findMatchingRoute(uri);
+        RouteDefinition matchingRoute = routeMap.findMatchingRoute(method, uri);
 
         // If no route found, return a 404 Error Response
         if (matchingRoute == null) {
@@ -79,7 +83,7 @@ class Router {
         appiumParams.setElementId(uriParams.get("elementId"));
 
         // Validate the sessionId
-        if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSessionId())) {
+        if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSession().getId())) {
             return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, "Invalid session ID " + appiumParams.getSessionId());
         }
 
