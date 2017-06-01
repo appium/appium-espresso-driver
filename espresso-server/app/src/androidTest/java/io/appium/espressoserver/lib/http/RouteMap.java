@@ -12,7 +12,7 @@ class RouteMap {
 
     private final Map<Method, Map<String, RouteDefinition>> routeMap = new ConcurrentHashMap<>();
 
-    void addRoute(RouteDefinition route) {
+    public void addRoute(RouteDefinition route) {
         if (!routeMap.containsKey(route.getMethod())) {
             routeMap.put(route.getMethod(), new ConcurrentHashMap<String, RouteDefinition>());
         }
