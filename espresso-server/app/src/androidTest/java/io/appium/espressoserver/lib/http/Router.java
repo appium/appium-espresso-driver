@@ -15,7 +15,6 @@ import io.appium.espressoserver.lib.handlers.CreateSession;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
 import io.appium.espressoserver.lib.handlers.GetSession;
 import io.appium.espressoserver.lib.handlers.GetSessions;
-import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException;

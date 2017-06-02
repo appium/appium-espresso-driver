@@ -64,13 +64,13 @@ class RouteDefinition {
         // Convert route to a regex
         for (String uriToken : uri.split("/")) {
             if (uriToken.startsWith(":")) {
-                testRegex.append("/[\\w\\W]*");
+                testRegex.append("/[^/]*");
             } else if (!uriToken.isEmpty()) {
                 testRegex.append("/");
                 testRegex.append(uriToken);
             }
         }
-        testRegex.append("$");
+        testRegex.append("/?$");
         return testRegex.toString();
     }
 }
