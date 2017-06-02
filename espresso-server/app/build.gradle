@@ -17,6 +17,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+        test {
+            java.srcDirs += 'src/androidTest/java'
+        }
+    }
 }
 
 dependencies {
@@ -24,12 +30,13 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.0.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'org.nanohttpd:nanohttpd-webserver:2.3.1'
-    androidTestCompile 'com.google.code.gson:gson:2.8.0'
-    androidTestCompile 'javax.ws.rs:jsr311-api:0.11'
+    compile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    compile 'com.android.support.test:runner:0.5'
+    compile 'org.nanohttpd:nanohttpd-webserver:2.3.1'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'javax.ws.rs:jsr311-api:0.11'
+
 }
