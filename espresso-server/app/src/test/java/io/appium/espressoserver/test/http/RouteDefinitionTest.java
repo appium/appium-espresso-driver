@@ -17,49 +17,64 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class RouteDefinitionTest {
-    private final RequestHandler<AppiumParams, Void> dumbHandler = new RequestHandler<AppiumParams, Void>() {
+    private final RequestHandler<AppiumParams, Void> dummyHandler = new RequestHandler<AppiumParams, Void>() {
         @Override
         public Void handle(AppiumParams params) throws AppiumException {
             return null;
         }
     };
 
-    private RouteDefinition routeDefinitionOne;
-    private RouteDefinition routeDefinitionTwo;
-    private RouteDefinition routeDefinitionThree;
+    private RouteDefinition routeDefinitionWithOneParam;
+    private RouteDefinition routeDefinitionWithTwoParams;
+    private RouteDefinition routeDefinitionWithNoParams;
 
     @Before
     public void before() {
-        routeDefinitionOne = new RouteDefinition(NanoHTTPD.Method.GET, "/hello/:param/world", dumbHandler, AppiumParams.class);
-        routeDefinitionTwo = new RouteDefinition(NanoHTTPD.Method.GET, "/hello", dumbHandler, AppiumParams.class);
-        routeDefinitionThree = new RouteDefinition(NanoHTTPD.Method.GET, "/hello/:paramOne/something/:paramTwo/world", dumbHandler, AppiumParams.class);
+        routeDefinitionWithOneParam = new RouteDefinition(
+                NanoHTTPD.Method.GET,
+                "/hello/:param/world",
+                dummyHandler,
+                AppiumParams.class
+        );
+        routeDefinitionWithTwoParams = new RouteDefinition(
+                NanoHTTPD.Method.GET,
+                "/hello",
+                dummyHandler,
+                AppiumParams.class
+        );
+        routeDefinitionWithNoParams = new RouteDefinition(
+                NanoHTTPD.Method.GET,
+                "/hello/:paramOne/something/:paramTwo/world",
+                dummyHandler,
+                AppiumParams.class
+        );
     }
 
     @Test
-    public void isMatchTest() throws Exception {
-        assertTrue(routeDefinitionOne.isMatch("/hello/something/world"));
-        assertTrue(routeDefinitionOne.isMatch("/hello/something/world/"));
-        assertFalse(routeDefinitionOne.isMatch("/hello/something/something/world"));
-        assertFalse(routeDefinitionOne.isMatch("/hello/world"));
-        assertFalse(routeDefinitionOne.isMatch("/something/hello/something/world"));
+    public void shouldProperlyParamsRoutesToUri() throws Exception {
+        assertTrue(routeDefinitionWithOneParam.isMatch("/hello/something/world"));
+        assertTrue(routeDefinitionWithOneParam.isMatch("/hello/something/world/"));
+        assertFalse(routeDefinitionWithOneParam.isMatch("/hello/something/something/world"));
+        assertFalse(routeDefinitionWithOneParam.isMatch("/hello/world"));
+        assertFalse(routeDefinitionWithOneParam.isMatch("/something/hello/something/world"));
 
-        assertTrue(routeDefinitionTwo.isMatch("/hello"));
-        assertTrue(routeDefinitionTwo.isMatch("/hello/"));
-        assertFalse(routeDefinitionTwo.isMatch("/hello/world"));
-        assertFalse(routeDefinitionTwo.isMatch("/hellooooooooo"));
+        assertTrue(routeDefinitionWithTwoParams.isMatch("/hello"));
+        assertTrue(routeDefinitionWithTwoParams.isMatch("/hello/"));
+        assertFalse(routeDefinitionWithTwoParams.isMatch("/hello/world"));
+        assertFalse(routeDefinitionWithTwoParams.isMatch("/hellooooooooo"));
 
-        assertTrue(routeDefinitionThree.isMatch("/hello/paramOne/something/paramTwo/world"));
-        assertTrue(routeDefinitionThree.isMatch("/hello/paramOne/something/paramTwo/world/"));
-        assertFalse(routeDefinitionThree.isMatch("/hello/paramOne/world"));
-        assertFalse(routeDefinitionThree.isMatch("/hello/paramOne/paramTwo/world"));
-        assertFalse(routeDefinitionThree.isMatch("/hello/paramOne/something/world"));
+        assertTrue(routeDefinitionWithNoParams.isMatch("/hello/paramOne/something/paramTwo/world"));
+        assertTrue(routeDefinitionWithNoParams.isMatch("/hello/paramOne/something/paramTwo/world/"));
+        assertFalse(routeDefinitionWithNoParams.isMatch("/hello/paramOne/world"));
+        assertFalse(routeDefinitionWithNoParams.isMatch("/hello/paramOne/paramTwo/world"));
+        assertFalse(routeDefinitionWithNoParams.isMatch("/hello/paramOne/something/world"));
     }
 
     @Test
-    public void getUriParamsTest() throws Exception {
-        assertEquals("something", routeDefinitionOne.getUriParams("/hello/something/world").get("param"));
-        assertTrue("something", routeDefinitionTwo.getUriParams("/hello").isEmpty());
-        assertEquals("p1", routeDefinitionThree.getUriParams("/hello/p1/something/p2/world/").get("paramOne"));
-        assertEquals("p2", routeDefinitionThree.getUriParams("/hello/p1/something/p2/world/").get("paramTwo"));
+    public void shouldProperlyParseUriParameters() throws Exception {
+        assertEquals("something", routeDefinitionWithOneParam.getUriParams("/hello/something/world").get("param"));
+        assertTrue("something", routeDefinitionWithTwoParams.getUriParams("/hello").isEmpty());
+        assertEquals("p1", routeDefinitionWithNoParams.getUriParams("/hello/p1/something/p2/world/").get("paramOne"));
+        assertEquals("p2", routeDefinitionWithNoParams.getUriParams("/hello/p1/something/p2/world/").get("paramTwo"));
     }
 }
