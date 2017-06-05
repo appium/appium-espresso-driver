@@ -2,6 +2,7 @@ package io.appium.espressoserver;
 
 import org.junit.Test;
 
+import io.appium.espressoserver.lib.model.AppiumParams;
 import static org.junit.Assert.*;
 
 /**
@@ -12,6 +13,7 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void additionIsCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+        AppiumParams appiumParams = new AppiumParams();
+        assertNull(appiumParams.getElementId());
     }
 }
