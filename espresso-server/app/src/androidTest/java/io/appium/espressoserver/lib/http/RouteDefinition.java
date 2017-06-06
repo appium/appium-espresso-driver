@@ -7,7 +7,7 @@ import fi.iki.elonen.NanoHTTPD.Method;
 import io.appium.espressoserver.lib.handlers.RequestHandler;
 import io.appium.espressoserver.lib.model.AppiumParams;
 
-class RouteDefinition {
+public class RouteDefinition {
 
     private final String testRegex;
     private final String routeUri;
@@ -15,7 +15,7 @@ class RouteDefinition {
     private final Class<? extends AppiumParams> paramClass;
     private final RequestHandler<? extends AppiumParams, ?> handler;
 
-    RouteDefinition(Method method, String routeUri, RequestHandler<? extends AppiumParams, ?> handler, Class<? extends AppiumParams> paramClass) {
+    public RouteDefinition(Method method, String routeUri, RequestHandler<? extends AppiumParams, ?> handler, Class<? extends AppiumParams> paramClass) {
         testRegex = RouteDefinition.buildTestRegex(routeUri);
         this.routeUri = routeUri;
         this.method = method;

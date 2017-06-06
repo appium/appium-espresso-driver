@@ -9,7 +9,7 @@ import fi.iki.elonen.NanoHTTPD.Method;
 import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
 
 
-class RouteMap {
+public class RouteMap {
 
     private final Map<Method, Map<String, RouteDefinition>> routeMap = new ConcurrentHashMap<>();
 
