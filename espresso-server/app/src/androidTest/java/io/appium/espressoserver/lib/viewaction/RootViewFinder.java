@@ -17,7 +17,7 @@ public class RootViewFinder {
     private final View[] views = {null};
 
     /**
-     * ViewAction subclass that simply saves the view that's being operated on to a variable in it's
+     * ViewAction subclass that simply saves the view that's being operated on to a variable in its
      * parent class
      */
     private class GetViewAction implements ViewAction {
