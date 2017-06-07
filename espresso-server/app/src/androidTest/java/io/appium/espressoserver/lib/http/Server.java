@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
@@ -24,12 +25,12 @@ public class Server extends NanoHTTPD {
         router = new Router();
     }
 
-    private String[] getStackTrace(Exception e) {
+    private List<String> getStackTrace(Exception e) {
         ArrayList<String> stackTrace = new ArrayList<>();
         for (StackTraceElement ste : e.getStackTrace()) {
             stackTrace.add(ste.toString());
         }
-        return (String[])stackTrace.toArray();
+        return stackTrace;
     }
 
     @Override
@@ -38,8 +39,8 @@ public class Server extends NanoHTTPD {
         BaseResponse response;
         try {
             response = router.route(session);
-        } catch (Exception e) {
-            String[] stackTrace = getStackTrace(e);
+        } catch (RuntimeException e) {
+            List<String> stackTrace = getStackTrace(e);
             response = new ErrorResponse(Response.Status.INTERNAL_ERROR, "Internal error has occurred", stackTrace);
         }
 
