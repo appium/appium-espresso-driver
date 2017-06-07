@@ -2,33 +2,27 @@ package io.appium.espressoserver.lib.model;
 
 public enum ViewAttributesEnum {
 
-    CONTENT_DESC("content-desc"),
-    CLASS("class"),
-    TEXT("text"),
-    PACKAGE("package"),
-    CHECKABLE("checkable"),
-    CHECKED("checked"),
-    CLICKABLE("clickable"),
-    ENABLED("enabled"),
-    FOCUSABLE("focusable"),
-    FOCUSED("focused"),
-    SCROLLABLE("scrollable"),
-    LONG_CLICKABLE("long-clickable"),
-    PASSWORD("password"),
-    SELECTED("selected"),
-    BOUNDS("bounds"),
-    RESOURCE_ID("resource-id"),
-    INSTANCE("instance"),
-    INDEX("index");
+    CONTENT_DESC,
+    CLASS,
+    TEXT,
+    PACKAGE,
+    CHECKABLE,
+    CHECKED,
+    CLICKABLE,
+    ENABLED,
+    FOCUSABLE,
+    FOCUSED,
+    SCROLLABLE,
+    LONG_CLICKABLE,
+    PASSWORD,
+    SELECTED,
+    BOUNDS,
+    RESOURCE_ID,
+    INSTANCE,
+    INDEX;
 
-
-    private final String name;
-
-    ViewAttributesEnum(String name) {
-        this.name = name;
-    }
 
     public String getName() {
-        return name;
+        return this.name().replace("_", "-").toLowerCase();
     }
 }
