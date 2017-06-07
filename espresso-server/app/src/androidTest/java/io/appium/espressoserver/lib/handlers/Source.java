@@ -66,17 +66,17 @@ public class Source implements RequestHandler<AppiumParams, String> {
      * @param parentElement Element that this new element will be appended to
      * @param view Android View that will map to an Element
      */
-    public void buildXML(Document doc, Element parentElement, View view) {
+    private void buildXML(Document doc, Element parentElement, View view) {
         // TODO: Extract this logic out to it's own class so it can be re-used with XPath locators
         Element element = doc.createElement(view.getClass().getName());
 
         // Set attributes
         ViewElement viewElement = new ViewElement(view);
-        element.setAttribute(ViewAttributesEnum.CONTENT_DESC.getName(), viewElement.getContentDescription());
-        element.setAttribute(ViewAttributesEnum.BOUNDS.getName(), viewElement.getBounds());
-        element.setAttribute(ViewAttributesEnum.FOCUSED.getName(), viewElement.getFocused());
-        element.setAttribute(ViewAttributesEnum.CLICKABLE.getName(), viewElement.getClickable());
-        element.setAttribute(ViewAttributesEnum.LONG_CLICKABLE.getName(), viewElement.getLongClickable());
+        element.setAttribute(ViewAttributesEnum.CONTENT_DESC.getName(), viewElement.getContentDescription().toString());
+        element.setAttribute(ViewAttributesEnum.BOUNDS.getName(), viewElement.getBounds().toShortString());
+        element.setAttribute(ViewAttributesEnum.FOCUSED.getName(), viewElement.isFocused() ? "true" : "false");
+        element.setAttribute(ViewAttributesEnum.CLICKABLE.getName(), viewElement.isClickable() ? "true" : "false");
+        element.setAttribute(ViewAttributesEnum.LONG_CLICKABLE.getName(), viewElement.isLongClickable() ? "true" : "false");
         element.setAttribute(ViewAttributesEnum.CLASS.getName(), viewElement.getClassName());
         element.setAttribute(ViewAttributesEnum.INDEX.getName(), viewElement.getIndex());
 
