@@ -9,6 +9,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.MissingCommandsException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
+import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.Locator;
 import io.appium.espressoserver.lib.model.Strategy;
@@ -20,6 +21,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath;
 import static org.hamcrest.Matchers.endsWith;
 
 public class Finder implements RequestHandler<Locator, Element> {
@@ -44,7 +46,7 @@ public class Finder implements RequestHandler<Locator, Element> {
     }
 
     ///Find By different strategies
-    private ViewInteraction findBy(Strategy strategy, String selector) throws InvalidStrategyException {
+    private ViewInteraction findBy(Strategy strategy, String selector) throws InvalidStrategyException, XPathLookupException {
         ViewInteraction matcher;
 
         switch (strategy) {
@@ -69,6 +71,9 @@ public class Finder implements RequestHandler<Locator, Element> {
             case ACCESSIBILITY_ID:
                 // with content description
                 matcher = onView(withContentDescription(selector));
+                break;
+            case XPATH:
+                matcher = onView(withXPath(selector));
                 break;
             default:
                 throw new InvalidStrategyException("Strategy is not implemented: " + strategy.getStrategyName());

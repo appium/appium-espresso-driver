@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.model;
 
+import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -12,18 +13,18 @@ public class ViewElement {
     private final boolean focused;
     private final String className;
     private int index;
-    private String contentDescription = "";
-    private String bounds;
+    private CharSequence contentDescription = "";
+    private final Rect bounds;
 
     public ViewElement(View view) {
         // Get content description
         if (view.getContentDescription() != null)
-            this.contentDescription = view.getContentDescription().toString();
+            this.contentDescription = view.getContentDescription();
 
         // Get bounds
         int[] l = new int[2];
         view.getLocationOnScreen(l);
-        this.bounds = String.format("[%d, %d],[%d, %d]", l[0], l[1], l[0] + view.getWidth(), l[1] + view.getHeight());
+        this.bounds = new Rect(l[0], l[1], l[0] + view.getWidth(), l[1] + view.getHeight());
 
         // Get ID
         id = view.getId(); // TODO: Not sure if we need this. Will leave for now
@@ -67,14 +68,15 @@ public class ViewElement {
         // bounds	[0,0][1440,2560]
         // resource-id	android:id/decor_content_parent
         // instance	0
+        // visibility
 
     }
 
-    public String getContentDescription() {
+    public CharSequence getContentDescription() {
         return contentDescription;
     }
 
-    public String getBounds() {
+    public Rect getBounds() {
         return bounds;
     }
 
@@ -82,23 +84,23 @@ public class ViewElement {
         return id + "";
     }
 
-    public String getClickable() {
-        return clickable ? "true" : "false";
+    public boolean isClickable() {
+        return clickable;
     }
 
-    public String getLongClickable() {
-        return longClickable ? "true" : "false";
+    public boolean isLongClickable() {
+        return longClickable;
     }
 
-    public String getFocused() {
-        return focused ? "true" : "false";
+    public boolean isFocused() {
+        return focused;
     }
 
     public String getClassName() {
         return className;
     }
 
-    public String getIndex() {
-        return index + "";
+    public int getIndex() {
+        return index;
     }
 }
