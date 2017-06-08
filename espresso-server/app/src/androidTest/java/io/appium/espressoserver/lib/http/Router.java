@@ -124,10 +124,7 @@ class Router {
 
 
     @SuppressWarnings("unchecked")
-    public BaseResponse route(IHTTPSession session) {
-        String uri = session.getUri();
-        Method method = session.getMethod();
-
+    public BaseResponse route(String uri, Method method, Map<String, String> params,  Map<String, String> files) {
         // Look for a route that matches this URL
         RouteDefinition matchingRoute = routeMap.findMatchingRoute(method, uri);
 
@@ -141,15 +138,8 @@ class Router {
         Class<? extends AppiumParams> paramClass = matchingRoute.getParamClass();
         Map<String, String> uriParams = matchingRoute.getUriParams(uri);
 
-        // Parse the appium params
-        String postJson;
-        try {
-            postJson = parseBody(session);
-        } catch (IOException e) {
-            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, e.getMessage());
-        } catch (NanoHTTPD.ResponseException e) {
-            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, e.getMessage());
-        }
+        // Get the appium params
+        String postJson = files.get("postData");
 
         AppiumParams appiumParams;
         if (postJson == null) {
@@ -191,13 +181,5 @@ class Router {
         } catch (AppiumException e) {
             return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, e.getMessage());
         }
-    }
-
-    private static String parseBody (IHTTPSession session) throws IOException, NanoHTTPD.ResponseException {
-        String result;
-        Map<String, String> files = new HashMap<>();
-        session.parseBody(files);
-        result = files.get("postData");
-        return result;
     }
 }
