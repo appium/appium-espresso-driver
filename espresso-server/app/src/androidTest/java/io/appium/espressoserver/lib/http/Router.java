@@ -6,6 +6,7 @@ import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Method;
+import io.appium.espressoserver.lib.handlers.Back;
 import io.appium.espressoserver.lib.handlers.Click;
 import io.appium.espressoserver.lib.handlers.CreateSession;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
@@ -52,6 +53,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys(), TextParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/source", new Source(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/screenshot", new Screenshot(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/back", new Back(), AppiumParams.class));
 
         // Unimplemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/timeouts", new NotYetImplemented(), AppiumParams.class));
@@ -62,7 +64,6 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/url", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/url", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/forward", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/back", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/refresh", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/execute", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/execute_async", new NotYetImplemented(), AppiumParams.class));
