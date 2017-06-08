@@ -3,6 +3,7 @@ package io.appium.espressoserver.lib.model;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.apache.xml.utils.XMLChar;
 import org.w3c.dom.*;
 import org.w3c.dom.Element;
 
@@ -75,18 +76,17 @@ public class SourceDocument {
      * @param view Android View that will map to an Element
      */
     private void buildXML(Document doc, Element parentElement, View view) {
-        // TODO: Investigate if this is safe and if we need to strip out characters before constructing XML document
-        Element element = doc.createElement(view.getClass().getName());
+        Element element = doc.createElement(view.getClass().getSimpleName());
 
         // Set attributes
         ViewElement viewElement = new ViewElement(view);
-        element.setAttribute(ViewAttributesEnum.CONTENT_DESC.getName(), viewElement.getContentDescription().toString());
-        element.setAttribute(ViewAttributesEnum.BOUNDS.getName(), viewElement.getBounds().toShortString());
-        element.setAttribute(ViewAttributesEnum.FOCUSED.getName(), Boolean.toString(viewElement.isFocused()));
-        element.setAttribute(ViewAttributesEnum.CLICKABLE.getName(), Boolean.toString(viewElement.isClickable()));
-        element.setAttribute(ViewAttributesEnum.LONG_CLICKABLE.getName(), Boolean.toString(viewElement.isLongClickable()));
-        element.setAttribute(ViewAttributesEnum.CLASS.getName(), viewElement.getClassName());
-        element.setAttribute(ViewAttributesEnum.INDEX.getName(), Integer.toString(viewElement.getIndex()));
+        setAttribute(element, ViewAttributesEnum.CONTENT_DESC, viewElement.getContentDescription());
+        setAttribute(element, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
+        setAttribute(element, ViewAttributesEnum.FOCUSED, Boolean.toString(viewElement.isFocused()));
+        setAttribute(element, ViewAttributesEnum.CLICKABLE, Boolean.toString(viewElement.isClickable()));
+        setAttribute(element, ViewAttributesEnum.LONG_CLICKABLE, Boolean.toString(viewElement.isLongClickable()));
+        setAttribute(element, ViewAttributesEnum.CLASS, viewElement.getClassName());
+        setAttribute(element, ViewAttributesEnum.INDEX, Integer.toString(viewElement.getIndex()));
 
         // If this is the rootElement, append it to the document
         if (parentElement == null) {
@@ -136,5 +136,22 @@ public class SourceDocument {
         } catch (TransformerException te) {
             throw new XPathLookupException(xpathSelector, te.getMessage());
         }
+    }
+
+    // Original Google code here broke UTF characters
+    private static String stripInvalidXMLChars(CharSequence charSequence) {
+        final StringBuilder sb = new StringBuilder(charSequence.length());
+        for (int i=0; i<charSequence.length(); i++) {
+            char c = charSequence.charAt(i);
+            if (XMLChar.isValid(c)) {
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
+    }
+
+    private static void setAttribute(Element element, ViewAttributesEnum viewAttributesEnum, CharSequence attrValue) {
+        element.setAttribute(stripInvalidXMLChars(viewAttributesEnum.toString()), stripInvalidXMLChars(attrValue));
     }
 }
