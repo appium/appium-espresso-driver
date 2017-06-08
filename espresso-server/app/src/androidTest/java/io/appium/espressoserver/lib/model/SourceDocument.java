@@ -31,11 +31,11 @@ import io.appium.espressoserver.lib.viewaction.RootViewFinder;
 public class SourceDocument {
 
     private Document doc;
-    private Map<Element, View> viewMap = new HashMap<>();
+    private final Map<Element, View> viewMap = new HashMap<>();
     private boolean cacheElementReferences;
     private final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
     private final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-    private TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
     private Transformer transformer;
 
     public SourceDocument() throws ParserConfigurationException, TransformerException {
@@ -58,11 +58,9 @@ public class SourceDocument {
 
     /**
      * Recursively visit all of the views and map them to XML elements
-     * @throws ParserConfigurationException
      */
-    private void buildXML() throws ParserConfigurationException {
+    private void buildXML() {
         // Create an empty document
-        this.cacheElementReferences = cacheElementReferences;
         doc = docBuilder.newDocument();
 
         // Get reference to root view
