@@ -76,7 +76,7 @@ public class SourceDocument {
      * @param view Android View that will map to an Element
      */
     private void buildXML(Document doc, Element parentElement, View view) {
-        Element element = doc.createElement(view.getClass().getSimpleName());
+        Element element = doc.createElement(getSimpleClassName(view.getClass().getName()));
 
         // Set attributes
         ViewElement viewElement = new ViewElement(view);
@@ -149,6 +149,23 @@ public class SourceDocument {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * returns by excluding inner class name.
+     */
+    private static String getSimpleClassName(String name) {
+        String nameCopy = name;
+        nameCopy = nameCopy.replaceAll("\\$[0-9]+", "\\$");
+        // we want the index of the inner class
+        int start = nameCopy.lastIndexOf('$');
+
+        // if this isn't an inner class, just find the start of the
+        // top level class name.
+        if (start == -1) {
+            return nameCopy;
+        }
+        return nameCopy.substring(0, start);
     }
 
     private static void setAttribute(Element element, ViewAttributesEnum viewAttributesEnum, CharSequence attrValue) {
