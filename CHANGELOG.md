@@ -1,3 +1,8 @@
+## [1.0.0-beta.2](https://github.com/appium/appium-espresso-driver/compare/v1.0.0-beta.2...v1.0.0-beta.1) (2017-06-09)
+
+### Changes
+* Fix: Sanitize XML inputs. Bad characters and tag names were breaking the XML (#50)
+
 ## [1.0.0-beta.1](https://github.com/appium/appium-espresso-driver/compare/v1.0.0-beta.1) (2017-06-08)
 
 ### Changes
