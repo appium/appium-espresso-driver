@@ -22,6 +22,7 @@ public enum ViewAttributesEnum {
     INDEX;
 
 
+    @Override
     public String toString() {
         return this.name().replace("_", "-").toLowerCase();
     }
