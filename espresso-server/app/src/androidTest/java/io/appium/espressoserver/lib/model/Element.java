@@ -25,6 +25,7 @@ public class Element {
         if (!exists(elementId)) {
             throw new NoSuchElementException(String.format("Invalid element ID %s", elementId));
         }
+        // TODO: Should we do a test here to determine if element is stale?
         return cache.get(elementId);
     }
 
