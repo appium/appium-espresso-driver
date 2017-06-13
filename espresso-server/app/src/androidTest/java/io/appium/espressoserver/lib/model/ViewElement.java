@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.TextView;
 
 public class ViewElement {
 
@@ -14,6 +15,7 @@ public class ViewElement {
     private final String className;
     private int index;
     private CharSequence contentDescription = "";
+    private CharSequence text;
     private final Rect bounds;
 
     public ViewElement(View view) {
@@ -45,7 +47,10 @@ public class ViewElement {
             // If it couldn't be cast to a ViewGroup, the parent has no children
         }
 
-
+        // Get text (if applicable)
+        if (view instanceof TextView) {
+            text = ((TextView) view).getText();
+        }
 
         // Get booleans
         clickable = view.isClickable();
@@ -55,7 +60,6 @@ public class ViewElement {
         // TODO: Attributes that need to be added with examples
         // resource-id android:id/decor_content_parent
         // index 0
-        // text "Hello World"
         // package	io.appium.android.apis
         // content-desc
         // checkable	false
@@ -102,5 +106,9 @@ public class ViewElement {
 
     public int getIndex() {
         return index;
+    }
+
+    public CharSequence getText() {
+        return text;
     }
 }
