@@ -87,6 +87,9 @@ public class SourceDocument {
         setAttribute(element, ViewAttributesEnum.LONG_CLICKABLE, Boolean.toString(viewElement.isLongClickable()));
         setAttribute(element, ViewAttributesEnum.CLASS, viewElement.getClassName());
         setAttribute(element, ViewAttributesEnum.INDEX, Integer.toString(viewElement.getIndex()));
+        if (viewElement.getText() != null) {
+            setAttribute(element, ViewAttributesEnum.TEXT, viewElement.getText());
+        }
 
         // If this is the rootElement, append it to the document
         if (parentElement == null) {
