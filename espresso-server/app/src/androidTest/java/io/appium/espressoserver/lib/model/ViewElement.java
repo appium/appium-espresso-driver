@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.TextView;
 
+import javax.annotation.Nullable;
+
 public class ViewElement {
 
     private final int id;
@@ -15,7 +17,7 @@ public class ViewElement {
     private final String className;
     private int index;
     private CharSequence contentDescription = "";
-    private CharSequence text;
+    private CharSequence text = null;
     private final Rect bounds;
 
     public ViewElement(View view) {
@@ -108,6 +110,7 @@ public class ViewElement {
         return index;
     }
 
+    @Nullable
     public CharSequence getText() {
         return text;
     }
