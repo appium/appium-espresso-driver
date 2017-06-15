@@ -17,11 +17,15 @@ describe('elementByXPath', function () {
   before(async () => {
     server = await startServer(PORT, HOST);
     driver = wd.promiseChainRemote(HOST, PORT);
-    await driver.init(APIDEMO_CAPS);
   });
   after(async () => {
     try {
       await server.close();
+    } catch (ign) {}
+  });
+  beforeEach(async () => {
+    try {
+      await driver.init(APIDEMO_CAPS);
     } catch (ign) {}
   });
   afterEach(async () => {
@@ -34,5 +38,13 @@ describe('elementByXPath', function () {
     let el = await driver.elementByXPath("//*[@content-desc='Animation']");
     el.should.exist;
     await el.click();
+  });
+  it('should find multiple elements that match one xpath', async () => {
+    let els = await driver.elementsByXPath('//android.widget.TextView');
+    els.length.should.be.above(0);
+  });
+  it('should get the first element of an xpath that matches more than one element', async () => {
+    let el = await driver.elementByXPath('//android.widget.TextView');
+    el.should.exist;
   });
 });
