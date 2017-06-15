@@ -27,6 +27,7 @@ import io.appium.espressoserver.lib.handlers.RequestHandler;
 import io.appium.espressoserver.lib.handlers.DeleteSession;
 import io.appium.espressoserver.lib.handlers.SendKeys;
 import io.appium.espressoserver.lib.handlers.Status;
+import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.http.response.ErrorResponse;
@@ -178,6 +179,8 @@ class Router {
             return new ErrorResponse(NanoHTTPD.Response.Status.NOT_FOUND, e.getMessage());
         } catch (NotYetImplementedException e) {
             return new ErrorResponse(NanoHTTPD.Response.Status.NOT_IMPLEMENTED, e.getMessage());
+        } catch (StaleElementException e) {
+            return new AppiumResponse<>(AppiumStatus.STALE_ELEMENT_REFERENCE, e.getMessage());
         } catch (AppiumException e) {
             return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, e.getMessage());
         }

@@ -47,4 +47,9 @@ describe('elementByXPath', function () {
     let el = await driver.elementByXPath('//android.widget.TextView');
     el.should.exist;
   });
+  it('should throw a stale element exception if clicking on element that does not exist', async () => {
+    let el = await driver.elementByXPath("//*[@content-desc='Animation']");
+    await el.click();
+    await el.click().should.eventually.be.rejectedWith(/no longer attached /);
+  });
 });
