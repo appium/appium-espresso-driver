@@ -75,9 +75,10 @@ public class SourceDocument {
 
     /**
      * Recursively visit all of the views and map them to XML elements
-     * @param doc XML Document
+     *
+     * @param doc           XML Document
      * @param parentElement Element that this new element will be appended to
-     * @param view Android View that will map to an Element
+     * @param view          Android View that will map to an Element
      */
     private void buildXML(Document doc, Element parentElement, View view) {
         Element element = doc.createElement(getSimpleClassName(view.getClass().getName()));
@@ -131,11 +132,11 @@ public class SourceDocument {
             // Get the Nodes that match the provided xpath
             SourceDocument sourceDocument = new SourceDocument(true);
             XPathExpression expr = xpath.compile(xpathSelector);
-            NodeList list= (NodeList) expr.evaluate(sourceDocument.doc, XPathConstants.NODESET);
+            NodeList list = (NodeList) expr.evaluate(sourceDocument.doc, XPathConstants.NODESET);
 
             // Get a list of elements that are associated with that node
             List<View> views = new ArrayList<>();
-            for (int i=0; i<list.getLength(); i++) {
+            for (int i = 0; i < list.getLength(); i++) {
                 Element element = (Element) list.item(i);
                 views.add(sourceDocument.viewMap.get(element));
             }
@@ -152,7 +153,7 @@ public class SourceDocument {
     // Original Google code here broke UTF characters
     private static String stripInvalidXMLChars(CharSequence charSequence) {
         final StringBuilder sb = new StringBuilder(charSequence.length());
-        for (int i=0; i<charSequence.length(); i++) {
+        for (int i = 0; i < charSequence.length(); i++) {
             char c = charSequence.charAt(i);
             if (XMLChar.isValid(c)) {
                 sb.append(c);
