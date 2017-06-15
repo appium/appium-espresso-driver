@@ -7,17 +7,31 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 
+import java.util.List;
+
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.SourceDocument;
 
 public class WithXPath {
-    public static Matcher<View> withXPath(final String xpath) throws XPathLookupException {
-        final View matchedXPathView = SourceDocument.findViewByXPath(xpath);
+    public static Matcher<View> withXPath(final String xpath, final Integer index) throws XPathLookupException {
+
+        // Get a list of the Views that match the provided xpath
+        final List<View> matchedXPathViews = SourceDocument.findViewsByXPath(xpath);
 
         return new TypeSafeMatcher<View>() {
             @Override
             protected boolean matchesSafely(View item) {
-                return item.equals(matchedXPathView);
+                try {
+                    if (index != null) {
+                        // If index is not null, match it with the xpath in the list at the provided index
+                        return matchedXPathViews.get(index).equals(item);
+                    } else {
+                        // If index is null, then we only check that the view is contained in the list of matched xpaths
+                        return matchedXPathViews.contains(item);
+                    }
+                } catch (NullPointerException npe) {
+                    return false;
+                }
             }
 
             @Override
@@ -25,5 +39,9 @@ public class WithXPath {
                 description.appendText(String.format("Looked for element with XPath %s", xpath));
             }
         };
+    }
+
+    public static Matcher<View> withXPath(final String xpath) throws XPathLookupException {
+        return withXPath(xpath, null);
     }
 }

@@ -8,7 +8,9 @@ import org.w3c.dom.*;
 import org.w3c.dom.Element;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -23,6 +25,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -122,16 +125,21 @@ public class SourceDocument {
         return stringWriter.toString();
     }
 
-    @Nullable
-    public static View findViewByXPath(String xpathSelector) throws XPathLookupException {
+    public static List<View> findViewsByXPath(String xpathSelector) throws XPathLookupException {
         try {
+            // Get the Nodes that match the provided xpath
             SourceDocument sourceDocument = new SourceDocument(true);
             XPath xpath = XPathFactory.newInstance().newXPath();
-            Element elementNode = (Element) xpath.evaluate(xpathSelector, sourceDocument.doc, XPathConstants.NODE);
-            if (elementNode == null) {
-                return null;
+            XPathExpression expr = xpath.compile(xpathSelector);
+            NodeList list= (NodeList) expr.evaluate(sourceDocument.doc, XPathConstants.NODESET);
+
+            // Get a list of elements that are associated with that node
+            List<View> views = new ArrayList<>();
+            for (int i=0; i<list.getLength(); i++) {
+                Element element = (Element) list.item(i);
+                views.add(sourceDocument.viewMap.get(element));
             }
-            return sourceDocument.viewMap.get(elementNode);
+            return views;
         } catch (ParserConfigurationException pe) {
             throw new XPathLookupException(xpathSelector, pe.getMessage());
         } catch (XPathExpressionException xe) {
