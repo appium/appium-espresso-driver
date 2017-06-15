@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.viewmatcher;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import org.hamcrest.Description;
@@ -13,7 +14,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.SourceDocument;
 
 public class WithXPath {
-    public static Matcher<View> withXPath(final String xpath, final Integer index) throws XPathLookupException {
+    public static Matcher<View> withXPath(final String xpath, @Nullable final Integer index) throws XPathLookupException {
 
         // Get a list of the Views that match the provided xpath
         final List<View> matchedXPathViews = SourceDocument.findViewsByXPath(xpath);
@@ -25,10 +26,10 @@ public class WithXPath {
                     if (index != null) {
                         // If index is not null, match it with the xpath in the list at the provided index
                         return matchedXPathViews.get(index).equals(item);
-                    } else {
-                        // If index is null, then we only check that the view is contained in the list of matched xpaths
-                        return matchedXPathViews.contains(item);
                     }
+
+                    // If index is null, then we only check that the view is contained in the list of matched xpaths
+                    return matchedXPathViews.contains(item);
                 } catch (NullPointerException npe) {
                     return false;
                 }

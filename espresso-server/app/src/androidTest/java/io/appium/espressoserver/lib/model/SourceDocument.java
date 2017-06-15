@@ -41,6 +41,7 @@ public class SourceDocument {
     private final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
     private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
     private Transformer transformer;
+    private static XPath xpath = XPathFactory.newInstance().newXPath();
 
     public SourceDocument() throws ParserConfigurationException, TransformerException {
         init();
@@ -129,7 +130,6 @@ public class SourceDocument {
         try {
             // Get the Nodes that match the provided xpath
             SourceDocument sourceDocument = new SourceDocument(true);
-            XPath xpath = XPathFactory.newInstance().newXPath();
             XPathExpression expr = xpath.compile(xpathSelector);
             NodeList list= (NodeList) expr.evaluate(sourceDocument.doc, XPathConstants.NODESET);
 
