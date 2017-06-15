@@ -13,7 +13,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 
-public class GetText {
+public class ViewTextGetter {
 
     private final View[] views = {null};
 

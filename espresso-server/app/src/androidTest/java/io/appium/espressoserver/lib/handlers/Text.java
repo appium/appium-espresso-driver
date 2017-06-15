@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
-import io.appium.espressoserver.lib.viewaction.GetText;
+import io.appium.espressoserver.lib.viewaction.ViewTextGetter;
 
 public class Text implements RequestHandler<AppiumParams, CharSequence> {
 
@@ -15,6 +15,6 @@ public class Text implements RequestHandler<AppiumParams, CharSequence> {
     @Nullable
     public CharSequence handle(AppiumParams params) throws AppiumException {
         ViewInteraction viewInteraction = Element.getById(params.getElementId());
-        return (new GetText()).get(viewInteraction);
+        return (new ViewTextGetter()).get(viewInteraction);
     }
 }
