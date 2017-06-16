@@ -1,11 +1,14 @@
 package io.appium.espressoserver.lib.model;
 
 
+import javax.annotation.Nullable;
+
 @SuppressWarnings("unused")
 public class Locator extends AppiumParams {
     private Strategy using;
     private String value;
 
+    @Nullable
     public String getValue() {
         return value;
     }
@@ -14,6 +17,7 @@ public class Locator extends AppiumParams {
         this.value = value;
     }
 
+    @Nullable
     public Strategy getUsing() {
         return using;
     }

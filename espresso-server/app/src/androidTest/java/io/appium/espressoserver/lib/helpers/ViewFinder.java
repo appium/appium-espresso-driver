@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.Strategy;
@@ -41,8 +43,13 @@ public class ViewFinder {
      * @throws InvalidStrategyException
      * @throws XPathLookupException
      */
+    @Nullable
     public static ViewInteraction findBy(Strategy strategy, String selector) throws InvalidStrategyException, XPathLookupException {
-        return findAllBy(strategy, selector, true).get(0);
+        List<ViewInteraction> viewInteractions = findAllBy(strategy, selector, true);
+        if (viewInteractions.size() == 0) {
+            return null;
+        }
+        return viewInteractions.get(0);
     }
 
     /**
@@ -58,7 +65,8 @@ public class ViewFinder {
     }
 
     ///Find By different strategies
-    private static List<ViewInteraction> findAllBy(Strategy strategy, String selector, Boolean findOne) throws InvalidStrategyException, XPathLookupException {
+    private static List<ViewInteraction> findAllBy(Strategy strategy, String selector, boolean findOne)
+            throws InvalidStrategyException, XPathLookupException {
         List<ViewInteraction> matcher;
 
         switch (strategy) {
@@ -101,27 +109,27 @@ public class ViewFinder {
     }
 
     private static List<ViewInteraction> getViewInteractions(Matcher<View> matcher, boolean findOne) {
+        // If it's just one view we want, return a singleton list
         if (findOne) {
-            // If it's just one view we want, return a singleton list
             return Collections.singletonList(onView(matcher));
-        } else {
-            // If we want all views that match the criteria, start looking for ViewInteractions by
-            // index and add each match to the List. As soon as we find no match, break the loop
-            // and return the list
-            List<ViewInteraction> viewInteractions = new ArrayList<>();
-            int i = 0;
-            do {
-                ViewInteraction viewInteraction = onView(withIndex(matcher, i));
-                try {
-                    viewInteraction.check(matches(isDisplayed()));
-                } catch (NoMatchingViewException nme) {
-                    break;
-                }
-                viewInteractions.add(viewInteraction);
-                i++;
-            } while (true);
-            return viewInteractions;
         }
+
+        // If we want all views that match the criteria, start looking for ViewInteractions by
+        // index and add each match to the List. As soon as we find no match, break the loop
+        // and return the list
+        List<ViewInteraction> viewInteractions = new ArrayList<>();
+        int i = 0;
+        do {
+            ViewInteraction viewInteraction = onView(withIndex(matcher, i));
+            try {
+                viewInteraction.check(matches(isDisplayed()));
+            } catch (NoMatchingViewException nme) {
+                break;
+            }
+            viewInteractions.add(viewInteraction);
+            i++;
+        } while (i < Integer.MAX_VALUE);
+        return viewInteractions;
     }
 
     private static Matcher<View> withIndex(final Matcher<View> matcher, final int index) {
