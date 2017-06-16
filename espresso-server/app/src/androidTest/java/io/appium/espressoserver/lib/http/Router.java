@@ -27,6 +27,7 @@ import io.appium.espressoserver.lib.handlers.RequestHandler;
 import io.appium.espressoserver.lib.handlers.DeleteSession;
 import io.appium.espressoserver.lib.handlers.SendKeys;
 import io.appium.espressoserver.lib.handlers.Status;
+import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.http.response.ErrorResponse;
@@ -169,17 +170,20 @@ class Router {
             System.out.println("Finished processing " + method + " request for '" + uri + "'");
             return appiumResponse;
         } catch (NoSuchElementException e) {
-            return new AppiumResponse<>(AppiumStatus.NO_SUCH_ELEMENT, e.getMessage());
+            return new AppiumResponse<>(e, AppiumStatus.NO_SUCH_ELEMENT, e.getMessage());
         } catch (SessionNotCreatedException e) {
-            return new AppiumResponse<>(AppiumStatus.SESSION_NOT_CREATED_EXCEPTION, e.getMessage());
+            return new AppiumResponse<>(e, AppiumStatus.SESSION_NOT_CREATED_EXCEPTION, e.getMessage());
         } catch (InvalidStrategyException e) {
-            return new AppiumResponse<>(AppiumStatus.INVALID_SELECTOR, e.getMessage());
+            return new AppiumResponse<>(e, AppiumStatus.INVALID_SELECTOR, e.getMessage());
         } catch (MissingCommandsException e) {
-            return new ErrorResponse(NanoHTTPD.Response.Status.NOT_FOUND, e.getMessage());
+            return new ErrorResponse(e, NanoHTTPD.Response.Status.NOT_FOUND, e.getMessage());
         } catch (NotYetImplementedException e) {
-            return new ErrorResponse(NanoHTTPD.Response.Status.NOT_IMPLEMENTED, e.getMessage());
+            return new ErrorResponse(e, NanoHTTPD.Response.Status.NOT_IMPLEMENTED, e.getMessage());
+        } catch (StaleElementException e) {
+            return new AppiumResponse<>(e, AppiumStatus.STALE_ELEMENT_REFERENCE, e.getMessage());
         } catch (AppiumException e) {
-            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, e.getMessage());
+            e.printStackTrace();
+            return new AppiumResponse<>(e, AppiumStatus.UNKNOWN_ERROR, e.getMessage());
         }
     }
 }

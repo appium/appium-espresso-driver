@@ -3,8 +3,6 @@ package io.appium.espressoserver.lib.http;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -27,14 +25,6 @@ public class Server extends NanoHTTPD {
         router = new Router();
     }
 
-    private List<String> getStackTrace(Exception e) {
-        ArrayList<String> stackTrace = new ArrayList<>();
-        for (StackTraceElement ste : e.getStackTrace()) {
-            stackTrace.add(ste.toString());
-        }
-        return stackTrace;
-    }
-
     @Override
     public Response serve(String uri, Method method, Map<String, String> headers, Map<String, String> parms, Map<String, String> files) {
         GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
@@ -42,8 +32,7 @@ public class Server extends NanoHTTPD {
         try {
             response = router.route(uri, method, parms, files);
         } catch (RuntimeException e) {
-            List<String> stackTrace = getStackTrace(e);
-            response = new ErrorResponse(Response.Status.INTERNAL_ERROR, "Internal error has occurred", stackTrace);
+            response = new ErrorResponse(e, Response.Status.INTERNAL_ERROR, "Internal error has occurred");
         }
 
         gsonBuilder.registerTypeAdapter(AppiumStatus.class, new AppiumStatusAdapter());

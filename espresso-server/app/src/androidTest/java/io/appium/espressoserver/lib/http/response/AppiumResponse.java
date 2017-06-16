@@ -3,6 +3,7 @@ package io.appium.espressoserver.lib.http.response;
 import java.util.UUID;
 
 import fi.iki.elonen.NanoHTTPD.Response.Status;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 
 @SuppressWarnings("unused")
@@ -12,6 +13,11 @@ public class AppiumResponse<T> extends BaseResponse {
     private String sessionId;
     // Unique Appium transaction ID
     private String id;
+
+    public AppiumResponse(AppiumException e, AppiumStatus status, T value) {
+        e.printStackTrace();
+        init(status, value, null);
+    }
 
     public AppiumResponse(AppiumStatus status, T value) {
         init(status, value, null);

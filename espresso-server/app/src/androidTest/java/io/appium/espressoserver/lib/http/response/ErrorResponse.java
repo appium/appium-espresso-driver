@@ -1,30 +1,29 @@
 package io.appium.espressoserver.lib.http.response;
 
 
-import java.util.List;
-
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 @SuppressWarnings("unused")
 public class ErrorResponse extends BaseResponse {
     private final String message;
-    private List<String> stackTrace;
+    private String reason;
 
     public ErrorResponse(Status status, String message) {
         httpStatus = status;
         this.message = message;
     }
-    public ErrorResponse(Status status, String message, List<String> stackTrace) {
+    public ErrorResponse(Exception e, Status status, String message) {
+        e.printStackTrace();
         httpStatus = status;
         this.message = message;
-        this.stackTrace = stackTrace;
+        this.reason = e.getMessage();
     }
 
     public String getMessage() {
         return message;
     }
 
-    public List<String> getStackTrace() {
-        return stackTrace;
+    public String getStackTrace() {
+        return reason;
     }
 }
