@@ -1,10 +1,7 @@
 package io.appium.espressoserver.lib.http.response;
 
 
-import java.util.List;
-
 import fi.iki.elonen.NanoHTTPD.Response.Status;
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 
 @SuppressWarnings("unused")
 public class ErrorResponse extends BaseResponse {
