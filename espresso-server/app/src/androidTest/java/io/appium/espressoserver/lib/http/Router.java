@@ -170,18 +170,25 @@ class Router {
             System.out.println("Finished processing " + method + " request for '" + uri + "'");
             return appiumResponse;
         } catch (NoSuchElementException e) {
+            e.printStackTrace();
             return new AppiumResponse<>(AppiumStatus.NO_SUCH_ELEMENT, e.getMessage());
         } catch (SessionNotCreatedException e) {
+            e.printStackTrace();
             return new AppiumResponse<>(AppiumStatus.SESSION_NOT_CREATED_EXCEPTION, e.getMessage());
         } catch (InvalidStrategyException e) {
+            e.printStackTrace();
             return new AppiumResponse<>(AppiumStatus.INVALID_SELECTOR, e.getMessage());
         } catch (MissingCommandsException e) {
+            e.printStackTrace();
             return new ErrorResponse(NanoHTTPD.Response.Status.NOT_FOUND, e.getMessage());
         } catch (NotYetImplementedException e) {
+            e.printStackTrace();
             return new ErrorResponse(NanoHTTPD.Response.Status.NOT_IMPLEMENTED, e.getMessage());
         } catch (StaleElementException e) {
+            e.printStackTrace();
             return new AppiumResponse<>(AppiumStatus.STALE_ELEMENT_REFERENCE, e.getMessage());
         } catch (AppiumException e) {
+            e.printStackTrace();
             return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, e.getMessage());
         }
     }

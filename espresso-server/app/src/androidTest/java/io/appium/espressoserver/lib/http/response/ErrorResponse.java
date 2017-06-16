@@ -8,23 +8,23 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
 @SuppressWarnings("unused")
 public class ErrorResponse extends BaseResponse {
     private final String message;
-    private List<String> stackTrace;
+    private String reason;
 
     public ErrorResponse(Status status, String message) {
         httpStatus = status;
         this.message = message;
     }
-    public ErrorResponse(Status status, String message, List<String> stackTrace) {
+    public ErrorResponse(Status status, String message, String reason) {
         httpStatus = status;
         this.message = message;
-        this.stackTrace = stackTrace;
+        this.reason = reason;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public List<String> getStackTrace() {
-        return stackTrace;
+    public String getStackTrace() {
+        return reason;
     }
 }
