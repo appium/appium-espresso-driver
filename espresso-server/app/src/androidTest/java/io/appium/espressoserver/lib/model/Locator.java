@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 
 @SuppressWarnings("unused")
 public class Locator extends AppiumParams {
-    private Strategy using;
-    private String value;
+    private Strategy using = null;
+    private String value = null;
 
     @Nullable
     public String getValue() {

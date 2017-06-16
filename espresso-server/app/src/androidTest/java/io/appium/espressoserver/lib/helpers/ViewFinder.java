@@ -46,7 +46,7 @@ public class ViewFinder {
     @Nullable
     public static ViewInteraction findBy(Strategy strategy, String selector) throws InvalidStrategyException, XPathLookupException {
         List<ViewInteraction> viewInteractions = findAllBy(strategy, selector, true);
-        if (viewInteractions.size() == 0) {
+        if (viewInteractions.isEmpty()) {
             return null;
         }
         return viewInteractions.get(0);

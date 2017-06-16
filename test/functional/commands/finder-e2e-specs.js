@@ -41,7 +41,7 @@ describe('elementByXPath', function () {
   });
   it('should find multiple elements that match one xpath', async () => {
     let els = await driver.elementsByXPath('//android.widget.TextView');
-    els.length.should.be.above(0);
+    els.length.should.be.above(1);
   });
   it('should get the first element of an xpath that matches more than one element', async () => {
     let el = await driver.elementByXPath('//android.widget.TextView');
