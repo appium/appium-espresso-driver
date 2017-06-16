@@ -1,7 +1,5 @@
 package io.appium.espressoserver.lib.handlers;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 
@@ -9,20 +7,12 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.MissingCommandsException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
-import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.Locator;
-import io.appium.espressoserver.lib.model.Strategy;
 
-import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath;
-import static org.hamcrest.Matchers.endsWith;
+import static io.appium.espressoserver.lib.helpers.ViewFinder.findBy;
 
 public class Finder implements RequestHandler<Locator, Element> {
 
@@ -43,42 +33,5 @@ public class Finder implements RequestHandler<Locator, Element> {
         } catch (NoMatchingViewException e) {
             throw new NoSuchElementException("Could not find element with strategy " + locator.getUsing() + " and selector " + locator.getValue());
         }
-    }
-
-    ///Find By different strategies
-    private ViewInteraction findBy(Strategy strategy, String selector) throws InvalidStrategyException, XPathLookupException {
-        ViewInteraction matcher;
-
-        switch (strategy) {
-            case ID: // with ID
-
-                // find id from target context
-                Context context = InstrumentationRegistry.getTargetContext();
-                int id = context.getResources().getIdentifier(selector, "Id",
-                        InstrumentationRegistry.getTargetContext().getPackageName());
-
-                matcher = onView(withId(id));
-                break;
-            case CLASS_NAME:
-                // with class name
-                // TODO: improve this finder with instanceOf
-                matcher = onView(withClassName(endsWith(selector)));
-                break;
-            case TEXT:
-                // with text
-                matcher = onView(withText(selector));
-                break;
-            case ACCESSIBILITY_ID:
-                // with content description
-                matcher = onView(withContentDescription(selector));
-                break;
-            case XPATH:
-                matcher = onView(withXPath(selector));
-                break;
-            default:
-                throw new InvalidStrategyException("Strategy is not implemented: " + strategy.getStrategyName());
-        }
-
-        return matcher;
     }
 }
