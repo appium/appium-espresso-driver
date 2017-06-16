@@ -3,8 +3,6 @@ package io.appium.espressoserver.lib.http;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -34,8 +32,7 @@ public class Server extends NanoHTTPD {
         try {
             response = router.route(uri, method, parms, files);
         } catch (RuntimeException e) {
-            e.printStackTrace();
-            response = new ErrorResponse(Response.Status.INTERNAL_ERROR, "Internal error has occurred", e.getMessage());
+            response = new ErrorResponse(e, Response.Status.INTERNAL_ERROR, "Internal error has occurred");
         }
 
         gsonBuilder.registerTypeAdapter(AppiumStatus.class, new AppiumStatusAdapter());
