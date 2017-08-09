@@ -2,18 +2,21 @@ package io.appium.espressoserver.lib.viewaction;
 
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.ViewInteraction;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.view.View;
 
 import org.hamcrest.Matcher;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 
 /**
- * Get the Root View of the Android App
+ * Get a View in an the Android App
  * Hack solution that makes use of Espresso ViewActions
  */
-public class RootViewFinder {
+public class ViewFinder {
     private final View[] views = {null};
 
     /**
@@ -24,12 +27,13 @@ public class RootViewFinder {
 
         @Override
         public Matcher<View> getConstraints() {
-            return isRoot();
+            // This is a hack constraint that passes any view through
+            return isDescendantOfA(isRoot());
         }
 
         @Override
         public String getDescription() {
-            return "getting root view of application";
+            return "getting view in application";
         }
 
         @Override
@@ -45,6 +49,11 @@ public class RootViewFinder {
      */
     public View getRootView() {
         onView(isRoot()).perform(new GetViewAction());
+        return views[0];
+    }
+
+    public View getView(ViewInteraction viewInteraction) {
+        viewInteraction.perform(new GetViewAction());
         return views[0];
     }
 }
