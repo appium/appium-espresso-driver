@@ -6,6 +6,8 @@ import android.view.View;
 
 import org.hamcrest.Matcher;
 
+import javax.annotation.Nullable;
+
 import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 
@@ -18,7 +20,7 @@ public class ScrollTo implements ViewAction {
         super();
     }
 
-    public ScrollTo(Integer xOffset, Integer yOffset) {
+    public ScrollTo(@Nullable Integer xOffset, @Nullable Integer yOffset) {
         super();
         this.xOffset = xOffset == null ? 0 : xOffset;
         this.yOffset = yOffset == null ? 0 : yOffset;
@@ -38,8 +40,8 @@ public class ScrollTo implements ViewAction {
     @Override
     public void perform(UiController uiController, View view) {
         int x = view.getLeft();
-        int y = view.getTop() + (view.getHeight() / 2);
-        view.scrollTo(this.xOffset, this.yOffset);
+        int y = view.getTop() + view.getHeight();
+        view.scrollTo(x, y);
     }
 
 }

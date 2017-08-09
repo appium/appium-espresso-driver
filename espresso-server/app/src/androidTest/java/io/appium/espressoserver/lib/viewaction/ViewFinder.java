@@ -3,7 +3,6 @@ package io.appium.espressoserver.lib.viewaction;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewInteraction;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.view.View;
 
 import org.hamcrest.Matcher;

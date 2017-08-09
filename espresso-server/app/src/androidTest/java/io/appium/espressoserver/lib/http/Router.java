@@ -65,8 +65,8 @@ class Router {
 
         // Mobile JSON Wire Protocol endpoints
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/context", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/contexts", new MoveTo(), MoveToParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/contexts", new MoveTo(), MoveToParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/contexts", new NotYetImplemented(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/contexts", new NotYetImplemented(), AppiumParams.class));
 
         // Unimplemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/timeouts", new NotYetImplemented(), AppiumParams.class));
