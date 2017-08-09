@@ -9,4 +9,8 @@ public class AppiumException extends Exception {
     public AppiumException(String reason) {
         super(reason);
     }
+
+    public AppiumException(Exception e) {
+        super(e);
+    }
 }

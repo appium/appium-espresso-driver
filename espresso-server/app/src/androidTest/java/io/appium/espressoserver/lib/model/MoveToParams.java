@@ -19,12 +19,10 @@ public class MoveToParams extends AppiumParams {
         this.elementId = elementId;
     }
 
-    @Nullable
     public int getXOffset() {
         return xoffset;
     }
 
-    @Nullable
     public int getYOffset() {
         return yoffset;
     }

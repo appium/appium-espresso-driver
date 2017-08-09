@@ -16,7 +16,7 @@ public class MoveTo implements RequestHandler<MoveToParams, Void> {
             ViewInteraction viewInteraction = Element.getById(params.getElementId());
             viewInteraction.perform(new ScrollTo(params.getXOffset(), params.getYOffset()));
         } catch (PerformException pe) {
-            throw new AppiumException(pe.getCause().getMessage());
+            throw new AppiumException(pe);
         }
 
         return null;

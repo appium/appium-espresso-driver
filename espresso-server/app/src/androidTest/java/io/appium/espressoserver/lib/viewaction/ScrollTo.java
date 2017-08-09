@@ -39,8 +39,8 @@ public class ScrollTo implements ViewAction {
 
     @Override
     public void perform(UiController uiController, View view) {
-        int x = view.getLeft();
-        int y = view.getTop() + view.getHeight();
+        int x = view.getLeft() + this.xOffset;
+        int y = view.getTop() + view.getHeight() + this.yOffset;
         view.scrollTo(x, y);
     }
 
