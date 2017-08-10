@@ -3,6 +3,7 @@ package io.appium.espressoserver.lib.viewaction;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.view.View;
+import android.widget.AbsListView;
 
 import org.hamcrest.Matcher;
 
@@ -41,7 +42,14 @@ public class ScrollTo implements ViewAction {
     public void perform(UiController uiController, View view) {
         int x = view.getLeft() + this.xOffset;
         int y = view.getTop() + view.getHeight() + this.yOffset;
-        view.scrollTo(x, y);
+
+        View viewParent = (View) view.getParent();
+
+        if (viewParent instanceof AbsListView) {
+            ((AbsListView) viewParent).smoothScrollToPosition(y);
+        } else {
+            viewParent.scrollTo(x, y);
+        }
     }
 
 }

@@ -19,11 +19,11 @@ describe('moveTo', function () {
   });
 
   it('should move to an element', async () => {
-    let el = await driver.elementByAccessibilityId('App');
+    let el = await driver.elementByAccessibilityId('Views');
     await el.click();
-    let moveToEl = await driver.elementByAccessibilityId('Service');
-    await driver.elementByAccessibilityId('Text Recognition').should.eventually.be.rejectedWith(/Could not find element/);
+    let moveToEl = await driver.elementByAccessibilityId('Expandable Lists');
+    await driver.elementByAccessibilityId('ImageView').should.eventually.be.rejectedWith(/Could not find element/);
     await driver.moveTo(moveToEl);
-    await driver.elementByAccessibilityId('Text-To-Speech').should.eventually.exist;
+    await driver.elementByAccessibilityId('ImageView').should.eventually.exist;
   });
 });
