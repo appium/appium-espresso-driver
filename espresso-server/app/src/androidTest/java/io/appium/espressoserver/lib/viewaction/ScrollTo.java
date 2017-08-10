@@ -14,8 +14,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 
 public class ScrollTo implements ViewAction {
 
-    private int xOffset;
-    private int yOffset;
+    private int xOffset = 0;
+    private int yOffset = 0;
 
     public ScrollTo() {
         super();
@@ -23,8 +23,12 @@ public class ScrollTo implements ViewAction {
 
     public ScrollTo(@Nullable Integer xOffset, @Nullable Integer yOffset) {
         super();
-        this.xOffset = xOffset == null ? 0 : xOffset;
-        this.yOffset = yOffset == null ? 0 : yOffset;
+        if (xOffset != null) {
+            this.xOffset = xOffset;
+        }
+        if (yOffset != null) {
+            this.yOffset = yOffset;
+        }
     }
 
     @Override

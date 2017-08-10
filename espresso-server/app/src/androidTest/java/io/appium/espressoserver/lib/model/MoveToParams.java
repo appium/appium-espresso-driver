@@ -2,7 +2,6 @@ package io.appium.espressoserver.lib.model;
 
 import com.google.gson.annotations.SerializedName;
 
-@SuppressWarnings("unused")
 public class MoveToParams extends AppiumParams {
     @SerializedName("element")
     private String elementId;

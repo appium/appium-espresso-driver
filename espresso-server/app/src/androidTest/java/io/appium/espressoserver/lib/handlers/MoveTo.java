@@ -16,8 +16,6 @@ public class MoveTo implements RequestHandler<MoveToParams, Void> {
         ViewInteraction viewInteraction = Element.getById(params.getElementId());
 
         try {
-            //viewInteraction.perform(new ScrollTo(params.getXOffset(), params.getYOffset()));
-
             // Try performing espresso's scrollTo, which will only work if
             //   1. View is descendant of scrollView
             //   2. View is visible
