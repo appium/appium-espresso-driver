@@ -18,7 +18,7 @@ public class ViewTextGetter {
     private final View[] views = {null};
 
     /**
-     * Hack way of getting a view. Similar to 'RootViewFinder' class.
+     * Hack way of getting a view. Similar to 'ViewFinder' class.
      */
     private class GetTextViewAction implements ViewAction {
         @Override

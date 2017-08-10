@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -30,7 +29,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
-import io.appium.espressoserver.lib.viewaction.RootViewFinder;
+import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 public class SourceDocument {
 
@@ -69,7 +68,7 @@ public class SourceDocument {
         doc = docBuilder.newDocument();
 
         // Get reference to root view
-        View rootView = (new RootViewFinder()).getRootView();
+        View rootView = (new ViewFinder()).getRootView();
         buildXML(doc, null, rootView);
     }
 

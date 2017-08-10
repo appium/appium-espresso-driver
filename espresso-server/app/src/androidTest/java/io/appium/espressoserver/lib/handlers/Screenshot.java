@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.viewaction.RootViewFinder;
+import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 public class Screenshot implements RequestHandler<AppiumParams, String> {
 
@@ -21,7 +21,7 @@ public class Screenshot implements RequestHandler<AppiumParams, String> {
     private String takeScreenshot() throws AppiumException {
         try {
             // Create bitmap screen capture
-            View rootView = (new RootViewFinder()).getRootView();
+            View rootView = (new ViewFinder()).getRootView();
             rootView.setDrawingCacheEnabled(true);
             Bitmap bitmapScreenCap = Bitmap.createBitmap(rootView.getDrawingCache());
             rootView.setDrawingCacheEnabled(false);
