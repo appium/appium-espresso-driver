@@ -1,7 +1,6 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.support.test.espresso.ViewInteraction;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,38 +45,38 @@ public class AttributesReader implements RequestHandler<AppiumParams, String> {
         if (dstAttribute == ViewAttributesEnum.TEXT) {
             return new ViewTextGetter().get(viewInteraction).toString();
         }
-        final View view = new ViewFinder().getView(viewInteraction);
+        final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
         switch (dstAttribute) {
             case CONTENT_DESC:
-                return new ViewElement(view).getContentDescription().toString();
+                return viewElement.getContentDescription().toString();
             case CLASS:
-                return new ViewElement(view).getClassName();
+                return viewElement.getClassName();
             case CHECKABLE:
-                return Boolean.toString(new ViewElement(view).isCheckable());
+                return Boolean.toString(viewElement.isCheckable());
             case CHECKED:
-                return Boolean.toString(new ViewElement(view).isChecked());
+                return Boolean.toString(viewElement.isChecked());
             case CLICKABLE:
-                return Boolean.toString(new ViewElement(view).isClickable());
+                return Boolean.toString(viewElement.isClickable());
             case ENABLED:
-                return Boolean.toString(new ViewElement(view).isEnabled());
+                return Boolean.toString(viewElement.isEnabled());
             case FOCUSABLE:
-                return Boolean.toString(new ViewElement(view).isFocusable());
+                return Boolean.toString(viewElement.isFocusable());
             case FOCUSED:
-                return Boolean.toString(new ViewElement(view).isFocused());
+                return Boolean.toString(viewElement.isFocused());
             case SCROLLABLE:
-                return Boolean.toString(new ViewElement(view).isScrollable());
+                return Boolean.toString(viewElement.isScrollable());
             case LONG_CLICKABLE:
-                return Boolean.toString(new ViewElement(view).isLongClickable());
+                return Boolean.toString(viewElement.isLongClickable());
             case PASSWORD:
-                return Boolean.toString(new ViewElement(view).isPassword());
+                return Boolean.toString(viewElement.isPassword());
             case SELECTED:
-                return Boolean.toString(new ViewElement(view).isSelected());
+                return Boolean.toString(viewElement.isSelected());
             case BOUNDS:
-                return new ViewElement(view).getBounds().toShortString();
+                return viewElement.getBounds().toShortString();
             case RESOURCE_ID:
-                return Integer.toString(new ViewElement(view).getResourceId());
+                return Integer.toString(viewElement.getResourceId());
             case INDEX:
-                return Integer.toString(new ViewElement(view).getIndex());
+                return Integer.toString(viewElement.getIndex());
             // case PACKAGE:
             // case INSTANCE:
             default:
