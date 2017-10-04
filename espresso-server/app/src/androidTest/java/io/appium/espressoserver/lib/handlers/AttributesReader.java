@@ -38,7 +38,7 @@ public class AttributesReader implements RequestHandler<AppiumParams, String> {
                 supportedAttributeNames.add(attribute.toString());
             }
             throw new AppiumException(
-                    String.format("Attribute name should one of %s. %s is given instead",
+                    String.format("Attribute name should be one of %s. '%s' is given instead",
                             supportedAttributeNames, attributeName));
         }
         final ViewInteraction viewInteraction = Element.getById(params.getElementId());
