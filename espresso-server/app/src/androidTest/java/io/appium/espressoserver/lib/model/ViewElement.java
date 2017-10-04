@@ -4,6 +4,8 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Checkable;
 import android.widget.TextView;
 
 import javax.annotation.Nullable;
@@ -12,8 +14,16 @@ public class ViewElement {
 
     private final int id;
     private final boolean clickable;
+    private final boolean checkable;
+    private final boolean checked;
     private final boolean longClickable;
     private final boolean focused;
+    private final boolean focusable;
+    private final boolean enabled;
+    private final boolean scrollable;
+    private final boolean isPassword;
+    private final boolean selected;
+    private final int resourceId;
     private final String className;
     private int index;
     private CharSequence contentDescription = "";
@@ -54,10 +64,24 @@ public class ViewElement {
             text = ((TextView) view).getText();
         }
 
+        resourceId = view.getId();
+
         // Get booleans
+        checkable = view instanceof Checkable;
+        if (checkable) {
+            checked = ((Checkable) view).isChecked();
+        } else {
+            checked = false;
+        }
+        enabled = view.isEnabled();
         clickable = view.isClickable();
         longClickable = view.isLongClickable();
+        focusable = view.isFocusable();
         focused = view.isAccessibilityFocused();
+        scrollable = view.isScrollContainer();
+        isPassword = (view instanceof TextView) &&
+                isPasswordInputType(((TextView) view).getInputType());
+        selected = view.isSelected();
 
         // TODO: Attributes that need to be added with examples
         // resource-id android:id/decor_content_parent
@@ -76,6 +100,17 @@ public class ViewElement {
         // instance	0
         // visibility
 
+    }
+
+    private static boolean isPasswordInputType(int inputType) {
+        final int variation =
+                inputType & (EditorInfo.TYPE_MASK_CLASS | EditorInfo.TYPE_MASK_VARIATION);
+        return variation
+                == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)
+                || variation
+                == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD)
+                || variation
+                == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
     }
 
     public CharSequence getContentDescription() {
@@ -98,8 +133,20 @@ public class ViewElement {
         return longClickable;
     }
 
+    public boolean isCheckable() {
+        return checkable;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
     public boolean isFocused() {
         return focused;
+    }
+
+    public int getResourceId() {
+        return resourceId;
     }
 
     public String getClassName() {
@@ -113,5 +160,25 @@ public class ViewElement {
     @Nullable
     public CharSequence getText() {
         return text;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public boolean isFocusable() {
+        return focusable;
+    }
+
+    public boolean isScrollable() {
+        return scrollable;
+    }
+
+    public boolean isPassword() {
+        return isPassword;
+    }
+
+    public boolean isSelected() {
+        return selected;
     }
 }

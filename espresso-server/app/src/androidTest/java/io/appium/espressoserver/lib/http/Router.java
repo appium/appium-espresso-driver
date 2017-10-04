@@ -6,6 +6,7 @@ import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Method;
+import io.appium.espressoserver.lib.handlers.AttributesReader;
 import io.appium.espressoserver.lib.handlers.Back;
 import io.appium.espressoserver.lib.handlers.Click;
 import io.appium.espressoserver.lib.handlers.CreateSession;
@@ -56,6 +57,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/text", new Text(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session", new CreateSession(), SessionParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element", new Finder(), Locator.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/attribute/:name", new AttributesReader(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/click", new Click(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys(), TextParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/back", new Back(), AppiumParams.class));
@@ -103,7 +105,6 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/clear", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/selected", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/enabled", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/attribute/:name", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/equals/:otherId", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/displayed", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/location", new NotYetImplemented(), AppiumParams.class));
@@ -155,10 +156,7 @@ class Router {
         } else {
             appiumParams = paramClass.cast((new Gson()).fromJson(postJson, paramClass));
         }
-        appiumParams.setSessionId(uriParams.get("sessionId"));
-        if (uriParams.get("elementId") != null) {
-            appiumParams.setElementId(uriParams.get("elementId"));
-        }
+        appiumParams.initUriMapping(uriParams);
 
         // Validate the sessionId
         if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSession().getId())) {
