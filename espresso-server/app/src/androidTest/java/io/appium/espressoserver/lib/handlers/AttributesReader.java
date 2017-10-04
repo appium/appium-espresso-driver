@@ -43,54 +43,40 @@ public class AttributesReader implements RequestHandler<AppiumParams, String> {
                             supportedAttributeNames, attributeName));
         }
         final ViewInteraction viewInteraction = Element.getById(params.getElementId());
-        View view;
+        if (dstAttribute == ViewAttributesEnum.TEXT) {
+            return new ViewTextGetter().get(viewInteraction).toString();
+        }
+        final View view = new ViewFinder().getView(viewInteraction);
         switch (dstAttribute) {
-            case TEXT:
-                return new ViewTextGetter().get(viewInteraction).toString();
             case CONTENT_DESC:
-                view = new ViewFinder().getView(viewInteraction);
                 return new ViewElement(view).getContentDescription().toString();
             case CLASS:
-                view = new ViewFinder().getView(viewInteraction);
                 return new ViewElement(view).getClassName();
             case CHECKABLE:
-                view = new ViewFinder().getView(viewInteraction);
                 return Boolean.toString(new ViewElement(view).isCheckable());
             case CHECKED:
-                view = new ViewFinder().getView(viewInteraction);
                 return Boolean.toString(new ViewElement(view).isChecked());
             case CLICKABLE:
-                view = new ViewFinder().getView(viewInteraction);
                 return Boolean.toString(new ViewElement(view).isClickable());
             case ENABLED:
-                view = new ViewFinder().getView(viewInteraction);
                 return Boolean.toString(new ViewElement(view).isEnabled());
             case FOCUSABLE:
-                view = new ViewFinder().getView(viewInteraction);
                 return Boolean.toString(new ViewElement(view).isFocusable());
             case FOCUSED:
-                view = new ViewFinder().getView(viewInteraction);
                 return Boolean.toString(new ViewElement(view).isFocused());
             case SCROLLABLE:
-                view = new ViewFinder().getView(viewInteraction);
                 return Boolean.toString(new ViewElement(view).isScrollable());
             case LONG_CLICKABLE:
-                view = new ViewFinder().getView(viewInteraction);
                 return Boolean.toString(new ViewElement(view).isLongClickable());
             case PASSWORD:
-                view = new ViewFinder().getView(viewInteraction);
                 return Boolean.toString(new ViewElement(view).isPassword());
             case SELECTED:
-                view = new ViewFinder().getView(viewInteraction);
                 return Boolean.toString(new ViewElement(view).isSelected());
             case BOUNDS:
-                view = new ViewFinder().getView(viewInteraction);
                 return new ViewElement(view).getBounds().toShortString();
             case RESOURCE_ID:
-                view = new ViewFinder().getView(viewInteraction);
                 return Integer.toString(new ViewElement(view).getResourceId());
             case INDEX:
-                view = new ViewFinder().getView(viewInteraction);
                 return Integer.toString(new ViewElement(view).getIndex());
             // case PACKAGE:
             // case INSTANCE:
