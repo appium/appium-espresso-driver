@@ -39,6 +39,6 @@ public class OrientationChange implements ViewAction {
     @Override
     public void perform(UiController uiController, View view) {
         uiController.loopMainThreadUntilIdle();
-        ActivityFinder.findActivity(view).setRequestedOrientation(orientation);
+        ActivityFinder.extractFrom(view).setRequestedOrientation(orientation);
     }
 }

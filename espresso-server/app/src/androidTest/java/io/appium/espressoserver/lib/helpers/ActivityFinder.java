@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class ActivityFinder {
-    public static Activity findActivity(View view) {
+    public static Activity extractFrom(View view) {
         Activity result = getActivity(view.getContext());
         if (result == null && (view instanceof ViewGroup)) {
             ViewGroup v = (ViewGroup) view;
