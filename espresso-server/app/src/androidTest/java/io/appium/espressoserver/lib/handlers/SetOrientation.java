@@ -17,7 +17,7 @@ public class SetOrientation implements RequestHandler<OrientationParams, Void> {
     @Nullable
     public Void handle(OrientationParams params) throws AppiumException {
         final ViewInteraction viewInteraction = Element.getById(params.getElementId());
-        String orientation = params.getOrientation();
+        final String orientation = params.getOrientation();
         if (orientation == null ||
                 !Arrays.asList(new String[] {"LANDSCAPE", "PORTRAIT"}).
                         contains(orientation.toUpperCase())) {
