@@ -13,4 +13,8 @@ public class AppiumException extends Exception {
     public AppiumException(Throwable e) {
         super(e);
     }
+
+    public AppiumException(String reason, Throwable e) {
+        super(reason, e);
+    }
 }

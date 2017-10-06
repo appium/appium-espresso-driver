@@ -11,7 +11,6 @@ import io.appium.espressoserver.lib.model.TextParams;
 
 import static android.support.test.espresso.action.ViewActions.typeText;
 
-
 public class SendKeys implements RequestHandler<TextParams, Void> {
 
     @Override
@@ -32,7 +31,8 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
         try {
             viewInteraction.perform(typeText(textValue));
         } catch (PerformException e) {
-            throw new AppiumException("Could not apply sendKeys to element " + id + ": " + e.getMessage());
+            throw new AppiumException(String.format("Could not apply sendKeys to element %s",
+                    params.getElementId()), e);
         }
 
         return null;

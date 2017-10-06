@@ -16,6 +16,7 @@ public enum ViewAttributesEnum {
     LONG_CLICKABLE,
     PASSWORD,
     SELECTED,
+    VISIBLE,
     BOUNDS,
     RESOURCE_ID,
     INSTANCE,
