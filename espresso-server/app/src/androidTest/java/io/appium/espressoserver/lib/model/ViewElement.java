@@ -23,17 +23,17 @@ public class ViewElement {
     private final boolean scrollable;
     private final boolean isPassword;
     private final boolean selected;
+    private final boolean visible;
     private final int resourceId;
     private final String className;
     private int index;
-    private CharSequence contentDescription = "";
+    private final CharSequence contentDescription;
     private CharSequence text = null;
     private final Rect bounds;
 
     public ViewElement(View view) {
         // Get content description
-        if (view.getContentDescription() != null)
-            this.contentDescription = view.getContentDescription();
+        this.contentDescription = view.getContentDescription();
 
         // Get bounds
         int[] l = new int[2];
@@ -68,20 +68,17 @@ public class ViewElement {
 
         // Get booleans
         checkable = view instanceof Checkable;
-        if (checkable) {
-            checked = ((Checkable) view).isChecked();
-        } else {
-            checked = false;
-        }
+        checked = checkable && ((Checkable) view).isChecked();
         enabled = view.isEnabled();
         clickable = view.isClickable();
         longClickable = view.isLongClickable();
         focusable = view.isFocusable();
-        focused = view.isAccessibilityFocused();
+        focused = focusable && view.isAccessibilityFocused();
         scrollable = view.isScrollContainer();
         isPassword = (view instanceof TextView) &&
                 isPasswordInputType(((TextView) view).getInputType());
         selected = view.isSelected();
+        visible = view.getVisibility() == View.VISIBLE;
 
         // TODO: Attributes that need to be added with examples
         // resource-id android:id/decor_content_parent
@@ -113,6 +110,7 @@ public class ViewElement {
                 == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
     }
 
+    @Nullable
     public CharSequence getContentDescription() {
         return contentDescription;
     }
@@ -143,6 +141,10 @@ public class ViewElement {
 
     public boolean isFocused() {
         return focused;
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 
     public int getResourceId() {

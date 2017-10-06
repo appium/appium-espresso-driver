@@ -16,7 +16,7 @@ import io.appium.espressoserver.lib.model.ViewElement;
 import io.appium.espressoserver.lib.viewaction.ViewFinder;
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter;
 
-public class AttributesReader implements RequestHandler<AppiumParams, String> {
+public class GetAttribute implements RequestHandler<AppiumParams, String> {
 
     @Override
     @Nullable
@@ -48,7 +48,9 @@ public class AttributesReader implements RequestHandler<AppiumParams, String> {
         final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
         switch (dstAttribute) {
             case CONTENT_DESC:
-                return viewElement.getContentDescription().toString();
+                return viewElement.getContentDescription() == null ?
+                        null :
+                        viewElement.getContentDescription().toString();
             case CLASS:
                 return viewElement.getClassName();
             case CHECKABLE:
@@ -71,6 +73,8 @@ public class AttributesReader implements RequestHandler<AppiumParams, String> {
                 return Boolean.toString(viewElement.isPassword());
             case SELECTED:
                 return Boolean.toString(viewElement.isSelected());
+            case VISIBLE:
+                return Boolean.toString(viewElement.isVisible());
             case BOUNDS:
                 return viewElement.getBounds().toShortString();
             case RESOURCE_ID:
