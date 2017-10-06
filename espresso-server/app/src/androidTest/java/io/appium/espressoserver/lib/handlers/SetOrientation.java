@@ -32,9 +32,6 @@ public class SetOrientation implements RequestHandler<OrientationParams, Void> {
                 case "PORTRAIT":
                     viewInteraction.perform(OrientationChange.orientationPortrait());
                     break;
-                default:
-                    throw new IllegalStateException(
-                            String.format("Unknown orientation value '%s'", orientation));
             }
         } catch (Exception e) {
             throw new AppiumException(String.format("Cannot change screen orientation to '%s'",
