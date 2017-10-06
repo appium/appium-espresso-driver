@@ -20,12 +20,12 @@ public class ActivityFinder {
         return result;
     }
 
-    private static Activity getActivity(Context context) {
-        while (context instanceof ContextWrapper) {
-            if (context instanceof Activity) {
-                return (Activity) context;
+    private static Activity getActivity(Context ctx) {
+        while (ctx instanceof ContextWrapper) {
+            if (ctx instanceof Activity) {
+                return (Activity) ctx;
             }
-            context = ((ContextWrapper) context).getBaseContext();
+            ctx = ((ContextWrapper) ctx).getBaseContext();
         }
         return null;
     }

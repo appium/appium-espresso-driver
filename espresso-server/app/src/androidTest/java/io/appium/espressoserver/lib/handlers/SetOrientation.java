@@ -17,7 +17,7 @@ public class SetOrientation implements RequestHandler<OrientationParams, Void> {
     @Nullable
     public Void handle(OrientationParams params) throws AppiumException {
         final ViewInteraction viewInteraction = Element.getById(params.getElementId());
-        final String orientation = params.getOrientation();
+        String orientation = params.getOrientation();
         if (orientation == null ||
                 !Arrays.asList(new String[] {"LANDSCAPE", "PORTRAIT"}).
                         contains(orientation.toUpperCase())) {
@@ -25,13 +25,10 @@ public class SetOrientation implements RequestHandler<OrientationParams, Void> {
                     orientation));
         }
         try {
-            switch (orientation.toUpperCase()) {
-                case "LANDSCAPE":
-                    viewInteraction.perform(OrientationChange.orientationLandscape());
-                    break;
-                case "PORTRAIT":
-                    viewInteraction.perform(OrientationChange.orientationPortrait());
-                    break;
+            if (orientation.equalsIgnoreCase("LANDSCAPE")) {
+                viewInteraction.perform(OrientationChange.orientationLandscape());
+            } else {
+                viewInteraction.perform(OrientationChange.orientationPortrait());
             }
         } catch (Exception e) {
             throw new AppiumException(String.format("Cannot change screen orientation to '%s'",
