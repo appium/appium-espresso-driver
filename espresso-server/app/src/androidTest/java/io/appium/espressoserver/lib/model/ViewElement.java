@@ -48,7 +48,7 @@ public class ViewElement {
         className = view.getClass().getName();
 
         // Get the index
-        ViewParent parent = view.getParent();
+        final ViewParent parent = view.getParent();
         try {
             for (int index = 0; index < ((ViewGroup) parent).getChildCount(); ++index) {
                 View childView = ((ViewGroup) parent).getChildAt(index);
@@ -66,8 +66,8 @@ public class ViewElement {
         }
 
         // Get position relative to the parent view
-        relativeLeft = getRelativeLeft(view);
-        relativeTop = getRelativeTop(view);
+        relativeLeft = view.getLeft();
+        relativeTop = view.getTop();
 
         // Get booleans
         checkable = view instanceof Checkable;
@@ -111,20 +111,6 @@ public class ViewElement {
                 == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD)
                 || variation
                 == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
-    }
-
-    private static int getRelativeLeft(View view) {
-        if (view.getParent() == view.getRootView()) {
-            return view.getLeft();
-        }
-        return view.getLeft() + getRelativeLeft((View) view.getParent());
-    }
-
-    private static int getRelativeTop(View view) {
-        if (view.getParent() == view.getRootView()) {
-            return view.getTop();
-        }
-        return view.getTop() + getRelativeTop((View) view.getParent());
     }
 
     @Nullable
