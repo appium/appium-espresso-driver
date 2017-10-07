@@ -6,7 +6,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.Rect;
-import io.appium.espressoserver.lib.model.Size;
 import io.appium.espressoserver.lib.model.ViewElement;
 import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
