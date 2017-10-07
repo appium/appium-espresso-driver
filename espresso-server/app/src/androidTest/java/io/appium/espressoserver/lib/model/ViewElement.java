@@ -24,7 +24,8 @@ public class ViewElement {
     private final boolean isPassword;
     private final boolean selected;
     private final boolean visible;
-    private final int resourceId;
+    private final int relativeLeft;
+    private final int relativeTop;
     private final String className;
     private int index;
     private final CharSequence contentDescription;
@@ -64,7 +65,9 @@ public class ViewElement {
             text = ((TextView) view).getText();
         }
 
-        resourceId = view.getId();
+        // Get position relative to the parent view
+        relativeLeft = getRelativeLeft(view);
+        relativeTop = getRelativeTop(view);
 
         // Get booleans
         checkable = view instanceof Checkable;
@@ -110,6 +113,20 @@ public class ViewElement {
                 == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
     }
 
+    private static int getRelativeLeft(View myView) {
+        if (myView.getParent() == myView.getRootView()) {
+            return myView.getLeft();
+        }
+        return myView.getLeft() + getRelativeLeft((View) myView.getParent());
+    }
+
+    private static int getRelativeTop(View myView) {
+        if (myView.getParent() == myView.getRootView()) {
+            return myView.getTop();
+        }
+        return myView.getTop() + getRelativeTop((View) myView.getParent());
+    }
+
     @Nullable
     public CharSequence getContentDescription() {
         return contentDescription;
@@ -117,10 +134,6 @@ public class ViewElement {
 
     public Rect getBounds() {
         return bounds;
-    }
-
-    public String getId() {
-        return id + "";
     }
 
     public boolean isClickable() {
@@ -148,7 +161,7 @@ public class ViewElement {
     }
 
     public int getResourceId() {
-        return resourceId;
+        return id;
     }
 
     public String getClassName() {
@@ -183,4 +196,8 @@ public class ViewElement {
     public boolean isSelected() {
         return selected;
     }
+
+    public int getRelativeLeft() { return relativeLeft; }
+
+    public int getRelativeTop() { return relativeTop; }
 }
