@@ -113,18 +113,18 @@ public class ViewElement {
                 == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
     }
 
-    private static int getRelativeLeft(View myView) {
-        if (myView.getParent() == myView.getRootView()) {
-            return myView.getLeft();
+    private static int getRelativeLeft(View view) {
+        if (view.getParent() == view.getRootView()) {
+            return view.getLeft();
         }
-        return myView.getLeft() + getRelativeLeft((View) myView.getParent());
+        return view.getLeft() + getRelativeLeft((View) view.getParent());
     }
 
-    private static int getRelativeTop(View myView) {
-        if (myView.getParent() == myView.getRootView()) {
-            return myView.getTop();
+    private static int getRelativeTop(View view) {
+        if (view.getParent() == view.getRootView()) {
+            return view.getTop();
         }
-        return myView.getTop() + getRelativeTop((View) myView.getParent());
+        return view.getTop() + getRelativeTop((View) view.getParent());
     }
 
     @Nullable
