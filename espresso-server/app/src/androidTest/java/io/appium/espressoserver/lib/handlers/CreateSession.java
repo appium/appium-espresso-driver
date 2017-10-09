@@ -2,6 +2,7 @@ package io.appium.espressoserver.lib.handlers;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException;
+import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.Session;
 
 import io.appium.espressoserver.lib.model.SessionParams;
@@ -29,7 +30,7 @@ public class CreateSession implements RequestHandler<SessionParams, Session> {
     }
 
     private void startActivity(String appActivity) {
-        System.out.println("Starting activity '" + appActivity + "'");
+        Logger.info(String.format("Starting activity '%s'", appActivity));
         Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
         ActivityMonitor mSessionMonitor = mInstrumentation.addMonitor(appActivity, null, false);
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -38,6 +39,6 @@ public class CreateSession implements RequestHandler<SessionParams, Session> {
         mInstrumentation.startActivitySync(intent);
 
         Activity mCurrentActivity = mInstrumentation.waitForMonitor(mSessionMonitor);
-        System.out.println("Activity '" + mCurrentActivity.getLocalClassName() + "' started");
+        Logger.info(String.format("Activity '%s' started", mCurrentActivity.getLocalClassName()));
     }
 }

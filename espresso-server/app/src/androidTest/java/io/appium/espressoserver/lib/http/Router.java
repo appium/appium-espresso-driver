@@ -39,6 +39,7 @@ import io.appium.espressoserver.lib.handlers.DeleteSession;
 import io.appium.espressoserver.lib.handlers.SendKeys;
 import io.appium.espressoserver.lib.handlers.Status;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
+import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.http.response.ErrorResponse;
@@ -55,7 +56,7 @@ class Router {
 
 
     Router() {
-        System.out.println("Generating routes");
+        Logger.debug("Generating routes");
         routeMap = new RouteMap();
 
         routeMap.addRoute(new RouteDefinition(Method.GET, "/status", new Status(), AppiumParams.class));
@@ -184,7 +185,7 @@ class Router {
             }
 
             AppiumResponse appiumResponse = new AppiumResponse<>(AppiumStatus.SUCCESS, handlerResult, sessionId);
-            System.out.println("Finished processing " + method + " request for '" + uri + "'");
+            Logger.debug(String.format("Finished processing %s request for '%s'", method, uri));
             return appiumResponse;
         } catch (NoSuchElementException e) {
             return new AppiumResponse<>(e, AppiumStatus.NO_SUCH_ELEMENT, e.getMessage());
