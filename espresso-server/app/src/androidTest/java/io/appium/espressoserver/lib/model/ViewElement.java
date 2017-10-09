@@ -24,7 +24,8 @@ public class ViewElement {
     private final boolean isPassword;
     private final boolean selected;
     private final boolean visible;
-    private final int resourceId;
+    private final int relativeLeft;
+    private final int relativeTop;
     private final String className;
     private int index;
     private final CharSequence contentDescription;
@@ -47,7 +48,7 @@ public class ViewElement {
         className = view.getClass().getName();
 
         // Get the index
-        ViewParent parent = view.getParent();
+        final ViewParent parent = view.getParent();
         try {
             for (int index = 0; index < ((ViewGroup) parent).getChildCount(); ++index) {
                 View childView = ((ViewGroup) parent).getChildAt(index);
@@ -64,7 +65,9 @@ public class ViewElement {
             text = ((TextView) view).getText();
         }
 
-        resourceId = view.getId();
+        // Get position relative to the parent view
+        relativeLeft = view.getLeft();
+        relativeTop = view.getTop();
 
         // Get booleans
         checkable = view instanceof Checkable;
@@ -119,10 +122,6 @@ public class ViewElement {
         return bounds;
     }
 
-    public String getId() {
-        return id + "";
-    }
-
     public boolean isClickable() {
         return clickable;
     }
@@ -148,7 +147,7 @@ public class ViewElement {
     }
 
     public int getResourceId() {
-        return resourceId;
+        return id;
     }
 
     public String getClassName() {
@@ -183,4 +182,8 @@ public class ViewElement {
     public boolean isSelected() {
         return selected;
     }
+
+    public int getRelativeLeft() { return relativeLeft; }
+
+    public int getRelativeTop() { return relativeTop; }
 }

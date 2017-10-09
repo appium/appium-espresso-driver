@@ -9,7 +9,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
 
-import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.action.ViewActions.clearText;
 
 public class Clear implements RequestHandler<AppiumParams, Void> {
 
@@ -18,7 +18,7 @@ public class Clear implements RequestHandler<AppiumParams, Void> {
     public Void handle(AppiumParams params) throws AppiumException {
         ViewInteraction viewInteraction = Element.getById(params.getElementId());
         try {
-            viewInteraction.perform(replaceText(""));
+            viewInteraction.perform(clearText());
         } catch (PerformException e) {
             throw new AppiumException(String.format("Could not apply clear to element %s",
                     params.getElementId()), e);
