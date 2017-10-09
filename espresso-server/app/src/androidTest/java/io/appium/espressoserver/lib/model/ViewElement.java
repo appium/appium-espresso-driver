@@ -90,7 +90,6 @@ public class ViewElement {
     }
 
     public String getResourceId() {
-        final StringBuilder result = new StringBuilder();
         final int id = getId();
         if (id != NO_ID) {
             final Resources r = view.getResources();
@@ -108,18 +107,13 @@ public class ViewElement {
                             pkgname = r.getResourcePackageName(id);
                             break;
                     }
-                    String typename = r.getResourceTypeName(id);
-                    String entryname = r.getResourceEntryName(id);
-                    result.append(pkgname);
-                    result.append(":");
-                    result.append(typename);
-                    result.append("/");
-                    result.append(entryname);
+                    return String.format("%s:%s/%s", pkgname,
+                            r.getResourceTypeName(id), r.getResourceEntryName(id));
                 } catch (Resources.NotFoundException e) {
                 }
             }
         }
-        return result.toString();
+        return "";
     }
 
     public String getClassName() {
