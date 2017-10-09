@@ -84,16 +84,26 @@ public class SourceDocument {
 
         // Set attributes
         ViewElement viewElement = new ViewElement(view);
-        setAttribute(element, ViewAttributesEnum.CONTENT_DESC, viewElement.getContentDescription());
-        setAttribute(element, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
-        setAttribute(element, ViewAttributesEnum.FOCUSED, Boolean.toString(viewElement.isFocused()));
-        setAttribute(element, ViewAttributesEnum.CLICKABLE, Boolean.toString(viewElement.isClickable()));
-        setAttribute(element, ViewAttributesEnum.LONG_CLICKABLE, Boolean.toString(viewElement.isLongClickable()));
-        setAttribute(element, ViewAttributesEnum.CLASS, viewElement.getClassName());
         setAttribute(element, ViewAttributesEnum.INDEX, Integer.toString(viewElement.getIndex()));
+        setAttribute(element, ViewAttributesEnum.PACKAGE, viewElement.getPackageName());
+        setAttribute(element, ViewAttributesEnum.TEXT, viewElement.getText());
+        setAttribute(element, ViewAttributesEnum.CLASS, viewElement.getClassName());
+        setAttribute(element, ViewAttributesEnum.CONTENT_DESC, viewElement.getContentDescription());
+        setAttribute(element, ViewAttributesEnum.CHECKABLE, Boolean.toString(viewElement.isCheckable()));
+        setAttribute(element, ViewAttributesEnum.CHECKED, Boolean.toString(viewElement.isChecked()));
+        setAttribute(element, ViewAttributesEnum.CLICKABLE, Boolean.toString(viewElement.isClickable()));
+        setAttribute(element, ViewAttributesEnum.ENABLED, Boolean.toString(viewElement.isEnabled()));
+        setAttribute(element, ViewAttributesEnum.FOCUSABLE, Boolean.toString(viewElement.isFocusable()));
+        setAttribute(element, ViewAttributesEnum.FOCUSED, Boolean.toString(viewElement.isFocused()));
+        setAttribute(element, ViewAttributesEnum.SCROLLABLE, Boolean.toString(viewElement.isScrollable()));
+        setAttribute(element, ViewAttributesEnum.LONG_CLICKABLE, Boolean.toString(viewElement.isLongClickable()));
+        setAttribute(element, ViewAttributesEnum.PASSWORD, Boolean.toString(viewElement.isPassword()));
+        setAttribute(element, ViewAttributesEnum.SELECTED, Boolean.toString(viewElement.isSelected()));
+        setAttribute(element, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
         if (viewElement.getText() != null) {
             setAttribute(element, ViewAttributesEnum.TEXT, viewElement.getText());
         }
+        setAttribute(element, ViewAttributesEnum.RESOURCE_ID, viewElement.getResourceId());
 
         // If this is the rootElement, append it to the document
         if (parentElement == null) {
