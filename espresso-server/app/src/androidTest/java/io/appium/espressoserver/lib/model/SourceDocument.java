@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -100,9 +101,7 @@ public class SourceDocument {
         setAttribute(element, ViewAttributesEnum.PASSWORD, Boolean.toString(viewElement.isPassword()));
         setAttribute(element, ViewAttributesEnum.SELECTED, Boolean.toString(viewElement.isSelected()));
         setAttribute(element, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
-        if (viewElement.getText() != null) {
-            setAttribute(element, ViewAttributesEnum.TEXT, viewElement.getText());
-        }
+        setAttribute(element, ViewAttributesEnum.TEXT, viewElement.getText());
         setAttribute(element, ViewAttributesEnum.RESOURCE_ID, viewElement.getResourceId());
 
         // If this is the rootElement, append it to the document
@@ -189,7 +188,13 @@ public class SourceDocument {
         return nameCopy.substring(0, start);
     }
 
-    private static void setAttribute(Element element, ViewAttributesEnum viewAttributesEnum, CharSequence attrValue) {
-        element.setAttribute(stripInvalidXMLChars(viewAttributesEnum.toString()), stripInvalidXMLChars(attrValue));
+    private static void setAttribute(Element element, ViewAttributesEnum viewAttributesEnum,
+                                     @Nullable CharSequence attrValue) {
+        if (attrValue == null) {
+            // Do not write attributes, whose values equal to null
+            return;
+        }
+        element.setAttribute(stripInvalidXMLChars(viewAttributesEnum.toString()),
+                stripInvalidXMLChars(attrValue));
     }
 }
