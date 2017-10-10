@@ -7,6 +7,8 @@ import android.content.ContextWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 
+import javax.annotation.Nullable;
+
 public class ActivityFinder {
     public static Activity extractFrom(View view) {
         Activity result = getActivity(view.getContext());
@@ -20,12 +22,14 @@ public class ActivityFinder {
         return result;
     }
 
+    @Nullable
     private static Activity getActivity(Context ctx) {
-        while (ctx instanceof ContextWrapper) {
-            if (ctx instanceof Activity) {
-                return (Activity) ctx;
+        Context context = ctx;
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
             }
-            ctx = ((ContextWrapper) ctx).getBaseContext();
+            context = ((ContextWrapper) context).getBaseContext();
         }
         return null;
     }
