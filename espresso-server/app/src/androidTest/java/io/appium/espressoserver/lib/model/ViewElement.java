@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.model;
 
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,78 +11,14 @@ import android.widget.TextView;
 
 import javax.annotation.Nullable;
 
+import static android.view.View.NO_ID;
+
 public class ViewElement {
 
-    private final int id;
-    private final boolean clickable;
-    private final boolean checkable;
-    private final boolean checked;
-    private final boolean longClickable;
-    private final boolean focused;
-    private final boolean focusable;
-    private final boolean enabled;
-    private final boolean scrollable;
-    private final boolean isPassword;
-    private final boolean selected;
-    private final boolean visible;
-    private final int relativeLeft;
-    private final int relativeTop;
-    private final String className;
-    private int index;
-    private final CharSequence contentDescription;
-    private CharSequence text = null;
-    private final Rect bounds;
+    private final View view;
 
     public ViewElement(View view) {
-        // Get content description
-        this.contentDescription = view.getContentDescription();
-
-        // Get bounds
-        int[] l = new int[2];
-        view.getLocationOnScreen(l);
-        this.bounds = new Rect(l[0], l[1], l[0] + view.getWidth(), l[1] + view.getHeight());
-
-        // Get ID
-        id = view.getId(); // TODO: Not sure if we need this. Will leave for now
-
-        // Get className
-        className = view.getClass().getName();
-
-        // Get the index
-        final ViewParent parent = view.getParent();
-        try {
-            for (int index = 0; index < ((ViewGroup) parent).getChildCount(); ++index) {
-                View childView = ((ViewGroup) parent).getChildAt(index);
-                if (childView.equals(view)) {
-                    this.index = index;
-                }
-            }
-        } catch (ClassCastException e) {
-            // If it couldn't be cast to a ViewGroup, the parent has no children
-        }
-
-        // Get text (if applicable)
-        if (view instanceof TextView) {
-            text = ((TextView) view).getText();
-        }
-
-        // Get position relative to the parent view
-        relativeLeft = view.getLeft();
-        relativeTop = view.getTop();
-
-        // Get booleans
-        checkable = view instanceof Checkable;
-        checked = checkable && ((Checkable) view).isChecked();
-        enabled = view.isEnabled();
-        clickable = view.isClickable();
-        longClickable = view.isLongClickable();
-        focusable = view.isFocusable();
-        focused = focusable && view.isAccessibilityFocused();
-        scrollable = view.isScrollContainer();
-        isPassword = (view instanceof TextView) &&
-                isPasswordInputType(((TextView) view).getInputType());
-        selected = view.isSelected();
-        visible = view.getVisibility() == View.VISIBLE;
+        this.view = view;
 
         // TODO: Attributes that need to be added with examples
         // resource-id android:id/decor_content_parent
@@ -115,75 +52,128 @@ public class ViewElement {
 
     @Nullable
     public CharSequence getContentDescription() {
-        return contentDescription;
+        return view.getContentDescription();
     }
 
     public Rect getBounds() {
-        return bounds;
+        int[] l = new int[2];
+        view.getLocationOnScreen(l);
+        return new Rect(l[0], l[1], l[0] + view.getWidth(), l[1] + view.getHeight());
     }
 
     public boolean isClickable() {
-        return clickable;
+        return view.isClickable();
     }
 
     public boolean isLongClickable() {
-        return longClickable;
+        return view.isLongClickable();
     }
 
     public boolean isCheckable() {
-        return checkable;
+        return view instanceof Checkable;
     }
 
     public boolean isChecked() {
-        return checked;
+        return isCheckable() && ((Checkable) view).isChecked();
     }
 
     public boolean isFocused() {
-        return focused;
+        return isFocusable() && view.isAccessibilityFocused();
     }
 
     public boolean isVisible() {
-        return visible;
+        return view.getVisibility() == View.VISIBLE;
     }
 
-    public int getResourceId() {
-        return id;
+    public int getId() {
+        return view.getId();
+    }
+
+    public String getResourceId() {
+        final int id = getId();
+        if (id != NO_ID) {
+            final Resources r = view.getResources();
+            if (id > 0 && r != null) {
+                try {
+                    String pkgname;
+                    switch (id & 0xff000000) {
+                        case 0x7f000000:
+                            pkgname = "app";
+                            break;
+                        case 0x01000000:
+                            pkgname = "android";
+                            break;
+                        default:
+                            pkgname = r.getResourcePackageName(id);
+                            break;
+                    }
+                    return String.format("%s:%s/%s", pkgname,
+                            r.getResourceTypeName(id), r.getResourceEntryName(id));
+                } catch (Resources.NotFoundException e) {
+                }
+            }
+        }
+        return "";
     }
 
     public String getClassName() {
-        return className;
+        return view.getClass().getName();
     }
 
     public int getIndex() {
-        return index;
+        final ViewParent parent = view.getParent();
+        try {
+            for (int index = 0; index < ((ViewGroup) parent).getChildCount(); ++index) {
+                View childView = ((ViewGroup) parent).getChildAt(index);
+                if (childView.equals(view)) {
+                    return index;
+                }
+            }
+        } catch (ClassCastException e) {
+            // If it couldn't be cast to a ViewGroup, the parent has no children
+        }
+        return 0;
     }
 
     @Nullable
     public CharSequence getText() {
-        return text;
+        if (view instanceof TextView) {
+            return ((TextView) view).getText();
+        }
+        return null;
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return view.isEnabled();
     }
 
     public boolean isFocusable() {
-        return focusable;
+        return view.isFocusable();
     }
 
     public boolean isScrollable() {
-        return scrollable;
+        return view.isScrollContainer();
     }
 
     public boolean isPassword() {
-        return isPassword;
+        return (view instanceof TextView) &&
+                isPasswordInputType(((TextView) view).getInputType());
     }
 
     public boolean isSelected() {
-        return selected;
+        return view.isSelected();
     }
 
-    public int getRelativeLeft() { return relativeLeft; }
+    public int getRelativeLeft() {
+        return view.getLeft();
+    }
 
-    public int getRelativeTop() { return relativeTop; }
+    public int getRelativeTop() {
+        return view.getTop();
+    }
+
+    public String getPackageName() {
+        // TBD
+        return "";
+    }
 }

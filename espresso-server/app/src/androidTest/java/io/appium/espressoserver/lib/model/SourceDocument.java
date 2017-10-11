@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -84,16 +85,24 @@ public class SourceDocument {
 
         // Set attributes
         ViewElement viewElement = new ViewElement(view);
-        setAttribute(element, ViewAttributesEnum.CONTENT_DESC, viewElement.getContentDescription());
-        setAttribute(element, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
-        setAttribute(element, ViewAttributesEnum.FOCUSED, Boolean.toString(viewElement.isFocused()));
-        setAttribute(element, ViewAttributesEnum.CLICKABLE, Boolean.toString(viewElement.isClickable()));
-        setAttribute(element, ViewAttributesEnum.LONG_CLICKABLE, Boolean.toString(viewElement.isLongClickable()));
-        setAttribute(element, ViewAttributesEnum.CLASS, viewElement.getClassName());
         setAttribute(element, ViewAttributesEnum.INDEX, Integer.toString(viewElement.getIndex()));
-        if (viewElement.getText() != null) {
-            setAttribute(element, ViewAttributesEnum.TEXT, viewElement.getText());
-        }
+        setAttribute(element, ViewAttributesEnum.PACKAGE, viewElement.getPackageName());
+        setAttribute(element, ViewAttributesEnum.TEXT, viewElement.getText());
+        setAttribute(element, ViewAttributesEnum.CLASS, viewElement.getClassName());
+        setAttribute(element, ViewAttributesEnum.CONTENT_DESC, viewElement.getContentDescription());
+        setAttribute(element, ViewAttributesEnum.CHECKABLE, Boolean.toString(viewElement.isCheckable()));
+        setAttribute(element, ViewAttributesEnum.CHECKED, Boolean.toString(viewElement.isChecked()));
+        setAttribute(element, ViewAttributesEnum.CLICKABLE, Boolean.toString(viewElement.isClickable()));
+        setAttribute(element, ViewAttributesEnum.ENABLED, Boolean.toString(viewElement.isEnabled()));
+        setAttribute(element, ViewAttributesEnum.FOCUSABLE, Boolean.toString(viewElement.isFocusable()));
+        setAttribute(element, ViewAttributesEnum.FOCUSED, Boolean.toString(viewElement.isFocused()));
+        setAttribute(element, ViewAttributesEnum.SCROLLABLE, Boolean.toString(viewElement.isScrollable()));
+        setAttribute(element, ViewAttributesEnum.LONG_CLICKABLE, Boolean.toString(viewElement.isLongClickable()));
+        setAttribute(element, ViewAttributesEnum.PASSWORD, Boolean.toString(viewElement.isPassword()));
+        setAttribute(element, ViewAttributesEnum.SELECTED, Boolean.toString(viewElement.isSelected()));
+        setAttribute(element, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
+        setAttribute(element, ViewAttributesEnum.TEXT, viewElement.getText());
+        setAttribute(element, ViewAttributesEnum.RESOURCE_ID, viewElement.getResourceId());
 
         // If this is the rootElement, append it to the document
         if (parentElement == null) {
@@ -179,7 +188,13 @@ public class SourceDocument {
         return nameCopy.substring(0, start);
     }
 
-    private static void setAttribute(Element element, ViewAttributesEnum viewAttributesEnum, CharSequence attrValue) {
-        element.setAttribute(stripInvalidXMLChars(viewAttributesEnum.toString()), stripInvalidXMLChars(attrValue));
+    private static void setAttribute(Element element, ViewAttributesEnum viewAttributesEnum,
+                                     @Nullable CharSequence attrValue) {
+        if (attrValue == null) {
+            // Do not write attributes, whose values equal to null
+            return;
+        }
+        element.setAttribute(stripInvalidXMLChars(viewAttributesEnum.toString()),
+                stripInvalidXMLChars(attrValue));
     }
 }

@@ -78,10 +78,11 @@ public class GetAttribute implements RequestHandler<AppiumParams, String> {
             case BOUNDS:
                 return viewElement.getBounds().toShortString();
             case RESOURCE_ID:
-                return Integer.toString(viewElement.getResourceId());
+                return viewElement.getResourceId();
             case INDEX:
                 return Integer.toString(viewElement.getIndex());
             // case PACKAGE:
+            //     return viewElement.getPackageName();
             // case INSTANCE:
             default:
                 throw new NotYetImplementedException();
