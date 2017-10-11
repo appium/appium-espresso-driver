@@ -81,8 +81,8 @@ public class GetAttribute implements RequestHandler<AppiumParams, String> {
                 return viewElement.getResourceId();
             case INDEX:
                 return Integer.toString(viewElement.getIndex());
-            // case PACKAGE:
-            //     return viewElement.getPackageName();
+            case PACKAGE:
+                return viewElement.getPackageName();
             // case INSTANCE:
             default:
                 throw new NotYetImplementedException();
