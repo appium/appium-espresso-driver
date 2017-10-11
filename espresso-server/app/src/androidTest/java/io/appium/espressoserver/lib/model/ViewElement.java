@@ -219,7 +219,7 @@ public class ViewElement {
         return view.getTop();
     }
 
-    public synchronized String getPackageName() {
+    public String getPackageName() {
         return extractActivity().getPackageName();
     }
 }
