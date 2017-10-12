@@ -1,5 +1,24 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.espressoserver.lib.model;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.view.View;
@@ -14,8 +33,8 @@ import javax.annotation.Nullable;
 import static android.view.View.NO_ID;
 
 public class ViewElement {
-
     private final View view;
+    private Activity activity = null;
 
     public ViewElement(View view) {
         this.view = view;
@@ -37,6 +56,33 @@ public class ViewElement {
         // instance	0
         // visibility
 
+    }
+
+    public synchronized Activity extractActivity() {
+        if (this.activity == null) {
+            Activity result = getActivity(view.getContext());
+            if (result == null && (view instanceof ViewGroup)) {
+                ViewGroup v = (ViewGroup) view;
+                int c = v.getChildCount();
+                for (int i = 0; i < c && result == null; ++i) {
+                    result = getActivity(v.getChildAt(i).getContext());
+                }
+            }
+            this.activity = result;
+        }
+        return this.activity;
+    }
+
+    @Nullable
+    private static Activity getActivity(Context ctx) {
+        Context context = ctx;
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
     }
 
     private static boolean isPasswordInputType(int inputType) {
@@ -110,6 +156,7 @@ public class ViewElement {
                     return String.format("%s:%s/%s", pkgname,
                             r.getResourceTypeName(id), r.getResourceEntryName(id));
                 } catch (Resources.NotFoundException e) {
+                    // ignore
                 }
             }
         }
@@ -173,7 +220,6 @@ public class ViewElement {
     }
 
     public String getPackageName() {
-        // TBD
-        return "";
+        return extractActivity().getPackageName();
     }
 }
