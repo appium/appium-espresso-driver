@@ -166,7 +166,16 @@ public class ViewElement {
     }
 
     public String getClassName() {
-        return view.getClass().getName();
+        String nameCopy = view.getClass().getName();
+        nameCopy = nameCopy.replaceAll("\\$[0-9]+", "\\$");
+        // we want the index of the inner class
+        final int start = nameCopy.lastIndexOf('$');
+        // if this isn't an inner class, just find the start of the
+        // top level class name.
+        if (start < 0) {
+            return nameCopy;
+        }
+        return nameCopy.substring(0, start);
     }
 
     public int getIndex() {
