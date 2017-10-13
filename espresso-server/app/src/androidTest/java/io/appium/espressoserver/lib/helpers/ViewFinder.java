@@ -125,7 +125,11 @@ public class ViewFinder {
     private static List<ViewInteraction> getViewInteractions(Matcher<View> matcher, boolean findOne) {
         // If it's just one view we want, return a singleton list
         if (findOne) {
-            return Collections.singletonList(onView(withIndex(matcher, 0)));
+            try {
+                return Collections.singletonList(onView(withIndex(matcher, 0)));
+            } catch (NoMatchingViewException e) {
+                return Collections.emptyList();
+            }
         }
 
         // If we want all views that match the criteria, start looking for ViewInteractions by
