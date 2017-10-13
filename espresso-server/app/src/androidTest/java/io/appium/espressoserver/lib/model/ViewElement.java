@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.support.test.InstrumentationRegistry;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -220,6 +221,6 @@ public class ViewElement {
     }
 
     public String getPackageName() {
-        return extractActivity().getPackageName();
+        return InstrumentationRegistry.getTargetContext().getPackageName();
     }
 }
