@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -108,7 +110,7 @@ public class ViewElement {
     }
 
     public boolean isClickable() {
-        return view.isClickable();
+        return ViewMatchers.isClickable().matches(view);
     }
 
     public boolean isLongClickable() {
@@ -120,7 +122,7 @@ public class ViewElement {
     }
 
     public boolean isChecked() {
-        return isCheckable() && ((Checkable) view).isChecked();
+        return ViewMatchers.isChecked().matches(view);
     }
 
     public boolean isFocused() {
@@ -128,7 +130,7 @@ public class ViewElement {
     }
 
     public boolean isVisible() {
-        return view.getVisibility() == View.VISIBLE;
+        return ViewMatchers.isDisplayed().matches(view);
     }
 
     public int getId() {
@@ -164,7 +166,16 @@ public class ViewElement {
     }
 
     public String getClassName() {
-        return view.getClass().getName();
+        String nameCopy = view.getClass().getName();
+        nameCopy = nameCopy.replaceAll("\\$[0-9]+", "\\$");
+        // we want the index of the inner class
+        final int start = nameCopy.lastIndexOf('$');
+        // if this isn't an inner class, just find the start of the
+        // top level class name.
+        if (start < 0) {
+            return nameCopy;
+        }
+        return nameCopy.substring(0, start);
     }
 
     public int getIndex() {
@@ -191,11 +202,11 @@ public class ViewElement {
     }
 
     public boolean isEnabled() {
-        return view.isEnabled();
+        return ViewMatchers.isEnabled().matches(view);
     }
 
     public boolean isFocusable() {
-        return view.isFocusable();
+        return ViewMatchers.isFocusable().matches(view);
     }
 
     public boolean isScrollable() {
@@ -208,7 +219,7 @@ public class ViewElement {
     }
 
     public boolean isSelected() {
-        return view.isSelected();
+        return ViewMatchers.isSelected().matches(view);
     }
 
     public int getRelativeLeft() {
@@ -220,6 +231,6 @@ public class ViewElement {
     }
 
     public String getPackageName() {
-        return extractActivity().getPackageName();
+        return InstrumentationRegistry.getTargetContext().getPackageName();
     }
 }

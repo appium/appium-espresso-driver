@@ -37,8 +37,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.Strategy;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -127,7 +125,11 @@ public class ViewFinder {
     private static List<ViewInteraction> getViewInteractions(Matcher<View> matcher, boolean findOne) {
         // If it's just one view we want, return a singleton list
         if (findOne) {
-            return Collections.singletonList(onView(matcher));
+            try {
+                return Collections.singletonList(onView(withIndex(matcher, 0)));
+            } catch (NoMatchingViewException e) {
+                return Collections.emptyList();
+            }
         }
 
         // If we want all views that match the criteria, start looking for ViewInteractions by
@@ -136,14 +138,12 @@ public class ViewFinder {
         List<ViewInteraction> viewInteractions = new ArrayList<>();
         int i = 0;
         do {
-            ViewInteraction viewInteraction = onView(withIndex(matcher, i));
             try {
-                viewInteraction.check(matches(isDisplayed()));
-            } catch (NoMatchingViewException nme) {
-                break;
+                ViewInteraction viewInteraction = onView(withIndex(matcher, i++));
+                viewInteractions.add(viewInteraction);
+            } catch (NoMatchingViewException e) {
+                return viewInteractions;
             }
-            viewInteractions.add(viewInteraction);
-            i++;
         } while (i < Integer.MAX_VALUE);
         return viewInteractions;
     }
