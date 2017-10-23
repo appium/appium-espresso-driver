@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "appium-adb": "^4.0.0",
-    "appium-android-driver": "^1.20.0",
+    "appium-android-driver": "^1.32.0",
     "appium-base-driver": "^2.8.1",
     "appium-support": "^2.8.2",
     "asyncbox": "^2.3.1",
