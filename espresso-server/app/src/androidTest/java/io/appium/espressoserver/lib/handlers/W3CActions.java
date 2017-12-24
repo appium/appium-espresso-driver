@@ -95,7 +95,6 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
             if (executeActions(actions)) {
                 return null;
             }
-            throw new AppiumException(String.format("Cannot execute W3C actions %s", actionsAsJson));
         } catch (JSONException | ActionsParseException e) {
             Logger.error("Exception while reading JSON: ", e);
             throw new AppiumException(String.format("Could not parse W3C actions %s",
@@ -105,6 +104,7 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
             throw new AppiumException(String.format(
                     "Got an unexpected error while executing W3C actions %s", actionsAsJson), e);
         }
+        throw new AppiumException(String.format("Cannot execute W3C actions %s", actionsAsJson));
     }
 
     private UiController getUiController() {
