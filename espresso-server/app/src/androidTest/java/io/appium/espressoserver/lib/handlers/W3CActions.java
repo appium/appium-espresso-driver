@@ -22,6 +22,7 @@ import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewInteraction;
 import android.util.LongSparseArray;
 import android.view.InputDevice;
+import android.view.InputEvent;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -56,7 +57,6 @@ import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.ac
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.getPointerAction;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.metaKeysToState;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.toolTypeToInputSource;
-
 
 public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
     /**
@@ -118,12 +118,12 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
         }
     }
 
-    private boolean injectKeyEvent(KeyEvent event) throws InjectEventSecurityException {
-        return getUiController().injectKeyEvent(event);
-    }
-
-    private boolean injectMotionEvent(MotionEvent event) throws InjectEventSecurityException {
-        return getUiController().injectMotionEvent(event);
+    private static boolean injectEvent(UiController uiController, InputEvent event)
+            throws InjectEventSecurityException {
+        if (event instanceof KeyEvent) {
+            return uiController.injectKeyEvent((KeyEvent) event);
+        }
+        return uiController.injectMotionEvent((MotionEvent) event);
     }
 
     private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
@@ -168,6 +168,7 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
         boolean result = true;
         final Set<Integer> depressedMetaKeys = new HashSet<>();
         final long startTimestamp = SystemClock.uptimeMillis();
+        final UiController uiController = getUiController();
         final LongSparseArray<Integer> motionEventsBalanceByInputSource = new LongSparseArray<>();
         for (final Long currentTimeDelta : allDeltas) {
             final List<InputEventParams> eventParams = inputEventsMapping.get(currentTimeDelta);
@@ -183,7 +184,7 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
                             depressedMetaKeys.remove(keyCode);
                         }
                     } else {
-                        result &= injectKeyEvent(new KeyEvent(startTimestamp + eventParam.startDelta,
+                        result &= injectEvent(uiController, new KeyEvent(startTimestamp + eventParam.startDelta,
                                 SystemClock.uptimeMillis(), keyAction, keyCode, metaKeysToState(depressedMetaKeys),
                                 KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0, InputDevice.SOURCE_KEYBOARD));
                     }
@@ -221,7 +222,7 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
                             motionEventsBalanceByInputSource.put(inputSource, upDownBalance);
                             final int action = upDownBalance == 1 ? MotionEvent.ACTION_DOWN :
                                     getPointerAction(MotionEvent.ACTION_POINTER_DOWN, upDownBalance - 1);
-                            result &= injectMotionEvent(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
+                            result &= injectEvent(uiController, MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), action,
                                     action == MotionEvent.ACTION_DOWN ? 1 : upDownBalance, nonHoveringProps, nonHoveringCoords,
                                     metaKeysToState(depressedMetaKeys), motionEventParams.button,
@@ -236,7 +237,7 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
                             motionEventsBalanceByInputSource.put(inputSource, upDownBalance);
                             final int action = upDownBalance <= 1 ? MotionEvent.ACTION_UP :
                                     getPointerAction(MotionEvent.ACTION_POINTER_UP, upDownBalance - 1);
-                            result &= injectMotionEvent(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
+                            result &= injectEvent(uiController, MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), action, action == MotionEvent.ACTION_UP ? 1 : upDownBalance,
                                     nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys), motionEventParams.button,
                                     1, 1, 0, 0, inputSource, 0));
@@ -246,7 +247,7 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
                         }
                         break;
                         case MotionEvent.ACTION_MOVE: {
-                            result &= injectMotionEvent(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
+                            result &= injectEvent(uiController, MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), actionCode, upDownBalance,
                                     nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys),
                                     motionEventParams.button, 1, 1, 0, 0, inputSource, 0)
@@ -256,7 +257,7 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
                         case MotionEvent.ACTION_HOVER_ENTER:
                         case MotionEvent.ACTION_HOVER_EXIT:
                         case MotionEvent.ACTION_HOVER_MOVE: {
-                            result &= injectMotionEvent(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
+                            result &= injectEvent(uiController, MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), actionCode, hoveringProps.length,
                                     hoveringProps, hoveringCoords, metaKeysToState(depressedMetaKeys),
                                     0, 1, 1, 0, 0, inputSource, 0)
@@ -266,7 +267,7 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
                     } // switch
                 } // motionEventParams : motionEventsParams
             } // for i < motionParamsByInputSource.size()
-//            getUiController().loopMainThreadForAtLeast(currentTimeDelta - recentTimeDelta);
+//            uiController.loopMainThreadForAtLeast(currentTimeDelta - recentTimeDelta);
             SystemClock.sleep(currentTimeDelta - recentTimeDelta);
             recentTimeDelta = currentTimeDelta;
         } // currentTimeDelta : allDeltas
