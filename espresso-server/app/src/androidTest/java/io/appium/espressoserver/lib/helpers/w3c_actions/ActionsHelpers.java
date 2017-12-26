@@ -317,12 +317,13 @@ public class ActionsHelpers {
             final JSONObject params = action.getJSONObject(ACTION_KEY_PARAMETERS);
             if (params.has(PARAMETERS_KEY_POINTER_TYPE)) {
                 switch (params.getString(PARAMETERS_KEY_POINTER_TYPE)) {
-                    case POINTER_TYPE_MOUSE:
-                        return MotionEvent.TOOL_TYPE_MOUSE;
                     case POINTER_TYPE_PEN:
                         return MotionEvent.TOOL_TYPE_STYLUS;
                     case POINTER_TYPE_TOUCH:
                         return MotionEvent.TOOL_TYPE_FINGER;
+                    case POINTER_TYPE_MOUSE:
+                    default:
+                        return MotionEvent.TOOL_TYPE_MOUSE;
                 }
             }
         }
@@ -331,14 +332,14 @@ public class ActionsHelpers {
 
     public static int toolTypeToInputSource(final int toolType) {
         switch (toolType) {
-            case MotionEvent.TOOL_TYPE_MOUSE:
-                return InputDevice.SOURCE_MOUSE;
             case MotionEvent.TOOL_TYPE_STYLUS:
                 return InputDevice.SOURCE_STYLUS;
             case MotionEvent.TOOL_TYPE_FINGER:
                 return InputDevice.SOURCE_TOUCHSCREEN;
+            case MotionEvent.TOOL_TYPE_MOUSE:
+            default:
+                return InputDevice.SOURCE_MOUSE;
         }
-        return InputDevice.SOURCE_MOUSE;
     }
 
     private static List<JSONObject> filterActionsByType(final JSONArray actions,
@@ -530,8 +531,9 @@ public class ActionsHelpers {
                     return MotionEvent.BUTTON_STYLUS_SECONDARY;
                 }
                 return MotionEvent.BUTTON_SECONDARY;
+            default:
+                return button;
         }
-        return button;
     }
 
     private static void applyKeyActionToEventsMapping(

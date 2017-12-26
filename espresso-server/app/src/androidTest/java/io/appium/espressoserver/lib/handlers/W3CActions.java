@@ -59,6 +59,11 @@ import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.me
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.toolTypeToInputSource;
 
 public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
+
+    private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
+            MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT, MotionEvent.ACTION_HOVER_MOVE
+    );
+
     /**
      * Android handler for <a href="https://github.com/jlipps/simple-wd-spec#perform-actions">W3C actions endpoint</a>
      * <p>
@@ -114,7 +119,7 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
             f.setAccessible(true);
             return (UiController) f.get(root);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -125,10 +130,6 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
         }
         return uiController.injectMotionEvent((MotionEvent) event);
     }
-
-    private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
-            MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT, MotionEvent.ACTION_HOVER_MOVE
-    );
 
     private static PointerProperties[] filterPointerProperties(
             final List<MotionInputEventParams> motionEventsParams, final boolean shouldHovering) {
@@ -264,6 +265,9 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
                             );
                         }
                         break;
+                        default:
+                            // do nothing
+                            break;
                     } // switch
                 } // motionEventParams : motionEventsParams
             } // for i < motionParamsByInputSource.size()
