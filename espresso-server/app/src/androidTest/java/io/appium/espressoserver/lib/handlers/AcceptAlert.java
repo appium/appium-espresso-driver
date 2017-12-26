@@ -44,7 +44,7 @@ public class AcceptAlert implements RequestHandler<AppiumParams, Void> {
         if (dialogs.isEmpty()) {
             throw new AppiumException("No alerts can be detected on the screen");
         }
-        // TODO: Does the first button always the one we need to click in order to accept the alert?
+        // TODO: Is the first button always the one we need to click in order to accept the alert?
         final List<UiObject2> buttons = dialogs.get(0)
                 .findObjects(By.clazz(Button.class));
         if (buttons.isEmpty()) {
