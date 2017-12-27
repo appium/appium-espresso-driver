@@ -1,0 +1,4 @@
+./espresso-server/build/generated
+./espresso-server/build/intermediates
+./espresso-server/build/tmp
+./espresso-server/.gradle
