@@ -22,13 +22,16 @@ import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject2;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 
-public class AlertText implements RequestHandler<AppiumParams, String> {
+import static android.text.TextUtils.join;
+
+public class GetAlertText implements RequestHandler<AppiumParams, String> {
 
     @Override
     public String handle(AppiumParams params) throws AppiumException {
@@ -45,13 +48,12 @@ public class AlertText implements RequestHandler<AppiumParams, String> {
         if (elementsWithText.isEmpty()) {
             return "";
         }
-        final StringBuilder result = new StringBuilder();
+        final List<String> result = new ArrayList<>();
         for (final UiObject2 element : elementsWithText) {
             if (!element.getClassName().contains("Button")) {
-                result.append(element.getText());
-                result.append("\n");
+                result.add(element.getText());
             }
         }
-        return result.toString();
+        return join("\n", result);
     }
 }
