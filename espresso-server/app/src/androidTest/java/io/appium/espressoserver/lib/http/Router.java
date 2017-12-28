@@ -45,6 +45,7 @@ import io.appium.espressoserver.lib.handlers.GetSize;
 import io.appium.espressoserver.lib.handlers.SetOrientation;
 import io.appium.espressoserver.lib.handlers.Source;
 import io.appium.espressoserver.lib.handlers.Text;
+import io.appium.espressoserver.lib.handlers.W3CActions;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException;
@@ -69,6 +70,7 @@ import io.appium.espressoserver.lib.model.OrientationParams;
 import io.appium.espressoserver.lib.model.Session;
 import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.TextParams;
+import io.appium.espressoserver.lib.model.W3CActionsParams;
 
 class Router {
     private final RouteMap routeMap;
@@ -80,6 +82,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/status", new Status(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/sessions", new GetSessions(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId", new GetSession(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/actions", new W3CActions(), W3CActionsParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/orientation", new SetOrientation(), OrientationParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/orientation", new GetOrientation(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/source", new Source(), AppiumParams.class));
