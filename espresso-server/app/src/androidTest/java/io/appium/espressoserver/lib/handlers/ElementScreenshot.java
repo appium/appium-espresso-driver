@@ -16,20 +16,25 @@
 
 package io.appium.espressoserver.lib.handlers;
 
+import android.support.test.espresso.ViewInteraction;
+
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
 import io.appium.espressoserver.lib.model.AppiumParams;
+import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
-public class Screenshot implements RequestHandler<AppiumParams, String> {
+public class ElementScreenshot implements RequestHandler<AppiumParams, String> {
 
     @Override
     public String handle(AppiumParams params) throws AppiumException {
+        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
         try {
-            return new ScreenshotsHelper(new ViewFinder().getRootView())
-                    .getScreenshot();
+            return new ScreenshotsHelper(new ViewFinder().getView(viewInteraction)).getScreenshot();
         } catch (Exception e) {
-            throw new AppiumException("Could not take the full screen shot", e);
+            throw new AppiumException(String.format("Could not get the screenshot of %s element",
+                    params.getElementId()), e);
         }
     }
+
 }
