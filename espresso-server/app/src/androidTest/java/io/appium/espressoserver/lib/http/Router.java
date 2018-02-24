@@ -195,8 +195,11 @@ class Router {
         appiumParams.initUriMapping(uriParams);
 
         // Validate the sessionId
-        if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSession().getId())) {
-            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, "Invalid session ID " + appiumParams.getSessionId());
+        if (appiumParams.getSessionId() != null &&
+                Session.getGlobalSession() != null &&
+                !appiumParams.getSessionId().equals(Session.getGlobalSession().getId())) {
+            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR,
+                    "Invalid session ID " + appiumParams.getSessionId());
         }
 
         // Create the result
