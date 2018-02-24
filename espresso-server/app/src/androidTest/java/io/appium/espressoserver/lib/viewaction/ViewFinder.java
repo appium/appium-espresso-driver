@@ -21,10 +21,11 @@ import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewInteraction;
 import android.view.View;
 
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 
 /**
@@ -43,7 +44,17 @@ public class ViewFinder {
         @Override
         public Matcher<View> getConstraints() {
             // This is a hack constraint that passes any view through
-            return isDescendantOfA(isRoot());
+            return new TypeSafeMatcher<View>() {
+                @Override
+                public void describeTo(Description description) {
+                    description.appendText("always matches to: ");
+                }
+
+                @Override
+                protected boolean matchesSafely(View item) {
+                    return true;
+                }
+            };
         }
 
         @Override
