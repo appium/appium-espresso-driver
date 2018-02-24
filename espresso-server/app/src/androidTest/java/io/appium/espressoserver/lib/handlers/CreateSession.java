@@ -49,7 +49,7 @@ public class CreateSession implements RequestHandler<SessionParams, Session> {
         Logger.info(String.format("Starting activity '%s'", target));
         mInstrumentation.getUiAutomation().executeShellCommand(
                 String.format("am start -W -n %s"
-                        + " -S -a android.intent.action.MAIN"
+                        + " -a android.intent.action.MAIN"
                         + " -c android.intent.category.LAUNCHER"
                         + " -f 0x10200000", target));
         Logger.info(String.format("Activity '%s' started", target));
