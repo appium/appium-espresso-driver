@@ -44,14 +44,14 @@ public class CreateSession implements RequestHandler<SessionParams, Session> {
 
     private void startActivity(String appActivity) {
         Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
-        final String target = String.format("Starting activity: %s/%s",
+        final String target = String.format("%s/%s",
                 mInstrumentation.getTargetContext().getClass().getName(), appActivity);
-        Logger.info(String.format("Starting activity '%s'", target));
+        Logger.info(String.format("Starting activity: %s", target));
         mInstrumentation.getUiAutomation().executeShellCommand(
                 String.format("am start -W -n %s"
                         + " -a android.intent.action.MAIN"
                         + " -c android.intent.category.LAUNCHER"
                         + " -f 0x10200000", target));
-        Logger.info(String.format("Activity '%s' started", target));
+        Logger.info(String.format("Started activity: %s", target));
     }
 }
