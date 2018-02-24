@@ -23,10 +23,7 @@ import io.appium.espressoserver.lib.model.Session;
 
 import io.appium.espressoserver.lib.model.SessionParams;
 
-import android.app.Activity;
 import android.app.Instrumentation;
-import android.app.Instrumentation.ActivityMonitor;
-import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 
 public class CreateSession implements RequestHandler<SessionParams, Session> {
@@ -46,15 +43,15 @@ public class CreateSession implements RequestHandler<SessionParams, Session> {
     }
 
     private void startActivity(String appActivity) {
-        Logger.info(String.format("Starting activity '%s'", appActivity));
         Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
-        ActivityMonitor mSessionMonitor = mInstrumentation.addMonitor(appActivity, null, false);
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClassName(mInstrumentation.getTargetContext(), appActivity);
-        mInstrumentation.startActivitySync(intent);
-
-        Activity mCurrentActivity = mInstrumentation.waitForMonitor(mSessionMonitor);
-        Logger.info(String.format("Activity '%s' started", mCurrentActivity.getLocalClassName()));
+        final String target = String.format("%s/%s",
+                mInstrumentation.getTargetContext().getClass().getName(), appActivity);
+        Logger.info(String.format("Starting activity: %s", target));
+        mInstrumentation.getUiAutomation().executeShellCommand(
+                String.format("am start -W -n %s"
+                        + " -a android.intent.action.MAIN"
+                        + " -c android.intent.category.LAUNCHER"
+                        + " -f 0x10200000", target));
+        Logger.info(String.format("Started activity: %s", target));
     }
 }
