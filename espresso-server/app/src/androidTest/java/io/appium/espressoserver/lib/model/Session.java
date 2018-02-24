@@ -57,8 +57,8 @@ public class Session {
     public synchronized static Session createGlobalSession(DesiredCapabilities desiredCapabilities)
             throws SessionNotCreatedException {
         if (globalSession != null) {
-            Logger.info(String.format("Got request for new session creating while the active one " +
-                    "is still in progress. Overriding the old session with id %s",
+            Logger.info(String.format("Got request for new session creation while the other one " +
+                    "is still in active. Overriding the old session with id %s",
                     globalSession.getId()));
         }
         String globalSessionId = UUID.randomUUID().toString();
