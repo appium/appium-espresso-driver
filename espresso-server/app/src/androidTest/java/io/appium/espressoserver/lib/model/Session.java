@@ -19,6 +19,7 @@ package io.appium.espressoserver.lib.model;
 import java.util.UUID;
 
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException;
+import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.SessionParams.DesiredCapabilities;
 
 @SuppressWarnings("unused")
@@ -48,13 +49,18 @@ public class Session {
     }
 
     /**
-     * Create a global session. Only one session can run per server instance so throw an exception if one already is in progress
+     * Create a global session. Only one session can run per server instance so throw an exception
+     * if one already is in progress
+     *
      * @return Serializable Session object
      * @throws SessionNotCreatedException Thrown if a Session is already running
      */
-    public synchronized static Session createGlobalSession(DesiredCapabilities desiredCapabilities) throws SessionNotCreatedException {
+    public synchronized static Session createGlobalSession(DesiredCapabilities desiredCapabilities)
+            throws SessionNotCreatedException {
         if (globalSession != null) {
-            throw new SessionNotCreatedException(String.format("Session %s is already in progress. Appium Espresso Server can only handle one session at a time.", globalSession.getId()));
+            Logger.info(String.format("Got request for new session creation while the one " +
+                            "is still in progress. Overriding the old session having id %s",
+                    globalSession.getId()));
         }
         String globalSessionId = UUID.randomUUID().toString();
         Session.globalSession = new Session(globalSessionId, desiredCapabilities);
