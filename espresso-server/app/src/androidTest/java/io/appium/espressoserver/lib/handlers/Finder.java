@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.support.test.espresso.ViewInteraction;
+import android.view.View;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.MissingCommandsException;
@@ -24,6 +25,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.Locator;
+import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 import static io.appium.espressoserver.lib.helpers.ViewFinder.findBy;
 
@@ -31,13 +33,17 @@ public class Finder implements RequestHandler<Locator, Element> {
 
     @Override
     public Element handle(Locator locator) throws AppiumException {
+        View parentView = null;
+        if (locator.getElementId() != null) {
+            parentView = new ViewFinder().getView(Element.getById(locator.getElementId()));
+        }
         if (locator.getUsing() == null) {
             throw new InvalidStrategyException("Locator strategy cannot be empty");
         } else if (locator.getValue() == null) {
             throw new MissingCommandsException("No locator provided");
         }
         // Test the selector
-        ViewInteraction matcher = findBy(locator.getUsing(), locator.getValue());
+        ViewInteraction matcher = findBy(parentView, locator.getUsing(), locator.getValue());
         if (matcher == null) {
             throw new NoSuchElementException(
                     String.format("Could not find element with strategy %s and selector %s",
