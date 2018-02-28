@@ -102,6 +102,33 @@ public class ViewFinder {
         return findAllBy(root, strategy, selector, false);
     }
 
+    /**
+     * Returns the currently focused element or null in case
+     * if there is nu such element
+     *
+     * @return element instance or null
+     */
+    @Nullable
+    public static ViewInteraction findActive() {
+        List<ViewInteraction> viewInteractions = getViewInteractions(null,
+                new TypeSafeMatcher<View>() {
+                    @Override
+                    protected boolean matchesSafely(View item) {
+                        return item.isFocused();
+                    }
+
+                    @Override
+                    public void describeTo(Description description) {
+                        description.appendText("is focused");
+                    }
+                },
+                true);
+        if (viewInteractions.isEmpty()) {
+            return null;
+        }
+        return viewInteractions.get(0);
+    }
+
     ///Find By different strategies
     private static List<ViewInteraction> findAllBy(@Nullable View root,
                                                    Strategy strategy, String selector, boolean findOne)

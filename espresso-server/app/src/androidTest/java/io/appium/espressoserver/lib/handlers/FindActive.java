@@ -16,21 +16,22 @@
 
 package io.appium.espressoserver.lib.handlers;
 
+import android.support.test.espresso.ViewInteraction;
+
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
-import io.appium.espressoserver.lib.model.Locator;
-import io.appium.espressoserver.lib.model.Strategy;
-import io.appium.espressoserver.lib.model.ViewAttributesEnum;
+
+import static io.appium.espressoserver.lib.helpers.ViewFinder.findActive;
 
 public class FindActive implements RequestHandler<AppiumParams, Element> {
-
     @Override
     public Element handle(AppiumParams params) throws AppiumException {
-        final Locator locator = new Locator();
-        locator.initUriMapping(params);
-        locator.setUsing(Strategy.XPATH);
-        locator.setValue(String.format("//*[@%s='true']", ViewAttributesEnum.FOCUSED.toString()));
-        return new Finder().handle(locator);
+        ViewInteraction matcher = findActive();
+        if (matcher == null) {
+            throw new NoSuchElementException("No elements are currently focused");
+        }
+        return new Element(matcher);
     }
 }
