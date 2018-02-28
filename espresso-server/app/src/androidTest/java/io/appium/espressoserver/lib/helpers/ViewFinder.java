@@ -103,10 +103,10 @@ public class ViewFinder {
     }
 
     /**
-     * Returns the currently focused element or null in case
-     * if there is nu such element
+     * Returns the currently focused element or null if
+     * there is no such element
      *
-     * @return element instance or null
+     * @return focused element instance or null
      */
     @Nullable
     public static ViewInteraction findActive() {
