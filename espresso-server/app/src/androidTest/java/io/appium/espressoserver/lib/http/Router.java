@@ -23,6 +23,7 @@ import java.util.Map;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Method;
 import io.appium.espressoserver.lib.handlers.AcceptAlert;
+import io.appium.espressoserver.lib.handlers.FindActive;
 import io.appium.espressoserver.lib.handlers.GetAlertText;
 import io.appium.espressoserver.lib.handlers.Clear;
 import io.appium.espressoserver.lib.handlers.DismissAlert;
@@ -96,6 +97,8 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/source", new Source(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/screenshot", new Screenshot(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element", new Finder(), Locator.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/active", new FindActive(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/active", new FindActive(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/attribute/:name", new GetAttribute(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/clear", new Clear(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/click", new Click(), AppiumParams.class));
@@ -147,7 +150,6 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId/cookie", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId/cookie/:name", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/title", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/active", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/submit", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/keys", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/equals/:otherId", new NotYetImplemented(), AppiumParams.class));

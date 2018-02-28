@@ -21,6 +21,8 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import static android.support.test.espresso.core.internal.deps.guava.base.Preconditions.checkNotNull;
+
 @SuppressWarnings("unused")
 public class AppiumParams {
     private static final String SESSION_ID_PARAM_NAME = "sessionId";
@@ -44,6 +46,10 @@ public class AppiumParams {
     public void initUriMapping(Map<String, String> params) {
         uriParams.clear();
         uriParams.putAll(params);
+    }
+
+    public void initUriMapping(AppiumParams other) {
+        initUriMapping(checkNotNull(other).uriParams);
     }
 
     @Nullable
