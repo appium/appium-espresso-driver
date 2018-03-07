@@ -32,7 +32,7 @@ public class Source implements RequestHandler<AppiumParams, String> {
         try {
             return new SourceDocument().toXMLString();
         } catch (TransformerException | ParserConfigurationException e) {
-            throw new AppiumException(String.format("Could not parse XML from source: %s", e.getMessage()));
+            throw new AppiumException("Could not parse XML from source", e);
         }
     }
 }
