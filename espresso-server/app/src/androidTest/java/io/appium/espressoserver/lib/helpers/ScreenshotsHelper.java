@@ -23,6 +23,9 @@ import android.view.View;
 
 import java.io.ByteArrayOutputStream;
 
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.ElementNotVisibleException;
+import io.appium.espressoserver.lib.handlers.exceptions.ScreenCaptureException;
 import io.appium.espressoserver.lib.model.ViewElement;
 
 public class ScreenshotsHelper {
@@ -35,29 +38,26 @@ public class ScreenshotsHelper {
     /**
      * Makes a screenshot of the particular view.
      *
-     * @param quality defines the quality of the output image. Should be in range 1..100, where
-     *                100 is the best quality.
      * @return the screenshot of the view as base-64 encoded string.
      * @throws IllegalStateException if the view has no visible area.
      */
-    public String getScreenshot(int quality) {
+    public String getScreenshot() throws AppiumException {
         if (new ViewElement(view).getBounds().isEmpty()) {
-            throw new IllegalStateException("Cannot get a screenshot of the invisible view");
+            throw new ElementNotVisibleException("Cannot get a screenshot of the invisible view");
         }
 
         view.setDrawingCacheEnabled(true);
         final Bitmap bitmapScreenCap;
         try {
             bitmapScreenCap = Bitmap.createBitmap(view.getDrawingCache());
+            if (bitmapScreenCap == null) {
+                throw new ScreenCaptureException("Screen capture is impossible on the current view");
+            }
         } finally {
             view.setDrawingCacheEnabled(false);
         }
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmapScreenCap.compress(Bitmap.CompressFormat.PNG, quality, outputStream);
+        bitmapScreenCap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
         return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
-    }
-
-    public String getScreenshot() {
-        return getScreenshot(100);
     }
 }

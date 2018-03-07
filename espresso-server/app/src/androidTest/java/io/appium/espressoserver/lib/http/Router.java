@@ -23,6 +23,7 @@ import java.util.Map;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Method;
 import io.appium.espressoserver.lib.handlers.AcceptAlert;
+import io.appium.espressoserver.lib.handlers.ElementScreenshot;
 import io.appium.espressoserver.lib.handlers.FindActive;
 import io.appium.espressoserver.lib.handlers.GetAlertText;
 import io.appium.espressoserver.lib.handlers.Clear;
@@ -50,8 +51,11 @@ import io.appium.espressoserver.lib.handlers.SetOrientation;
 import io.appium.espressoserver.lib.handlers.Source;
 import io.appium.espressoserver.lib.handlers.Text;
 import io.appium.espressoserver.lib.handlers.W3CActions;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
+import io.appium.espressoserver.lib.handlers.exceptions.NoAlertOpenException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
+import io.appium.espressoserver.lib.handlers.exceptions.ScreenCaptureException;
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException;
 import io.appium.espressoserver.lib.handlers.Finder;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
@@ -62,6 +66,7 @@ import io.appium.espressoserver.lib.handlers.DeleteSession;
 import io.appium.espressoserver.lib.handlers.SendKeys;
 import io.appium.espressoserver.lib.handlers.Status;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
+import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
@@ -110,7 +115,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/location_in_view", new GetLocationInView(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/name", new GetName(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/rect", new GetRect(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/screenshot", new Screenshot(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/screenshot", new ElementScreenshot(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/selected", new GetSelected(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/size", new GetSize(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/text", new Text(), AppiumParams.class));
@@ -226,6 +231,14 @@ class Router {
             return new ErrorResponse(e, NanoHTTPD.Response.Status.NOT_IMPLEMENTED, e.getMessage());
         } catch (StaleElementException e) {
             return new AppiumResponse<>(e, AppiumStatus.STALE_ELEMENT_REFERENCE, e.getMessage());
+        } catch (XPathLookupException e) {
+            return new AppiumResponse<>(e, AppiumStatus.XPATH_LOOKUP_ERROR, e.getMessage());
+        } catch (NoAlertOpenException e) {
+            return new AppiumResponse<>(e, AppiumStatus.NO_ALERT_OPEN_ERROR, e.getMessage());
+        } catch (ScreenCaptureException e) {
+            return new AppiumResponse<>(e, AppiumStatus.UNABLE_TO_CAPTURE_SCREEN_ERROR, e.getMessage());
+        } catch (InvalidElementStateException e) {
+            return new AppiumResponse<>(e, AppiumStatus.INVALID_ELEMENT_STATE, e.getMessage());
         } catch (AppiumException e) {
             e.printStackTrace();
             return new AppiumResponse<>(e, AppiumStatus.UNKNOWN_ERROR, e.getMessage());

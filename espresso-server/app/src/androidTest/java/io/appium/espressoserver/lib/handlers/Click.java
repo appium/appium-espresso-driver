@@ -16,11 +16,13 @@
 
 package io.appium.espressoserver.lib.handlers;
 
+import android.support.test.espresso.PerformException;
 import android.support.test.espresso.ViewInteraction;
 
 import javax.annotation.Nullable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
 
@@ -34,8 +36,8 @@ public class Click implements RequestHandler<AppiumParams, Void> {
         ViewInteraction viewInteraction = Element.getById(params.getElementId());
         try {
             viewInteraction.perform(click());
-        } catch (Exception e) { // TODO: Can we narrow down these exceptions?
-            throw new AppiumException("Could not click element " + params.getElementId());
+        } catch (PerformException e) {
+            throw new InvalidElementStateException("click", params.getElementId(), e);
         }
         return null;
     }

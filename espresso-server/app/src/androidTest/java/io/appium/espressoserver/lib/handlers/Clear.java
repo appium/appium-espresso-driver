@@ -22,6 +22,7 @@ import android.support.test.espresso.ViewInteraction;
 import javax.annotation.Nullable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
 
@@ -36,8 +37,7 @@ public class Clear implements RequestHandler<AppiumParams, Void> {
         try {
             viewInteraction.perform(clearText());
         } catch (PerformException e) {
-            throw new AppiumException(String.format("Could not apply clear to element %s",
-                    params.getElementId()), e);
+            throw new InvalidElementStateException("clear", params.getElementId(), e);
         }
         return null;
     }
