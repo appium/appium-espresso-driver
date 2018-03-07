@@ -24,4 +24,9 @@ public class InvalidElementStateException extends AppiumException {
     public InvalidElementStateException(String reason, Throwable cause) {
         super(reason, cause);
     }
+
+        public InvalidElementStateException(String action, String elementId, Throwable cause) {
+        super(String.format("Could not perform %s action on the element %s", action, elementId),
+                cause);
+    }
 }

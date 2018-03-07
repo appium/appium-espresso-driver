@@ -37,8 +37,7 @@ public class Click implements RequestHandler<AppiumParams, Void> {
         try {
             viewInteraction.perform(click());
         } catch (PerformException e) {
-            throw new InvalidElementStateException(
-                    String.format("Could not click element %s", params.getElementId()), e);
+            throw new InvalidElementStateException("click", params.getElementId(), e);
         }
         return null;
     }

@@ -37,8 +37,7 @@ public class Clear implements RequestHandler<AppiumParams, Void> {
         try {
             viewInteraction.perform(clearText());
         } catch (PerformException e) {
-            throw new InvalidElementStateException(
-                    String.format("Could not apply clear to element %s", params.getElementId()), e);
+            throw new InvalidElementStateException("clear", params.getElementId(), e);
         }
         return null;
     }
