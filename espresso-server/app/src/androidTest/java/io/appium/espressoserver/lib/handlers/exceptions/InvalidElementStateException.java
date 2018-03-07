@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers.exceptions;
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
-import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.viewaction.ViewFinder;
+public class InvalidElementStateException extends AppiumException {
+    public InvalidElementStateException(String reason) {
+        super(reason);
+    }
 
-public class Screenshot implements RequestHandler<AppiumParams, String> {
-
-    @Override
-    public String handle(AppiumParams params) throws AppiumException {
-        return new ScreenshotsHelper(new ViewFinder().getRootView()).getScreenshot();
+    public InvalidElementStateException(String reason, Throwable cause) {
+        super(reason, cause);
     }
 }

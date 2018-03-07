@@ -22,6 +22,7 @@ import android.support.test.espresso.ViewInteraction;
 import javax.annotation.Nullable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.TextParams;
 
@@ -47,7 +48,7 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
         try {
             viewInteraction.perform(typeText(textValue));
         } catch (PerformException e) {
-            throw new AppiumException(String.format("Could not apply sendKeys to element %s",
+            throw new InvalidElementStateException(String.format("Could not apply sendKeys to element %s",
                     params.getElementId()), e);
         }
 

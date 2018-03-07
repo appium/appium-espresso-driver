@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.NoAlertOpenException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 
 import static android.text.TextUtils.join;
@@ -41,7 +42,7 @@ public class GetAlertText implements RequestHandler<AppiumParams, String> {
                 .getInstance(InstrumentationRegistry.getInstrumentation());
         final List<UiObject2> dialogs = mDevice.findObjects(By.clazz(Dialog.class));
         if (dialogs.isEmpty()) {
-            throw new AppiumException("No alerts can be detected on the screen");
+            throw new NoAlertOpenException("No alerts can be detected on the screen");
         }
         final List<UiObject2> elementsWithText = dialogs.get(0)
                 .findObjects(By.text(Pattern.compile("\\S+")));
