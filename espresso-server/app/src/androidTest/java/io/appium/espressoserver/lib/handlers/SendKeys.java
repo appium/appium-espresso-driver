@@ -48,8 +48,8 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
         try {
             viewInteraction.perform(typeText(textValue));
         } catch (PerformException e) {
-            throw new InvalidElementStateException(String.format("Could not apply sendKeys to element %s",
-                    params.getElementId()), e);
+            throw new InvalidElementStateException(
+                    String.format("Could not apply sendKeys to element %s", params.getElementId()), e);
         }
 
         return null;

@@ -16,9 +16,12 @@
 
 package io.appium.espressoserver.lib.handlers.exceptions;
 
-
 public class NoAlertOpenException extends AppiumException {
     public NoAlertOpenException(String reason) {
         super(reason);
+    }
+
+    public NoAlertOpenException() {
+        super("No alerts can be detected on the screen");
     }
 }

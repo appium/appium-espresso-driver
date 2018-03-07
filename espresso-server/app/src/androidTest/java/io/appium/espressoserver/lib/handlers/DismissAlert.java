@@ -42,7 +42,7 @@ public class DismissAlert implements RequestHandler<AppiumParams, Void> {
                 .getInstance(InstrumentationRegistry.getInstrumentation());
         final List<UiObject2> dialogs = mDevice.findObjects(By.clazz(Dialog.class));
         if (dialogs.isEmpty()) {
-            throw new NoAlertOpenException("No alerts can be detected on the screen");
+            throw new NoAlertOpenException();
         }
         Logger.info("Pressing Back button in order to dismiss the alert");
         mDevice.pressBack();

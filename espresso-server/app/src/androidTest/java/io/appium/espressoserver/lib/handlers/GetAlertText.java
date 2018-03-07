@@ -42,7 +42,7 @@ public class GetAlertText implements RequestHandler<AppiumParams, String> {
                 .getInstance(InstrumentationRegistry.getInstrumentation());
         final List<UiObject2> dialogs = mDevice.findObjects(By.clazz(Dialog.class));
         if (dialogs.isEmpty()) {
-            throw new NoAlertOpenException("No alerts can be detected on the screen");
+            throw new NoAlertOpenException();
         }
         final List<UiObject2> elementsWithText = dialogs.get(0)
                 .findObjects(By.text(Pattern.compile("\\S+")));

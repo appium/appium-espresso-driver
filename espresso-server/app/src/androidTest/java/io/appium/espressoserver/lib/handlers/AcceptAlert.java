@@ -28,6 +28,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoAlertOpenException;
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.AppiumParams;
@@ -43,13 +44,13 @@ public class AcceptAlert implements RequestHandler<AppiumParams, Void> {
                 .getInstance(InstrumentationRegistry.getInstrumentation());
         final List<UiObject2> dialogs = mDevice.findObjects(By.clazz(Dialog.class));
         if (dialogs.isEmpty()) {
-            throw new NoAlertOpenException("No alerts can be detected on the screen");
+            throw new NoAlertOpenException();
         }
         // TODO: Is the first button always the one we need to click in order to accept the alert?
         final List<UiObject2> buttons = dialogs.get(0)
                 .findObjects(By.clazz(Button.class));
         if (buttons.isEmpty()) {
-            throw new AppiumException("No buttons can be detected on the alert");
+            throw new InvalidElementStateException("No buttons can be detected on the alert");
         }
         Logger.info(String.format("Clicking dialog button '%s' in order to accept it",
                 buttons.get(0).getText()));
