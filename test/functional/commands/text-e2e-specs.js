@@ -14,23 +14,23 @@ describe('text', function () {
 
   let driver;
   let server;
-  before(async () => {
+  before(async function () {
     server = await startServer(PORT, HOST);
     driver = wd.promiseChainRemote(HOST, PORT);
     await driver.init(APIDEMO_CAPS);
   });
-  after(async () => {
+  after(async function () {
     try {
       await server.close();
     } catch (ign) {}
   });
-  afterEach(async () => {
+  afterEach(async function () {
     try {
       await driver.quit();
     } catch (ign) {}
   });
 
-  it('should find an element by it\'s xpath', async () => {
+  it('should find an element by it\'s xpath', async function () {
     let el = await driver.elementByXPath("//*[@content-desc='Animation']");
     let text = await el.text();
     text.should.equal('Animation');

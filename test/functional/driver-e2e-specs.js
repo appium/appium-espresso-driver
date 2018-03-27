@@ -14,22 +14,22 @@ describe('createSession', function () {
 
   let driver;
   let server;
-  before(async () => {
+  before(async function () {
     server = await startServer(PORT, HOST);
     driver = wd.promiseChainRemote(HOST, PORT);
   });
-  after(async () => {
+  after(async function () {
     try {
       await server.close();
     } catch (ign) {}
   });
-  afterEach(async () => {
+  afterEach(async function () {
     try {
       await driver.quit();
     } catch (ign) {}
   });
 
-  it('should start android session focusing on default activity', async () => {
+  it('should start android session focusing on default activity', async function () {
     let status = await driver.init(APIDEMO_CAPS);
 
     status[1].app.should.eql(APIDEMO_CAPS.app);
@@ -37,7 +37,7 @@ describe('createSession', function () {
     let activity = await driver.getCurrentDeviceActivity();
     activity.should.equal('.ApiDemos');
   });
-  it('should start android session focusing on specified activity', async () => {
+  it('should start android session focusing on specified activity', async function () {
     // for now the activity needs to be fully qualified
     let status = await driver.init(Object.assign({
       appActivity: 'io.appium.android.apis.view.TextFields'

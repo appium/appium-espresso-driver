@@ -11,17 +11,17 @@ describe('createSession', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
-  before(async () => {
+  before(async function () {
     let caps = Object.assign({
       appActivity: 'io.appium.android.apis.view.TextFields'
     }, APIDEMO_CAPS);
     driver = await initSession(caps);
   });
-  after(async () => {
+  after(async function () {
     await deleteSession();
   });
 
-  it('should start android session focusing on default activity', async () => {
+  it('should start android session focusing on default activity', async function () {
     let el = await driver.elementById('id/edit1');
     await el.click();
 
