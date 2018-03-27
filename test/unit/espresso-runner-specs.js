@@ -23,7 +23,7 @@ describe('espresso-runner', function () {
   describe('constructor', function () {
     function runConstructorTest (opts, missingParam) {
       it(`should error out if missing '${missingParam}' parameter`, function () {
-        expect(() => {
+        expect(function () {
           new EspressoRunner(opts);
         }).to.throw(`Option '${missingParam}' is required!`);
       });

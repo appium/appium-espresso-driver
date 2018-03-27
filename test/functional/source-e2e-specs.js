@@ -16,22 +16,22 @@ describe('createSession', function () {
 
   let driver;
   let server;
-  before(async () => {
+  before(async function () {
     server = await startServer(PORT, HOST);
     driver = wd.promiseChainRemote(HOST, PORT);
     await driver.init(APIDEMO_CAPS);
   });
-  after(async () => {
+  after(async function () {
     try {
       await server.close();
     } catch (ign) {}
   });
-  afterEach(async () => {
+  afterEach(async function () {
     try {
       await driver.quit();
     } catch (ign) {}
   });
-  it('should get sourceXML, parse it, and find a node by xpath', async () => {
+  it('should get sourceXML, parse it, and find a node by xpath', async function () {
     const sourceXML = await driver.source();
     sourceXML.should.be.a.string;
     const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');

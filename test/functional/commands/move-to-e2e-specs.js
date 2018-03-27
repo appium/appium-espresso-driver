@@ -11,14 +11,14 @@ describe('moveTo', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
-  before(async () => {
+  before(async function () {
     driver = await initSession(APIDEMO_CAPS);
   });
-  after(async () => {
+  after(async function () {
     await deleteSession();
   });
 
-  it('should move to an element', async () => {
+  it('should move to an element', async function () {
     let el = await driver.elementByAccessibilityId('Views');
     await el.click();
     let moveToEl = await driver.elementByAccessibilityId('Expandable Lists');
