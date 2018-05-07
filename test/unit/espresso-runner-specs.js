@@ -44,7 +44,7 @@ describe('espresso-runner', function () {
       let espressoRunner = new EspressoRunner(opts);
       await espressoRunner.startSession({}).should.eventually.be.rejectedWith(/Problem with instrumentation/);
 
-      mocks.adb.verify();
+      mocks.verify();
     });
   }));
 });

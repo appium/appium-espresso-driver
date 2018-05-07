@@ -14,40 +14,40 @@ describe('elementByXPath', function () {
 
   let driver;
   let server;
-  before(async () => {
+  before(async function () {
     server = await startServer(PORT, HOST);
     driver = wd.promiseChainRemote(HOST, PORT);
   });
-  after(async () => {
+  after(async function () {
     try {
       await server.close();
     } catch (ign) {}
   });
-  beforeEach(async () => {
+  beforeEach(async function () {
     try {
       await driver.init(APIDEMO_CAPS);
     } catch (ign) {}
   });
-  afterEach(async () => {
+  afterEach(async function () {
     try {
       await driver.quit();
     } catch (ign) {}
   });
 
-  it('should find an element by it\'s xpath', async () => {
+  it('should find an element by it\'s xpath', async function () {
     let el = await driver.elementByXPath("//*[@content-desc='Animation']");
     el.should.exist;
     await el.click();
   });
-  it('should find multiple elements that match one xpath', async () => {
+  it('should find multiple elements that match one xpath', async function () {
     let els = await driver.elementsByXPath('//android.widget.TextView');
     els.length.should.be.above(1);
   });
-  it('should get the first element of an xpath that matches more than one element', async () => {
+  it('should get the first element of an xpath that matches more than one element', async function () {
     let el = await driver.elementByXPath('//android.widget.TextView');
     el.should.exist;
   });
-  it('should throw a stale element exception if clicking on element that does not exist', async () => {
+  it('should throw a stale element exception if clicking on element that does not exist', async function () {
     let el = await driver.elementByXPath("//*[@content-desc='Animation']");
     await el.click();
     await el.click().should.eventually.be.rejectedWith(/no longer attached /);

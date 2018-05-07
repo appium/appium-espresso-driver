@@ -12,4 +12,4 @@ espresso-server/.idea/
 espresso-server/app/build
 node_modules
 build
-package-lock.json
+package-lock.json*
