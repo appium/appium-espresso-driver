@@ -49,6 +49,11 @@ install:
 
   # npm stuff
   - npm install
+
+  # build the server
+  - pushd espresso-server
+  - ./gradlew clean assembleAndroidTest
+  - popd
 before_script:
   - |
     if [ ${START_EMU} = "1" ]; then
