@@ -1,52 +1,83 @@
 language: android
-sudo: false
+dist: precise
 android:
   components:
     # use the latest revision of Android SDK Tools
     - platform-tools
     - tools
-    - build-tools-25.0.3
-    - android-25
+    - build-tools-$ANDROID_BUILD_TOOLS
+    - android-22
+    - android-24
 
     # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
     - extra-android-m2repository
+    - addon-google_apis-google-19
 
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
+    - sys-img-armeabi-v7a-android-24
     - sys-img-armeabi-v7a-android-22
-jdk:
-  - oraclejdk8
 env:
   global:
-    - _FORCE_LOGS=1
+    - NODE_VERSION=6
     - DEVICE=android
+    - START_EMU=1
+    - ANDROID_EMU_NAME=test
+    - ANDROID_EMU_ABI=armeabi-v7a
+    - ANDROID_BUILD_TOOLS=26.0.2
+    - RECURSIVE=1
   matrix:
-    - TEST=unit RECURSIVE=1
-    - TEST=functional RECURSIVE=1
-before_script:
-  # android stuff
-  - android list targets
-  - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
-  - emulator -avd test -no-audio -no-window &
-  # skip waiting for start until after,
-  # since they can happen in parallel
-
+    - TEST=unit START_EMU=0
+    - TEST=functional ANDROID_EMU_TARGET=android-24
+before_install:
+  - |
+    if [ ${START_EMU} = "1" ]; then
+      echo y | android update sdk --no-ui -t platform-tools
+      echo y | android update sdk --no-ui -t tools
+      echo y | android update sdk --no-ui -t ${ANDROID_EMU_TARGET}
+      echo no | android create avd --force -n ${ANDROID_EMU_NAME} -t ${ANDROID_EMU_TARGET} --abi ${ANDROID_EMU_ABI} --sdcard 200M
+      QEMU_AUDIO_DRV=none emulator -avd ${ANDROID_EMU_NAME} -no-window &
+    fi
+install:
   # node stuff
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
-  - nvm install 6
-  - npm install -g gulp
-  - npm install -g mocha
+  - nvm install ${NODE_VERSION}
+  - node --version
+  - npm --version
+
+  # npm stuff
   - npm install
 
-  # build the espresso server
+  # build the server
   - pushd espresso-server
   - ./gradlew clean assembleAndroidTest
   - popd
-
-  # make sure the emulator is up and running
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
+before_script:
+  - |
+    if [ ${START_EMU} = "1" ]; then
+      # make sure emulator started
+      $(npm bin)/android-emu-travis-post
+    fi
 script:
-  - gulp eslint && if [ -n "$RECURSIVE" ]; then mocha -t 240000 --recursive build/test/$TEST -g @skip-ci -i; else mocha -t 240000 build/test/$TEST -g @skip-ci -i; fi
-after_success:
-  - gulp coveralls
+  - |
+    if [ -n "$RECURSIVE" ]; then
+      mocha -t $MOCHA_TIMEOUT --recursive build/test/$TEST -g @skip-ci -i --exit;
+    else
+      mocha -t $MOCHA_TIMEOUT build/test/$TEST -g @skip-ci -i --exit;
+    fi
+after_failure:
+  - |
+    if [ "$TEST" != "unit" ]; then
+      echo -e "----UIAUTOMATOR DUMPS----\n"
+      adb pull /sdcard/hierarchy .
+      for f in ./hierarchy/*.xml
+      do
+        echo -e "Hierarchy dump for $f\n"
+        cat "$f"
+      done
+
+      echo -e "----LOGCAT----\n"
+      cat logcat.txt
+    fi
