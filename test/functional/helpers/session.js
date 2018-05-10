@@ -4,7 +4,7 @@ import { startServer } from '../../..';
 
 const HOST = '0.0.0.0',
       PORT = 4994;
-const MOCHA_TIMEOUT = 60 * 1000 * (process.env.TRAVIS ? 8 : 4);
+const MOCHA_TIMEOUT = 60 * 1000 * (process.env.TRAVIS ? 10 : 4);
 
 let driver, server;
 

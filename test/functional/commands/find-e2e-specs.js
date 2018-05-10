@@ -35,7 +35,7 @@ describe('elementByXPath', function () {
   });
 
   it('should find an element by it\'s xpath', async function () {
-    let el = await driver.elementByXPath("//*[@content-desc='Animation']");
+    let el = await driver.elementByXPath("//*[@text='Animation']");
     el.should.exist;
     await el.click();
   });

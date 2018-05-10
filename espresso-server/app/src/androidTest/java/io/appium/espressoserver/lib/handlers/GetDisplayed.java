@@ -20,6 +20,8 @@ import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
+
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
 
@@ -30,11 +32,10 @@ public class GetDisplayed implements RequestHandler<AppiumParams, Boolean> {
 
     @Override
     public Boolean handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
         try {
-            viewInteraction.check(matches(isDisplayed()));
+            Element.getById(params.getElementId());
             return true;
-        } catch (NoMatchingViewException e) {
+        } catch (StaleElementException e) {
             return false;
         }
     }

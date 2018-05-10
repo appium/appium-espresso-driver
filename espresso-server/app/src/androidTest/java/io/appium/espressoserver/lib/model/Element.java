@@ -29,6 +29,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 
+
 @SuppressWarnings("unused")
 public class Element {
     private final String ELEMENT;
