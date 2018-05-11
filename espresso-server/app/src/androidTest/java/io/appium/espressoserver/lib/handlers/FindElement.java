@@ -29,7 +29,7 @@ import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 import static io.appium.espressoserver.lib.helpers.ViewFinder.findBy;
 
-public class Finder implements RequestHandler<Locator, Element> {
+public class FindElement implements RequestHandler<Locator, Element> {
 
     @Override
     public Element handle(Locator locator) throws AppiumException {

@@ -3,15 +3,15 @@ import chaiAsPromised from 'chai-as-promised';
 import wd from 'wd';
 import { DOMParser } from 'xmldom';
 import xpath from 'xpath';
-import { HOST, PORT, MOCHA_TIMEOUT } from './helpers/session';
-import { APIDEMO_CAPS } from './desired';
-import { startServer } from '../..';
+import { HOST, PORT, MOCHA_TIMEOUT } from '../helpers/session';
+import { APIDEMO_CAPS } from '../desired';
+import { startServer } from '../../..';
 
 
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('createSession', function () {
+describe('source commands', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;

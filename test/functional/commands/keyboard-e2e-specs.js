@@ -7,7 +7,7 @@ import { APIDEMO_CAPS } from '../desired';
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('createSession', function () {
+describe('keyboard', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
@@ -21,7 +21,7 @@ describe('createSession', function () {
     await deleteSession();
   });
 
-  it('should start android session focusing on default activity', async function () {
+  it('should send keys to the correct element', async function () {
     let el = await driver.elementById('id/edit1');
     await el.click();
 
