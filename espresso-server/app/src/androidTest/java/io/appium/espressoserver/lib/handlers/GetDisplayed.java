@@ -33,9 +33,11 @@ public class GetDisplayed implements RequestHandler<AppiumParams, Boolean> {
     @Override
     public Boolean handle(AppiumParams params) throws AppiumException {
         try {
+            // either finish, throw StaleElementException, or throw NoSuchElementException
             Element.getById(params.getElementId());
             return true;
         } catch (StaleElementException e) {
+            // element exists but is not displayed
             return false;
         }
     }

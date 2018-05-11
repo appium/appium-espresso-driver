@@ -65,6 +65,7 @@ before_script:
       $(npm bin)/android-emu-travis-post;
     fi
 script:
+  - npm run lint
   - mocha -t ${MOCHA_TIMEOUT} ${RECURSIVE} build/test/${TEST} -g @skip-ci -i --exit;
 after_failure:
   - |
