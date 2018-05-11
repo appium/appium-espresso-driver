@@ -48,6 +48,7 @@ public enum AppiumStatus {
     MOVE_TARGET_OUT_OF_BOUNDS(34, "Target provided for a move action is out of bounds"),
     JSON_DECODER_ERROR(35, "Could not decode action/params of command, please check format!"),
     INVALID_CONTEXT_ERROR(36, "The operation could not be performed in the current context"),
+    INVALID_ARGUMENT(61, "The arguments passed to the command are either invalid or malformed"),
     UNABLE_TO_CAPTURE_SCREEN_ERROR(63, "Screen capture is not possible");
 
     private final int code;

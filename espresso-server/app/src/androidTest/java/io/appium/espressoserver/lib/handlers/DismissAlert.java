@@ -16,36 +16,17 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.app.Dialog;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject2;
-
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.handlers.exceptions.NoAlertOpenException;
-import io.appium.espressoserver.lib.helpers.Logger;
-import io.appium.espressoserver.lib.model.AppiumParams;
+import io.appium.espressoserver.lib.helpers.AlertHelpers;
+import io.appium.espressoserver.lib.model.AlertParams;
 
-public class DismissAlert implements RequestHandler<AppiumParams, Void> {
+public class DismissAlert implements RequestHandler<AlertParams, Void> {
 
     @Override
-    @Nullable
-    public Void handle(AppiumParams params) throws AppiumException {
+    public Void handle(AlertParams params) throws AppiumException {
         // We use UIA2 here, since Espresso is limited to application sandbox
         // and cannot handle security alerts
-        final UiDevice mDevice = UiDevice
-                .getInstance(InstrumentationRegistry.getInstrumentation());
-        final List<UiObject2> dialogs = mDevice.findObjects(By.clazz(Dialog.class));
-        if (dialogs.isEmpty()) {
-            throw new NoAlertOpenException();
-        }
-        Logger.info("Pressing Back button in order to dismiss the alert");
-        mDevice.pressBack();
+        AlertHelpers.handle(AlertHelpers.AlertAction.DISMISS, params.getButtonLabel());
         return null;
     }
 }

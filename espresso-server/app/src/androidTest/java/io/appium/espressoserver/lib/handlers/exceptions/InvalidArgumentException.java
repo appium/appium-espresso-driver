@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers.exceptions;
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.AlertHelpers;
-import io.appium.espressoserver.lib.model.AlertParams;
+public class InvalidArgumentException extends AppiumException {
 
-public class AcceptAlert implements RequestHandler<AlertParams, Void> {
-
-    @Override
-    public Void handle(AlertParams params) throws AppiumException {
-        // We use UIA2 here, since Espresso is limited to application sandbox
-        // and cannot handle security alerts
-        AlertHelpers.handle(AlertHelpers.AlertAction.ACCEPT, params.getButtonLabel());
-        return null;
+    public InvalidArgumentException(String reason) {
+        super(reason);
     }
+
 }
