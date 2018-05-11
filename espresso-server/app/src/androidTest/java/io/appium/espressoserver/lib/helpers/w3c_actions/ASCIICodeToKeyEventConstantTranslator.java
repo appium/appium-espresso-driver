@@ -69,11 +69,11 @@ public final class ASCIICodeToKeyEventConstantTranslator {
         // Graphic Characters
 
         // '0'-'9'
-        ASCIICodeToKeyEventConstantTranslator._mapCharRange('0', '9', 41);
+        ASCIICodeToKeyEventConstantTranslator.mapCharRange('0', '9', 41);
         // 'A'-'Z'
-        ASCIICodeToKeyEventConstantTranslator._mapCharRange('A', 'Z', 36);
+        ASCIICodeToKeyEventConstantTranslator.mapCharRange('A', 'Z', 36);
         // 'a'-'z'
-        ASCIICodeToKeyEventConstantTranslator._mapCharRange('a', 'z', 68);
+        ASCIICodeToKeyEventConstantTranslator.mapCharRange('a', 'z', 68);
 
         ASCIICodeToKeyEventConstantTranslator._MAP.put(
                 ASCIICharacters.APOSTROPHE, KeyEvent.KEYCODE_APOSTROPHE
@@ -142,7 +142,7 @@ public final class ASCIICodeToKeyEventConstantTranslator {
      * @param offset the offset between the ASCII code and the corresponding key
      *               code constant of <tt>{@link KeyEvent}</tt>
      */
-    private static void _mapCharRange(
+    private static void mapCharRange(
             final char start, final char end, final int offset) {
         int i;
         for (char c = start; c < end; ++c) {
