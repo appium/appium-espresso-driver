@@ -18,20 +18,22 @@ package io.appium.espressoserver.lib.handlers;
 
 import android.support.test.espresso.PerformException;
 import android.support.test.espresso.ViewInteraction;
-
-import javax.annotation.Nullable;
+import android.view.View;
+import android.widget.NumberPicker;
+import android.widget.ProgressBar;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.TextParams;
+import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 import static android.support.test.espresso.action.ViewActions.typeText;
 
 public class SendKeys implements RequestHandler<TextParams, Void> {
 
     @Override
-    @Nullable
     public Void handle(TextParams params) throws AppiumException {
         String id = params.getElementId();
         ViewInteraction viewInteraction = Element.getById(id);
@@ -39,14 +41,29 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
         // Convert the array of text to a String
         String[] textArray = params.getValue();
         StringBuilder stringBuilder = new StringBuilder();
-        for (String text: textArray) {
+        for (String text : textArray) {
             stringBuilder.append(text);
         }
 
-        String textValue = stringBuilder.toString();
+        String value = stringBuilder.toString();
+
+        final View view = new ViewFinder().getView(viewInteraction);
+        try {
+            if (view instanceof ProgressBar) {
+                ((ProgressBar) view).setProgress(Integer.parseInt(value));
+                return null;
+            }
+            if (view instanceof NumberPicker) {
+                ((NumberPicker) view).setValue(Integer.parseInt(value));
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException(String.format("Cannot convert '%s' to an integer",
+                    value));
+        }
 
         try {
-            viewInteraction.perform(typeText(textValue));
+            viewInteraction.perform(typeText(value));
         } catch (PerformException e) {
             throw new InvalidElementStateException("sendKeys", params.getElementId(), e);
         }

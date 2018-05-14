@@ -55,8 +55,7 @@ public class Session {
      * @return Serializable Session object
      * @throws SessionNotCreatedException Thrown if a Session is already running
      */
-    public synchronized static Session createGlobalSession(DesiredCapabilities desiredCapabilities)
-            throws SessionNotCreatedException {
+    public synchronized static Session createGlobalSession(DesiredCapabilities desiredCapabilities) {
         if (globalSession != null) {
             Logger.info(String.format("Got request for new session creation while the one " +
                             "is still in progress. Overriding the old session having id %s",

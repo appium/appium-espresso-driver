@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class RouteDefinitionTest {
     private final RequestHandler<AppiumParams, Void> dummyHandler = new RequestHandler<AppiumParams, Void>() {
         @Override
-        public Void handle(AppiumParams params) throws AppiumException {
+        public Void handle(AppiumParams params) {
             return null;
         }
     };
@@ -47,7 +47,7 @@ public class RouteDefinitionTest {
     }
 
     @Test
-    public void shouldProperlyParamsRoutesToUri() throws Exception {
+    public void shouldProperlyParamsRoutesToUri() {
         assertTrue(routeDefinitionWithZeroParams.isMatch("/hello"));
         assertTrue(routeDefinitionWithZeroParams.isMatch("/hello/"));
         assertFalse(routeDefinitionWithZeroParams.isMatch("/hello/world"));
@@ -67,7 +67,7 @@ public class RouteDefinitionTest {
     }
 
     @Test
-    public void shouldProperlyParseUriParameters() throws Exception {
+    public void shouldProperlyParseUriParameters() {
         assertEquals("something", routeDefinitionWithOneParam.getUriParams("/hello/something/world").get("param"));
         assertTrue("something", routeDefinitionWithZeroParams.getUriParams("/hello").isEmpty());
         assertEquals("p1", routeDefinitionWithTwoParams.getUriParams("/hello/p1/something/p2/world/").get("paramOne"));

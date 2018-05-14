@@ -51,6 +51,7 @@ import io.appium.espressoserver.lib.handlers.SetOrientation;
 import io.appium.espressoserver.lib.handlers.Source;
 import io.appium.espressoserver.lib.handlers.Text;
 import io.appium.espressoserver.lib.handlers.W3CActions;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoAlertOpenException;
@@ -239,6 +240,8 @@ class Router {
             return new AppiumResponse<>(e, AppiumStatus.UNABLE_TO_CAPTURE_SCREEN_ERROR, e.getMessage());
         } catch (InvalidElementStateException e) {
             return new AppiumResponse<>(e, AppiumStatus.INVALID_ELEMENT_STATE, e.getMessage());
+        } catch (InvalidArgumentException e) {
+            return new AppiumResponse<>(e, AppiumStatus.INVALID_ARGUMENT, e.getMessage());
         } catch (AppiumException e) {
             e.printStackTrace();
             return new AppiumResponse<>(e, AppiumStatus.UNKNOWN_ERROR, e.getMessage());

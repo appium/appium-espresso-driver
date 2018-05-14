@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
-
-import android.support.test.espresso.ViewInteraction;
+package io.appium.espressoserver.lib.model;
 
 import javax.annotation.Nullable;
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.model.Element;
-import io.appium.espressoserver.lib.viewaction.ViewTextGetter;
+@SuppressWarnings("unused")
+public class AlertParams extends AppiumParams {
+    private String buttonLabel = null;
 
-public class Text implements RequestHandler<AppiumParams, CharSequence> {
-
-    @Override
     @Nullable
-    public CharSequence handle(AppiumParams params) throws AppiumException {
-        ViewInteraction viewInteraction = Element.getById(params.getElementId());
-        return new ViewTextGetter().get(viewInteraction);
+    public String getButtonLabel() {
+        return buttonLabel;
+    }
+
+    public void setButtonLabel(String buttonLabel) {
+        this.buttonLabel = buttonLabel;
     }
 }

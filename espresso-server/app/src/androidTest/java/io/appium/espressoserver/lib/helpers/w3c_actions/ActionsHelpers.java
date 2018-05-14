@@ -31,7 +31,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -80,6 +82,16 @@ import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants.
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants.POINTER_TYPE_TOUCH;
 
 public class ActionsHelpers {
+    /**
+     * This is necessary to shift the meta codes to avoid
+     * unexpected matches with key codes.
+     * Unfortunately there is no other way to distinguish
+     * key codes from meta codes, since the standard only provides a single field
+     * to keep the value.
+     */
+    public static final int META_CODES_SHIFT = 0x1000;
+    private static final Set<Integer> metaKeyCodes = new HashSet<>();
+
     private static JSONArray preprocessActionItems(final String actionId,
                                                    final String actionType,
                                                    final JSONArray actionItems) throws JSONException {
@@ -565,7 +577,7 @@ public class ActionsHelpers {
                                 ACTION_ITEM_VALUE_KEY, action, action.getString(ACTION_KEY_ID)));
                     }
                     final KeyInputEventParams evtParams = new KeyInputEventParams();
-                    evtParams.keyCode = value.charAt(0);
+                    evtParams.keyCode = value.codePointAt(0);
                     evtParams.keyAction = itemType.equals(ACTION_ITEM_TYPE_KEY_DOWN) ?
                             KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP;
                     evtParams.startDelta = chainEntryPointDelta;
@@ -649,5 +661,23 @@ public class ActionsHelpers {
             result |= metaKey;
         }
         return result;
+    }
+
+    public static Set<Integer> getMetaKeyCodes() {
+        if (metaKeyCodes.isEmpty()) {
+            final Field[] fields = KeyEvent.class.getFields();
+            for (Field field : fields) {
+                if (field.getName().startsWith("META_") && field.getType() == int.class) {
+                    final int metaCode;
+                    try {
+                        metaCode = field.getInt(null);
+                    } catch (IllegalAccessException e) {
+                        continue;
+                    }
+                    metaKeyCodes.add(META_CODES_SHIFT + metaCode);
+                }
+            }
+        }
+        return metaKeyCodes;
     }
 }
