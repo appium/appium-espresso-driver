@@ -47,6 +47,7 @@ import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.MotionInp
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsParseException;
 import io.appium.espressoserver.lib.model.W3CActionsParams;
 
+import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.META_CODES_SHIFT;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.actionsToInputEventsMapping;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.getMetaKeyCodes;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.getPointerAction;
@@ -159,9 +160,9 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
                     final int keyAction = ((KeyInputEventParams) eventParam).keyAction;
                     if (getMetaKeyCodes().contains(keyCode)) {
                         if (keyAction == KeyEvent.ACTION_DOWN) {
-                            depressedMetaKeys.add(keyCode);
+                            depressedMetaKeys.add(keyCode - META_CODES_SHIFT);
                         } else {
-                            depressedMetaKeys.remove(keyCode);
+                            depressedMetaKeys.remove(keyCode - META_CODES_SHIFT);
                         }
                     } else if (keyCode <= 0) {
                         depressedMetaKeys.clear();

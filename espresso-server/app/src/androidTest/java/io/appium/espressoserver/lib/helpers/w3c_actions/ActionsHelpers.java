@@ -82,6 +82,14 @@ import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants.
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants.POINTER_TYPE_TOUCH;
 
 public class ActionsHelpers {
+    /**
+     * This is necessary to shift the meta codes to avoid
+     * unexpected matches with key codes.
+     * Unfortunately there is no other way to distinguish
+     * key codes from meta codes, since the standard only provides a single field
+     * to keep the value.
+     */
+    public static final int META_CODES_SHIFT = 0x1000;
     private static final Set<Integer> metaKeyCodes = new HashSet<>();
 
     private static JSONArray preprocessActionItems(final String actionId,
@@ -569,9 +577,7 @@ public class ActionsHelpers {
                                 ACTION_ITEM_VALUE_KEY, action, action.getString(ACTION_KEY_ID)));
                     }
                     final KeyInputEventParams evtParams = new KeyInputEventParams();
-                    final Integer keyCode = ASCIICodeToKeyEventConstantTranslator
-                            .translate(value.codePointAt(0));
-                    evtParams.keyCode = keyCode == null ? value.codePointAt(0) : keyCode;
+                    evtParams.keyCode = value.codePointAt(0);
                     evtParams.keyAction = itemType.equals(ACTION_ITEM_TYPE_KEY_DOWN) ?
                             KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP;
                     evtParams.startDelta = chainEntryPointDelta;
@@ -668,9 +674,7 @@ public class ActionsHelpers {
                     } catch (IllegalAccessException e) {
                         continue;
                     }
-                    if (ASCIICodeToKeyEventConstantTranslator.translate(metaCode) == null) {
-                        metaKeyCodes.add(metaCode);
-                    }
+                    metaKeyCodes.add(META_CODES_SHIFT + metaCode);
                 }
             }
         }
