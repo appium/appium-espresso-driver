@@ -31,7 +31,7 @@ public class GetName implements RequestHandler<AppiumParams, String> {
     @Override
     @Nullable
     public String handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
+        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
         return viewElement.getContentDescription() == null ?
                 null :

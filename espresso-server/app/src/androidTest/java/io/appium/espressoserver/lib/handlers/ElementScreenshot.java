@@ -28,7 +28,7 @@ public class ElementScreenshot implements RequestHandler<AppiumParams, String> {
 
     @Override
     public String handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
+        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         return new ScreenshotsHelper(new ViewFinder().getView(viewInteraction)).getScreenshot();
     }
 }

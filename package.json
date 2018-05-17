@@ -49,6 +49,7 @@
     "e2e-test": "gulp e2e-test",
     "watch": "gulp watch",
     "coverage": "gulp coveralls",
+    "prepublish": "npm run build:server",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "precommit-test": "REPORTER=dot gulp once",
     "lint": "gulp eslint",

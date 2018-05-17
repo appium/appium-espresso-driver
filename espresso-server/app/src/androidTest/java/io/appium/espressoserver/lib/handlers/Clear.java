@@ -33,7 +33,7 @@ public class Clear implements RequestHandler<AppiumParams, Void> {
     @Override
     @Nullable
     public Void handle(AppiumParams params) throws AppiumException {
-        ViewInteraction viewInteraction = Element.getById(params.getElementId());
+        ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         try {
             viewInteraction.perform(clearText());
         } catch (PerformException e) {

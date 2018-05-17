@@ -172,7 +172,7 @@ public class ActionsHelpers {
         final PointerCoords result = new PointerCoords();
         final Rect bounds;
         try {
-            final ViewInteraction viewInteraction = Element.getById(elementId);
+            final ViewInteraction viewInteraction = Element.getViewInteractionById(elementId);
             final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
             bounds = viewElement.getBounds();
         } catch (Exception e) {

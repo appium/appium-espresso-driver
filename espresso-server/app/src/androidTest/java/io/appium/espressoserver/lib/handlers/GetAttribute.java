@@ -41,7 +41,7 @@ public class GetAttribute implements RequestHandler<AppiumParams, String> {
                     String.format("Attribute name should be one of %s. '%s' is given instead",
                             supportedAttributeNames, attributeName));
         }
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
+        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         if (dstAttribute == ViewAttributesEnum.TEXT) {
             return new ViewTextGetter().get(viewInteraction).toString();
         }

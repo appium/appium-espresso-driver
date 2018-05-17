@@ -29,7 +29,7 @@ public class GetRect implements RequestHandler<AppiumParams, Rect> {
 
     @Override
     public Rect handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
+        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
         final Rect result = new Rect();
         final android.graphics.Rect elementBounds = viewElement.getBounds();

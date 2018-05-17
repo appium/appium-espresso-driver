@@ -18,6 +18,7 @@ package io.appium.espressoserver.lib.model;
 
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
+import android.view.View;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -25,31 +26,37 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
+import io.appium.espressoserver.lib.helpers.Logger;
+import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.Espresso.onView;
+import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
 
 
 @SuppressWarnings("unused")
 public class Element {
     private final String ELEMENT;
-    private final static Map<String, ViewInteraction> cache = new ConcurrentHashMap<>();
+    private final static Map<String, View> cache = new ConcurrentHashMap<>();
 
     public Element (ViewInteraction interaction) {
         ELEMENT = UUID.randomUUID().toString();
-        cache.put(ELEMENT, interaction);
+        View view = (new ViewFinder()).getView(interaction);
+        cache.put(ELEMENT, view);
     }
 
     public String getElementId() {
         return ELEMENT;
     }
 
-    public static ViewInteraction getById(String elementId) throws NoSuchElementException, StaleElementException {
+    public static ViewInteraction getViewInteractionById(String elementId) throws NoSuchElementException, StaleElementException {
+        Logger.info(String.format("Retrieving element %s", elementId));
         if (!exists(elementId)) {
             throw new NoSuchElementException(String.format("Invalid element ID %s", elementId));
         }
-
-        ViewInteraction viewInteraction = cache.get(elementId);
+        View view = cache.get(elementId);
+        ViewInteraction viewInteraction = onView(withView(view));
 
         // Check if the element is stale
         try {

@@ -52,4 +52,9 @@ describe('elementByXPath', function () {
     await el.click();
     await el.click().should.eventually.be.rejectedWith(/no longer attached /);
   });
+  it('should get the isDisplayed attribute on the same element twice', async function () {
+    let el = await driver.elementByXPath("//*[@content-desc='Animation']");
+    await el.isDisplayed().should.eventually.be.true;
+    await el.isDisplayed().should.eventually.be.true;
+  });
 });

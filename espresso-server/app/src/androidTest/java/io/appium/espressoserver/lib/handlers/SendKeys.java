@@ -36,7 +36,7 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
     @Override
     public Void handle(TextParams params) throws AppiumException {
         String id = params.getElementId();
-        ViewInteraction viewInteraction = Element.getById(id);
+        ViewInteraction viewInteraction = Element.getViewInteractionById(id);
 
         // Convert the array of text to a String
         String[] textArray = params.getValue();

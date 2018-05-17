@@ -29,7 +29,7 @@ public class GetSize implements RequestHandler<AppiumParams, Size> {
 
     @Override
     public Size handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
+        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
         final Size result = new Size();
         result.setHeight(viewElement.getBounds().height());

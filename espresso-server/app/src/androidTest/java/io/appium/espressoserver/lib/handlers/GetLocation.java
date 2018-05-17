@@ -29,7 +29,7 @@ public class GetLocation implements RequestHandler<AppiumParams, Location> {
 
     @Override
     public Location handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
+        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
         final Location result = new Location();
         result.setX(viewElement.getBounds().left);

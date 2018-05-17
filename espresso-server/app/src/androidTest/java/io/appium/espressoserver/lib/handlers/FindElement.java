@@ -35,7 +35,7 @@ public class FindElement implements RequestHandler<Locator, Element> {
     public Element handle(Locator locator) throws AppiumException {
         View parentView = null;
         if (locator.getElementId() != null) {
-            parentView = new ViewFinder().getView(Element.getById(locator.getElementId()));
+            parentView = new ViewFinder().getView(Element.getViewInteractionById(locator.getElementId()));
         }
         if (locator.getUsing() == null) {
             throw new InvalidStrategyException("Locator strategy cannot be empty");

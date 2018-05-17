@@ -30,7 +30,7 @@ public class Text implements RequestHandler<AppiumParams, CharSequence> {
     @Override
     @Nullable
     public CharSequence handle(AppiumParams params) throws AppiumException {
-        ViewInteraction viewInteraction = Element.getById(params.getElementId());
+        ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         return new ViewTextGetter().get(viewInteraction);
     }
 }
