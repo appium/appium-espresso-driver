@@ -34,8 +34,7 @@ public class GetOrientation implements RequestHandler<AppiumParams, Integer> {
     @Override
     @Nullable
     public Integer handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
-        final View view = new ViewFinder().getView(viewInteraction);
+        final View view = Element.getViewById(params.getElementId());
         final Activity activity = new ViewElement(view).extractActivity();
         try {
             switch (activity.getRequestedOrientation()) {

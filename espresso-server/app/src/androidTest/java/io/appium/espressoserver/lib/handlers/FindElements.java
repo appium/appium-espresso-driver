@@ -46,13 +46,13 @@ public class FindElements implements RequestHandler<Locator, List<Element>> {
         }
 
         // Get the viewInteractions
-        List<ViewInteraction> viewInteractions = findAllBy(parentView,
+        List<View> views = findAllBy(parentView,
                 locator.getUsing(), locator.getValue());
 
         // Turn it into a list of elements
         List<Element> elements = new ArrayList<>();
-        for (ViewInteraction viewInteraction : viewInteractions) {
-            elements.add(new Element(viewInteraction));
+        for (View view : views) {
+            elements.add(new Element(view));
         }
 
         // If we have a match, return success

@@ -43,14 +43,14 @@ public class FindElement implements RequestHandler<Locator, Element> {
             throw new MissingCommandsException("No locator provided");
         }
         // Test the selector
-        ViewInteraction matcher = findBy(parentView, locator.getUsing(), locator.getValue());
-        if (matcher == null) {
+        View view = findBy(parentView, locator.getUsing(), locator.getValue());
+        if (view == null) {
             throw new NoSuchElementException(
                     String.format("Could not find element with strategy %s and selector %s",
                             locator.getUsing(), locator.getValue()));
         }
 
         // If we have a match, return success
-        return new Element(matcher);
+        return new Element(view);
     }
 }

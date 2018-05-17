@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.support.test.espresso.ViewInteraction;
+import android.view.View;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
@@ -28,10 +29,10 @@ import static io.appium.espressoserver.lib.helpers.ViewFinder.findActive;
 public class FindActive implements RequestHandler<AppiumParams, Element> {
     @Override
     public Element handle(AppiumParams params) throws AppiumException {
-        ViewInteraction matcher = findActive();
-        if (matcher == null) {
+        View view = findActive();
+        if (view == null) {
             throw new NoSuchElementException("No elements are currently focused");
         }
-        return new Element(matcher);
+        return new Element(view);
     }
 }

@@ -37,6 +37,7 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
     public Void handle(TextParams params) throws AppiumException {
         String id = params.getElementId();
         ViewInteraction viewInteraction = Element.getViewInteractionById(id);
+        View view = Element.getViewById(id);
 
         // Convert the array of text to a String
         String[] textArray = params.getValue();
@@ -47,7 +48,6 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
 
         String value = stringBuilder.toString();
 
-        final View view = new ViewFinder().getView(viewInteraction);
         try {
             if (view instanceof ProgressBar) {
                 ((ProgressBar) view).setProgress(Integer.parseInt(value));

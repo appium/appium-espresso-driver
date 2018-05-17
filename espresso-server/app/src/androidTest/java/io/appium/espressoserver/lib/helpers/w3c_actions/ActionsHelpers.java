@@ -26,6 +26,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.MotionEvent.PointerProperties;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -172,8 +173,8 @@ public class ActionsHelpers {
         final PointerCoords result = new PointerCoords();
         final Rect bounds;
         try {
-            final ViewInteraction viewInteraction = Element.getViewInteractionById(elementId);
-            final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
+            final View view = Element.getViewById(elementId);
+            final ViewElement viewElement = new ViewElement(view);
             bounds = viewElement.getBounds();
         } catch (Exception e) {
             throw new ActionsParseException(String.format(

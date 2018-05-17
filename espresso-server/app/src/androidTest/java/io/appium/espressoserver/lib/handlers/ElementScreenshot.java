@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.support.test.espresso.ViewInteraction;
+import android.view.View;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
@@ -28,7 +29,7 @@ public class ElementScreenshot implements RequestHandler<AppiumParams, String> {
 
     @Override
     public String handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
-        return new ScreenshotsHelper(new ViewFinder().getView(viewInteraction)).getScreenshot();
+        final View view = Element.getViewById(params.getElementId());
+        return new ScreenshotsHelper(view).getScreenshot();
     }
 }
