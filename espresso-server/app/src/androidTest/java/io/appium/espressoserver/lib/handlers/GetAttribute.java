@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.support.test.espresso.ViewInteraction;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +42,12 @@ public class GetAttribute implements RequestHandler<AppiumParams, String> {
                     String.format("Attribute name should be one of %s. '%s' is given instead",
                             supportedAttributeNames, attributeName));
         }
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
+        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
+        final View view = Element.getViewById(params.getElementId());
         if (dstAttribute == ViewAttributesEnum.TEXT) {
             return new ViewTextGetter().get(viewInteraction).toString();
         }
-        final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
+        final ViewElement viewElement = new ViewElement(view);
         switch (dstAttribute) {
             case CONTENT_DESC:
                 return viewElement.getContentDescription() == null ?

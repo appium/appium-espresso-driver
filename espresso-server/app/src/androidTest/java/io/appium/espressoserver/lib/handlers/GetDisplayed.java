@@ -16,17 +16,11 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.support.test.espresso.NoMatchingViewException;
-import android.support.test.espresso.ViewInteraction;
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
-
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 
 public class GetDisplayed implements RequestHandler<AppiumParams, Boolean> {
 
@@ -34,7 +28,7 @@ public class GetDisplayed implements RequestHandler<AppiumParams, Boolean> {
     public Boolean handle(AppiumParams params) throws AppiumException {
         try {
             // either finish, throw StaleElementException, or throw NoSuchElementException
-            Element.getById(params.getElementId());
+            Element.getViewInteractionById(params.getElementId());
             return true;
         } catch (StaleElementException e) {
             // element exists but is not displayed

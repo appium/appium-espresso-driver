@@ -35,7 +35,7 @@ public class FindElement implements RequestHandler<Locator, Element> {
     public Element handle(Locator locator) throws AppiumException {
         View parentView = null;
         if (locator.getElementId() != null) {
-            parentView = new ViewFinder().getView(Element.getById(locator.getElementId()));
+            parentView = new ViewFinder().getView(Element.getViewInteractionById(locator.getElementId()));
         }
         if (locator.getUsing() == null) {
             throw new InvalidStrategyException("Locator strategy cannot be empty");
@@ -43,14 +43,14 @@ public class FindElement implements RequestHandler<Locator, Element> {
             throw new MissingCommandsException("No locator provided");
         }
         // Test the selector
-        ViewInteraction matcher = findBy(parentView, locator.getUsing(), locator.getValue());
-        if (matcher == null) {
+        View view = findBy(parentView, locator.getUsing(), locator.getValue());
+        if (view == null) {
             throw new NoSuchElementException(
                     String.format("Could not find element with strategy %s and selector %s",
                             locator.getUsing(), locator.getValue()));
         }
 
         // If we have a match, return success
-        return new Element(matcher);
+        return new Element(view);
     }
 }

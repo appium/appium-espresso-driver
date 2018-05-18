@@ -52,7 +52,7 @@ import static org.hamcrest.Matchers.endsWith;
 public class ViewFinder {
 
     @Nullable
-    public static ViewInteraction findBy(Strategy strategy, String selector)
+    public static View findBy(Strategy strategy, String selector)
             throws InvalidStrategyException, XPathLookupException {
         return findBy(null, strategy, selector);
     }
@@ -69,10 +69,10 @@ public class ViewFinder {
      * @throws XPathLookupException
      */
     @Nullable
-    public static ViewInteraction findBy(
+    public static View findBy(
             @Nullable View root, Strategy strategy, String selector)
             throws InvalidStrategyException, XPathLookupException {
-        List<ViewInteraction> viewInteractions = findAllBy(root, strategy, selector, true);
+        List<View> viewInteractions = findAllBy(root, strategy, selector, true);
         if (viewInteractions.isEmpty()) {
             return null;
         }
@@ -80,7 +80,7 @@ public class ViewFinder {
     }
 
     @Nullable
-    public static List<ViewInteraction> findAllBy(Strategy strategy, String selector)
+    public static List<View> findAllBy(Strategy strategy, String selector)
             throws InvalidStrategyException, XPathLookupException {
         return findAllBy(null, strategy, selector, false);
     }
@@ -96,7 +96,7 @@ public class ViewFinder {
      * @throws InvalidStrategyException
      * @throws XPathLookupException
      */
-    public static List<ViewInteraction> findAllBy(@Nullable View root,
+    public static List<View> findAllBy(@Nullable View root,
                                                   Strategy strategy, String selector)
             throws InvalidStrategyException, XPathLookupException {
         return findAllBy(root, strategy, selector, false);
@@ -109,8 +109,8 @@ public class ViewFinder {
      * @return focused element instance or null
      */
     @Nullable
-    public static ViewInteraction findActive() {
-        List<ViewInteraction> viewInteractions = getViewInteractions(null,
+    public static View findActive() {
+        List<View> views = getViews(null,
                 new TypeSafeMatcher<View>() {
                     @Override
                     protected boolean matchesSafely(View item) {
@@ -123,17 +123,17 @@ public class ViewFinder {
                     }
                 },
                 true);
-        if (viewInteractions.isEmpty()) {
+        if (views.isEmpty()) {
             return null;
         }
-        return viewInteractions.get(0);
+        return views.get(0);
     }
 
     ///Find By different strategies
-    private static List<ViewInteraction> findAllBy(@Nullable View root,
+    private static List<View> findAllBy(@Nullable View root,
                                                    Strategy strategy, String selector, boolean findOne)
             throws InvalidStrategyException, XPathLookupException {
-        List<ViewInteraction> matcher;
+        List<View> views;
 
         switch (strategy) {
             case ID: // with ID
@@ -143,49 +143,53 @@ public class ViewFinder {
                 int id = context.getResources().getIdentifier(selector, "Id",
                         InstrumentationRegistry.getTargetContext().getPackageName());
 
-                matcher = getViewInteractions(root, withId(id), findOne);
+                views = getViews(root, withId(id), findOne);
                 break;
             case CLASS_NAME:
                 // with class name
                 // TODO: improve this finder with instanceOf
-                matcher = getViewInteractions(root, withClassName(endsWith(selector)), findOne);
+                views = getViews(root, withClassName(endsWith(selector)), findOne);
                 break;
             case TEXT:
                 // with text
-                matcher = getViewInteractions(root, withText(selector), findOne);
+                views = getViews(root, withText(selector), findOne);
                 break;
             case ACCESSIBILITY_ID:
                 // with content description
-                matcher = getViewInteractions(root, withContentDescription(selector), findOne);
+                views = getViews(root, withContentDescription(selector), findOne);
                 break;
             case XPATH:
                 // If we're only looking for one item that matches xpath, pass it index 0 or else
                 // Espresso throws an AmbiguousMatcherException
                 if (findOne) {
-                    matcher = getViewInteractions(root, withXPath(selector, 0), true);
+                    views = getViews(root, withXPath(selector, 0), true);
                 } else {
-                    matcher = getViewInteractions(root, withXPath(selector), false);
+                    views = getViews(root, withXPath(selector), false);
                 }
                 break;
             default:
                 throw new InvalidStrategyException(String.format("Strategy is not implemented: %s", strategy.getStrategyName()));
         }
 
-        return matcher;
+        return views;
     }
 
-    private static List<ViewInteraction> getViewInteractions(
+    private static List<View> getViews(
             @Nullable View root, Matcher<View> matcher, boolean findOne) {
         // If it's just one view we want, return a singleton list
         if (findOne) {
             try {
+                ViewInteraction interaction;
                 if (root == null) {
-                    return Collections.singletonList(onView(withIndex(matcher, 0)));
+                    interaction = onView(withIndex(matcher, 0));
+                } else {
+                    interaction = onView(withIndex(matcher, 0)).inRoot(withDecorView(is(root)));
                 }
-                return Collections.singletonList(
-                        onView(withIndex(matcher, 0)).inRoot(withDecorView(is(root)))
-                );
+                View view = (new io.appium.espressoserver.lib.viewaction.ViewFinder()).getView(interaction);
+                return Collections.singletonList(view);
             } catch (NoMatchingViewException e) {
+                return Collections.emptyList();
+            } catch (Exception e) {
                 return Collections.emptyList();
             }
         }
@@ -193,7 +197,7 @@ public class ViewFinder {
         // If we want all views that match the criteria, start looking for ViewInteractions by
         // index and add each match to the List. As soon as we find no match, break the loop
         // and return the list
-        List<ViewInteraction> viewInteractions = new ArrayList<>();
+        List<View> viewInteractions = new ArrayList<>();
         int i = 0;
         do {
             try {
@@ -204,7 +208,8 @@ public class ViewFinder {
                     viewInteraction = onView(withIndex(matcher, i++))
                             .inRoot(withDecorView(is(root)));
                 }
-                viewInteractions.add(viewInteraction);
+                View view = (new io.appium.espressoserver.lib.viewaction.ViewFinder()).getView(viewInteraction);
+                viewInteractions.add(view);
             } catch (NoMatchingViewException e) {
                 return viewInteractions;
             }

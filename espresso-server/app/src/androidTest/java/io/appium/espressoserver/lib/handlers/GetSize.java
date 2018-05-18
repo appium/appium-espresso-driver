@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.support.test.espresso.ViewInteraction;
+import android.view.View;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
@@ -29,8 +30,8 @@ public class GetSize implements RequestHandler<AppiumParams, Size> {
 
     @Override
     public Size handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
-        final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
+        final View view = Element.getViewById(params.getElementId());
+        final ViewElement viewElement = new ViewElement(view);
         final Size result = new Size();
         result.setHeight(viewElement.getBounds().height());
         result.setWidth(viewElement.getBounds().width());

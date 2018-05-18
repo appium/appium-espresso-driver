@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.support.test.espresso.ViewInteraction;
+import android.view.View;
 
 import javax.annotation.Nullable;
 
@@ -31,8 +32,8 @@ public class GetName implements RequestHandler<AppiumParams, String> {
     @Override
     @Nullable
     public String handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
-        final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
+        final View view = Element.getViewById(params.getElementId());
+        final ViewElement viewElement = new ViewElement(view);
         return viewElement.getContentDescription() == null ?
                 null :
                 viewElement.getContentDescription().toString();

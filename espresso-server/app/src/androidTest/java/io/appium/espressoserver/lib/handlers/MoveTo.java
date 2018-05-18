@@ -29,7 +29,7 @@ public class MoveTo implements RequestHandler<MoveToParams, Void> {
     @Override
     public Void handle(MoveToParams params) throws AppiumException {
         // Get a reference to the view and call onData. This will automatically scroll to the view.
-        ViewInteraction viewInteraction = Element.getById(params.getElementId());
+        ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
 
         try {
             // Try performing espresso's scrollTo, which will only work if

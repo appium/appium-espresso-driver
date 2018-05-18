@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.support.test.espresso.ViewInteraction;
+import android.view.View;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
@@ -29,8 +30,8 @@ public class GetRect implements RequestHandler<AppiumParams, Rect> {
 
     @Override
     public Rect handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
-        final ViewElement viewElement = new ViewElement(new ViewFinder().getView(viewInteraction));
+        final View view = Element.getViewById(params.getElementId());
+        final ViewElement viewElement = new ViewElement(view);
         final Rect result = new Rect();
         final android.graphics.Rect elementBounds = viewElement.getBounds();
         result.setX(elementBounds.left);

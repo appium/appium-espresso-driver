@@ -30,7 +30,7 @@ public class GetSelected implements RequestHandler<AppiumParams, Boolean> {
 
     @Override
     public Boolean handle(AppiumParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getById(params.getElementId());
+        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         try {
             viewInteraction.check(matches(isSelected()));
             return true;
