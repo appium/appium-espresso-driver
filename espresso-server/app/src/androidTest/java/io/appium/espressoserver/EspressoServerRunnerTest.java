@@ -40,8 +40,11 @@ public class EspressoServerRunnerTest {
     @Test
     public void startEspressoServer() throws InterruptedException, IOException, DuplicateRouteException {
         new Server();
-        // TODO: Figure out how to keep Runner open forever
-        Thread.sleep(3000000);
         assertEquals(true, true); // Keep Codacy happy
+
+        // The server should run permanently. The test is only closed
+        while (true) {
+            Thread.sleep(Long.MAX_VALUE);
+        }
     }
 }
