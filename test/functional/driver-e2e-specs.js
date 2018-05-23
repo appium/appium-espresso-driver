@@ -57,9 +57,16 @@ describe('createSession', function () {
       appPackage: 'com.android.settings'
     }, APIDEMO_CAPS)).should.eventually.be.rejectedWith(/does not have a signature matching/i);
   });
-  it.skip('should start new activity', async function () {
-    await driver.init(APIDEMO_CAPS);
-    await driver.startActivity({appActivity: '.accessibility.AccessibilityNodeProviderActivity'});
-    await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
+  describe('.startActivity', function () {
+    it('should start activity by name', async function () {
+      await driver.init(APIDEMO_CAPS);
+      await driver.startActivity({appActivity: '.accessibility.AccessibilityNodeProviderActivity'});
+      await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
+    });
+    it('should start activity by fully-qualified name', async function () {
+      await driver.init(APIDEMO_CAPS);
+      await driver.startActivity({appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity'});
+      await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
+    });
   });
 });

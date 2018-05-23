@@ -37,24 +37,11 @@ public class CreateSession implements RequestHandler<SessionParams, Session> {
         String activityName = params.getDesiredCapabilities().getAppActivity();
         try {
             if (activityName != null) { // TODO: Remove this, using it now for testing purposes
-                startActivity(activityName);
+                StartActivity.startActivity(activityName, true);
             }
         } catch (RuntimeException e) {
             throw new SessionNotCreatedException(e.getCause().toString());
         }
         return appiumSession;
-    }
-
-    private void startActivity(String appActivity) {
-        Logger.info(String.format("Starting activity '%s'", appActivity));
-        Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
-        ActivityMonitor mSessionMonitor = mInstrumentation.addMonitor(appActivity, null, false);
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClassName(mInstrumentation.getTargetContext(), appActivity);
-        mInstrumentation.startActivitySync(intent);
-
-        Activity mCurrentActivity = mInstrumentation.waitForMonitor(mSessionMonitor);
-        Logger.info(String.format("Activity '%s' started", mCurrentActivity.getLocalClassName()));
     }
 }

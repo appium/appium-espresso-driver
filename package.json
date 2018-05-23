@@ -41,7 +41,7 @@
     "yargs": "^11.0.0"
   },
   "scripts": {
-    "build": "gulp transpile",
+    "build": "gulp transpile && npm run build:server",
     "build:server": "cd espresso-server && ./gradlew clean assembleAndroidTest && cd ..",
     "mocha": "mocha",
     "test": "gulp once",
