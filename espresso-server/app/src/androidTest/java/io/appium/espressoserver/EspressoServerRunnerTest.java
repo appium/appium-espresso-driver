@@ -40,11 +40,10 @@ public class EspressoServerRunnerTest {
     @Test
     public void startEspressoServer() throws InterruptedException, IOException, DuplicateRouteException {
         new Server();
-        assertEquals(true, true); // Keep Codacy happy
 
-        // The server should run permanently. The test is only closed
-        while (true) {
-            Thread.sleep(Long.MAX_VALUE);
-        }
+        // The server should run permanently. The test gets closed externally.
+        Thread.sleep(Long.MAX_VALUE);
+
+        assertEquals(true, true); // Keep Codacy happy
     }
 }
