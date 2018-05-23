@@ -7,7 +7,7 @@ import { APIDEMO_CAPS } from '../desired';
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('moveTo', function () {
+describe('moveTo @skip-ci', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
