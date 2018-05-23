@@ -6,6 +6,7 @@ const GENERIC_CAPS = {
   deviceName: 'Android',
   platformName: 'Android',
   forceEspressoRebuild: true,
+  adbExecTimeout: process.env.CI ? 120000 : 20000,
 };
 
 const APIDEMO_CAPS = Object.assign({}, GENERIC_CAPS, {app});
