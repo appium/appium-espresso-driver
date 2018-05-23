@@ -57,4 +57,12 @@ describe('elementByXPath', function () {
     await el.isDisplayed().should.eventually.be.true;
     await el.isDisplayed().should.eventually.be.true;
   });
+  it('should match an element if the element is off-screen but has an accessibility id', async function () {
+    let el = await driver.elementByAccessibilityId('Views');
+    await el.click();
+
+    // Click on an element that is at the bottom of the list
+    let moveToEl = await driver.elementByAccessibilityId('WebView');
+    await moveToEl.click();
+  });
 });
