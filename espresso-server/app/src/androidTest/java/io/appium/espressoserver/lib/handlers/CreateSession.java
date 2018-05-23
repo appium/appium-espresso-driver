@@ -40,7 +40,7 @@ public class CreateSession implements RequestHandler<SessionParams, Session> {
                 startActivity(activityName);
             }
         } catch (RuntimeException e) {
-            throw new SessionNotCreatedException(e.getMessage());
+            throw new SessionNotCreatedException(e.getCause().toString());
         }
         return appiumSession;
     }
