@@ -135,7 +135,7 @@ public class SourceDocument {
         }
 
         // If it's an AdapterView, get the adapters as a String
-        try {
+        if (view instanceof AdapterView) {
             AdapterView adapterView = (AdapterView) view;
             Adapter adapter = adapterView.getAdapter();
             StringBuilder adapterData = new StringBuilder();
@@ -148,30 +148,11 @@ public class SourceDocument {
 
                 // Get the type of the adapter item
                 if (i == 0) {
-                    String adapterItemType = "Object";
-                    if (adapterItem instanceof Map) {
-                        adapterItemType = "Map";
-                    } else if (adapterItem instanceof String) {
-                        adapterItemType = "String";
-                    } else if (adapterItem instanceof Integer) {
-                        adapterItemType = "Integer";
-                    } else if (adapterItem instanceof Number) {
-                        adapterItemType = "Number";
-                    } else if (adapterItem instanceof Boolean) {
-                        adapterItemType = "Boolean";
-                    } else if (adapterItem instanceof Collection) {
-                        adapterItemType = "Collection";
-                    } else if (adapter instanceof CursorAdapter) {
-                        adapterItemType = "Cursor";
-                    }
-
-                    setAttribute(element, ViewAttributesEnum.ADAPTER_TYPE, adapterItemType);
+                    setAttribute(element, ViewAttributesEnum.ADAPTER_TYPE, adapterItem.getClass().getSimpleName());
                 }
                 setAttribute(element, ViewAttributesEnum.ADAPTERS, adapterData);
 
             }
-        } catch (ClassCastException cce) {
-            // Do nothing
         }
 
         // If cacheElementReferences == true, then cache a reference to the View

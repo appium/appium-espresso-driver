@@ -204,9 +204,9 @@ public class ViewFinder {
             dataInteraction.check(matches(isDisplayed()));
         } catch (Exception e) {
             return false;
-        } finally {
-            return true;
         }
+
+        return true;
     }
 
     private static List<View> getViews(

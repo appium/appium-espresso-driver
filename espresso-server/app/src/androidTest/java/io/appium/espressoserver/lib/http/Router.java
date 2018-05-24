@@ -134,8 +134,6 @@ class Router {
 
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/press_keycode", new PressKeyCode(), KeyEventParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/long_press_keycode", new LongPressKeyCode(), KeyEventParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/start_activity", new StartActivity(), StartActivityParams.class));
-
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/click", new NotYetImplemented(), AppiumParams.class));
