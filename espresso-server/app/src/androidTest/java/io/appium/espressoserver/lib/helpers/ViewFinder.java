@@ -171,17 +171,8 @@ public class ViewFinder {
 
                 // If the item is not found on the screen, use 'onData' to try
                 // to scroll it into view and then locate it again
-                if (views.isEmpty()) {
-                    try {
-                        DataInteraction dataInteraction = onData(
-                                hasEntry(Matchers.equalTo("contentDescription"), is(selector))
-                        );
-                        dataInteraction.check(matches(isDisplayed()));
-                    } catch (Exception e) {
-                        // Didn't find it. Don't do anything
-                    } finally {
-                        views = getViews(root, withContentDescription(selector), findOne);
-                    }
+                if (views.isEmpty() && canScrollToViewWithContentDescription(selector)) {
+                    views = getViews(root, withContentDescription(selector), findOne);
                 }
                 break;
             case XPATH:
@@ -198,6 +189,24 @@ public class ViewFinder {
         }
 
         return views;
+    }
+
+    /**
+     * Attempts to scroll to a view with the content description using onData
+     * @param contentDesc Content description
+     * @return
+     */
+    private static boolean canScrollToViewWithContentDescription (String contentDesc) {
+        try {
+            DataInteraction dataInteraction = onData(
+                    hasEntry(Matchers.equalTo("contentDescription"), is(contentDesc))
+            );
+            dataInteraction.check(matches(isDisplayed()));
+        } catch (Exception e) {
+            return false;
+        } finally {
+            return true;
+        }
     }
 
     private static List<View> getViews(
