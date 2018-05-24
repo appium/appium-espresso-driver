@@ -1,6 +1,7 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import wd from 'wd';
+import path from 'path';
 import { DOMParser } from 'xmldom';
 import xpath from 'xpath';
 import { HOST, PORT, MOCHA_TIMEOUT } from '../helpers/session';
@@ -18,8 +19,6 @@ describe('source commands', function () {
   let server;
   before(async function () {
     server = await startServer(PORT, HOST);
-    driver = wd.promiseChainRemote(HOST, PORT);
-    await driver.init(APIDEMO_CAPS);
   });
   after(async function () {
     try {
@@ -32,8 +31,24 @@ describe('source commands', function () {
     } catch (ign) {}
   });
   it('should get sourceXML, parse it, and find a node by xpath', async function () {
+    driver = wd.promiseChainRemote(HOST, PORT);
+    await driver.init(APIDEMO_CAPS);
     const sourceXML = await driver.source();
     sourceXML.should.be.a.string;
+    const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
+    const node = xpath.select('//*[content-desc=Animation]', doc);
+    node.should.exist;
+  });
+  it.only('should get sourceXML from a react native app and have view-tag', async function () {
+    driver = wd.promiseChainRemote(HOST, PORT);
+    await driver.init({
+      ...APIDEMO_CAPS,
+      app: path.resolve(__dirname, '..', '..', 'assets', 'ReactNativeApp.apk'),
+    });
+    const sourceXML = await driver.source();
+    sourceXML.should.be.a.string;
+    console.log('#####', sourceXML);
+    process.exit();
     const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
     const node = xpath.select('//*[content-desc=Animation]', doc);
     node.should.exist;

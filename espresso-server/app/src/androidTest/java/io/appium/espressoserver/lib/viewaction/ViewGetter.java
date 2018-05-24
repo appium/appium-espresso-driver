@@ -32,7 +32,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
  * Get a View in an the Android App
  * Hack solution that makes use of Espresso ViewActions
  */
-public class ViewFinder {
+public class ViewGetter {
     private final View[] views = {null};
 
     /**

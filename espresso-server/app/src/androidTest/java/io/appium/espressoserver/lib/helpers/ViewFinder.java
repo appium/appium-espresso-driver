@@ -37,6 +37,7 @@ import javax.annotation.Nullable;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.Strategy;
+import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -214,7 +215,7 @@ public class ViewFinder {
                 } else {
                     interaction = onView(withIndex(matcher, 0)).inRoot(withDecorView(is(root)));
                 }
-                View view = (new io.appium.espressoserver.lib.viewaction.ViewFinder()).getView(interaction);
+                View view = (new ViewGetter()).getView(interaction);
                 return Collections.singletonList(view);
             } catch (NoMatchingViewException e) {
                 return Collections.emptyList();
@@ -237,7 +238,7 @@ public class ViewFinder {
                     viewInteraction = onView(withIndex(matcher, i++))
                             .inRoot(withDecorView(is(root)));
                 }
-                View view = (new io.appium.espressoserver.lib.viewaction.ViewFinder()).getView(viewInteraction);
+                View view = (new ViewGetter()).getView(viewInteraction);
                 viewInteractions.add(view);
             } catch (NoMatchingViewException e) {
                 return viewInteractions;

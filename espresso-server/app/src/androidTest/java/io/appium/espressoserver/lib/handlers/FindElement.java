@@ -24,7 +24,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.MissingCommandsException
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.Locator;
-import io.appium.espressoserver.lib.viewaction.ViewFinder;
+import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
 import static io.appium.espressoserver.lib.helpers.ViewFinder.findBy;
 
@@ -34,7 +34,7 @@ public class FindElement implements RequestHandler<Locator, Element> {
     public Element handle(Locator locator) throws AppiumException {
         View parentView = null;
         if (locator.getElementId() != null) {
-            parentView = new ViewFinder().getView(Element.getViewInteractionById(locator.getElementId()));
+            parentView = new ViewGetter().getView(Element.getViewInteractionById(locator.getElementId()));
         }
         if (locator.getUsing() == null) {
             throw new InvalidStrategyException("Locator strategy cannot be empty");

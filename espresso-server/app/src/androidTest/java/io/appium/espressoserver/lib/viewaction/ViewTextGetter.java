@@ -27,7 +27,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 
 public class ViewTextGetter {
     public CharSequence get(ViewInteraction viewInteraction) throws AppiumException {
-        final View view = new ViewFinder().getView(viewInteraction);
+        final View view = new ViewGetter().getView(viewInteraction);
         if (view instanceof ProgressBar) {
             return Integer.toString(((ProgressBar) view).getProgress());
         }

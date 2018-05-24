@@ -19,12 +19,12 @@ package io.appium.espressoserver.lib.handlers;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
 import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.viewaction.ViewFinder;
+import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
 public class Screenshot implements RequestHandler<AppiumParams, String> {
 
     @Override
     public String handle(AppiumParams params) throws AppiumException {
-        return new ScreenshotsHelper(new ViewFinder().getRootView()).getScreenshot();
+        return new ScreenshotsHelper(new ViewGetter().getRootView()).getScreenshot();
     }
 }
