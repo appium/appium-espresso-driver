@@ -27,7 +27,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.TextParams;
-import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 import static android.support.test.espresso.action.ViewActions.typeText;
 

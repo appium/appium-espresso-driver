@@ -23,7 +23,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-
 import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;

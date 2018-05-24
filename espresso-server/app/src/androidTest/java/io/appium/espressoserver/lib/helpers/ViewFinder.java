@@ -18,12 +18,14 @@ package io.appium.espressoserver.lib.helpers;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.DataInteraction;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 import android.view.View;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 
 import java.util.ArrayList;
@@ -36,8 +38,11 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.Strategy;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -45,6 +50,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasEntry;
 
 /**
  * Helper methods to find elements based on locator strategies and selectors
@@ -155,8 +161,13 @@ public class ViewFinder {
                 views = getViews(root, withText(selector), findOne);
                 break;
             case ACCESSIBILITY_ID:
-                // with content description
                 views = getViews(root, withContentDescription(selector), findOne);
+
+                // If the item is not found on the screen, use 'onData' to try
+                // to scroll it into view and then locate it again
+                if (views.isEmpty() && canScrollToViewWithContentDescription(selector)) {
+                    views = getViews(root, withContentDescription(selector), findOne);
+                }
                 break;
             case XPATH:
                 // If we're only looking for one item that matches xpath, pass it index 0 or else
@@ -172,6 +183,24 @@ public class ViewFinder {
         }
 
         return views;
+    }
+
+    /**
+     * Attempts to scroll to a view with the content description using onData
+     * @param contentDesc Content description
+     * @return
+     */
+    private static boolean canScrollToViewWithContentDescription (String contentDesc) {
+        try {
+            DataInteraction dataInteraction = onData(
+                    hasEntry(Matchers.equalTo("contentDescription"), is(contentDesc))
+            );
+            dataInteraction.check(matches(isDisplayed()));
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
     }
 
     private static List<View> getViews(

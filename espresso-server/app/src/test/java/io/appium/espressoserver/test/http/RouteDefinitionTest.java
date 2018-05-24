@@ -1,15 +1,16 @@
 package io.appium.espressoserver.test.http;
 
-import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.lib.handlers.RequestHandler;
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.http.RouteDefinition;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import fi.iki.elonen.NanoHTTPD;
+import io.appium.espressoserver.lib.handlers.RequestHandler;
+import io.appium.espressoserver.lib.http.RouteDefinition;
+import io.appium.espressoserver.lib.model.AppiumParams;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 public class RouteDefinitionTest {

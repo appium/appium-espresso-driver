@@ -21,6 +21,8 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.ws.rs.core.MediaType;
+
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.helpers.Logger;
@@ -28,7 +30,6 @@ import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.http.response.ErrorResponse;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.gsonadapters.AppiumStatusAdapter;
-import javax.ws.rs.core.MediaType;
 
 public class Server extends NanoHTTPD {
 

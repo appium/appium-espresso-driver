@@ -18,7 +18,6 @@ package io.appium.espressoserver.lib.handlers;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
-
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
 

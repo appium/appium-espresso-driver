@@ -18,10 +18,12 @@ package io.appium.espressoserver.lib.handlers;
 
 import android.support.test.espresso.PerformException;
 import android.support.test.espresso.ViewInteraction;
+
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.MoveToParams;
 import io.appium.espressoserver.lib.viewaction.ScrollTo;
+
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 
 public class MoveTo implements RequestHandler<MoveToParams, Void> {

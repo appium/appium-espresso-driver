@@ -7,7 +7,7 @@
     "automated testing",
     "android"
   ],
-  "version": "1.0.0-beta.10",
+  "version": "1.0.0-beta.11",
   "author": "appium",
   "license": "Apache-2.0",
   "repository": {
@@ -41,7 +41,7 @@
     "yargs": "^11.0.0"
   },
   "scripts": {
-    "build": "gulp transpile",
+    "build": "gulp transpile && npm run build:server",
     "build:server": "cd espresso-server && ./gradlew clean assembleAndroidTest && cd ..",
     "mocha": "mocha",
     "test": "gulp once",
