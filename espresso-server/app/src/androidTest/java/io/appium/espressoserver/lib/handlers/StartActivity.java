@@ -38,7 +38,6 @@ import static android.support.test.espresso.action.ViewActions.click;
 public class StartActivity implements RequestHandler<StartActivityParams, Void> {
 
     @Override
-    @Nullable
     public Void handle(StartActivityParams params) throws AppiumException {
         StartActivity.startActivity(params.getAppActivity(), false);
         return null;
@@ -62,7 +61,8 @@ public class StartActivity implements RequestHandler<StartActivityParams, Void> 
         if (appActivity.startsWith(".")) {
             fullyQualifiedAppActivity = context.getPackageName() + appActivity;
         }
-        intent.setClassName(mInstrumentation.getTargetContext(), fullyQualifiedAppActivity);
+        intent.setClassName(mInstrumentation.getTargetContext(), fullyQualifiedAppActivity)
+        ;
         mInstrumentation.startActivitySync(intent);
 
         if (waitForActivity) {
