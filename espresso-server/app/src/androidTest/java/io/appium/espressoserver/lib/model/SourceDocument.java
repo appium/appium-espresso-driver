@@ -18,6 +18,11 @@ package io.appium.espressoserver.lib.model;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.CheckedTextView;
+import android.widget.CursorAdapter;
+import android.widget.ListView;
 
 import org.apache.xml.utils.XMLChar;
 import org.w3c.dom.*;
@@ -25,6 +30,7 @@ import org.w3c.dom.Element;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +52,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
+import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 public class SourceDocument {
@@ -125,6 +132,26 @@ public class SourceDocument {
             doc.appendChild(element);
         } else {
             parentElement.appendChild(element);
+        }
+
+        // If it's an AdapterView, get the adapters as a String
+        if (view instanceof AdapterView) {
+            AdapterView adapterView = (AdapterView) view;
+            Adapter adapter = adapterView.getAdapter();
+            StringBuilder adapterData = new StringBuilder();
+            for (int i = 0; i < adapter.getCount(); i++) {
+                Object adapterItem = adapter.getItem(i);
+                adapterData.append(adapterItem);
+                if (i < adapter.getCount() - 1) {
+                    adapterData.append(",");
+                }
+
+                // Get the type of the adapter item
+                if (i == 0) {
+                    setAttribute(element, ViewAttributesEnum.ADAPTER_TYPE, adapterItem.getClass().getSimpleName());
+                }
+                setAttribute(element, ViewAttributesEnum.ADAPTERS, adapterData);
+            }
         }
 
         // If cacheElementReferences == true, then cache a reference to the View

@@ -36,7 +36,9 @@ public enum ViewAttributesEnum {
     BOUNDS,
     RESOURCE_ID,
     INSTANCE,
-    INDEX;
+    INDEX,
+    ADAPTERS,
+    ADAPTER_TYPE;
 
 
     @Override

@@ -13,7 +13,7 @@ describe('keyboard', function () {
   let driver;
   before(async function () {
     let caps = Object.assign({
-      appActivity: 'io.appium.android.apis.view.TextFields'
+      appActivity: 'io.appium.android.apis.view.AutoComplete4'
     }, APIDEMO_CAPS);
     driver = await initSession(caps);
   });
@@ -22,7 +22,7 @@ describe('keyboard', function () {
   });
 
   it('should send keys to the correct element', async function () {
-    let el = await driver.elementById('id/edit1');
+    let el = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
     await el.click();
 
     try {
