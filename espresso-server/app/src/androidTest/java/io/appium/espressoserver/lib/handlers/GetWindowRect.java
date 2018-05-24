@@ -36,16 +36,17 @@ public class GetWindowRect implements RequestHandler<AppiumParams, WindowRect> {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         WindowManager winManager = (WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
 
-        winManager.getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
+        if (winManager != null) {
+            winManager.getDefaultDisplay().getMetrics(displayMetrics);
 
-        final WindowRect windowRect = new WindowRect();
-        windowRect.setHeight(height);
-        windowRect.setWidth(width);
-        windowRect.setX(0);
-        windowRect.setY(0);
-
-        return windowRect;
+            final WindowRect windowRect = new WindowRect();
+            windowRect.setHeight(displayMetrics.heightPixels);
+            windowRect.setWidth(displayMetrics.widthPixels);
+            windowRect.setX(0);
+            windowRect.setY(0);
+            return windowRect;
+        } else {
+            throw new AppiumException("Couldn't get default display: context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE) is null");
+        }
     }
 }
