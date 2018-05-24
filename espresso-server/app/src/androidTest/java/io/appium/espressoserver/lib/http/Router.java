@@ -39,6 +39,7 @@ import io.appium.espressoserver.lib.handlers.GetLocation;
 import io.appium.espressoserver.lib.handlers.GetLocationInView;
 import io.appium.espressoserver.lib.handlers.GetRect;
 import io.appium.espressoserver.lib.handlers.GetOrientation;
+import io.appium.espressoserver.lib.handlers.GetWindowRect;
 import io.appium.espressoserver.lib.handlers.GetWindowSize;
 import io.appium.espressoserver.lib.handlers.LongPressKeyCode;
 import io.appium.espressoserver.lib.handlers.MoveTo;
@@ -128,6 +129,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/text", new Text(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys(), TextParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/window/:windowHandle/size", new GetWindowSize(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/window/rect", new GetWindowRect(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/elements", new FindElements(), Locator.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/moveto", new MoveTo(), MoveToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/sessions", new GetSessions(), AppiumParams.class));
