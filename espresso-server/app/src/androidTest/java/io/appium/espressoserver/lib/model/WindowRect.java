@@ -19,14 +19,45 @@ package io.appium.espressoserver.lib.model;
 import javax.annotation.Nullable;
 
 @SuppressWarnings("unused")
-public class WindowRect extends WindowSize {
+public class WindowRect extends AppiumParams {
+    private Integer width = null;
+    private Integer height = null;
+    private Integer x = null;
+    private Integer y = null;
+
     @Nullable
     public Integer getX() {
-        return 0;
+        return x;
+    }
+
+    public void setX(Integer x) {
+        this.x = x;
     }
 
     @Nullable
     public Integer getY() {
-        return 0;
+        return y;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
+    }
+
+    @Nullable
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    @Nullable
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
     }
 }

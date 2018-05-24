@@ -16,23 +16,35 @@
 
 package io.appium.espressoserver.lib.handlers;
 
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
+
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.WindowRect;
-import io.appium.espressoserver.lib.model.WindowSize;
 
-public class GetWindowRect implements RequestHandler<AppiumParams, WindowSize> {
+public class GetWindowRect implements RequestHandler<AppiumParams, WindowRect> {
 
     @Override
-    public WindowSize handle(AppiumParams params) throws AppiumException {
+    public WindowRect handle(AppiumParams params) throws AppiumException {
         Logger.info("Get window rect of the device");
 
-        final WindowSize windowSize = new GetWindowSize().handle(params);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        WindowManager winManager = (WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+
+        winManager.getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
 
         final WindowRect windowRect = new WindowRect();
-        windowRect.setHeight(windowSize.getHeight());
-        windowRect.setWidth(windowSize.getWidth());
+        windowRect.setHeight(height);
+        windowRect.setWidth(width);
+        windowRect.setX(0);
+        windowRect.setY(0);
 
         return windowRect;
     }
