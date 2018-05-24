@@ -16,7 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.util.DisplayMetrics;
@@ -26,8 +25,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.WindowSize;
-
-import static io.appium.espressoserver.lib.helpers.InteractionHelper.getUiDevice;
 
 public class GetWindowSize implements RequestHandler<AppiumParams, WindowSize> {
 

@@ -16,14 +16,12 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.support.test.espresso.ViewInteraction;
 import android.view.View;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
-import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 public class ElementScreenshot implements RequestHandler<AppiumParams, String> {
 

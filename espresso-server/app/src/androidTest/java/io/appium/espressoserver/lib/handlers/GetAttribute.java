@@ -14,7 +14,6 @@ import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.ViewAttributesEnum;
 import io.appium.espressoserver.lib.model.ViewElement;
-import io.appium.espressoserver.lib.viewaction.ViewFinder;
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter;
 
 public class GetAttribute implements RequestHandler<AppiumParams, String> {

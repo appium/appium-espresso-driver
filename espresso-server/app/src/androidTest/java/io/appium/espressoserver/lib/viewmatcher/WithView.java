@@ -16,18 +16,11 @@
 
 package io.appium.espressoserver.lib.viewmatcher;
 
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-
-
-import java.util.List;
-
-import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
-import io.appium.espressoserver.lib.model.SourceDocument;
 
 public class WithView {
     public static Matcher<View> withView(final View view) {

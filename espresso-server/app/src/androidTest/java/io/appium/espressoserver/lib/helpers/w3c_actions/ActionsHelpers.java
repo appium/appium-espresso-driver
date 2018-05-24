@@ -19,7 +19,6 @@ package io.appium.espressoserver.lib.helpers.w3c_actions;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.test.espresso.ViewInteraction;
 import android.util.LongSparseArray;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -39,7 +38,6 @@ import java.util.Set;
 
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.ViewElement;
-import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants.ACTION_ITEM_BUTTON_KEY;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants.ACTION_ITEM_DURATION_KEY;

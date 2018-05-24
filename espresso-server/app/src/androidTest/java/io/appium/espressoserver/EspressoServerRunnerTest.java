@@ -26,6 +26,7 @@ import java.io.IOException;
 
 import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.http.Server;
+
 import static org.junit.Assert.assertEquals;
 
 /**

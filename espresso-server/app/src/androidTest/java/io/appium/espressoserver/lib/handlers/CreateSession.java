@@ -19,7 +19,6 @@ package io.appium.espressoserver.lib.handlers;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException;
 import io.appium.espressoserver.lib.model.Session;
-
 import io.appium.espressoserver.lib.model.SessionParams;
 
 import static io.appium.espressoserver.lib.handlers.StartActivity.startActivity;

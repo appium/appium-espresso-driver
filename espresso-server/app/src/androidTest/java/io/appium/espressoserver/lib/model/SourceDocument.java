@@ -20,17 +20,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.CheckedTextView;
-import android.widget.CursorAdapter;
-import android.widget.ListView;
 
 import org.apache.xml.utils.XMLChar;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +49,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
-import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 public class SourceDocument {

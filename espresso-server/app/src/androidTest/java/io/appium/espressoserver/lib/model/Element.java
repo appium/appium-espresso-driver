@@ -27,11 +27,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.helpers.Logger;
-import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.Espresso.onView;
 import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
 
 

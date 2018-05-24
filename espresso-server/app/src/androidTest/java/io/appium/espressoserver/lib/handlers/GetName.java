@@ -16,7 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.support.test.espresso.ViewInteraction;
 import android.view.View;
 
 import javax.annotation.Nullable;
@@ -25,7 +24,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.ViewElement;
-import io.appium.espressoserver.lib.viewaction.ViewFinder;
 
 public class GetName implements RequestHandler<AppiumParams, String> {
 

@@ -16,7 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.support.test.espresso.ViewInteraction;
 import android.view.View;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;

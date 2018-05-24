@@ -21,19 +21,10 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.PerformException;
-import android.support.test.espresso.ViewInteraction;
-
-import javax.annotation.Nullable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.helpers.Logger;
-import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.StartActivityParams;
-
-import static android.support.test.espresso.action.ViewActions.click;
 
 public class StartActivity implements RequestHandler<StartActivityParams, Void> {
 
