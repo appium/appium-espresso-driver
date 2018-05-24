@@ -151,7 +151,6 @@ public class SourceDocument {
                     setAttribute(element, ViewAttributesEnum.ADAPTER_TYPE, adapterItem.getClass().getSimpleName());
                 }
                 setAttribute(element, ViewAttributesEnum.ADAPTERS, adapterData);
-
             }
         }
 
