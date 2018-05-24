@@ -20,10 +20,10 @@ import javax.annotation.Nullable;
 
 @SuppressWarnings("unused")
 public class WindowRect extends AppiumParams {
-    private Integer width = null;
-    private Integer height = null;
-    private Integer x = null;
-    private Integer y = null;
+    private Integer width;
+    private Integer height;
+    private Integer x;
+    private Integer y;
 
     @Nullable
     public Integer getX() {
