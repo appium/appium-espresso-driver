@@ -27,7 +27,9 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.TextParams;
+import io.appium.espressoserver.lib.viewaction.ViewTextGetter;
 
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
 
 public class SendKeys implements RequestHandler<TextParams, Void> {
@@ -65,6 +67,19 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
             viewInteraction.perform(typeText(value));
         } catch (PerformException e) {
             throw new InvalidElementStateException("sendKeys", params.getElementId(), e);
+        } catch (RuntimeException e) {
+            if (!e.getMessage().contains("IME does not understand how to translate")) {
+                throw e;
+            }
+            // Try to apply replaceText action instead of typeText
+            // in order to enter Unicode characters
+            // https://stackoverflow.com/questions/35905451/cannot-enter-unicode-characters-in-espresso
+            CharSequence currentText = new ViewTextGetter().get(viewInteraction);
+            if (currentText == null || currentText.length() == 0) {
+                viewInteraction.perform(replaceText(value));
+            } else {
+                viewInteraction.perform(replaceText(currentText + value));
+            }
         }
 
         return null;
