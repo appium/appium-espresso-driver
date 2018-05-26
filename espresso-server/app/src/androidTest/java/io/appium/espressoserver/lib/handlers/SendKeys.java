@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
+import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter;
@@ -71,13 +72,13 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
             if (!e.getMessage().contains("IME does not understand how to translate")) {
                 throw e;
             }
-            // Try to apply replaceText action instead of typeText
-            // in order to enter Unicode characters
-            // https://stackoverflow.com/questions/35905451/cannot-enter-unicode-characters-in-espresso
+            Logger.debug("Trying replaceText action as a workaround " +
+                    "to type the Unicode text into the input field");
             CharSequence currentText = new ViewTextGetter().get(viewInteraction);
             if (currentText == null || currentText.length() == 0) {
                 viewInteraction.perform(replaceText(value));
             } else {
+                Logger.debug(String.format("Current input field's text: '%s'", currentText));
                 viewInteraction.perform(replaceText(currentText + value));
             }
         }
