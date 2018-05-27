@@ -72,8 +72,11 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
             if (!e.getMessage().contains("IME does not understand how to translate")) {
                 throw e;
             }
-            Logger.debug("Trying replaceText action as a workaround " +
-                    "to type the Unicode text into the input field");
+            Logger.debug(String.format("Trying replaceText action as a workaround " +
+                    "to type the '%s' text into the input field", value));
+            if (params.getText() != null) {
+                value = params.getText();
+            }
             CharSequence currentText = new ViewTextGetter().get(viewInteraction);
             if (currentText == null || currentText.length() == 0) {
                 viewInteraction.perform(replaceText(value));

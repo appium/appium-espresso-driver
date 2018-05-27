@@ -16,6 +16,8 @@
 
 package io.appium.espressoserver.lib.http;
 
+import android.support.annotation.Nullable;
+
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -183,6 +185,12 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/log/types", new NotYetImplemented(), AppiumParams.class));
     }
 
+    private static String abbreviate(@Nullable String str, int len) {
+        if (str != null && str.length() > len) {
+            return str.substring(0, len) + "...";
+        }
+        return str;
+    }
 
     @SuppressWarnings("unchecked")
     public BaseResponse route(String uri, Method method, Map<String, String> params,  Map<String, String> files) {
@@ -206,6 +214,7 @@ class Router {
         if (postJson == null) {
             appiumParams = new AppiumParams();
         } else {
+            Logger.debug(String.format("Got raw post data: %s", abbreviate(postJson, 300)));
             appiumParams = paramClass.cast((new Gson()).fromJson(postJson, paramClass));
         }
         appiumParams.initUriMapping(uriParams);

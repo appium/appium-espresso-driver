@@ -16,11 +16,19 @@
 
 package io.appium.espressoserver.lib.model;
 
+import android.support.annotation.Nullable;
+
 @SuppressWarnings("unused")
 public class TextParams extends AppiumParams {
     private String[] value;
+    private String text;
 
     public String[] getValue() {
         return value;
+    }
+
+    @Nullable
+    public String getText() {
+        return text;
     }
 }
