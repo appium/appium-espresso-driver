@@ -26,8 +26,8 @@ import javax.ws.rs.core.MediaType;
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.helpers.Logger;
+import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
-import io.appium.espressoserver.lib.http.response.ErrorResponse;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.gsonadapters.AppiumStatusAdapter;
 
@@ -51,8 +51,7 @@ public class Server extends NanoHTTPD {
         try {
             response = router.route(uri, method, params, files);
         } catch (RuntimeException e) {
-            response = new ErrorResponse(e, Response.Status.INTERNAL_ERROR,
-                    "Internal error has occurred");
+            response = new AppiumResponse<>(e, AppiumStatus.UNKNOWN_ERROR);
         }
 
         gsonBuilder.registerTypeAdapter(AppiumStatus.class, new AppiumStatusAdapter());

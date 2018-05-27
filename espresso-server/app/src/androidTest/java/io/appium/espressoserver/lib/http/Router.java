@@ -16,13 +16,10 @@
 
 package io.appium.espressoserver.lib.http;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 
 import java.util.Map;
 
-import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Method;
 import io.appium.espressoserver.lib.handlers.AcceptAlert;
 import io.appium.espressoserver.lib.handlers.Back;
@@ -76,7 +73,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
-import io.appium.espressoserver.lib.http.response.ErrorResponse;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.KeyEventParams;
@@ -193,7 +189,7 @@ class Router {
 
         // If no route found, return a 404 Error Response
         if (matchingRoute == null) {
-            return new ErrorResponse(NanoHTTPD.Response.Status.NOT_FOUND, String.format("No such route %s", uri));
+            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, String.format("No such route %s", uri));
         }
 
         // Get the handler, parameter class and URI parameters
@@ -231,29 +227,27 @@ class Router {
             Logger.debug(String.format("Finished processing %s request for '%s'", method, uri));
             return appiumResponse;
         } catch (NoSuchElementException e) {
-            return new AppiumResponse<>(e, AppiumStatus.NO_SUCH_ELEMENT, Log.getStackTraceString(e));
+            return new AppiumResponse<>(e, AppiumStatus.NO_SUCH_ELEMENT);
         } catch (SessionNotCreatedException e) {
-            return new AppiumResponse<>(e, AppiumStatus.SESSION_NOT_CREATED_EXCEPTION, Log.getStackTraceString(e));
+            return new AppiumResponse<>(e, AppiumStatus.SESSION_NOT_CREATED_EXCEPTION);
         } catch (InvalidStrategyException e) {
-            return new AppiumResponse<>(e, AppiumStatus.INVALID_SELECTOR, Log.getStackTraceString(e));
-        } catch (MissingCommandsException e) {
-            return new ErrorResponse(e, NanoHTTPD.Response.Status.NOT_FOUND, Log.getStackTraceString(e));
-        } catch (NotYetImplementedException e) {
-            return new ErrorResponse(e, NanoHTTPD.Response.Status.NOT_IMPLEMENTED, Log.getStackTraceString(e));
+            return new AppiumResponse<>(e, AppiumStatus.INVALID_SELECTOR);
+        } catch (NotYetImplementedException | MissingCommandsException e) {
+            return new AppiumResponse<>(e, AppiumStatus.UNKNOWN_COMMAND);
         } catch (StaleElementException e) {
-            return new AppiumResponse<>(e, AppiumStatus.STALE_ELEMENT_REFERENCE, Log.getStackTraceString(e));
+            return new AppiumResponse<>(e, AppiumStatus.STALE_ELEMENT_REFERENCE);
         } catch (XPathLookupException e) {
-            return new AppiumResponse<>(e, AppiumStatus.XPATH_LOOKUP_ERROR, Log.getStackTraceString(e));
+            return new AppiumResponse<>(e, AppiumStatus.XPATH_LOOKUP_ERROR);
         } catch (NoAlertOpenException e) {
-            return new AppiumResponse<>(e, AppiumStatus.NO_ALERT_OPEN_ERROR, Log.getStackTraceString(e));
+            return new AppiumResponse<>(e, AppiumStatus.NO_ALERT_OPEN_ERROR);
         } catch (ScreenCaptureException e) {
-            return new AppiumResponse<>(e, AppiumStatus.UNABLE_TO_CAPTURE_SCREEN_ERROR, Log.getStackTraceString(e));
+            return new AppiumResponse<>(e, AppiumStatus.UNABLE_TO_CAPTURE_SCREEN_ERROR);
         } catch (InvalidElementStateException e) {
-            return new AppiumResponse<>(e, AppiumStatus.INVALID_ELEMENT_STATE, Log.getStackTraceString(e));
+            return new AppiumResponse<>(e, AppiumStatus.INVALID_ELEMENT_STATE);
         } catch (InvalidArgumentException e) {
-            return new AppiumResponse<>(e, AppiumStatus.INVALID_ARGUMENT, Log.getStackTraceString(e));
+            return new AppiumResponse<>(e, AppiumStatus.INVALID_ARGUMENT);
         } catch (Exception e) {
-            return new AppiumResponse<>(e, AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e));
+            return new AppiumResponse<>(e, AppiumStatus.UNKNOWN_ERROR);
         }
     }
 }
