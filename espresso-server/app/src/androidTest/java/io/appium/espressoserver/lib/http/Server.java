@@ -16,6 +16,8 @@
 
 package io.appium.espressoserver.lib.http;
 
+import android.util.Log;
+
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
@@ -51,7 +53,13 @@ public class Server extends NanoHTTPD {
         try {
             response = router.route(uri, method, params, files);
         } catch (RuntimeException e) {
-            response = new AppiumResponse<>(e, AppiumStatus.UNKNOWN_ERROR);
+            response = new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e));
+        }
+
+        if (response instanceof AppiumResponse
+                && ((AppiumResponse) response).getStatus() != AppiumStatus.SUCCESS) {
+            Logger.info(String.format("Responding to server with error: %s",
+                    ((AppiumResponse) response).getValue()));
         }
 
         gsonBuilder.registerTypeAdapter(AppiumStatus.class, new AppiumStatusAdapter());

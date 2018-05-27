@@ -17,7 +17,6 @@
 package io.appium.espressoserver.lib.http.response;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.util.UUID;
 
@@ -31,12 +30,6 @@ public class AppiumResponse<T> extends BaseResponse {
     private String sessionId;
     // Unique Appium transaction ID
     private String id;
-
-    public AppiumResponse(Throwable e, AppiumStatus status) {
-        e.printStackTrace();
-        //noinspection unchecked
-        init(status, (T) Log.getStackTraceString(e), null);
-    }
 
     public AppiumResponse(AppiumStatus status, T value) {
         init(status, value, null);

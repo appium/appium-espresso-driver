@@ -16,6 +16,8 @@
 
 package io.appium.espressoserver.lib.http;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import java.util.Map;
@@ -227,27 +229,27 @@ class Router {
             Logger.debug(String.format("Finished processing %s request for '%s'", method, uri));
             return appiumResponse;
         } catch (NoSuchElementException e) {
-            return new AppiumResponse<>(e, AppiumStatus.NO_SUCH_ELEMENT);
+            return new AppiumResponse<>(AppiumStatus.NO_SUCH_ELEMENT, Log.getStackTraceString(e));
         } catch (SessionNotCreatedException e) {
-            return new AppiumResponse<>(e, AppiumStatus.SESSION_NOT_CREATED_EXCEPTION);
+            return new AppiumResponse<>(AppiumStatus.SESSION_NOT_CREATED_EXCEPTION, Log.getStackTraceString(e));
         } catch (InvalidStrategyException e) {
-            return new AppiumResponse<>(e, AppiumStatus.INVALID_SELECTOR);
+            return new AppiumResponse<>(AppiumStatus.INVALID_SELECTOR, Log.getStackTraceString(e));
         } catch (NotYetImplementedException | MissingCommandsException e) {
-            return new AppiumResponse<>(e, AppiumStatus.UNKNOWN_COMMAND);
+            return new AppiumResponse<>(AppiumStatus.UNKNOWN_COMMAND, Log.getStackTraceString(e));
         } catch (StaleElementException e) {
-            return new AppiumResponse<>(e, AppiumStatus.STALE_ELEMENT_REFERENCE);
+            return new AppiumResponse<>(AppiumStatus.STALE_ELEMENT_REFERENCE, Log.getStackTraceString(e));
         } catch (XPathLookupException e) {
-            return new AppiumResponse<>(e, AppiumStatus.XPATH_LOOKUP_ERROR);
+            return new AppiumResponse<>(AppiumStatus.XPATH_LOOKUP_ERROR, Log.getStackTraceString(e));
         } catch (NoAlertOpenException e) {
-            return new AppiumResponse<>(e, AppiumStatus.NO_ALERT_OPEN_ERROR);
+            return new AppiumResponse<>(AppiumStatus.NO_ALERT_OPEN_ERROR, Log.getStackTraceString(e));
         } catch (ScreenCaptureException e) {
-            return new AppiumResponse<>(e, AppiumStatus.UNABLE_TO_CAPTURE_SCREEN_ERROR);
+            return new AppiumResponse<>(AppiumStatus.UNABLE_TO_CAPTURE_SCREEN_ERROR, Log.getStackTraceString(e));
         } catch (InvalidElementStateException e) {
-            return new AppiumResponse<>(e, AppiumStatus.INVALID_ELEMENT_STATE);
+            return new AppiumResponse<>(AppiumStatus.INVALID_ELEMENT_STATE, Log.getStackTraceString(e));
         } catch (InvalidArgumentException e) {
-            return new AppiumResponse<>(e, AppiumStatus.INVALID_ARGUMENT);
+            return new AppiumResponse<>(AppiumStatus.INVALID_ARGUMENT, Log.getStackTraceString(e));
         } catch (Exception e) {
-            return new AppiumResponse<>(e, AppiumStatus.UNKNOWN_ERROR);
+            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e));
         }
     }
 }
