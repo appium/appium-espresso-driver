@@ -49,7 +49,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
-import io.appium.espressoserver.lib.viewaction.ViewFinder;
+import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
 public class SourceDocument {
 
@@ -88,7 +88,7 @@ public class SourceDocument {
         doc = docBuilder.newDocument();
 
         // Get reference to root view
-        View rootView = (new ViewFinder()).getRootView();
+        View rootView = (new ViewGetter()).getRootView();
         buildXML(doc, null, rootView);
     }
 
@@ -122,6 +122,10 @@ public class SourceDocument {
         setAttribute(element, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
         setAttribute(element, ViewAttributesEnum.TEXT, viewElement.getText());
         setAttribute(element, ViewAttributesEnum.RESOURCE_ID, viewElement.getResourceId());
+
+        if (view.getTag() != null) {
+            setAttribute(element, ViewAttributesEnum.VIEW_TAG, view.getTag().toString());
+        }
 
         // If this is the rootElement, append it to the document
         if (parentElement == null) {
