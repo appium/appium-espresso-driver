@@ -2,7 +2,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import wd from 'wd';
 import { HOST, PORT } from './helpers/session';
-import { APIDEMO_CAPS } from './desired';
+import { APIDEMO_CAPS, GPS_CAPS } from './desired';
 import { startServer } from '../..';
 
 
@@ -56,6 +56,23 @@ describe('createSession', function () {
     await driver.init(Object.assign({
       appPackage: 'com.android.settings'
     }, APIDEMO_CAPS)).should.eventually.be.rejectedWith(/does not have a signature matching/i);
+  });
+  it('should start subsequent sessions with different apps', async function () {
+    let status = await driver.init(GPS_CAPS);
+
+    status[1].app.should.eql(GPS_CAPS.app);
+
+    let activity = await driver.getCurrentDeviceActivity();
+    activity.should.equal('.GPSTest');
+
+    await driver.quit();
+
+    status = await driver.init(APIDEMO_CAPS);
+
+    status[1].app.should.eql(APIDEMO_CAPS.app);
+
+    activity = await driver.getCurrentDeviceActivity();
+    activity.should.equal('.ApiDemos');
   });
   describe('.startActivity', function () {
     it('should start activity by name', async function () {

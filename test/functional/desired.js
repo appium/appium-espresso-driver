@@ -1,4 +1,5 @@
-const app = require.resolve('android-apidemos');
+import gpsdemoApp from 'gps-demo-app';
+const apidemosApp = require.resolve('android-apidemos');
 
 
 const GENERIC_CAPS = {
@@ -9,6 +10,12 @@ const GENERIC_CAPS = {
   adbExecTimeout: process.env.CI ? 120000 : 20000,
 };
 
-const APIDEMO_CAPS = Object.assign({}, GENERIC_CAPS, {app});
+const APIDEMO_CAPS = Object.assign({}, GENERIC_CAPS, {
+  app: apidemosApp,
+});
 
-export { GENERIC_CAPS, APIDEMO_CAPS };
+const GPS_CAPS = Object.assign({}, GENERIC_CAPS, {
+  app: gpsdemoApp,
+});
+
+export { GENERIC_CAPS, APIDEMO_CAPS, GPS_CAPS };
