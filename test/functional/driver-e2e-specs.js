@@ -74,7 +74,7 @@ describe('createSession', function () {
     activity = await driver.getCurrentDeviceActivity();
     activity.should.equal('.ApiDemos');
   });
-  describe('.startActivity', function () {
+  describe.skip('.startActivity', function () {
     it('should start activity by name', async function () {
       await driver.init(APIDEMO_CAPS);
       await driver.startActivity({appActivity: '.accessibility.AccessibilityNodeProviderActivity'});
