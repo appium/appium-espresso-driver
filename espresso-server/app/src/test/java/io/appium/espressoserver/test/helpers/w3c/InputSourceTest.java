@@ -9,6 +9,7 @@ import org.junit.Test;
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.handlers.RequestHandler;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
+import io.appium.espressoserver.lib.helpers.w3c.models.KeyInputSource;
 import io.appium.espressoserver.lib.helpers.w3c.models.PointerInputSource;
 import io.appium.espressoserver.lib.helpers.w3c.models.PointerTypeEnum;
 import io.appium.espressoserver.lib.http.RouteDefinition;
@@ -34,17 +35,16 @@ public class InputSourceTest {
 
     @Test
     public void shouldDeserializePointerInputSource() {
-        String postJson = "{\"type\":\"pointer\",\"id\":\"something\", \"pointerType\": \"mouse\"}";
+        String postJson = "{\"type\":\"pointer\",\"id\":\"something\", \"parameters\": {\"pointerType\": \"touch\"}}";
         PointerInputSource inputSource = (PointerInputSource) InputSource.deserialize(postJson);
         assertEquals(inputSource.getId(), "something");
-        assertEquals(inputSource.getPointerTypeEnum(), PointerTypeEnum.MOUSE);
+        assertEquals(inputSource.getParameters().getPointerType(), PointerTypeEnum.TOUCH);
     }
 
     @Test
     public void shouldDeserializeKeyInputSource() {
-        String postJson = "{\"type\":\"pointer\",\"id\":\"something\", \"pointerType\": \"mouse\"}";
-        PointerInputSource inputSource = (PointerInputSource) InputSource.deserialize(postJson);
-        assertEquals(inputSource.getId(), "something");
-        assertEquals(inputSource.getPointerTypeEnum(), PointerTypeEnum.MOUSE);
+        String postJson = "{\"type\":\"key\",\"id\":\"something2\"}";
+        KeyInputSource inputSource = (KeyInputSource) KeyInputSource.deserialize(postJson);
+        assertEquals(inputSource.getId(), "something2");
     }
 }

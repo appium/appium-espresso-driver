@@ -1,9 +1,9 @@
 package io.appium.espressoserver.lib.helpers.w3c.models;
 
 public class PointerInputSource extends InputSource {
-    private PointerTypeEnum pointerType;
+    private Parameters parameters;
 
-    public PointerTypeEnum getPointerTypeEnum() {
-        return pointerType;
+    public Parameters getParameters() {
+        return parameters;
     }
 }
