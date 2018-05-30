@@ -8,10 +8,13 @@ import javax.annotation.Nullable;
 
 @SuppressWarnings("unused")
 public class InputSource {
-    InputSourceType type;
-    String id;
-    Parameters parameters;
-    List<Action> actions;
+    private final String VIEWPORT = "viewport";
+    private final String POINTER = "pointer";
+
+    private InputSourceType type;
+    private String id;
+    private Parameters parameters;
+    private List<Action> actions;
 
     public String getId() {
         return id;
@@ -55,11 +58,11 @@ public class InputSource {
 
     public class Action {
         ActionType type; // type of action
-        long duration; // time in milliseconds
+        Long duration; // time in milliseconds
         String origin; // origin; could be viewport, pointer or <ELEMENT_ID>
-        int button; // Button that is being pressed
-        long x; // x coordinate of pointer
-        long y; // y coordinate of pointer
+        Integer button; // Button that is being pressed. Defaults to 0.
+        Long x; // x coordinate of pointer
+        Long y; // y coordinate of pointer
         String value; // a string containing a single Unicode code point
 
         public ActionType getType(){
@@ -74,7 +77,7 @@ public class InputSource {
         }
 
         @Nullable
-        public long getDuration(){
+        public Long getDuration(){
             return duration;
         }
 
@@ -82,8 +85,10 @@ public class InputSource {
             this.duration = duration;
         }
 
-        @Nullable
         public String getOrigin(){
+            if (origin == null) {
+                return VIEWPORT;
+            }
             return origin;
         }
 
@@ -92,6 +97,9 @@ public class InputSource {
         }
 
         public int getButton(){
+            if (button == null) {
+                return 0;
+            }
             return button;
         }
 
@@ -100,14 +108,15 @@ public class InputSource {
         }
 
         public boolean isOriginViewport(){
-            return origin.toLowerCase().equals("viewport");
+            return origin.toLowerCase().equals(VIEWPORT);
         }
 
         public boolean isOriginPointer(){
-            return origin.toLowerCase().equals("pointer");
+            return origin.toLowerCase().equals(POINTER);
         }
 
-        public long getX(){
+        @Nullable
+        public Long getX(){
             return x;
         }
 
@@ -115,7 +124,8 @@ public class InputSource {
             this.x = x;
         }
 
-        public long getY(){
+        @Nullable
+        public Long getY(){
             return y;
         }
 
@@ -123,6 +133,7 @@ public class InputSource {
             this.y = y;
         }
 
+        @Nullable
         public String getValue(){
             return value;
         }
@@ -152,7 +163,7 @@ public class InputSource {
     public class Parameters {
         PointerType pointerType;
 
-        public PointerType getPointerType(){
+        PointerType getPointerType(){
             return pointerType;
         }
 
