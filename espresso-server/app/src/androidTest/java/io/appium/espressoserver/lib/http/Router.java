@@ -57,6 +57,7 @@ import io.appium.espressoserver.lib.handlers.Screenshot;
 import io.appium.espressoserver.lib.handlers.SendKeys;
 import io.appium.espressoserver.lib.handlers.SetOrientation;
 import io.appium.espressoserver.lib.handlers.Source;
+import io.appium.espressoserver.lib.handlers.StartActivity;
 import io.appium.espressoserver.lib.handlers.Status;
 import io.appium.espressoserver.lib.handlers.Text;
 import io.appium.espressoserver.lib.handlers.W3CActions;
@@ -84,6 +85,7 @@ import io.appium.espressoserver.lib.model.MoveToParams;
 import io.appium.espressoserver.lib.model.OrientationParams;
 import io.appium.espressoserver.lib.model.Session;
 import io.appium.espressoserver.lib.model.SessionParams;
+import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.model.W3CActionsParams;
 
@@ -131,7 +133,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/elements", new FindElements(), Locator.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/moveto", new MoveTo(), MoveToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/sessions", new GetSessions(), AppiumParams.class));
-
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/start_activity", new StartActivity(), StartActivityParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/press_keycode", new PressKeyCode(), KeyEventParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/long_press_keycode", new LongPressKeyCode(), KeyEventParams.class));
 
