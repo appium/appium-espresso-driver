@@ -79,15 +79,6 @@ import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants.
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants.POINTER_TYPE_TOUCH;
 
 public class ActionsHelpers {
-    /**
-     * This is necessary to shift the meta codes to avoid
-     * unexpected matches with key codes.
-     * Unfortunately there is no other way to distinguish
-     * key codes from meta codes, since the standard only provides a single field
-     * to keep the value.
-     */
-    public static final int META_CODES_SHIFT = 0x1000;
-
     private static JSONArray preprocessActionItems(final String actionId,
                                                    final String actionType,
                                                    final JSONArray actionItems) throws JSONException {
