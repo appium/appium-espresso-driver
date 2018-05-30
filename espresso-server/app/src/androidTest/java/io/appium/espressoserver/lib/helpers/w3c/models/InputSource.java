@@ -1,3 +1,10 @@
+/**
+ * InputSource
+ *
+ * (refer to https://www.w3.org/TR/webdriver/#terminology-0 of W3C spec)
+ *
+ * Represents a Virtual Device providing input events
+ */
 package io.appium.espressoserver.lib.helpers.w3c.models;
 
 import com.google.gson.annotations.SerializedName;
