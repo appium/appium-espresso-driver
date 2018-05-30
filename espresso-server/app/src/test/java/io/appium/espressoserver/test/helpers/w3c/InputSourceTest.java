@@ -47,8 +47,8 @@ public class InputSourceTest {
         Action actionOne = actions.get(0);
         assertEquals(actionOne.getType(), ActionType.POINTER_MOVE);
         assertEquals(actionOne.getDuration(), new Long(0));
-        assertEquals(actionOne.getX(), new Long(100));
-        assertEquals(actionOne.getY(), new Long(200));
+        assertEquals(actionOne.getX(), 100);
+        assertEquals(actionOne.getY(), 200);
 
         Action actionTwo = actions.get(1);
         assertEquals(actionTwo.getType(), ActionType.POINTER_DOWN);
@@ -63,8 +63,8 @@ public class InputSourceTest {
         assertEquals(actionFour.getDuration(), new Long(1000));
         assertEquals(actionFour.getOrigin(), "pointer");
         assertTrue(actionFour.isOriginPointer());
-        assertEquals(actionFour.getX(), new Long(50));
-        assertEquals(actionFour.getY(), new Long(10));
+        assertEquals(actionFour.getX(), 50);
+        assertEquals(actionFour.getY(), 10);
 
         Action actionFive = actions.get(4);
         assertEquals(actionFive.getType(), ActionType.POINTER_UP);

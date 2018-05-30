@@ -106,8 +106,8 @@ public class InputSource {
         private Long duration; // time in milliseconds
         private String origin; // origin; could be viewport, pointer or <ELEMENT_ID>
         private Integer button; // Button that is being pressed. Defaults to 0.
-        private Long x; // x coordinate of pointer
-        private Long y; // y coordinate of pointer
+        private long x; // x coordinate of pointer
+        private long y; // y coordinate of pointer
         private String value; // a string containing a single Unicode code point
 
         public ActionType getType(){
@@ -160,8 +160,7 @@ public class InputSource {
             return origin.equalsIgnoreCase(POINTER);
         }
 
-        @Nullable
-        public Long getX(){
+        public long getX(){
             return x;
         }
 
@@ -169,8 +168,7 @@ public class InputSource {
             this.x = x;
         }
 
-        @Nullable
-        public Long getY(){
+        public long getY(){
             return y;
         }
 
