@@ -1,4 +1,4 @@
-package io.appium.espressoserver.lib.helpers.w3c.models;
+package io.appium.espressoserver.lib.helpers.w3c.models.inputsources;
 
 public class PointerInputSource extends InputSource {
     private Parameters parameters;

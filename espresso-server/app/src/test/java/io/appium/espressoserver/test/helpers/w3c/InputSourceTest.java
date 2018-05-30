@@ -1,19 +1,12 @@
 package io.appium.espressoserver.test.helpers.w3c;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.lib.handlers.RequestHandler;
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
-import io.appium.espressoserver.lib.helpers.w3c.models.KeyInputSource;
-import io.appium.espressoserver.lib.helpers.w3c.models.PointerInputSource;
-import io.appium.espressoserver.lib.helpers.w3c.models.PointerTypeEnum;
-import io.appium.espressoserver.lib.http.RouteDefinition;
-import io.appium.espressoserver.lib.model.AppiumParams;
+import io.appium.espressoserver.lib.helpers.w3c.models.inputsources.InputSource;
+import io.appium.espressoserver.lib.helpers.w3c.models.inputsources.KeyInputSource;
+import io.appium.espressoserver.lib.helpers.w3c.models.inputsources.PointerInputSource;
+import io.appium.espressoserver.lib.helpers.w3c.models.inputsources.PointerTypeEnum;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -44,7 +37,12 @@ public class InputSourceTest {
     @Test
     public void shouldDeserializeKeyInputSource() {
         String postJson = "{\"type\":\"key\",\"id\":\"something2\"}";
-        KeyInputSource inputSource = (KeyInputSource) KeyInputSource.deserialize(postJson);
+        KeyInputSource inputSource = (KeyInputSource) InputSource.deserialize(postJson);
         assertEquals(inputSource.getId(), "something2");
+    }
+
+    public void shouldDeserializePauseActions() {
+        String postJson = "{\"id\":\"finger2\",\"actions\":[{\"type\":\"pause\",\"duration\":500}]}";
+        InputSource inputSource = InputSource.deserialize(postJson);
     }
 }
