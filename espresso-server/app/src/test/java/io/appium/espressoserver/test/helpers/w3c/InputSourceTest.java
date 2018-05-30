@@ -154,6 +154,5 @@ public class InputSourceTest {
         actions.add(action);
         InputSource inputSource = new InputSource(InputSourceType.NONE, "any", null, actions);
         assertNull(inputSource.getState());
-
     }
 }

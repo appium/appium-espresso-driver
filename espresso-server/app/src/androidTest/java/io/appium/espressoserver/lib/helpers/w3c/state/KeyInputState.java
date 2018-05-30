@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.helpers.w3c.state;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -66,5 +67,41 @@ public class KeyInputState implements InputStateInterface {
 
     public void setMeta(boolean meta) {
         this.meta = meta;
+    }
+
+    /**
+     * Implement 'calculated global key state' in spec 17.2
+     */
+    public static KeyInputState getAggregateKeyInputState(List<KeyInputState> keyInputStates) {
+        Set<String> pressed = new HashSet<>();
+        boolean isAlt = false;
+        boolean isShift = false;
+        boolean isCtrl = false;
+        boolean isMeta = false;
+
+        for (KeyInputState keyInputState:keyInputStates) {
+            if(keyInputState.isAlt()) {
+                isAlt = true;
+            }
+            if(keyInputState.isShift()) {
+                isShift = true;
+            }
+            if(keyInputState.isCtrl()) {
+                isCtrl = true;
+            }
+            if(keyInputState.isMeta()) {
+                isMeta = true;
+            }
+            pressed.addAll(keyInputState.pressed);
+        }
+
+        KeyInputState outputState = new KeyInputState();
+        outputState.setAlt(isAlt);
+        outputState.setShift(isShift);
+        outputState.setCtrl(isCtrl);
+        outputState.setMeta(isMeta);
+        outputState.pressed = pressed;
+
+        return outputState;
     }
 }
