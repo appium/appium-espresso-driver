@@ -1,10 +1,3 @@
-/**
- * InputSource
- *
- * (refer to https://www.w3.org/TR/webdriver/#terminology-0 of W3C spec)
- *
- * Represents a Virtual Device providing input events
- */
 package io.appium.espressoserver.lib.helpers.w3c.models;
 
 import com.google.gson.annotations.SerializedName;
@@ -12,6 +5,14 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import javax.annotation.Nullable;
+
+/**
+ * InputSource
+ *
+ * (refer to https://www.w3.org/TR/webdriver/#terminology-0 of W3C spec)
+ *
+ * Represents a Virtual Device providing input events
+ */
 
 @SuppressWarnings("unused")
 public class InputSource {
@@ -60,17 +61,17 @@ public class InputSource {
         @SerializedName("key")
         KEY,
         @SerializedName("none")
-        NONE;
+        NONE
     }
 
     public class Action {
-        ActionType type; // type of action
-        Long duration; // time in milliseconds
-        String origin; // origin; could be viewport, pointer or <ELEMENT_ID>
-        Integer button; // Button that is being pressed. Defaults to 0.
-        Long x; // x coordinate of pointer
-        Long y; // y coordinate of pointer
-        String value; // a string containing a single Unicode code point
+        private ActionType type; // type of action
+        private Long duration; // time in milliseconds
+        private String origin; // origin; could be viewport, pointer or <ELEMENT_ID>
+        private Integer button; // Button that is being pressed. Defaults to 0.
+        private Long x; // x coordinate of pointer
+        private Long y; // y coordinate of pointer
+        private String value; // a string containing a single Unicode code point
 
         public ActionType getType(){
             if (type == null) {
@@ -79,7 +80,7 @@ public class InputSource {
             return type;
         }
 
-        public void setType(ActionType actionType){
+        public void setType(ActionType type){
             this.type = type;
         }
 
@@ -115,11 +116,11 @@ public class InputSource {
         }
 
         public boolean isOriginViewport(){
-            return origin.toLowerCase().equals(VIEWPORT);
+            return origin.equalsIgnoreCase(VIEWPORT);
         }
 
         public boolean isOriginPointer(){
-            return origin.toLowerCase().equals(POINTER);
+            return origin.equalsIgnoreCase(POINTER);
         }
 
         @Nullable
@@ -164,13 +165,13 @@ public class InputSource {
         @SerializedName("keyUp")
         KEY_UP,
         @SerializedName("keyDown")
-        KEY_DOWN;
+        KEY_DOWN
     }
 
     public class Parameters {
-        PointerType pointerType;
+        private PointerType pointerType;
 
-        PointerType getPointerType(){
+        private PointerType getPointerType(){
             return pointerType;
         }
 
@@ -185,6 +186,6 @@ public class InputSource {
         @SerializedName("pen")
         PEN,
         @SerializedName("touch")
-        TOUCH;
+        TOUCH
     }
 }
