@@ -16,8 +16,6 @@
 
 package io.appium.espressoserver.lib.http;
 
-import android.support.annotation.Nullable;
-
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -87,6 +85,8 @@ import io.appium.espressoserver.lib.model.Session;
 import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.model.W3CActionsParams;
+
+import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 
 class Router {
     private final RouteMap routeMap;
@@ -183,13 +183,6 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/location", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/log", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/log/types", new NotYetImplemented(), AppiumParams.class));
-    }
-
-    private static String abbreviate(@Nullable String str, int len) {
-        if (str != null && str.length() > len) {
-            return str.substring(0, len) + "...";
-        }
-        return str;
     }
 
     @SuppressWarnings("unchecked")
