@@ -18,18 +18,19 @@ package io.appium.espressoserver.lib.model;
 
 import android.support.annotation.Nullable;
 
-import io.appium.espressoserver.lib.helpers.w3c.models.W3CActions;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class W3CActionsParams extends AppiumParams {
-    private W3CActions actions;
+    private List<Map<String, Object>> actions = null;
 
     @Nullable
-    public W3CActions getActions() {
+    public List<Map<String, Object>> getActions() {
         return actions;
     }
 
-    public void setActions(W3CActions actions) {
+    public void setActions(List<Map<String, Object>> actions) {
         this.actions = actions;
     }
 }
