@@ -12,6 +12,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
  */
 public class ActiveInputSources {
     private Map<String, InputSource> inputSources = new HashMap<>();
+    private static ActiveInputSources globalActiveInputSources;
 
     public void addInputSource(InputSource inputSource) throws InvalidArgumentException {
         if (inputSource.getId() == null) {
@@ -30,5 +31,25 @@ public class ActiveInputSources {
 
     public void removeInputSource(String id) {
         inputSources.remove(id);
+    }
+
+    public InputSource getInputSource(InputSource inputSource) {
+        return inputSources.get(inputSource.getId());
+    }
+
+    /**
+     * There is supposed to be on ActiveInputSource per session
+     *
+     * Since Espresso is one session per device return a global session
+     *
+     * If need be though we could amend it in the future to overload this method
+     * and get an instance by the sessionId
+     * @return
+     */
+    public static ActiveInputSources getInstance() {
+        if (globalActiveInputSources == null) {
+            globalActiveInputSources = new ActiveInputSources();
+        }
+        return globalActiveInputSources;
     }
 }

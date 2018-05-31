@@ -54,9 +54,6 @@ public class InputSource {
     }
 
     public InputSourceType getType() {
-        if (type == null) {
-            return InputSourceType.NONE;
-        }
         return type;
     }
 
@@ -111,9 +108,6 @@ public class InputSource {
         private String value; // a string containing a single Unicode code point
 
         public ActionType getType(){
-            if (type == null) {
-                return ActionType.PAUSE;
-            }
             return type;
         }
 
@@ -204,7 +198,7 @@ public class InputSource {
     }
 
     public static class Parameters {
-        PointerType pointerType;
+        private PointerType pointerType;
 
         private PointerType getPointerType(){
             return pointerType;
