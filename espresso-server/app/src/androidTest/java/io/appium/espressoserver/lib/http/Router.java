@@ -86,6 +86,8 @@ import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.model.W3CActionsParams;
 
+import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
+
 class Router {
     private final RouteMap routeMap;
 
@@ -183,7 +185,6 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/log/types", new NotYetImplemented(), AppiumParams.class));
     }
 
-
     @SuppressWarnings("unchecked")
     public BaseResponse route(String uri, Method method, Map<String, String> params,  Map<String, String> files) {
         // Look for a route that matches this URL
@@ -206,6 +207,7 @@ class Router {
         if (postJson == null) {
             appiumParams = new AppiumParams();
         } else {
+            Logger.debug(String.format("Got raw post data: %s", abbreviate(postJson, 300)));
             appiumParams = paramClass.cast((new Gson()).fromJson(postJson, paramClass));
         }
         appiumParams.initUriMapping(uriParams);

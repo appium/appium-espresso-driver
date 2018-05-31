@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.helpers;
 
 import android.support.annotation.Nullable;
 
-@SuppressWarnings("unused")
-public class TextParams extends AppiumParams {
-    private String[] value;
-    private String text;
+public class StringHelpers {
 
-    public String[] getValue() {
-        return value;
+    public static String abbreviate(@Nullable String str, int len) {
+        if (str != null && str.length() > len) {
+            return str.substring(0, len) + "...";
+        }
+        return str;
     }
 
-    @Nullable
-    public String getText() {
-        return text;
-    }
 }
