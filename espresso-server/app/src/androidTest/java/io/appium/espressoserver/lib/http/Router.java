@@ -189,6 +189,8 @@ class Router {
 
     @SuppressWarnings("unchecked")
     public BaseResponse route(String uri, Method method, Map<String, String> params,  Map<String, String> files) {
+        Logger.debug(String.format("Started processing %s request for '%s'", method, uri));
+
         // Look for a route that matches this URL
         RouteDefinition matchingRoute = routeMap.findMatchingRoute(method, uri);
 
@@ -196,9 +198,11 @@ class Router {
         if (matchingRoute == null) {
             return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, String.format("No such route %s", uri));
         }
+        Logger.debug(String.format("Matched route definition: %s", matchingRoute.getClass()));
 
         // Get the handler, parameter class and URI parameters
         RequestHandler handler = matchingRoute.getHandler();
+        Logger.debug(String.format("Matched route handler: %s", handler.getClass()));
         Class<? extends AppiumParams> paramClass = matchingRoute.getParamClass();
         Map<String, String> uriParams = matchingRoute.getUriParams(uri);
 
