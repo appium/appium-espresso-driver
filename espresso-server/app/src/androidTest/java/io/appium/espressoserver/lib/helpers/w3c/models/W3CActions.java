@@ -72,9 +72,6 @@ public class W3CActions {
             throw new InvalidArgumentException("'id' in action cannot be null");
         }
 
-        // 5: Add pointer
-
-
         // 6: Let source be the input source in the list of active input sources where that input source’s input id matches id,
         InputSource activeSource = activeInputSources.getInputSource(inputSource);
 
