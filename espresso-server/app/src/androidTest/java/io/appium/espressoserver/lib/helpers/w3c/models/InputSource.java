@@ -6,6 +6,10 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateInterface;
+import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
+import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
+
 /**
  * InputSource
  *
@@ -13,10 +17,6 @@ import javax.annotation.Nullable;
  *
  * Represents a Virtual Device providing input events
  */
-import io.appium.espressoserver.lib.helpers.w3c.state.InputStateInterface;
-import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
-import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
-
 @SuppressWarnings("unused")
 public class InputSource {
     public static final String VIEWPORT = "viewport";
@@ -38,6 +38,10 @@ public class InputSource {
         this.id = id;
         this.parameters = parameters;
         this.actions = actions;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Nullable
@@ -63,7 +67,7 @@ public class InputSource {
 
     /**
      * Get the initial state of an Input Source
-     * @return
+     * @return Get the initial input state (see 17.3 for info on Input State)
      */
     public InputStateInterface getDefaultState() {
         switch (getType()) {
@@ -209,7 +213,7 @@ public class InputSource {
         }
     }
 
-    public static enum PointerType {
+    public enum PointerType {
         @SerializedName("mouse")
         MOUSE,
         @SerializedName("pen")

@@ -1,14 +1,12 @@
 package io.appium.espressoserver.lib.helpers.w3c.models;
 
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Tick implements Iterator<Action> {
+public class Tick implements Iterator<ActionObject> {
 
-    private final List<Action> actions;
+    private final List<ActionObject> actions;
     private int actionCounter;
 
     public Tick() {
@@ -16,8 +14,8 @@ public class Tick implements Iterator<Action> {
         actionCounter = 0;
     }
 
-    public void addAction(Action action) {
-        this.actions.add(action);
+    public void addAction(ActionObject action) {
+        actions.add(action);
     }
 
     @Override
@@ -26,7 +24,7 @@ public class Tick implements Iterator<Action> {
     }
 
     @Override
-    public Action next() {
+    public ActionObject next() {
         return actions.get(actionCounter++);
     }
 

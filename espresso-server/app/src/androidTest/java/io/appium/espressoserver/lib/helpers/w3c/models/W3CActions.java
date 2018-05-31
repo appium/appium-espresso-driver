@@ -24,10 +24,18 @@ import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.*;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_DOWN;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_UP;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.PAUSE;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_CANCEL;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_DOWN;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_UP;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 
 @SuppressWarnings("unused")
@@ -46,13 +54,14 @@ public class W3CActions {
     /**
      * Follows algorithm "for process an input source action sequence" in section 17.3
      */
-    public void processSourceActionSequence(InputSource inputSource, ActiveInputSources activeInputSources, InputStateTable inputStateTable) throws InvalidArgumentException {
+    public static List<ActionObject> processSourceActionSequence(InputSource inputSource, ActiveInputSources activeInputSources, InputStateTable inputStateTable)
+            throws InvalidArgumentException, NotYetImplementedException {
         // 1: Get the type
         InputSourceType type = inputSource.getType();
 
         // 2: If type is not "key", "pointer", or "none", return an error
         if (type == null) {
-            throw new InvalidArgumentException("'type' is required in touch action and must be one of: pointer, key, none");
+            throw new InvalidArgumentException("'type' is required in input source and must be one of: pointer, key, none");
         }
 
         // 3: Get the ID from the input source
@@ -60,10 +69,11 @@ public class W3CActions {
 
         // 4: If id is undefined or is not a String, return error
         if (id == null) {
-            throw new InvalidArgumentException("'id' in touch action cannot be null");
+            throw new InvalidArgumentException("'id' in action cannot be null");
         }
 
-        // 5: Skip 'process pointer parameters'. This is already covered by deserializer
+        // 5: Add pointer
+
 
         // 6: Let source be the input source in the list of active input sources where that input source’s input id matches id,
         InputSource activeSource = activeInputSources.getInputSource(inputSource);
@@ -71,15 +81,16 @@ public class W3CActions {
         // 7:  source is undefined:
         if (activeSource == null) {
             activeInputSources.addInputSource(inputSource);
+            inputStateTable.addInputState(inputSource.getId(), inputSource.getDefaultState());
         } else {
 
-            // 8: If source's source type does not match type return an error
+            // 8: If source's type does not match type return an error
             if (activeSource.getType() != inputSource.getType()) {
                 throw new InvalidArgumentException(String.format("Input type %s does not match pre-existing input type '%s' in actions input source with id '%s'",
                         inputSource.getType(), activeSource.getType(),  id));
             }
 
-            // 9: If it's a pointer type, check that they match
+            // 9: If it's a pointer type, check that they match parameter types
             if (activeSource.getType() == InputSourceType.POINTER) {
                 if (activeSource.getPointerType() != inputSource.getPointerType()) {
                     throw new InvalidArgumentException(String.format("Pointer type %s does not match pre-existing pointer type '%s' in actions input source with id '%s'",
@@ -111,21 +122,23 @@ public class W3CActions {
                     actionObjects.add(processNullAction(action, inputSource.getType(), id, index));
                     break;
                 case POINTER:
-                    //actionObjects.add(processPointerAction(action));
+                    actionObjects.add(processPointerAction(action, inputSource, id, index));
                     break;
                 case KEY:
-                    //actionObjects.add(processKeyAction(action));
+                    actionObjects.add(processKeyAction(action, inputSource.getType(), id, index));
                     break;
                 default:
                     break;
             }
         }
+
+        return actionObjects;
     }
 
-    /*public void processSourceActionSequence(InputSource inputSource) throws InvalidArgumentException {
-        ActiveInputSources activeInputSources = ActiveInputSources.getInstance();
-        processSourceActionSequence(inputSource, activeInputSources);
-    }*/
+    public static List<ActionObject> processSourceActionSequence(InputSource inputSource)
+            throws InvalidArgumentException, NotYetImplementedException {
+        return processSourceActionSequence(inputSource, ActiveInputSources.getInstance(), InputStateTable.getInstance());
+    }
 
     /**
      * Implement the 'process a null action' in 17.3
@@ -146,13 +159,13 @@ public class W3CActions {
     /**
      * Follows the 'process a pointer action' algorithm in 17.2
      * @param action Action being processed
-     * @param inputSourceType Source type
+     * @param inputSource Input source
      * @param id ID of input source that it's part of
      * @param index Index within the 'actions' array
      * @return Processed action object
      * @throws InvalidArgumentException If failed to process, throw this. Means that args are bad.
      */
-    public static ActionObject processPointerAction(Action action, InputSourceType inputSourceType, String id, int index)
+    public static ActionObject processPointerAction(Action action, InputSource inputSource, String id, int index)
             throws InvalidArgumentException, NotYetImplementedException {
 
         // 1 -2 get and validate the type
@@ -167,22 +180,28 @@ public class W3CActions {
 
         // 4 if pause return PAUSE action
         if (subType.equals(PAUSE)) {
-            return processPauseAction(action, inputSourceType, id, index);
+            return processPauseAction(action, inputSource.getType(), id, index);
         }
+
 
         // 5-8 check type and return proper action object
         switch (subType) {
             case POINTER_DOWN:
             case POINTER_UP:
-                return processPointerUpOrDownAction(action, inputSourceType, id, index);
+                actionObject = processPointerUpOrDownAction(action, inputSource.getType(), id, index);
+                break;
             case POINTER_MOVE:
-                return processPointerMoveAction(action, inputSourceType, id, index);
+                actionObject = processPointerMoveAction(action, inputSource.getType(), id, index);
+                break;
             case POINTER_CANCEL:
                 throw new NotYetImplementedException();
             default:
                 // Technically unreachable because the 'validKeyTypes' check catches this
                 throw new InvalidArgumentException(String.format("Invalid pointer type %s", subType));
         }
+
+        actionObject.setPointer(inputSource.getPointerType());
+        return actionObject;
     }
 
     /**

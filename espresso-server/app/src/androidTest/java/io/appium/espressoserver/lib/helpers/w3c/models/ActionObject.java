@@ -2,9 +2,12 @@ package io.appium.espressoserver.lib.helpers.w3c.models;
 
 import javax.annotation.Nullable;
 
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 
 public class ActionObject {
+    private final int index;
     private InputSourceType type;
     private ActionType subType;
     private String id;
@@ -14,10 +17,13 @@ public class ActionObject {
     private Long y;
     private int button;
     private String value;
+    private PointerType pointer;
 
     public ActionObject(String id, InputSourceType type, ActionType subType, int index){
         this.type = type;
         this.subType = subType;
+        this.id = id;
+        this.index = index; // Store the index of the action for possible future logging issues
     }
 
     public InputSourceType getType() {
@@ -86,5 +92,17 @@ public class ActionObject {
 
     public String getValue() {
         return value;
+    }
+
+    public void setPointer(PointerType pointer) {
+        this.pointer = pointer;
+    }
+
+    public PointerType getPointer() {
+        return pointer;
+    }
+
+    public String getId() {
+        return id;
     }
 }

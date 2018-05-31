@@ -34,6 +34,14 @@ public class ActiveInputSources {
         return inputSources.get(inputSource.getId());
     }
 
+    public InputSource getInputSource(String id) {
+        return inputSources.get(id);
+    }
+
+    public boolean hasInputSource(String id) {
+        return inputSources.containsKey(id);
+    }
+
     /**
      * There is supposed to be on ActiveInputSource per session
      *
@@ -41,7 +49,7 @@ public class ActiveInputSources {
      *
      * If need be though we could amend it in the future to overload this method
      * and get an instance by the sessionId
-     * @return
+     * @return Global instance of ActiveInputSources
      */
     public static ActiveInputSources getInstance() {
         if (globalActiveInputSources == null) {
