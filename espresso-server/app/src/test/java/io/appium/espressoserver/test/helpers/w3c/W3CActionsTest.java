@@ -29,7 +29,7 @@ public class W3CActionsTest {
             W3CActions.processPauseAction(action, InputSourceType.NONE, "any", 0);
             fail("expected exception was not occured.");
         } catch (InvalidArgumentException ie) {
-            assertTrue(ie.getMessage().contains("'duration' be greater than 0"));
+            assertTrue(ie.getMessage().contains("'duration' be greater than or equal to 0"));
         }
     }
 
@@ -64,7 +64,7 @@ public class W3CActionsTest {
         Action action = new Action();
         action.setDuration(100);
         action.setType(ActionType.PAUSE);
-        ActionObject actionObject = W3CActions.processPauseAction(action, InputSourceType.NONE, "any", 0);
+        W3CActions.processPauseAction(action, InputSourceType.NONE, "any", 0);
         assertEquals(action.getDuration(), new Long(100));
     }
 
@@ -76,7 +76,7 @@ public class W3CActionsTest {
             W3CActions.processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
             fail("expected exception was not occured.");
         } catch (InvalidArgumentException ie) {
-            assertTrue(ie.getMessage().contains("'duration' be greater than 0"));
+            assertTrue(ie.getMessage().contains("'duration' be greater than or equal to 0"));
         }
     }
 
@@ -88,7 +88,7 @@ public class W3CActionsTest {
             W3CActions.processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
             fail("expected exception was not occured.");
         } catch (InvalidArgumentException ie) {
-            assertTrue(ie.getMessage().contains("'x' be greater than 0"));
+            assertTrue(ie.getMessage().contains("'x' be greater than or equal to 0"));
         }
     }
 
@@ -100,7 +100,7 @@ public class W3CActionsTest {
             W3CActions.processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
             fail("expected exception was not occured.");
         } catch (InvalidArgumentException ie) {
-            assertTrue(ie.getMessage().contains("'y' be greater than 0"));
+            assertTrue(ie.getMessage().contains("'y' be greater than or equal to 0"));
         }
     }
 
@@ -114,5 +114,17 @@ public class W3CActionsTest {
         assertEquals(actionObject.getX(), new Long(100));
         assertEquals(actionObject.getY(), new Long(200));
         assertEquals(actionObject.getDuration(), new Long(300));
+    }
+
+    @Test
+    public void shouldRejectPointerUpOrDownIfButtonNegative() throws InvalidArgumentException {
+        Action action = new Action();
+        action.setButton(-100);
+        try {
+            W3CActions.processPointerUpOrDownAction(action, InputSourceType.POINTER, "any", 0);
+            fail("expected exception was not occured.");
+        } catch (InvalidArgumentException ie) {
+            assertTrue(ie.getMessage().contains("property 'button' must be greater than or equal to 0"));
+        }
     }
 }

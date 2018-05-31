@@ -145,7 +145,33 @@ public class W3CActions {
     }
 
     /**
-     * Implement the 'process a pause action' in 17.3
+     * Follows the 'process a pointer action' algorithm in 17.2
+     * @param action
+     * @param inputSourceType
+     * @param id
+     * @param index
+     * @return
+     * @throws InvalidArgumentException
+     */
+    public static ActionObject processPointerAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
+        return null;
+    }
+
+    /**
+     * Follows the 'process a key action' algorithm in 17.2
+     * @param action
+     * @param inputSourceType
+     * @param id
+     * @param index
+     * @return
+     * @throws InvalidArgumentException
+     */
+    public static ActionObject processKeyAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
+        return null;
+    }
+
+    /**
+     * Follows the 'process a pause action' algorithm in 17.3
      * @param action
      * @param inputSourceType
      * @param id
@@ -161,22 +187,27 @@ public class W3CActions {
         return actionObject;
     }
 
-    public static ActionObject processPointerAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
-        /*ActionType subType = action.getType();
-        List<ActionType> validActionTypes = Arrays.asList(new ActionType[] {
-                POINTER_CANCEL, POINTER_DOWN, POINTER_MOVE, POINTER_UP, PAUSE
-        });
-        if (!validActionTypes.contains(subType)) {
-            throw new InvalidArgumentException(String.format(
-                    "pointer action in actions[%s] of action input source with id %s must be one of " +
-                    "[pause, pointerUp, pointerDown, pointerMove, pointerCancel]", index, id));
+    /**
+     * Follows the 'process a pointer up or pointer down action' algorithm in 17.2
+     * @param action
+     * @param inputSourceType
+     * @param id
+     * @param index
+     * @return
+     * @throws InvalidArgumentException
+     */
+    public static ActionObject processPointerUpOrDownAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
+        ActionObject actionObject = new ActionObject(id, inputSourceType, action, index);
+        int button = action.getButton();
+        if (button < 0) {
+            throwArgException(index, id, String.format("property 'button' must be greater than or equal to 0. Found %s", button));
         }
-        ActionObject actionObject = new ActionObject(id, inputSourceType, action, index);*/
-        return null;
+        actionObject.setButton(button);
+        return actionObject;
     }
 
     /**
-     * Follow the 'process pointer move action' algorithm in 17.3
+     * Follows the 'process pointer move action' algorithm in 17.3
      * @param action
      * @param inputSourceType
      * @param id
@@ -224,7 +255,7 @@ public class W3CActions {
     private static void assertNullOrPositive(int index, String id, String propertyName, Long propertyValue) throws InvalidArgumentException {
         if (!isNullOrPositive(propertyValue)) {
             throwArgException(index, id, String.format(
-                    "must have property '%s' be greater than 0 or undefined. Found %s", propertyName, propertyValue)
+                    "must have property '%s' be greater than or equal to 0 or undefined. Found %s", propertyName, propertyValue)
             );
         }
     }

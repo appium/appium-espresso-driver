@@ -1,5 +1,7 @@
 package io.appium.espressoserver.lib.helpers.w3c.models;
 
+import javax.annotation.Nullable;
+
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
 
 public class ActionObject {
@@ -10,6 +12,7 @@ public class ActionObject {
     private String origin;
     private Long x;
     private Long y;
+    private int button;
 
     public ActionObject(String id, InputSourceType type, Action action, int index){
         this.type = type;
@@ -32,6 +35,7 @@ public class ActionObject {
         this.subType = subType;
     }
 
+    @Nullable
     public Long getDuration() {
         return duration;
     }
@@ -40,6 +44,7 @@ public class ActionObject {
         this.duration = duration;
     }
 
+    @Nullable
     public String getOrigin() {
         return origin;
     }
@@ -48,6 +53,7 @@ public class ActionObject {
         this.origin = origin;
     }
 
+    @Nullable
     public Long getX() {
         return x;
     }
@@ -56,11 +62,20 @@ public class ActionObject {
         this.x = x;
     }
 
+    @Nullable
     public Long getY() {
         return y;
     }
 
     public void setY(Long y) {
         this.y = y;
+    }
+
+    public void setButton(int button) {
+        this.button = button;
+    }
+
+    public int getButton() {
+        return button;
     }
 }
