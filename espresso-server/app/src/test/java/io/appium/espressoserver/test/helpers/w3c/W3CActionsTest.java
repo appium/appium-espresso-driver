@@ -8,7 +8,9 @@ import org.junit.Test;
 
 import java.util.List;
 
+import io.appium.espressoserver.lib.handlers.NotYetImplemented;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
+import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
 import io.appium.espressoserver.lib.helpers.w3c.models.W3CActions;
@@ -22,11 +24,32 @@ import static org.junit.Assert.assertTrue;
 public class W3CActionsTest {
 
     @Test
+    public void shouldRejectNullIfNotPause() {
+        Action action = new Action();
+        action.setType(ActionType.POINTER_DOWN);
+        try {
+            W3CActions.processNullAction(action, InputSourceType.NONE, "any1", 0);
+            fail("expected exception was not occured.");
+        } catch (InvalidArgumentException ie) {
+            assertTrue(ie.getMessage().contains("must be type 'pause'"));
+        }
+    }
+
+    @Test
+    public void shouldPassNullIfPause() throws InvalidArgumentException {
+        Action action = new Action();
+        action.setType(ActionType.PAUSE);
+        ActionObject actionObject = W3CActions.processNullAction(action, InputSourceType.NONE, "any1", 0);
+        assertEquals(actionObject.getType(), InputSourceType.NONE);
+        assertEquals(actionObject.getSubType(), ActionType.PAUSE);
+    }
+
+    @Test
     public void shouldRejectPauseIfNegativeDuration() {
         Action action = new Action();
         action.setDuration(-1);
         try {
-            W3CActions.processPauseAction(action, InputSourceType.NONE, "any", 0);
+            W3CActions.processPauseAction(action, InputSourceType.NONE, "any3", 0);
             fail("expected exception was not occured.");
         } catch (InvalidArgumentException ie) {
             assertTrue(ie.getMessage().contains("'duration' be greater than or equal to 0"));
@@ -145,9 +168,10 @@ public class W3CActionsTest {
         Action action = new Action();
         action.setType(ActionType.PAUSE);
         action.setDuration(300);
-        ActionObject actionObject = W3CActions.processKeyAction(action, InputSourceType.POINTER, "any", 0);
+        ActionObject actionObject = W3CActions.processKeyAction(action, InputSourceType.KEY, "any", 0);
         assertEquals(actionObject.getDuration(), new Long(300));
         assertEquals(actionObject.getSubType(), ActionType.PAUSE);
+        assertEquals(actionObject.getType(), InputSourceType.KEY);
     }
 
     @Test
@@ -171,5 +195,67 @@ public class W3CActionsTest {
         ActionObject actionObject = W3CActions.processKeyAction(action, InputSourceType.POINTER, "any", 0);
         assertEquals(actionObject.getValue(), "\\uE9F0");
         assertEquals(actionObject.getSubType(), ActionType.KEY_DOWN);
+    }
+
+    @Test
+    public void shouldRejectInvalidPointerType() throws NotYetImplementedException {
+        Action action = new Action();
+        action.setType(ActionType.KEY_DOWN);
+        try {
+            W3CActions.processPointerAction(action, InputSourceType.POINTER, "any", 0);
+            fail("expected exception was not occured.");
+        } catch (InvalidArgumentException ie) {
+            assertTrue(ie.getMessage().contains("has an invalid type"));
+        }
+    }
+
+    @Test
+    public void shouldProcessPointerAsPauseIfPause() throws InvalidArgumentException, NotYetImplementedException {
+        Action action = new Action();
+        action.setType(ActionType.PAUSE);
+        action.setDuration(300);
+        ActionObject actionObject = W3CActions.processPointerAction(action, InputSourceType.POINTER, "any", 0);
+        assertEquals(actionObject.getDuration(), new Long(300));
+        assertEquals(actionObject.getSubType(), ActionType.PAUSE);
+        assertEquals(actionObject.getType(), InputSourceType.POINTER);
+    }
+
+    @Test
+    public void shouldProcessPointerAsPointerMove() throws InvalidArgumentException, NotYetImplementedException {
+        Action action = new Action();
+        action.setType(ActionType.POINTER_MOVE);
+        ActionObject actionObject = W3CActions.processPointerAction(action, InputSourceType.POINTER, "any", 0);
+        assertEquals(actionObject.getSubType(), ActionType.POINTER_MOVE);
+        assertEquals(actionObject.getType(), InputSourceType.POINTER);
+    }
+
+    @Test
+    public void shouldProcessPointerAsPointerUp() throws InvalidArgumentException, NotYetImplementedException {
+        Action action = new Action();
+        action.setType(ActionType.POINTER_UP);
+        ActionObject actionObject = W3CActions.processPointerAction(action, InputSourceType.POINTER, "any", 0);
+        assertEquals(actionObject.getSubType(), ActionType.POINTER_UP);
+        assertEquals(actionObject.getType(), InputSourceType.POINTER);
+    }
+
+    @Test
+    public void shouldProcessPointerAsPointerDown() throws InvalidArgumentException, NotYetImplementedException {
+        Action action = new Action();
+        action.setType(ActionType.POINTER_DOWN);
+        ActionObject actionObject = W3CActions.processPointerAction(action, InputSourceType.POINTER, "any", 0);
+        assertEquals(actionObject.getSubType(), ActionType.POINTER_DOWN);
+        assertEquals(actionObject.getType(), InputSourceType.POINTER);
+    }
+
+    @Test
+    public void shouldRejectPointerCancel() throws InvalidArgumentException {
+        Action action = new Action();
+        action.setType(ActionType.POINTER_CANCEL);
+        try {
+            W3CActions.processPointerAction(action, InputSourceType.POINTER, "any", 0);
+            fail("expected exception was not occured.");
+        } catch (NotYetImplementedException ie) {
+            assertTrue(ie.getMessage().contains("not yet implemented"));
+        }
     }
 }

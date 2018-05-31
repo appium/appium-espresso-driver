@@ -71,8 +71,6 @@ public class W3CActions {
         // 7:  source is undefined:
         if (activeSource == null) {
             activeInputSources.addInputSource(inputSource);
-
-            activeSource = inputSource;
         } else {
 
             // 8: If source's source type does not match type return an error
@@ -131,34 +129,48 @@ public class W3CActions {
 
     /**
      * Implement the 'process a null action' in 17.3
-     * @param action
-     * @param inputSourceType
-     * @param id
-     * @param index
-     * @return
-     * @throws InvalidArgumentException
+     * @param action Action being processed
+     * @param inputSourceType Source type
+     * @param id ID of input source that it's part of
+     * @param index Index within the 'actions' array
+     * @return Processed action object
+     * @throws InvalidArgumentException If failed to process, throw this. Means that args are bad.
      */
     public static ActionObject processNullAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
         if (action.getType() != PAUSE) {
-            throw new InvalidArgumentException(String.format("null action in actions[%s] of action input source with id '%s' must only have type 'pause'",
-                    index, id));
+            throwArgException(index, id, "must be type 'pause' if input source type is null");
         }
         return processPauseAction(action, inputSourceType, id, index);
     }
 
     /**
      * Follows the 'process a pointer action' algorithm in 17.2
-     * @param action
-     * @param inputSourceType
-     * @param id
-     * @param index
-     * @return
-     * @throws InvalidArgumentException
+     * @param action Action being processed
+     * @param inputSourceType Source type
+     * @param id ID of input source that it's part of
+     * @param index Index within the 'actions' array
+     * @return Processed action object
+     * @throws InvalidArgumentException If failed to process, throw this. Means that args are bad.
      */
     public static ActionObject processPointerAction(Action action, InputSourceType inputSourceType, String id, int index)
             throws InvalidArgumentException, NotYetImplementedException {
-        ActionType subType = action.getType();
 
+        // 1 -2 get and validate the type
+        ActionType subType = action.getType();
+        ActionType[] validKeyTypes = new ActionType[]{ POINTER_MOVE, POINTER_DOWN, POINTER_UP, POINTER_CANCEL, PAUSE };
+        if (!Arrays.asList(validKeyTypes).contains(subType)) {
+            throwArgException(index, id, "has an invalid type. 'type' for 'key' actions must be one of:" +
+                    "pointerMove, pointerDown, pointerUp, pointerCancel, pause");
+        }
+
+        ActionObject actionObject;
+
+        // 4 if pause return PAUSE action
+        if (subType.equals(PAUSE)) {
+            return processPauseAction(action, inputSourceType, id, index);
+        }
+
+        // 5-8 check type and return proper action object
         switch (subType) {
             case POINTER_DOWN:
             case POINTER_UP:
@@ -167,19 +179,20 @@ public class W3CActions {
                 return processPointerMoveAction(action, inputSourceType, id, index);
             case POINTER_CANCEL:
                 throw new NotYetImplementedException();
+            default:
+                // Technically unreachable because the 'validKeyTypes' check catches this
+                throw new InvalidArgumentException(String.format("Invalid pointer type %s", subType));
         }
-
-        return null;
     }
 
     /**
      * Follows the 'process a key action' algorithm in 17.2
-     * @param action
-     * @param inputSourceType
-     * @param id
-     * @param index
-     * @return
-     * @throws InvalidArgumentException
+     * @param action Action being processed
+     * @param inputSourceType Source type
+     * @param id ID of input source that it's part of
+     * @param index Index within the 'actions' array
+     * @return Processed action object
+     * @throws InvalidArgumentException If failed to process, throw this. Means that args are bad.
      */
     public static ActionObject processKeyAction(Action action, InputSourceType inputSourceType, String id, int index)
             throws InvalidArgumentException {
@@ -209,12 +222,12 @@ public class W3CActions {
 
     /**
      * Follows the 'process a pause action' algorithm in 17.3
-     * @param action
-     * @param inputSourceType
-     * @param id
-     * @param index
-     * @return
-     * @throws InvalidArgumentException
+     * @param action Action being processed
+     * @param inputSourceType Source type
+     * @param id ID of input source that it's part of
+     * @param index Index within the 'actions' array
+     * @return Processed action object
+     * @throws InvalidArgumentException If failed to process, throw this. Means that args are bad.
      */
     public static ActionObject processPauseAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
         Long duration = action.getDuration();
@@ -226,12 +239,12 @@ public class W3CActions {
 
     /**
      * Follows the 'process a pointer up or pointer down action' algorithm in 17.2
-     * @param action
-     * @param inputSourceType
-     * @param id
-     * @param index
-     * @return
-     * @throws InvalidArgumentException
+     * @param action Action being processed
+     * @param inputSourceType Source type
+     * @param id ID of input source that it's part of
+     * @param index Index within the 'actions' array
+     * @return Processed action object
+     * @throws InvalidArgumentException If failed to process, throw this. Means that args are bad.
      */
     public static ActionObject processPointerUpOrDownAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
         ActionObject actionObject = new ActionObject(id, inputSourceType, action.getType(), index);
@@ -245,12 +258,12 @@ public class W3CActions {
 
     /**
      * Follows the 'process pointer move action' algorithm in 17.3
-     * @param action
-     * @param inputSourceType
-     * @param id
-     * @param index
-     * @return
-     * @throws InvalidArgumentException
+     * @param action Action being processed
+     * @param inputSourceType Source type
+     * @param id ID of input source that it's part of
+     * @param index Index within the 'actions' array
+     * @return Processed action object
+     * @throws InvalidArgumentException If failed to process, throw this. Means that args are bad.
      */
     public static ActionObject processPointerMoveAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
         ActionObject actionObject = new ActionObject(id, inputSourceType, action.getType(), index);
