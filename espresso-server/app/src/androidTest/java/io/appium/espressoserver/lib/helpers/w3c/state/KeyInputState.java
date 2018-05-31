@@ -10,20 +10,11 @@ import java.util.Set;
  * https://www.w3.org/TR/webdriver/#input-source-state
  */
 public class KeyInputState implements InputStateInterface {
-    private Set<String> pressed;
-    private boolean alt;
-    private boolean shift;
-    private boolean ctrl;
-    private boolean meta;
-
-    public KeyInputState() {
-        pressed = new HashSet<>();
-        alt = false;
-        shift = false;
-        ctrl = false;
-        meta = false;
-    }
-
+    private final Set<String> pressed = new HashSet<>();
+    private boolean alt = false;
+    private boolean shift = false;
+    private boolean ctrl = false;
+    private boolean meta = false;
 
     public boolean isPressed(String key) {
         return pressed.contains(key);
@@ -79,6 +70,8 @@ public class KeyInputState implements InputStateInterface {
         boolean isCtrl = false;
         boolean isMeta = false;
 
+        KeyInputState outputState = new KeyInputState();
+
         for (KeyInputState keyInputState:keyInputStates) {
             if(keyInputState.isAlt()) {
                 isAlt = true;
@@ -92,15 +85,15 @@ public class KeyInputState implements InputStateInterface {
             if(keyInputState.isMeta()) {
                 isMeta = true;
             }
-            pressed.addAll(keyInputState.pressed);
+            for (String key:keyInputState.pressed) {
+                outputState.addPressed(key);
+            }
         }
 
-        KeyInputState outputState = new KeyInputState();
         outputState.setAlt(isAlt);
         outputState.setShift(isShift);
         outputState.setCtrl(isCtrl);
         outputState.setMeta(isMeta);
-        outputState.pressed = pressed;
 
         return outputState;
     }

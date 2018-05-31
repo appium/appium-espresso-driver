@@ -74,8 +74,6 @@ public class InputSource {
                 return new PointerInputState();
             case KEY:
                 return new KeyInputState();
-            case NONE:
-                return null;
             default:
                 return null;
         }
@@ -104,13 +102,13 @@ public class InputSource {
     }
 
     public static class Action {
-        ActionType type; // type of action
-        Long duration; // time in milliseconds
-        String origin; // origin; could be viewport, pointer or <ELEMENT_ID>
-        Integer button; // Button that is being pressed. Defaults to 0.
-        Long x; // x coordinate of pointer
-        Long y; // y coordinate of pointer
-        String value; // a string containing a single Unicode code point
+        private ActionType type; // type of action
+        private Long duration; // time in milliseconds
+        private String origin; // origin; could be viewport, pointer or <ELEMENT_ID>
+        private Integer button; // Button that is being pressed. Defaults to 0.
+        private Long x; // x coordinate of pointer
+        private Long y; // y coordinate of pointer
+        private String value; // a string containing a single Unicode code point
 
         public ActionType getType(){
             if (type == null) {

@@ -11,16 +11,9 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
  * https://www.w3.org/TR/webdriver/#input-source-state
  */
 public class PointerInputState implements InputStateInterface {
-    private InputSource.PointerType subtype;
-    private Set<Integer> pressed;
-    private int x;
-    private int y;
-
-    public PointerInputState() {
-        pressed = new HashSet<>();
-        x = 0;
-        y = 0;
-    }
+    private Set<Integer> pressed = new HashSet<>();
+    private int x = 0;
+    private int y = 0;
 
     public boolean isPressed(int num) {
         return pressed.contains(num);

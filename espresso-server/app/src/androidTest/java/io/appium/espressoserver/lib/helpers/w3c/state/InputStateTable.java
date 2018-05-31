@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class InputStateTable {
 
-    private Map<String, InputStateInterface> stateTable = new HashMap<>();
+    private final Map<String, InputStateInterface> stateTable = new HashMap<>();
 
     public void addInputState(String id, InputStateInterface inputState){
         stateTable.put(id, inputState);
