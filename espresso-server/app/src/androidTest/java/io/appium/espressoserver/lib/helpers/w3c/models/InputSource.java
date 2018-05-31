@@ -24,6 +24,7 @@ public class InputSource {
     private Parameters parameters;
     private List<Action> actions;
 
+    @Nullable
     public String getId() {
         return id;
     }
@@ -49,7 +50,7 @@ public class InputSource {
 
     @Nullable
     public PointerType getPointerType(){
-        if(parameters != null) {
+        if (parameters != null) {
             return parameters.getPointerType();
         }
         return null;

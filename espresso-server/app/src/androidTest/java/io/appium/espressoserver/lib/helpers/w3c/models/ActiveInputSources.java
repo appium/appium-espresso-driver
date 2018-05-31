@@ -22,12 +22,10 @@ public class ActiveInputSources {
 
     /**
      * Remove an input source and also remove it from InputStateTable
-     * @param inputSource
+     * @param inputSource Source to remove
      */
     public void removeInputSource(InputSource inputSource) {
-        if (this.inputSources.containsKey(inputSource.getId())) {
-            this.inputSources.remove(inputSource.getId());
-        }
+        this.inputSources.remove(inputSource.getId());
     }
 
 }

@@ -89,7 +89,6 @@ public class InputSourceTest {
         assertEquals(actionThree.getType(), ActionType.KEY_UP);
         assertEquals(actionThree.getValue(), "key1");
 
-
         Action actionFour = actions.get(3);
         assertEquals(actionFour.getType(), ActionType.KEY_UP);
         assertEquals(actionFour.getValue(), "key2");
