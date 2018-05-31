@@ -22,14 +22,14 @@ import static org.junit.Assert.assertTrue;
 public class W3CActionsTest {
 
     @Test
-    public void shouldRejectPauseActionsIfDurationInvalid() {
+    public void shouldRejectPauseIfNegativeDuration() {
         Action action = new Action();
         action.setDuration(-1);
         try {
             W3CActions.processPauseAction(action, InputSourceType.NONE, "any", 0);
             fail("expected exception was not occured.");
         } catch (InvalidArgumentException ie) {
-            assertTrue(ie.getMessage().contains("integer > 0"));
+            assertTrue(ie.getMessage().contains("'duration' be greater than 0"));
         }
     }
 
@@ -38,7 +38,7 @@ public class W3CActionsTest {
         Action action = new Action();
         assertNull(action.getDuration());
         ActionObject actionObject = W3CActions.processPauseAction(action, InputSourceType.NONE, "any", 0);
-        assertEquals(actionObject.getDuration(), 0L);
+        assertNull(actionObject.getDuration());
     }
 
     @Test
@@ -46,7 +46,7 @@ public class W3CActionsTest {
         Action action = new Action();
         action.setDuration(10L);
         ActionObject actionObject = W3CActions.processPauseAction(action, InputSourceType.NONE, "any", 0);
-        assertEquals(actionObject.getDuration(), 10L);
+        assertEquals(actionObject.getDuration(), new Long(10));
     }
 
     @Test
@@ -68,5 +68,51 @@ public class W3CActionsTest {
         assertEquals(action.getDuration(), new Long(100));
     }
 
+    @Test
+    public void shouldRejectPointerMoveIfNegativeDuration() throws InvalidArgumentException {
+        Action action = new Action();
+        action.setDuration(-1);
+        try {
+            W3CActions.processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
+            fail("expected exception was not occured.");
+        } catch (InvalidArgumentException ie) {
+            assertTrue(ie.getMessage().contains("'duration' be greater than 0"));
+        }
+    }
 
+    @Test
+    public void shouldRejectPointerMoveIfNegativeX() throws InvalidArgumentException {
+        Action action = new Action();
+        action.setX(-100);
+        try {
+            W3CActions.processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
+            fail("expected exception was not occured.");
+        } catch (InvalidArgumentException ie) {
+            assertTrue(ie.getMessage().contains("'x' be greater than 0"));
+        }
+    }
+
+    @Test
+    public void shouldRejectPointerMoveIfNegativeY() throws InvalidArgumentException {
+        Action action = new Action();
+        action.setY(-100);
+        try {
+            W3CActions.processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
+            fail("expected exception was not occured.");
+        } catch (InvalidArgumentException ie) {
+            assertTrue(ie.getMessage().contains("'y' be greater than 0"));
+        }
+    }
+
+    @Test
+    public void shouldPassValidPointerMove() throws InvalidArgumentException {
+        Action action = new Action();
+        action.setX(100);
+        action.setY(200);
+        action.setDuration(300);
+        ActionObject actionObject = W3CActions.processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
+        assertEquals(actionObject.getX(), new Long(100));
+        assertEquals(actionObject.getY(), new Long(200));
+        assertEquals(actionObject.getDuration(), new Long(300));
+    }
 }

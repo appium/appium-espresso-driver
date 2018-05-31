@@ -6,7 +6,10 @@ public class ActionObject {
     private InputSourceType type;
     private ActionType subType;
     private String id;
-    private long duration;
+    private Long duration;
+    private String origin;
+    private Long x;
+    private Long y;
 
     public ActionObject(String id, InputSourceType type, Action action, int index){
         this.type = type;
@@ -29,11 +32,35 @@ public class ActionObject {
         this.subType = subType;
     }
 
-    public long getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    public Long getX() {
+        return x;
+    }
+
+    public void setX(Long x) {
+        this.x = x;
+    }
+
+    public Long getY() {
+        return y;
+    }
+
+    public void setY(Long y) {
+        this.y = y;
     }
 }

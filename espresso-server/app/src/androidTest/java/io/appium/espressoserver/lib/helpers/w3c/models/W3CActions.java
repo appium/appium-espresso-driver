@@ -19,7 +19,6 @@ package io.appium.espressoserver.lib.helpers.w3c.models;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
@@ -27,6 +26,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.*;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 
 @SuppressWarnings("unused")
 public class W3CActions {
@@ -75,14 +75,14 @@ public class W3CActions {
 
             // 8: If source's source type does not match type return an error
             if (activeSource.getType() != inputSource.getType()) {
-                throw new InvalidArgumentException(String.format("Input type %s does not match pre-existing input type %s in actions input source with id %s",
+                throw new InvalidArgumentException(String.format("Input type %s does not match pre-existing input type '%s' in actions input source with id '%s'",
                         inputSource.getType(), activeSource.getType(),  id));
             }
 
             // 9: If it's a pointer type, check that they match
             if (activeSource.getType() == InputSourceType.POINTER) {
                 if (activeSource.getPointerType() != inputSource.getPointerType()) {
-                    throw new InvalidArgumentException(String.format("Pointer type %s does not match pre-existing pointer type %s in actions input source with id %s",
+                    throw new InvalidArgumentException(String.format("Pointer type %s does not match pre-existing pointer type '%s' in actions input source with id '%s'",
                             inputSource.getPointerType(), activeSource.getPointerType(),id));
                 }
             }
@@ -93,7 +93,7 @@ public class W3CActions {
 
         // 11: If action items is not an Array, return error
         if (actionItems == null) {
-            throw new InvalidArgumentException(String.format("'actions' array not provided in actions input source with id %s", id));
+            throw new InvalidArgumentException(String.format("'actions' array not provided in actions input source with id '%s'", id));
         }
 
         // 12: Let actions be a new list
@@ -103,7 +103,7 @@ public class W3CActions {
         int index = 0;
         for (Action action:actionItems) {
             if (action == null) {
-                throw new InvalidArgumentException(String.format("'actions[%s]' did not provide a valid JSON object for actions input source with id %s", index, id));
+                throw new InvalidArgumentException(String.format("'actions[%s]' did not provide a valid JSON object for actions input source with id '%s'", index, id));
             }
             index++;
             switch (inputSource.getType()) {
@@ -138,7 +138,7 @@ public class W3CActions {
      */
     public static ActionObject processNullAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
         if (action.getType() != PAUSE) {
-            throw new InvalidArgumentException(String.format("null action in actions[%s] of action input source with id %s must only have type 'pause'",
+            throw new InvalidArgumentException(String.format("null action in actions[%s] of action input source with id '%s' must only have type 'pause'",
                     index, id));
         }
         return processPauseAction(action, inputSourceType, id, index);
@@ -155,15 +155,7 @@ public class W3CActions {
      */
     public static ActionObject processPauseAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
         Long duration = action.getDuration();
-        if (duration != null && duration < 0) {
-            throw new InvalidArgumentException(String.format("pause action in actions[%s] of action input source with id %s must be integer > 0",
-                    index, id));
-        }
-
-        if (duration == null) {
-            duration = 0L;
-        }
-
+        assertNullOrPositive(index, id, "duration", duration);
         ActionObject actionObject = new ActionObject(id, inputSourceType, action, index);
         actionObject.setDuration(duration);
         return actionObject;
@@ -181,5 +173,59 @@ public class W3CActions {
         }
         ActionObject actionObject = new ActionObject(id, inputSourceType, action, index);*/
         return null;
+    }
+
+    /**
+     * Follow the 'process pointer move action' algorithm in 17.3
+     * @param action
+     * @param inputSourceType
+     * @param id
+     * @param index
+     * @return
+     * @throws InvalidArgumentException
+     */
+    public static ActionObject processPointerMoveAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
+        ActionObject actionObject = new ActionObject(id, inputSourceType, action, index);
+
+        // 1-3 Add the duration
+        Long duration = action.getDuration();
+        assertNullOrPositive(index, id, "duration", duration);
+        actionObject.setDuration(duration);
+
+        // 4-7 Add the origin
+        String origin = action.getOrigin();
+        if (origin == null) {
+            origin = VIEWPORT;
+        }
+        actionObject.setOrigin(origin);
+
+        // 8-10 Add the X coordinate
+        Long x = action.getX();
+        assertNullOrPositive(index, id, "x", x);
+        actionObject.setX(x);
+
+        // 11-14 Add the Y coordinate
+        Long y = action.getY();
+        assertNullOrPositive(index, id, "y", y);
+        actionObject.setY(y);
+
+        return actionObject;
+    }
+
+    private static boolean isNullOrPositive(Long num) {
+        return num == null || num >= 0;
+    }
+
+    private static void throwArgException(int index, String id, String message) throws InvalidArgumentException {
+        throw new InvalidArgumentException(String.format("pointer move action in actions[%s] of action input source with id %s %s",
+                index, id, message));
+    }
+
+    private static void assertNullOrPositive(int index, String id, String propertyName, Long propertyValue) throws InvalidArgumentException {
+        if (!isNullOrPositive(propertyValue)) {
+            throwArgException(index, id, String.format(
+                    "must have property '%s' be greater than 0 or undefined. Found %s", propertyName, propertyValue)
+            );
+        }
     }
 }

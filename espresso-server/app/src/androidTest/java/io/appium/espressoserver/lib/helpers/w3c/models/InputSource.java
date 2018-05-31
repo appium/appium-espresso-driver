@@ -19,8 +19,8 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 @SuppressWarnings("unused")
 public class InputSource {
-    private static final String VIEWPORT = "viewport";
-    private static final String POINTER = "pointer";
+    public static final String VIEWPORT = "viewport";
+    public static final String POINTER = "pointer";
 
     private InputSourceType type;
     private String id;
