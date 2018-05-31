@@ -33,6 +33,8 @@ import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.gsonadapters.AppiumStatusAdapter;
 
+import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
+
 public class Server extends NanoHTTPD {
 
     private Router router;
@@ -45,10 +47,16 @@ public class Server extends NanoHTTPD {
         router = new Router();
     }
 
+    private Response buildFixedLengthResponse(BaseResponse response) {
+        GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
+        gsonBuilder.registerTypeAdapter(AppiumStatus.class, new AppiumStatusAdapter());
+        return newFixedLengthResponse(response.getHttpStatus(),
+                MediaType.APPLICATION_JSON, gsonBuilder.create().toJson(response));
+    }
+
     @Override
     public Response serve(String uri, Method method, Map<String,
             String> headers, Map<String, String> params, Map<String, String> files) {
-        GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
         BaseResponse response;
         try {
             response = router.route(uri, method, params, files);
@@ -56,14 +64,22 @@ public class Server extends NanoHTTPD {
             response = new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e));
         }
 
-        if (response instanceof AppiumResponse
-                && ((AppiumResponse) response).getStatus() != AppiumStatus.SUCCESS) {
-            Logger.info(String.format("Responding to server with error: %s",
-                    ((AppiumResponse) response).getValue()));
+        if (response instanceof AppiumResponse) {
+            AppiumResponse appiumResponse = (AppiumResponse) response;
+            if (appiumResponse.getStatus() == AppiumStatus.SUCCESS) {
+                Logger.info(String.format("Responding to server with value: %s",
+                        abbreviate(String.valueOf(appiumResponse.getValue()), 300)));
+            } else {
+                Logger.info(String.format("Responding to server with error: %s",
+                        appiumResponse.getValue()));
+            }
         }
 
-        gsonBuilder.registerTypeAdapter(AppiumStatus.class, new AppiumStatusAdapter());
-        return newFixedLengthResponse(response.getHttpStatus(),
-                MediaType.APPLICATION_JSON, gsonBuilder.create().toJson(response));
+        try {
+            return buildFixedLengthResponse(response);
+        } catch (RuntimeException e) {
+            return buildFixedLengthResponse(
+                    new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e)));
+        }
     }
 }
