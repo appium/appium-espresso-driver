@@ -64,22 +64,21 @@ public class InputSource {
         this.type = type;
     }
 
-    public InputStateInterface getState() {
-        // Return the proper state once the user asks for it
-        if (state == null) {
-            switch (getType()) {
-                case POINTER:
-                    this.state = new PointerInputState();
-                    break;
-                case KEY:
-                    this.state = new KeyInputState();
-                    break;
-                case NONE:
-                    this.state = null;
-                    break;
-            }
+    /**
+     * Get the initial state of an Input Source
+     * @return
+     */
+    public InputStateInterface getDefaultState() {
+        switch (getType()) {
+            case POINTER:
+                return new PointerInputState();
+            case KEY:
+                return new KeyInputState();
+            case NONE:
+                return null;
+            default:
+                return null;
         }
-        return this.state;
     }
 
 

@@ -29,8 +29,6 @@ public class ActiveInputSources {
     }
 
     public void removeInputSource(String id) {
-        if (inputSources.containsKey(id)) {
-            inputSources.remove(id);
-        }
+        inputSources.remove(id);
     }
 }

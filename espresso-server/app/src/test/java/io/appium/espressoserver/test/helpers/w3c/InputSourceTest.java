@@ -113,7 +113,7 @@ public class InputSourceTest {
         InputSource inputSource = new InputSource(InputSourceType.KEY, "any", null, actions);
 
         // Check the initial state
-        KeyInputState inputState = (KeyInputState) inputSource.getState();
+        KeyInputState inputState = (KeyInputState) inputSource.getDefaultState();
         assertTrue(!inputState.isAlt());
         assertTrue(!inputState.isCtrl());
         assertTrue(!inputState.isMeta());
@@ -138,7 +138,7 @@ public class InputSourceTest {
         InputSource inputSource = new InputSource(InputSourceType.POINTER, "any", parameters, actions);
 
         // Check the initial state
-        PointerInputState inputState = (PointerInputState) inputSource.getState();
+        PointerInputState inputState = (PointerInputState) inputSource.getDefaultState();
         assertTrue(!inputState.isPressed(1));
         inputState.addPressed(1);
         assertTrue(inputState.isPressed(1));
@@ -153,6 +153,6 @@ public class InputSourceTest {
         action.setType(ActionType.POINTER_DOWN);
         actions.add(action);
         InputSource inputSource = new InputSource(InputSourceType.NONE, "any", null, actions);
-        assertNull(inputSource.getState());
+        assertNull(inputSource.getDefaultState());
     }
 }
