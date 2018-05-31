@@ -21,12 +21,13 @@ import io.appium.espressoserver.test.assets.Helpers;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 
 public class ActionSequenceTest {
 
     @Test
-    public void shouldTransposeActionsInW3CActions() throws IOException, InvalidArgumentException, NotYetImplementedException {
+    public void shouldPullOutPointerActionsInW3CActions() throws IOException, InvalidArgumentException, NotYetImplementedException {
         String multiTouchJson = Helpers.readAssetFile("multi-touch-actions.json");
         W3CActions w3CActions = W3CActions.class.cast((new Gson()).fromJson(multiTouchJson, W3CActions.class));
         ActionSequence actionSequence = new ActionSequence(w3CActions);
@@ -128,6 +129,54 @@ public class ActionSequenceTest {
         assertEquals(action.getDuration(), new Long(0));
 
         assertFalse(tick.hasNext());
+        assertFalse(actionSequence.hasNext());
+    }
+
+
+    @Test
+    public void shouldPullOutKeyActionsInW3CActions() throws IOException, InvalidArgumentException, NotYetImplementedException {
+        String multiTouchJson = Helpers.readAssetFile("key-actions.json");
+        W3CActions w3CActions = W3CActions.class.cast((new Gson()).fromJson(multiTouchJson, W3CActions.class));
+        ActionSequence actionSequence = new ActionSequence(w3CActions);
+
+        ActionObject action;
+        Tick tick;
+
+        String unicodeChar = Character.toString('\uE009');
+
+        // Tick #1 of 4
+        tick = actionSequence.next();
+        action = tick.next();
+        assertEquals(action.getType(), InputSourceType.KEY);
+        assertEquals(action.getSubType(), ActionType.KEY_DOWN);
+        assertEquals(action.getValue(), unicodeChar);
+        assertEquals(action.getId(), "keyboard");
+        assertFalse(tick.hasNext());
+
+        // Tick #2 of 4
+        tick = actionSequence.next();
+        action = tick.next();
+        assertEquals(action.getType(), InputSourceType.KEY);
+        assertEquals(action.getSubType(), ActionType.KEY_DOWN);
+        assertEquals(action.getId(), "keyboard");
+        assertFalse(tick.hasNext());
+
+        // Tick #3 of 4
+        tick = actionSequence.next();
+        action = tick.next();
+        assertEquals(action.getType(), InputSourceType.KEY);
+        assertEquals(action.getSubType(), ActionType.KEY_UP);
+        assertEquals(action.getId(), "keyboard");
+        assertFalse(tick.hasNext());
+
+        // Tick #4 of 4
+        tick = actionSequence.next();
+        action = tick.next();
+        assertEquals(action.getType(), InputSourceType.KEY);
+        assertEquals(action.getSubType(), ActionType.KEY_UP);
+        assertEquals(action.getId(), "keyboard");
+        assertFalse(tick.hasNext());
+
         assertFalse(actionSequence.hasNext());
     }
 

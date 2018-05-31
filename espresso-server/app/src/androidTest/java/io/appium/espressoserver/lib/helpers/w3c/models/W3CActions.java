@@ -228,11 +228,12 @@ public class W3CActions {
             return processPauseAction(action, inputSourceType, id, index);
         }
 
-        // 5-7 get the Unicode value of the keystroke
+        // 5-7 get the Unicode value of the keystroke (verify that it's a single character)
         String key = action.getValue();
-        if (!isUnicodeCodePoint(key)) {
+        if (key.length() != 1) {
             throwArgException(index, id, String.format("has invalid 'value' %s. Must be a unicode point", key));
         }
+
 
         ActionObject actionObject = new ActionObject(id, inputSourceType, subType, index);
         actionObject.setValue(key);
@@ -327,21 +328,5 @@ public class W3CActions {
                     "must have property '%s' be greater than or equal to 0 or undefined. Found %s", propertyName, propertyValue)
             );
         }
-    }
-
-    private static boolean isUnicodeCodePoint(String str) {
-        if (str.length() != 6) {
-            return false;
-        }
-        if(str.charAt(0) != '\\' || str.charAt(1) != 'u') {
-            return false;
-        }
-        Character[] hex = new Character[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        for(int i=2; i<str.length(); i++) {
-           if(!Arrays.asList(hex).contains(str.charAt(i))) {
-               return false;
-           }
-        }
-        return true;
     }
 }

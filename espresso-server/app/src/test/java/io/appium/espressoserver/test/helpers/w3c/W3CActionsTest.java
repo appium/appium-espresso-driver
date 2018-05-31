@@ -209,9 +209,10 @@ public class W3CActionsTest {
     public void shouldPassKeyIfUnicode() throws InvalidArgumentException {
         Action action = new Action();
         action.setType(ActionType.KEY_DOWN);
-        action.setValue("\\uE9F0");
+        String value = Character.toString('\uE9F0');
+        action.setValue(value);
         ActionObject actionObject = processKeyAction(action, InputSourceType.POINTER, "any", 0);
-        assertEquals(actionObject.getValue(), "\\uE9F0");
+        assertEquals(actionObject.getValue(), value);
         assertEquals(actionObject.getSubType(), ActionType.KEY_DOWN);
     }
 
