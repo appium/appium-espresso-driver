@@ -15,9 +15,6 @@ public class ActiveInputSources {
     private static ActiveInputSources globalActiveInputSources;
 
     public void addInputSource(InputSource inputSource) throws InvalidArgumentException {
-        if (inputSource.getId() == null) {
-            throw new InvalidArgumentException("Input source is missing ID");
-        }
         inputSources.put(inputSource.getId(), inputSource);
     }
 
