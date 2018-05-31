@@ -19,9 +19,11 @@ package io.appium.espressoserver.lib.helpers.w3c.models;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
+import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 
@@ -153,7 +155,20 @@ public class W3CActions {
      * @return
      * @throws InvalidArgumentException
      */
-    public static ActionObject processPointerAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
+    public static ActionObject processPointerAction(Action action, InputSourceType inputSourceType, String id, int index)
+            throws InvalidArgumentException, NotYetImplementedException {
+        ActionType subType = action.getType();
+
+        switch (subType) {
+            case POINTER_DOWN:
+            case POINTER_UP:
+                return processPointerUpOrDownAction(action, inputSourceType, id, index);
+            case POINTER_MOVE:
+                return processPointerMoveAction(action, inputSourceType, id, index);
+            case POINTER_CANCEL:
+                throw new NotYetImplementedException();
+        }
+
         return null;
     }
 
@@ -166,8 +181,30 @@ public class W3CActions {
      * @return
      * @throws InvalidArgumentException
      */
-    public static ActionObject processKeyAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
-        return null;
+    public static ActionObject processKeyAction(Action action, InputSourceType inputSourceType, String id, int index)
+            throws InvalidArgumentException {
+
+        // 1-3 get and validate the action type
+        ActionType subType = action.getType();
+        ActionType[] validKeyTypes = new ActionType[]{ KEY_UP, KEY_DOWN, PAUSE };
+        if (!Arrays.asList(validKeyTypes).contains(subType)) {
+            throwArgException(index, id, "has an invalid type. 'type' for 'key' actions must be one of: keyUp, keyDown or pause");
+        }
+
+        // 4 if pause return PAUSE action
+        if (subType.equals(PAUSE)) {
+            return processPauseAction(action, inputSourceType, id, index);
+        }
+
+        // 5-7 get the Unicode value of the keystroke
+        String key = action.getValue();
+        if (!isUnicodeCodePoint(key)) {
+            throwArgException(index, id, String.format("has invalid 'value' %s. Must be a unicode point", key));
+        }
+
+        ActionObject actionObject = new ActionObject(id, inputSourceType, subType, index);
+        actionObject.setValue(key);
+        return actionObject;
     }
 
     /**
@@ -182,7 +219,7 @@ public class W3CActions {
     public static ActionObject processPauseAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
         Long duration = action.getDuration();
         assertNullOrPositive(index, id, "duration", duration);
-        ActionObject actionObject = new ActionObject(id, inputSourceType, action, index);
+        ActionObject actionObject = new ActionObject(id, inputSourceType, PAUSE, index);
         actionObject.setDuration(duration);
         return actionObject;
     }
@@ -197,7 +234,7 @@ public class W3CActions {
      * @throws InvalidArgumentException
      */
     public static ActionObject processPointerUpOrDownAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
-        ActionObject actionObject = new ActionObject(id, inputSourceType, action, index);
+        ActionObject actionObject = new ActionObject(id, inputSourceType, action.getType(), index);
         int button = action.getButton();
         if (button < 0) {
             throwArgException(index, id, String.format("property 'button' must be greater than or equal to 0. Found %s", button));
@@ -216,7 +253,7 @@ public class W3CActions {
      * @throws InvalidArgumentException
      */
     public static ActionObject processPointerMoveAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
-        ActionObject actionObject = new ActionObject(id, inputSourceType, action, index);
+        ActionObject actionObject = new ActionObject(id, inputSourceType, action.getType(), index);
 
         // 1-3 Add the duration
         Long duration = action.getDuration();
@@ -248,7 +285,7 @@ public class W3CActions {
     }
 
     private static void throwArgException(int index, String id, String message) throws InvalidArgumentException {
-        throw new InvalidArgumentException(String.format("pointer move action in actions[%s] of action input source with id %s %s",
+        throw new InvalidArgumentException(String.format("action in actions[%s] of action input source with id '%s' %s",
                 index, id, message));
     }
 
@@ -258,5 +295,21 @@ public class W3CActions {
                     "must have property '%s' be greater than or equal to 0 or undefined. Found %s", propertyName, propertyValue)
             );
         }
+    }
+
+    private static boolean isUnicodeCodePoint(String str) {
+        if (str.length() != 6) {
+            return false;
+        }
+        if(str.charAt(0) != '\\' || str.charAt(1) != 'u') {
+            return false;
+        }
+        Character[] hex = new Character[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        for(int i=2; i<str.length(); i++) {
+           if(!Arrays.asList(hex).contains(str.charAt(i))) {
+               return false;
+           }
+        }
+        return true;
     }
 }

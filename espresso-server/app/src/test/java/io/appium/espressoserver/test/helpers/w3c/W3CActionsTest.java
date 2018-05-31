@@ -127,4 +127,49 @@ public class W3CActionsTest {
             assertTrue(ie.getMessage().contains("property 'button' must be greater than or equal to 0"));
         }
     }
+
+    @Test
+    public void shouldRejectKeyIfNotValidType() {
+        Action action = new Action();
+        action.setType(ActionType.POINTER_DOWN);
+        try {
+            W3CActions.processKeyAction(action, InputSourceType.KEY, "any", 0);
+            fail("expected exception was not occured.");
+        } catch (InvalidArgumentException ie) {
+            assertTrue(ie.getMessage().contains("has an invalid type"));
+        }
+    }
+
+    @Test
+    public void shouldProcessKeyAsPauseIfPause() throws InvalidArgumentException {
+        Action action = new Action();
+        action.setType(ActionType.PAUSE);
+        action.setDuration(300);
+        ActionObject actionObject = W3CActions.processKeyAction(action, InputSourceType.POINTER, "any", 0);
+        assertEquals(actionObject.getDuration(), new Long(300));
+        assertEquals(actionObject.getSubType(), ActionType.PAUSE);
+    }
+
+    @Test
+    public void shouldRejectKeyIfNotUnicode() throws InvalidArgumentException {
+        Action action = new Action();
+        action.setType(ActionType.KEY_DOWN);
+        action.setValue("asdfafsd");
+        try {
+            W3CActions.processKeyAction(action, InputSourceType.KEY, "any", 0);
+            fail("expected exception was not occured.");
+        } catch (InvalidArgumentException ie) {
+            assertTrue(ie.getMessage().contains("Must be a unicode point"));
+        }
+    }
+
+    @Test
+    public void shouldPassKeyIfUnicode() throws InvalidArgumentException {
+        Action action = new Action();
+        action.setType(ActionType.KEY_DOWN);
+        action.setValue("\\uE9F0");
+        ActionObject actionObject = W3CActions.processKeyAction(action, InputSourceType.POINTER, "any", 0);
+        assertEquals(actionObject.getValue(), "\\uE9F0");
+        assertEquals(actionObject.getSubType(), ActionType.KEY_DOWN);
+    }
 }

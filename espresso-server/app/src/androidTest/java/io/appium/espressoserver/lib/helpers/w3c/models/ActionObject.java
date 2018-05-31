@@ -13,10 +13,11 @@ public class ActionObject {
     private Long x;
     private Long y;
     private int button;
+    private String value;
 
-    public ActionObject(String id, InputSourceType type, Action action, int index){
+    public ActionObject(String id, InputSourceType type, ActionType subType, int index){
         this.type = type;
-        this.subType = action.getType();
+        this.subType = subType;
     }
 
     public InputSourceType getType() {
@@ -77,5 +78,13 @@ public class ActionObject {
 
     public int getButton() {
         return button;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 }
