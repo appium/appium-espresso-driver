@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.helpers.w3c.models;
 
 import android.support.annotation.Nullable;
 
-import io.appium.espressoserver.lib.helpers.w3c.models.W3CActions;
+import java.util.List;
 
 @SuppressWarnings("unused")
-public class W3CActionsParams extends AppiumParams {
-    private W3CActions actions;
+public class W3CActions {
+    private List<InputSource> actions = null;
 
     @Nullable
-    public W3CActions getActions() {
+    public List<InputSource> getActions() {
         return actions;
     }
 
-    public void setActions(W3CActions actions) {
+    public void setActions(List<InputSource> actions) {
         this.actions = actions;
     }
 }
