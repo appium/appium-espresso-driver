@@ -11,6 +11,7 @@ import java.util.Map;
 public class InputStateTable {
 
     private final Map<String, InputStateInterface> stateTable = new HashMap<>();
+    private static InputStateTable globalInputStateTable;
 
     public void addInputState(String id, InputStateInterface inputState){
         stateTable.put(id, inputState);
@@ -22,5 +23,12 @@ public class InputStateTable {
 
     public boolean hasInputState(String id) {
         return stateTable.containsKey(id);
+    }
+
+    public InputStateTable getInstance() {
+        if (globalInputStateTable == null) {
+            globalInputStateTable = new InputStateTable();
+        }
+        return globalInputStateTable;
     }
 }

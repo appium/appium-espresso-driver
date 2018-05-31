@@ -3,5 +3,37 @@ package io.appium.espressoserver.lib.helpers.w3c.models;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
 
 public class ActionObject {
-    private InputSourceType
+    private InputSourceType type;
+    private ActionType subType;
+    private String id;
+    private long duration;
+
+    public ActionObject(String id, InputSourceType type, Action action, int index){
+        this.type = type;
+        this.subType = action.getType();
+    }
+
+    public InputSourceType getType() {
+        return type;
+    }
+
+    public void setType(InputSourceType type) {
+        this.type = type;
+    }
+
+    public ActionType getSubType() {
+        return subType;
+    }
+
+    public void setSubType(ActionType subType) {
+        this.subType = subType;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
 }

@@ -19,10 +19,14 @@ package io.appium.espressoserver.lib.helpers.w3c.models;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
+
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.*;
 
 @SuppressWarnings("unused")
 public class W3CActions {
@@ -40,14 +44,19 @@ public class W3CActions {
     /**
      * Follows algorithm "for process an input source action sequence" in section 17.3
      */
-    public void processSourceActionSequence(InputSource inputSource, ActiveInputSources activeInputSources) throws InvalidArgumentException {
+    public void processSourceActionSequence(InputSource inputSource, ActiveInputSources activeInputSources, InputStateTable inputStateTable) throws InvalidArgumentException {
+        // 1: Get the type
+        InputSourceType type = inputSource.getType();
+
         // 2: If type is not "key", "pointer", or "none", return an error
-        if (inputSource.getType() == null) {
+        if (type == null) {
             throw new InvalidArgumentException("'type' is required in touch action and must be one of: pointer, key, none");
         }
 
-        // 4: If id is undefined or is not a String, return error
+        // 3: Get the ID from the input source
         String id = inputSource.getId();
+
+        // 4: If id is undefined or is not a String, return error
         if (id == null) {
             throw new InvalidArgumentException("'id' in touch action cannot be null");
         }
@@ -60,6 +69,7 @@ public class W3CActions {
         // 7:  source is undefined:
         if (activeSource == null) {
             activeInputSources.addInputSource(inputSource);
+
             activeSource = inputSource;
         } else {
 
@@ -87,7 +97,7 @@ public class W3CActions {
         }
 
         // 12: Let actions be a new list
-        List<Action> actions = new ArrayList<>();
+        List<ActionObject> actionObjects = new ArrayList<>();
 
         // 13: For each item in action items
         int index = 0;
@@ -98,13 +108,13 @@ public class W3CActions {
             index++;
             switch (inputSource.getType()) {
                 case NONE:
-                    actions.add(processNullAction(action, id, index));
+                    actionObjects.add(processNullAction(action, inputSource.getType(), id, index));
                     break;
                 case POINTER:
-                    actions.add(processPointerAction(action));
+                    //actionObjects.add(processPointerAction(action));
                     break;
                 case KEY:
-                    actions.add(processKeyAction(action));
+                    //actionObjects.add(processKeyAction(action));
                     break;
                 default:
                     break;
@@ -112,22 +122,64 @@ public class W3CActions {
         }
     }
 
-    public void processSourceActionSequence(InputSource inputSource) throws InvalidArgumentException {
+    /*public void processSourceActionSequence(InputSource inputSource) throws InvalidArgumentException {
         ActiveInputSources activeInputSources = ActiveInputSources.getInstance();
         processSourceActionSequence(inputSource, activeInputSources);
-    }
+    }*/
 
     /**
      * Implement the 'process a null action' in 17.3
      * @param action
+     * @param inputSourceType
+     * @param id
+     * @param index
      * @return
+     * @throws InvalidArgumentException
      */
-    public Action processNullAction(Action action, String id, int index) throws InvalidArgumentException {
-        if (action.getType() != ActionType.PAUSE) {
-            throw new InvalidArgumentException(String.format("null action in actions[%s] of action input source with id %s must only have type=pause",
+    public static ActionObject processNullAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
+        if (action.getType() != PAUSE) {
+            throw new InvalidArgumentException(String.format("null action in actions[%s] of action input source with id %s must only have type 'pause'",
                     index, id));
         }
-        Action processedAction = new Action();
-        processedAction.setType(Actio);
+        return processPauseAction(action, inputSourceType, id, index);
+    }
+
+    /**
+     * Implement the 'process a pause action' in 17.3
+     * @param action
+     * @param inputSourceType
+     * @param id
+     * @param index
+     * @return
+     * @throws InvalidArgumentException
+     */
+    public static ActionObject processPauseAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
+        Long duration = action.getDuration();
+        if (duration != null && duration < 0) {
+            throw new InvalidArgumentException(String.format("pause action in actions[%s] of action input source with id %s must be integer > 0",
+                    index, id));
+        }
+
+        if (duration == null) {
+            duration = 0L;
+        }
+
+        ActionObject actionObject = new ActionObject(id, inputSourceType, action, index);
+        actionObject.setDuration(duration);
+        return actionObject;
+    }
+
+    public static ActionObject processPointerAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
+        /*ActionType subType = action.getType();
+        List<ActionType> validActionTypes = Arrays.asList(new ActionType[] {
+                POINTER_CANCEL, POINTER_DOWN, POINTER_MOVE, POINTER_UP, PAUSE
+        });
+        if (!validActionTypes.contains(subType)) {
+            throw new InvalidArgumentException(String.format(
+                    "pointer action in actions[%s] of action input source with id %s must be one of " +
+                    "[pause, pointerUp, pointerDown, pointerMove, pointerCancel]", index, id));
+        }
+        ActionObject actionObject = new ActionObject(id, inputSourceType, action, index);*/
+        return null;
     }
 }
