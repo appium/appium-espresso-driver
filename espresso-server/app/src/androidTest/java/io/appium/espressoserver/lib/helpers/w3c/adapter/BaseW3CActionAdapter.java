@@ -1,0 +1,29 @@
+package io.appium.espressoserver.lib.helpers.w3c.adapter;
+
+import java.util.concurrent.locks.ReentrantLock;
+
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch;
+
+public class BaseW3CActionAdapter implements W3CActionAdapter {
+
+    private static ReentrantLock reentrantLock = new ReentrantLock();
+
+    public boolean keyDown(KeyDispatch.KeyEvent keyDownEvent) throws AppiumException {
+        throw new NotYetImplementedException();
+    }
+
+    public boolean keyUp(KeyDispatch.KeyEvent keyUpEvent) throws AppiumException {
+        throw new NotYetImplementedException();
+    }
+
+    public synchronized void lockAdapter() {
+        reentrantLock.lock();
+    }
+
+    public synchronized void unlockAdapter() {
+        reentrantLock.unlock();
+    }
+
+}

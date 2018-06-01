@@ -47,7 +47,7 @@ public class ActionsConstants {
     public static final String ACTION_ITEM_TYPE_POINTER_CANCEL = "pointerCancel";
     public static final String ACTION_ITEM_TYPE_PAUSE = "pause";
     public static final String ACTION_ITEM_TYPE_KEY_UP = "keyUp";
-    public static final String ACTION_ITEM_TYPE_KEY_DOWN = "KeyDown";
+    public static final String ACTION_ITEM_TYPE_KEY_DOWN = "keyDown";
     public static final List<String> POINTER_ITEM_TYPES = Arrays.asList(
             ACTION_ITEM_TYPE_POINTER_MOVE, ACTION_ITEM_TYPE_POINTER_UP,
             ACTION_ITEM_TYPE_POINTER_DOWN, ACTION_ITEM_TYPE_POINTER_CANCEL, ACTION_ITEM_TYPE_PAUSE);

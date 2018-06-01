@@ -199,7 +199,7 @@ public class InputSource {
         POINTER_CANCEL,
         @SerializedName("keyUp")
         KEY_UP,
-        @SerializedName("KeyDown")
+        @SerializedName("keyDown")
         KEY_DOWN
     }
 

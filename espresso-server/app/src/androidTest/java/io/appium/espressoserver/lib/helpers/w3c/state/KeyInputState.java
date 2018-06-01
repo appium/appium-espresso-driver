@@ -64,7 +64,6 @@ public class KeyInputState implements InputState {
      * Implement 'calculated global key state' in spec 17.2
      */
     public static KeyInputState getAggregateKeyInputState(List<KeyInputState> keyInputStates) {
-        Set<String> pressed = new HashSet<>();
         boolean isAlt = false;
         boolean isShift = false;
         boolean isCtrl = false;
