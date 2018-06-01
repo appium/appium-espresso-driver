@@ -189,7 +189,7 @@ class Router {
 
     @SuppressWarnings("unchecked")
     public BaseResponse route(String uri, Method method, Map<String, String> params,  Map<String, String> files) {
-        Logger.debug(String.format("Started processing %s request for '%s'", method, uri));
+        Logger.debug(String.format("Started processing %s request to '%s'", method, uri));
 
         // Look for a route that matches this URL
         RouteDefinition matchingRoute = routeMap.findMatchingRoute(method, uri);
@@ -198,7 +198,6 @@ class Router {
         if (matchingRoute == null) {
             return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, String.format("No such route %s", uri));
         }
-        Logger.debug(String.format("Matched route definition: %s", matchingRoute.getClass()));
 
         // Get the handler, parameter class and URI parameters
         RequestHandler handler = matchingRoute.getHandler();
@@ -234,7 +233,7 @@ class Router {
             }
 
             AppiumResponse appiumResponse = new AppiumResponse<>(AppiumStatus.SUCCESS, handlerResult, sessionId);
-            Logger.debug(String.format("Finished processing %s request for '%s'", method, uri));
+            Logger.debug(String.format("Finished processing %s request to '%s'", method, uri));
             return appiumResponse;
         } catch (NoSuchElementException e) {
             return new AppiumResponse<>(AppiumStatus.NO_SUCH_ELEMENT, Log.getStackTraceString(e));

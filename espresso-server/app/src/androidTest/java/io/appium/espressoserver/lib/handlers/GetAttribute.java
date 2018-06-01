@@ -44,7 +44,7 @@ public class GetAttribute implements RequestHandler<AppiumParams, String> {
         final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         final View view = Element.getViewById(params.getElementId());
         if (dstAttribute == ViewAttributesEnum.TEXT) {
-            return new ViewTextGetter().get(viewInteraction).toString();
+            return new ViewTextGetter().get(viewInteraction).getText();
         }
         final ViewElement viewElement = new ViewElement(view);
         switch (dstAttribute) {

@@ -28,6 +28,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateExcep
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.TextParams;
+import io.appium.espressoserver.lib.model.ViewText;
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter;
 
 import static android.support.test.espresso.action.ViewActions.replaceText;
@@ -77,8 +78,8 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
             }
             Logger.debug(String.format("Trying replaceText action as a workaround " +
                     "to type the '%s' text into the input field", value));
-            CharSequence currentText = new ViewTextGetter().get(viewInteraction);
-            if (currentText == null || currentText.length() == 0) {
+            ViewText currentText = new ViewTextGetter().get(viewInteraction);
+            if (currentText.getText().isEmpty() || currentText.isHint()) {
                 viewInteraction.perform(replaceText(value));
             } else {
                 Logger.debug(String.format("Current input field's text: '%s'", currentText));

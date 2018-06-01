@@ -28,6 +28,8 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Checkable;
+import android.widget.NumberPicker;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import javax.annotation.Nullable;
@@ -194,10 +196,23 @@ public class ViewElement {
     }
 
     @Nullable
-    public CharSequence getText() {
-        if (view instanceof TextView) {
-            return ((TextView) view).getText();
+    public ViewText getText() {
+        if (view instanceof ProgressBar) {
+            return new ViewText(((ProgressBar) view).getProgress());
         }
+        if (view instanceof NumberPicker) {
+            return new ViewText(((NumberPicker) view).getValue());
+        }
+        if (view instanceof TextView) {
+            CharSequence textValue = ((TextView) view).getText();
+            CharSequence hintValue = ((TextView) view).getHint();
+            if ((textValue == null || textValue.toString().isEmpty())
+                    && hintValue != null && !hintValue.toString().isEmpty()) {
+                return new ViewText(hintValue.toString(), true);
+            }
+            return new ViewText(textValue == null ? null : textValue.toString(), false);
+        }
+
         return null;
     }
 
