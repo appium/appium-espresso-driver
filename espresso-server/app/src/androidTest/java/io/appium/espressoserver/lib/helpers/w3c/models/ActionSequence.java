@@ -10,30 +10,30 @@ import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedExcepti
 import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.processSourceActionSequence;
 
 /**
- * Pull out the actions from the input sources and group them by 'ticks'
+ * The algorithm for extracting an action sequence from a request takes the JSON Object representing
+ * an action sequence, validates the input, and returns a data structure that is the transpose of
+ * the input JSON, such that the actions to be performed in a single tick are grouped together
  *
- * Defined in 17.3 of spec 'extract an action sequence'
+ * (Defined in 17.3 of spec 'extract an action sequence')
  */
 public class ActionSequence implements Iterator<Tick> {
 
-    private List<Tick> actionsByTick;
-    private int tickCounter;
+    private List<Tick> actionsByTick = new ArrayList<>();
+    private int tickCounter = 0;
 
     public ActionSequence(W3CActions w3CActions) throws InvalidArgumentException, NotYetImplementedException {
-        tickCounter = 0;
-        actionsByTick = new ArrayList<>();
-
-        // Transpose the actionsByTick within the input sources
+        // Check if null to keep Codacy happy. It will never make it this far if it's null though.
         if (w3CActions.getActions() != null) {
             for (InputSource inputSource : w3CActions.getActions()) {
-                int i = 0;
+                int tickIndex = 0;
                 List<ActionObject> actionObjects = processSourceActionSequence(inputSource);
                 for (ActionObject action : actionObjects) {
-                    if (actionsByTick.size() == i) {
+                    if (actionsByTick.size() == tickIndex) {
                         actionsByTick.add(new Tick());
                     }
-                    actionsByTick.get(i).addAction(action);
-                    i++;
+                    Tick tick = actionsByTick.get(tickIndex);
+                    tick.addAction(action);
+                    tickIndex++;
                 }
             }
         }

@@ -25,7 +25,7 @@ public class InputStateTable {
         return stateTable.containsKey(id);
     }
 
-    public static InputStateTable getInstance() {
+    public synchronized static InputStateTable getInstance() {
         if (globalInputStateTable == null) {
             globalInputStateTable = new InputStateTable();
         }

@@ -3,6 +3,8 @@ package io.appium.espressoserver.lib.helpers.w3c.models;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 
 /**
@@ -30,10 +32,12 @@ public class ActiveInputSources {
         inputSources.remove(id);
     }
 
+    @Nullable
     public InputSource getInputSource(InputSource inputSource) {
         return inputSources.get(inputSource.getId());
     }
 
+    @Nullable
     public InputSource getInputSource(String id) {
         return inputSources.get(id);
     }
@@ -51,7 +55,7 @@ public class ActiveInputSources {
      * and get an instance by the sessionId
      * @return Global instance of ActiveInputSources
      */
-    public static ActiveInputSources getInstance() {
+    public synchronized static ActiveInputSources getInstance() {
         if (globalActiveInputSources == null) {
             globalActiveInputSources = new ActiveInputSources();
         }

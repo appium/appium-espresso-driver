@@ -111,6 +111,7 @@ public class InputSource {
         private long y; // y coordinate of pointer
         private String value; // a string containing a single Unicode code point
 
+        @Nullable
         public ActionType getType(){
             return type;
         }
