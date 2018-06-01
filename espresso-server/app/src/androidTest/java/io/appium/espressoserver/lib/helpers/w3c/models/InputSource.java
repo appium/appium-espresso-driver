@@ -13,16 +13,32 @@ import javax.annotation.Nullable;
  *
  * Represents a Virtual Device providing input events
  */
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateInterface;
+import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
+import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 @SuppressWarnings("unused")
 public class InputSource {
-    private final String VIEWPORT = "viewport";
-    private final String POINTER = "pointer";
+    private static final String VIEWPORT = "viewport";
+    private static final String POINTER = "pointer";
 
     private InputSourceType type;
     private String id;
     private Parameters parameters;
     private List<Action> actions;
+
+    private InputStateInterface state;
+
+    public InputSource(){
+
+    }
+
+    public InputSource(InputSourceType type, String id, Parameters parameters, List<Action> actions){
+        this.type = type;
+        this.id = id;
+        this.parameters = parameters;
+        this.actions = actions;
+    }
 
     @Nullable
     public String getId() {
@@ -48,10 +64,30 @@ public class InputSource {
         this.type = type;
     }
 
+    /**
+     * Get the initial state of an Input Source
+     * @return
+     */
+    public InputStateInterface getDefaultState() {
+        switch (getType()) {
+            case POINTER:
+                return new PointerInputState();
+            case KEY:
+                return new KeyInputState();
+            default:
+                return null;
+        }
+    }
+
+
     @Nullable
     public PointerType getPointerType(){
         if (parameters != null) {
             return parameters.getPointerType();
+        } else if (type == InputSourceType.POINTER) {
+            // NOTE: The spec specifies that the default should be MOUSE. This is an exception
+            // because the vast majority of use cases on a mobile device will use TOUCH.
+            return PointerType.TOUCH;
         }
         return null;
     }
@@ -65,7 +101,7 @@ public class InputSource {
         NONE
     }
 
-    public class Action {
+    public static class Action {
         private ActionType type; // type of action
         private Long duration; // time in milliseconds
         private String origin; // origin; could be viewport, pointer or <ELEMENT_ID>
@@ -169,8 +205,8 @@ public class InputSource {
         KEY_DOWN
     }
 
-    public class Parameters {
-        private PointerType pointerType;
+    public static class Parameters {
+        PointerType pointerType;
 
         private PointerType getPointerType(){
             return pointerType;
@@ -181,7 +217,7 @@ public class InputSource {
         }
     }
 
-    public enum PointerType {
+    public static enum PointerType {
         @SerializedName("mouse")
         MOUSE,
         @SerializedName("pen")

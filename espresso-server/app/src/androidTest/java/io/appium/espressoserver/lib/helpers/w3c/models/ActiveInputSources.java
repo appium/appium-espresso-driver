@@ -17,7 +17,7 @@ public class ActiveInputSources {
         if (inputSource.getId() == null) {
             throw new InvalidArgumentException("Input source is missing ID");
         }
-        this.inputSources.put(inputSource.getId(), inputSource);
+        inputSources.put(inputSource.getId(), inputSource);
     }
 
     /**
@@ -25,7 +25,10 @@ public class ActiveInputSources {
      * @param inputSource Source to remove
      */
     public void removeInputSource(InputSource inputSource) {
-        this.inputSources.remove(inputSource.getId());
+        removeInputSource(inputSource.getId());
     }
 
+    public void removeInputSource(String id) {
+        inputSources.remove(id);
+    }
 }

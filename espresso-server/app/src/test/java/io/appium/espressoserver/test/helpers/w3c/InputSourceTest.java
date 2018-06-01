@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
@@ -13,6 +14,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
+import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
+import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 
 public class InputSourceTest {
@@ -92,5 +95,64 @@ public class InputSourceTest {
         Action actionFour = actions.get(3);
         assertEquals(actionFour.getType(), ActionType.KEY_UP);
         assertEquals(actionFour.getValue(), "key2");
+    }
+
+    @Test
+    public void shouldDefaultPointerTypeToTouch() {
+        InputSource inputSource = new InputSource();
+        inputSource.setType(InputSourceType.POINTER);
+        assertEquals(inputSource.getPointerType(), PointerType.TOUCH);
+    }
+
+    @Test
+    public void shouldMapKeyObjectToKeyInputState() {
+        List<Action> actions = new ArrayList<>();
+        Action action = new Action();
+        action.setType(ActionType.KEY_DOWN);
+        actions.add(action);
+        InputSource inputSource = new InputSource(InputSourceType.KEY, "any", null, actions);
+
+        // Check the initial state
+        KeyInputState inputState = (KeyInputState) inputSource.getDefaultState();
+        assertTrue(!inputState.isAlt());
+        assertTrue(!inputState.isCtrl());
+        assertTrue(!inputState.isMeta());
+        assertTrue(!inputState.isShift());
+
+        // Add and remove a key and check the state along the way
+        assertTrue(!inputState.isPressed("a"));
+        inputState.addPressed("a");
+        assertTrue(inputState.isPressed("a"));
+        inputState.removePressed("a");
+        assertTrue(!inputState.isPressed("a"));
+    }
+
+    @Test
+    public void shouldMapPointerObjectToPointerInputState() {
+        List<Action> actions = new ArrayList<>();
+        Action action = new Action();
+        action.setType(ActionType.POINTER_DOWN);
+        actions.add(action);
+        Parameters parameters = new Parameters();
+        parameters.setPointerType(PointerType.TOUCH);
+        InputSource inputSource = new InputSource(InputSourceType.POINTER, "any", parameters, actions);
+
+        // Check the initial state
+        PointerInputState inputState = (PointerInputState) inputSource.getDefaultState();
+        assertTrue(!inputState.isPressed(1));
+        inputState.addPressed(1);
+        assertTrue(inputState.isPressed(1));
+        inputState.removePressed(1);
+        assertTrue(!inputState.isPressed(1));
+    }
+
+    @Test
+    public void shouldMapNullInputSourceStateToNull() {
+        List<Action> actions = new ArrayList<>();
+        Action action = new Action();
+        action.setType(ActionType.POINTER_DOWN);
+        actions.add(action);
+        InputSource inputSource = new InputSource(InputSourceType.NONE, "any", null, actions);
+        assertNull(inputSource.getDefaultState());
     }
 }
