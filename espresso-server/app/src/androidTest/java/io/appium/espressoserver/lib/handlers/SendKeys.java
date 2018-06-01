@@ -82,8 +82,8 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
             if (currentText.getText().isEmpty() || currentText.isHint()) {
                 viewInteraction.perform(replaceText(value));
             } else {
-                Logger.debug(String.format("Current input field's text: '%s'", currentText));
-                viewInteraction.perform(replaceText(currentText + value));
+                Logger.debug(String.format("Current input field's text: '%s'", currentText.getText()));
+                viewInteraction.perform(replaceText(currentText.getText() + value));
             }
         }
 

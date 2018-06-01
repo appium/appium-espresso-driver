@@ -27,4 +27,9 @@ public class ViewText {
     public boolean isHint() {
         return isHint;
     }
+
+    @Override
+    public String toString() {
+        return getText();
+    }
 }
