@@ -31,6 +31,6 @@ public class Text implements RequestHandler<AppiumParams, String> {
     @Nullable
     public String handle(AppiumParams params) throws AppiumException {
         ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
-        return new ViewTextGetter().get(viewInteraction).getText();
+        return new ViewTextGetter().get(viewInteraction).getRawText();
     }
 }
