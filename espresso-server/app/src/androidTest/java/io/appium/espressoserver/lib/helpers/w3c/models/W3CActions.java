@@ -217,7 +217,7 @@ public class W3CActions {
         ActionType subType = action.getType();
         ActionType[] validKeyTypes = new ActionType[]{ KEY_UP, KEY_DOWN, PAUSE };
         if (!Arrays.asList(validKeyTypes).contains(subType)) {
-            throwArgException(index, id, "has an invalid type. 'type' for 'key' actions must be one of: keyUp, keyDown or pause");
+            throwArgException(index, id, "has an invalid type. 'type' for 'key' actions must be one of: keyUp, KeyDown or pause");
         }
 
         // 4 if pause return PAUSE action

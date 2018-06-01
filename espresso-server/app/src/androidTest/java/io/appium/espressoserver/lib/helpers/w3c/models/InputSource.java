@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import io.appium.espressoserver.lib.helpers.w3c.state.InputStateInterface;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
@@ -27,7 +27,7 @@ public class InputSource {
     private Parameters parameters;
     private List<Action> actions;
 
-    private InputStateInterface state;
+    private InputState state;
 
     public InputSource(){
 
@@ -70,7 +70,7 @@ public class InputSource {
      * Get the initial state of an Input Source
      * @return Get the initial input state (see 17.3 for info on Input State)
      */
-    public InputStateInterface getDefaultState() {
+    public InputState getDefaultState() {
         switch (getType()) {
             case POINTER:
                 return new PointerInputState();
@@ -199,7 +199,7 @@ public class InputSource {
         POINTER_CANCEL,
         @SerializedName("keyUp")
         KEY_UP,
-        @SerializedName("keyDown")
+        @SerializedName("KeyDown")
         KEY_DOWN
     }
 

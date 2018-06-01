@@ -76,7 +76,7 @@ public class InputSourceTest {
 
     @Test
     public void shouldDeserializeComplexKeyObject() {
-        String postJson = "{\"type\":\"key\",\"id\":\"keyboard\",\"actions\":[{\"type\":\"keyDown\",\"value\":\"key1\"},{\"type\":\"keyDown\",\"value\":\"key2\"},{\"type\":\"keyUp\",\"value\":\"key1\"},{\"type\":\"keyUp\",\"value\":\"key2\"}]}";
+        String postJson = "{\"type\":\"key\",\"id\":\"keyboard\",\"actions\":[{\"type\":\"KeyDown\",\"value\":\"key1\"},{\"type\":\"KeyDown\",\"value\":\"key2\"},{\"type\":\"keyUp\",\"value\":\"key1\"},{\"type\":\"keyUp\",\"value\":\"key2\"}]}";
         InputSource inputSource = InputSource.class.cast((new Gson()).fromJson(postJson, InputSource.class));
         assertEquals(inputSource.getType(), InputSourceType.KEY);
         assertEquals(inputSource.getId(), "keyboard");
