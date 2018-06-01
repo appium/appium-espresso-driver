@@ -18,29 +18,19 @@ package io.appium.espressoserver.lib.viewaction;
 
 import android.support.test.espresso.ViewInteraction;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.model.ViewElement;
+import io.appium.espressoserver.lib.model.ViewText;
 
 public class ViewTextGetter {
-    public CharSequence get(ViewInteraction viewInteraction) throws AppiumException {
+    public ViewText get(ViewInteraction viewInteraction) throws AppiumException {
         final View view = new ViewGetter().getView(viewInteraction);
-        if (view instanceof ProgressBar) {
-            return Integer.toString(((ProgressBar) view).getProgress());
+        final ViewText result = new ViewElement(view).getText();
+        if (result == null) {
+            throw new AppiumException(String.format("Views of class type %s have no 'text' property",
+                    view.getClass().getName()));
         }
-        if (view instanceof NumberPicker) {
-            return Integer.toString(((NumberPicker) view).getValue());
-        }
-        if (view instanceof EditText) {
-            return ((EditText) view).getText();
-        }
-        if (view instanceof TextView) {
-            return ((TextView) view).getText();
-        }
-        throw new AppiumException(String.format("Views of class type %s have no text property",
-                view.getClass().getName()));
+        return result;
     }
 }

@@ -25,12 +25,12 @@ import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter;
 
-public class Text implements RequestHandler<AppiumParams, CharSequence> {
+public class Text implements RequestHandler<AppiumParams, String> {
 
     @Override
     @Nullable
-    public CharSequence handle(AppiumParams params) throws AppiumException {
+    public String handle(AppiumParams params) throws AppiumException {
         ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
-        return new ViewTextGetter().get(viewInteraction);
+        return new ViewTextGetter().get(viewInteraction).getRawText();
     }
 }

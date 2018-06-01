@@ -106,7 +106,6 @@ public class SourceDocument {
         // Set attributes
         setAttribute(element, ViewAttributesEnum.INDEX, Integer.toString(viewElement.getIndex()));
         setAttribute(element, ViewAttributesEnum.PACKAGE, viewElement.getPackageName());
-        setAttribute(element, ViewAttributesEnum.TEXT, viewElement.getText());
         setAttribute(element, ViewAttributesEnum.CLASS, viewElement.getClassName());
         setAttribute(element, ViewAttributesEnum.CONTENT_DESC, viewElement.getContentDescription());
         setAttribute(element, ViewAttributesEnum.CHECKABLE, Boolean.toString(viewElement.isCheckable()));
@@ -120,7 +119,10 @@ public class SourceDocument {
         setAttribute(element, ViewAttributesEnum.PASSWORD, Boolean.toString(viewElement.isPassword()));
         setAttribute(element, ViewAttributesEnum.SELECTED, Boolean.toString(viewElement.isSelected()));
         setAttribute(element, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
-        setAttribute(element, ViewAttributesEnum.TEXT, viewElement.getText());
+        final ViewText viewText = viewElement.getText();
+        if (viewText != null) {
+            setAttribute(element, ViewAttributesEnum.TEXT, viewText.getRawText());
+        }
         setAttribute(element, ViewAttributesEnum.RESOURCE_ID, viewElement.getResourceId());
 
         if (view.getTag() != null) {
