@@ -31,7 +31,7 @@
     "appium-base-driver": "^2.18.4",
     "appium-support": "^2.12.0",
     "asyncbox": "^2.3.1",
-    "babel-runtime": "6.26.0",
+    "babel-runtime": "=5.8.24",
     "bluebird": "^3.5.0",
     "lodash": "^4.17.4",
     "portscanner": "^2.1.1",
@@ -63,14 +63,14 @@
     "android-apidemos": "^3.0.0",
     "appium-gulp-plugins": "^2.3.2",
     "appium-test-support": "^1.0.0",
-    "babel-eslint": "^8.2.3",
+    "babel-eslint": "^7.1.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^4.19.1",
+    "eslint": "^3.10.2",
     "eslint-config-appium": "^2.0.1",
-    "eslint-plugin-babel": "^5.1.0",
+    "eslint-plugin-babel": "^3.3.0",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-mocha": "^5.0.0",
+    "eslint-plugin-mocha": "^4.7.0",
     "eslint-plugin-promise": "^3.3.1",
     "gulp": "^3.9.1",
     "mocha": "^5.1.1",
@@ -79,5 +79,18 @@
     "wd": "^1.2.0",
     "xmldom": "^0.1.27",
     "xpath": "0.0.27"
+  },
+  "greenkeeper": {
+    "ignore": [
+      "babel-eslint",
+      "babel-preset-env",
+      "eslint",
+      "eslint-plugin-babel",
+      "eslint-plugin-import",
+      "eslint-plugin-mocha",
+      "eslint-plugin-promise",
+      "gulp",
+      "babel-runtime"
+    ]
   }
 }
