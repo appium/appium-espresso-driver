@@ -66,7 +66,7 @@
     "babel-eslint": "^7.1.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^3.18.0",
+    "eslint": "^3.10.2",
     "eslint-config-appium": "^2.0.1",
     "eslint-plugin-babel": "^3.3.0",
     "eslint-plugin-import": "^2.2.0",
@@ -79,5 +79,18 @@
     "wd": "^1.2.0",
     "xmldom": "^0.1.27",
     "xpath": "0.0.27"
+  },
+  "greenkeeper": {
+    "ignore": [
+      "babel-eslint",
+      "babel-preset-env",
+      "eslint",
+      "eslint-plugin-babel",
+      "eslint-plugin-import",
+      "eslint-plugin-mocha",
+      "eslint-plugin-promise",
+      "gulp",
+      "babel-runtime"
+    ]
   }
 }
