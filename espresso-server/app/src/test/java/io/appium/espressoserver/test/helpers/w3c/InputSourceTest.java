@@ -8,14 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Parameters;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
+import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
+import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
-import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
-import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 
 public class InputSourceTest {

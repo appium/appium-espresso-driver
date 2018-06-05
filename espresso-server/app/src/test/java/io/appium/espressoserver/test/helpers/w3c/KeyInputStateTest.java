@@ -1,11 +1,13 @@
 package io.appium.espressoserver.test.helpers.w3c;
 
 
-import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
-
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.Arrays;
+
+import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
+
 import static org.junit.Assert.assertTrue;
 
 
