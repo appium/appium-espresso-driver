@@ -6,13 +6,8 @@ import java.util.List;
 
 public class Tick implements Iterator<ActionObject> {
 
-    private final List<ActionObject> actions;
-    private int actionCounter;
-
-    public Tick() {
-        actions = new ArrayList<>();
-        actionCounter = 0;
-    }
+    private final List<ActionObject> actions = new ArrayList<>();
+    private int actionCounter = 0;
 
     public void addAction(ActionObject action) {
         actions.add(action);
