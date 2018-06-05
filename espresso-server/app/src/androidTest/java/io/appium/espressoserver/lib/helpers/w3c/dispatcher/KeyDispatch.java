@@ -105,9 +105,9 @@ public class KeyDispatch {
         boolean ctrl = key.equals(NormalizedKeys.CONTROL);
         boolean meta = key.equals(NormalizedKeys.META);
         if (alt) inputState.setAlt(false);
-        if (shift) inputState.setAlt(false);
-        if (ctrl) inputState.setAlt(false);
-        if (meta) inputState.setAlt(false);
+        if (shift) inputState.setShift(false);
+        if (ctrl) inputState.setCtrl(false);
+        if (meta) inputState.setMeta(false);
 
         // 11: Remove key from the set corresponding to input state's pressed property.
         inputState.removePressed(key);

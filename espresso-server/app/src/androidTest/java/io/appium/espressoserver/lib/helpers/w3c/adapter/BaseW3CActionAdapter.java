@@ -6,7 +6,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch;
 
-public class BaseW3CActionAdapter implements W3CActionAdapter {
+public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
 
     private static ReentrantLock reentrantLock = new ReentrantLock();
 
