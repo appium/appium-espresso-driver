@@ -6,6 +6,10 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateInterface;
+import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
+import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
+
 /**
  * InputSource
  *
@@ -13,14 +17,10 @@ import javax.annotation.Nullable;
  *
  * Represents a Virtual Device providing input events
  */
-import io.appium.espressoserver.lib.helpers.w3c.state.InputStateInterface;
-import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
-import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
-
 @SuppressWarnings("unused")
 public class InputSource {
-    private static final String VIEWPORT = "viewport";
-    private static final String POINTER = "pointer";
+    public static final String VIEWPORT = "viewport";
+    public static final String POINTER = "pointer";
 
     private InputSourceType type;
     private String id;
@@ -40,6 +40,10 @@ public class InputSource {
         this.actions = actions;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Nullable
     public String getId() {
         return id;
@@ -53,10 +57,8 @@ public class InputSource {
         this.actions = actions;
     }
 
+    @Nullable
     public InputSourceType getType() {
-        if (type == null) {
-            return InputSourceType.NONE;
-        }
         return type;
     }
 
@@ -66,7 +68,7 @@ public class InputSource {
 
     /**
      * Get the initial state of an Input Source
-     * @return
+     * @return Get the initial input state (see 17.3 for info on Input State)
      */
     public InputStateInterface getDefaultState() {
         switch (getType()) {
@@ -110,10 +112,8 @@ public class InputSource {
         private Long y; // y coordinate of pointer
         private String value; // a string containing a single Unicode code point
 
+        @Nullable
         public ActionType getType(){
-            if (type == null) {
-                return ActionType.PAUSE;
-            }
             return type;
         }
 
@@ -160,7 +160,6 @@ public class InputSource {
             return origin.equalsIgnoreCase(POINTER);
         }
 
-        @Nullable
         public Long getX(){
             return x;
         }
@@ -169,7 +168,6 @@ public class InputSource {
             this.x = x;
         }
 
-        @Nullable
         public Long getY(){
             return y;
         }
@@ -206,7 +204,7 @@ public class InputSource {
     }
 
     public static class Parameters {
-        PointerType pointerType;
+        private PointerType pointerType;
 
         private PointerType getPointerType(){
             return pointerType;
@@ -217,7 +215,7 @@ public class InputSource {
         }
     }
 
-    public static enum PointerType {
+    public enum PointerType {
         @SerializedName("mouse")
         MOUSE,
         @SerializedName("pen")
