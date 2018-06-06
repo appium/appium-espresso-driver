@@ -12,7 +12,7 @@ import { startServer } from '../../..';
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('source commands', function () {
+describe('source commands @skip-ci', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
@@ -47,8 +47,6 @@ describe('source commands', function () {
     });
     const sourceXML = await driver.source();
     sourceXML.should.be.a.string;
-    console.log('#####', sourceXML); // eslint-disable-line no-console
-    process.exit();
     const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
     const node = xpath.select('//*[content-desc=Animation]', doc);
     node.should.exist;

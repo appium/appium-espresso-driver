@@ -9,7 +9,7 @@ import { startServer } from '../../..';
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('elementByXPath', function () {
+describe('elementByXPath @skip-ci', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
