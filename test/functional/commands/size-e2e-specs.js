@@ -9,7 +9,7 @@ import { startServer } from '../../..';
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('Size', function () {
+describe('Size @skip-ci', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;

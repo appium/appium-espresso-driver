@@ -7,7 +7,7 @@ import { APIDEMO_CAPS } from '../desired';
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('keyboard', function () {
+describe('keyboard @skip-ci', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;

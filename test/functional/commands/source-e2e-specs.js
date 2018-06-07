@@ -12,7 +12,7 @@ import { startServer } from '../../..';
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('source commands', function () {
+describe('source commands @skip-ci', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
@@ -39,7 +39,7 @@ describe('source commands', function () {
     const node = xpath.select('//*[content-desc=Animation]', doc);
     node.should.exist;
   });
-  it.only('should get sourceXML from a react native app and have view-tag', async function () {
+  it('should get sourceXML from a react native app and have view-tag', async function () {
     driver = wd.promiseChainRemote(HOST, PORT);
     await driver.init({
       ...APIDEMO_CAPS,
@@ -47,8 +47,6 @@ describe('source commands', function () {
     });
     const sourceXML = await driver.source();
     sourceXML.should.be.a.string;
-    console.log('#####', sourceXML);
-    process.exit();
     const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
     const node = xpath.select('//*[content-desc=Animation]', doc);
     node.should.exist;
