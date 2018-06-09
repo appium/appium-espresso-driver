@@ -52,4 +52,8 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
         // Default to ~15 moves-per-second
         return 67;
     }
+
+    public void sleep(long duration) throws InterruptedException {
+        Thread.sleep(duration);
+    }
 }

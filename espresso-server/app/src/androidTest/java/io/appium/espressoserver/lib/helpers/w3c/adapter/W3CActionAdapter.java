@@ -30,4 +30,6 @@ public interface W3CActionAdapter {
                              Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException;
 
     int pointerMoveIntervalDuration();
+
+    void sleep(long duration) throws InterruptedException;
 }
