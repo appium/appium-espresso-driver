@@ -3,6 +3,8 @@ package io.appium.espressoserver.lib.helpers.w3c.state;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
+
 /**
  * Pointer input state specified in 17.2 of spec
  *
@@ -10,6 +12,7 @@ import java.util.Set;
  */
 public class PointerInputState implements InputState {
     private Set<Integer> pressed = new HashSet<>();
+    private PointerType type;
     private int x = 0;
     private int y = 0;
 
@@ -23,6 +26,14 @@ public class PointerInputState implements InputState {
 
     public void removePressed(int num) {
         pressed.remove(num);
+    }
+
+    public Set<Integer> getButtons() {
+        return pressed;
+    }
+
+    public boolean hasPressedButtons() {
+        return !pressed.isEmpty();
     }
 
     public int getX() {
@@ -39,5 +50,13 @@ public class PointerInputState implements InputState {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public PointerType getType() {
+        return type;
+    }
+
+    public void setType(PointerType type) {
+        this.type = type;
     }
 }
