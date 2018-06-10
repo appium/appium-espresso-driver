@@ -28,6 +28,17 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
         return -1;
     }
 
+    public void pointerDown(int button, String sourceId, PointerType pointerType, Long x, Long y,
+                            Set<Integer> depressedButtons, KeyInputState globalKeyInputState) throws AppiumException {
+
+    }
+
+    public void pointerUp(int button, String sourceId, PointerType pointerType,
+                   Long x, Long y, Set<Integer> depressedButtons,
+                   KeyInputState globalKeyInputState) throws AppiumException {
+
+    }
+
     public synchronized void lockAdapter() {
         reentrantLock.lock();
     }

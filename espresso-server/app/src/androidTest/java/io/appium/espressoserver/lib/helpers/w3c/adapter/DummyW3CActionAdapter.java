@@ -28,12 +28,24 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
 
     private List<PointerMoveEvent> pointerMoveEvents = new ArrayList<>();
 
-    public boolean keyDown(KeyDispatch.KeyEvent keyEvent) {
-        return true;
+    public void keyDown(KeyDispatch.KeyEvent keyEvent) {
+
     }
 
-    public boolean keyUp(KeyDispatch.KeyEvent keyEvent) {
-        return true;
+    public void keyUp(KeyDispatch.KeyEvent keyEvent) {
+
+    }
+
+    public void pointerUp(int button, String sourceId, PointerType pointerType,
+                            Long x, Long y, Set<Integer> depressedButtons,
+                            KeyInputState globalKeyInputState) throws AppiumException {
+
+    }
+
+    public void pointerDown(int button, String sourceId, PointerType pointerType,
+                     Long x, Long y, Set<Integer> depressedButtons,
+                     KeyInputState globalKeyInputState) throws AppiumException {
+
     }
 
     public double getPointerMoveDurationMargin(PointerInputState pointerInputState) {

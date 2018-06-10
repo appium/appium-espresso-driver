@@ -15,6 +15,64 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
 public class PointerDispatch {
 
     /**
+     * Run the 'dispatch a pointer down' algorithm
+     * @param dispatcherAdapter
+     * @param sourceId
+     * @param actionObject
+     * @param pointerInputState
+     * @param globalKeyInputState
+     * @throws AppiumException
+     */
+    public static void dispatchPointerDown(final W3CActionAdapter dispatcherAdapter,
+                                           final String sourceId,
+                                           final ActionObject actionObject,
+                                           final PointerInputState pointerInputState,
+                                           final KeyInputState globalKeyInputState) throws AppiumException {
+        PointerType pointerType = actionObject.getPointer();
+        int button = actionObject.getButton();
+        if (pointerInputState.isPressed(button)) {
+            return;
+        }
+        Long x = pointerInputState.getX();
+        Long y = pointerInputState.getY();
+        // TODO: Do cancel list stuff
+        pointerInputState.addPressed(button);
+        dispatcherAdapter.lockAdapter();
+        dispatcherAdapter.pointerDown(button, sourceId, pointerType, x, y,
+                pointerInputState.getButtons(), globalKeyInputState);
+        dispatcherAdapter.unlockAdapter();
+    }
+
+    /**
+     * Perform the 'dispatch pointer up' algorithm
+     * @param dispatcherAdapter
+     * @param sourceId
+     * @param actionObject
+     * @param pointerInputState
+     * @param globalKeyInputState
+     * @throws AppiumException
+     */
+    public static void dispatchPointerUp(final W3CActionAdapter dispatcherAdapter,
+                                           final String sourceId,
+                                           final ActionObject actionObject,
+                                           final PointerInputState pointerInputState,
+                                           final KeyInputState globalKeyInputState) throws AppiumException {
+        PointerType pointerType = actionObject.getPointer();
+        int button = actionObject.getButton();
+        if (!pointerInputState.isPressed(button)) {
+            return;
+        }
+        Long x = pointerInputState.getX();
+        Long y = pointerInputState.getY();
+        // TODO: Do cancel list stuff
+        pointerInputState.removePressed(button);
+        dispatcherAdapter.lockAdapter();
+        dispatcherAdapter.pointerUp(button, sourceId, pointerType, x, y,
+                pointerInputState.getButtons(), globalKeyInputState);
+        dispatcherAdapter.unlockAdapter();
+    }
+
+    /**
      * Call the 'dispatch a pointerMove action' algorithm
      * @param dispatcherAdapter
      * @param sourceId
@@ -31,7 +89,7 @@ public class PointerDispatch {
                                                      final ActionObject actionObject,
                                                      final PointerInputState pointerInputState,
                                                      final long tickDuration,
-                                                     final int timeSinceBeginningOfTick,
+                                                     final long timeSinceBeginningOfTick,
                                                      final KeyInputState globalKeyInputState) throws AppiumException {
         // 1.5 Variable definitions
         long xOffset = actionObject.getX();
@@ -108,7 +166,6 @@ public class PointerDispatch {
                                                     final long timeSinceBeginningOfTick,
                                                     final KeyInputState globalKeyInputState) {
 
-        //final ExecutorService executorService = Executors.newSingleThreadExecutor();
         /*Logger.debug(String.format(
             "Performing pointer move '%s' on input source with id '%s' from [%s, %s] to [%s, %s]",
             pointerInputState.getType().toString(), sourceId, startX, startY, targetX, targetY
@@ -162,11 +219,8 @@ public class PointerDispatch {
                 } while (!isLast);
 
                 // 9. If last is true, return
-                //executorService.shutdown();
                 return null;
             }
         };
-
-        //return executorService.submit(callable);
     }
 }

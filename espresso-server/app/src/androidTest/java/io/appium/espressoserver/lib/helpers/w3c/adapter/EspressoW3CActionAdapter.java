@@ -10,11 +10,11 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     //private final UiController uiController;
 
     public EspressoW3CActionAdapter(UiController uiController) {
-        this.uiController = uiController;
+        //this.uiController = uiController;
     }
 
-    public boolean keyDown(KeyEvent keyEvent) throws AppiumException {
-        // TODO: This is only a stub
+    public void keyDown(KeyEvent keyEvent) throws AppiumException {
+        // TODO: This is a stub
         /*android.view.KeyEvent androidKeyEvent = new android.view.KeyEvent(
                 System.currentTimeMillis(), System.currentTimeMillis(),
                 ACTION_DOWN, Character.getNumericValue(keyEvent.getKey().charAt(0)),
@@ -26,11 +26,9 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         } catch (InjectEventSecurityException e) {
             throw new AppiumException(e.getCause().toString());
         }*/
-        return false;
     }
 
-    public boolean keyUp(KeyEvent keyEvent) {
-        // TODO: this is only a stub
-        return false;
+    public void keyUp(KeyEvent keyEvent) {
+        // TODO: This is a stub
     }
 }

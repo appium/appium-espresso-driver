@@ -5,28 +5,33 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException;
+import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter.PointerMoveEvent;
+import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
+import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerDown;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerMove;
+import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerUp;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.performPointerMove;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.*;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTER;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class PointerDispatchTest {
@@ -193,5 +198,91 @@ public class PointerDispatchTest {
             assertEquals(pointerInputState.getX(), expectedX[i]);
             assertEquals(pointerInputState.getY(), expectedY[i]);
         }
+    }
+
+    @Test
+    public void shouldAddButtonToDepressedOnDispatchDown() throws AppiumException {
+        DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
+        PointerInputState pointerInputState = new PointerInputState();
+
+        ActionObject actionObject = new ActionObject(
+                "id", InputSourceType.POINTER, POINTER_MOVE, 0
+        );
+        actionObject.setButton(1);
+
+        assertFalse(pointerInputState.isPressed(1));
+        dispatchPointerDown(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
+                null);
+
+        assertTrue(pointerInputState.isPressed(1));
+    }
+
+    @Test
+    public void shouldReturnDispatchDownRightAwayIfAlreadyPressed() throws AppiumException {
+        class TempDummyAdapter extends DummyW3CActionAdapter {
+            @Override
+            public void pointerDown(int button, String sourceId, PointerType pointerType,
+                                    Long x, Long y, Set<Integer> depressedButtons,
+                                    KeyInputState globalKeyInputState) throws AppiumException {
+                throw new AppiumException("Should not reach this point. Button already pressed.");
+            }
+
+        }
+        W3CActionAdapter dummyW3CActionAdapter = new TempDummyAdapter();
+        PointerInputState pointerInputState = new PointerInputState();
+        pointerInputState.addPressed(1);
+        ActionObject actionObject = new ActionObject(
+                "id", InputSourceType.POINTER, POINTER_MOVE, 0
+        );
+        actionObject.setButton(1);
+
+        assertTrue(pointerInputState.isPressed(1));
+        dispatchPointerDown(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
+                null);
+
+        assertTrue(pointerInputState.isPressed(1));
+    }
+
+    @Test
+    public void shouldRemoveButtonFromDepressedOnDispatchUp() throws AppiumException {
+        DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
+        PointerInputState pointerInputState = new PointerInputState();
+        pointerInputState.addPressed(1);
+
+        ActionObject actionObject = new ActionObject(
+                "id", InputSourceType.POINTER, POINTER_MOVE, 0
+        );
+        actionObject.setButton(1);
+
+        assertTrue(pointerInputState.isPressed(1));
+        dispatchPointerUp(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
+                null);
+
+        assertFalse(pointerInputState.isPressed(1));
+    }
+
+    @Test
+    public void shouldReturnDispatchUpRightAwayIfNotCurrentlyPressed() throws AppiumException {
+        class TempDummyAdapter extends DummyW3CActionAdapter {
+            @Override
+            public void pointerUp(int button, String sourceId, PointerType pointerType,
+                                  Long x, Long y, Set<Integer> depressedButtons,
+                                  KeyInputState globalKeyInputState) throws AppiumException {
+                throw new AppiumException("Should not reach this point. Button already pressed.");
+            }
+
+        }
+        W3CActionAdapter dummyW3CActionAdapter = new TempDummyAdapter();
+        PointerInputState pointerInputState = new PointerInputState();
+        ActionObject actionObject = new ActionObject(
+                "id", InputSourceType.POINTER, POINTER_MOVE, 0
+        );
+        actionObject.setButton(1);
+
+        assertFalse(pointerInputState.isPressed(1));
+        dispatchPointerUp(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
+                null);
+
+        assertFalse(pointerInputState.isPressed(1));
     }
 }
