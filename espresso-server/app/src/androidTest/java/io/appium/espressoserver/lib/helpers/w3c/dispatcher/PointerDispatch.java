@@ -5,6 +5,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException;
+//import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
@@ -14,37 +17,79 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
 
 public class PointerDispatch {
 
-    /*public static Future<Void> dispatchPointerMove(final W3CActionAdapter dispatcherAdapter,
+    /**
+     * Call the 'dispatch a pointerMove action' algorithm
+     * @param dispatcherAdapter
+     * @param sourceId
+     * @param actionObject
+     * @param pointerInputState
+     * @param tickDuration
+     * @param timeSinceBeginningOfTick
+     * @param globalKeyInputState
+     * @return
+     * @throws AppiumException
+     */
+    public static Future<Void> dispatchPointerMove(final W3CActionAdapter dispatcherAdapter,
                                                    final String sourceId,
                                                    final ActionObject actionObject,
                                                    final PointerInputState pointerInputState,
-                                                   final int tickDuration) {
+                                                   final long tickDuration,
+                                                   final int timeSinceBeginningOfTick,
+                                                   final KeyInputState globalKeyInputState) throws AppiumException {
+        // 1.5 Variable definitions
         long xOffset = actionObject.getX();
         long yOffset = actionObject.getY();
-        int startX = pointerInputState.getX();
-        int startY = pointerInputState.getY();
+        long startX = pointerInputState.getX();
+        long startY = pointerInputState.getY();
         String origin = actionObject.getOrigin();
+
+        /*Logger.debug(String.format(
+            "Dispatching pointer move '%s' on input source with id '%s' with origin '%s' and coordinates [%s, %s]",
+            pointerInputState.getType().toString(), sourceId, origin, xOffset, yOffset
+        ));*/
 
         long x;
         long y;
 
-        // Do null-check to keep linter happy. Can't actually be null.
-        if (origin != null) {
-            switch (origin) {
-                case VIEWPORT:
-                    x = xOffset;
-                    y = yOffset;
-                    break;
-                case POINTER:
-                    x = startX + xOffset;
-                    y = startY + yOffset;
-                    break;
-                default:
-                    // TODO: Get element center point
-                    break;
-            }
+        // 6. Run the substeps of the first matching value of origin
+        switch (origin) {
+            case VIEWPORT:
+                x = xOffset;
+                y = yOffset;
+                break;
+            case POINTER:
+                x = startX + xOffset;
+                y = startY + yOffset;
+                break;
+            default:
+                long[] elementCoordinates = dispatcherAdapter.getElementCenterPoint(origin);
+                x = elementCoordinates[0] + xOffset;
+                y = elementCoordinates[1] + yOffset;
+                break;
         }
-    }*/
+
+        // 7-8. Bounds check
+        if (x < 0 || y < 0 || x > dispatcherAdapter.getViewportWidth() || y > dispatcherAdapter.getViewportHeight()) {
+            throw new MoveTargetOutOfBoundsException(x, y);
+        }
+
+        // 9. Let duration be equal to action object's duration property if it is not undefined, or tick duration otherwise
+        Long duration = actionObject.getDuration();
+        if (duration == null) {
+            duration = tickDuration;
+        }
+
+        return performPointerMove(
+                dispatcherAdapter,
+                sourceId,
+                pointerInputState,
+                duration,
+                startX, startY,
+                x, y,
+                timeSinceBeginningOfTick,
+                globalKeyInputState
+        );
+    }
 
     /**
      * Implements the 'perform a pointer move' algorithm in section 17.4.3
@@ -60,16 +105,18 @@ public class PointerDispatch {
     public static Future<Void> performPointerMove(final W3CActionAdapter dispatcherAdapter,
                                                   final String sourceId,
                                                   final PointerInputState pointerInputState,
-                                                  final int duration,
-                                                  final int startX, final int startY,
-                                                  final int targetX, final int targetY,
+                                                  final long duration,
+                                                  final long startX, final long startY,
+                                                  final long targetX, final long targetY,
                                                   final long timeSinceBeginningOfTick,
                                                   final KeyInputState globalKeyInputState) {
 
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Callable<Void> callable;
-
-        callable = new Callable<Void>() {
+        /*Logger.debug(String.format(
+            "Performing pointer move '%s' on input source with id '%s' from [%s, %s] to [%s, %s]",
+            pointerInputState.getType().toString(), sourceId, startX, startY, targetX, targetY
+        ));*/
+        Callable<Void> callable = new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 boolean isLast;
@@ -86,29 +133,30 @@ public class PointerDispatch {
 
                     // 5. If last is true, let x equal target x and y equal target y
                     // 6. Otherwise let x equal an approximation to duration ratio × (target x - start x) + start x,, ...
-                    final int x = isLast ? targetX : Math.round(durationRatio * (targetX - startX)) + startX;
-                    final int y = isLast ? targetY : Math.round(durationRatio * (targetY - startY)) + startY;
+                    final long x = isLast ? targetX : Math.round(durationRatio * (targetX - startX)) + startX;
+                    final long y = isLast ? targetY : Math.round(durationRatio * (targetY - startY)) + startY;
 
                     // 7-8: Let currentX and currentY be pointer input state
-                    final int currentX = pointerInputState.getX();
-                    final int currentY = pointerInputState.getY();
+                    final long currentX = pointerInputState.getX();
+                    final long currentY = pointerInputState.getY();
 
-                    if (currentX != x || currentY != y) {
-                        // 8.2 Perform implementation specific move event
+                    try {
                         dispatcherAdapter.lockAdapter();
-                        dispatcherAdapter.pointerMoveEvent(sourceId, pointerInputState.getType(), currentX, currentY, x, y,
-                                pointerInputState.getButtons(), globalKeyInputState);
-                        dispatcherAdapter.unlockAdapter();
+                        if (currentX != x || currentY != y) {
+                            // 8.2 Perform implementation specific move event
+                            dispatcherAdapter.performPointerMoveEvent(sourceId, pointerInputState.getType(), currentX, currentY, x, y,
+                                    pointerInputState.getButtons(), globalKeyInputState);
 
-                        // 8.3. Let input state's x property equal x and y property equal y
-                        pointerInputState.setX(x);
-                        pointerInputState.setY(y);
-                    }
+                            // 8.3. Let input state's x property equal x and y property equal y
+                            pointerInputState.setX(x);
+                            pointerInputState.setY(y);
+                        }
 
-                    if (!isLast) {
-                        // 10. Asynchronously wait for an implementation defined amount of time to pass
-                        dispatcherAdapter.lockAdapter();
-                        dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
+                        if (!isLast) {
+                            // 10. Asynchronously wait for an implementation defined amount of time to pass
+                            dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
+                        }
+                    } finally {
                         dispatcherAdapter.unlockAdapter();
                     }
 

@@ -13,8 +13,8 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 public class PointerInputState implements InputState {
     private Set<Integer> pressed = new HashSet<>();
     private PointerType type;
-    private int x = 0;
-    private int y = 0;
+    private long x = 0;
+    private long y = 0;
 
     public boolean isPressed(int num) {
         return pressed.contains(num);
@@ -36,19 +36,19 @@ public class PointerInputState implements InputState {
         return !pressed.isEmpty();
     }
 
-    public int getX() {
+    public long getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(long x) {
         this.x = x;
     }
 
-    public int getY() {
+    public long getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(long y) {
         this.y = y;
     }
 

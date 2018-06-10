@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
+import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
+import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
@@ -15,10 +18,10 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
     public static class PointerMoveEvent {
         public String sourceId;
         public PointerType pointerType;
-        public int currentX;
-        public int currentY;
-        public int x;
-        public int y;
+        public long currentX;
+        public long currentY;
+        public long x;
+        public long y;
         public Set<Integer> buttons;
         public KeyInputState globalKeyInputState;
     }
@@ -48,9 +51,9 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
         return 0.01;
     }
 
-    public boolean pointerMoveEvent(String sourceId, PointerType pointerType,
-                                    int currentX, int currentY, int x, int y,
-                                    Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
+    public boolean performPointerMoveEvent(String sourceId, PointerType pointerType,
+                                           long currentX, long currentY, long x, long y,
+                                           Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
         PointerMoveEvent pointerMoveEvent = new PointerMoveEvent();
         pointerMoveEvent.sourceId = sourceId;
         pointerMoveEvent.pointerType = pointerType;
@@ -64,8 +67,26 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
         return true;
     }
 
-
     public List<PointerMoveEvent> getPointerMoveEvents() {
         return pointerMoveEvents;
+    }
+
+    public long[] getElementCenterPoint(String elementId)
+            throws NoSuchElementException, StaleElementException, NotYetImplementedException {
+        if (elementId.equals("none")) {
+            throw new NoSuchElementException(String.format("Could not find element with id: %s", elementId));
+        } else if (elementId.equals("stale")) {
+            throw new StaleElementException(String.format("Element with id %s no longer exists", elementId));
+        }
+
+        return new long[]  { 10L, 10L };
+    }
+
+    public long getViewportHeight() {
+        return 400;
+    }
+
+    public long getViewportWidth() {
+        return 200;
     }
 }

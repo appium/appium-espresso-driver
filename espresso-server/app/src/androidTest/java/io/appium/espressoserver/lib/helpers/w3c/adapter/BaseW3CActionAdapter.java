@@ -4,7 +4,9 @@ import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
+import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
@@ -38,9 +40,9 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
         return 0.01;
     }
 
-    public boolean pointerMoveEvent(String sourceId, PointerType pointerType,
-                                    int currentX, int currentY, int x, int y,
-                                    Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
+    public boolean performPointerMoveEvent(String sourceId, PointerType pointerType,
+                                           long currentX, long currentY, long x, long y,
+                                           Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
         throw new NotYetImplementedException();
     }
 
@@ -55,5 +57,18 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
 
     public void sleep(long duration) throws InterruptedException {
         Thread.sleep(duration);
+    }
+
+    public long[] getElementCenterPoint(String elementId)
+            throws NoSuchElementException, StaleElementException, NotYetImplementedException {
+        throw new NotYetImplementedException("This implementation does not support performing actions on elements");
+    }
+
+    public long getViewportHeight() {
+        return Long.MAX_VALUE;
+    }
+
+    public long getViewportWidth() {
+        return Long.MAX_VALUE;
     }
 }

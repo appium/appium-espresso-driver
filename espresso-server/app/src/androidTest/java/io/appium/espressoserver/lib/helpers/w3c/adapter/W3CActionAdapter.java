@@ -3,6 +3,9 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter;
 import java.util.Set;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
+import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
+import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
@@ -25,11 +28,17 @@ public interface W3CActionAdapter {
     int getWhich(String keyValue, int location);
     double getPointerMoveDurationMargin(PointerInputState pointerInputState);
 
-    boolean pointerMoveEvent(String sourceId, InputSource.PointerType pointerType,
-                             int currentX, int currentY, int x, int y,
-                             Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException;
+    boolean performPointerMoveEvent(String sourceId, InputSource.PointerType pointerType,
+                                    long currentX, long currentY, long x, long y,
+                                    Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException;
 
     int pointerMoveIntervalDuration();
 
     void sleep(long duration) throws InterruptedException;
+
+    long[] getElementCenterPoint(String elementId) throws NoSuchElementException, StaleElementException, NotYetImplementedException;
+
+    long getViewportWidth();
+
+    long getViewportHeight();
 }

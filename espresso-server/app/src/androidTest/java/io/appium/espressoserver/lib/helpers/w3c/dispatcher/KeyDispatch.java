@@ -192,6 +192,13 @@ public class KeyDispatch {
 
         public KeyEvent() { }
 
+        public String logMessage() {
+            return String.format(
+                "key=[%s] code=[%s] altKey=[%s] shiftKey=[%s] ctrlKey=[%s] metaKey=[%s]",
+                key, code, altKey, shiftKey, ctrlKey, metaKey
+            );
+        }
+
         public String getKey() {
             return key;
         }
