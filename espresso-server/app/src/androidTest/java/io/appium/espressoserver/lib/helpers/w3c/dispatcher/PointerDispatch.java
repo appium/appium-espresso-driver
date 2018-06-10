@@ -16,11 +16,11 @@ public class PointerDispatch {
 
     /**
      * Run the 'dispatch a pointer down' algorithm
-     * @param dispatcherAdapter
-     * @param sourceId
-     * @param actionObject
-     * @param pointerInputState
-     * @param globalKeyInputState
+     * @param dispatcherAdapter W3C actions implementation
+     * @param sourceId ID of the input source
+     * @param actionObject Action object that defines the pointer action
+     * @param pointerInputState Current state of the input source
+     * @param globalKeyInputState Global key input state
      * @throws AppiumException
      */
     public static void dispatchPointerDown(final W3CActionAdapter dispatcherAdapter,
@@ -45,11 +45,11 @@ public class PointerDispatch {
 
     /**
      * Perform the 'dispatch pointer up' algorithm
-     * @param dispatcherAdapter
-     * @param sourceId
-     * @param actionObject
-     * @param pointerInputState
-     * @param globalKeyInputState
+     * @param dispatcherAdapter W3C actions implementation
+     * @param sourceId ID of the input source
+     * @param actionObject Action object that defines the pointer action
+     * @param pointerInputState Current state of the input source
+     * @param globalKeyInputState Global key input state
      * @throws AppiumException
      */
     public static void dispatchPointerUp(final W3CActionAdapter dispatcherAdapter,
@@ -74,13 +74,13 @@ public class PointerDispatch {
 
     /**
      * Call the 'dispatch a pointerMove action' algorithm
-     * @param dispatcherAdapter
-     * @param sourceId
-     * @param actionObject
-     * @param pointerInputState
-     * @param tickDuration
-     * @param timeSinceBeginningOfTick
-     * @param globalKeyInputState
+     * @param dispatcherAdapter W3C actions implementation
+     * @param sourceId ID of the input source
+     * @param actionObject Action object that defines the pointer action
+     * @param pointerInputState Current state of the input source
+     * @param tickDuration How long is this tick (in ms)
+     * @param timeSinceBeginningOfTick Time since current tick started (in ms)
+     * @param globalKeyInputState Global key input state
      * @return
      * @throws AppiumException
      */
@@ -148,14 +148,14 @@ public class PointerDispatch {
 
     /**
      * Implements the 'perform a pointer move' algorithm in section 17.4.3
-     * @param dispatcherAdapter
-     * @param sourceId
-     * @param pointerInputState
-     * @param duration
-     * @param startX
-     * @param startY
-     * @param targetX
-     * @param targetY
+     * @param dispatcherAdapter W3C actions implementation
+     * @param sourceId ID of the input source
+     * @param pointerInputState Current state of the input source
+     * @param duration How long is the pointer move
+     * @param startX Starting x coordinate
+     * @param startY Starting y coordinate
+     * @param targetX Target x coordinate
+     * @param targetY Target y coordinate
      */
     public static Callable<Void> performPointerMove(final W3CActionAdapter dispatcherAdapter,
                                                     final String sourceId,
