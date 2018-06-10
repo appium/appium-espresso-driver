@@ -3,12 +3,18 @@ package io.appium.espressoserver.test.helpers.w3c;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException;
@@ -118,6 +124,60 @@ public class PointerDispatchTest {
 
         assertEquals(pointerInputSource.getX(), 30);
         assertEquals(pointerInputSource.getY(), 40);
+    }
+
+    @Test
+    public void shouldRunMultiplePointerMoves() throws InterruptedException {
+        DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
+        pointerInputSource = new PointerInputState();
+        pointerInputSource.setType(PointerType.TOUCH);
+        pointerInputSource.setX(10);
+        pointerInputSource.setY(20);
+        pointerInputSource.addPressed(0);
+
+        PointerInputState pointerInputSourceTwo = new PointerInputState();
+        pointerInputSourceTwo = new PointerInputState();
+        pointerInputSourceTwo.setType(PointerType.TOUCH);
+        pointerInputSourceTwo.setX(10);
+        pointerInputSourceTwo.setY(20);
+        pointerInputSourceTwo.addPressed(0);
+
+
+        List<Callable<Void>> callables = new ArrayList<>();
+
+        callables.add(performPointerMove(
+                dummyW3CActionAdapter, "any", pointerInputSource,
+                500, 10, 20, 30, 40, System.currentTimeMillis(),
+                new KeyInputState()
+        ));
+
+        callables.add(performPointerMove(
+                dummyW3CActionAdapter, "any2", pointerInputSourceTwo,
+                500, 20, 20, 30, 40, System.currentTimeMillis(),
+                new KeyInputState()
+        ));
+
+        Executor executor = Executors.newFixedThreadPool(callables.size());
+        CompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
+        for(Callable<Void> callable:callables) {
+            completionService.submit(callable);
+        }
+
+        int received = 0;
+        boolean errors = false;
+        while (received < callables.size() && !errors) {
+            Future<Void> resultFuture = completionService.take(); //blocks if none available
+            try {
+                resultFuture.get();
+                received ++;
+            }
+            catch(Exception e) {
+                //log
+                errors = true;
+            }
+        }
+
+        assertFalse(errors);
     }
 
     @Test

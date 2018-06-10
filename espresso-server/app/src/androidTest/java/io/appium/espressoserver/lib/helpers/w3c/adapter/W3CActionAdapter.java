@@ -38,6 +38,7 @@ public interface W3CActionAdapter {
     int getCharCode(String keyValue, int location);
 
     int getWhich(String keyValue, int location);
+    
     double getPointerMoveDurationMargin(PointerInputState pointerInputState);
 
     int pointerMoveIntervalDuration();

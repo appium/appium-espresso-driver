@@ -6,6 +6,7 @@ import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
+import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 
 import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.processSourceActionSequence;
 
@@ -18,7 +19,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.process
  */
 public class ActionSequence implements Iterator<Tick> {
 
-    private List<Tick> actionsByTick = new ArrayList<>();
+    private List<Tick> ticks = new ArrayList<>();
     private int tickCounter = 0;
 
     public ActionSequence(W3CActions w3CActions) throws InvalidArgumentException, NotYetImplementedException {
@@ -28,10 +29,10 @@ public class ActionSequence implements Iterator<Tick> {
                 int tickIndex = 0;
                 List<ActionObject> actionObjects = processSourceActionSequence(inputSource);
                 for (ActionObject action : actionObjects) {
-                    if (actionsByTick.size() == tickIndex) {
-                        actionsByTick.add(new Tick());
+                    if (ticks.size() == tickIndex) {
+                        ticks.add(new Tick());
                     }
-                    Tick tick = actionsByTick.get(tickIndex);
+                    Tick tick = ticks.get(tickIndex);
                     tick.addAction(action);
                     tickIndex++;
                 }
@@ -41,11 +42,17 @@ public class ActionSequence implements Iterator<Tick> {
 
     @Override
     public boolean hasNext() {
-        return tickCounter < actionsByTick.size();
+        return tickCounter < ticks.size();
     }
 
     @Override
     public Tick next() {
-        return actionsByTick.get(tickCounter++);
+        return ticks.get(tickCounter++);
+    }
+
+    public void dispatch(W3CActionAdapter adapter) {
+        for(Tick tick: ticks) {
+            //tick.dispatch(adapter);
+        }
     }
 }

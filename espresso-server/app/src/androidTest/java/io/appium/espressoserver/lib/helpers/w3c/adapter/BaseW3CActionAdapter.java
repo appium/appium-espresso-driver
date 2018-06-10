@@ -20,11 +20,11 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
         return -1;
     }
 
-    public synchronized void lockAdapter() {
+    public void lockAdapter() {
         reentrantLock.lock();
     }
 
-    public synchronized void unlockAdapter() {
+    public void unlockAdapter() {
         reentrantLock.unlock();
     }
 

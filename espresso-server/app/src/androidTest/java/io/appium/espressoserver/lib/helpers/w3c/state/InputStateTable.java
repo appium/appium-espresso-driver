@@ -1,6 +1,8 @@
 package io.appium.espressoserver.lib.helpers.w3c.state;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,5 +32,16 @@ public class InputStateTable {
             globalInputStateTable = new InputStateTable();
         }
         return globalInputStateTable;
+    }
+
+    public KeyInputState getGlobalKeyInputState() {
+        List<KeyInputState> keyInputStates = new ArrayList<>();
+        for(Map.Entry<String, InputState> inputStateEntry:stateTable.entrySet()) {
+            InputState inputState = inputStateEntry.getValue();
+            if (inputState.getClass() == KeyInputState.class) {
+                keyInputStates.add((KeyInputState) inputState);
+            }
+        }
+        return KeyInputState.getGlobalKeyState(keyInputStates);
     }
 }
