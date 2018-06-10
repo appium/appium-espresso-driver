@@ -5,7 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
@@ -41,12 +44,14 @@ public class PointerDispatchTest {
         pointerInputSource = new PointerInputState();
         pointerInputSource.setType(PointerType.TOUCH);
 
-        Future<Void> future = performPointerMove(
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Callable<Void> callable = performPointerMove(
             dummyW3CActionAdapter, "any", pointerInputSource,
             100, 10, 20, 30, 40, System.currentTimeMillis(),
             new KeyInputState()
         );
-        future.get();
+        executorService.submit(callable).get();
+        executorService.shutdown();
         assertEquals(dummyW3CActionAdapter.getPointerMoveEvents().size(), 1);
     }
 
@@ -59,12 +64,15 @@ public class PointerDispatchTest {
         pointerInputSource.setY(20);
         pointerInputSource.addPressed(0);
 
-        Future<Void> future = performPointerMove(
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Callable<Void> callable = performPointerMove(
                 dummyW3CActionAdapter, "any", pointerInputSource,
                 0, 10, 20, 30, 40, System.currentTimeMillis(),
                 new KeyInputState()
         );
-        future.get();
+        executorService.submit(callable).get();
+        executorService.shutdown();
+
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
         assertEquals(dummyW3CActionAdapter.getPointerMoveEvents().size(), 1);
         assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30);
@@ -80,12 +88,15 @@ public class PointerDispatchTest {
         pointerInputSource.setY(20);
         pointerInputSource.addPressed(0);
 
-        Future<Void> future = performPointerMove(
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Callable<Void> callable = performPointerMove(
                 dummyW3CActionAdapter, "any", pointerInputSource,
                 1000, 10, 20, 30, 40, System.currentTimeMillis(),
                 new KeyInputState()
         );
-        future.get();
+        executorService.submit(callable).get();
+        executorService.shutdown();
+
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
         assertTrue(Math.abs(pointerMoveEvents.size() - 15) <= 1); // Should be 15 moves per the 1 second (give or take 1)
         assertEquals(pointerMoveEvents.get(0).currentX, 10);
@@ -173,8 +184,11 @@ public class PointerDispatchTest {
             actionObject.setY(yCoords[i]);
             actionObject.setOrigin(origins[i]);
 
-            dispatchPointerMove(dummyW3CActionAdapter, "any", actionObject,
-                pointerInputState, 10, 0, null).get();
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            Callable<Void> callable = dispatchPointerMove(dummyW3CActionAdapter, "any", actionObject,
+                pointerInputState, 10, 0, null);
+            executorService.submit(callable).get();
+            executorService.shutdown();
 
             assertEquals(pointerInputState.getX(), expectedX[i]);
             assertEquals(pointerInputState.getY(), expectedY[i]);

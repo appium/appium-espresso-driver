@@ -1,9 +1,6 @@
 package io.appium.espressoserver.lib.helpers.w3c.dispatcher;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException;
@@ -29,13 +26,13 @@ public class PointerDispatch {
      * @return
      * @throws AppiumException
      */
-    public static Future<Void> dispatchPointerMove(final W3CActionAdapter dispatcherAdapter,
-                                                   final String sourceId,
-                                                   final ActionObject actionObject,
-                                                   final PointerInputState pointerInputState,
-                                                   final long tickDuration,
-                                                   final int timeSinceBeginningOfTick,
-                                                   final KeyInputState globalKeyInputState) throws AppiumException {
+    public static Callable<Void> dispatchPointerMove(final W3CActionAdapter dispatcherAdapter,
+                                                     final String sourceId,
+                                                     final ActionObject actionObject,
+                                                     final PointerInputState pointerInputState,
+                                                     final long tickDuration,
+                                                     final int timeSinceBeginningOfTick,
+                                                     final KeyInputState globalKeyInputState) throws AppiumException {
         // 1.5 Variable definitions
         long xOffset = actionObject.getX();
         long yOffset = actionObject.getY();
@@ -102,21 +99,21 @@ public class PointerDispatch {
      * @param targetX
      * @param targetY
      */
-    public static Future<Void> performPointerMove(final W3CActionAdapter dispatcherAdapter,
-                                                  final String sourceId,
-                                                  final PointerInputState pointerInputState,
-                                                  final long duration,
-                                                  final long startX, final long startY,
-                                                  final long targetX, final long targetY,
-                                                  final long timeSinceBeginningOfTick,
-                                                  final KeyInputState globalKeyInputState) {
+    public static Callable<Void> performPointerMove(final W3CActionAdapter dispatcherAdapter,
+                                                    final String sourceId,
+                                                    final PointerInputState pointerInputState,
+                                                    final long duration,
+                                                    final long startX, final long startY,
+                                                    final long targetX, final long targetY,
+                                                    final long timeSinceBeginningOfTick,
+                                                    final KeyInputState globalKeyInputState) {
 
-        final ExecutorService executorService = Executors.newSingleThreadExecutor();
+        //final ExecutorService executorService = Executors.newSingleThreadExecutor();
         /*Logger.debug(String.format(
             "Performing pointer move '%s' on input source with id '%s' from [%s, %s] to [%s, %s]",
             pointerInputState.getType().toString(), sourceId, startX, startY, targetX, targetY
         ));*/
-        Callable<Void> callable = new Callable<Void>() {
+        return new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 boolean isLast;
@@ -165,11 +162,11 @@ public class PointerDispatch {
                 } while (!isLast);
 
                 // 9. If last is true, return
-                executorService.shutdown();
+                //executorService.shutdown();
                 return null;
             }
         };
 
-        return executorService.submit(callable);
+        //return executorService.submit(callable);
     }
 }
