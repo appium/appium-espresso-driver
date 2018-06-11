@@ -54,4 +54,11 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
     public void sleep(long duration) throws InterruptedException {
         Thread.sleep(duration);
     }
+
+    /**
+     * Waits for the UI to complete before moving forward
+     */
+    public void waitForUiThread() {
+        return;
+    }
 }

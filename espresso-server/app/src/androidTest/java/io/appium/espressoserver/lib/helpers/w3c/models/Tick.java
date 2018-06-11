@@ -8,8 +8,6 @@ import java.util.concurrent.Callable;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputState;
@@ -20,6 +18,7 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyDown;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyUp;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerMove;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.PAUSE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.NONE;
@@ -54,7 +53,8 @@ public class Tick implements Iterator<ActionObject> {
             long currDuration = 0;
             if (actionObject.getType() == NONE && actionObject.getDuration() != null) {
                 currDuration = actionObject.getDuration();
-            } else if (actionObject.getType() == POINTER && actionObject.getSubType() == POINTER_MOVE &&
+            } else if (actionObject.getType() == POINTER &&
+                    (actionObject.getSubType() == POINTER_MOVE || actionObject.getSubType() == PAUSE) &&
                      actionObject.getDuration() != null) {
                 currDuration = actionObject.getDuration();
             }
@@ -65,9 +65,8 @@ public class Tick implements Iterator<ActionObject> {
         return maxDuration;
     }
 
-    public List<Callable<Void>> dispatch(W3CActionAdapter adapter, InputStateTable inputStateTable)
+    public List<Callable<Void>> dispatch(W3CActionAdapter adapter, InputStateTable inputStateTable, long tickDuration)
             throws AppiumException {
-        long tickDuration = this.calculateTickDuration();
         long timeAtBeginningOfTick = System.currentTimeMillis();
         KeyInputState globalKeyInputState = inputStateTable.getGlobalKeyInputState();
 

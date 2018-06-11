@@ -45,6 +45,8 @@ public interface W3CActionAdapter {
 
     void sleep(long duration) throws InterruptedException;
 
+    void waitForUiThread();
+
     long[] getElementCenterPoint(String elementId) throws NoSuchElementException, StaleElementException, NotYetImplementedException;
 
     long getViewportWidth();

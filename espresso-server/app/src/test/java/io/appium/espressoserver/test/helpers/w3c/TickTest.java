@@ -11,16 +11,13 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
@@ -92,7 +89,7 @@ public class TickTest {
         actionObject.setValue("F");
         tick.addAction(actionObject);
         assertFalse(inputStateTable.hasInputState(sourceId));
-        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable);
+        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
         assertTrue(inputStateTable.hasInputState(sourceId));
         assertTrue(inputStateTable.getInputState(sourceId).getClass() == KeyInputState.class);
     }
@@ -107,7 +104,7 @@ public class TickTest {
         actionObject.setButton(0);
         tick.addAction(actionObject);
         assertFalse(inputStateTable.hasInputState(sourceId));
-        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable);
+        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
         assertTrue(inputStateTable.hasInputState(sourceId));
         assertTrue(inputStateTable.getInputState(sourceId).getClass() == PointerInputState.class);
     }
@@ -120,7 +117,7 @@ public class TickTest {
         ActionObject actionObject = new ActionObject(sourceId, NONE, null, 0);
         tick.addAction(actionObject);
         assertFalse(inputStateTable.hasInputState(sourceId));
-        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable);
+        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
         assertFalse(inputStateTable.hasInputState(sourceId));
     }
 
@@ -159,7 +156,7 @@ public class TickTest {
         assertTrue(keyInputState.isPressed("g"));
         assertFalse(keyInputState.isShift());
 
-        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable);
+        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
         assertTrue(keyInputState.isPressed("e"));
         assertTrue(keyInputState.isPressed("f"));
         assertFalse(keyInputState.isPressed("g"));
@@ -228,7 +225,7 @@ public class TickTest {
             }
         };
 
-        List<Callable<Void>> callables = tick.dispatch(baseW3CActionAdapter, inputStateTable);
+        List<Callable<Void>> callables = tick.dispatch(baseW3CActionAdapter, inputStateTable, tick.calculateTickDuration());
         Executor executor = Executors.newFixedThreadPool(callables.size());
         CompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
         for(Callable<Void> callable:callables) {
@@ -272,7 +269,7 @@ public class TickTest {
         tick.addAction(actionObjectTwo);
 
         try {
-            tick.dispatch(new DummyW3CActionAdapter(), inputStateTable);
+            tick.dispatch(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
         } catch (InvalidArgumentException e) {
             assertTrue(true);
             return;

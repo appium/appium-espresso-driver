@@ -5,9 +5,13 @@ import com.google.gson.Gson;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
+import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter;
+import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionSequence;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
@@ -16,6 +20,9 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceTy
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.models.Tick;
 import io.appium.espressoserver.lib.helpers.w3c.models.W3CActions;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputState;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
+import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 import io.appium.espressoserver.test.assets.Helpers;
 
 import static junit.framework.Assert.assertTrue;
@@ -177,6 +184,40 @@ public class ActionSequenceTest {
         assertFalse(tick.hasNext());
 
         assertFalse(actionSequence.hasNext());
+    }
+
+    @Test
+    public void shouldDispatchW3CActions() throws IOException, AppiumException, InterruptedException, ExecutionException {
+        class AlteredDummyAdapter extends DummyW3CActionAdapter {
+            @Override
+            public long getViewportWidth() {
+                // Bump up viewport width so we don't get out of bounds issues
+                return 300;
+            }
+        }
+
+        InputStateTable inputStateTable = new InputStateTable();
+        String multiTouchJson = Helpers.readAssetFile("multi-touch-actions.json");
+        W3CActions w3CActions = W3CActions.class.cast((new Gson()).fromJson(multiTouchJson, W3CActions.class));
+        ActionSequence actionSequence = new ActionSequence(w3CActions);
+
+        long timeBefore = System.currentTimeMillis();
+        actionSequence.dispatch(new AlteredDummyAdapter(), inputStateTable);
+        long elapsedTime = System.currentTimeMillis() - timeBefore;
+
+        // Must be greater than 2s because that's the total duration
+        assertTrue(elapsedTime >= 2000);
+
+        // Check that it's under 2.5s though to verify that it's not TOO long
+        assertTrue(elapsedTime < 2100);
+
+        PointerInputState finger1State = (PointerInputState) inputStateTable.getInputState("finger1");
+        PointerInputState finger2State = (PointerInputState) inputStateTable.getInputState("finger2");
+
+        assertEquals(finger1State.getX(), 120);
+        assertEquals(finger1State.getY(), 100);
+        assertEquals(finger2State.getX(), 250);
+        assertEquals(finger2State.getY(), 400);
     }
 
 }
