@@ -9,7 +9,7 @@ import java.util.Set;
  *
  * https://www.w3.org/TR/webdriver/#input-source-state
  */
-public class KeyInputState implements InputStateInterface {
+public class KeyInputState implements InputState {
     private final Set<String> pressed = new HashSet<>();
     private boolean alt = false;
     private boolean shift = false;
@@ -64,7 +64,6 @@ public class KeyInputState implements InputStateInterface {
      * Implement 'calculated global key state' in spec 17.2
      */
     public static KeyInputState getAggregateKeyInputState(List<KeyInputState> keyInputStates) {
-        Set<String> pressed = new HashSet<>();
         boolean isAlt = false;
         boolean isShift = false;
         boolean isCtrl = false;
