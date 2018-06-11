@@ -10,14 +10,14 @@ import java.util.Map;
  */
 public class InputStateTable {
 
-    private final Map<String, InputStateInterface> stateTable = new HashMap<>();
+    private final Map<String, InputState> stateTable = new HashMap<>();
     private static InputStateTable globalInputStateTable;
 
-    public void addInputState(String id, InputStateInterface inputState){
+    public void addInputState(String id, InputState inputState){
         stateTable.put(id, inputState);
     }
 
-    public InputStateInterface getInputState(String id) {
+    public InputState getInputState(String id) {
         return stateTable.get(id);
     }
 
