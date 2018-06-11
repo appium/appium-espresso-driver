@@ -12,4 +12,10 @@ public interface W3CActionAdapter {
     void lockAdapter();
 
     void unlockAdapter();
+
+    int getKeyCode(String keyValue, int location);
+
+    int getCharCode(String keyValue, int location);
+
+    int getWhich(String keyValue, int location);
 }

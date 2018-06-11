@@ -18,6 +18,18 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
         throw new NotYetImplementedException();
     }
 
+    public int getKeyCode(String keyValue, int location) {
+        return Character.getNumericValue(keyValue.charAt(0));
+    }
+
+    public int getCharCode(String keyValue, int location) {
+        return -1;
+    }
+
+    public int getWhich(String keyValue, int location) {
+        return -1;
+    }
+
     public synchronized void lockAdapter() {
         reentrantLock.lock();
     }

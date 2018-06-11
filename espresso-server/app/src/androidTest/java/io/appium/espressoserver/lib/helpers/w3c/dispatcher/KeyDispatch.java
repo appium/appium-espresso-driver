@@ -20,7 +20,7 @@ public class KeyDispatch {
                                              ActionObject actionObject, KeyInputState inputState,
                                              long tickDuration, boolean down) throws AppiumException {
         // Get the base Key Event
-        KeyEvent keyEvent = getKeyEvent(actionObject);
+        KeyEvent keyEvent = getKeyEvent(dispatcherAdapter, actionObject);
         String key = keyEvent.getKey();
 
         // 3. If the input state's pressed property contains key, let repeat be true, otherwise let repeat be false.
@@ -119,7 +119,7 @@ public class KeyDispatch {
      * @return KeyEvent Key event info used by adapter
      * @return
      */
-    private static KeyEvent getKeyEvent(ActionObject actionObject) {
+    private static KeyEvent getKeyEvent(W3CActionAdapter dispatcherAdapter, ActionObject actionObject) {
         // 1. Let raw key be action's value property
         String rawKey = actionObject.getValue();
 
@@ -132,10 +132,20 @@ public class KeyDispatch {
         // 5. Let location be the key location for raw key
         int location = KeyLocationMapper.getLocation(rawKey);
 
+        // 6. Let charCode, keyCode and which be the implementation-specific values of the charCode,
+        // keyCode and which properties appropriate for a key with key key and location location on
+        // a 102 key US keyboard
+        int keyCode = dispatcherAdapter.getKeyCode(key, location);
+        int charCode = dispatcherAdapter.getCharCode(key, location);
+        int which = dispatcherAdapter.getWhich(key, location);
+
         KeyEvent keyEvent = new KeyEvent();
         keyEvent.setKey(key);
         keyEvent.setCode(code);
         keyEvent.setLocation(location);
+        keyEvent.setKeyCode(keyCode);
+        keyEvent.setCharCode(charCode);
+        keyEvent.setWhich(which);
         return keyEvent;
     }
 
@@ -143,6 +153,9 @@ public class KeyDispatch {
         private String key;
         private String code;
         private int location;
+        private int keyCode;
+        private int charCode;
+        private int which;
         private boolean altKey;
         private boolean shiftKey;
         private boolean ctrlKey;
@@ -154,6 +167,9 @@ public class KeyDispatch {
                 String key,
                 String code,
                 int location,
+                int keyCode,
+                int charCode,
+                int which,
                 boolean altKey,
                 boolean shiftKey,
                 boolean ctrlKey,
@@ -244,6 +260,30 @@ public class KeyDispatch {
 
         public void setComposing(boolean composing) {
             isComposing = composing;
+        }
+
+        public int getKeyCode() {
+            return keyCode;
+        }
+
+        public void setKeyCode(int keyCode) {
+            this.keyCode = keyCode;
+        }
+
+        public int getCharCode() {
+            return charCode;
+        }
+
+        public void setCharCode(int charCode) {
+            this.charCode = charCode;
+        }
+
+        public int getWhich() {
+            return which;
+        }
+
+        public void setWhich(int which) {
+            this.which = which;
         }
     }
 }
