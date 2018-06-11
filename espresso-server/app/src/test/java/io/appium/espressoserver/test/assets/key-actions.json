@@ -5,6 +5,7 @@
       "id": "keyboard",
       "actions": [
         {"type": "keyDown", "value": "\uE009"},
+        {"type": "pause", "duration": 500},
         {"type": "keyDown", "value": "s"},
         {"type": "keyUp", "value": "\uE009"},
         {"type": "keyUp", "value": "s"}

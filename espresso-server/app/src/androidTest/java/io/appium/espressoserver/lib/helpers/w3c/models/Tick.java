@@ -51,13 +51,19 @@ public class Tick implements Iterator<ActionObject> {
         long maxDuration = 0;
         for(ActionObject actionObject: tickActions) {
             long currDuration = 0;
-            if (actionObject.getType() == NONE && actionObject.getDuration() != null) {
-                currDuration = actionObject.getDuration();
-            } else if (actionObject.getType() == POINTER &&
-                    (actionObject.getSubType() == POINTER_MOVE || actionObject.getSubType() == PAUSE) &&
-                     actionObject.getDuration() != null) {
-                currDuration = actionObject.getDuration();
+
+            InputSourceType type = actionObject.getType();
+            Long duration = actionObject.getDuration();
+            ActionType subType = actionObject.getSubType();
+
+            if (duration != null) {
+                if (type == POINTER && subType == POINTER_MOVE) {
+                    currDuration = duration;
+                } else if (subType == PAUSE) {
+                    currDuration = duration;
+                }
             }
+
             if (currDuration > maxDuration) {
                 maxDuration = currDuration;
             }

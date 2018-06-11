@@ -60,6 +60,7 @@ public class TickTest {
             Tick tick = new Tick();
             ActionObject actionObjectOne = new ActionObject();
             actionObjectOne.setType(NONE);
+            actionObjectOne.setSubType(PAUSE);
             actionObjectOne.setDuration(valueOne[i]);
 
             ActionObject actionObjectTwo = new ActionObject();
