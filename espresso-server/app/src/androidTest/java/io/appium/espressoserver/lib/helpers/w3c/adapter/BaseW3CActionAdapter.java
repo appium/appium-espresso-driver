@@ -58,9 +58,4 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
     public void sleep(long duration) throws InterruptedException {
         Thread.sleep(duration);
     }
-
-    public long[] getElementCenterPoint(String elementId)
-            throws NoSuchElementException, StaleElementException, NotYetImplementedException {
-        throw new NotYetImplementedException("This implementation does not support performing actions on elements");
-    }
 }

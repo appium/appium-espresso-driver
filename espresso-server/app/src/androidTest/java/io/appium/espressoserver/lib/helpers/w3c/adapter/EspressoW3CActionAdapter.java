@@ -5,6 +5,9 @@ import android.support.test.espresso.UiController;
 import java.util.Set;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
+import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
+import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
@@ -62,5 +65,11 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     public long getViewportWidth() {
         // Stub.
         return Long.MAX_VALUE;
+    }
+
+    public long[] getElementCenterPoint(String elementId)
+            throws NoSuchElementException, StaleElementException, NotYetImplementedException {
+        // Stub.
+        return new long[] { };
     }
 }
