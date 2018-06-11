@@ -10,14 +10,6 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
 
     private static ReentrantLock reentrantLock = new ReentrantLock();
 
-    public boolean keyDown(KeyDispatch.KeyEvent keyDownEvent) throws AppiumException {
-        throw new NotYetImplementedException();
-    }
-
-    public boolean keyUp(KeyDispatch.KeyEvent keyUpEvent) throws AppiumException {
-        throw new NotYetImplementedException();
-    }
-
     public int getKeyCode(String keyValue, int location) {
         return Character.getNumericValue(keyValue.charAt(0));
     }
