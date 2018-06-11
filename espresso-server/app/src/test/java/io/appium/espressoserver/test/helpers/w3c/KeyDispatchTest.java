@@ -10,9 +10,12 @@ import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyDown;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyUp;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.*;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.*;
-import static junit.framework.Assert.*;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_DOWN;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
 public class KeyDispatchTest {
 

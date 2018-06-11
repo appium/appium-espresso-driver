@@ -2,10 +2,6 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch;
-
 public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
 
     private static ReentrantLock reentrantLock = new ReentrantLock();

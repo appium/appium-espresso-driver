@@ -117,7 +117,6 @@ public class KeyDispatch {
      * Helper method to get a Key Event that has common attributes between KeyUp and KeyDispatch
      * @param actionObject Action Object to get key event info for
      * @return KeyEvent Key event info used by adapter
-     * @return
      */
     private static KeyEvent getKeyEvent(W3CActionAdapter dispatcherAdapter, ActionObject actionObject) {
         // 1. Let raw key be action's value property
@@ -180,6 +179,9 @@ public class KeyDispatch {
             this.key = key;
             this.code = code;
             this.location = location;
+            this.keyCode = keyCode;
+            this.charCode = charCode;
+            this.which = which;
             this.altKey = altKey;
             this.shiftKey = shiftKey;
             this.ctrlKey = ctrlKey;
