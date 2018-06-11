@@ -16,6 +16,60 @@ import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
  */
 public class KeyDispatch {
 
+    private static KeyEvent dispatchKeyEvent(W3CActionAdapter dispatcherAdapter,
+                                             ActionObject actionObject, KeyInputState inputState,
+                                             long tickDuration, boolean down) throws AppiumException {
+        // Get the base Key Event
+        KeyEvent keyEvent = getKeyEvent(actionObject);
+        String key = keyEvent.getKey();
+
+        // 3. If the input state's pressed property contains key, let repeat be true, otherwise let repeat be false.
+        boolean repeat = inputState.isPressed(key);
+
+        // 6. Let charCode, keyCode and which be the implementation-specific values of the charCode,
+        // keyCode and which properties.
+        // Omiting this for now until there's an implementation that needs it.
+
+        // 7-10: Set the alt, shift, ctrl meta key state
+        if (down) {
+            inputState.setAlt(inputState.isAlt() || key.equals(NormalizedKeys.ALT));
+            inputState.setShift(inputState.isShift() || key.equals(NormalizedKeys.SHIFT));
+            inputState.setCtrl(inputState.isCtrl() || key.equals(NormalizedKeys.CONTROL));
+            inputState.setMeta(inputState.isMeta() || key.equals(NormalizedKeys.META));
+        } else {
+            inputState.setAlt(inputState.isAlt() && !key.equals(NormalizedKeys.ALT));
+            inputState.setAlt(inputState.isShift() && !key.equals(NormalizedKeys.SHIFT));
+            inputState.setAlt(inputState.isCtrl() && !key.equals(NormalizedKeys.CONTROL));
+            inputState.setAlt(inputState.isMeta() && !key.equals(NormalizedKeys.META));
+        }
+
+        // 11: Add key to the set corresponding to input state's pressed property
+        if (down) {
+            inputState.addPressed(key);
+        } else {
+            inputState.removePressed(key);
+        }
+
+        // 12. Call implementation specific key-down event
+        // Must lock the dispatcherAdapter in-case other threads are also using it
+        dispatcherAdapter.lockAdapter();
+        try {
+            boolean success;
+            if (down) {
+                success = dispatcherAdapter.keyDown(keyEvent);
+            } else {
+                success = dispatcherAdapter.keyUp(keyEvent);
+            }
+            if (!success) {
+                return null;
+            }
+        } finally {
+            dispatcherAdapter.unlockAdapter();
+        }
+
+        return keyEvent;
+    }
+
     /**
      * Dispatch a key down event (in accordance with https://www.w3.org/TR/webdriver/#keyboard-actions)
      *
@@ -29,43 +83,7 @@ public class KeyDispatch {
     public static KeyEvent dispatchKeyDown(W3CActionAdapter dispatcherAdapter,
                                    ActionObject actionObject, KeyInputState inputState, long tickDuration) throws AppiumException {
 
-        // Get the base Key Event
-        KeyEvent keyEvent = getKeyEvent(actionObject);
-        String key = keyEvent.getKey();
-
-        // 3. If the input state's pressed property contains key, let repeat be true, otherwise let repeat be false.
-        boolean repeat = inputState.isPressed(key);
-
-        // 6. Let charCode, keyCode and which be the implementation-specific values of the charCode,
-        // keyCode and which properties.
-        // Omiting this for now until there's an implementation that needs it.
-
-        // 7-10: Set the alt, shift, ctrl meta key state
-        boolean alt = key.equals(NormalizedKeys.ALT);
-        boolean shift = key.equals(NormalizedKeys.SHIFT);
-        boolean ctrl = key.equals(NormalizedKeys.CONTROL);
-        boolean meta = key.equals(NormalizedKeys.META);
-        if (alt) inputState.setAlt(true);
-        if (shift) inputState.setShift(true);
-        if (ctrl) inputState.setCtrl(true);
-        if (meta) inputState.setMeta(true);
-
-        // 11: Add key to the set corresponding to input state's pressed property
-        inputState.addPressed(key);
-
-        // 12. Call implementation specific key-down event
-        // Must lock the dispatcherAdapter in-case other threads are also using it
-        dispatcherAdapter.lockAdapter();
-        try {
-            boolean success = dispatcherAdapter.keyDown(keyEvent);
-            if (!success) {
-                return null;
-            }
-        } finally {
-            dispatcherAdapter.unlockAdapter();
-        }
-
-        return keyEvent;
+        return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, tickDuration, true);
     }
 
     @Nullable
@@ -86,39 +104,7 @@ public class KeyDispatch {
     @Nullable
     public static KeyEvent dispatchKeyUp(W3CActionAdapter dispatcherAdapter,
                                          ActionObject actionObject, KeyInputState inputState, long tickDuration) throws AppiumException {
-        // Get the base Key Event
-        KeyEvent keyEvent = getKeyEvent(actionObject);
-        String key = keyEvent.getKey();
-
-        // 3. If the input state's pressed property does not contain key, return.
-        if(!inputState.isPressed(key)) {
-            return keyEvent;
-        }
-
-        // 6. Let charCode, keyCode and which be the implementation-specific values of the charCode,
-        // keyCode and which properties.
-        // Omiting this for now until there's an implementation that needs it.
-
-        // 7-10: Set the alt, shift, ctrl meta key state
-        boolean alt = key.equals(NormalizedKeys.ALT);
-        boolean shift = key.equals(NormalizedKeys.SHIFT);
-        boolean ctrl = key.equals(NormalizedKeys.CONTROL);
-        boolean meta = key.equals(NormalizedKeys.META);
-        if (alt) inputState.setAlt(false);
-        if (shift) inputState.setShift(false);
-        if (ctrl) inputState.setCtrl(false);
-        if (meta) inputState.setMeta(false);
-
-        // 11: Remove key from the set corresponding to input state's pressed property.
-        inputState.removePressed(key);
-
-        boolean success = dispatcherAdapter.keyUp(keyEvent);
-
-        if (!success) {
-            return null;
-        }
-
-        return keyEvent;
+        return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, tickDuration, false);
     }
 
     @Nullable

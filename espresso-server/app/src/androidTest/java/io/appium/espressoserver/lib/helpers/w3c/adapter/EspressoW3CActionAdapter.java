@@ -17,7 +17,8 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public boolean keyDown(KeyEvent keyEvent) throws AppiumException {
-        android.view.KeyEvent androidKeyEvent = new android.view.KeyEvent(
+        // TODO: This is only a stub
+        /*android.view.KeyEvent androidKeyEvent = new android.view.KeyEvent(
                 System.currentTimeMillis(), System.currentTimeMillis(),
                 ACTION_DOWN, Character.getNumericValue(keyEvent.getKey().charAt(0)),
                 0
@@ -27,11 +28,12 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             uiController.injectKeyEvent(androidKeyEvent);
         } catch (InjectEventSecurityException e) {
             throw new AppiumException(e.getCause().toString());
-        }
+        }*/
         return false;
     }
 
     public boolean keyUp(KeyEvent keyEvent) {
+        // TODO: this is only a stub
         return false;
     }
 }

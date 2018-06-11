@@ -87,7 +87,7 @@ public class KeyNormalizer {
         return key;
     }
 
-    public static KeyNormalizer getInstance () {
+    public static synchronized KeyNormalizer getInstance () {
         if (instance == null) {
             instance = new KeyNormalizer();
         }
