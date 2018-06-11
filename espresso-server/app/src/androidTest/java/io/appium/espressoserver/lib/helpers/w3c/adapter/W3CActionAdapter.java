@@ -25,6 +25,10 @@ public interface W3CActionAdapter {
                      Long x, Long y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException;
 
+    void pointerMove(String sourceId, PointerType pointerType,
+                     long currentX, long currentY, long x, long y,
+                     Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException;
+
     void lockAdapter();
 
     void unlockAdapter();
@@ -35,10 +39,6 @@ public interface W3CActionAdapter {
 
     int getWhich(String keyValue, int location);
     double getPointerMoveDurationMargin(PointerInputState pointerInputState);
-
-    boolean performPointerMoveEvent(String sourceId, PointerType pointerType,
-                                    long currentX, long currentY, long x, long y,
-                                    Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException;
 
     int pointerMoveIntervalDuration();
 

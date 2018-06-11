@@ -28,17 +28,6 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
         return -1;
     }
 
-    public void pointerDown(int button, String sourceId, PointerType pointerType, Long x, Long y,
-                            Set<Integer> depressedButtons, KeyInputState globalKeyInputState) throws AppiumException {
-
-    }
-
-    public void pointerUp(int button, String sourceId, PointerType pointerType,
-                   Long x, Long y, Set<Integer> depressedButtons,
-                   KeyInputState globalKeyInputState) throws AppiumException {
-
-    }
-
     public synchronized void lockAdapter() {
         reentrantLock.lock();
     }
@@ -47,14 +36,14 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
         reentrantLock.unlock();
     }
 
+    /**
+     * Determines how close coordinates must be to the target coordinates before we
+     * decide to just skip ahead to the target coordinates. 0.01 is arbitrary.
+     * @param pointerInputState
+     * @return
+     */
     public double getPointerMoveDurationMargin(PointerInputState pointerInputState) {
         return 0.01;
-    }
-
-    public boolean performPointerMoveEvent(String sourceId, PointerType pointerType,
-                                           long currentX, long currentY, long x, long y,
-                                           Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
-        throw new NotYetImplementedException();
     }
 
     /**
@@ -73,13 +62,5 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
     public long[] getElementCenterPoint(String elementId)
             throws NoSuchElementException, StaleElementException, NotYetImplementedException {
         throw new NotYetImplementedException("This implementation does not support performing actions on elements");
-    }
-
-    public long getViewportHeight() {
-        return Long.MAX_VALUE;
-    }
-
-    public long getViewportWidth() {
-        return Long.MAX_VALUE;
     }
 }

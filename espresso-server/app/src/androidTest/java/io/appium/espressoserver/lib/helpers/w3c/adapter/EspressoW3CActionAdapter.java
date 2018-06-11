@@ -2,8 +2,12 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter;
 
 import android.support.test.espresso.UiController;
 
+import java.util.Set;
+
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.KeyEvent;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
+import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
@@ -28,7 +32,35 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         }*/
     }
 
+    public void pointerDown(int button, String sourceId, InputSource.PointerType pointerType,
+                     Long x, Long y, Set<Integer> depressedButtons,
+                     KeyInputState globalKeyInputState) throws AppiumException {
+        // Stub.
+    }
+
+    public void pointerUp(int button, String sourceId, InputSource.PointerType pointerType,
+                   Long x, Long y, Set<Integer> depressedButtons,
+                   KeyInputState globalKeyInputState) throws AppiumException {
+        // Stub.
+    }
+
+    public void pointerMove(String sourceId, InputSource.PointerType pointerType,
+                            long currentX, long currentY, long x, long y,
+                            Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
+        // Stub.
+    }
+
     public void keyUp(KeyEvent keyEvent) {
         // TODO: This is a stub
+    }
+
+    public long getViewportHeight() {
+        // Stub.
+        return Long.MAX_VALUE;
+    }
+
+    public long getViewportWidth() {
+        // Stub.
+        return Long.MAX_VALUE;
     }
 }

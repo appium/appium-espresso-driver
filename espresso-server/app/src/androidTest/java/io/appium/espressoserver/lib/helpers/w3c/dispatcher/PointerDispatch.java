@@ -14,6 +14,45 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
 
 public class PointerDispatch {
 
+    private static void dispatchPointerEvent(final W3CActionAdapter dispatcherAdapter,
+                                             final String sourceId,
+                                             final ActionObject actionObject,
+                                             final PointerInputState pointerInputState,
+                                             final KeyInputState globalKeyInputState,
+                                             final boolean down) throws AppiumException {
+        PointerType pointerType = actionObject.getPointer();
+        int button = actionObject.getButton();
+        if (down) {
+            if (pointerInputState.isPressed(button)) {
+                return;
+            }
+        } else {
+            if (!pointerInputState.isPressed(button)) {
+                return;
+            }
+        }
+        Long x = pointerInputState.getX();
+        Long y = pointerInputState.getY();
+        // TODO: Do cancel list stuff
+        if (down) {
+            pointerInputState.addPressed(button);
+        } else {
+            pointerInputState.removePressed(button);
+        }
+        try {
+            dispatcherAdapter.lockAdapter();
+            if (down) {
+                dispatcherAdapter.pointerDown(button, sourceId, pointerType, x, y,
+                        pointerInputState.getButtons(), globalKeyInputState);
+            } else {
+                dispatcherAdapter.pointerUp(button, sourceId, pointerType, x, y,
+                        pointerInputState.getButtons(), globalKeyInputState);
+            }
+        } finally {
+            dispatcherAdapter.unlockAdapter();
+        }
+    }
+
     /**
      * Run the 'dispatch a pointer down' algorithm
      * @param dispatcherAdapter W3C actions implementation
@@ -28,19 +67,8 @@ public class PointerDispatch {
                                            final ActionObject actionObject,
                                            final PointerInputState pointerInputState,
                                            final KeyInputState globalKeyInputState) throws AppiumException {
-        PointerType pointerType = actionObject.getPointer();
-        int button = actionObject.getButton();
-        if (pointerInputState.isPressed(button)) {
-            return;
-        }
-        Long x = pointerInputState.getX();
-        Long y = pointerInputState.getY();
-        // TODO: Do cancel list stuff
-        pointerInputState.addPressed(button);
-        dispatcherAdapter.lockAdapter();
-        dispatcherAdapter.pointerDown(button, sourceId, pointerType, x, y,
-                pointerInputState.getButtons(), globalKeyInputState);
-        dispatcherAdapter.unlockAdapter();
+        dispatchPointerEvent(dispatcherAdapter, sourceId, actionObject, pointerInputState,
+                globalKeyInputState, true);
     }
 
     /**
@@ -57,19 +85,8 @@ public class PointerDispatch {
                                            final ActionObject actionObject,
                                            final PointerInputState pointerInputState,
                                            final KeyInputState globalKeyInputState) throws AppiumException {
-        PointerType pointerType = actionObject.getPointer();
-        int button = actionObject.getButton();
-        if (!pointerInputState.isPressed(button)) {
-            return;
-        }
-        Long x = pointerInputState.getX();
-        Long y = pointerInputState.getY();
-        // TODO: Do cancel list stuff
-        pointerInputState.removePressed(button);
-        dispatcherAdapter.lockAdapter();
-        dispatcherAdapter.pointerUp(button, sourceId, pointerType, x, y,
-                pointerInputState.getButtons(), globalKeyInputState);
-        dispatcherAdapter.unlockAdapter();
+        dispatchPointerEvent(dispatcherAdapter, sourceId, actionObject, pointerInputState,
+                globalKeyInputState, false);
     }
 
     /**
@@ -198,7 +215,7 @@ public class PointerDispatch {
                         dispatcherAdapter.lockAdapter();
                         if (currentX != x || currentY != y) {
                             // 8.2 Perform implementation specific move event
-                            dispatcherAdapter.performPointerMoveEvent(sourceId, pointerInputState.getType(), currentX, currentY, x, y,
+                            dispatcherAdapter.pointerMove(sourceId, pointerInputState.getType(), currentX, currentY, x, y,
                                     pointerInputState.getButtons(), globalKeyInputState);
 
                             // 8.3. Let input state's x property equal x and y property equal y

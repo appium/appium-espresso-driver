@@ -63,9 +63,9 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
         return 0.01;
     }
 
-    public boolean performPointerMoveEvent(String sourceId, PointerType pointerType,
-                                           long currentX, long currentY, long x, long y,
-                                           Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
+    public void pointerMove(String sourceId, PointerType pointerType,
+                            long currentX, long currentY, long x, long y,
+                            Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
         PointerMoveEvent pointerMoveEvent = new PointerMoveEvent();
         pointerMoveEvent.sourceId = sourceId;
         pointerMoveEvent.pointerType = pointerType;
@@ -76,7 +76,6 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
         pointerMoveEvent.buttons = buttons;
         pointerMoveEvent.globalKeyInputState = globalKeyInputState;
         pointerMoveEvents.add(pointerMoveEvent);
-        return true;
     }
 
     public List<PointerMoveEvent> getPointerMoveEvents() {
