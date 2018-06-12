@@ -18,6 +18,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
+import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
@@ -203,7 +204,7 @@ public class TickTest {
         tick.addAction(actionObjectOne);
         tick.addAction(actionObjectTwo);
 
-        BaseW3CActionAdapter baseW3CActionAdapter = new BaseW3CActionAdapter() {
+        class ExtendedDummyW3CActionAdapter extends DummyW3CActionAdapter {
             @Override
             public void pointerMove(String sourceIdCalled,
                                     PointerType pointerType,
@@ -225,6 +226,8 @@ public class TickTest {
             public void keyDown(KeyEvent keyDownEvent) {
             }
         };
+
+        W3CActionAdapter baseW3CActionAdapter = new ExtendedDummyW3CActionAdapter();
 
         List<Callable<Void>> callables = tick.dispatch(baseW3CActionAdapter, inputStateTable, tick.calculateTickDuration());
         Executor executor = Executors.newFixedThreadPool(callables.size());
