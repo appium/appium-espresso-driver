@@ -166,11 +166,11 @@ public class TickTest {
 
     @Test
     public void shouldDispatchPointerMoveEvents() throws AppiumException, InterruptedException, ExecutionException {
-        InputStateTable inputStateTable = new InputStateTable();
+        final InputStateTable inputStateTable = new InputStateTable();
         KeyInputState keyInputState = new KeyInputState();
         keyInputState.setShift(true);
         inputStateTable.addInputState("keyInputs", keyInputState);
-        Tick tick = new Tick();
+        final Tick tick = new Tick();
 
         final String sourceId = "something4";
         final String sourceId2 = "something5";
