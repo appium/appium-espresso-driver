@@ -1,4 +1,4 @@
-package io.appium.espressoserver.lib.helpers.w3c.models;
+package io.appium.espressoserver.lib.helpers.w3c.state;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 
 /**
  * Active Input Source defined in W3C spec
@@ -14,7 +15,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
  */
 public class ActiveInputSources {
     private Map<String, InputSource> inputSources = new HashMap<>();
-    private static ActiveInputSources globalActiveInputSources;
+    private static Map<String, ActiveInputSources> activeInputSources = new HashMap<>();
 
     public void addInputSource(InputSource inputSource) throws InvalidArgumentException {
         inputSources.put(inputSource.getId(), inputSource);
@@ -47,18 +48,16 @@ public class ActiveInputSources {
     }
 
     /**
-     * There is supposed to be on ActiveInputSource per session
+     * Get the `active input sources` table for a session
      *
-     * Since Espresso is one session per device return a global session
-     *
-     * If need be though we could amend it in the future to overload this method
-     * and get an instance by the sessionId
      * @return Global instance of ActiveInputSources
      */
-    public synchronized static ActiveInputSources getInstance() {
-        if (globalActiveInputSources == null) {
-            globalActiveInputSources = new ActiveInputSources();
+    public synchronized static ActiveInputSources getActiveInputSourcesForSession(String sessionId) {
+        ActiveInputSources globalInputStateTable = activeInputSources.get(sessionId);
+        if (globalInputStateTable == null) {
+            activeInputSources.put(sessionId, new ActiveInputSources());
+            globalInputStateTable = activeInputSources.get(sessionId);
         }
-        return globalActiveInputSources;
+        return globalInputStateTable;
     }
 }

@@ -22,10 +22,10 @@ import java.util.List;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
-import io.appium.espressoserver.lib.helpers.w3c.models.ActiveInputSources;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
+import io.appium.espressoserver.lib.helpers.w3c.state.ActiveInputSources;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 
 import static io.appium.espressoserver.lib.helpers.w3c.processor.KeyProcessor.processKeyAction;
