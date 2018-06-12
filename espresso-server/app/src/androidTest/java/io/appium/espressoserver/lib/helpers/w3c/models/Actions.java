@@ -20,12 +20,25 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
+import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
+import io.appium.espressoserver.lib.helpers.w3c.processor.ActionsProcessor;
+import io.appium.espressoserver.lib.helpers.w3c.state.ActiveInputSources;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
+
 @SuppressWarnings("unused")
 public class Actions {
     private List<InputSource> actions = null;
 
-    public void performActions(String sessionId) {
-        // Stub.
+    public static void performActions(List<Actions> actions, String sessionId)
+            throws NotYetImplementedException, InvalidArgumentException {
+        // Get state of session
+        ActiveInputSources activeInputSources = ActiveInputSources.getActiveInputSourcesForSession(sessionId);
+        InputStateTable inputStateTable = InputStateTable.getInputStateTableOfSession(sessionId);
+
+        // 1. Let actions by tick be the result of trying to extract an action sequence with argument parameters
+
+        //ActionSequence actionSequence = new ActionSequence(actions, activeInputSources, inputStateTable);
     }
 
     public void releaseActions(String sessionId) {
