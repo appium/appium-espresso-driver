@@ -237,7 +237,6 @@ public class ActionSequenceTest {
         long timeBefore = System.currentTimeMillis();
         actionSequence.dispatch(new DummyW3CActionAdapter(), inputStateTable);
         long elapsedTime = System.currentTimeMillis() - timeBefore;
-        System.out.println(elapsedTime);
         assertTrue(elapsedTime >= 500);
         assertTrue(elapsedTime <= 600);
 

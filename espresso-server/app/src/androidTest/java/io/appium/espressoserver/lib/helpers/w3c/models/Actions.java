@@ -24,6 +24,14 @@ import java.util.List;
 public class Actions {
     private List<InputSource> actions = null;
 
+    public void performActions(String sessionId) {
+        // Stub.
+    }
+
+    public void releaseActions(String sessionId) {
+        // Stub.
+    }
+
     @Nullable
     public List<InputSource> getActions() {
         return actions;

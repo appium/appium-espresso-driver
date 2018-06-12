@@ -2,10 +2,8 @@ package io.appium.espressoserver.lib.helpers.w3c.state;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 
@@ -17,7 +15,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 public class InputStateTable {
 
     private final Map<String, InputState> stateTable = new HashMap<>();
-    private final Set<ActionObject> cancelList = new HashSet<>();
+    private final List<ActionObject> cancelList = new ArrayList<>();
 
     private static Map<String, InputStateTable> inputStateTables = new HashMap<>();
 
@@ -37,7 +35,7 @@ public class InputStateTable {
         cancelList.add(actionObject);
     }
 
-    public Set<ActionObject> getCancelList() {
+    public List<ActionObject> getCancelList() {
         return cancelList;
     }
 

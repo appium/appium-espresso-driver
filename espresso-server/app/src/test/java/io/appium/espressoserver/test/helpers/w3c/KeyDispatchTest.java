@@ -2,7 +2,7 @@ package io.appium.espressoserver.test.helpers.w3c;
 
 import org.junit.Test;
 
-import java.util.Set;
+import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
@@ -34,11 +34,11 @@ public class KeyDispatchTest {
         KeyInputState keyInputState = new KeyInputState();
         assertFalse(keyInputState.isAlt());
         assertFalse(keyInputState.isCtrl());
-        Set<ActionObject> cancelList = inputStateTable.getCancelList();
-        assertEquals(cancelList.size(), 0);
+        List<ActionObject> cancelList = inputStateTable.getCancelList();
+        assertTrue(cancelList.isEmpty());
         dispatchKeyDown(adapter, actionObject, keyInputState, inputStateTable);
         assertEquals(cancelList.size(), 1);
-        ActionObject cancelObject = cancelList.iterator().next();
+        ActionObject cancelObject = cancelList.get(0);
         assertEquals(cancelObject.getSubType(), KEY_UP);
         assertEquals(cancelObject.getValue(), alt);
         assertTrue(keyInputState.isAlt());
