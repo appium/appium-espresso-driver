@@ -31,12 +31,12 @@ public class ActionSequence implements Iterator<Tick> {
     private List<Tick> ticks = new ArrayList<>();
     private int tickCounter = 0;
 
-    public ActionSequence(W3CActions w3CActions, ActiveInputSources activeInputSources,
+    public ActionSequence(Actions actions, ActiveInputSources activeInputSources,
                           InputStateTable inputStateTable)
             throws InvalidArgumentException, NotYetImplementedException {
         // Check if null to keep Codacy happy. It will never make it this far if it's null though.
-        if (w3CActions.getActions() != null) {
-            for (InputSource inputSource : w3CActions.getActions()) {
+        if (actions.getActions() != null) {
+            for (InputSource inputSource : actions.getActions()) {
                 int tickIndex = 0;
                 List<ActionObject> actionObjects = processSourceActionSequence(inputSource, activeInputSources, inputStateTable);
                 for (ActionObject action : actionObjects) {

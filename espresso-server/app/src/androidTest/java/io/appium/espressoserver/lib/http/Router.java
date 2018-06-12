@@ -87,7 +87,7 @@ import io.appium.espressoserver.lib.model.Session;
 import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
-import io.appium.espressoserver.lib.model.W3CActionsParams;
+import io.appium.espressoserver.lib.model.ActionsParams;
 
 import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 
@@ -101,7 +101,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/status", new Status(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session", new CreateSession(), SessionParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId", new GetSession(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/actions", new W3CActions(), W3CActionsParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/actions", new W3CActions(), ActionsParams.class));
         routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId", new DeleteSession(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/back", new Back(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/accept_alert", new AcceptAlert(), AppiumParams.class));

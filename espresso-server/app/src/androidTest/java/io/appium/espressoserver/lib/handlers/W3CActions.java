@@ -45,7 +45,7 @@ import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.InputEven
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.KeyInputEventParams;
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.MotionInputEventParams;
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsParseException;
-import io.appium.espressoserver.lib.model.W3CActionsParams;
+import io.appium.espressoserver.lib.model.ActionsParams;
 
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.META_CODES_SHIFT;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.actionsToInputEventsMapping;
@@ -53,7 +53,7 @@ import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.ge
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.metaKeysToState;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.toolTypeToInputSource;
 
-public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
+public class W3CActions implements RequestHandler<ActionsParams, Void> {
 
     private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
             MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT, MotionEvent.ACTION_HOVER_MOVE
@@ -88,7 +88,7 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
      * @param params JSON request formatted according to W3C actions endpoint compilation rules.
      */
     @Override
-    public Void handle(W3CActionsParams params) throws AppiumException {
+    public Void handle(ActionsParams params) throws AppiumException {
         final String actionsAsJson = new Gson().toJson(params.getActions());
         try {
             final JSONArray actions = ActionsHelpers.preprocessActions(new JSONArray(actionsAsJson));

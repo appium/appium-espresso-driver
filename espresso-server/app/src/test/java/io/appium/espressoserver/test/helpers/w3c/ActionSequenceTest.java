@@ -19,7 +19,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.models.Tick;
-import io.appium.espressoserver.lib.helpers.w3c.models.W3CActions;
+import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 import io.appium.espressoserver.test.assets.Helpers;
@@ -34,8 +34,8 @@ public class ActionSequenceTest {
     @Test
     public void shouldPullOutPointerActionsInW3CActions() throws IOException, InvalidArgumentException, NotYetImplementedException {
         String multiTouchJson = Helpers.readAssetFile("multi-touch-actions.json");
-        W3CActions w3CActions = W3CActions.class.cast((new Gson()).fromJson(multiTouchJson, W3CActions.class));
-        ActionSequence actionSequence = new ActionSequence(w3CActions, new ActiveInputSources(), new InputStateTable());
+        Actions actions = Actions.class.cast((new Gson()).fromJson(multiTouchJson, Actions.class));
+        ActionSequence actionSequence = new ActionSequence(actions, new ActiveInputSources(), new InputStateTable());
 
         // Tick #1 of 6
         Tick tick = actionSequence.next();
@@ -141,8 +141,8 @@ public class ActionSequenceTest {
     @Test
     public void shouldPullOutKeyActionsInW3CActions() throws IOException, InvalidArgumentException, NotYetImplementedException {
         String multiTouchJson = Helpers.readAssetFile("key-actions.json");
-        W3CActions w3CActions = W3CActions.class.cast((new Gson()).fromJson(multiTouchJson, W3CActions.class));
-        ActionSequence actionSequence = new ActionSequence(w3CActions, new ActiveInputSources(), new InputStateTable());
+        Actions actions = Actions.class.cast((new Gson()).fromJson(multiTouchJson, Actions.class));
+        ActionSequence actionSequence = new ActionSequence(actions, new ActiveInputSources(), new InputStateTable());
 
         ActionObject action;
         Tick tick;
@@ -205,8 +205,8 @@ public class ActionSequenceTest {
 
         InputStateTable inputStateTable = new InputStateTable();
         String multiTouchJson = Helpers.readAssetFile("multi-touch-actions.json");
-        W3CActions w3CActions = W3CActions.class.cast((new Gson()).fromJson(multiTouchJson, W3CActions.class));
-        ActionSequence actionSequence = new ActionSequence(w3CActions, new ActiveInputSources(), new InputStateTable());
+        Actions actions = Actions.class.cast((new Gson()).fromJson(multiTouchJson, Actions.class));
+        ActionSequence actionSequence = new ActionSequence(actions, new ActiveInputSources(), new InputStateTable());
 
         long timeBefore = System.currentTimeMillis();
         actionSequence.dispatch(new AlteredDummyAdapter(), inputStateTable);
@@ -231,8 +231,8 @@ public class ActionSequenceTest {
     public void shouldDispatchW3CKeyActions() throws IOException, AppiumException, InterruptedException, ExecutionException {
         InputStateTable inputStateTable = new InputStateTable();
         String multiTouchJson = Helpers.readAssetFile("key-actions.json");
-        W3CActions w3CActions = W3CActions.class.cast((new Gson()).fromJson(multiTouchJson, W3CActions.class));
-        ActionSequence actionSequence = new ActionSequence(w3CActions, new ActiveInputSources(), new InputStateTable());
+        Actions actions = Actions.class.cast((new Gson()).fromJson(multiTouchJson, Actions.class));
+        ActionSequence actionSequence = new ActionSequence(actions, new ActiveInputSources(), new InputStateTable());
 
         long timeBefore = System.currentTimeMillis();
         actionSequence.dispatch(new DummyW3CActionAdapter(), inputStateTable);
