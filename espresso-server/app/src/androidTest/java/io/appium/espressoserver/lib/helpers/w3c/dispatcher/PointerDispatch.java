@@ -39,8 +39,9 @@ public class PointerDispatch {
         } else {
             pointerInputState.removePressed(button);
         }
+
+        dispatcherAdapter.lockAdapter();
         try {
-            dispatcherAdapter.lockAdapter();
             if (down) {
                 dispatcherAdapter.pointerDown(button, sourceId, pointerType, x, y,
                         pointerInputState.getButtons(), globalKeyInputState);
@@ -98,7 +99,7 @@ public class PointerDispatch {
      * @param tickDuration How long is this tick (in ms)
      * @param timeSinceBeginningOfTick Time since current tick started (in ms)
      * @param globalKeyInputState Global key input state
-     * @return
+     * @return Returns a callable that returns when the pointer move is complete
      * @throws AppiumException
      */
     public static Callable<Void> dispatchPointerMove(final W3CActionAdapter dispatcherAdapter,
@@ -188,6 +189,7 @@ public class PointerDispatch {
             "Performing pointer move '%s' on input source with id '%s' from [%s, %s] to [%s, %s]",
             pointerInputState.getType().toString(), sourceId, startX, startY, targetX, targetY
         ));*/
+
         return new Callable<Void>() {
             @Override
             public Void call() throws Exception {
@@ -212,8 +214,8 @@ public class PointerDispatch {
                     final long currentX = pointerInputState.getX();
                     final long currentY = pointerInputState.getY();
 
+                    dispatcherAdapter.lockAdapter();
                     try {
-                        dispatcherAdapter.lockAdapter();
                         if (currentX != x || currentY != y) {
                             // 8.2 Perform implementation specific move event
                             dispatcherAdapter.pointerMove(sourceId, pointerInputState.getType(), currentX, currentY, x, y,
