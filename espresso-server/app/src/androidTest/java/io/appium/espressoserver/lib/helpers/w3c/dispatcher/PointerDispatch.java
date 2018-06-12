@@ -183,6 +183,7 @@ public class PointerDispatch {
                                                     final long timeSinceBeginningOfTick,
                                                     final KeyInputState globalKeyInputState) {
 
+        // TODO: Make logger implement a generic Java logger interface so we can mock it in tests
         /*Logger.debug(String.format(
             "Performing pointer move '%s' on input source with id '%s' from [%s, %s] to [%s, %s]",
             pointerInputState.getType().toString(), sourceId, startX, startY, targetX, targetY

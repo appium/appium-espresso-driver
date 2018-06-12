@@ -39,8 +39,10 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
     /**
      * Determines how close coordinates must be to the target coordinates before we
      * decide to just skip ahead to the target coordinates. 0.01 is arbitrary.
-     * @param pointerInputState
-     * @return
+     *
+     * (see item 4 of 'perform a pointer move' algorithm in 17.4.3)
+     * @param pointerInputState What the state of the pointer is currently
+     * @return How close the coordinates need to be to just go to the final coordinate.
      */
     public double getPointerMoveDurationMargin(PointerInputState pointerInputState) {
         return 0.01;
@@ -48,11 +50,13 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
 
     /**
      * How long (in ms) does the adapter need to perform a pointer move event
-     * @return
+     *
+     * (see 17.4.3)
+     * @return Time in MS to perform operations
      */
     public int pointerMoveIntervalDuration() {
         // Default to ~15 moves-per-second
-        return 67;
+        return 70;
     }
 
     public void sleep(long duration) throws InterruptedException {

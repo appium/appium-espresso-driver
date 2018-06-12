@@ -26,6 +26,7 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
         public KeyInputState globalKeyInputState;
     }
 
+    // Keep a log of pointer move events so the values can be checked in the unit tests
     private List<PointerMoveEvent> pointerMoveEvents = new ArrayList<>();
 
     public void keyDown(KeyDispatch.KeyEvent keyEvent) {
@@ -53,8 +54,8 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
             if (!pointerInputState.hasPressedButtons()) {
                 // If no buttons are pushed nothing happens, so skip to the end
                 // of the pointer move
-                // ie: touch move without pressed buttons is like a finger movoing without
-                //     being pressed on the screen
+                // e.g.: touch move without pressed buttons is like a finger moving without
+                //      being pressed on the screen
                 return 1.0;
             }
         }
