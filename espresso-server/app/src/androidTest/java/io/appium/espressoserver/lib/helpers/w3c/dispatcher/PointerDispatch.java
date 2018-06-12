@@ -4,13 +4,16 @@ import java.util.concurrent.Callable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException;
-//import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTER;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
+
+//import io.appium.espressoserver.lib.helpers.Logger;
 
 public class PointerDispatch {
 

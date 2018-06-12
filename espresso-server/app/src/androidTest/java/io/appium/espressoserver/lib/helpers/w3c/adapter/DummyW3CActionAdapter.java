@@ -15,6 +15,9 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
 
+    // Keep a log of pointer move events so the values can be checked in the unit tests
+    private List<PointerMoveEvent> pointerMoveEvents = new ArrayList<>();
+
     public static class PointerMoveEvent {
         public String sourceId;
         public PointerType pointerType;
@@ -26,38 +29,33 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
         public KeyInputState globalKeyInputState;
     }
 
-    // Keep a log of pointer move events so the values can be checked in the unit tests
-    private List<PointerMoveEvent> pointerMoveEvents = new ArrayList<>();
-
     public void keyDown(KeyDispatch.KeyEvent keyEvent) {
-
+        // Does nothing. Used for testing
     }
 
     public void keyUp(KeyDispatch.KeyEvent keyEvent) {
-
+        // Does nothing. Used for testing
     }
 
     public void pointerUp(int button, String sourceId, PointerType pointerType,
                             Long x, Long y, Set<Integer> depressedButtons,
                             KeyInputState globalKeyInputState) throws AppiumException {
-
+        // Does nothing. Used for testing
     }
 
     public void pointerDown(int button, String sourceId, PointerType pointerType,
                      Long x, Long y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException {
-
+        // Does nothing. Used for testing
     }
 
     public double getPointerMoveDurationMargin(PointerInputState pointerInputState) {
-        if (pointerInputState.getType() == PointerType.TOUCH) {
-            if (!pointerInputState.hasPressedButtons()) {
-                // If no buttons are pushed nothing happens, so skip to the end
-                // of the pointer move
-                // e.g.: touch move without pressed buttons is like a finger moving without
-                //      being pressed on the screen
-                return 1.0;
-            }
+        if (pointerInputState.getType() == PointerType.TOUCH && !pointerInputState.hasPressedButtons()) {
+            // If no buttons are pushed nothing happens, so skip to the end
+            // of the pointer move
+            // e.g.: touch move without pressed buttons is like a finger moving without
+            //      being pressed on the screen
+            return 1.0;
         }
 
         // Give a margin of error of 1%
@@ -67,6 +65,7 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
     public void pointerMove(String sourceId, PointerType pointerType,
                             long currentX, long currentY, long x, long y,
                             Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
+        // Add the pointer move event to the logs
         PointerMoveEvent pointerMoveEvent = new PointerMoveEvent();
         pointerMoveEvent.sourceId = sourceId;
         pointerMoveEvent.pointerType = pointerType;
@@ -85,9 +84,9 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
 
     public long[] getElementCenterPoint(String elementId)
             throws NoSuchElementException, StaleElementException, NotYetImplementedException {
-        if (elementId.equals("none")) {
+        if ("none".equals(elementId)) {
             throw new NoSuchElementException(String.format("Could not find element with id: %s", elementId));
-        } else if (elementId.equals("stale")) {
+        } else if ("stale".equals(elementId)) {
             throw new StaleElementException(String.format("Element with id %s no longer exists", elementId));
         }
 

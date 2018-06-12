@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException;
-import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter.PointerMoveEvent;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
@@ -27,21 +26,17 @@ import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatc
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerMove;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerUp;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.performPointerMove;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.*;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTER;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class PointerDispatchTest {
 
     private PointerInputState pointerInputSource;
-
-    @Before
-    public void before() {
-    }
-
 
     @Test
     public void shouldNoopPointerMoveIfNoButtons() throws ExecutionException, InterruptedException {
@@ -158,7 +153,7 @@ public class PointerDispatchTest {
                 assertTrue(me.getMessage().contains("not in the viewport"));
                 continue;
             }
-            assertTrue(false);
+            fail("Should have thrown 'MoveTargetOutOfBoundsException'");
         }
     }
 

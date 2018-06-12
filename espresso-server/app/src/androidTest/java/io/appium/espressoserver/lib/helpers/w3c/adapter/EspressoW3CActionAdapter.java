@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter;
 
+import android.os.SystemClock;
 import android.support.test.espresso.UiController;
 
 import java.util.Set;
@@ -21,7 +22,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void keyDown(KeyEvent keyEvent) throws AppiumException {
-        // TODO: This is a stub
+        // Stub.
         /*android.view.KeyEvent androidKeyEvent = new android.view.KeyEvent(
                 System.currentTimeMillis(), System.currentTimeMillis(),
                 ACTION_DOWN, Character.getNumericValue(keyEvent.getKey().charAt(0)),
@@ -71,5 +72,9 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             throws NoSuchElementException, StaleElementException, NotYetImplementedException {
         // Stub.
         return new long[] { };
+    }
+
+    public void sleep(long duration) throws InterruptedException {
+        SystemClock.sleep(duration);
     }
 }
