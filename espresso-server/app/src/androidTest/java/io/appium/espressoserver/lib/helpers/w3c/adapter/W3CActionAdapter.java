@@ -38,11 +38,14 @@ public interface W3CActionAdapter {
     int getCharCode(String keyValue, int location);
 
     int getWhich(String keyValue, int location);
+    
     double getPointerMoveDurationMargin(PointerInputState pointerInputState);
 
     int pointerMoveIntervalDuration();
 
     void sleep(long duration) throws InterruptedException;
+
+    void waitForUiThread();
 
     long[] getElementCenterPoint(String elementId) throws NoSuchElementException, StaleElementException, NotYetImplementedException;
 
