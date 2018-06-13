@@ -48,22 +48,6 @@ public class KeyDispatchTest {
     }
 
     @Test
-    public void shouldReturnNullIfImplementationReturnsFalse() throws AppiumException {
-        class TestAdapter extends DummyW3CActionAdapter {
-            public boolean keyDown(KeyEvent keyEvent) {
-                return false;
-            }
-        }
-        TestAdapter testAdapter = new TestAdapter();
-        String id = "keyboard";
-        String alt = "F";
-        ActionObject actionObject = new ActionObject(id, KEY, KEY_DOWN, 0);
-        actionObject.setValue(alt);
-        KeyInputState keyInputState = new KeyInputState();
-        assertNull(dispatchKeyDown(testAdapter, actionObject, keyInputState));
-    }
-
-    @Test
     public void shouldPassKeyCodeToEvent() throws AppiumException {
         DummyW3CActionAdapter adapter = new DummyW3CActionAdapter();
         String id = "keyboard";
@@ -113,23 +97,6 @@ public class KeyDispatchTest {
         dispatchKeyUp(adapter, actionObject, keyInputState);
         assertFalse(keyInputState.isAlt());
         assertTrue(keyInputState.isCtrl());
-    }
-
-    @Test
-    public void shouldReturnNullIfKeyUpImplementationReturnsFalse() throws AppiumException {
-        class TestAdapter extends DummyW3CActionAdapter {
-            public boolean keyUp(KeyEvent keyEvent) {
-                return false;
-            }
-        }
-        TestAdapter testAdapter = new TestAdapter();
-        String id = "keyboard";
-        String value = "F";
-        ActionObject actionObject = new ActionObject(id, KEY, KEY_DOWN, 0);
-        actionObject.setValue(value);
-        KeyInputState keyInputState = new KeyInputState();
-        keyInputState.addPressed(value);
-        assertNull(dispatchKeyUp(testAdapter, actionObject, keyInputState));
     }
 
     @Test

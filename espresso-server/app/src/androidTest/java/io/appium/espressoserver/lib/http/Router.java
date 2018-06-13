@@ -66,6 +66,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.MissingCommandsException;
+import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoAlertOpenException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
@@ -255,6 +256,8 @@ class Router {
             return new AppiumResponse<>(AppiumStatus.INVALID_ELEMENT_STATE, Log.getStackTraceString(e));
         } catch (InvalidArgumentException e) {
             return new AppiumResponse<>(AppiumStatus.INVALID_ARGUMENT, Log.getStackTraceString(e));
+        } catch (MoveTargetOutOfBoundsException e) {
+            return new AppiumResponse<>(AppiumStatus.MOVE_TARGET_OUT_OF_BOUNDS, Log.getStackTraceString(e));
         } catch (Exception e) {
             return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e));
         }
