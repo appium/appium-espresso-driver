@@ -231,20 +231,11 @@ public class TickTest {
         }
 
         int received = 0;
-        boolean errors = false;
-        while (received < callables.size() && !errors) {
+        while (received < callables.size()) {
             Future<Void> resultFuture = completionService.take(); //blocks if none available
-            try {
-                resultFuture.get();
-                received ++;
-            }
-            catch(Exception e) {
-                //log
-                errors = true;
-            }
+            resultFuture.get();
+            received ++;
         }
-
-        assertFalse(errors);
     }
 
     @Test
