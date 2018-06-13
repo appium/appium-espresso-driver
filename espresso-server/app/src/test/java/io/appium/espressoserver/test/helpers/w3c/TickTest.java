@@ -20,7 +20,6 @@ import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.models.Tick;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
@@ -37,10 +36,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class TickTest {
-
-    @Before
-    public void before() {
-    }
 
     @Test
     public void shouldCalculateMaxDurationZeroIfNoDurations() throws ExecutionException, InterruptedException {
@@ -64,12 +59,12 @@ public class TickTest {
             actionObjectOne.setDuration(valueOne[i]);
 
             ActionObject actionObjectTwo = new ActionObject();
-            actionObjectTwo.setType(InputSourceType.POINTER);
+            actionObjectTwo.setType(POINTER);
             actionObjectTwo.setSubType(POINTER_MOVE);
             actionObjectTwo.setDuration(valueTwo[i]);
 
             ActionObject actionObjectThree = new ActionObject();
-            actionObjectTwo.setType(InputSourceType.POINTER);
+            actionObjectTwo.setType(POINTER);
             actionObjectTwo.setSubType(POINTER_MOVE);
 
             tick.addAction(actionObjectOne);
@@ -100,7 +95,7 @@ public class TickTest {
         InputStateTable inputStateTable = new InputStateTable();
         Tick tick = new Tick();
         String sourceId = "something2";
-        ActionObject actionObject = new ActionObject(sourceId, InputSourceType.POINTER, null, 0);
+        ActionObject actionObject = new ActionObject(sourceId, POINTER, null, 0);
         actionObject.setSubType(POINTER_DOWN);
         actionObject.setButton(0);
         tick.addAction(actionObject);
@@ -184,7 +179,7 @@ public class TickTest {
         inputStateTable.addInputState(sourceId2, pointerInputState);
 
         // Construct pointer move event
-        ActionObject actionObjectOne = new ActionObject(sourceId, InputSourceType.POINTER, null, 0);
+        ActionObject actionObjectOne = new ActionObject(sourceId, POINTER, null, 0);
         actionObjectOne.setSubType(POINTER_MOVE);
         actionObjectOne.setPointer(TOUCH);
         actionObjectOne.setX(10L);
@@ -192,7 +187,7 @@ public class TickTest {
         actionObjectOne.setOrigin(VIEWPORT);
 
         // Construct another pointer move event
-        ActionObject actionObjectTwo = new ActionObject(sourceId2, InputSourceType.POINTER, null, 0);
+        ActionObject actionObjectTwo = new ActionObject(sourceId2, POINTER, null, 0);
         actionObjectTwo.setSubType(POINTER_MOVE);
         actionObjectTwo.setPointer(TOUCH);
         actionObjectTwo.setX(10L);
@@ -265,7 +260,7 @@ public class TickTest {
         actionObjectTwo.setSubType(KEY_DOWN);
 
         // Construct pointer move event
-        ActionObject actionObjectOne = new ActionObject(sourceId, InputSourceType.POINTER, null, 0);
+        ActionObject actionObjectOne = new ActionObject(sourceId, POINTER, null, 0);
         actionObjectOne.setSubType(POINTER_DOWN);
 
         tick.addAction(actionObjectOne);
