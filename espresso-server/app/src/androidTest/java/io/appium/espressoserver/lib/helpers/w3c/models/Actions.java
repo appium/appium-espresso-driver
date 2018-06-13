@@ -19,30 +19,50 @@ package io.appium.espressoserver.lib.helpers.w3c.models;
 import android.support.annotation.Nullable;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
-import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
-import io.appium.espressoserver.lib.helpers.w3c.processor.ActionsProcessor;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.state.ActiveInputSources;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 
 @SuppressWarnings("unused")
 public class Actions {
-    private List<InputSource> actions = null;
+    private List<InputSource> actions;
+    private W3CActionAdapter adapter;
 
-    public static void performActions(List<Actions> actions, String sessionId)
-            throws NotYetImplementedException, InvalidArgumentException {
+    public void performActions(String sessionId) throws AppiumException {
+
+        if (adapter == null) {
+            throw new AppiumException("An internal server error has occurred: Failed to initialize /actions adapter");
+        }
+
         // Get state of session
         ActiveInputSources activeInputSources = ActiveInputSources.getActiveInputSourcesForSession(sessionId);
         InputStateTable inputStateTable = InputStateTable.getInputStateTableOfSession(sessionId);
 
-        // 1. Let actions by tick be the result of trying to extract an action sequence with argument parameters
-
-        //ActionSequence actionSequence = new ActionSequence(actions, activeInputSources, inputStateTable);
+        // Let `actions by tick` be the result of trying to extract an action sequence with argument parameters
+        ActionSequence actionsByTick = new ActionSequence(this, activeInputSources, inputStateTable);
+        try {
+            // Dispatch the actions
+            actionsByTick.dispatch(adapter, inputStateTable);
+        } catch (InterruptedException e) {
+            throw new AppiumException(e.getCause().toString());
+        } catch (ExecutionException e) {
+            throw new AppiumException(e.getCause().toString());
+        }
     }
 
     public void releaseActions(String sessionId) {
         // Stub.
+    }
+
+    public void setAdapter(W3CActionAdapter adapter) {
+        this.adapter = adapter;
+    }
+
+    public W3CActionAdapter getAdapter() {
+        return adapter;
     }
 
     @Nullable
