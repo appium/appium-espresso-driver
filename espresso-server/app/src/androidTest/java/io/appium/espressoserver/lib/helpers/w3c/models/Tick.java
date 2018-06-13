@@ -21,7 +21,6 @@ import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatc
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.PAUSE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.NONE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER;
 
 public class Tick implements Iterator<ActionObject> {

@@ -16,7 +16,6 @@ import java.util.concurrent.Future;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
-import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.KeyEvent;

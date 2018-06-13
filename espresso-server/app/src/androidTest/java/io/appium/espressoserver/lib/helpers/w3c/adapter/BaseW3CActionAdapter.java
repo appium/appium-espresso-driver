@@ -59,6 +59,6 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
      * Waits for the UI to complete before moving forward
      */
     public void waitForUiThread() {
-        return;
+        // No-op by default.
     }
 }
