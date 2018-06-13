@@ -31,6 +31,11 @@ public class Actions {
     private List<InputSource> actions;
     private W3CActionAdapter adapter;
 
+    /**
+     * Perform actions (17.5)
+     * @param sessionId ID of the session to perform actions on
+     * @throws AppiumException
+     */
     public void performActions(String sessionId) throws AppiumException {
 
         if (adapter == null) {
@@ -53,8 +58,20 @@ public class Actions {
         }
     }
 
-    public void releaseActions(String sessionId) {
-        // Stub.
+    /**
+     * Release actions (17.6)
+     * @param sessionId ID of the session to release actions on
+     */
+    public void releaseActions(String sessionId) throws AppiumException {
+        if (adapter == null) {
+            throw new AppiumException("An internal server error has occurred: Failed to initialize /actions adapter");
+        }
+
+        // Get state of session
+        InputStateTable inputStateTable = InputStateTable.getInputStateTableOfSession(sessionId);
+
+        // Undo all actions
+        inputStateTable.undoAll(adapter, System.currentTimeMillis());
     }
 
     public void setAdapter(W3CActionAdapter adapter) {
