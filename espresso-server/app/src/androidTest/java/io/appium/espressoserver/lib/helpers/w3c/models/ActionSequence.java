@@ -75,7 +75,7 @@ public class ActionSequence implements Iterator<Tick> {
         for(Tick tick: ticks) {
             long timeAtBeginningOfTick = System.currentTimeMillis();
             long tickDuration = tick.calculateTickDuration();
-            List<Callable<Void>> callables = tick.dispatch(adapter, inputStateTable, tickDuration);
+            List<Callable<Void>> callables = tick.dispatchAll(adapter, inputStateTable, tickDuration);
 
             // 2. Wait until the following conditions are all met:
 

@@ -30,6 +30,28 @@ public class InputStateTable {
         return stateTable.get(id);
     }
 
+    public InputState getOrCreateInputState(String sourceId, ActionObject actionObject) {
+        if (!this.hasInputState(sourceId)) {
+            InputState newInputState = null;
+            switch(actionObject.getType()) {
+                case KEY:
+                    newInputState = new KeyInputState();
+                    break;
+                case POINTER:
+                    newInputState = new PointerInputState();
+                    break;
+                // Don't need to track state of null input types
+                case NONE:
+                default:
+                    break;
+            }
+            if (newInputState != null) {
+                this.addInputState(sourceId, newInputState);
+            }
+        }
+        return stateTable.get(sourceId);
+    }
+
     public boolean hasInputState(String id) {
         return stateTable.containsKey(id);
     }
