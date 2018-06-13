@@ -265,7 +265,7 @@ public class TickTest {
         try {
             tick.dispatch(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
         } catch (InvalidArgumentException e) {
-            assertTrue(true);
+            assertTrue(e.getMessage().contains("Attempted to apply action of type"));
             return;
         }
 
