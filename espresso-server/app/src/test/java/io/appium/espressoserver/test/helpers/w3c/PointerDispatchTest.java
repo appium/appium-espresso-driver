@@ -172,11 +172,11 @@ public class PointerDispatchTest {
         boolean hasAny = false;
         boolean hasAny2 = false;
         for (PointerMoveEvent pointerMoveEvent:pointerMoveEvents) {
-            if (pointerMoveEvent.sourceId.equals("any")) {
+            if ("any".equals(pointerMoveEvent.sourceId)) {
                 hasAny = true;
                 assertTrue(pointerMoveEvent.x >= 10 && pointerMoveEvent.x <= 30);
                 assertTrue(pointerMoveEvent.y >= 20 && pointerMoveEvent.y <= 40);
-            } else if (pointerMoveEvent.sourceId.equals("any2")) {
+            } else if ("any2".equals(pointerMoveEvent.sourceId)) {
                 hasAny2 = true;
                 assertTrue(pointerMoveEvent.x >= 20 && pointerMoveEvent.x <= 40);
                 assertTrue(pointerMoveEvent.y >= 30 && pointerMoveEvent.y <= 50);

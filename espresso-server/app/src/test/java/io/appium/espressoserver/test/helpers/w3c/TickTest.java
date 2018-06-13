@@ -220,10 +220,6 @@ public class TickTest {
                 assertTrue(buttons.contains(1));
                 assertTrue(globalKeyInputState.isShift());
             }
-
-            @Override
-            public void keyDown(KeyEvent keyDownEvent) {
-            }
         };
 
         W3CActionAdapter baseW3CActionAdapter = new ExtendedDummyW3CActionAdapter();
