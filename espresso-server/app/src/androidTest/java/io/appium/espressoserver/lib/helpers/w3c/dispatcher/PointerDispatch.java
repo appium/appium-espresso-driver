@@ -217,24 +217,25 @@ public class PointerDispatch {
                     final long currentX = pointerInputState.getX();
                     final long currentY = pointerInputState.getY();
 
-                    dispatcherAdapter.lockAdapter();
-                    try {
-                        if (currentX != x || currentY != y) {
+                    if (currentX != x || currentY != y) {
+                        dispatcherAdapter.lockAdapter();
+                        try {
                             // 8.2 Perform implementation specific move event
-                            dispatcherAdapter.pointerMove(sourceId, pointerInputState.getType(), currentX, currentY, x, y,
+                            dispatcherAdapter.pointerMove(sourceId, pointerInputState.getType(),
+                                    currentX, currentY, x, y,
                                     pointerInputState.getButtons(), globalKeyInputState);
 
                             // 8.3. Let input state's x property equal x and y property equal y
                             pointerInputState.setX(x);
                             pointerInputState.setY(y);
-                        }
 
-                        if (!isLast) {
-                            // 10. Asynchronously wait for an implementation defined amount of time to pass
-                            dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
+                            if (!isLast) {
+                                // 10. Asynchronously wait for an implementation defined amount of time to pass
+                                dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
+                            }
+                        } finally {
+                            dispatcherAdapter.unlockAdapter();
                         }
-                    } finally {
-                        dispatcherAdapter.unlockAdapter();
                     }
 
                     // 11. Perform a pointer move with arguments source id, input state, duration, start x, start y, target x, target y

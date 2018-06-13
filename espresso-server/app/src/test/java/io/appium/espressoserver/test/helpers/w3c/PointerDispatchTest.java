@@ -97,7 +97,7 @@ public class PointerDispatchTest {
         executorService.shutdown();
 
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
-        assertTrue(Math.abs(pointerMoveEvents.size() - 15) <= 1); // Should be 15 moves per the 1 second (give or take 1)
+        assertTrue(Math.abs(pointerMoveEvents.size() - 20) <= 2); // Should be 15 moves per the 1 second (give or take 1)
         assertEquals(pointerMoveEvents.get(0).currentX, 10);
         assertEquals(pointerMoveEvents.get(0).currentY, 20);
         assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30);
