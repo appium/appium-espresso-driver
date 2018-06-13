@@ -6,7 +6,7 @@ import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.KeyEvent;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
