@@ -54,14 +54,10 @@ public class KeyDispatch {
         // Must lock the dispatcherAdapter in-case other threads are also using it
         dispatcherAdapter.lockAdapter();
         try {
-            boolean success;
             if (down) {
-                success = dispatcherAdapter.keyDown(keyEvent);
+                dispatcherAdapter.keyDown(keyEvent);
             } else {
-                success = dispatcherAdapter.keyUp(keyEvent);
-            }
-            if (!success) {
-                return null;
+                dispatcherAdapter.keyUp(keyEvent);
             }
         } finally {
             dispatcherAdapter.unlockAdapter();
@@ -191,6 +187,13 @@ public class KeyDispatch {
         }
 
         public KeyEvent() { }
+
+        public String logMessage() {
+            return String.format(
+                "key=[%s] code=[%s] altKey=[%s] shiftKey=[%s] ctrlKey=[%s] metaKey=[%s]",
+                key, code, altKey, shiftKey, ctrlKey, metaKey
+            );
+        }
 
         public String getKey() {
             return key;
