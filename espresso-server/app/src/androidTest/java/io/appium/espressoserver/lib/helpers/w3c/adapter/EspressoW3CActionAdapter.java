@@ -55,7 +55,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void keyUp(KeyEvent keyEvent) {
-        // TODO: This is a stub
+        // Stub.
     }
 
     public long getViewportHeight() {
@@ -72,6 +72,12 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             throws NoSuchElementException, StaleElementException, NotYetImplementedException {
         // Stub.
         return new long[] { };
+        // TODO: Add functionality later. This is a stub
+    }
+
+    public void waitForUiThread() {
+        // Stub.
+        //uiController.loopMainThreadUntilIdle();
     }
 
     public void sleep(long duration) throws InterruptedException {

@@ -3,9 +3,19 @@ package io.appium.espressoserver.lib.helpers.w3c.models;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
+import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 
 import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.processSourceActionSequence;
 
@@ -18,7 +28,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.process
  */
 public class ActionSequence implements Iterator<Tick> {
 
-    private List<Tick> actionsByTick = new ArrayList<>();
+    private List<Tick> ticks = new ArrayList<>();
     private int tickCounter = 0;
 
     public ActionSequence(W3CActions w3CActions) throws InvalidArgumentException, NotYetImplementedException {
@@ -28,10 +38,10 @@ public class ActionSequence implements Iterator<Tick> {
                 int tickIndex = 0;
                 List<ActionObject> actionObjects = processSourceActionSequence(inputSource);
                 for (ActionObject action : actionObjects) {
-                    if (actionsByTick.size() == tickIndex) {
-                        actionsByTick.add(new Tick());
+                    if (ticks.size() == tickIndex) {
+                        ticks.add(new Tick());
                     }
-                    Tick tick = actionsByTick.get(tickIndex);
+                    Tick tick = ticks.get(tickIndex);
                     tick.addAction(action);
                     tickIndex++;
                 }
@@ -41,11 +51,55 @@ public class ActionSequence implements Iterator<Tick> {
 
     @Override
     public boolean hasNext() {
-        return tickCounter < actionsByTick.size();
+        return tickCounter < ticks.size();
     }
 
     @Override
     public Tick next() {
-        return actionsByTick.get(tickCounter++);
+        return ticks.get(tickCounter++);
+    }
+
+    /**
+     * Call the dispatch algorithm defined in 17.4
+     * @param adapter
+     * @param inputStateTable
+     * @throws AppiumException
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    public void dispatch(W3CActionAdapter adapter, InputStateTable inputStateTable)
+            throws AppiumException, InterruptedException, ExecutionException {
+        for(Tick tick: ticks) {
+            long timeAtBeginningOfTick = System.currentTimeMillis();
+            long tickDuration = tick.calculateTickDuration();
+            List<Callable<Void>> callables = tick.dispatch(adapter, inputStateTable, tickDuration);
+
+            // 2. Wait until the following conditions are all met:
+
+            //  2.1 Wait for any pending async operations
+            if (!callables.isEmpty()) {
+                Executor executor = Executors.newFixedThreadPool(callables.size());
+                CompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
+                for (Callable<Void> callable : callables) {
+                    completionService.submit(callable);
+                }
+
+                int received = 0;
+                while (received < callables.size()) {
+                    Future<Void> resultFuture = completionService.take(); //blocks if none available
+                    resultFuture.get();
+                    received++;
+                }
+            }
+
+            //  2.2 At least tick duration milliseconds have passed
+            long timeSinceBeginningOfTick = System.currentTimeMillis() - timeAtBeginningOfTick;
+            if (timeSinceBeginningOfTick < tickDuration) {
+                adapter.sleep(tickDuration - timeSinceBeginningOfTick);
+            }
+
+            // 2.3 The UI thread is complete
+            adapter.waitForUiThread();
+        }
     }
 }

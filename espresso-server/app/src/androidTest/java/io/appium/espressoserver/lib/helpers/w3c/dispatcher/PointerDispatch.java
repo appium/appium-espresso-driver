@@ -238,6 +238,10 @@ public class PointerDispatch {
                         }
                     }
 
+                    if (!isLast) {
+                        dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
+                    }
+
                     // 11. Perform a pointer move with arguments source id, input state, duration, start x, start y, target x, target y
                     //     (does this again by going to beginning of loop)
                 } while (!isLast);
