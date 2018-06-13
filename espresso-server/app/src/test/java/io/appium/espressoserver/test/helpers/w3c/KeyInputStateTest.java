@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 public class KeyInputStateTest {
 
-    // Start tests for getAggregateKeyInputState
+    // Start tests for getGlobalKeyState
 
     KeyInputState keyInputStateOne;
     KeyInputState keyInputStateTwo;
@@ -29,7 +29,7 @@ public class KeyInputStateTest {
         keyInputStateOne.setAlt(true);
         keyInputStateTwo.setAlt(false);
         KeyInputState[] keyInputStates = new KeyInputState[]{keyInputStateOne, keyInputStateTwo};
-        KeyInputState aggregateKeyInputState = KeyInputState.getAggregateKeyInputState(Arrays.asList(keyInputStates));
+        KeyInputState aggregateKeyInputState = KeyInputState.getGlobalKeyState(Arrays.asList(keyInputStates));
         assertTrue(aggregateKeyInputState.isAlt());
     }
 
@@ -38,7 +38,7 @@ public class KeyInputStateTest {
         keyInputStateOne.setAlt(false);
         keyInputStateTwo.setAlt(false);
         KeyInputState[] keyInputStates = new KeyInputState[]{keyInputStateOne, keyInputStateTwo};
-        KeyInputState aggregateKeyInputState = KeyInputState.getAggregateKeyInputState(Arrays.asList(keyInputStates));
+        KeyInputState aggregateKeyInputState = KeyInputState.getGlobalKeyState(Arrays.asList(keyInputStates));
         assertTrue(!aggregateKeyInputState.isAlt());
     }
 
@@ -55,7 +55,7 @@ public class KeyInputStateTest {
         keyInputStateTwo.setMeta(true);
 
         KeyInputState[] keyInputStates = new KeyInputState[]{keyInputStateOne, keyInputStateTwo};
-        KeyInputState aggregateKeyInputState = KeyInputState.getAggregateKeyInputState(Arrays.asList(keyInputStates));
+        KeyInputState aggregateKeyInputState = KeyInputState.getGlobalKeyState(Arrays.asList(keyInputStates));
         assertTrue(aggregateKeyInputState.isAlt());
         assertTrue(aggregateKeyInputState.isCtrl());
         assertTrue(!aggregateKeyInputState.isShift());
@@ -73,7 +73,7 @@ public class KeyInputStateTest {
         keyInputStateTwo.addPressed("f");
 
         KeyInputState[] keyInputStates = new KeyInputState[]{keyInputStateOne, keyInputStateTwo};
-        KeyInputState aggregateKeyInputState = KeyInputState.getAggregateKeyInputState(Arrays.asList(keyInputStates));
+        KeyInputState aggregateKeyInputState = KeyInputState.getGlobalKeyState(Arrays.asList(keyInputStates));
         assertTrue(aggregateKeyInputState.isPressed("a"));
         assertTrue(aggregateKeyInputState.isPressed("b"));
         assertTrue(aggregateKeyInputState.isPressed("c"));

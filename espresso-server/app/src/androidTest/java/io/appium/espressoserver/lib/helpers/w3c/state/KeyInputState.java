@@ -63,7 +63,7 @@ public class KeyInputState implements InputState {
     /**
      * Implement 'calculated global key state' in spec 17.2
      */
-    public static KeyInputState getAggregateKeyInputState(List<KeyInputState> keyInputStates) {
+    public static KeyInputState getGlobalKeyState(List<KeyInputState> keyInputStates) {
         boolean isAlt = false;
         boolean isShift = false;
         boolean isCtrl = false;
