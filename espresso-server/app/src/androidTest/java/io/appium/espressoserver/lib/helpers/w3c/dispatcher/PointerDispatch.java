@@ -107,6 +107,19 @@ public class PointerDispatch {
     }
 
     /**
+     * Perform the 'dispatch a pointer cancel' event
+     * @param dispatcherAdapter Actions adapter
+     * @param sourceId Input source
+     * @param actionObject Action object
+     * @throws AppiumException
+     */
+    public static void dispatchPointerCancel(final W3CActionAdapter dispatcherAdapter,
+                                             final String sourceId,
+                                             final ActionObject actionObject) throws AppiumException {
+        dispatcherAdapter.pointerCancel(sourceId, actionObject.getPointer());
+    }
+
+    /**
      * Call the 'dispatch a pointerMove action' algorithm
      * @param dispatcherAdapter W3C actions implementation
      * @param sourceId ID of the input source

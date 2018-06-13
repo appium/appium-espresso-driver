@@ -54,6 +54,10 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         // Stub.
     }
 
+    public void pointerCancel(String sourceId, InputSource.PointerType pointerType) throws AppiumException {
+        // Stub.
+    }
+
     public void keyUp(KeyEvent keyEvent) {
         // Stub.
     }

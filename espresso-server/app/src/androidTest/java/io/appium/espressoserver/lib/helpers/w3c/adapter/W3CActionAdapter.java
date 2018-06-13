@@ -29,6 +29,8 @@ public interface W3CActionAdapter {
                      long currentX, long currentY, long x, long y,
                      Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException;
 
+    void pointerCancel(String sourceId, PointerType pointerType) throws AppiumException;
+
     void lockAdapter();
 
     void unlockAdapter();

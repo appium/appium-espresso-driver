@@ -49,6 +49,10 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
         // No-op
     }
 
+    public void pointerCancel(String sourceId, PointerType pointerType) throws AppiumException {
+
+    }
+
     public double getPointerMoveDurationMargin(PointerInputState pointerInputState) {
         if (pointerInputState.getType() == PointerType.TOUCH && !pointerInputState.hasPressedButtons()) {
             // If no buttons are pushed nothing happens, so skip to the end
