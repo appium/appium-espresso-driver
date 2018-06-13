@@ -43,9 +43,9 @@ public class KeyDispatch {
             inputState.setMeta(inputState.isMeta() || key.equals(NormalizedKeys.META));
         } else {
             inputState.setAlt(inputState.isAlt() && !key.equals(NormalizedKeys.ALT));
-            inputState.setAlt(inputState.isShift() && !key.equals(NormalizedKeys.SHIFT));
-            inputState.setAlt(inputState.isCtrl() && !key.equals(NormalizedKeys.CONTROL));
-            inputState.setAlt(inputState.isMeta() && !key.equals(NormalizedKeys.META));
+            inputState.setShift(inputState.isShift() && !key.equals(NormalizedKeys.SHIFT));
+            inputState.setCtrl(inputState.isCtrl() && !key.equals(NormalizedKeys.CONTROL));
+            inputState.setMeta(inputState.isMeta() && !key.equals(NormalizedKeys.META));
         }
 
         // 11: Add key to the set corresponding to input state's pressed property

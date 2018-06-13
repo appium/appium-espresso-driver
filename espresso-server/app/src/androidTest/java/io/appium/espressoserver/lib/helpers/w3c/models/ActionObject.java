@@ -17,7 +17,9 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyDown;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyUp;
+import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerDown;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerMove;
+import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerUp;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER;
 
@@ -95,6 +97,7 @@ public class ActionObject {
                         break;
                 }
             } else if (inputSourceType == POINTER) {
+                long timeSinceBeginningOfTick = System.currentTimeMillis() - timeAtBeginningOfTick;
                 switch (actionType) {
                     case POINTER_MOVE:
                         return dispatchPointerMove(
@@ -103,9 +106,30 @@ public class ActionObject {
                                 this,
                                 (PointerInputState) deviceState,
                                 tickDuration,
-                                System.currentTimeMillis() - timeAtBeginningOfTick,
+                                timeSinceBeginningOfTick,
                                 inputStateTable.getGlobalKeyInputState()
                         );
+                    case POINTER_DOWN:
+                        dispatchPointerDown(
+                                adapter,
+                                this.getId(),
+                                this,
+                                (PointerInputState) deviceState,
+                                inputStateTable,
+                                inputStateTable.getGlobalKeyInputState()
+                        );
+                        break;
+                    case POINTER_UP:
+                        dispatchPointerUp(
+                                adapter,
+                                this.getId(),
+                                this,
+                                (PointerInputState) deviceState,
+                                inputStateTable,
+                                inputStateTable.getGlobalKeyInputState()
+                        );
+                        break;
+                    // TODO: Add pointer cancel
                     default:
                         break;
                 }
@@ -197,5 +221,9 @@ public class ActionObject {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

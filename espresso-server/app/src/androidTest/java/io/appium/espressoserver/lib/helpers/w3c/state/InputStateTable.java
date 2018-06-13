@@ -80,16 +80,19 @@ public class InputStateTable {
     /**
      * Do the release actions to undo everything
      * @param adapter W3C Action adapter
-     * @param sessionId Session ID
      * @param timeAtBeginningOfTick When did the tick begin
      * @throws AppiumException
      */
-    public void undoAll (W3CActionAdapter adapter, String sessionId, long timeAtBeginningOfTick)
+    public void undoAll (W3CActionAdapter adapter, long timeAtBeginningOfTick)
             throws AppiumException {
         // 2-3: Dispatch tick actions with arguments undo actions and duration 0 in reverse order
+        Collections.reverse(cancelList);
         for (ActionObject actionObject:cancelList) {
             actionObject.dispatch(adapter, this, 0, timeAtBeginningOfTick);
         }
+
+        // Clear the cancel list now that the Undo operations are all fulfilled
+        cancelList.clear();
     }
 
 
