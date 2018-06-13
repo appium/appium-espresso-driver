@@ -126,7 +126,7 @@ public class PointerDispatchTest {
     }
 
     @Test
-    public void shouldRunMultiplePointerMoves() throws InterruptedException {
+    public void shouldRunMultiplePointerMoves() throws InterruptedException, ExecutionException {
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
         pointerInputSource = new PointerInputState();
         pointerInputSource.setType(PointerType.TOUCH);
@@ -135,7 +135,6 @@ public class PointerDispatchTest {
         pointerInputSource.addPressed(0);
 
         PointerInputState pointerInputSourceTwo = new PointerInputState();
-        pointerInputSourceTwo = new PointerInputState();
         pointerInputSourceTwo.setType(PointerType.TOUCH);
         pointerInputSourceTwo.setX(10);
         pointerInputSourceTwo.setY(20);
@@ -152,7 +151,7 @@ public class PointerDispatchTest {
 
         callables.add(performPointerMove(
                 dummyW3CActionAdapter, "any2", pointerInputSourceTwo,
-                500, 20, 20, 30, 40, System.currentTimeMillis(),
+                500, 20, 30, 40, 50, System.currentTimeMillis(),
                 new KeyInputState()
         ));
 
@@ -163,20 +162,29 @@ public class PointerDispatchTest {
         }
 
         int received = 0;
-        boolean errors = false;
-        while (received < callables.size() && !errors) {
+        while (received < callables.size()) {
             Future<Void> resultFuture = completionService.take(); //blocks if none available
-            try {
-                resultFuture.get();
-                received ++;
-            }
-            catch(Exception e) {
-                //log
-                errors = true;
+            resultFuture.get();
+            received ++;
+        }
+        List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
+
+        boolean hasAny = false;
+        boolean hasAny2 = false;
+        for (PointerMoveEvent pointerMoveEvent:pointerMoveEvents) {
+            if (pointerMoveEvent.sourceId.equals("any")) {
+                hasAny = true;
+                assertTrue(pointerMoveEvent.x >= 10 && pointerMoveEvent.x <= 30);
+                assertTrue(pointerMoveEvent.y >= 20 && pointerMoveEvent.y <= 40);
+            } else if (pointerMoveEvent.sourceId.equals("any2")) {
+                hasAny2 = true;
+                assertTrue(pointerMoveEvent.x >= 20 && pointerMoveEvent.x <= 40);
+                assertTrue(pointerMoveEvent.y >= 30 && pointerMoveEvent.y <= 50);
+
             }
         }
-
-        assertFalse(errors);
+        assertTrue(hasAny);
+        assertTrue(hasAny2);
     }
 
     @Test

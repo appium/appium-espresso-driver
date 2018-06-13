@@ -1,7 +1,6 @@
 package io.appium.espressoserver.test.helpers.w3c;
 
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -26,8 +25,14 @@ import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.*;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.*;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_DOWN;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_UP;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.PAUSE;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_DOWN;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.NONE;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 import static org.junit.Assert.assertEquals;
