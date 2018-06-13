@@ -63,7 +63,6 @@ public class ActionObject {
     /**
      * Call `dispatch tick actions` algorithm in section 17.4
      * @param adapter Adapter for actions
-     * @param inputState State of the corresponding input
      * @param inputStateTable State of all inputs
      * @param tickDuration How long the tick is
      * @param timeAtBeginningOfTick When the tick began
@@ -72,19 +71,24 @@ public class ActionObject {
      */
     @Nullable
     public Callable<Void> dispatch(W3CActionAdapter adapter,
-                             InputState inputState,
                              InputStateTable inputStateTable,
                              long tickDuration, long timeAtBeginningOfTick) throws AppiumException {
         InputSourceType inputSourceType = this.getType();
         ActionType actionType = this.getSubType();
         try {
+            // 1.3 If the current session's input state table doesn't have a property corresponding to
+            //      source id, then let the property corresponding to source id be a new object of the
+            //      corresponding input source state type for source type.
+            // 1.4 Let device state be the input source state corresponding to source id in the current session’s input state table
+            InputState deviceState = inputStateTable.getOrCreateInputState(this.getId(), this);
+
             if (inputSourceType == KEY) {
                 switch (actionType) {
                     case KEY_DOWN:
-                        dispatchKeyDown(adapter, this, (KeyInputState) inputState, inputStateTable, tickDuration);
+                        dispatchKeyDown(adapter, this, (KeyInputState) deviceState, inputStateTable, tickDuration);
                         break;
                     case KEY_UP:
-                        dispatchKeyUp(adapter, this, (KeyInputState) inputState, inputStateTable, tickDuration);
+                        dispatchKeyUp(adapter, this, (KeyInputState) deviceState, inputStateTable, tickDuration);
                         break;
                     case PAUSE:
                     default:
@@ -97,7 +101,7 @@ public class ActionObject {
                                 adapter,
                                 this.getId(),
                                 this,
-                                (PointerInputState) inputState,
+                                (PointerInputState) deviceState,
                                 tickDuration,
                                 System.currentTimeMillis() - timeAtBeginningOfTick,
                                 inputStateTable.getGlobalKeyInputState()

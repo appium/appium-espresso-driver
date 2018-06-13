@@ -72,14 +72,8 @@ public class Tick implements Iterator<ActionObject> {
         for(ActionObject actionObject: tickActions) {
             String sourceId = actionObject.getId();
 
-            // 1.3 If the current session's input state table doesn't have a property corresponding to
-            //      source id, then let the property corresponding to source id be a new object of the
-            //      corresponding input source state type for source type.
-            // 1.4 Let device state be the input source state corresponding to source id in the current session’s input state table
-            InputState deviceState = inputStateTable.getOrCreateInputState(sourceId, actionObject);
-
             // 2. Run algorithm with arguments source id, action object, device state and tick duration
-            Callable<Void> dispatchResult = actionObject.dispatch(adapter, deviceState,
+            Callable<Void> dispatchResult = actionObject.dispatch(adapter,
                     inputStateTable, tickDuration, timeAtBeginningOfTick);
 
             // If it's an async operation, add it to the list

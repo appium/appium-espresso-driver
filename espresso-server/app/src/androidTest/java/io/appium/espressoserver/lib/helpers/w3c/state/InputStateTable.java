@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
@@ -75,8 +77,19 @@ public class InputStateTable {
         return KeyInputState.getGlobalKeyState(keyInputStates);
     }
 
-    public void undoAll () {
-        // Stub.
+    /**
+     * Do the release actions to undo everything
+     * @param adapter W3C Action adapter
+     * @param sessionId Session ID
+     * @param timeAtBeginningOfTick When did the tick begin
+     * @throws AppiumException
+     */
+    public void undoAll (W3CActionAdapter adapter, String sessionId, long timeAtBeginningOfTick)
+            throws AppiumException {
+        // 2-3: Dispatch tick actions with arguments undo actions and duration 0 in reverse order
+        for (ActionObject actionObject:cancelList) {
+            actionObject.dispatch(adapter, this, 0, timeAtBeginningOfTick);
+        }
     }
 
 
