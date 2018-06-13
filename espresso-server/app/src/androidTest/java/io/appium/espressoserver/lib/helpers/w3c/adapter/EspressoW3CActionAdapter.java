@@ -1,20 +1,28 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter;
 
+import android.os.SystemClock;
 import android.support.test.espresso.UiController;
 
+import java.util.Set;
+
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
+import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
+import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.KeyEvent;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
+import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
     //private final UiController uiController;
 
     public EspressoW3CActionAdapter(UiController uiController) {
-        this.uiController = uiController;
+        //this.uiController = uiController;
     }
 
-    public boolean keyDown(KeyEvent keyEvent) throws AppiumException {
-        // TODO: This is only a stub
+    public void keyDown(KeyEvent keyEvent) throws AppiumException {
+        // Stub.
         /*android.view.KeyEvent androidKeyEvent = new android.view.KeyEvent(
                 System.currentTimeMillis(), System.currentTimeMillis(),
                 ACTION_DOWN, Character.getNumericValue(keyEvent.getKey().charAt(0)),
@@ -26,11 +34,47 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         } catch (InjectEventSecurityException e) {
             throw new AppiumException(e.getCause().toString());
         }*/
-        return false;
     }
 
-    public boolean keyUp(KeyEvent keyEvent) {
-        // TODO: this is only a stub
-        return false;
+    public void pointerDown(int button, String sourceId, InputSource.PointerType pointerType,
+                     Long x, Long y, Set<Integer> depressedButtons,
+                     KeyInputState globalKeyInputState) throws AppiumException {
+        // Stub.
+    }
+
+    public void pointerUp(int button, String sourceId, InputSource.PointerType pointerType,
+                   Long x, Long y, Set<Integer> depressedButtons,
+                   KeyInputState globalKeyInputState) throws AppiumException {
+        // Stub.
+    }
+
+    public void pointerMove(String sourceId, InputSource.PointerType pointerType,
+                            long currentX, long currentY, long x, long y,
+                            Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
+        // Stub.
+    }
+
+    public void keyUp(KeyEvent keyEvent) {
+        // TODO: This is a stub
+    }
+
+    public long getViewportHeight() {
+        // Stub.
+        return Long.MAX_VALUE;
+    }
+
+    public long getViewportWidth() {
+        // Stub.
+        return Long.MAX_VALUE;
+    }
+
+    public long[] getElementCenterPoint(String elementId)
+            throws NoSuchElementException, StaleElementException, NotYetImplementedException {
+        // Stub.
+        return new long[] { };
+    }
+
+    public void sleep(long duration) throws InterruptedException {
+        SystemClock.sleep(duration);
     }
 }
