@@ -20,11 +20,11 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
         return -1;
     }
 
-    public synchronized void lockAdapter() {
+    public void lockAdapter() {
         reentrantLock.lock();
     }
 
-    public synchronized void unlockAdapter() {
+    public void unlockAdapter() {
         reentrantLock.unlock();
     }
 
@@ -53,5 +53,12 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
 
     public void sleep(long duration) throws InterruptedException {
         Thread.sleep(duration);
+    }
+
+    /**
+     * Waits for the UI to complete before moving forward
+     */
+    public void waitForUiThread() {
+        // No-op by default.
     }
 }
