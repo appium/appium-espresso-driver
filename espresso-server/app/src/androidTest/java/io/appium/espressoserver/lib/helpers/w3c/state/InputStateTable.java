@@ -53,6 +53,10 @@ public class InputStateTable {
         return KeyInputState.getGlobalKeyState(keyInputStates);
     }
 
+    public void undoAll () {
+        // Stub.
+    }
+
 
     /**
      * Get the global input states for a given session
