@@ -36,6 +36,10 @@ public class KeyDispatch {
         // Omiting this for now until there's an implementation that needs it.
 
         // 7-10: Set the alt, shift, ctrl meta key state
+        dispatcherAdapter.getLogger().info(String.format(
+                "Dispatching '%s' event on input source with id %s with properties '%s'",
+                down ? "keyDown" : "keyUp", actionObject.getId(), keyEvent.logMessage()
+        ));
         if (down) {
             inputState.setAlt(inputState.isAlt() || key.equals(NormalizedKeys.ALT));
             inputState.setShift(inputState.isShift() || key.equals(NormalizedKeys.SHIFT));
@@ -74,6 +78,12 @@ public class KeyDispatch {
         } finally {
             dispatcherAdapter.unlockAdapter();
         }
+
+        // Log the updated keyboard state
+        dispatcherAdapter.getLogger().info(String.format(
+                "Current state of key input source with id: %s",
+                inputState.logMessage()
+        ));
 
         return keyEvent;
     }

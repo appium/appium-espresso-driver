@@ -78,6 +78,10 @@ public class ActionObject {
                              long tickDuration, long timeAtBeginningOfTick) throws AppiumException {
         InputSourceType inputSourceType = this.getType();
         ActionType actionType = this.getSubType();
+        adapter.getLogger().info(String.format(
+                "Dispatching action #%s of input source %s",
+                index, getId()
+        ));
         try {
             // 1.3 If the current session's input state table doesn't have a property corresponding to
             //      source id, then let the property corresponding to source id be a new object of the
@@ -118,7 +122,7 @@ public class ActionObject {
                                 inputStateTable,
                                 inputStateTable.getGlobalKeyInputState()
                         );
-                        break;
+                        return null;
                     case POINTER_UP:
                         dispatchPointerUp(
                                 adapter,
@@ -127,13 +131,13 @@ public class ActionObject {
                                 inputStateTable,
                                 inputStateTable.getGlobalKeyInputState()
                         );
-                        break;
+                        return null;
                     case POINTER_CANCEL:
                         dispatchPointerCancel(
                                 adapter,
                                 this
                         );
-                        break;
+                        return null;
                     default:
                         break;
                 }

@@ -28,6 +28,7 @@ public class PointerDispatch {
                                              final boolean down) throws AppiumException {
         PointerType pointerType = actionObject.getPointer();
         int button = actionObject.getButton();
+
         if (down) {
             if (pointerInputState.isPressed(button)) {
                 return;
@@ -45,6 +46,12 @@ public class PointerDispatch {
         } else {
             pointerInputState.removePressed(button);
         }
+
+        dispatcherAdapter.getLogger().info(String.format(
+                "Dispatching pointer event '%s' on input source with id '%s' with coordinates [%s, %s] " +
+                "and button '%s'",
+                down ? "pointerDown": "pointerUp", actionObject.getId(), x, y, button
+        ));
 
         dispatcherAdapter.lockAdapter();
         try {
@@ -65,6 +72,12 @@ public class PointerDispatch {
         } finally {
             dispatcherAdapter.unlockAdapter();
         }
+
+        // Log the new state of the pointer
+        dispatcherAdapter.getLogger().info(String.format(
+                "State of pointer input source with id %s is now: %s",
+                actionObject.getId(), pointerInputState.logMessage()
+        ));
     }
 
     /**
@@ -138,10 +151,10 @@ public class PointerDispatch {
         long startY = pointerInputState.getY();
         Origin origin = actionObject.getOrigin();
 
-        /*AndroidLogger.debug(String.format(
+        dispatcherAdapter.getLogger().info(String.format(
             "Dispatching pointer move '%s' on input source with id '%s' with origin '%s' and coordinates [%s, %s]",
-            pointerInputState.getType().toString(), sourceId, origin, xOffset, yOffset
-        ));*/
+            pointerInputState.getType(), sourceId, origin, xOffset, yOffset
+        ));
 
         long x;
         long y;
@@ -174,7 +187,7 @@ public class PointerDispatch {
             duration = tickDuration;
         }
 
-        return performPointerMove(
+        Callable<Void> callable = performPointerMove(
                 dispatcherAdapter,
                 sourceId,
                 pointerInputState,
@@ -184,6 +197,15 @@ public class PointerDispatch {
                 timeSinceBeginningOfTick,
                 globalKeyInputState
         );
+
+
+        // Log the new state of the pointer
+        dispatcherAdapter.getLogger().info(String.format(
+                "State of pointer input source with id %s is now: %s",
+               actionObject.getId(), pointerInputState.logMessage()
+        ));
+
+        return callable;
     }
 
     /**
@@ -205,13 +227,6 @@ public class PointerDispatch {
                                                     final long targetX, final long targetY,
                                                     final long timeSinceBeginningOfTick,
                                                     final KeyInputState globalKeyInputState) {
-
-        // TODO: Make logger implement a generic Java logger interface so we can mock it in tests
-        /*AndroidLogger.debug(String.format(
-            "Performing pointer move '%s' on input source with id '%s' from [%s, %s] to [%s, %s]",
-            pointerInputState.getType().toString(), sourceId, startX, startY, targetX, targetY
-        ));*/
-
         return new Callable<Void>() {
             @Override
             public Void call() throws Exception {
