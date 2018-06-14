@@ -26,7 +26,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "appium-adb": "^6.0.1",
+    "appium-adb": "^6.11.1",
     "appium-android-driver": "^3.0.0",
     "appium-base-driver": "^2.32.0",
     "appium-support": "^2.12.0",
