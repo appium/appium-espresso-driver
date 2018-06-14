@@ -17,7 +17,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedExcepti
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 
-import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.processSourceActionSequence;
+import static io.appium.espressoserver.lib.helpers.w3c.processor.ActionsProcessor.processSourceActionSequence;
 
 /**
  * The algorithm for extracting an action sequence from a request takes the JSON Object representing
@@ -31,12 +31,14 @@ public class ActionSequence implements Iterator<Tick> {
     private List<Tick> ticks = new ArrayList<>();
     private int tickCounter = 0;
 
-    public ActionSequence(W3CActions w3CActions) throws InvalidArgumentException, NotYetImplementedException {
+    public ActionSequence(Actions actions, ActiveInputSources activeInputSources,
+                          InputStateTable inputStateTable)
+            throws InvalidArgumentException, NotYetImplementedException {
         // Check if null to keep Codacy happy. It will never make it this far if it's null though.
-        if (w3CActions.getActions() != null) {
-            for (InputSource inputSource : w3CActions.getActions()) {
+        if (actions.getActions() != null) {
+            for (InputSource inputSource : actions.getActions()) {
                 int tickIndex = 0;
-                List<ActionObject> actionObjects = processSourceActionSequence(inputSource);
+                List<ActionObject> actionObjects = processSourceActionSequence(inputSource, activeInputSources, inputStateTable);
                 for (ActionObject action : actionObjects) {
                     if (ticks.size() == tickIndex) {
                         ticks.add(new Tick());
@@ -61,8 +63,8 @@ public class ActionSequence implements Iterator<Tick> {
 
     /**
      * Call the dispatch algorithm defined in 17.4
-     * @param adapter
-     * @param inputStateTable
+     * @param adapter Touch action adapter
+     * @param inputStateTable Input states for a session
      * @throws AppiumException
      * @throws InterruptedException
      * @throws ExecutionException
