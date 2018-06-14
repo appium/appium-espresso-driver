@@ -6,6 +6,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
+import io.appium.espressoserver.lib.helpers.w3c.models.Origin;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
@@ -117,7 +118,7 @@ public class PointerDispatch {
         long yOffset = actionObject.getY();
         long startX = pointerInputState.getX();
         long startY = pointerInputState.getY();
-        String origin = actionObject.getOrigin();
+        Origin origin = actionObject.getOrigin();
 
         /*Logger.debug(String.format(
             "Dispatching pointer move '%s' on input source with id '%s' with origin '%s' and coordinates [%s, %s]",
@@ -128,7 +129,7 @@ public class PointerDispatch {
         long y;
 
         // 6. Run the substeps of the first matching value of origin
-        switch (origin) {
+        switch (origin.getType()) {
             case VIEWPORT:
                 x = xOffset;
                 y = yOffset;
@@ -138,7 +139,7 @@ public class PointerDispatch {
                 y = startY + yOffset;
                 break;
             default:
-                long[] elementCoordinates = dispatcherAdapter.getElementCenterPoint(origin);
+                long[] elementCoordinates = dispatcherAdapter.getElementCenterPoint(origin.getElementId());
                 x = elementCoordinates[0] + xOffset;
                 y = elementCoordinates[1] + yOffset;
                 break;
