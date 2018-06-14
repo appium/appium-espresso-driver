@@ -18,19 +18,19 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceTy
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
-import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.processKeyAction;
-import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.processNullAction;
-import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.processPauseAction;
-import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.processPointerAction;
-import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.processPointerMoveAction;
-import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.processPointerUpOrDownAction;
-import static io.appium.espressoserver.lib.helpers.w3c.models.W3CActions.processSourceActionSequence;
+import static io.appium.espressoserver.lib.helpers.w3c.processor.ActionsProcessor.processSourceActionSequence;
+import static io.appium.espressoserver.lib.helpers.w3c.processor.KeyProcessor.processKeyAction;
+import static io.appium.espressoserver.lib.helpers.w3c.processor.PauseProcessor.processNullAction;
+import static io.appium.espressoserver.lib.helpers.w3c.processor.PauseProcessor.processPauseAction;
+import static io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerAction;
+import static io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerMoveAction;
+import static io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerUpOrDownAction;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class W3CActionsTest {
+public class ProcessorTest {
 
     private InputSource pointerInputSource;
 
@@ -282,7 +282,7 @@ public class W3CActionsTest {
     public void shouldNotPassProcessorIfNoType() throws InvalidArgumentException, NotYetImplementedException {
         InputSource inputSource = new InputSource();
         try {
-            processSourceActionSequence(inputSource);
+            processSourceActionSequence(inputSource, new ActiveInputSources(), new InputStateTable());
         } catch (InvalidArgumentException ie) {
             assertTrue(ie.getMessage().contains("'type' is required in input source"));
         }
@@ -293,7 +293,7 @@ public class W3CActionsTest {
         InputSource inputSource = new InputSource();
         inputSource.setType(InputSourceType.KEY);
         try {
-            processSourceActionSequence(inputSource);
+            processSourceActionSequence(inputSource, new ActiveInputSources(), new InputStateTable());
         } catch (InvalidArgumentException ie) {
             assertTrue(ie.getMessage().contains("'id' in action cannot be null"));
         }
