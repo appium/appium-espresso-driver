@@ -21,6 +21,7 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 public class InputSource {
     public static final String VIEWPORT = "viewport";
     public static final String POINTER = "pointer";
+    public static final String ELEMENT = "element";
 
     private InputSourceType type;
     private String id;
@@ -106,11 +107,15 @@ public class InputSource {
     public static class Action {
         private ActionType type; // type of action
         private Long duration; // time in milliseconds
-        private String origin; // origin; could be viewport, pointer or <ELEMENT_ID>
         private Integer button; // Button that is being pressed. Defaults to 0.
         private Long x; // x coordinate of pointer
         private Long y; // y coordinate of pointer
         private String value; // a string containing a single Unicode code point
+        private Origin origin = new Origin(); // origin; could be viewport, pointer or <{element-6066-11e4-a52e-4f735466cecf: <element-uuid>}>
+
+        // Web element identifier: https://www.w3.org/TR/webdriver/#elements
+        // (note: in the Appium case it's not actually a "web" element, it's a native element)
+        public static final String ELEMENT_CODE = "element-6066-11e4-a52e-4f735466cecf";
 
         @Nullable
         public ActionType getType(){
@@ -130,17 +135,6 @@ public class InputSource {
             this.duration = duration;
         }
 
-        public String getOrigin(){
-            if (origin == null) {
-                return VIEWPORT;
-            }
-            return origin;
-        }
-
-        public void setOrigin(String origin){
-            this.origin = origin;
-        }
-
         public int getButton(){
             if (button == null) {
                 return 0;
@@ -153,11 +147,15 @@ public class InputSource {
         }
 
         public boolean isOriginViewport(){
-            return origin.equalsIgnoreCase(VIEWPORT);
+            return origin.getType().equalsIgnoreCase(VIEWPORT);
         }
 
         public boolean isOriginPointer(){
-            return origin.equalsIgnoreCase(POINTER);
+            return origin.getType().equalsIgnoreCase(POINTER);
+        }
+
+        public boolean isOriginElement(){
+            return origin.getType().equalsIgnoreCase(ELEMENT_CODE);
         }
 
         public Long getX(){
@@ -183,6 +181,10 @@ public class InputSource {
 
         public void setValue(String value){
             this.value = value;
+        }
+
+        public Origin getOrigin() {
+            return origin;
         }
     }
 

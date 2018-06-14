@@ -17,9 +17,9 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
+import io.appium.espressoserver.lib.helpers.w3c.models.Origin;
 import io.appium.espressoserver.lib.helpers.w3c.models.Tick;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
@@ -166,11 +166,11 @@ public class TickTest {
 
     @Test
     public void shouldDispatchPointerMoveEvents() throws AppiumException, InterruptedException, ExecutionException {
-        InputStateTable inputStateTable = new InputStateTable();
+        final InputStateTable inputStateTable = new InputStateTable();
         KeyInputState keyInputState = new KeyInputState();
         keyInputState.setShift(true);
         inputStateTable.addInputState("keyInputs", keyInputState);
-        Tick tick = new Tick();
+        final Tick tick = new Tick();
 
         final String sourceId = "something4";
         final String sourceId2 = "something5";
@@ -189,7 +189,7 @@ public class TickTest {
         actionObjectOne.setPointer(TOUCH);
         actionObjectOne.setX(10L);
         actionObjectOne.setY(20L);
-        actionObjectOne.setOrigin(VIEWPORT);
+        actionObjectOne.setOrigin(new Origin(VIEWPORT));
 
         // Construct another pointer move event
         ActionObject actionObjectTwo = new ActionObject(sourceId2, POINTER, null, 0);
@@ -197,7 +197,7 @@ public class TickTest {
         actionObjectTwo.setPointer(TOUCH);
         actionObjectTwo.setX(10L);
         actionObjectTwo.setY(20L);
-        actionObjectTwo.setOrigin(VIEWPORT);
+        actionObjectTwo.setOrigin(new Origin(VIEWPORT));
 
         // Add two pointer move actions to verify that they can run on multiple threads separately
         tick.addAction(actionObjectOne);
