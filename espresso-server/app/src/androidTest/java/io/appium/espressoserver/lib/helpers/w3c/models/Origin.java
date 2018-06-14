@@ -9,6 +9,13 @@ public class Origin {
     private String type = VIEWPORT;
     private String elementId;
 
+    public Origin() {
+    }
+
+    public Origin(String type) {
+        this.type = type;
+    }
+
     public String getType() {
         return type;
     }

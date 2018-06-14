@@ -23,6 +23,7 @@ import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
+import io.appium.espressoserver.lib.helpers.w3c.models.Origin;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
@@ -210,7 +211,7 @@ public class PointerDispatchTest {
             );
             actionObject.setX(badX[i]);
             actionObject.setY(badY[i]);
-            actionObject.setOrigin(badOrigin[i]);
+            actionObject.setOrigin(new Origin(badOrigin[i]));
 
             try {
                 dispatchPointerMove(dummyW3CActionAdapter, "any", actionObject,
@@ -248,7 +249,7 @@ public class PointerDispatchTest {
             );
             actionObject.setX(xCoords[i]);
             actionObject.setY(yCoords[i]);
-            actionObject.setOrigin(origins[i]);
+            actionObject.setOrigin(new Origin(origins[i]));
 
             ExecutorService executorService = Executors.newSingleThreadExecutor();
             Callable<Void> callable = dispatchPointerMove(dummyW3CActionAdapter, "any", actionObject,

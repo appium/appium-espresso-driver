@@ -31,7 +31,6 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_DOWN;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_UP;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 import static io.appium.espressoserver.lib.helpers.w3c.processor.PauseProcessor.processPauseAction;
 import static io.appium.espressoserver.lib.helpers.w3c.processor.ProcessorHelpers.assertNullOrPositive;
 import static io.appium.espressoserver.lib.helpers.w3c.processor.ProcessorHelpers.throwArgException;
@@ -123,11 +122,7 @@ public class PointerProcessor {
         actionObject.setDuration(duration);
 
         // 4-7 Add the origin
-        String origin = action.getOrigin();
-        if (origin == null) {
-            origin = VIEWPORT;
-        }
-        actionObject.setOrigin(origin);
+        actionObject.setOrigin(action.getOrigin());
 
         // 8-10 Add the X coordinate
         Long x = action.getX();

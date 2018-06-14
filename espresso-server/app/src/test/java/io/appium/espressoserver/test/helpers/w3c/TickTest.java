@@ -19,6 +19,7 @@ import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
+import io.appium.espressoserver.lib.helpers.w3c.models.Origin;
 import io.appium.espressoserver.lib.helpers.w3c.models.Tick;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
@@ -188,7 +189,7 @@ public class TickTest {
         actionObjectOne.setPointer(TOUCH);
         actionObjectOne.setX(10L);
         actionObjectOne.setY(20L);
-        actionObjectOne.setOrigin(VIEWPORT);
+        actionObjectOne.setOrigin(new Origin(VIEWPORT));
 
         // Construct another pointer move event
         ActionObject actionObjectTwo = new ActionObject(sourceId2, POINTER, null, 0);
@@ -196,7 +197,7 @@ public class TickTest {
         actionObjectTwo.setPointer(TOUCH);
         actionObjectTwo.setX(10L);
         actionObjectTwo.setY(20L);
-        actionObjectTwo.setOrigin(VIEWPORT);
+        actionObjectTwo.setOrigin(new Origin(VIEWPORT));
 
         // Add two pointer move actions to verify that they can run on multiple threads separately
         tick.addAction(actionObjectOne);

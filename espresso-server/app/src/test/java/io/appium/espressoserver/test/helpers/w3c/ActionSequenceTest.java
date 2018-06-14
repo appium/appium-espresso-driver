@@ -103,7 +103,7 @@ public class ActionSequenceTest {
         assertEquals(action.getType(), InputSourceType.POINTER);
         assertEquals(action.getSubType(), ActionType.POINTER_MOVE);
         assertEquals(action.getDuration(), new Long(1000));
-        assertEquals(action.getOrigin(), InputSource.POINTER);
+        assertEquals(action.getOrigin().getType(), InputSource.POINTER);
         assertEquals(action.getX(), new Long(50));
         assertEquals(action.getY(), new Long(0));
 

@@ -136,24 +136,6 @@ public class InputSource {
             this.duration = duration;
         }
 
-        @Nullable
-        public String getOrigin(){
-            return origin.getType();
-        }
-
-        public void setOrigin(String origin){
-            this.origin.setType(origin);
-        }
-
-        @Nullable
-        public String getElementId() {
-            return origin.getElementId();
-        }
-
-        public void setElementId(String elementId) {
-            origin.setElementId(elementId);
-        }
-
         public int getButton(){
             if (button == null) {
                 return 0;
@@ -200,6 +182,10 @@ public class InputSource {
 
         public void setValue(String value){
             this.value = value;
+        }
+
+        public Origin getOrigin() {
+            return origin;
         }
     }
 

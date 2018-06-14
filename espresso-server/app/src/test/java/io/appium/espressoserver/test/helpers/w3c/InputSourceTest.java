@@ -47,8 +47,8 @@ public class InputSourceTest {
         assertEquals(inputSource.getId(), "something2");
         assertEquals(inputSource.getPointerType(), InputSource.PointerType.TOUCH);
         Action action = inputSource.getActions().get(0);
-        assertEquals(action.getOrigin(), ELEMENT_CODE);
-        assertEquals(action.getElementId(), "some-element-id");
+        assertEquals(action.getOrigin().getType(), ELEMENT_CODE);
+        assertEquals(action.getOrigin().getElementId(), "some-element-id");
     }
 
     @Test
@@ -77,7 +77,7 @@ public class InputSourceTest {
         Action actionFour = actions.get(3);
         assertEquals(actionFour.getType(), ActionType.POINTER_MOVE);
         assertEquals(actionFour.getDuration(), new Long(1000));
-        assertEquals(actionFour.getOrigin(), "pointer");
+        assertEquals(actionFour.getOrigin().getType(), "pointer");
         assertTrue(actionFour.isOriginPointer());
         assertEquals(actionFour.getX(), new Long(50));
         assertEquals(actionFour.getY(), new Long(10));

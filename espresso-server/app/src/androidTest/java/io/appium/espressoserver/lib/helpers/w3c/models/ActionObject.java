@@ -12,12 +12,12 @@ public class ActionObject {
     private ActionType subType;
     private String id;
     private Long duration;
-    private String origin;
     private Long x;
     private Long y;
     private int button;
     private String value;
     private PointerType pointer;
+    private Origin origin = new Origin();
 
     public ActionObject() {
 
@@ -56,11 +56,11 @@ public class ActionObject {
     }
 
     @Nullable
-    public String getOrigin() {
+    public Origin getOrigin() {
         return origin;
     }
 
-    public void setOrigin(String origin) {
+    public void setOrigin(Origin origin) {
         this.origin = origin;
     }
 
