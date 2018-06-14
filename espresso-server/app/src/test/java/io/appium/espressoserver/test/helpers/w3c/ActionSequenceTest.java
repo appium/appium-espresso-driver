@@ -16,7 +16,6 @@ import io.appium.espressoserver.lib.helpers.w3c.models.ActionSequence;
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType;
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.models.Tick;
 import io.appium.espressoserver.lib.helpers.w3c.state.ActiveInputSources;
@@ -24,7 +23,11 @@ import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 import io.appium.espressoserver.test.assets.Helpers;
 
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.*;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_DOWN;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_UP;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.PAUSE;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_DOWN;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER;
 import static junit.framework.Assert.assertTrue;
@@ -45,7 +48,7 @@ public class ActionSequenceTest {
         ActionObject action = tick.next();
         assertEquals(action.getId(), "finger1");
         assertEquals(action.getType(), POINTER);
-        assertEquals(action.getSubType(), POINTER);
+        assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Long(0));
         assertEquals(action.getX(), new Long(100));
         assertEquals(action.getY(), new Long(100));
@@ -53,7 +56,7 @@ public class ActionSequenceTest {
         action = tick.next();
         assertEquals(action.getId(), "finger2");
         assertEquals(action.getType(), POINTER);
-        assertEquals(action.getSubType(), ActionType.POINTER_MOVE);
+        assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Long(10));
         assertEquals(action.getX(), new Long(200));
         assertEquals(action.getY(), new Long(400));
@@ -65,13 +68,13 @@ public class ActionSequenceTest {
         action = tick.next();
         assertEquals(action.getId(), "finger1");
         assertEquals(action.getType(), POINTER);
-        assertEquals(action.getSubType(), ActionType.POINTER_DOWN);
+        assertEquals(action.getSubType(), POINTER_DOWN);
         assertEquals(action.getButton(), 0);
 
         action = tick.next();
         assertEquals(action.getId(), "finger2");
         assertEquals(action.getType(), POINTER);
-        assertEquals(action.getSubType(), ActionType.POINTER_DOWN);
+        assertEquals(action.getSubType(), POINTER_DOWN);
         assertEquals(action.getButton(), 0);
 
         // Tick #3 of 6
@@ -95,7 +98,7 @@ public class ActionSequenceTest {
         action = tick.next();
         assertEquals(action.getId(), "finger1");
         assertEquals(action.getType(), POINTER);
-        assertEquals(action.getSubType(), ActionType.POINTER_MOVE);
+        assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Long(1000));
         assertTrue(action.getPointer().equals(PointerType.TOUCH));
         assertEquals(action.getX(), new Long(20));
@@ -104,7 +107,7 @@ public class ActionSequenceTest {
         action = tick.next();
         assertEquals(action.getId(), "finger2");
         assertEquals(action.getType(), POINTER);
-        assertEquals(action.getSubType(), ActionType.POINTER_MOVE);
+        assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Long(1000));
         assertEquals(action.getOrigin().getType(), InputSource.POINTER);
         assertEquals(action.getX(), new Long(50));

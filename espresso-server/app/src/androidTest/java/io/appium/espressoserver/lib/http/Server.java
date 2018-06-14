@@ -27,12 +27,12 @@ import javax.ws.rs.core.MediaType;
 
 import fi.iki.elonen.NanoHTTPD;
 import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
-import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.gsonadapters.AppiumStatusAdapter;
 
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 
 public class Server extends NanoHTTPD {
@@ -43,7 +43,7 @@ public class Server extends NanoHTTPD {
     public Server() throws IOException, DuplicateRouteException {
         super(DEFAULT_PORT); // TODO: Get this from an environment variable
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
-        Logger.info(String.format("\nRunning Appium Espresso Server at port %d \n", DEFAULT_PORT));
+        logger.info(String.format("\nRunning Appium Espresso Server at port %d \n", DEFAULT_PORT));
         router = new Router();
     }
 
@@ -67,10 +67,10 @@ public class Server extends NanoHTTPD {
         if (response instanceof AppiumResponse) {
             AppiumResponse appiumResponse = (AppiumResponse) response;
             if (appiumResponse.getStatus() == AppiumStatus.SUCCESS) {
-                Logger.info(String.format("Responding to server with value: %s",
+                logger.info(String.format("Responding to server with value: %s",
                         abbreviate(String.valueOf(appiumResponse.getValue()), 300)));
             } else {
-                Logger.info(String.format("Responding to server with error: %s",
+                logger.info(String.format("Responding to server with error: %s",
                         appiumResponse.getValue()));
             }
         }

@@ -16,7 +16,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTE
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 
-//import io.appium.espressoserver.lib.helpers.Logger;
+//import io.appium.espressoserver.lib.helpers.AndroidLogger;
 
 public class PointerDispatch {
 
@@ -138,7 +138,7 @@ public class PointerDispatch {
         long startY = pointerInputState.getY();
         Origin origin = actionObject.getOrigin();
 
-        /*Logger.debug(String.format(
+        /*AndroidLogger.debug(String.format(
             "Dispatching pointer move '%s' on input source with id '%s' with origin '%s' and coordinates [%s, %s]",
             pointerInputState.getType().toString(), sourceId, origin, xOffset, yOffset
         ));*/
@@ -207,7 +207,7 @@ public class PointerDispatch {
                                                     final KeyInputState globalKeyInputState) {
 
         // TODO: Make logger implement a generic Java logger interface so we can mock it in tests
-        /*Logger.debug(String.format(
+        /*AndroidLogger.debug(String.format(
             "Performing pointer move '%s' on input source with id '%s' from [%s, %s] to [%s, %s]",
             pointerInputState.getType().toString(), sourceId, startX, startY, targetX, targetY
         ));*/
