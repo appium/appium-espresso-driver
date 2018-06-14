@@ -107,7 +107,6 @@ public class InputSource {
     public static class Action {
         private ActionType type; // type of action
         private Long duration; // time in milliseconds
-        private String elementId; // If the origin is an element, the element ID
         private Integer button; // Button that is being pressed. Defaults to 0.
         private Long x; // x coordinate of pointer
         private Long y; // y coordinate of pointer
