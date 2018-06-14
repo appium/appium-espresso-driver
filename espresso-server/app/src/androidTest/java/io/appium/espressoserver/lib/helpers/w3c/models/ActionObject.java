@@ -113,7 +113,6 @@ public class ActionObject {
                     case POINTER_DOWN:
                         dispatchPointerDown(
                                 adapter,
-                                this.getId(),
                                 this,
                                 (PointerInputState) deviceState,
                                 inputStateTable,
@@ -123,7 +122,6 @@ public class ActionObject {
                     case POINTER_UP:
                         dispatchPointerUp(
                                 adapter,
-                                this.getId(),
                                 this,
                                 (PointerInputState) deviceState,
                                 inputStateTable,
@@ -133,7 +131,6 @@ public class ActionObject {
                     case POINTER_CANCEL:
                         dispatchPointerCancel(
                                 adapter,
-                                this.getId(),
                                 this
                         );
                         break;

@@ -29,7 +29,7 @@ public class KeyDispatch {
         String key = keyEvent.getKey();
 
         // 3. If the input state's pressed property contains key, let repeat be true, otherwise let repeat be false.
-        boolean repeat = inputState.isPressed(key);
+        //    (Doesn't do this step because the value doesn't get used)
 
         // 6. Let charCode, keyCode and which be the implementation-specific values of the charCode,
         // keyCode and which properties.

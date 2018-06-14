@@ -21,7 +21,6 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPO
 public class PointerDispatch {
 
     private static void dispatchPointerEvent(final W3CActionAdapter dispatcherAdapter,
-                                             final String sourceId,
                                              final ActionObject actionObject,
                                              final PointerInputState pointerInputState,
                                              final InputStateTable inputStateTable,
@@ -56,11 +55,11 @@ public class PointerDispatch {
                 inputStateTable.addActionToCancel(cancelObject);
 
                 // Dispatch implementation specific pointer down
-                dispatcherAdapter.pointerDown(button, sourceId, pointerType, x, y,
+                dispatcherAdapter.pointerDown(button, actionObject.getId(), pointerType, x, y,
                         pointerInputState.getButtons(), globalKeyInputState);
             } else {
                 // Dispatch implementation specific pointer up
-                dispatcherAdapter.pointerUp(button, sourceId, pointerType, x, y,
+                dispatcherAdapter.pointerUp(button, actionObject.getId(), pointerType, x, y,
                         pointerInputState.getButtons(), globalKeyInputState);
             }
         } finally {
@@ -71,52 +70,46 @@ public class PointerDispatch {
     /**
      * Run the 'dispatch a pointer down' algorithm
      * @param dispatcherAdapter W3C actions implementation
-     * @param sourceId ID of the input source
      * @param actionObject Action object that defines the pointer action
      * @param pointerInputState Current state of the input source
      * @param globalKeyInputState Global key input state
      * @throws AppiumException
      */
     public static void dispatchPointerDown(final W3CActionAdapter dispatcherAdapter,
-                                           final String sourceId,
                                            final ActionObject actionObject,
                                            final PointerInputState pointerInputState,
                                            final InputStateTable inputStateTable,
                                            final KeyInputState globalKeyInputState) throws AppiumException {
-        dispatchPointerEvent(dispatcherAdapter, sourceId, actionObject, pointerInputState,
+        dispatchPointerEvent(dispatcherAdapter, actionObject, pointerInputState,
                 inputStateTable, globalKeyInputState, true);
     }
 
     /**
      * Perform the 'dispatch pointer up' algorithm
      * @param dispatcherAdapter W3C actions implementation
-     * @param sourceId ID of the input source
      * @param actionObject Action object that defines the pointer action
      * @param pointerInputState Current state of the input source
      * @param globalKeyInputState Global key input state
      * @throws AppiumException
      */
     public static void dispatchPointerUp(final W3CActionAdapter dispatcherAdapter,
-                                           final String sourceId,
                                            final ActionObject actionObject,
                                            final PointerInputState pointerInputState,
                                             final InputStateTable inputStateTable,
                                            final KeyInputState globalKeyInputState) throws AppiumException {
-        dispatchPointerEvent(dispatcherAdapter, sourceId, actionObject, pointerInputState,
+        dispatchPointerEvent(dispatcherAdapter, actionObject, pointerInputState,
                 inputStateTable, globalKeyInputState, false);
     }
 
     /**
      * Perform the 'dispatch a pointer cancel' event
      * @param dispatcherAdapter Actions adapter
-     * @param sourceId Input source
      * @param actionObject Action object
      * @throws AppiumException
      */
     public static void dispatchPointerCancel(final W3CActionAdapter dispatcherAdapter,
-                                             final String sourceId,
                                              final ActionObject actionObject) throws AppiumException {
-        dispatcherAdapter.pointerCancel(sourceId, actionObject.getPointer());
+        dispatcherAdapter.pointerCancel(actionObject.getId(), actionObject.getPointer());
     }
 
     /**

@@ -15,9 +15,10 @@ import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
+    // Stub.
     //private final UiController uiController;
 
-    public EspressoW3CActionAdapter(UiController uiController) {
+    public EspressoW3CActionAdapter(/*UiController uiController*/) {
         //this.uiController = uiController;
     }
 

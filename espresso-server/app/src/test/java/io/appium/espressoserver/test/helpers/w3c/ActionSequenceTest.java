@@ -24,6 +24,9 @@ import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 import io.appium.espressoserver.test.assets.Helpers;
 
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.*;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -41,15 +44,15 @@ public class ActionSequenceTest {
         Tick tick = actionSequence.next();
         ActionObject action = tick.next();
         assertEquals(action.getId(), "finger1");
-        assertEquals(action.getType(), InputSourceType.POINTER);
-        assertEquals(action.getSubType(), ActionType.POINTER_MOVE);
+        assertEquals(action.getType(), POINTER);
+        assertEquals(action.getSubType(), POINTER);
         assertEquals(action.getDuration(), new Long(0));
         assertEquals(action.getX(), new Long(100));
         assertEquals(action.getY(), new Long(100));
 
         action = tick.next();
         assertEquals(action.getId(), "finger2");
-        assertEquals(action.getType(), InputSourceType.POINTER);
+        assertEquals(action.getType(), POINTER);
         assertEquals(action.getSubType(), ActionType.POINTER_MOVE);
         assertEquals(action.getDuration(), new Long(10));
         assertEquals(action.getX(), new Long(200));
@@ -61,13 +64,13 @@ public class ActionSequenceTest {
         tick = actionSequence.next();
         action = tick.next();
         assertEquals(action.getId(), "finger1");
-        assertEquals(action.getType(), InputSourceType.POINTER);
+        assertEquals(action.getType(), POINTER);
         assertEquals(action.getSubType(), ActionType.POINTER_DOWN);
         assertEquals(action.getButton(), 0);
 
         action = tick.next();
         assertEquals(action.getId(), "finger2");
-        assertEquals(action.getType(), InputSourceType.POINTER);
+        assertEquals(action.getType(), POINTER);
         assertEquals(action.getSubType(), ActionType.POINTER_DOWN);
         assertEquals(action.getButton(), 0);
 
@@ -75,14 +78,14 @@ public class ActionSequenceTest {
         tick = actionSequence.next();
         action = tick.next();
         assertEquals(action.getId(), "finger1");
-        assertEquals(action.getType(), InputSourceType.POINTER);
-        assertEquals(action.getSubType(), ActionType.PAUSE);
+        assertEquals(action.getType(), POINTER);
+        assertEquals(action.getSubType(), PAUSE);
         assertEquals(action.getButton(), 0);
 
         action = tick.next();
         assertEquals(action.getId(), "finger2");
-        assertEquals(action.getType(), InputSourceType.POINTER);
-        assertEquals(action.getSubType(), ActionType.PAUSE);
+        assertEquals(action.getType(), POINTER);
+        assertEquals(action.getSubType(), PAUSE);
         assertEquals(action.getButton(), 0);
 
         assertFalse(tick.hasNext());
@@ -91,7 +94,7 @@ public class ActionSequenceTest {
         tick = actionSequence.next();
         action = tick.next();
         assertEquals(action.getId(), "finger1");
-        assertEquals(action.getType(), InputSourceType.POINTER);
+        assertEquals(action.getType(), POINTER);
         assertEquals(action.getSubType(), ActionType.POINTER_MOVE);
         assertEquals(action.getDuration(), new Long(1000));
         assertTrue(action.getPointer().equals(PointerType.TOUCH));
@@ -100,7 +103,7 @@ public class ActionSequenceTest {
 
         action = tick.next();
         assertEquals(action.getId(), "finger2");
-        assertEquals(action.getType(), InputSourceType.POINTER);
+        assertEquals(action.getType(), POINTER);
         assertEquals(action.getSubType(), ActionType.POINTER_MOVE);
         assertEquals(action.getDuration(), new Long(1000));
         assertEquals(action.getOrigin().getType(), InputSource.POINTER);
@@ -113,13 +116,13 @@ public class ActionSequenceTest {
         tick = actionSequence.next();
         action = tick.next();
         assertEquals(action.getId(), "finger1");
-        assertEquals(action.getType(), InputSourceType.POINTER);
+        assertEquals(action.getType(), POINTER);
         assertEquals(action.getSubType(), ActionType.POINTER_UP);
         assertEquals(action.getButton(), 0);
 
         action = tick.next();
         assertEquals(action.getId(), "finger2");
-        assertEquals(action.getType(), InputSourceType.POINTER);
+        assertEquals(action.getType(), POINTER);
         assertEquals(action.getSubType(), ActionType.POINTER_UP);
         assertEquals(action.getButton(), 0);
 
@@ -129,8 +132,8 @@ public class ActionSequenceTest {
         tick = actionSequence.next();
         action = tick.next();
         assertEquals(action.getId(), "finger2");
-        assertEquals(action.getType(), InputSourceType.POINTER);
-        assertEquals(action.getSubType(), ActionType.PAUSE);
+        assertEquals(action.getType(), POINTER);
+        assertEquals(action.getSubType(), PAUSE);
         assertEquals(action.getDuration(), new Long(0));
 
         assertFalse(tick.hasNext());
@@ -149,46 +152,19 @@ public class ActionSequenceTest {
 
         String unicodeChar = Character.toString('\uE009');
 
-        // Tick #1 of 5
-        tick = actionSequence.next();
-        action = tick.next();
-        assertEquals(action.getType(), InputSourceType.KEY);
-        assertEquals(action.getSubType(), ActionType.KEY_DOWN);
-        assertEquals(action.getValue(), unicodeChar);
-        assertEquals(action.getId(), "keyboard");
-        assertFalse(tick.hasNext());
+        ActionType[] expectedSubTypes = new ActionType[] { KEY_DOWN, PAUSE, KEY_DOWN, KEY_UP, KEY_UP };
+        String[] expectedValue = new String[]{ unicodeChar, null, "s", unicodeChar, "s" };
 
-        // Tick #2 of 5
-        tick = actionSequence.next();
-        action = tick.next();
-        assertEquals(action.getType(), InputSourceType.KEY);
-        assertEquals(action.getSubType(), ActionType.PAUSE);
-        assertEquals(action.getId(), "keyboard");
-        assertFalse(tick.hasNext());
 
-        // Tick #3 of 5
-        tick = actionSequence.next();
-        action = tick.next();
-        assertEquals(action.getType(), InputSourceType.KEY);
-        assertEquals(action.getSubType(), ActionType.KEY_DOWN);
-        assertEquals(action.getId(), "keyboard");
-        assertFalse(tick.hasNext());
-
-        // Tick #4 of 5
-        tick = actionSequence.next();
-        action = tick.next();
-        assertEquals(action.getType(), InputSourceType.KEY);
-        assertEquals(action.getSubType(), ActionType.KEY_UP);
-        assertEquals(action.getId(), "keyboard");
-        assertFalse(tick.hasNext());
-
-        // Tick #5 of 5
-        tick = actionSequence.next();
-        action = tick.next();
-        assertEquals(action.getType(), InputSourceType.KEY);
-        assertEquals(action.getSubType(), ActionType.KEY_UP);
-        assertEquals(action.getId(), "keyboard");
-        assertFalse(tick.hasNext());
+        for (int i=0; i<expectedSubTypes.length; i++) {
+            tick = actionSequence.next();
+            action = tick.next();
+            assertEquals(action.getType(), KEY);
+            assertEquals(action.getSubType(), expectedSubTypes[i]);
+            assertEquals(action.getValue(), expectedValue[i]);
+            assertEquals(action.getId(), "keyboard");
+            assertFalse(tick.hasNext());
+        }
 
         assertFalse(actionSequence.hasNext());
     }
