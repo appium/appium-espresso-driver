@@ -72,11 +72,9 @@ public class ActionsProcessor {
             }
 
             // 9: If it's a pointer type, check that they match parameter types
-            if (activeSource.getType() == InputSourceType.POINTER) {
-                if (activeSource.getPointerType() != inputSource.getPointerType()) {
-                    throw new InvalidArgumentException(String.format("Pointer type %s does not match pre-existing pointer type '%s' in actions input source with id '%s'",
-                            inputSource.getPointerType(), activeSource.getPointerType(),id));
-                }
+            if (activeSource.getType() == InputSourceType.POINTER && activeSource.getPointerType() != inputSource.getPointerType()) {
+                throw new InvalidArgumentException(String.format("Pointer type %s does not match pre-existing pointer type '%s' in actions input source with id '%s'",
+                        inputSource.getPointerType(), activeSource.getPointerType(),id));
             }
         }
 

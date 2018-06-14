@@ -20,16 +20,16 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 
 @SuppressWarnings("unused")
 public class ProcessorHelpers {
-    static boolean isNullOrPositive(Long num) {
+    public static boolean isNullOrPositive(Long num) {
         return num == null || num >= 0;
     }
 
-    static void throwArgException(int index, String id, String message) throws InvalidArgumentException {
+    public static void throwArgException(int index, String id, String message) throws InvalidArgumentException {
         throw new InvalidArgumentException(String.format("action in actions[%s] of action input source with id '%s' %s",
                 index, id, message));
     }
 
-    static void assertNullOrPositive(int index, String id, String propertyName, Long propertyValue) throws InvalidArgumentException {
+    public static void assertNullOrPositive(int index, String id, String propertyName, Long propertyValue) throws InvalidArgumentException {
         if (!isNullOrPositive(propertyValue)) {
             throwArgException(index, id, String.format(
                     "must have property '%s' be greater than or equal to 0 or undefined. Found %s", propertyName, propertyValue)
