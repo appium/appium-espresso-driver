@@ -16,6 +16,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action.ELEMENT_CODE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -36,6 +37,18 @@ public class InputSourceTest {
         InputSource inputSource = InputSource.class.cast((new Gson()).fromJson(postJson, InputSource.class));
         assertEquals(inputSource.getId(), "something2");
         assertEquals(inputSource.getPointerType(), InputSource.PointerType.TOUCH);
+    }
+
+    @Test
+    public void shouldDeserializeElementOriginPointer() {
+        String postJson = "{\"type\":\"pointer\",\"id\":\"something2\", \"parameters\": {\"pointerType\": \"touch\"}, " +
+                "\"actions\": [{\"type\":\"pointerMove\",\"duration\":1000,\"origin\":{\"element-6066-11e4-a52e-4f735466cecf\":\"some-element-id\"},\"x\":50,\"y\":0}]}";
+        InputSource inputSource = InputSource.class.cast((new Gson()).fromJson(postJson, InputSource.class));
+        assertEquals(inputSource.getId(), "something2");
+        assertEquals(inputSource.getPointerType(), InputSource.PointerType.TOUCH);
+        Action action = inputSource.getActions().get(0);
+        assertEquals(action.getOrigin(), ELEMENT_CODE);
+        assertEquals(action.getElementId(), "some-element-id");
     }
 
     @Test

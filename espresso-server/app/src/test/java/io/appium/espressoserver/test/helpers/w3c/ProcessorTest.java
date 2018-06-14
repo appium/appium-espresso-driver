@@ -30,7 +30,7 @@ import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ProccessorTest {
+public class ProcessorTest {
 
     private InputSource pointerInputSource;
 

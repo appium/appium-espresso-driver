@@ -66,7 +66,6 @@ public class PointerProcessor {
             return processPauseAction(action, inputSource.getType(), id, index);
         }
 
-
         // 5-8 check type and return proper action object
         switch (subType) {
             case POINTER_DOWN:

@@ -77,6 +77,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
+import io.appium.espressoserver.lib.model.ActionsParams;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.KeyEventParams;
@@ -87,7 +88,6 @@ import io.appium.espressoserver.lib.model.Session;
 import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
-import io.appium.espressoserver.lib.model.ActionsParams;
 
 import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 

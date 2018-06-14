@@ -109,7 +109,7 @@ public class ActionsProcessor {
                     actionObjects.add(processKeyAction(action, inputSource.getType(), id, index));
                     break;
                 default:
-                    break;
+                    throw new InvalidArgumentException(String.format("'actions[%s]' of input source with id '%s' did not provide a valid type", index, id));
             }
         }
 

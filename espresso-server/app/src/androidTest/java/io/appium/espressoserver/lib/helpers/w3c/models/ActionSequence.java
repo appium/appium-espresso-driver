@@ -63,8 +63,8 @@ public class ActionSequence implements Iterator<Tick> {
 
     /**
      * Call the dispatch algorithm defined in 17.4
-     * @param adapter
-     * @param inputStateTable
+     * @param adapter Touch action adapter
+     * @param inputStateTable Input states for a session
      * @throws AppiumException
      * @throws InterruptedException
      * @throws ExecutionException
