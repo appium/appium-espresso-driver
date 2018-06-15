@@ -1,7 +1,6 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter;
 
 import android.os.SystemClock;
-import android.support.test.espresso.UiController;
 
 import java.util.Set;
 
