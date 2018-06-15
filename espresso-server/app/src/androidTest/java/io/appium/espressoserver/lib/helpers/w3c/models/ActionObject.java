@@ -23,6 +23,21 @@ public class ActionObject {
 
     }
 
+    // Copy constructor
+    public ActionObject(ActionObject actionObject) {
+        this.index = actionObject.index;
+        this.type = actionObject.type;
+        this.subType = actionObject.subType;
+        this.id = actionObject.id;
+        this.duration = actionObject.duration;
+        this.origin = actionObject.origin;
+        this.x = actionObject.x;
+        this.y = actionObject.y;
+        this.button = actionObject.button;
+        this.value = actionObject.value;
+        this.pointer = actionObject.pointer;
+    }
+
     public ActionObject(String id, InputSourceType type, ActionType subType, int index){
         this.type = type;
         this.subType = subType;

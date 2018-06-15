@@ -24,6 +24,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.models.Origin;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
@@ -32,6 +33,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatc
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerUp;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.performPointerMove;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_UP;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTER;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 import static org.junit.Assert.assertEquals;
@@ -265,6 +267,7 @@ public class PointerDispatchTest {
     @Test
     public void shouldAddButtonToDepressedOnDispatchDown() throws AppiumException {
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
+        InputStateTable inputStateTable = new InputStateTable();
         PointerInputState pointerInputState = new PointerInputState();
 
         ActionObject actionObject = new ActionObject(
@@ -273,9 +276,13 @@ public class PointerDispatchTest {
         actionObject.setButton(1);
 
         assertFalse(pointerInputState.isPressed(1));
+        assertTrue(inputStateTable.getCancelList().isEmpty());
         dispatchPointerDown(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
-                null);
-
+                inputStateTable,null);
+        assertEquals(inputStateTable.getCancelList().size(), 1);
+        ActionObject cancelObject = inputStateTable.getCancelList().get(0);
+        assertEquals(cancelObject.getButton(), 1);
+        assertEquals(cancelObject.getSubType(), POINTER_UP);
         assertTrue(pointerInputState.isPressed(1));
     }
 
@@ -300,7 +307,7 @@ public class PointerDispatchTest {
 
         assertTrue(pointerInputState.isPressed(1));
         dispatchPointerDown(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
-                null);
+                new InputStateTable(), null);
 
         assertTrue(pointerInputState.isPressed(1));
     }
@@ -318,7 +325,7 @@ public class PointerDispatchTest {
 
         assertTrue(pointerInputState.isPressed(1));
         dispatchPointerUp(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
-                null);
+                new InputStateTable(), null);
 
         assertFalse(pointerInputState.isPressed(1));
     }
@@ -343,7 +350,7 @@ public class PointerDispatchTest {
 
         assertFalse(pointerInputState.isPressed(1));
         dispatchPointerUp(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
-                null);
+                new InputStateTable(), null);
 
         assertFalse(pointerInputState.isPressed(1));
     }

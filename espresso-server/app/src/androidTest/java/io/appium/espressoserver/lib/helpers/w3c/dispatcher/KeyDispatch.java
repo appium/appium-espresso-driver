@@ -9,7 +9,10 @@ import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyLocation
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
+
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_UP;
 
 /**
  * Implement key dispatch events (https://www.w3.org/TR/webdriver/#keyboard-actions)
@@ -17,7 +20,9 @@ import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 public class KeyDispatch {
 
     private static KeyEvent dispatchKeyEvent(W3CActionAdapter dispatcherAdapter,
-                                             ActionObject actionObject, KeyInputState inputState,
+                                             ActionObject actionObject,
+                                             KeyInputState inputState,
+                                             InputStateTable inputStateTable,
                                              long tickDuration, boolean down) throws AppiumException {
         // Get the base Key Event
         KeyEvent keyEvent = getKeyEvent(dispatcherAdapter, actionObject);
@@ -50,13 +55,20 @@ public class KeyDispatch {
             inputState.removePressed(key);
         }
 
-        // 12. Call implementation specific key-down event
         // Must lock the dispatcherAdapter in-case other threads are also using it
         dispatcherAdapter.lockAdapter();
         try {
             if (down) {
+
+                // 12: Append action object with subtype property changed to 'keyUp' to cancel list
+                ActionObject cancelActionObject = new ActionObject(actionObject);
+                cancelActionObject.setSubType(KEY_UP);
+                inputStateTable.addActionToCancel(cancelActionObject);
+
+                // 13: Call implementation specific key-down event
                 dispatcherAdapter.keyDown(keyEvent);
             } else {
+                // 13: Call implementation specific key-up event
                 dispatcherAdapter.keyUp(keyEvent);
             }
         } finally {
@@ -72,20 +84,23 @@ public class KeyDispatch {
      * @param dispatcherAdapter Adapter that has implementation specific keyDown event
      * @param actionObject W3C Action Object
      * @param inputState State of the input source
+     * @param inputStateTable All of the input states for this session
      * @param tickDuration How long the 'tick' is. This is unused currently but may be used in the future
      * @return KeyEvent (for testing purposes). 'null' if the dispatch failed.
      */
     @Nullable
     public static KeyEvent dispatchKeyDown(W3CActionAdapter dispatcherAdapter,
-                                   ActionObject actionObject, KeyInputState inputState, long tickDuration) throws AppiumException {
+                                            ActionObject actionObject, KeyInputState inputState,
+                                            InputStateTable inputStateTable, long tickDuration) throws AppiumException {
 
-        return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, tickDuration, true);
+        return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable ,tickDuration, true);
     }
 
     @Nullable
     public static KeyEvent dispatchKeyDown(W3CActionAdapter dispatcherAdapter,
-                                           ActionObject actionObject, KeyInputState inputState) throws AppiumException {
-        return dispatchKeyDown(dispatcherAdapter, actionObject, inputState, 0);
+                                           ActionObject actionObject, KeyInputState inputState,
+                                           InputStateTable inputStateTable) throws AppiumException {
+        return dispatchKeyDown(dispatcherAdapter, actionObject, inputState, inputStateTable, 0);
     }
 
     /**
@@ -94,19 +109,22 @@ public class KeyDispatch {
      * @param dispatcherAdapter Adapter that has implementation specific keyDown event
      * @param actionObject W3C Action Object
      * @param inputState State of the input source
+     * @param inputStateTable All of the input states for this session
      * @param tickDuration How long the 'tick' is. This is unused currently but may be used in the future
      * @return KeyEvent (for testing purposes). 'null' if the dispatch failed.
      */
     @Nullable
     public static KeyEvent dispatchKeyUp(W3CActionAdapter dispatcherAdapter,
-                                         ActionObject actionObject, KeyInputState inputState, long tickDuration) throws AppiumException {
-        return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, tickDuration, false);
+                                         ActionObject actionObject, KeyInputState inputState,
+                                         InputStateTable inputStateTable, long tickDuration) throws AppiumException {
+        return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable, tickDuration, false);
     }
 
     @Nullable
     public static KeyEvent dispatchKeyUp(W3CActionAdapter dispatcherAdapter,
-                                         ActionObject actionObject, KeyInputState inputState) throws AppiumException {
-        return dispatchKeyUp(dispatcherAdapter, actionObject, inputState, 0);
+                                         ActionObject actionObject, KeyInputState inputState,
+                                         InputStateTable inputStateTable) throws AppiumException {
+        return dispatchKeyUp(dispatcherAdapter, actionObject, inputState, inputStateTable, 0);
     }
 
     /**

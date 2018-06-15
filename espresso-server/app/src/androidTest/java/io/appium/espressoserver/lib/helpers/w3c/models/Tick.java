@@ -113,10 +113,10 @@ public class Tick implements Iterator<ActionObject> {
                 if (inputSourceType == KEY) {
                     switch (actionType) {
                         case KEY_DOWN:
-                            dispatchKeyDown(adapter, actionObject, (KeyInputState) deviceState, tickDuration);
+                            dispatchKeyDown(adapter, actionObject, (KeyInputState) deviceState, inputStateTable, tickDuration);
                             break;
                         case KEY_UP:
-                            dispatchKeyUp(adapter, actionObject, (KeyInputState) deviceState, tickDuration);
+                            dispatchKeyUp(adapter, actionObject, (KeyInputState) deviceState, inputStateTable, tickDuration);
                             break;
                         case PAUSE:
                         default:

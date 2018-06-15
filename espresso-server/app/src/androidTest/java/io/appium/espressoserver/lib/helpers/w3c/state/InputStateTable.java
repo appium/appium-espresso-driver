@@ -1,9 +1,12 @@
 package io.appium.espressoserver.lib.helpers.w3c.state;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 
 /**
  * Keep the state of all active input sources
@@ -13,7 +16,9 @@ import java.util.Map;
 public class InputStateTable {
 
     private final Map<String, InputState> stateTable = new HashMap<>();
-    private static InputStateTable globalInputStateTable;
+    private final List<ActionObject> cancelList = new ArrayList<>();
+
+    private static Map<String, InputStateTable> inputStateTables = new HashMap<>();
 
     public void addInputState(String id, InputState inputState){
         stateTable.put(id, inputState);
@@ -27,11 +32,12 @@ public class InputStateTable {
         return stateTable.containsKey(id);
     }
 
-    public synchronized static InputStateTable getInstance() {
-        if (globalInputStateTable == null) {
-            globalInputStateTable = new InputStateTable();
-        }
-        return globalInputStateTable;
+    public void addActionToCancel(ActionObject actionObject) {
+        cancelList.add(actionObject);
+    }
+
+    public List<ActionObject> getCancelList() {
+        return Collections.unmodifiableList(cancelList);
     }
 
     public KeyInputState getGlobalKeyInputState() {
@@ -43,5 +49,20 @@ public class InputStateTable {
             }
         }
         return KeyInputState.getGlobalKeyState(keyInputStates);
+    }
+
+
+    /**
+     * Get the global input states for a given session
+     * @param sessionId ID of the session
+     * @return
+     */
+    public synchronized static InputStateTable getInputStateTableOfSession(String sessionId) {
+        InputStateTable globalInputStateTable = inputStateTables.get(sessionId);
+        if (globalInputStateTable == null) {
+            inputStateTables.put(sessionId, new InputStateTable());
+            globalInputStateTable = inputStateTables.get(sessionId);
+        }
+        return globalInputStateTable;
     }
 }
