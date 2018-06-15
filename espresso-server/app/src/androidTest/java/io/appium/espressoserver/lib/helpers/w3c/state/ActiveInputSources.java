@@ -2,6 +2,7 @@ package io.appium.espressoserver.lib.helpers.w3c.state;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import javax.annotation.Nullable;
 
@@ -14,8 +15,8 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
  * (see https://www.w3.org/TR/webdriver/#terminology-0)
  */
 public class ActiveInputSources {
-    private Map<String, InputSource> inputSources = new HashMap<>();
-    private static Map<String, ActiveInputSources> activeInputSources = new HashMap<>();
+    private final Map<String, InputSource> inputSources = new WeakHashMap<>();
+    private static final Map<String, ActiveInputSources> activeInputSources = new WeakHashMap<>();
 
     public void addInputSource(InputSource inputSource) throws InvalidArgumentException {
         inputSources.put(inputSource.getId(), inputSource);
