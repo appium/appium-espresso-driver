@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.helpers.w3c.state;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class InputStateTable {
     }
 
     public List<ActionObject> getCancelList() {
-        return cancelList;
+        return Collections.unmodifiableList(cancelList);
     }
 
     public KeyInputState getGlobalKeyInputState() {
