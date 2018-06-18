@@ -1,3 +1,4 @@
+import path from 'path';
 import gpsdemoApp from 'gps-demo-app';
 const apidemosApp = require.resolve('android-apidemos');
 
@@ -19,4 +20,8 @@ const GPS_CAPS = Object.assign({}, GENERIC_CAPS, {
   app: gpsdemoApp,
 });
 
-export { GENERIC_CAPS, APIDEMO_CAPS, GPS_CAPS };
+const REACT_NATIVE_CAPS = Object.assign({}, GENERIC_CAPS, {
+  app: path.resolve(__dirname, '..', '..', 'assets', 'ReactNativeApp.apk'),
+});
+
+export { GENERIC_CAPS, APIDEMO_CAPS, GPS_CAPS, REACT_NATIVE_CAPS };
