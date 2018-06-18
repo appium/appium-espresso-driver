@@ -10,7 +10,10 @@ Note: this is an experimental work in progress and is not ready for use.
 ## Developers
 
 ### Building Espresso Server
-
+```
+npm run build:server
+```
+or
 ```
 cd espresso-server
 ./gradlew clean assembleDebug assembleAndroidTest

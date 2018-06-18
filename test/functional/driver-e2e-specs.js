@@ -75,7 +75,7 @@ describe('EspressoDriver', function () {
       });
       it('should reject opening of appPackage with incorrect signature', async function () {
         await driver.init(Object.assign({
-          appPackage: 'com.android.settings'
+          appPackage: 'com.android.settings',
         }, APIDEMO_CAPS)).should.eventually.be.rejectedWith(/does not have a signature matching/i);
       });
     });
