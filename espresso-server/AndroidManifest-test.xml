@@ -6,7 +6,7 @@
           platformBuildVersionCode="25"
           platformBuildVersionName="7.1.1">
 
-    <uses-sdk android:minSdkVersion="21"
+    <uses-sdk android:minSdkVersion="19"
               android:targetSdkVersion="25" />
 
     <instrumentation android:functionalTest="false"
