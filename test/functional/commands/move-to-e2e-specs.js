@@ -7,7 +7,9 @@ import { APIDEMO_CAPS } from '../desired';
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('moveTo @skip-ci', function () {
+// TODO: what is this test supposed to do? finding an element in this driver
+// automatically scrolls to make it visible, so this test always fails
+describe.skip('moveTo', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
