@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.BaseDispatchResult;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
@@ -73,9 +74,9 @@ public class ActionObject {
      * @throws AppiumException
      */
     @Nullable
-    public Callable<Void> dispatch(W3CActionAdapter adapter,
-                             InputStateTable inputStateTable,
-                             long tickDuration, long timeAtBeginningOfTick) throws AppiumException {
+    public Callable<BaseDispatchResult> dispatch(W3CActionAdapter adapter,
+                                                 InputStateTable inputStateTable,
+                                                 long tickDuration, long timeAtBeginningOfTick) throws AppiumException {
         InputSourceType inputSourceType = this.getType();
         ActionType actionType = this.getSubType();
         adapter.getLogger().info(String.format(

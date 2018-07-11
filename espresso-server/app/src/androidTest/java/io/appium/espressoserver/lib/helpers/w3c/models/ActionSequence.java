@@ -15,6 +15,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.BaseDispatchResult;
 import io.appium.espressoserver.lib.helpers.w3c.state.ActiveInputSources;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 
@@ -82,22 +83,28 @@ public class ActionSequence implements Iterator<Tick> {
                     "Dispatching tick #%s of %s",
                     tickIndex, ticks.size()
             ));
-            List<Callable<Void>> callables = tick.dispatchAll(adapter, inputStateTable, tickDuration);
+            List<Callable<BaseDispatchResult>> callables = tick.dispatchAll(adapter, inputStateTable, tickDuration);
+            int callableCount = callables.size();
 
             // 2. Wait until the following conditions are all met:
 
             //  2.1 Wait for any pending async operations
             if (!callables.isEmpty()) {
-                Executor executor = Executors.newFixedThreadPool(callables.size());
-                CompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
-                for (Callable<Void> callable : callables) {
+                Executor executor = Executors.newCachedThreadPool();
+                CompletionService<BaseDispatchResult> completionService = new ExecutorCompletionService<>(executor);
+                for (Callable<BaseDispatchResult> callable : callables) {
                     completionService.submit(callable);
                 }
 
                 int received = 0;
-                while (received < callables.size()) {
-                    Future<Void> resultFuture = completionService.take(); //blocks if none available
-                    resultFuture.get();
+                while (received < callableCount) {
+                    Future<BaseDispatchResult> resultFuture = completionService.take(); //blocks if none available
+                    BaseDispatchResult dispatchResult = resultFuture.get();
+                    dispatchResult.perform();
+                    if (dispatchResult.hasNext()) {
+                        callableCount++;
+                        completionService.submit(dispatchResult.getNext());
+                    }
                     received++;
                 }
             }

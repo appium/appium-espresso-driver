@@ -20,6 +20,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsExc
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter.PointerMoveEvent;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.BaseDispatchResult;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
@@ -46,24 +47,26 @@ public class PointerDispatchTest {
     private PointerInputState pointerInputSource;
 
     @Test
-    public void shouldNoopPointerMoveIfNoButtons() throws ExecutionException, InterruptedException {
+    public void shouldNoopPointerMoveIfNoButtons() throws ExecutionException, InterruptedException, AppiumException {
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
         pointerInputSource = new PointerInputState();
         pointerInputSource.setType(PointerType.TOUCH);
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Callable<Void> callable = performPointerMove(
+        Callable<BaseDispatchResult> callable = performPointerMove(
             dummyW3CActionAdapter, "any", pointerInputSource,
             100, 10, 20, 30, 40, System.currentTimeMillis(),
             new KeyInputState()
         );
-        executorService.submit(callable).get();
+        BaseDispatchResult dispatchResult = executorService.submit(callable).get();
+        dispatchResult.perform();
         executorService.shutdown();
         assertEquals(dummyW3CActionAdapter.getPointerMoveEvents().size(), 1);
     }
 
     @Test
-    public void shouldDoOneMoveIfDurationZero() throws ExecutionException, InterruptedException {
+    public void shouldDoOneMoveIfDurationZero()
+            throws ExecutionException, InterruptedException, AppiumException {
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
         pointerInputSource = new PointerInputState();
         pointerInputSource.setType(PointerType.TOUCH);
@@ -72,12 +75,13 @@ public class PointerDispatchTest {
         pointerInputSource.addPressed(0);
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Callable<Void> callable = performPointerMove(
+        Callable<BaseDispatchResult> callable = performPointerMove(
                 dummyW3CActionAdapter, "any", pointerInputSource,
                 0, 10, 20, 30, 40, System.currentTimeMillis(),
                 new KeyInputState()
         );
-        executorService.submit(callable).get();
+        BaseDispatchResult dispatchResult = executorService.submit(callable).get();
+        dispatchResult.perform();
         executorService.shutdown();
 
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
@@ -87,7 +91,7 @@ public class PointerDispatchTest {
     }
 
     @Test
-    public void shouldMovePointerInIntervals() throws ExecutionException, InterruptedException {
+    public void shouldMovePointerInIntervals() throws ExecutionException, InterruptedException, AppiumException {
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
         pointerInputSource = new PointerInputState();
         pointerInputSource.setType(PointerType.TOUCH);
@@ -95,17 +99,23 @@ public class PointerDispatchTest {
         pointerInputSource.setY(20);
         pointerInputSource.addPressed(0);
 
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Callable<Void> callable = performPointerMove(
+        Callable<BaseDispatchResult> callable = performPointerMove(
                 dummyW3CActionAdapter, "any", pointerInputSource,
                 1000, 10, 20, 30, 40, System.currentTimeMillis(),
                 new KeyInputState()
         );
-        executorService.submit(callable).get();
-        executorService.shutdown();
+
+        BaseDispatchResult dispatchResult;
+        do {
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            dispatchResult = executorService.submit(callable).get();
+            dispatchResult.perform();
+            callable = dispatchResult.getNext();
+            executorService.shutdown();
+        } while (dispatchResult.hasNext());
 
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
-        assertTrue(Math.abs(pointerMoveEvents.size() - 20) <= 2); // Should be 15 moves per the 1 second (give or take 1)
+        assertTrue(Math.abs(pointerMoveEvents.size() - 20) <= 2); // Should be 20 moves per the 1 second (give or take 1)
         assertEquals(pointerMoveEvents.get(0).currentX, 10);
         assertEquals(pointerMoveEvents.get(0).currentY, 20);
         assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30);
@@ -121,7 +131,7 @@ public class PointerDispatchTest {
             assertTrue(currX > prevX);
             assertTrue(currY > prevY);
             prevX = currX;
-            prevY = currX;
+            prevY = currY;
         }
 
         assertEquals(pointerInputSource.getX(), 30);
@@ -129,7 +139,7 @@ public class PointerDispatchTest {
     }
 
     @Test
-    public void shouldRunMultiplePointerMoves() throws InterruptedException, ExecutionException {
+    public void shouldRunMultiplePointerMoves() throws InterruptedException, ExecutionException, AppiumException{
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
         pointerInputSource = new PointerInputState();
         pointerInputSource.setType(PointerType.TOUCH);
@@ -143,33 +153,35 @@ public class PointerDispatchTest {
         pointerInputSourceTwo.setY(20);
         pointerInputSourceTwo.addPressed(0);
 
-
-        List<Callable<Void>> callables = new ArrayList<>();
-
-        callables.add(performPointerMove(
+        Callable<BaseDispatchResult> pointerMoveOne = performPointerMove(
                 dummyW3CActionAdapter, "any", pointerInputSource,
                 500, 10, 20, 30, 40, System.currentTimeMillis(),
                 new KeyInputState()
-        ));
+        );
 
-        callables.add(performPointerMove(
+        Callable<BaseDispatchResult> pointerMoveTwo = performPointerMove(
                 dummyW3CActionAdapter, "any2", pointerInputSourceTwo,
                 500, 20, 30, 40, 50, System.currentTimeMillis(),
                 new KeyInputState()
-        ));
+        );
 
-        Executor executor = Executors.newFixedThreadPool(callables.size());
-        CompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
-        for(Callable<Void> callable:callables) {
-            completionService.submit(callable);
-        }
+        Executor executor = Executors.newCachedThreadPool();
+        long completedPointerMoves = 0;
 
-        int received = 0;
-        while (received < callables.size()) {
-            Future<Void> resultFuture = completionService.take(); //blocks if none available
-            resultFuture.get();
-            received ++;
-        }
+        do {
+            CompletionService<BaseDispatchResult> completionService = new ExecutorCompletionService<>(executor);
+            completionService.submit(pointerMoveOne);
+            completionService.submit(pointerMoveTwo);
+
+            Future<BaseDispatchResult> resultFuture = completionService.take(); //blocks if none available
+            BaseDispatchResult dispatchResult = resultFuture.get();
+            dispatchResult.perform();
+            if (dispatchResult.hasNext()) {
+                completionService.submit(dispatchResult.getNext());
+            } else {
+                completedPointerMoves++;
+            }
+        } while (completedPointerMoves < 2);
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
 
         boolean hasAny = false;
@@ -254,7 +266,7 @@ public class PointerDispatchTest {
             actionObject.setOrigin(new Origin(origins[i]));
 
             ExecutorService executorService = Executors.newSingleThreadExecutor();
-            Callable<Void> callable = dispatchPointerMove(dummyW3CActionAdapter, "any", actionObject,
+            Callable<BaseDispatchResult> callable = dispatchPointerMove(dummyW3CActionAdapter, "any", actionObject,
                 pointerInputState, 10, 0, null);
             executorService.submit(callable).get();
             executorService.shutdown();

@@ -137,7 +137,7 @@ public class PointerDispatch {
      * @return Returns a callable that returns when the pointer move is complete
      * @throws AppiumException
      */
-    public static Callable<Void> dispatchPointerMove(final W3CActionAdapter dispatcherAdapter,
+    public static Callable<BaseDispatchResult> dispatchPointerMove(final W3CActionAdapter dispatcherAdapter,
                                                      final String sourceId,
                                                      final ActionObject actionObject,
                                                      final PointerInputState pointerInputState,
@@ -187,7 +187,7 @@ public class PointerDispatch {
             duration = tickDuration;
         }
 
-        Callable<Void> callable = performPointerMove(
+        Callable<BaseDispatchResult> callable = performPointerMove(
                 dispatcherAdapter,
                 sourceId,
                 pointerInputState,
@@ -219,7 +219,7 @@ public class PointerDispatch {
      * @param targetX Target x coordinate
      * @param targetY Target y coordinate
      */
-    public static Callable<Void> performPointerMove(final W3CActionAdapter dispatcherAdapter,
+    public static Callable<BaseDispatchResult> performPointerMove(final W3CActionAdapter dispatcherAdapter,
                                                     final String sourceId,
                                                     final PointerInputState pointerInputState,
                                                     final long duration,
@@ -227,61 +227,65 @@ public class PointerDispatch {
                                                     final long targetX, final long targetY,
                                                     final long timeSinceBeginningOfTick,
                                                     final KeyInputState globalKeyInputState) {
-        return new Callable<Void>() {
+        return new Callable<BaseDispatchResult>() {
             @Override
-            public Void call() throws Exception {
+            public BaseDispatchResult call() throws Exception {
                 boolean isLast;
-                do {
-                    // 2. Let time delta be the time since the beginning of the current tick, measured in milliseconds on a monotonic clock
-                    long timeDelta = System.currentTimeMillis() - timeSinceBeginningOfTick;
 
-                    // 3. Let duration ratio be the ratio of time delta and duration, if duration is greater than 0, or 1 otherwise
-                    float durationRatio = duration > 0 ? timeDelta / ((float) duration) : 1;
+                // 2. Let time delta be the time since the beginning of the current tick, measured in milliseconds on a monotonic clock
+                long timeDelta = System.currentTimeMillis() - timeSinceBeginningOfTick;
 
-                    // 4. If duration ratio is 1, or close enough to 1 that the implementation will not further subdivide the move action,
-                    //    let last be true. Otherwise let last be false
-                    isLast = (1 - durationRatio) <= dispatcherAdapter.getPointerMoveDurationMargin(pointerInputState);
+                // 3. Let duration ratio be the ratio of time delta and duration, if duration is greater than 0, or 1 otherwise
+                float durationRatio = duration > 0 ? timeDelta / ((float) duration) : 1;
 
-                    // 5. If last is true, let x equal target x and y equal target y
-                    // 6. Otherwise let x equal an approximation to duration ratio × (target x - start x) + start x,, ...
-                    final long x = isLast ? targetX : Math.round(durationRatio * (targetX - startX)) + startX;
-                    final long y = isLast ? targetY : Math.round(durationRatio * (targetY - startY)) + startY;
+                // 4. If duration ratio is 1, or close enough to 1 that the implementation will not further subdivide the move action,
+                //    let last be true. Otherwise let last be false
+                isLast = (1 - durationRatio) <= dispatcherAdapter.getPointerMoveDurationMargin(pointerInputState);
 
-                    // 7-8: Let currentX and currentY be pointer input state
-                    final long currentX = pointerInputState.getX();
-                    final long currentY = pointerInputState.getY();
+                // 5. If last is true, let x equal target x and y equal target y
+                // 6. Otherwise let x equal an approximation to duration ratio × (target x - start x) + start x,, ...
+                final long x = isLast ? targetX : Math.round(durationRatio * (targetX - startX)) + startX;
+                final long y = isLast ? targetY : Math.round(durationRatio * (targetY - startY)) + startY;
 
-                    if (currentX != x || currentY != y) {
-                        dispatcherAdapter.lockAdapter();
-                        try {
-                            // 8.2 Perform implementation specific move event
-                            dispatcherAdapter.pointerMove(sourceId, pointerInputState.getType(),
-                                    currentX, currentY, x, y,
-                                    pointerInputState.getButtons(), globalKeyInputState);
+                // 7-8: Let currentX and currentY be pointer input state
+                final long currentX = pointerInputState.getX();
+                final long currentY = pointerInputState.getY();
 
-                            // 8.3. Let input state's x property equal x and y property equal y
-                            pointerInputState.setX(x);
-                            pointerInputState.setY(y);
+                // Prepare the result
+                DispatchPointerMoveResult dispatchResult = new DispatchPointerMoveResult(
+                        dispatcherAdapter,
+                        sourceId, pointerInputState.getType(),
+                        currentX, currentY, x, y,
+                        pointerInputState.getButtons(),
+                        globalKeyInputState,
+                        duration
+                );
 
-                            if (!isLast) {
-                                // 10. Asynchronously wait for an implementation defined amount of time to pass
-                                dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
-                            }
-                        } finally {
-                            dispatcherAdapter.unlockAdapter();
-                        }
-                    }
+                if (currentX != x || currentY != y) {
 
-                    if (!isLast) {
-                        dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
-                    }
+                    // 8.3. Let input state's x property equal x and y property equal y
+                    pointerInputState.setX(x);
+                    pointerInputState.setY(y);
+                }
 
-                    // 11. Perform a pointer move with arguments source id, input state, duration, start x, start y, target x, target y
-                    //     (does this again by going to beginning of loop)
-                } while (!isLast);
+                if (!isLast) {
+                    // 11. Perform a pointer move with arguments source id, input state, duration, start x, start y, target x, target y)
+                    dispatchResult.setNext(
+                            performPointerMove(
+                                    dispatcherAdapter,
+                                    sourceId,
+                                    pointerInputState,
+                                    duration,
+                                    startX, startY,
+                                    targetX, targetY,
+                                    timeSinceBeginningOfTick,
+                                    globalKeyInputState
+                            )
+                    );
+                }
 
-                // 9. If last is true, return
-                return null;
+                return dispatchResult;
+
             }
         };
     }
