@@ -146,8 +146,8 @@ public class ActionSequenceTest {
 
     @Test
     public void shouldPullOutKeyActionsInW3CActions() throws IOException, InvalidArgumentException, NotYetImplementedException {
-        String multiTouchJson = Helpers.readAssetFile("key-actions.json");
-        Actions actions = Actions.class.cast((new Gson()).fromJson(multiTouchJson, Actions.class));
+        String keyJson = Helpers.readAssetFile("key-actions.json");
+        Actions actions = Actions.class.cast((new Gson()).fromJson(keyJson, Actions.class));
         ActionSequence actionSequence = new ActionSequence(actions, new ActiveInputSources(), new InputStateTable());
 
         ActionObject action;

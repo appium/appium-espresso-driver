@@ -116,7 +116,7 @@ public class PointerDispatch {
 
     /**
      * Perform the 'dispatch a pointer cancel' event
-     * @param dispatcherAdapter Actions adapter
+     * @param dispatcherAdapter ActionsPerformer adapter
      * @param actionObject Action object
      * @throws AppiumException
      */
