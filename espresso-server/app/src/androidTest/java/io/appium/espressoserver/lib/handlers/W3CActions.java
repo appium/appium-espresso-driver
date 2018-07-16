@@ -45,18 +45,20 @@ import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.InputEven
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.KeyInputEventParams;
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.MotionInputEventParams;
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsParseException;
+import io.appium.espressoserver.lib.helpers.w3c_actions.W3CKeyCode;
 import io.appium.espressoserver.lib.model.W3CActionsParams;
 
-import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.META_CODES_SHIFT;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.actionsToInputEventsMapping;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.getPointerAction;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.metaKeysToState;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.toolTypeToInputSource;
 
 public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
+    private static final KeyCharacterMap kcm = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
 
     private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
-            MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT, MotionEvent.ACTION_HOVER_MOVE
+            MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT,
+            MotionEvent.ACTION_HOVER_MOVE
     );
 
     /**
@@ -111,6 +113,49 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
         return InteractionHelper.injectEventSync(event);
     }
 
+    private boolean injectKeyEvent(KeyInputEventParams eventParam, long startTimestamp,
+                                   Set<Integer> depressedMetaKeys) throws AppiumException {
+        final int keyCode = eventParam.keyCode;
+        if (keyCode <= 0) {
+            depressedMetaKeys.clear();
+            return true;
+        }
+        final int keyAction = eventParam.keyAction;
+
+        final W3CKeyCode w3CKeyCode = W3CKeyCode.fromCodePoint(keyCode);
+        if (w3CKeyCode == null) {
+            final KeyEvent[] events = kcm.getEvents(Character.toChars(keyCode));
+            boolean result = true;
+            for (KeyEvent event : events) {
+                if (event.getAction() == keyAction) {
+                    Logger.debug(String.format("Generating KeyEvent for keyAction '%s', keyCode: '%s', metaState: '%s'",
+                            keyAction, keyCode, metaKeysToState(depressedMetaKeys)));
+                    result &= injectEventSync(new KeyEvent(startTimestamp + eventParam.startDelta,
+                            SystemClock.uptimeMillis(), keyAction, event.getKeyCode(), 0,
+                            event.getMetaState() | metaKeysToState(depressedMetaKeys),
+                            KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0));
+                }
+            }
+            return result;
+        }
+
+        final Integer metaCode = w3CKeyCode.toAndroidMetaKeyCode();
+        if (metaCode != null) {
+            if (keyAction == KeyEvent.ACTION_DOWN) {
+                depressedMetaKeys.add(metaCode);
+            } else {
+                depressedMetaKeys.remove(metaCode);
+            }
+            return true;
+        }
+
+        Logger.debug(String.format("Generating KeyEvent for keyAction '%s', keyCode: '%s', metaState: '%s'",
+                keyAction, keyCode, metaKeysToState(depressedMetaKeys)));
+        return injectEventSync(new KeyEvent(startTimestamp + eventParam.startDelta,
+                SystemClock.uptimeMillis(), keyAction, w3CKeyCode.getAndroidCodePoint(), 0,
+                metaKeysToState(depressedMetaKeys), KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0));
+    }
+
     private static PointerProperties[] filterPointerProperties(
             final List<MotionInputEventParams> motionEventsParams, final boolean shouldHovering) {
         final List<PointerProperties> result = new ArrayList<>();
@@ -155,24 +200,7 @@ public class W3CActions implements RequestHandler<W3CActionsParams, Void> {
             final LongSparseArray<List<MotionInputEventParams>> motionParamsByInputSource = new LongSparseArray<>();
             for (final InputEventParams eventParam : eventParams) {
                 if (eventParam instanceof KeyInputEventParams) {
-                    final int keyCode = ((KeyInputEventParams) eventParam).keyCode;
-                    final int keyAction = ((KeyInputEventParams) eventParam).keyAction;
-                    if (keyCode > META_CODES_SHIFT) {
-                        if (keyAction == KeyEvent.ACTION_DOWN) {
-                            depressedMetaKeys.add(keyCode - META_CODES_SHIFT);
-                        } else {
-                            depressedMetaKeys.remove(keyCode - META_CODES_SHIFT);
-                        }
-                    } else if (keyCode <= 0) {
-                        depressedMetaKeys.clear();
-                    } else {
-                        final int metaState = metaKeysToState(depressedMetaKeys);
-                        result &= injectEventSync(new KeyEvent(startTimestamp + eventParam.startDelta,
-                                SystemClock.uptimeMillis(), keyAction, keyCode, 0,
-                                metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0));
-                        Logger.debug(String.format("Generated KeyEvent for keyAction '%s', keyCode: '%s', metaState: '%s'",
-                                keyAction, keyCode, metaState));
-                    }
+                    result &= injectKeyEvent((KeyInputEventParams) eventParam, startTimestamp, depressedMetaKeys);
                 } else if (eventParam instanceof MotionInputEventParams) {
                     final int inputSource = toolTypeToInputSource(((MotionInputEventParams) eventParam).properties.toolType);
                     final List<MotionInputEventParams> events = (motionParamsByInputSource.get(inputSource) == null) ?
