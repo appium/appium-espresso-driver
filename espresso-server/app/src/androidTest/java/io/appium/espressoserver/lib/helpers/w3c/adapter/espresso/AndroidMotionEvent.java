@@ -30,6 +30,7 @@ public class AndroidMotionEvent {
     }
 
     public void pointerDown(List<Long> x, List<Long> y,
+                            int action,
                             Integer button, PointerType pointerType,
                             final KeyInputState globalKeyInputState)
             throws AppiumException {
@@ -38,7 +39,7 @@ public class AndroidMotionEvent {
         int metaState = 0;
 
         (new MotionEventBuilder(uiController))
-                .setAction(ACTION_DOWN)
+                .setAction(action)
                 .setButtonState(extractButton(button, pointerType))
                 .setPointerType(pointerType)
                 .setDownTime(downTime)

@@ -19,6 +19,9 @@ import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_DOWN;
+
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
     private final UiController uiController;
@@ -51,8 +54,14 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                      Long x, Long y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer down at coordinates: %s %s", x, y));
-        AndroidMotionEvent.getMotionEvent(sourceId, uiController)
-                .pointerDown(Collections.singletonList(x), Collections.singletonList(y), button, pointerType, globalKeyInputState);
+        AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController);
+        androidMotionEvent.pointerDown(
+                Collections.singletonList(x), Collections.singletonList(y),
+                ACTION_DOWN, button, pointerType, globalKeyInputState);
+
+        androidMotionEvent.pointerDown(
+                Collections.singletonList(x), Collections.singletonList(y),
+                ACTION_POINTER_DOWN, button, pointerType, globalKeyInputState);
     }
 
     public void pointerUp(int button, String sourceId, InputSource.PointerType pointerType,
