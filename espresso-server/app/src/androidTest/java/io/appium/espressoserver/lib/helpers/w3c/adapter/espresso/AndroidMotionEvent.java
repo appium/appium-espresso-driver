@@ -29,7 +29,7 @@ public class AndroidMotionEvent {
         // TODO: How do we distinguish STYLUS, MOUSE and TOUCH?
     }
 
-    public void pointerDown(List<Long> x, List<Long> y,
+    /*public void pointerDown(List<Long> x, List<Long> y,
                             int action,
                             Integer button, PointerType pointerType,
                             final KeyInputState globalKeyInputState)
@@ -47,9 +47,10 @@ public class AndroidMotionEvent {
                 .setY(y)
                 .setMetaState(metaState)
                 .run();
-    }
+    }*/
 
-    public void pointerUp(List<Long> x, List<Long> y,
+    public void pointerUpOrDown(List<Long> x, List<Long> y,
+                          int action,
                           Integer button, PointerType pointerType,
                           final KeyInputState globalKeyInputState)
             throws AppiumException {
@@ -58,7 +59,7 @@ public class AndroidMotionEvent {
         int metaState = 0;
 
         (new MotionEventBuilder(uiController))
-                .setAction(ACTION_UP)
+                .setAction(action)
                 .setButtonState(extractButton(button, pointerType)) // TODO: Make this redundant
                 .setPointerType(pointerType)
                 .setDownTime(downTime)

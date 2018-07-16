@@ -21,6 +21,8 @@ import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_UP;
+import static android.view.MotionEvent.ACTION_UP;
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
@@ -55,11 +57,11 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                      KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer down at coordinates: %s %s", x, y));
         AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController);
-        androidMotionEvent.pointerDown(
+        androidMotionEvent.pointerUpOrDown(
                 Collections.singletonList(x), Collections.singletonList(y),
                 ACTION_DOWN, button, pointerType, globalKeyInputState);
 
-        androidMotionEvent.pointerDown(
+        androidMotionEvent.pointerUpOrDown(
                 Collections.singletonList(x), Collections.singletonList(y),
                 ACTION_POINTER_DOWN, button, pointerType, globalKeyInputState);
     }
@@ -68,14 +70,16 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                    Long x, Long y, Set<Integer> depressedButtons,
                    KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer up at coordinates: %s %s", x, y));
-        AndroidMotionEvent.getMotionEvent(sourceId, uiController)
-                .pointerUp(Collections.singletonList(x), Collections.singletonList(y), button, pointerType, globalKeyInputState);
+        AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController);
+        androidMotionEvent.pointerUpOrDown(Collections.singletonList(x), Collections.singletonList(y),
+                ACTION_POINTER_UP, button, pointerType, globalKeyInputState);
+        androidMotionEvent.pointerUpOrDown(Collections.singletonList(x), Collections.singletonList(y),
+                ACTION_UP, button, pointerType, globalKeyInputState);
     }
 
     public void pointerMove(String sourceId, InputSource.PointerType pointerType,
                             long currentX, long currentY, long x, long y,
                             Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
-        // TODO: This should probably be
         this.getLogger().info(String.format("Running pointer move at coordinates: %s %s", x, y));
         AndroidMotionEvent.getMotionEvent(sourceId, uiController)
                 .pointerMove(Collections.singletonList(x), Collections.singletonList(y), pointerType, globalKeyInputState);
