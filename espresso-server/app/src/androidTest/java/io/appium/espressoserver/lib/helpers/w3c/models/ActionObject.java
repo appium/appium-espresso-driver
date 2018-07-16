@@ -103,7 +103,6 @@ public class ActionObject {
                         break;
                 }
             } else if (inputSourceType == POINTER) {
-                long timeSinceBeginningOfTick = System.currentTimeMillis() - timeAtBeginningOfTick;
                 switch (actionType) {
                     case POINTER_MOVE:
                         return dispatchPointerMove(
@@ -112,7 +111,7 @@ public class ActionObject {
                                 this,
                                 (PointerInputState) deviceState,
                                 tickDuration,
-                                timeSinceBeginningOfTick,
+                                timeAtBeginningOfTick,
                                 inputStateTable.getGlobalKeyInputState()
                         );
                     case POINTER_DOWN:
