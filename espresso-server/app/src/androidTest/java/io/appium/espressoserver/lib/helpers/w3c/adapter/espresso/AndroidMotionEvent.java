@@ -3,6 +3,7 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 import android.os.SystemClock;
 import android.support.test.espresso.UiController;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,7 +29,7 @@ public class AndroidMotionEvent {
         // TODO: How do we distinguish STYLUS, MOUSE and TOUCH?
     }
 
-    public void pointerDown(long x, long y,
+    public void pointerDown(List<Long> x, List<Long> y,
                             Integer button, PointerType pointerType,
                             final KeyInputState globalKeyInputState)
             throws AppiumException {
@@ -39,6 +40,7 @@ public class AndroidMotionEvent {
         (new MotionEventBuilder(uiController))
                 .setAction(ACTION_DOWN)
                 .setButtonState(extractButton(button, pointerType))
+                .setPointerType(pointerType)
                 .setDownTime(downTime)
                 .setX(x)
                 .setY(y)
@@ -46,7 +48,7 @@ public class AndroidMotionEvent {
                 .run();
     }
 
-    public void pointerUp(long x, long y,
+    public void pointerUp(List<Long> x, List<Long> y,
                           Integer button, PointerType pointerType,
                           final KeyInputState globalKeyInputState)
             throws AppiumException {
@@ -56,7 +58,8 @@ public class AndroidMotionEvent {
 
         (new MotionEventBuilder(uiController))
                 .setAction(ACTION_UP)
-                .setButtonState(extractButton(button, pointerType))
+                .setButtonState(extractButton(button, pointerType)) // TODO: Make this redundant
+                .setPointerType(pointerType)
                 .setDownTime(downTime)
                 .setX(x)
                 .setY(y)
@@ -64,13 +67,16 @@ public class AndroidMotionEvent {
                 .run();
     }
 
-    public void pointerMove(long x, long y, final KeyInputState globalKeyInputState) throws AppiumException {
+    public void pointerMove(List<Long> x, List<Long> y,
+                            final PointerType pointerType,
+                            final KeyInputState globalKeyInputState) throws AppiumException {
         // TODO: Use globalKeyInputState to get metaState
         int metaState = 0;
 
         (new MotionEventBuilder(uiController))
                 .setAction(ACTION_MOVE)
                 .setDownTime(downTime)
+                .setPointerType(pointerType)
                 .setX(x)
                 .setY(y)
                 .setMetaState(metaState)

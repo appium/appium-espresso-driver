@@ -2,8 +2,8 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.os.SystemClock;
 import android.support.test.espresso.UiController;
-import android.support.test.espresso.action.MotionEvents;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +52,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                      KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer down at coordinates: %s %s", x, y));
         AndroidMotionEvent.getMotionEvent(sourceId, uiController)
-                .pointerDown(x, y, button, pointerType, globalKeyInputState);
+                .pointerDown(Collections.singletonList(x), Collections.singletonList(y), button, pointerType, globalKeyInputState);
     }
 
     public void pointerUp(int button, String sourceId, InputSource.PointerType pointerType,
@@ -60,7 +60,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                    KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer up at coordinates: %s %s", x, y));
         AndroidMotionEvent.getMotionEvent(sourceId, uiController)
-                .pointerUp(x, y, button, pointerType, globalKeyInputState);
+                .pointerUp(Collections.singletonList(x), Collections.singletonList(y), button, pointerType, globalKeyInputState);
     }
 
     public void pointerMove(String sourceId, InputSource.PointerType pointerType,
@@ -69,7 +69,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         // TODO: This should probably be
         this.getLogger().info(String.format("Running pointer move at coordinates: %s %s", x, y));
         AndroidMotionEvent.getMotionEvent(sourceId, uiController)
-                .pointerMove(x, y, globalKeyInputState);
+                .pointerMove(Collections.singletonList(x), Collections.singletonList(y), pointerType, globalKeyInputState);
     }
 
     public void pointerCancel(String sourceId, InputSource.PointerType pointerType) throws AppiumException {

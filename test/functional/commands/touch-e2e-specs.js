@@ -64,12 +64,11 @@ describe('elementByXPath', function () {
   };
 
   describe('fingerpaint', async function () {
-    it('should draw the letter L on fingerpaint', async function () {
+    it.only('should draw the letter L on fingerpaint', async function () {
       await (await driver.elementByAccessibilityId("Graphics")).click();
       await (await driver.elementByAccessibilityId("FingerPaint")).click();
       let canvas = await driver.elementById("android:id/content");
       let {x, y} = await canvas.getLocation();
-      let startTime = +(new Date());
       const touchActions = [
         {"type": "pointerMove", duration: 100, x: x + 10, y: y + 10},
         {"type": "pointerDown", "button": 0},
@@ -79,7 +78,6 @@ describe('elementByXPath', function () {
         {"type": "pointerUp", "button": 0},
       ];
       await performTouchAction(touchActions);
-      console.log('Duration', +(new Date()) - startTime);
     });
 
     it('should draw two parallel lines on fingerpaint', async function () {
