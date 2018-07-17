@@ -66,4 +66,8 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
     public void waitForUiThread() {
         // No-op by default.
     }
+
+    public void sychronousTickActionsComplete() throws AppiumException {
+        // No-op by default
+    }
 }

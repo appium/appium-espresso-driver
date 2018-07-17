@@ -64,7 +64,7 @@ describe('elementByXPath', function () {
   };
 
   describe('fingerpaint', async function () {
-    it.only('should draw the letter L on fingerpaint', async function () {
+    it('should draw the letter L on fingerpaint', async function () {
       await (await driver.elementByAccessibilityId("Graphics")).click();
       await (await driver.elementByAccessibilityId("FingerPaint")).click();
       let canvas = await driver.elementById("android:id/content");
@@ -72,9 +72,9 @@ describe('elementByXPath', function () {
       const touchActions = [
         {"type": "pointerMove", duration: 100, x: x + 10, y: y + 10},
         {"type": "pointerDown", "button": 0},
-        {"type": "pointerMove", duration: 2000,  x: x + 10, y: y + 1000},
-        {"type": "pause", duration: 2000},
-        {"type": "pointerMove", duration: 2000,  x: x + 1000, y: y + 1000},
+        {"type": "pointerMove", duration: 100,  x: x + 10, y: y + 1000},
+        {"type": "pause", duration: 100},
+        {"type": "pointerMove", duration: 100,  x: x + 1000, y: y + 1000},
         {"type": "pointerUp", "button": 0},
       ];
       await performTouchAction(touchActions);
@@ -85,17 +85,20 @@ describe('elementByXPath', function () {
       await (await driver.elementByAccessibilityId("FingerPaint")).click();
       let canvas = await driver.elementById("android:id/content");
       let {x, y} = await canvas.getLocation();
-      const touchActions = [
+      const touchActionOne = [
         {"type": "pointerMove", x: x + 10, y: y + 10},
         {"type": "pointerDown", "button": 0},
         {"type": "pointerMove", duration: 2000,  x: x + 10, y: y + 1000},
         {"type": "pointerUp", "button": 0},
+      ];
+
+      const touchActionTwo = [
         {"type": "pointerMove", x: x + 200, y: y + 10},
         {"type": "pointerDown", "button": 0},
         {"type": "pointerMove", duration: 2000,  x: x + 200, y: y + 1000},
         {"type": "pointerUp", "button": 0},
       ];
-      await performTouchAction(touchActions);
+      await performTouchAction(touchActionOne, touchActionTwo);
     });
   });
 

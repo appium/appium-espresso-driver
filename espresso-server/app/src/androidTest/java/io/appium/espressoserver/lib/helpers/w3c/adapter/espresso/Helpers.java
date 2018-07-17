@@ -19,21 +19,7 @@ public class Helpers {
             throws AppiumException {
 
         // Get the Android tool type constant associated with the W3C provided pointer type
-        final int toolType;
-        switch (pointerType) {
-            case TOUCH:
-                toolType = TOOL_TYPE_FINGER;
-                break;
-            case PEN:
-                toolType = TOOL_TYPE_STYLUS;
-                break;
-            case MOUSE:
-                toolType  = TOOL_TYPE_MOUSE;
-                break;
-            default:
-                throw new AppiumException(String.format("Invalid tool type: %s", pointerType));
-        }
-
+        final int toolType = getToolType(pointerType);
 
         if (toolType == TOOL_TYPE_FINGER) {
             // Ignore button code conversion for the unsupported tool type
@@ -58,6 +44,27 @@ public class Helpers {
                     MotionEvent.BUTTON_SECONDARY;
             default:
                 return androidButton;
+        }
+    }
+
+    /**
+     * Return Android tool type based on W3C pointer type
+     * @param pointerType W3C pointer types (TOUCH, PEN, MOUSE)
+     * @return Android Motion Event type (FINGER, STYLUS, MOUSE)
+     */
+    public static int getToolType(PointerType pointerType) throws AppiumException {
+        if (pointerType == null) {
+            return TOOL_TYPE_FINGER;
+        }
+        switch (pointerType) {
+            case TOUCH:
+                return TOOL_TYPE_FINGER;
+            case PEN:
+                return TOOL_TYPE_STYLUS;
+            case MOUSE:
+                return TOOL_TYPE_MOUSE;
+            default:
+                throw new AppiumException(String.format("Invalid tool type: %s", pointerType));
         }
     }
 

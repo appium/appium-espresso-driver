@@ -10,12 +10,11 @@ import android.view.MotionEvent.PointerProperties;
 import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
+import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 
-import static android.view.MotionEvent.TOOL_TYPE_FINGER;
-import static android.view.MotionEvent.TOOL_TYPE_MOUSE;
-import static android.view.MotionEvent.TOOL_TYPE_STYLUS;
+import static android.view.MotionEvent.*;
+import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.Helpers.getToolType;
 
 public class MotionEventBuilder {
 
@@ -39,6 +38,11 @@ public class MotionEventBuilder {
 
     public MotionEventBuilder setDownTime(long downTime) {
         params.downTime = downTime;
+        return this;
+    }
+
+    public MotionEventBuilder setEventTime(long eventTime) {
+        params.eventTime = eventTime;
         return this;
     }
 
@@ -72,6 +76,11 @@ public class MotionEventBuilder {
         return this;
     }
 
+    public MotionEventBuilder setSource(int source) {
+        params.source = source;
+        return this;
+    }
+
     public MotionEventBuilder setEdgeFlags(int edgeFlags) {
         params.edgeFlags = edgeFlags;
         return this;
@@ -82,28 +91,50 @@ public class MotionEventBuilder {
         return this;
     }
 
-    public void run () throws AppiumException {
+    public MotionEvent run () throws AppiumException {
         int pointerCount = params.x.size();
+
+        AndroidLogger.logger.info("Calling pointers", pointerCount);
+
+        // Don't do anything if no pointers were provided
+        if (pointerCount == 0) {
+            return null;
+        }
+
         PointerCoords[] pointerCoords = new PointerCoords[pointerCount];
         PointerProperties[] pointerProperties = new PointerProperties[pointerCount];
 
         for (int pointerIndex = 0; pointerIndex < pointerCount; pointerIndex++) {
+            // Set pointer coordinates
             pointerCoords[pointerIndex] = new PointerCoords();
+            pointerCoords[pointerIndex].clear();
             pointerCoords[pointerIndex].pressure = 1;
             pointerCoords[pointerIndex].size = 1;
             pointerCoords[pointerIndex].x = params.x.get(pointerIndex);
             pointerCoords[pointerIndex].y = params.y.get(pointerIndex);
 
+            // Set pointer properties
             pointerProperties[pointerIndex] = new PointerProperties();
             pointerProperties[pointerIndex].toolType = getToolType(params.pointerType);
             pointerProperties[pointerIndex].id = pointerIndex;
 
         }
 
+        // ACTION_POINTER_DOWN and ACTION_POINTER_UP need a bit mask
+        int action = params.action;
+        if (pointerCount > 1 && (action == ACTION_POINTER_DOWN || action == ACTION_POINTER_UP)) {
+            action += (pointerProperties[1].id << ACTION_POINTER_INDEX_SHIFT);
+        }
+
+        // ACTION_DOWN and ACTION_UP has a pointer count of 1
+        if (action == ACTION_DOWN || action == ACTION_UP) {
+            pointerCount = 1;
+        }
+
         MotionEvent evt = MotionEvent.obtain(
                 params.downTime,
-                SystemClock.uptimeMillis(),
-                params.action,
+                params.eventTime > 0 ? params.eventTime : SystemClock.uptimeMillis(),
+                action,
                 pointerCount,
                 pointerProperties,
                 pointerCoords,
@@ -113,16 +144,9 @@ public class MotionEventBuilder {
                 params.yPrecision,
                 params.deviceId,
                 params.edgeFlags,
-                0, // TODO: How to get source?
+                params.source,
                 0 // TODO: How to get Motion Event flags?
         );
-
-        /*long downTime, long eventTime,
-        int action, int pointerCount, PointerProperties[] pointerProperties,
-                PointerCoords[] pointerCoords, int metaState, int buttonState,
-        float xPrecision, float yPrecision, int deviceId,
-        int edgeFlags, int source, int flags*/
-
 
         try {
             uiController.injectMotionEvent(evt);
@@ -132,21 +156,8 @@ public class MotionEventBuilder {
                     e.getCause()
             ));
         }
-    }
 
-    public int getToolType(PointerType pointerType) {
-        if (pointerType == null) {
-            return TOOL_TYPE_FINGER;
-        }
-        switch (pointerType) {
-            case TOUCH:
-                return TOOL_TYPE_FINGER;
-            case PEN:
-                return TOOL_TYPE_STYLUS;
-            case MOUSE:
-            default:
-                return TOOL_TYPE_MOUSE;
-        }
+        return evt;
     }
 
     static class MotionEventParams {
@@ -154,14 +165,14 @@ public class MotionEventBuilder {
         int action;
         List<Long> x;
         List<Long> y;
-        float pressure;
-        float size;
         int metaState;
         float xPrecision;
         float yPrecision;
         int deviceId;
         int edgeFlags;
         int buttonState;
+        int source;
         PointerType pointerType;
+        long eventTime;
     }
 }

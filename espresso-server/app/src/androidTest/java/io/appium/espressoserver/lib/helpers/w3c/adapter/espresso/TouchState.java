@@ -1,13 +1,9 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
-import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
-
 public class TouchState {
     private long x;
     private long y;
     private String sourceId;
-    private KeyInputState globalKeyInputState;
-    private int button;
 
     public String getSourceId() {
         return sourceId;
@@ -33,19 +29,4 @@ public class TouchState {
         this.x = x;
     }
 
-    public KeyInputState getGlobalKeyInputState() {
-        return globalKeyInputState;
-    }
-
-    public void setGlobalKeyInputState(KeyInputState globalKeyInputState) {
-        this.globalKeyInputState = globalKeyInputState;
-    }
-
-    public int getButton() {
-        return button;
-    }
-
-    public void setButton(int button) {
-        this.button = button;
-    }
 }
