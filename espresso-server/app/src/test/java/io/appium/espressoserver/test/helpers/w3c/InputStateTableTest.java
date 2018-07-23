@@ -8,8 +8,6 @@ import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
-import io.appium.espressoserver.lib.helpers.w3c.state.InputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
@@ -18,7 +16,6 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_DOWN;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER;
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 

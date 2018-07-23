@@ -10,8 +10,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 
-import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
-
 /**
  * Keep the state of all active input sources
  *

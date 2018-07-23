@@ -1,6 +1,5 @@
 package io.appium.espressoserver.lib.helpers.w3c.state;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
