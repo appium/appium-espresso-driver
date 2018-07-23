@@ -67,8 +67,6 @@ public class Tick implements Iterator<ActionObject> {
         long timeAtBeginningOfTick = System.currentTimeMillis();
         List<Callable<Void>> asyncOperations = new ArrayList<>();
         for(ActionObject actionObject: tickActions) {
-            String sourceId = actionObject.getId();
-
             // 2. Run algorithm with arguments source id, action object, device state and tick duration
             Callable<Void> dispatchResult = actionObject.dispatch(adapter,
                     inputStateTable, tickDuration, timeAtBeginningOfTick);
