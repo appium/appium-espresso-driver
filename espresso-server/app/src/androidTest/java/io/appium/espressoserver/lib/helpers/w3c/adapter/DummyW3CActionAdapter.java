@@ -30,9 +30,6 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
         public KeyInputState globalKeyInputState;
     }
 
-    // Keep a log of pointer move events so the values can be checked in the unit tests
-    private List<PointerMoveEvent> pointerMoveEvents = new ArrayList<>();
-
     public void keyDown(KeyEvent keyEvent) {
         // No-op
     }
