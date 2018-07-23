@@ -8,7 +8,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
@@ -29,24 +29,24 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
         public KeyInputState globalKeyInputState;
     }
 
-    public void keyDown(KeyDispatch.KeyEvent keyEvent) {
-        // Does nothing. Used for testing
+    public void keyDown(KeyEvent keyEvent) {
+        // No-op
     }
 
-    public void keyUp(KeyDispatch.KeyEvent keyEvent) {
-        // Does nothing. Used for testing
+    public void keyUp(KeyEvent keyEvent) {
+        // No-op
     }
 
     public void pointerUp(int button, String sourceId, PointerType pointerType,
                             Long x, Long y, Set<Integer> depressedButtons,
                             KeyInputState globalKeyInputState) throws AppiumException {
-        // Does nothing. Used for testing
+        // No-op
     }
 
     public void pointerDown(int button, String sourceId, PointerType pointerType,
                      Long x, Long y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException {
-        // Does nothing. Used for testing
+        // No-op
     }
 
     public double getPointerMoveDurationMargin(PointerInputState pointerInputState) {

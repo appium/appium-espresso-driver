@@ -90,7 +90,7 @@ public class TickTest {
         actionObject.setValue("F");
         tick.addAction(actionObject);
         assertFalse(inputStateTable.hasInputState(sourceId));
-        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
+        tick.dispatchAll(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
         assertTrue(inputStateTable.hasInputState(sourceId));
         assertTrue(inputStateTable.getInputState(sourceId).getClass() == KeyInputState.class);
     }
@@ -105,7 +105,7 @@ public class TickTest {
         actionObject.setButton(0);
         tick.addAction(actionObject);
         assertFalse(inputStateTable.hasInputState(sourceId));
-        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
+        tick.dispatchAll(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
         assertTrue(inputStateTable.hasInputState(sourceId));
         assertTrue(inputStateTable.getInputState(sourceId).getClass() == PointerInputState.class);
     }
@@ -118,7 +118,7 @@ public class TickTest {
         ActionObject actionObject = new ActionObject(sourceId, NONE, null, 0);
         tick.addAction(actionObject);
         assertFalse(inputStateTable.hasInputState(sourceId));
-        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
+        tick.dispatchAll(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
         assertFalse(inputStateTable.hasInputState(sourceId));
     }
 
@@ -157,7 +157,7 @@ public class TickTest {
         assertTrue(keyInputState.isPressed("g"));
         assertFalse(keyInputState.isShift());
 
-        tick.dispatch(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
+        tick.dispatchAll(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
         assertTrue(keyInputState.isPressed("e"));
         assertTrue(keyInputState.isPressed("f"));
         assertFalse(keyInputState.isPressed("g"));
@@ -222,9 +222,9 @@ public class TickTest {
             }
         };
 
-        W3CActionAdapter baseW3CActionAdapter = new ExtendedDummyW3CActionAdapter();
+        final W3CActionAdapter dummyAdapter = new ExtendedDummyW3CActionAdapter();
 
-        List<Callable<Void>> callables = tick.dispatch(baseW3CActionAdapter, inputStateTable, tick.calculateTickDuration());
+        List<Callable<Void>> callables = tick.dispatchAll(dummyAdapter, inputStateTable, tick.calculateTickDuration());
         Executor executor = Executors.newFixedThreadPool(callables.size());
         CompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
         for(Callable<Void> callable:callables) {
@@ -259,7 +259,7 @@ public class TickTest {
         tick.addAction(actionObjectTwo);
 
         try {
-            tick.dispatch(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
+            tick.dispatchAll(new DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration());
         } catch (InvalidArgumentException e) {
             assertTrue(e.getMessage().contains("Attempted to apply action of type"));
             return;

@@ -7,9 +7,11 @@ import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsExc
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.Origin;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_UP;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTER;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
@@ -22,6 +24,7 @@ public class PointerDispatch {
                                              final String sourceId,
                                              final ActionObject actionObject,
                                              final PointerInputState pointerInputState,
+                                             final InputStateTable inputStateTable,
                                              final KeyInputState globalKeyInputState,
                                              final boolean down) throws AppiumException {
         PointerType pointerType = actionObject.getPointer();
@@ -47,9 +50,16 @@ public class PointerDispatch {
         dispatcherAdapter.lockAdapter();
         try {
             if (down) {
+                // Add cancel object to cancel list
+                ActionObject cancelObject = new ActionObject(actionObject);
+                cancelObject.setSubType(POINTER_UP);
+                inputStateTable.addActionToCancel(cancelObject);
+
+                // Dispatch implementation specific pointer down
                 dispatcherAdapter.pointerDown(button, sourceId, pointerType, x, y,
                         pointerInputState.getButtons(), globalKeyInputState);
             } else {
+                // Dispatch implementation specific pointer up
                 dispatcherAdapter.pointerUp(button, sourceId, pointerType, x, y,
                         pointerInputState.getButtons(), globalKeyInputState);
             }
@@ -71,9 +81,10 @@ public class PointerDispatch {
                                            final String sourceId,
                                            final ActionObject actionObject,
                                            final PointerInputState pointerInputState,
+                                           final InputStateTable inputStateTable,
                                            final KeyInputState globalKeyInputState) throws AppiumException {
         dispatchPointerEvent(dispatcherAdapter, sourceId, actionObject, pointerInputState,
-                globalKeyInputState, true);
+                inputStateTable, globalKeyInputState, true);
     }
 
     /**
@@ -89,9 +100,10 @@ public class PointerDispatch {
                                            final String sourceId,
                                            final ActionObject actionObject,
                                            final PointerInputState pointerInputState,
+                                            final InputStateTable inputStateTable,
                                            final KeyInputState globalKeyInputState) throws AppiumException {
         dispatchPointerEvent(dispatcherAdapter, sourceId, actionObject, pointerInputState,
-                globalKeyInputState, false);
+                inputStateTable, globalKeyInputState, false);
     }
 
     /**
