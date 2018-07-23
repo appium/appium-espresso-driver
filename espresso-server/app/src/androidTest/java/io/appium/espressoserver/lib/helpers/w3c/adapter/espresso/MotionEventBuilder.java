@@ -13,7 +13,12 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 
-import static android.view.MotionEvent.*;
+import static android.view.MotionEvent.ACTION_CANCEL;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+import static android.view.MotionEvent.ACTION_POINTER_UP;
+import static android.view.MotionEvent.ACTION_UP;
 import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.Helpers.getToolType;
 
 public class MotionEventBuilder {
@@ -92,12 +97,12 @@ public class MotionEventBuilder {
     }
 
     public MotionEvent run () throws AppiumException {
-        int pointerCount = params.x.size();
+        int pointerCount = params.x == null ? 0 : params.x.size();
 
         AndroidLogger.logger.info("Calling pointers", pointerCount);
 
         // Don't do anything if no pointers were provided
-        if (pointerCount == 0) {
+        if (pointerCount == 0 && params.action != ACTION_CANCEL) {
             return null;
         }
 
@@ -126,9 +131,13 @@ public class MotionEventBuilder {
             action += (pointerProperties[1].id << ACTION_POINTER_INDEX_SHIFT);
         }
 
-        // ACTION_DOWN and ACTION_UP has a pointer count of 1
-        if (action == ACTION_DOWN || action == ACTION_UP) {
-            pointerCount = 1;
+        // ACTION_DOWN and ACTION_UP and ACTION_CANCEL has a pointer count of 1
+        if (action == ACTION_DOWN || action == ACTION_UP || action == ACTION_CANCEL) {
+            if (params.x != null && params.y != null) {
+                pointerCount = 1;
+            } else {
+                pointerCount = 0;
+            }
         }
 
         MotionEvent evt = MotionEvent.obtain(
@@ -149,7 +158,12 @@ public class MotionEventBuilder {
         );
 
         try {
-            uiController.injectMotionEvent(evt);
+            boolean success = uiController.injectMotionEvent(evt);
+            if (!success) {
+                throw new AppiumException(String.format(
+                        "Could not complete pointer operation"
+                ));
+            }
         } catch (InjectEventSecurityException e) {
             throw new AppiumException(String.format(
                     "Could not complete pointer operation. An internal server error occurred: %s",

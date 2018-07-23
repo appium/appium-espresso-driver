@@ -14,7 +14,7 @@ import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
 import static android.view.MotionEvent.ACTION_DOWN;
@@ -52,7 +52,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         // Stub.
     }
 
-    public void pointerDown(int button, String sourceId, InputSource.PointerType pointerType,
+    public void pointerDown(int button, String sourceId, PointerType pointerType,
                      Long x, Long y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer down at coordinates: %s %s", x, y));
@@ -72,7 +72,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         }
     }
 
-    public void pointerUp(int button, String sourceId, InputSource.PointerType pointerType,
+    public void pointerUp(int button, String sourceId, PointerType pointerType,
                    Long x, Long y, Set<Integer> depressedButtons,
                    KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer up at coordinates: %s %s", x, y));
@@ -88,7 +88,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         }
     }
 
-    public void pointerMove(String sourceId, InputSource.PointerType pointerType,
+    public void pointerMove(String sourceId, PointerType pointerType,
                             long currentX, long currentY, long x, long y,
                             Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer move at coordinates: %s %s %s", x, y, pointerType));
@@ -101,13 +101,17 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         }
     }
 
+    public void pointerCancel(String sourceId, PointerType pointerType) throws AppiumException {
+        if (pointerType == TOUCH) {
+            multiTouchState.pointerCancel(uiController);
+        } else {
+            AndroidMotionEvent.getMotionEvent(sourceId, uiController).pointerCancel();
+        }
+    }
+
     public void sychronousTickActionsComplete() throws AppiumException {
         AndroidLogger.logger.info("Pointer event: Tick complete");
         multiTouchState.perform(uiController);
-    }
-
-    public void pointerCancel(String sourceId, InputSource.PointerType pointerType) throws AppiumException {
-        // Stub.
     }
 
     public long getViewportHeight() {

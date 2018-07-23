@@ -14,8 +14,13 @@ import javax.annotation.Nullable;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
-import static android.view.MotionEvent.*;
-import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.MultiTouchState.TouchPhase.*;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_UP;
+import static android.view.MotionEvent.ACTION_UP;
+import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.MultiTouchState.TouchPhase.DOWN;
+import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.MultiTouchState.TouchPhase.NONE;
+import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.MultiTouchState.TouchPhase.UP;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 
 public class MultiTouchState {
@@ -88,26 +93,43 @@ public class MultiTouchState {
     public void pointerDown(UiController uiController) throws AppiumException {
         AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getTouchMotionEvent(uiController);
         Long eventTime = SystemClock.uptimeMillis();
+        List<Long> xCoords = getXCoords();
+        List<Long> yCoords = getYCoords();
         this.downEvent = androidMotionEvent.pointerUpOrDown(
-                getXCoords(), getYCoords(),
+                xCoords, yCoords,
                 ACTION_DOWN, this.button, TOUCH, this.globalKeyInputState, null, eventTime);
 
-        androidMotionEvent.pointerUpOrDown(getXCoords(), getYCoords(),
-                ACTION_POINTER_DOWN, this.button, TOUCH, this.globalKeyInputState, downEvent, eventTime);
+        if (xCoords.size() > 1) {
+            androidMotionEvent.pointerUpOrDown(xCoords, yCoords,
+                    ACTION_POINTER_DOWN, this.button, TOUCH, this.globalKeyInputState, downEvent, eventTime);
+        }
 
     }
 
     public void pointerUp(UiController uiController) throws AppiumException {
         AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getTouchMotionEvent(uiController);
         Long eventTime = SystemClock.uptimeMillis();
-        androidMotionEvent.pointerUpOrDown(
-                getXCoords(), getYCoords(),
-                ACTION_POINTER_UP, this.button, TOUCH, this.globalKeyInputState, downEvent, eventTime);
+        List<Long> xCoords = getXCoords();
+        List<Long> yCoords = getYCoords();
+        if (xCoords.size() > 1) {
+            androidMotionEvent.pointerUpOrDown(
+                    xCoords, yCoords,
+                    ACTION_POINTER_UP, this.button, TOUCH, this.globalKeyInputState, downEvent, eventTime);
+        }
 
-        androidMotionEvent.pointerUpOrDown(getXCoords(), getYCoords(),
+        androidMotionEvent.pointerUpOrDown(
+                xCoords, yCoords,
                 ACTION_UP, this.button, TOUCH, this.globalKeyInputState, downEvent, eventTime);
 
         this.downEvent = null;
+    }
+
+    public void pointerCancel(UiController uiController) throws AppiumException {
+        List<Long> xCoords = getXCoords();
+        List<Long> yCoords = getYCoords();
+        AndroidMotionEvent.getTouchMotionEvent(uiController).pointerCancel(xCoords, yCoords);
+        this.downEvent = null;
+        touchPhase = NONE;
     }
 
     public void pointerMove(UiController uiController) throws AppiumException {

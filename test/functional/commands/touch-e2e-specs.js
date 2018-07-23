@@ -75,7 +75,7 @@ describe('elementByXPath', function () {
         {"type": "pointerMove", duration: 100,  x: x + 10, y: y + 1000},
         {"type": "pause", duration: 100},
         {"type": "pointerMove", duration: 100,  x: x + 1000, y: y + 1000},
-        {"type": "pointerUp", "button": 0},
+        {"type": "pointerCancel", "button": 0},
       ];
       await performTouchAction(touchActions);
     });
@@ -103,7 +103,7 @@ describe('elementByXPath', function () {
   });
 
   describe('scrolling/swiping', async function () {
-    it('should scroll up menu', async function () {
+    it.skip('should scroll up menu', async function () {
       await (await driver.elementByAccessibilityId("Views")).click();
       let gcEl = await driver.elementByAccessibilityId("Game Controller Input");
       let {x, y} = await gcEl.getLocation();
@@ -120,7 +120,7 @@ describe('elementByXPath', function () {
       await driver.elementByXPath("//*[@text='ImageButton']");
     });
 
-    it('should swipe up menu', async function () {
+    it.skip('should swipe up menu', async function () {
       await (await driver.elementByAccessibilityId("Views")).click();
       let gcEl = await driver.elementByAccessibilityId("Game Controller Input");
       let {x, y} = await gcEl.getLocation();
@@ -169,7 +169,7 @@ describe('elementByXPath', function () {
   });
 
   describe('mjsonwp touch actions', function () {
-    it('should touch down at a location and then touch up', async function () {
+    it.skip('should touch down at a location and then touch up', async function () {
       let el = await driver.elementByAccessibilityId("Animation");
       let sessionId = await driver.getSessionId();
       let {x, y} = await el.getLocation();

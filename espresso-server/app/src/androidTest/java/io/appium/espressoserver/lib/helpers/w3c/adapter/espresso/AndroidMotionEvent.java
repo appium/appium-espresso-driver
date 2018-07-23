@@ -11,6 +11,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
+import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.Helpers.extractButton;
 
@@ -36,7 +37,7 @@ public class AndroidMotionEvent {
         // TODO: Use globalKeyInputState to get metaState
         int metaState = 0;
 
-        this.downTime = eventTime;
+        this.downTime = downEvent != null ? downEvent.getDownTime() : eventTime;
 
         return (new MotionEventBuilder(uiController))
                 .setAction(action)
@@ -66,6 +67,24 @@ public class AndroidMotionEvent {
                 .setY(y)
                 .setMetaState(metaState)
                 .setSource(downEvent.getSource())
+                .run();
+    }
+
+    public void pointerCancel() throws AppiumException {
+        pointerCancel(null, null);
+    }
+
+    public void pointerCancel(List<Long> x, List<Long> y) throws AppiumException {
+        // TODO: Use globalKeyInputState to get metaState
+        int metaState = 0;
+
+        (new MotionEventBuilder(uiController))
+                .setAction(ACTION_CANCEL)
+                .setDownTime(downTime)
+                .setX(x)
+                .setY(y)
+                .setPointerType(PointerType.TOUCH)
+                .setMetaState(metaState)
                 .run();
     }
 
