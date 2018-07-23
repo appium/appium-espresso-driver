@@ -14,12 +14,12 @@ import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionSequence;
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
-import io.appium.espressoserver.lib.helpers.w3c.models.ActiveInputSources;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.models.Tick;
+import io.appium.espressoserver.lib.helpers.w3c.state.ActiveInputSources;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 import io.appium.espressoserver.test.assets.Helpers;
@@ -237,7 +237,6 @@ public class ActionSequenceTest {
         long timeBefore = System.currentTimeMillis();
         actionSequence.dispatch(new DummyW3CActionAdapter(), inputStateTable);
         long elapsedTime = System.currentTimeMillis() - timeBefore;
-        System.out.println(elapsedTime);
         assertTrue(elapsedTime >= 500);
         assertTrue(elapsedTime <= 600);
 

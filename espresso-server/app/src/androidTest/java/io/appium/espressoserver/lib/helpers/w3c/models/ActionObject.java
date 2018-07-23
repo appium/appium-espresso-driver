@@ -1,10 +1,27 @@
 package io.appium.espressoserver.lib.helpers.w3c.models;
 
+import java.util.concurrent.Callable;
+
 import javax.annotation.Nullable;
 
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
+import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputState;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
+import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
+import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
+
+import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyDown;
+import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyUp;
+import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerDown;
+import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerMove;
+import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerUp;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER;
 
 public class ActionObject {
     private int index;
@@ -23,11 +40,107 @@ public class ActionObject {
 
     }
 
+    // Copy constructor
+    public ActionObject(ActionObject actionObject) {
+        this.index = actionObject.index;
+        this.type = actionObject.type;
+        this.subType = actionObject.subType;
+        this.id = actionObject.id;
+        this.duration = actionObject.duration;
+        this.origin = actionObject.origin;
+        this.x = actionObject.x;
+        this.y = actionObject.y;
+        this.button = actionObject.button;
+        this.value = actionObject.value;
+        this.pointer = actionObject.pointer;
+    }
+
     public ActionObject(String id, InputSourceType type, ActionType subType, int index){
         this.type = type;
         this.subType = subType;
         this.id = id;
         this.index = index; // Store the index of the action for possible future logging issues
+    }
+
+    /**
+     * Call `dispatch tick actions` algorithm in section 17.4
+     * @param adapter Adapter for actions
+     * @param inputStateTable State of all inputs
+     * @param tickDuration How long the tick is
+     * @param timeAtBeginningOfTick When the tick began
+     * @return
+     * @throws AppiumException
+     */
+    @Nullable
+    public Callable<Void> dispatch(W3CActionAdapter adapter,
+                             InputStateTable inputStateTable,
+                             long tickDuration, long timeAtBeginningOfTick) throws AppiumException {
+        InputSourceType inputSourceType = this.getType();
+        ActionType actionType = this.getSubType();
+        try {
+            // 1.3 If the current session's input state table doesn't have a property corresponding to
+            //      source id, then let the property corresponding to source id be a new object of the
+            //      corresponding input source state type for source type.
+            // 1.4 Let device state be the input source state corresponding to source id in the current session’s input state table
+            InputState deviceState = inputStateTable.getOrCreateInputState(this.getId(), this);
+
+            if (inputSourceType == KEY) {
+                switch (actionType) {
+                    case KEY_DOWN:
+                        dispatchKeyDown(adapter, this, (KeyInputState) deviceState, inputStateTable, tickDuration);
+                        break;
+                    case KEY_UP:
+                        dispatchKeyUp(adapter, this, (KeyInputState) deviceState, inputStateTable, tickDuration);
+                        break;
+                    case PAUSE:
+                    default:
+                        break;
+                }
+            } else if (inputSourceType == POINTER) {
+                long timeSinceBeginningOfTick = System.currentTimeMillis() - timeAtBeginningOfTick;
+                switch (actionType) {
+                    case POINTER_MOVE:
+                        return dispatchPointerMove(
+                                adapter,
+                                this.getId(),
+                                this,
+                                (PointerInputState) deviceState,
+                                tickDuration,
+                                timeSinceBeginningOfTick,
+                                inputStateTable.getGlobalKeyInputState()
+                        );
+                    case POINTER_DOWN:
+                        dispatchPointerDown(
+                                adapter,
+                                this.getId(),
+                                this,
+                                (PointerInputState) deviceState,
+                                inputStateTable,
+                                inputStateTable.getGlobalKeyInputState()
+                        );
+                        break;
+                    case POINTER_UP:
+                        dispatchPointerUp(
+                                adapter,
+                                this.getId(),
+                                this,
+                                (PointerInputState) deviceState,
+                                inputStateTable,
+                                inputStateTable.getGlobalKeyInputState()
+                        );
+                        break;
+                    // TODO: Add pointer cancel
+                    default:
+                        break;
+                }
+            }
+        } catch (ClassCastException cce) {
+            throw new InvalidArgumentException(String.format(
+                    "Attempted to apply action of type '%s' to a source with type '%s'",
+                    inputSourceType, inputStateTable.getClass().getSimpleName()
+            ));
+        }
+        return null;
     }
 
     public InputSourceType getType() {
@@ -108,5 +221,9 @@ public class ActionObject {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

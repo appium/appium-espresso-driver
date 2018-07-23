@@ -9,7 +9,10 @@ import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyLocation
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
+import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
+
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_UP;
 
 /**
  * Implement key dispatch events (https://www.w3.org/TR/webdriver/#keyboard-actions)
@@ -17,7 +20,9 @@ import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 public class KeyDispatch {
 
     private static KeyEvent dispatchKeyEvent(W3CActionAdapter dispatcherAdapter,
-                                             ActionObject actionObject, KeyInputState inputState,
+                                             ActionObject actionObject,
+                                             KeyInputState inputState,
+                                             InputStateTable inputStateTable,
                                              long tickDuration, boolean down) throws AppiumException {
         // Get the base Key Event
         KeyEvent keyEvent = getKeyEvent(dispatcherAdapter, actionObject);
@@ -38,9 +43,9 @@ public class KeyDispatch {
             inputState.setMeta(inputState.isMeta() || key.equals(NormalizedKeys.META));
         } else {
             inputState.setAlt(inputState.isAlt() && !key.equals(NormalizedKeys.ALT));
-            inputState.setAlt(inputState.isShift() && !key.equals(NormalizedKeys.SHIFT));
-            inputState.setAlt(inputState.isCtrl() && !key.equals(NormalizedKeys.CONTROL));
-            inputState.setAlt(inputState.isMeta() && !key.equals(NormalizedKeys.META));
+            inputState.setShift(inputState.isShift() && !key.equals(NormalizedKeys.SHIFT));
+            inputState.setCtrl(inputState.isCtrl() && !key.equals(NormalizedKeys.CONTROL));
+            inputState.setMeta(inputState.isMeta() && !key.equals(NormalizedKeys.META));
         }
 
         // 11: Add key to the set corresponding to input state's pressed property
@@ -50,13 +55,20 @@ public class KeyDispatch {
             inputState.removePressed(key);
         }
 
-        // 12. Call implementation specific key-down event
         // Must lock the dispatcherAdapter in-case other threads are also using it
         dispatcherAdapter.lockAdapter();
         try {
             if (down) {
+
+                // 12: Append action object with subtype property changed to 'keyUp' to cancel list
+                ActionObject cancelActionObject = new ActionObject(actionObject);
+                cancelActionObject.setSubType(KEY_UP);
+                inputStateTable.addActionToCancel(cancelActionObject);
+
+                // 13: Call implementation specific key-down event
                 dispatcherAdapter.keyDown(keyEvent);
             } else {
+                // 13: Call implementation specific key-up event
                 dispatcherAdapter.keyUp(keyEvent);
             }
         } finally {
@@ -72,20 +84,23 @@ public class KeyDispatch {
      * @param dispatcherAdapter Adapter that has implementation specific keyDown event
      * @param actionObject W3C Action Object
      * @param inputState State of the input source
+     * @param inputStateTable All of the input states for this session
      * @param tickDuration How long the 'tick' is. This is unused currently but may be used in the future
      * @return KeyEvent (for testing purposes). 'null' if the dispatch failed.
      */
     @Nullable
     public static KeyEvent dispatchKeyDown(W3CActionAdapter dispatcherAdapter,
-                                   ActionObject actionObject, KeyInputState inputState, long tickDuration) throws AppiumException {
+                                            ActionObject actionObject, KeyInputState inputState,
+                                            InputStateTable inputStateTable, long tickDuration) throws AppiumException {
 
-        return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, tickDuration, true);
+        return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable ,tickDuration, true);
     }
 
     @Nullable
     public static KeyEvent dispatchKeyDown(W3CActionAdapter dispatcherAdapter,
-                                           ActionObject actionObject, KeyInputState inputState) throws AppiumException {
-        return dispatchKeyDown(dispatcherAdapter, actionObject, inputState, 0);
+                                           ActionObject actionObject, KeyInputState inputState,
+                                           InputStateTable inputStateTable) throws AppiumException {
+        return dispatchKeyDown(dispatcherAdapter, actionObject, inputState, inputStateTable, 0);
     }
 
     /**
@@ -94,19 +109,22 @@ public class KeyDispatch {
      * @param dispatcherAdapter Adapter that has implementation specific keyDown event
      * @param actionObject W3C Action Object
      * @param inputState State of the input source
+     * @param inputStateTable All of the input states for this session
      * @param tickDuration How long the 'tick' is. This is unused currently but may be used in the future
      * @return KeyEvent (for testing purposes). 'null' if the dispatch failed.
      */
     @Nullable
     public static KeyEvent dispatchKeyUp(W3CActionAdapter dispatcherAdapter,
-                                         ActionObject actionObject, KeyInputState inputState, long tickDuration) throws AppiumException {
-        return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, tickDuration, false);
+                                         ActionObject actionObject, KeyInputState inputState,
+                                         InputStateTable inputStateTable, long tickDuration) throws AppiumException {
+        return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable, tickDuration, false);
     }
 
     @Nullable
     public static KeyEvent dispatchKeyUp(W3CActionAdapter dispatcherAdapter,
-                                         ActionObject actionObject, KeyInputState inputState) throws AppiumException {
-        return dispatchKeyUp(dispatcherAdapter, actionObject, inputState, 0);
+                                         ActionObject actionObject, KeyInputState inputState,
+                                         InputStateTable inputStateTable) throws AppiumException {
+        return dispatchKeyUp(dispatcherAdapter, actionObject, inputState, inputStateTable, 0);
     }
 
     /**
@@ -142,153 +160,5 @@ public class KeyDispatch {
         keyEvent.setCharCode(charCode);
         keyEvent.setWhich(which);
         return keyEvent;
-    }
-
-    public static class KeyEvent {
-        private String key;
-        private String code;
-        private int location;
-        private int keyCode;
-        private int charCode;
-        private int which;
-        private boolean altKey;
-        private boolean shiftKey;
-        private boolean ctrlKey;
-        private boolean metaKey;
-        private boolean repeat;
-        private boolean isComposing = false;
-
-        public KeyEvent(
-                String key,
-                String code,
-                int location,
-                int keyCode,
-                int charCode,
-                int which,
-                boolean altKey,
-                boolean shiftKey,
-                boolean ctrlKey,
-                boolean metaKey,
-                boolean repeat,
-                boolean isComposing
-        ) {
-            this.key = key;
-            this.code = code;
-            this.location = location;
-            this.keyCode = keyCode;
-            this.charCode = charCode;
-            this.which = which;
-            this.altKey = altKey;
-            this.shiftKey = shiftKey;
-            this.ctrlKey = ctrlKey;
-            this.metaKey = metaKey;
-            this.repeat = repeat;
-            this.isComposing = isComposing;
-        }
-
-        public KeyEvent() { }
-
-        public String logMessage() {
-            return String.format(
-                "key=[%s] code=[%s] altKey=[%s] shiftKey=[%s] ctrlKey=[%s] metaKey=[%s]",
-                key, code, altKey, shiftKey, ctrlKey, metaKey
-            );
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        public String getCode() {
-            return code;
-        }
-
-        public void setCode(String code) {
-            this.code = code;
-        }
-
-        public int getLocation() {
-            return location;
-        }
-
-        public void setLocation(int location) {
-            this.location = location;
-        }
-
-        public boolean isAltKey() {
-            return altKey;
-        }
-
-        public void setAltKey(boolean altKey) {
-            this.altKey = altKey;
-        }
-
-        public boolean isShiftKey() {
-            return shiftKey;
-        }
-
-        public void setShiftKey(boolean shiftKey) {
-            this.shiftKey = shiftKey;
-        }
-
-        public boolean isCtrlKey() {
-            return ctrlKey;
-        }
-
-        public void setCtrlKey(boolean ctrlKey) {
-            this.ctrlKey = ctrlKey;
-        }
-
-        public boolean isMetaKey() {
-            return metaKey;
-        }
-
-        public void setMetaKey(boolean metaKey) {
-            this.metaKey = metaKey;
-        }
-
-        public boolean isRepeat() {
-            return repeat;
-        }
-
-        public void setRepeat(boolean repeat) {
-            this.repeat = repeat;
-        }
-
-        public boolean isComposing() {
-            return isComposing;
-        }
-
-        public void setComposing(boolean composing) {
-            isComposing = composing;
-        }
-
-        public int getKeyCode() {
-            return keyCode;
-        }
-
-        public void setKeyCode(int keyCode) {
-            this.keyCode = keyCode;
-        }
-
-        public int getCharCode() {
-            return charCode;
-        }
-
-        public void setCharCode(int charCode) {
-            this.charCode = charCode;
-        }
-
-        public int getWhich() {
-            return which;
-        }
-
-        public void setWhich(int which) {
-            this.which = which;
-        }
     }
 }

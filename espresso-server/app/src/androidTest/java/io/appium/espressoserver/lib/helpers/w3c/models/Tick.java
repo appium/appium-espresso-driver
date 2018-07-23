@@ -6,21 +6,13 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
-import io.appium.espressoserver.lib.helpers.w3c.state.InputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
-import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
-import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyDown;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyUp;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerMove;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.PAUSE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER;
 
 public class Tick implements Iterator<ActionObject> {
@@ -70,82 +62,19 @@ public class Tick implements Iterator<ActionObject> {
         return maxDuration;
     }
 
-    public List<Callable<Void>> dispatch(W3CActionAdapter adapter, InputStateTable inputStateTable, long tickDuration)
+    public List<Callable<Void>> dispatchAll(W3CActionAdapter adapter, InputStateTable inputStateTable, long tickDuration)
             throws AppiumException {
         long timeAtBeginningOfTick = System.currentTimeMillis();
-        KeyInputState globalKeyInputState = inputStateTable.getGlobalKeyInputState();
-
         List<Callable<Void>> asyncOperations = new ArrayList<>();
         for(ActionObject actionObject: tickActions) {
-            String sourceId = actionObject.getId();
-
-            // 1.3 If the current session's input state table doesn't have a property corresponding to
-            // source id, then let the property corresponding to source id be a new object of the
-            // corresponding input source state type for source type.
-            if (!inputStateTable.hasInputState(sourceId)) {
-                InputState newInputState = null;
-                switch(actionObject.getType()) {
-                    case KEY:
-                        newInputState = new KeyInputState();
-                        break;
-                    case POINTER:
-                        newInputState = new PointerInputState();
-                        break;
-                    case NONE:
-                        // Don't need to track state of null input types
-                        break;
-                    default:
-                        break;
-                }
-                if (newInputState != null) {
-                    inputStateTable.addInputState(sourceId, newInputState);
-                }
-            }
-
-            // 1.4 Let device state be the input source state corresponding to source id in the current session’s input state table
-            InputState deviceState = inputStateTable.getInputState(sourceId);
-
             // 2. Run algorithm with arguments source id, action object, device state and tick duration
-            InputSourceType inputSourceType = actionObject.getType();
-            ActionType actionType = actionObject.getSubType();
+            Callable<Void> dispatchResult = actionObject.dispatch(adapter,
+                    inputStateTable, tickDuration, timeAtBeginningOfTick);
 
-            try {
-                if (inputSourceType == KEY) {
-                    switch (actionType) {
-                        case KEY_DOWN:
-                            dispatchKeyDown(adapter, actionObject, (KeyInputState) deviceState, tickDuration);
-                            break;
-                        case KEY_UP:
-                            dispatchKeyUp(adapter, actionObject, (KeyInputState) deviceState, tickDuration);
-                            break;
-                        case PAUSE:
-                        default:
-                            break;
-                    }
-                } else if (inputSourceType == POINTER) {
-                    switch (actionType) {
-                        case POINTER_MOVE:
-                            asyncOperations.add(dispatchPointerMove(
-                                    adapter,
-                                    sourceId,
-                                    actionObject,
-                                    (PointerInputState) deviceState,
-                                    tickDuration,
-                                    System.currentTimeMillis() - timeAtBeginningOfTick,
-                                    globalKeyInputState
-                            ));
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            } catch (ClassCastException cce) {
-                throw new InvalidArgumentException(String.format(
-                        "Attempted to apply action of type '%s' to a source with type '%s'",
-                        inputSourceType, deviceState.getClass().getSimpleName()
-                ));
+            // If it's an async operation, add it to the list
+            if (dispatchResult != null) {
+                asyncOperations.add(dispatchResult);
             }
-
         }
 
         return asyncOperations;
