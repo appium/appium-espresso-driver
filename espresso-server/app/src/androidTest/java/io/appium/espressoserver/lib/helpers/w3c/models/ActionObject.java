@@ -17,6 +17,7 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyDown;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyDispatch.dispatchKeyUp;
+import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerCancel;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerDown;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerMove;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispatchPointerUp;
@@ -129,7 +130,13 @@ public class ActionObject {
                                 inputStateTable.getGlobalKeyInputState()
                         );
                         break;
-                    // TODO: Add pointer cancel
+                    case POINTER_CANCEL:
+                        dispatchPointerCancel(
+                                adapter,
+                                this.getId(),
+                                this
+                        );
+                        break;
                     default:
                         break;
                 }
