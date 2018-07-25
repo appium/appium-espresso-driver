@@ -44,13 +44,6 @@ public class DispatchPointerMoveResult extends BaseDispatchResult {
         if (currentX != x || currentY != y) {
             dispatcherAdapter.pointerMove(sourceId, pointerType, currentX, currentY, x, y, buttons, globalKeyInputState);
         }
-        if (duration > 0) {
-            try {
-                dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
-            } catch (InterruptedException ie) {
-                throw new AppiumException(ie.getCause());
-            }
-        }
     }
 
 }

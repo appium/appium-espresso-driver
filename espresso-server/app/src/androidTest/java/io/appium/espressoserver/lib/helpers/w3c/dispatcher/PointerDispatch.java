@@ -268,6 +268,15 @@ public class PointerDispatch {
                     pointerInputState.setY(y);
                 }
 
+                // Sleep for a fixed period of time
+                if (duration > 0) {
+                    try {
+                        dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
+                    } catch (InterruptedException ie) {
+                        throw new AppiumException(ie.getCause());
+                    }
+                }
+
                 if (!isLast) {
                     // 11. Perform a pointer move with arguments source id, input state, duration, start x, start y, target x, target y)
                     dispatchResult.setNext(
