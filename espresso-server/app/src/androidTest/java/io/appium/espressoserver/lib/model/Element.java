@@ -91,7 +91,6 @@ public class Element {
         } catch (NoMatchingViewException nme) {
             throw new StaleElementException(elementId);
         }
-        // TODO: Check that view still exists?
         return view;
     }
 

@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.support.test.espresso.UiController;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import java.util.List;
@@ -34,8 +35,7 @@ public class AndroidMotionEvent {
                                        final long eventTime)
             throws AppiumException {
 
-        // TODO: Use globalKeyInputState to get metaState
-        int metaState = 0;
+        int metaState = getMetaState(globalKeyInputState);
 
         this.downTime = downEvent != null ? downEvent.getDownTime() : eventTime;
 
@@ -57,8 +57,7 @@ public class AndroidMotionEvent {
                             final PointerType pointerType,
                             final KeyInputState globalKeyInputState,
                             final MotionEvent downEvent) throws AppiumException {
-        // TODO: Use globalKeyInputState to get metaState
-        int metaState = 0;
+        int metaState = getMetaState(globalKeyInputState);
 
         (new MotionEventBuilder())
                 .withAction(ACTION_MOVE)
@@ -77,8 +76,6 @@ public class AndroidMotionEvent {
     }
 
     public void pointerCancel(List<Long> x, List<Long> y) throws AppiumException {
-        // TODO: Use globalKeyInputState to get metaState
-        int metaState = 0;
 
         (new MotionEventBuilder())
                 .withAction(ACTION_CANCEL)
@@ -86,7 +83,6 @@ public class AndroidMotionEvent {
                 .withX(x)
                 .withY(y)
                 .withPointerType(PointerType.TOUCH)
-                .withMetaState(metaState)
                 .build()
                 .run(uiController);
 
@@ -105,5 +101,22 @@ public class AndroidMotionEvent {
             touchMotionEvent = new AndroidMotionEvent(uiController);
         }
         return touchMotionEvent;
+    }
+
+    public static int getMetaState(final KeyInputState keyInputState) {
+        int metaState = 0;
+        if (keyInputState.isAlt()) {
+            metaState |= KeyEvent.META_ALT_MASK;
+        }
+        if (keyInputState.isCtrl()) {
+            metaState |= KeyEvent.META_CTRL_MASK;
+        }
+        if (keyInputState.isShift()) {
+            metaState |= KeyEvent.META_SHIFT_MASK;
+        }
+        if (keyInputState.isMeta()) {
+            metaState |= KeyEvent.META_META_MASK;
+        }
+        return metaState;
     }
 }
