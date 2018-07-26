@@ -26,11 +26,11 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
-import io.appium.espressoserver.lib.helpers.Logger;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
 
 
@@ -78,7 +78,7 @@ public class Element {
      * @return
      */
     public static View getViewById(String elementId) throws NoSuchElementException, StaleElementException {
-        Logger.info(String.format("Retrieving element %s", elementId));
+        logger.info(String.format("Retrieving element %s", elementId));
         if (!exists(elementId)) {
             throw new NoSuchElementException(String.format("Invalid element ID %s", elementId));
         }

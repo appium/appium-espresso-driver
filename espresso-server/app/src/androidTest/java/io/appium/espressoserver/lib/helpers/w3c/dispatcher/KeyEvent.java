@@ -15,34 +15,6 @@ public class KeyEvent {
     private boolean repeat;
     private boolean isComposing = false;
 
-    public KeyEvent(
-            String key,
-            String code,
-            int location,
-            int keyCode,
-            int charCode,
-            int which,
-            boolean altKey,
-            boolean shiftKey,
-            boolean ctrlKey,
-            boolean metaKey,
-            boolean repeat,
-            boolean isComposing
-    ) {
-        this.key = key;
-        this.code = code;
-        this.location = location;
-        this.keyCode = keyCode;
-        this.charCode = charCode;
-        this.which = which;
-        this.altKey = altKey;
-        this.shiftKey = shiftKey;
-        this.ctrlKey = ctrlKey;
-        this.metaKey = metaKey;
-        this.repeat = repeat;
-        this.isComposing = isComposing;
-    }
-
     public KeyEvent() { }
 
     public String logMessage() {

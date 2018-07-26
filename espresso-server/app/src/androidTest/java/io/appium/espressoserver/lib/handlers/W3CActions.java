@@ -39,7 +39,6 @@ import java.util.Set;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.InteractionHelper;
-import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers;
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.InputEventParams;
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.KeyInputEventParams;
@@ -47,6 +46,7 @@ import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.MotionInp
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsParseException;
 import io.appium.espressoserver.lib.model.ActionsParams;
 
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.META_CODES_SHIFT;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.actionsToInputEventsMapping;
 import static io.appium.espressoserver.lib.helpers.w3c_actions.ActionsHelpers.getPointerAction;
@@ -96,11 +96,11 @@ public class W3CActions implements RequestHandler<ActionsParams, Void> {
                 return null;
             }
         } catch (JSONException | ActionsParseException e) {
-            Logger.error("Exception while reading JSON: ", e);
+            logger.error("Exception while reading JSON: ", e);
             throw new AppiumException(String.format("Could not parse W3C actions %s",
                     actionsAsJson), e);
         } catch (Exception e) {
-            Logger.error("Exception while executing W3C actions: ", e);
+            logger.error("Exception while executing W3C actions: ", e);
             throw new AppiumException(String.format(
                     "Got an unexpected error while executing W3C actions %s", actionsAsJson), e);
         }
@@ -170,7 +170,7 @@ public class W3CActions implements RequestHandler<ActionsParams, Void> {
                         result &= injectEventSync(new KeyEvent(startTimestamp + eventParam.startDelta,
                                 SystemClock.uptimeMillis(), keyAction, keyCode, 0,
                                 metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0));
-                        Logger.debug(String.format("Generated KeyEvent for keyAction '%s', keyCode: '%s', metaState: '%s'",
+                        logger.debug(String.format("Generated KeyEvent for keyAction '%s', keyCode: '%s', metaState: '%s'",
                                 keyAction, keyCode, metaState));
                     }
                 } else if (eventParam instanceof MotionInputEventParams) {

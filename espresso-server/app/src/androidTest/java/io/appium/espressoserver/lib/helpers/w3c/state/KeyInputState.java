@@ -60,6 +60,13 @@ public class KeyInputState implements InputState {
         this.meta = meta;
     }
 
+    public String logMessage() {
+        return String.format(
+                "alt=[%s] shift=[%s] ctrl=[%s] meta=[%s] pressed=[]",
+                isAlt(), isShift(), isCtrl(), isMeta(), pressed
+        );
+    }
+
     /**
      * Implement 'calculated global key state' in spec 17.2
      */
@@ -96,4 +103,5 @@ public class KeyInputState implements InputState {
 
         return outputState;
     }
+
 }

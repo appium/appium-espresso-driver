@@ -74,7 +74,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.ScreenCaptureException;
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
-import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.model.ActionsParams;
@@ -89,13 +88,14 @@ import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
 
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 
 class Router {
     private final RouteMap routeMap;
 
     Router() {
-        Logger.debug("Generating routes");
+        logger.debug("Generating routes");
         routeMap = new RouteMap();
 
         routeMap.addRoute(new RouteDefinition(Method.GET, "/status", new Status(), AppiumParams.class));
@@ -190,7 +190,7 @@ class Router {
 
     @SuppressWarnings("unchecked")
     public BaseResponse route(String uri, Method method, Map<String, String> params,  Map<String, String> files) {
-        Logger.debug(String.format("Started processing %s request to '%s'", method, uri));
+        logger.debug(String.format("Started processing %s request for '%s'", method, uri));
 
         // Look for a route that matches this URL
         RouteDefinition matchingRoute = routeMap.findMatchingRoute(method, uri);
@@ -199,10 +199,11 @@ class Router {
         if (matchingRoute == null) {
             return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, String.format("No such route %s", uri));
         }
+        logger.debug(String.format("Matched route definition: %s", matchingRoute.getClass()));
 
         // Get the handler, parameter class and URI parameters
         RequestHandler handler = matchingRoute.getHandler();
-        Logger.debug(String.format("Matched route handler: %s", handler.getClass()));
+        logger.debug(String.format("Matched route handler: %s", handler.getClass()));
         Class<? extends AppiumParams> paramClass = matchingRoute.getParamClass();
         Map<String, String> uriParams = matchingRoute.getUriParams(uri);
 
@@ -213,7 +214,7 @@ class Router {
         if (postJson == null) {
             appiumParams = new AppiumParams();
         } else {
-            Logger.debug(String.format("Got raw post data: %s", abbreviate(postJson, 300)));
+            logger.debug(String.format("Got raw post data: %s", abbreviate(postJson, 300)));
             appiumParams = paramClass.cast((new Gson()).fromJson(postJson, paramClass));
         }
         appiumParams.initUriMapping(uriParams);
@@ -234,7 +235,7 @@ class Router {
             }
 
             AppiumResponse appiumResponse = new AppiumResponse<>(AppiumStatus.SUCCESS, handlerResult, sessionId);
-            Logger.debug(String.format("Finished processing %s request to '%s'", method, uri));
+            logger.debug(String.format("Finished processing %s request for '%s'", method, uri));
             return appiumResponse;
         } catch (NoSuchElementException e) {
             return new AppiumResponse<>(AppiumStatus.NO_SUCH_ELEMENT, Log.getStackTraceString(e));

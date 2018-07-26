@@ -277,7 +277,7 @@ public class PointerDispatchTest {
 
         assertFalse(pointerInputState.isPressed(1));
         assertTrue(inputStateTable.getCancelList().isEmpty());
-        dispatchPointerDown(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
+        dispatchPointerDown(dummyW3CActionAdapter, actionObject, pointerInputState,
                 inputStateTable,null);
         assertEquals(inputStateTable.getCancelList().size(), 1);
         ActionObject cancelObject = inputStateTable.getCancelList().get(0);
@@ -306,7 +306,7 @@ public class PointerDispatchTest {
         actionObject.setButton(1);
 
         assertTrue(pointerInputState.isPressed(1));
-        dispatchPointerDown(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
+        dispatchPointerDown(dummyW3CActionAdapter, actionObject, pointerInputState,
                 new InputStateTable(), null);
 
         assertTrue(pointerInputState.isPressed(1));
@@ -324,7 +324,7 @@ public class PointerDispatchTest {
         actionObject.setButton(1);
 
         assertTrue(pointerInputState.isPressed(1));
-        dispatchPointerUp(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
+        dispatchPointerUp(dummyW3CActionAdapter, actionObject, pointerInputState,
                 new InputStateTable(), null);
 
         assertFalse(pointerInputState.isPressed(1));
@@ -349,7 +349,7 @@ public class PointerDispatchTest {
         actionObject.setButton(1);
 
         assertFalse(pointerInputState.isPressed(1));
-        dispatchPointerUp(dummyW3CActionAdapter, "any", actionObject, pointerInputState,
+        dispatchPointerUp(dummyW3CActionAdapter, actionObject, pointerInputState,
                 new InputStateTable(), null);
 
         assertFalse(pointerInputState.isPressed(1));

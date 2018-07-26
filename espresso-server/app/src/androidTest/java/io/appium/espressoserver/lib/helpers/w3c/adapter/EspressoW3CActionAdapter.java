@@ -1,7 +1,6 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter;
 
 import android.os.SystemClock;
-import android.support.test.espresso.UiController;
 
 import java.util.Set;
 
@@ -9,15 +8,18 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
+import io.appium.espressoserver.lib.helpers.AndroidLogger;
+import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
+    // Stub.
     //private final UiController uiController;
 
-    public EspressoW3CActionAdapter(UiController uiController) {
+    public EspressoW3CActionAdapter(/*UiController uiController*/) {
         //this.uiController = uiController;
     }
 
@@ -86,5 +88,9 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
     public void sleep(long duration) throws InterruptedException {
         SystemClock.sleep(duration);
+    }
+    
+    public Logger getLogger() {
+        return AndroidLogger.logger;
     }
 }
