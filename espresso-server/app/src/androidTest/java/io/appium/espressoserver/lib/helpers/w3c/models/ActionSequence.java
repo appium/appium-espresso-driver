@@ -63,18 +63,25 @@ public class ActionSequence implements Iterator<Tick> {
     }
 
     /**
-     * Call the dispatch algorithm defined in 17.4
-     * @param adapter Touch action adapter
-     * @param inputStateTable Input states for a session
+     * Call the dispatchAll algorithm defined in 17.4
+     * @param adapter W3C Actions adapter
+     * @param inputStateTable Input states for this session
      * @throws AppiumException
      * @throws InterruptedException
      * @throws ExecutionException
      */
     public void dispatch(W3CActionAdapter adapter, InputStateTable inputStateTable)
             throws AppiumException, InterruptedException, ExecutionException {
+        int tickIndex = 0;
         for(Tick tick: ticks) {
             long timeAtBeginningOfTick = System.currentTimeMillis();
             long tickDuration = tick.calculateTickDuration();
+
+            // 1. Dispatch all of the events
+            adapter.getLogger().info(String.format(
+                    "Dispatching tick #%s of %s",
+                    tickIndex, ticks.size()
+            ));
             List<Callable<Void>> callables = tick.dispatchAll(adapter, inputStateTable, tickDuration);
 
             // 2. Wait until the following conditions are all met:
@@ -103,6 +110,8 @@ public class ActionSequence implements Iterator<Tick> {
 
             // 2.3 The UI thread is complete
             adapter.waitForUiThread();
+
+            tickIndex++;
         }
     }
 }

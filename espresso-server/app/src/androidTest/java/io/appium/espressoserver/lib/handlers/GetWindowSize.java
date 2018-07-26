@@ -22,15 +22,16 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.WindowSize;
+
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
 public class GetWindowSize implements RequestHandler<AppiumParams, WindowSize> {
 
     @Override
     public WindowSize handle(AppiumParams params) throws AppiumException {
-        Logger.info("Get window size of the device");
+        logger.info("Get window size of the device");
         DisplayMetrics displayMetrics = new DisplayMetrics();
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         WindowManager winManager = (WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);

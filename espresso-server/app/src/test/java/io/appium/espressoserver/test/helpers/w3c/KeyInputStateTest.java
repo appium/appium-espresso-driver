@@ -8,15 +8,14 @@ import java.util.Arrays;
 
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
 public class KeyInputStateTest {
 
-    // Start tests for getGlobalKeyState
-
-    KeyInputState keyInputStateOne;
-    KeyInputState keyInputStateTwo;
+    private KeyInputState keyInputStateOne;
+    private KeyInputState keyInputStateTwo;
 
     @Before
     public void before() {
@@ -39,7 +38,7 @@ public class KeyInputStateTest {
         keyInputStateTwo.setAlt(false);
         KeyInputState[] keyInputStates = new KeyInputState[]{keyInputStateOne, keyInputStateTwo};
         KeyInputState aggregateKeyInputState = KeyInputState.getGlobalKeyState(Arrays.asList(keyInputStates));
-        assertTrue(!aggregateKeyInputState.isAlt());
+        assertFalse(aggregateKeyInputState.isAlt());
     }
 
     @Test
@@ -58,7 +57,7 @@ public class KeyInputStateTest {
         KeyInputState aggregateKeyInputState = KeyInputState.getGlobalKeyState(Arrays.asList(keyInputStates));
         assertTrue(aggregateKeyInputState.isAlt());
         assertTrue(aggregateKeyInputState.isCtrl());
-        assertTrue(!aggregateKeyInputState.isShift());
+        assertFalse(aggregateKeyInputState.isShift());
         assertTrue(aggregateKeyInputState.isMeta());
     }
 

@@ -34,6 +34,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateExcep
 import io.appium.espressoserver.lib.handlers.exceptions.NoAlertOpenException;
 
 import static android.text.TextUtils.join;
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.InteractionHelper.getUiDevice;
 
 public class AlertHelpers {
@@ -148,7 +149,7 @@ public class AlertHelpers {
         }
 
         final String actualLabel = dstButton.getText();
-        Logger.info(String.format("Clicking alert button '%s' in order to %s it",
+        logger.info(String.format("Clicking alert button '%s' in order to %s it",
                 actualLabel, action.name().toLowerCase()));
         dstButton.click();
         return actualLabel;

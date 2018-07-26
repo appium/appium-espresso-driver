@@ -59,4 +59,11 @@ public class PointerInputState implements InputState {
     public void setType(PointerType type) {
         this.type = type;
     }
+
+    public String logMessage() {
+        return String.format(
+                "pointer-type=[%s] x=[%s] y=[%s] pressed=[%s]",
+                type, x, y, pressed
+        );
+    }
 }

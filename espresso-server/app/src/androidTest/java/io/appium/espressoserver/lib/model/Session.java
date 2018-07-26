@@ -19,8 +19,9 @@ package io.appium.espressoserver.lib.model;
 import java.util.UUID;
 
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException;
-import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.SessionParams.DesiredCapabilities;
+
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
 @SuppressWarnings("unused")
 public class Session {
@@ -57,7 +58,7 @@ public class Session {
      */
     public synchronized static Session createGlobalSession(DesiredCapabilities desiredCapabilities) {
         if (globalSession != null) {
-            Logger.info(String.format("Got request for new session creation while the one " +
+            logger.info(String.format("Got request for new session creation while the one " +
                             "is still in progress. Overriding the old session having id %s",
                     globalSession.getId()));
         }
