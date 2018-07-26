@@ -25,7 +25,6 @@ import android.widget.ProgressBar;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
-import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.model.ViewText;
@@ -33,6 +32,7 @@ import io.appium.espressoserver.lib.viewaction.ViewTextGetter;
 
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
 public class SendKeys implements RequestHandler<TextParams, Void> {
 
@@ -76,14 +76,14 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
             if (params.getText() != null) {
                 value = params.getText();
             }
-            Logger.debug(String.format("Trying replaceText action as a workaround " +
+            logger.debug(String.format("Trying replaceText action as a workaround " +
                     "to type the '%s' text into the input field", value));
             ViewText currentText = new ViewTextGetter().get(viewInteraction);
             if (currentText.getText().isEmpty() || currentText.isHint()) {
                 viewInteraction.perform(replaceText(value));
             } else {
-                Logger.debug(String.format("Current input field's text: '%s'", currentText.getText()));
-                viewInteraction.perform(replaceText(currentText.getText() + value));
+                logger.debug(String.format("Current input field's text: '%s'", currentText));
+                viewInteraction.perform(replaceText(currentText + value));
             }
         }
 

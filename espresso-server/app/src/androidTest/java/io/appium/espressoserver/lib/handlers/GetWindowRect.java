@@ -22,15 +22,16 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.WindowRect;
+
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
 public class GetWindowRect implements RequestHandler<AppiumParams, WindowRect> {
 
     @Override
     public WindowRect handle(AppiumParams params) throws AppiumException {
-        Logger.info("Get window rect of the device");
+        logger.info("Get window rect of the device");
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();

@@ -16,12 +16,11 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTE
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 
-//import io.appium.espressoserver.lib.helpers.Logger;
+//import io.appium.espressoserver.lib.helpers.AndroidLogger;
 
 public class PointerDispatch {
 
     private static void dispatchPointerEvent(final W3CActionAdapter dispatcherAdapter,
-                                             final String sourceId,
                                              final ActionObject actionObject,
                                              final PointerInputState pointerInputState,
                                              final InputStateTable inputStateTable,
@@ -29,6 +28,7 @@ public class PointerDispatch {
                                              final boolean down) throws AppiumException {
         PointerType pointerType = actionObject.getPointer();
         int button = actionObject.getButton();
+
         if (down) {
             if (pointerInputState.isPressed(button)) {
                 return;
@@ -47,6 +47,12 @@ public class PointerDispatch {
             pointerInputState.removePressed(button);
         }
 
+        dispatcherAdapter.getLogger().info(String.format(
+                "Dispatching pointer event '%s' on input source with id '%s' with coordinates [%s, %s] " +
+                "and button '%s'",
+                down ? "pointerDown": "pointerUp", actionObject.getId(), x, y, button
+        ));
+
         dispatcherAdapter.lockAdapter();
         try {
             if (down) {
@@ -56,67 +62,67 @@ public class PointerDispatch {
                 inputStateTable.addActionToCancel(cancelObject);
 
                 // Dispatch implementation specific pointer down
-                dispatcherAdapter.pointerDown(button, sourceId, pointerType, x, y,
+                dispatcherAdapter.pointerDown(button, actionObject.getId(), pointerType, x, y,
                         pointerInputState.getButtons(), globalKeyInputState);
             } else {
                 // Dispatch implementation specific pointer up
-                dispatcherAdapter.pointerUp(button, sourceId, pointerType, x, y,
+                dispatcherAdapter.pointerUp(button, actionObject.getId(), pointerType, x, y,
                         pointerInputState.getButtons(), globalKeyInputState);
             }
         } finally {
             dispatcherAdapter.unlockAdapter();
         }
+
+        // Log the new state of the pointer
+        dispatcherAdapter.getLogger().info(String.format(
+                "State of pointer input source with id %s is now: %s",
+                actionObject.getId(), pointerInputState.logMessage()
+        ));
     }
 
     /**
      * Run the 'dispatch a pointer down' algorithm
      * @param dispatcherAdapter W3C actions implementation
-     * @param sourceId ID of the input source
      * @param actionObject Action object that defines the pointer action
      * @param pointerInputState Current state of the input source
      * @param globalKeyInputState Global key input state
      * @throws AppiumException
      */
     public static void dispatchPointerDown(final W3CActionAdapter dispatcherAdapter,
-                                           final String sourceId,
                                            final ActionObject actionObject,
                                            final PointerInputState pointerInputState,
                                            final InputStateTable inputStateTable,
                                            final KeyInputState globalKeyInputState) throws AppiumException {
-        dispatchPointerEvent(dispatcherAdapter, sourceId, actionObject, pointerInputState,
+        dispatchPointerEvent(dispatcherAdapter, actionObject, pointerInputState,
                 inputStateTable, globalKeyInputState, true);
     }
 
     /**
      * Perform the 'dispatch pointer up' algorithm
      * @param dispatcherAdapter W3C actions implementation
-     * @param sourceId ID of the input source
      * @param actionObject Action object that defines the pointer action
      * @param pointerInputState Current state of the input source
      * @param globalKeyInputState Global key input state
      * @throws AppiumException
      */
     public static void dispatchPointerUp(final W3CActionAdapter dispatcherAdapter,
-                                           final String sourceId,
                                            final ActionObject actionObject,
                                            final PointerInputState pointerInputState,
                                             final InputStateTable inputStateTable,
                                            final KeyInputState globalKeyInputState) throws AppiumException {
-        dispatchPointerEvent(dispatcherAdapter, sourceId, actionObject, pointerInputState,
+        dispatchPointerEvent(dispatcherAdapter, actionObject, pointerInputState,
                 inputStateTable, globalKeyInputState, false);
     }
 
     /**
      * Perform the 'dispatch a pointer cancel' event
      * @param dispatcherAdapter Actions adapter
-     * @param sourceId Input source
      * @param actionObject Action object
      * @throws AppiumException
      */
     public static void dispatchPointerCancel(final W3CActionAdapter dispatcherAdapter,
-                                             final String sourceId,
                                              final ActionObject actionObject) throws AppiumException {
-        dispatcherAdapter.pointerCancel(sourceId, actionObject.getPointer());
+        dispatcherAdapter.pointerCancel(actionObject.getId(), actionObject.getPointer());
     }
 
     /**
@@ -145,10 +151,10 @@ public class PointerDispatch {
         long startY = pointerInputState.getY();
         Origin origin = actionObject.getOrigin();
 
-        /*Logger.debug(String.format(
+        dispatcherAdapter.getLogger().info(String.format(
             "Dispatching pointer move '%s' on input source with id '%s' with origin '%s' and coordinates [%s, %s]",
-            pointerInputState.getType().toString(), sourceId, origin, xOffset, yOffset
-        ));*/
+            pointerInputState.getType(), sourceId, origin, xOffset, yOffset
+        ));
 
         long x;
         long y;
@@ -181,7 +187,7 @@ public class PointerDispatch {
             duration = tickDuration;
         }
 
-        return performPointerMove(
+        Callable<Void> callable = performPointerMove(
                 dispatcherAdapter,
                 sourceId,
                 pointerInputState,
@@ -191,6 +197,15 @@ public class PointerDispatch {
                 timeSinceBeginningOfTick,
                 globalKeyInputState
         );
+
+
+        // Log the new state of the pointer
+        dispatcherAdapter.getLogger().info(String.format(
+                "State of pointer input source with id %s is now: %s",
+               actionObject.getId(), pointerInputState.logMessage()
+        ));
+
+        return callable;
     }
 
     /**
@@ -212,13 +227,6 @@ public class PointerDispatch {
                                                     final long targetX, final long targetY,
                                                     final long timeSinceBeginningOfTick,
                                                     final KeyInputState globalKeyInputState) {
-
-        // TODO: Make logger implement a generic Java logger interface so we can mock it in tests
-        /*Logger.debug(String.format(
-            "Performing pointer move '%s' on input source with id '%s' from [%s, %s] to [%s, %s]",
-            pointerInputState.getType().toString(), sourceId, startX, startY, targetX, targetY
-        ));*/
-
         return new Callable<Void>() {
             @Override
             public Void call() throws Exception {

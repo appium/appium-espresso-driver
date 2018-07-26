@@ -48,6 +48,7 @@ public class Actions {
         InputStateTable inputStateTable = InputStateTable.getInputStateTableOfSession(sessionId);
 
         // Let `actions by tick` be the result of trying to extract an action sequence with argument parameters
+        adapter.getLogger().info("Performing actions");
         ActionSequence actionsByTick = new ActionSequence(this, activeInputSources, inputStateTable);
         try {
             // Dispatch the actions
@@ -72,6 +73,7 @@ public class Actions {
         InputStateTable inputStateTable = InputStateTable.getInputStateTableOfSession(sessionId);
 
         // Undo all actions
+        adapter.getLogger().info("Releasing actions performed during session %s");
         inputStateTable.undoAll(adapter, System.currentTimeMillis());
     }
 

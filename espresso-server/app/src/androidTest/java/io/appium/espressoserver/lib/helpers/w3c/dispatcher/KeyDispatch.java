@@ -29,13 +29,17 @@ public class KeyDispatch {
         String key = keyEvent.getKey();
 
         // 3. If the input state's pressed property contains key, let repeat be true, otherwise let repeat be false.
-        boolean repeat = inputState.isPressed(key);
+        //    (Doesn't do this step because the value doesn't get used)
 
         // 6. Let charCode, keyCode and which be the implementation-specific values of the charCode,
         // keyCode and which properties.
         // Omiting this for now until there's an implementation that needs it.
 
         // 7-10: Set the alt, shift, ctrl meta key state
+        dispatcherAdapter.getLogger().info(String.format(
+                "Dispatching '%s' event on input source with id %s with properties '%s'",
+                down ? "keyDown" : "keyUp", actionObject.getId(), keyEvent.logMessage()
+        ));
         if (down) {
             inputState.setAlt(inputState.isAlt() || key.equals(NormalizedKeys.ALT));
             inputState.setShift(inputState.isShift() || key.equals(NormalizedKeys.SHIFT));
@@ -74,6 +78,12 @@ public class KeyDispatch {
         } finally {
             dispatcherAdapter.unlockAdapter();
         }
+
+        // Log the updated keyboard state
+        dispatcherAdapter.getLogger().info(String.format(
+                "Current state of key input source with id: %s",
+                inputState.logMessage()
+        ));
 
         return keyEvent;
     }

@@ -23,8 +23,9 @@ import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.model.StartActivityParams;
+
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
 public class StartActivity implements RequestHandler<StartActivityParams, Void> {
 
@@ -40,7 +41,7 @@ public class StartActivity implements RequestHandler<StartActivityParams, Void> 
      * @param waitForActivity
      */
     public static void startActivity(String appActivity, Boolean waitForActivity) {
-        Logger.info(String.format("Starting activity '%s'", appActivity));
+        logger.info(String.format("Starting activity '%s'", appActivity));
         Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
         Instrumentation.ActivityMonitor mSessionMonitor = mInstrumentation.addMonitor(appActivity, null, false);
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -58,7 +59,7 @@ public class StartActivity implements RequestHandler<StartActivityParams, Void> 
 
         if (waitForActivity) {
             Activity mCurrentActivity = mInstrumentation.waitForMonitor(mSessionMonitor);
-            Logger.info(String.format("Activity '%s' started", mCurrentActivity.getLocalClassName()));
+            logger.info(String.format("Activity '%s' started", mCurrentActivity.getLocalClassName()));
         }
     }
 }
