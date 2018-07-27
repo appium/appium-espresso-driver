@@ -3,8 +3,10 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 import android.os.SystemClock;
 import android.support.test.espresso.InjectEventSecurityException;
 import android.support.test.espresso.UiController;
+import android.util.DisplayMetrics;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,122 +26,14 @@ import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
+import io.appium.espressoserver.lib.model.Element;
 
-import static android.view.KeyEvent.ACTION_DOWN;
-import static android.view.KeyEvent.ACTION_UP;
-import static android.view.KeyEvent.KEYCODE_0;
-import static android.view.KeyEvent.KEYCODE_1;
-import static android.view.KeyEvent.KEYCODE_2;
-import static android.view.KeyEvent.KEYCODE_3;
-import static android.view.KeyEvent.KEYCODE_4;
-import static android.view.KeyEvent.KEYCODE_5;
-import static android.view.KeyEvent.KEYCODE_6;
-import static android.view.KeyEvent.KEYCODE_7;
-import static android.view.KeyEvent.KEYCODE_8;
-import static android.view.KeyEvent.KEYCODE_9;
-import static android.view.KeyEvent.KEYCODE_ALT_LEFT;
-import static android.view.KeyEvent.KEYCODE_BREAK;
-import static android.view.KeyEvent.KEYCODE_CLEAR;
-import static android.view.KeyEvent.KEYCODE_COMMA;
-import static android.view.KeyEvent.KEYCODE_CTRL_LEFT;
-import static android.view.KeyEvent.KEYCODE_DEL;
-import static android.view.KeyEvent.KEYCODE_DPAD_DOWN;
-import static android.view.KeyEvent.KEYCODE_DPAD_LEFT;
-import static android.view.KeyEvent.KEYCODE_DPAD_RIGHT;
-import static android.view.KeyEvent.KEYCODE_ENTER;
-import static android.view.KeyEvent.KEYCODE_EQUALS;
-import static android.view.KeyEvent.KEYCODE_ESCAPE;
-import static android.view.KeyEvent.KEYCODE_F1;
-import static android.view.KeyEvent.KEYCODE_F10;
-import static android.view.KeyEvent.KEYCODE_F11;
-import static android.view.KeyEvent.KEYCODE_F12;
-import static android.view.KeyEvent.KEYCODE_F2;
-import static android.view.KeyEvent.KEYCODE_F3;
-import static android.view.KeyEvent.KEYCODE_F4;
-import static android.view.KeyEvent.KEYCODE_F5;
-import static android.view.KeyEvent.KEYCODE_F6;
-import static android.view.KeyEvent.KEYCODE_F7;
-import static android.view.KeyEvent.KEYCODE_F8;
-import static android.view.KeyEvent.KEYCODE_F9;
-import static android.view.KeyEvent.KEYCODE_FORWARD_DEL;
-import static android.view.KeyEvent.KEYCODE_HELP;
-import static android.view.KeyEvent.KEYCODE_HOME;
-import static android.view.KeyEvent.KEYCODE_INSERT;
-import static android.view.KeyEvent.KEYCODE_META_LEFT;
-import static android.view.KeyEvent.KEYCODE_MINUS;
-import static android.view.KeyEvent.KEYCODE_MOVE_END;
-import static android.view.KeyEvent.KEYCODE_NUMPAD_ADD;
-import static android.view.KeyEvent.KEYCODE_PAGE_DOWN;
-import static android.view.KeyEvent.KEYCODE_PAGE_UP;
-import static android.view.KeyEvent.KEYCODE_PERIOD;
-import static android.view.KeyEvent.KEYCODE_SEMICOLON;
-import static android.view.KeyEvent.KEYCODE_SHIFT_LEFT;
-import static android.view.KeyEvent.KEYCODE_SLASH;
-import static android.view.KeyEvent.KEYCODE_SPACE;
-import static android.view.KeyEvent.KEYCODE_STAR;
-import static android.view.KeyEvent.KEYCODE_TAB;
-import static android.view.KeyEvent.KEYCODE_UNKNOWN;
-import static android.view.KeyEvent.KEYCODE_ZENKAKU_HANKAKU;
-import static android.view.KeyEvent.META_ALT_MASK;
-import static android.view.KeyEvent.META_CTRL_MASK;
-import static android.view.KeyEvent.META_SHIFT_MASK;
+import static android.support.test.InstrumentationRegistry.getContext;
+import static android.view.KeyEvent.*;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ALT;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ARROW_DOWN;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ARROW_LEFT;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ARROW_RIGHT;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ARROW_UP;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ASTERISK;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.BACKSPACE;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.CLEAR;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.COMMA;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.CONTROL;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.DELETE;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.EIGHT;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.END;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.EQUALS;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ESCAPE;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F1;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F10;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F11;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F12;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F2;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F3;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F4;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F5;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F6;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F7;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F8;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.F9;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.FIVE;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.FORWARD_SLASH;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.FOUR;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.HELP;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.HOME;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.HYPHEN;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.INSERT;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.META;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.NINE;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ONE;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.PAGEDOWN;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.PAGEUP;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.PAUSE;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.PERIOD;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.PLUS;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.RETURN;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.SEMICOLON;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.SEVEN;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.SHIFT;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.SIX;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.TAB;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.THREE;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.TWO;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.UNIDENTIFIED;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.WHITESPACE;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ZENKAKU_HANKAKU;
-import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ZERO;
+import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.*;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
@@ -148,6 +42,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     private final MultiTouchState multiTouchState = new MultiTouchState();
     private Map<String, List<KeyEvent>> keyDownEvents = new HashMap<>();
     private final KeyCharacterMap keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
+    private final DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
 
     public EspressoW3CActionAdapter(UiController uiController) {
         this.uiController = uiController;
@@ -452,19 +347,22 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public long getViewportHeight() {
-        // Stub.
-        return Long.MAX_VALUE;
+        return displayMetrics.heightPixels;
     }
 
     public long getViewportWidth() {
-        // Stub.
-        return Long.MAX_VALUE;
+        return displayMetrics.widthPixels;
     }
 
     public long[] getElementCenterPoint(String elementId)
             throws NoSuchElementException, StaleElementException, NotYetImplementedException {
-        // Stub.
-        return new long[] { };
+        View view = Element.getViewById(elementId);
+        int[] out = new int[2];
+        view.getLocationInWindow(out);
+        long[] res = new long[2];
+        res[0] = out[0] + ((view.getWidth()) / 2);
+        res[1] = out[1] + ((view.getHeight()) / 2);
+        return res;
     }
 
     public void waitForUiThread() {
