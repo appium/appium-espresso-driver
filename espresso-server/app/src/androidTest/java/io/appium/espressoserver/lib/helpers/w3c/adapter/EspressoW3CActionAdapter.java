@@ -13,7 +13,6 @@ import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
-import io.appium.espressoserver.lib.model.AppiumParams;
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 

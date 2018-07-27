@@ -11,7 +11,6 @@ import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
-import io.appium.espressoserver.lib.model.AppiumParams;
 
 public interface W3CActionAdapter {
 
