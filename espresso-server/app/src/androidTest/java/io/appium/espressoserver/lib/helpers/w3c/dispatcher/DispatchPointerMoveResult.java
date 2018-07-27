@@ -18,7 +18,6 @@ public class DispatchPointerMoveResult extends BaseDispatchResult {
     private long y;
     private Set<Integer> buttons;
     private KeyInputState globalKeyInputState;
-    private long duration;
 
     public DispatchPointerMoveResult(final W3CActionAdapter dispatcherAdapter,
                                      final String sourceId,
@@ -26,8 +25,7 @@ public class DispatchPointerMoveResult extends BaseDispatchResult {
                                      final long currentX, final long currentY,
                                      final long x, final long y,
                                      final Set<Integer> buttons,
-                                     final KeyInputState globalKeyInputState,
-                                     final long duration) {
+                                     final KeyInputState globalKeyInputState) {
         this.dispatcherAdapter = dispatcherAdapter;
         this.sourceId = sourceId;
         this.pointerType = pointerType;
@@ -37,7 +35,6 @@ public class DispatchPointerMoveResult extends BaseDispatchResult {
         this.y = y;
         this.buttons = buttons;
         this.globalKeyInputState = globalKeyInputState;
-        this.duration = duration;
     }
 
     public void perform() throws AppiumException {

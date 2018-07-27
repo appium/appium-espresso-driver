@@ -257,8 +257,7 @@ public class PointerDispatch {
                         sourceId, pointerInputState.getType(),
                         currentX, currentY, x, y,
                         pointerInputState.getButtons(),
-                        globalKeyInputState,
-                        duration
+                        globalKeyInputState
                 );
 
                 if (currentX != x || currentY != y) {
@@ -270,11 +269,7 @@ public class PointerDispatch {
 
                 // Sleep for a fixed period of time
                 if (duration > 0) {
-                    try {
-                        dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
-                    } catch (InterruptedException ie) {
-                        throw new AppiumException(ie.getCause());
-                    }
+                    dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
                 }
 
                 if (!isLast) {
