@@ -1,39 +1,30 @@
 package io.appium.espressoserver.lib.handlers;
 
-import android.support.test.espresso.NoMatchingViewException;
-import android.support.test.espresso.ViewInteraction;
-import android.view.View;
+import android.support.test.espresso.UiController;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.AndroidLogger;
+import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
-import io.appium.espressoserver.lib.viewaction.ActionsPerformer;
-import io.appium.espressoserver.lib.viewaction.ViewGetter;
-
-import static android.support.test.espresso.Espresso.onView;
-import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
+import io.appium.espressoserver.lib.viewaction.UiControllerPerformer;
+import io.appium.espressoserver.lib.viewaction.UiControllerRunnable;
 
 
 public class PeformActions implements RequestHandler<Actions, Void>  {
 
     @Override
-    public Void handle(Actions actions) throws AppiumException {
-        // Get the root view because it doesn't matter what we perform this interaction on
-        View rootView = (new ViewGetter()).getRootView();
-        ViewInteraction viewInteraction = onView(withView(rootView));
-        AndroidLogger.logger.info("Performing W3C actions sequence");
+    public Void handle(final Actions actions) throws AppiumException {
 
-        ActionsPerformer actionsPerformer = new ActionsPerformer(actions);
-        try {
-            viewInteraction.perform(actionsPerformer);
-        } catch (NoMatchingViewException nme) {
-            // Ignore this. The viewMatcher is a hack to begin with
-        }
+        UiControllerRunnable<Void> runnable = new UiControllerRunnable<Void>() {
+            @Override
+            public Void run(UiController uiController) throws AppiumException {
+                actions.setAdapter(new EspressoW3CActionAdapter(uiController));
+                actions.performActions(actions.getSessionId());
+                return null;
+            }
+        };
 
-        // Hacky way of getting the exception from the view interaction
-        if (actionsPerformer.getAppiumException() != null) {
-            throw actionsPerformer.getAppiumException();
-        }
+        UiControllerPerformer<Void> uiControllerPerformer = new UiControllerPerformer<>(runnable);
+        uiControllerPerformer.run();
 
         return null;
     }

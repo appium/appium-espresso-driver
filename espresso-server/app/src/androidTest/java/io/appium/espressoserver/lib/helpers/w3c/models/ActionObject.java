@@ -83,12 +83,12 @@ public class ActionObject {
                 "Dispatching action #%s of input source %s",
                 index, getId()
         ));
+        // 1.3 If the current session's input state table doesn't have a property corresponding to
+        //      source id, then let the property corresponding to source id be a new object of the
+        //      corresponding input source state type for source type.
+        // 1.4 Let device state be the input source state corresponding to source id in the current session’s input state table
+        InputState deviceState = inputStateTable.getOrCreateInputState(this.getId(), this);
         try {
-            // 1.3 If the current session's input state table doesn't have a property corresponding to
-            //      source id, then let the property corresponding to source id be a new object of the
-            //      corresponding input source state type for source type.
-            // 1.4 Let device state be the input source state corresponding to source id in the current session’s input state table
-            InputState deviceState = inputStateTable.getOrCreateInputState(this.getId(), this);
 
             if (inputSourceType == KEY) {
                 switch (actionType) {
@@ -144,8 +144,8 @@ public class ActionObject {
             }
         } catch (ClassCastException cce) {
             throw new InvalidArgumentException(String.format(
-                    "Attempted to apply action of type '%s' to a source with type '%s'",
-                    inputSourceType, inputStateTable.getClass().getSimpleName()
+                    "Attempted to apply action of type '%s' to a source with type '%s': %s",
+                    inputSourceType, deviceState.getClass().getSimpleName(), cce.getMessage()
             ));
         }
         return null;

@@ -2,6 +2,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import wd from 'wd';
 import request from 'request-promise';
+import B from 'bluebird';
 import { HOST, PORT, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 import { startServer } from '../../..';
@@ -184,9 +185,58 @@ describe('elementByXPath', function () {
   });
 
   describe('mjsonwp touch actions', function () {
-    it.skip('should touch down at a location and then touch up', async function () {
+    let sessionId;
+
+    it('should do touch/click event', async function () {
+      let el = await driver.elementByAccessibilityId("Accessibility");
+      sessionId = await driver.getSessionId();
+      const {value:elementId} = el;
+      const options = {
+        method: 'POST',
+        uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/click`,
+        body: {
+          element: elementId,
+        },
+        json: true,
+      };
+      await request(options);
+      await driver.elementByAccessibilityId('Accessibility Node Provider').should.eventually.exist;
+    });
+
+    it('should do touch/longclick event', async function () {
+      let el = await driver.elementByAccessibilityId("Accessibility");
+      sessionId = await driver.getSessionId();
+      const {value:elementId} = el;
+      const options = {
+        method: 'POST',
+        uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/longclick`,
+        body: {
+          element: elementId,
+        },
+        json: true,
+      };
+      await request(options);
+      await driver.elementByAccessibilityId('Accessibility Node Provider').should.eventually.exist;
+    });
+
+    it('should do touch/doubleclick event', async function () {
+      let el = await driver.elementByAccessibilityId("Accessibility");
+      sessionId = await driver.getSessionId();
+      const {value:elementId} = el;
+      const options = {
+        method: 'POST',
+        uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/doubleclick`,
+        body: {
+          element: elementId,
+        },
+        json: true,
+      };
+      await request(options);
+    });
+
+    it('should touch down at a location and then touch up', async function () {
+      sessionId = await driver.getSessionId();
       let el = await driver.elementByAccessibilityId("Animation");
-      let sessionId = await driver.getSessionId();
       let {x, y} = await el.getLocation();
       const options = {
         method: 'POST',
@@ -198,6 +248,7 @@ describe('elementByXPath', function () {
         json: true,
       };
       await request(options);
+      await B.delay(1000);
       const optionsTwo = {
         method: 'POST',
         uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/up`,
@@ -209,6 +260,70 @@ describe('elementByXPath', function () {
       };
       await request(optionsTwo);
       await driver.elementByAccessibilityId("Bouncing Balls").should.eventually.exist;
+    });
+
+    it('should touch down, move, touch up and cause a scroll event', async function () {
+      await (await driver.elementByAccessibilityId("Views")).click();
+
+      sessionId = await driver.getSessionId();
+      let el = await driver.elementByAccessibilityId("Gallery");
+      let {x:startX, y:startY} = await el.getLocation();
+      el = await driver.elementByAccessibilityId("Controls");
+      let {x:endX, y:endY} = await el.getLocation();
+      let options = {
+        method: 'POST',
+        uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/down`,
+        body: {
+          x: startX + 1,
+          y: startY + 1,
+        },
+        json: true,
+      };
+      await request(options);
+      await B.delay(1000);
+
+      options = {
+        method: 'POST',
+        uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/move`,
+        body: {
+          x: endX + 1,
+          y: endY + 1,
+        },
+        json: true,
+      };
+      await request(options);
+      await B.delay(1000);
+
+      options = {
+        method: 'POST',
+        uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/up`,
+        body: {
+          x: endX + 1,
+          y: endY + 1,
+        },
+        json: true,
+      };
+      await request(options);
+      await driver.elementByAccessibilityId("Hover Events").should.eventually.exist;
+
+    });
+
+    it('should scroll on an element', async function () {
+      await (await driver.elementByAccessibilityId("Views")).click();
+
+      sessionId = await driver.getSessionId();
+      let options = {
+        method: 'POST',
+        uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/scroll`,
+        body: {
+          //element: el.value,
+          x: 0,
+          y: -300,
+        },
+        json: true,
+      };
+      await request(options);
+      await B.delay(1000);
     });
   });
 });
