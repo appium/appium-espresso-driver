@@ -17,6 +17,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.BaseDispatchResult;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.models.Origin;
@@ -224,16 +225,16 @@ public class TickTest {
 
         final W3CActionAdapter dummyAdapter = new ExtendedDummyW3CActionAdapter();
 
-        List<Callable<Void>> callables = tick.dispatchAll(dummyAdapter, inputStateTable, tick.calculateTickDuration());
+        List<Callable<BaseDispatchResult>> callables = tick.dispatchAll(dummyAdapter, inputStateTable, tick.calculateTickDuration());
         Executor executor = Executors.newFixedThreadPool(callables.size());
-        CompletionService<Void> completionService = new ExecutorCompletionService<>(executor);
-        for(Callable<Void> callable:callables) {
+        CompletionService<BaseDispatchResult> completionService = new ExecutorCompletionService<>(executor);
+        for(Callable<BaseDispatchResult> callable:callables) {
             completionService.submit(callable);
         }
 
         int received = 0;
         while (received < callables.size()) {
-            Future<Void> resultFuture = completionService.take(); //blocks if none available
+            Future<BaseDispatchResult> resultFuture = completionService.take(); //blocks if none available
             resultFuture.get();
             received ++;
         }

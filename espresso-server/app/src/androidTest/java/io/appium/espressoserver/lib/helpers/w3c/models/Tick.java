@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.BaseDispatchResult;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
@@ -62,13 +63,13 @@ public class Tick implements Iterator<ActionObject> {
         return maxDuration;
     }
 
-    public List<Callable<Void>> dispatchAll(W3CActionAdapter adapter, InputStateTable inputStateTable, long tickDuration)
+    public List<Callable<BaseDispatchResult>> dispatchAll(W3CActionAdapter adapter, InputStateTable inputStateTable, long tickDuration)
             throws AppiumException {
         long timeAtBeginningOfTick = System.currentTimeMillis();
-        List<Callable<Void>> asyncOperations = new ArrayList<>();
+        List<Callable<BaseDispatchResult>> asyncOperations = new ArrayList<>();
         for(ActionObject actionObject: tickActions) {
             // 2. Run algorithm with arguments source id, action object, device state and tick duration
-            Callable<Void> dispatchResult = actionObject.dispatch(adapter,
+            Callable<BaseDispatchResult> dispatchResult = actionObject.dispatch(adapter,
                     inputStateTable, tickDuration, timeAtBeginningOfTick);
 
             // If it's an async operation, add it to the list
