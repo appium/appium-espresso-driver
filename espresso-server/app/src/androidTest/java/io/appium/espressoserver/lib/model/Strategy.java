@@ -43,8 +43,8 @@ public enum Strategy {
     ACCESSIBILITY_ID("accessibility id"),
     @SerializedName("text")
     TEXT("text"),
-
-    ANDROID_UIAUTOMATOR("-android uiautomator");
+    @SerializedName("-android viewtag")
+    VIEW_TAG("-android viewtag");
 
     private final String strategyName;
 

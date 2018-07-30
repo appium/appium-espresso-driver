@@ -47,11 +47,15 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.instanceOf;
 
 /**
  * Helper methods to find elements based on locator strategies and selectors
@@ -141,7 +145,6 @@ public class ViewFinder {
                                                    Strategy strategy, String selector, boolean findOne)
             throws InvalidStrategyException, XPathLookupException {
         List<View> views;
-
         switch (strategy) {
             case ID: // with ID
 
@@ -178,6 +181,9 @@ public class ViewFinder {
                 } else {
                     views = getViews(root, withXPath(selector), false);
                 }
+                break;
+            case VIEW_TAG:
+                views = getViews(root, withTagValue(allOf(instanceOf(String.class), equalTo((Object) selector))), findOne);
                 break;
             default:
                 throw new InvalidStrategyException(String.format("Strategy is not implemented: %s", strategy.getStrategyName()));
