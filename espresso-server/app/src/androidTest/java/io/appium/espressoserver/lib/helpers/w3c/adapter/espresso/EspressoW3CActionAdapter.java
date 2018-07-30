@@ -20,13 +20,11 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
 import static android.view.KeyEvent.*;
+import static android.view.MotionEvent.*;
 import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_MOVE;
-import static android.view.MotionEvent.ACTION_POINTER_DOWN;
-import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.*;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.*;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 

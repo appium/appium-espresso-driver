@@ -34,7 +34,7 @@ public class ActionObject {
     private Long x;
     private Long y;
     private int button;
-    private String value;
+    private Object value;
     private PointerType pointer;
     private Origin origin = new Origin();
 
@@ -211,11 +211,11 @@ public class ActionObject {
         return button;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 

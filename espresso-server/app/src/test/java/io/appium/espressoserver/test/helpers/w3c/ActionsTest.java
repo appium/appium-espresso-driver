@@ -62,14 +62,14 @@ public class ActionsTest {
         assertEquals(finger2.getY(), 400);
 
         // Sanity check that it's recording pointer move events
-        List<PointerMoveEvent> pointerMoveEvents = ((DummyW3CActionAdapter)actions.getAdapter()).getPointerMoveEvents();
+        List<PointerMoveEvent> pointerMoveEvents = ((DummyW3CActionAdapter) actions.getAdapter()).getPointerMoveEvents();
         assertTrue(pointerMoveEvents.size() > 0);
     }
 
     @Test
     public void shouldPerformKeyActionsOnASetOfInputSources() throws IOException, AppiumException {
-        String multiTouchJson = Helpers.readAssetFile("key-actions.json");
-        Actions actions = Actions.class.cast((new Gson()).fromJson(multiTouchJson, Actions.class));
+        String keyJson = Helpers.readAssetFile("key-actions.json");
+        Actions actions = Actions.class.cast((new Gson()).fromJson(keyJson, Actions.class));
         actions.setAdapter(new AlteredDummyAdapter());
 
         String sessionId = "123";
@@ -77,5 +77,20 @@ public class ActionsTest {
         InputStateTable inputStateTable = InputStateTable.getInputStateTableOfSession(sessionId);
         KeyInputState keyboard = (KeyInputState) inputStateTable.getInputState("keyboard");
         assertFalse(keyboard.isPressed("\\uE009"));
+    }
+
+    @Test
+    public void shouldPerformKeyActionsOnASetOfInputSourcesAndAllowKeyNumbers() throws IOException, AppiumException {
+        String keyJson = Helpers.readAssetFile("key-actions-2.json");
+        Actions actions = Actions.class.cast((new Gson()).fromJson(keyJson, Actions.class));
+        actions.setAdapter(new AlteredDummyAdapter());
+
+        String sessionId = "123";
+        actions.performActions(sessionId);
+        InputStateTable inputStateTable = InputStateTable.getInputStateTableOfSession(sessionId);
+        KeyInputState keyboard = (KeyInputState) inputStateTable.getInputState("keyboard");
+        assertTrue(keyboard.isPressed(100));
+        actions.releaseActions(sessionId);
+        assertFalse(keyboard.isPressed(100));
     }
 }

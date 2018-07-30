@@ -110,7 +110,7 @@ public class InputSource {
         private Integer button; // Button that is being pressed. Defaults to 0.
         private Long x; // x coordinate of pointer
         private Long y; // y coordinate of pointer
-        private String value; // a string containing a single Unicode code point
+        private Object value; // a string containing a single Unicode code point or a number
         private Origin origin = new Origin(); // origin; could be viewport, pointer or <{element-6066-11e4-a52e-4f735466cecf: <element-uuid>}>
 
         // Web element identifier: https://www.w3.org/TR/webdriver/#elements
@@ -175,11 +175,11 @@ public class InputSource {
         }
 
         @Nullable
-        public String getValue(){
+        public Object getValue(){
             return value;
         }
 
-        public void setValue(String value){
+        public void setValue(Object value){
             this.value = value;
         }
 

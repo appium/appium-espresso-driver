@@ -1,0 +1,12 @@
+{
+  "actions": [
+    {
+      "type": "key",
+      "id": "keyboard",
+      "actions": [
+        {"type": "keyDown", "value": 100},
+        {"type": "pause", "duration": 500}
+      ]
+    }
+  ]
+}
