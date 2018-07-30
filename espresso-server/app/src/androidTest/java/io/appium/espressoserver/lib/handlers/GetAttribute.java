@@ -84,6 +84,8 @@ public class GetAttribute implements RequestHandler<AppiumParams, String> {
                 return Integer.toString(viewElement.getIndex());
             case PACKAGE:
                 return viewElement.getPackageName();
+            case VIEW_TAG:
+                return viewElement.getViewTag();
             default:
                 throw new NotYetImplementedException();
         }

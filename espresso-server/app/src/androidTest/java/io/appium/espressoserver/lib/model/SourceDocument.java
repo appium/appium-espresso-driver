@@ -119,6 +119,7 @@ public class SourceDocument {
         setAttribute(element, ViewAttributesEnum.PASSWORD, Boolean.toString(viewElement.isPassword()));
         setAttribute(element, ViewAttributesEnum.SELECTED, Boolean.toString(viewElement.isSelected()));
         setAttribute(element, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
+
         final ViewText viewText = viewElement.getText();
         if (viewText != null) {
             setAttribute(element, ViewAttributesEnum.TEXT, viewText.getRawText());
@@ -126,7 +127,7 @@ public class SourceDocument {
         setAttribute(element, ViewAttributesEnum.RESOURCE_ID, viewElement.getResourceId());
 
         if (view.getTag() != null) {
-            setAttribute(element, ViewAttributesEnum.VIEW_TAG, view.getTag().toString());
+            setAttribute(element, ViewAttributesEnum.VIEW_TAG, viewElement.getViewTag());
         }
 
         // If this is the rootElement, append it to the document
