@@ -2,6 +2,7 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
@@ -51,8 +52,12 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
         return 5;
     }
 
-    public void sleep(long duration) throws InterruptedException {
-        Thread.sleep(duration);
+    public void sleep(long duration) throws AppiumException {
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException ie) {
+            throw new AppiumException(String.format("Could not run 'sleep' method: %s", ie.getCause()));
+        }
     }
 
     /**

@@ -41,7 +41,7 @@ public class Server extends NanoHTTPD {
     private static final int DEFAULT_PORT = 8080;
 
     public Server() throws IOException, DuplicateRouteException {
-        super(DEFAULT_PORT); // TODO: Get this from an environment variable
+        super(DEFAULT_PORT);
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         logger.info(String.format("\nRunning Appium Espresso Server at port %d \n", DEFAULT_PORT));
         router = new Router();

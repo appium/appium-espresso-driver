@@ -86,7 +86,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         //uiController.loopMainThreadUntilIdle();
     }
 
-    public void sleep(long duration) throws InterruptedException {
+    public void sleep(long duration) throws AppiumException {
         SystemClock.sleep(duration);
     }
     

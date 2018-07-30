@@ -46,7 +46,7 @@ public interface W3CActionAdapter {
 
     int pointerMoveIntervalDuration();
 
-    void sleep(long duration) throws InterruptedException;
+    void sleep(long duration) throws AppiumException;
 
     void waitForUiThread();
 
