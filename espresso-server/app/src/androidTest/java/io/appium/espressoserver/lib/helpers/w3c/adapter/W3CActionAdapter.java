@@ -36,11 +36,11 @@ public interface W3CActionAdapter {
 
     void unlockAdapter();
 
-    int getKeyCode(String keyValue, int location);
+    int getKeyCode(String keyValue, int location) throws AppiumException;
 
-    int getCharCode(String keyValue, int location);
+    int getCharCode(String keyValue, int location) throws AppiumException;
 
-    int getWhich(String keyValue, int location);
+    int getWhich(String keyValue, int location) throws AppiumException;
     
     double getPointerMoveDurationMargin(PointerInputState pointerInputState);
 

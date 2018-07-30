@@ -142,7 +142,7 @@ public class KeyDispatch {
      * @param actionObject Action Object to get key event info for
      * @return KeyEvent Key event info used by adapter
      */
-    private static KeyEvent getKeyEvent(W3CActionAdapter dispatcherAdapter, ActionObject actionObject) {
+    private static KeyEvent getKeyEvent(W3CActionAdapter dispatcherAdapter, ActionObject actionObject) throws AppiumException {
         // 1. Let raw key be action's value property
         String rawKey = actionObject.getValue();
 
