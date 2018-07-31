@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
@@ -52,7 +53,7 @@ public class Helpers {
      * @param pointerType W3C pointer types (TOUCH, PEN, MOUSE)
      * @return Android Motion Event type (FINGER, STYLUS, MOUSE)
      */
-    public static int getToolType(PointerType pointerType) throws AppiumException {
+    public static int getToolType(@Nullable PointerType pointerType) throws AppiumException {
         if (pointerType == null) {
             return TOOL_TYPE_FINGER;
         }

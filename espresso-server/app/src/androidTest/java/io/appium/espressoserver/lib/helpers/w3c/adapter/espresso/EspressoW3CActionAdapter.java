@@ -4,6 +4,7 @@ import android.os.SystemClock;
 import android.support.test.espresso.UiController;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
@@ -62,12 +63,14 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             multiTouchState.updateTouchState(ACTION_DOWN, sourceId, x, y, globalKeyInputState, button);
         } else {
             AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController);
+            List<Long> xList = Collections.singletonList(x);
+            List<Long> yList = Collections.singletonList(y);
             androidMotionEvent.pointerUpOrDown(
-                    Collections.singletonList(x), Collections.singletonList(y),
+                    xList, yList,
                     ACTION_DOWN, button, pointerType, globalKeyInputState, null, 0);
 
             androidMotionEvent.pointerUpOrDown(
-                    Collections.singletonList(x), Collections.singletonList(y),
+                    xList, yList,
                     ACTION_POINTER_DOWN, button, pointerType, globalKeyInputState, null, 0);
         }
     }

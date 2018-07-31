@@ -160,9 +160,7 @@ public class MotionEventBuilder {
         try {
             boolean success = uiController.injectMotionEvent(evt);
             if (!success) {
-                throw new AppiumException(String.format(
-                        "Could not complete pointer operation"
-                ));
+                throw new AppiumException("Could not complete pointer operation");
             }
         } catch (InjectEventSecurityException e) {
             throw new AppiumException(String.format(
@@ -175,18 +173,18 @@ public class MotionEventBuilder {
     }
 
     static class MotionEventParams {
-        long downTime;
-        int action;
-        List<Long> x;
-        List<Long> y;
-        int metaState;
-        float xPrecision;
-        float yPrecision;
-        int deviceId;
-        int edgeFlags;
-        int buttonState;
-        int source;
-        PointerType pointerType;
-        long eventTime;
+        private long downTime;
+        private int action;
+        private List<Long> x;
+        private List<Long> y;
+        private int metaState;
+        private float xPrecision;
+        private float yPrecision;
+        private int deviceId;
+        private int edgeFlags;
+        private int buttonState;
+        private int source;
+        private PointerType pointerType;
+        private long eventTime;
     }
 }
