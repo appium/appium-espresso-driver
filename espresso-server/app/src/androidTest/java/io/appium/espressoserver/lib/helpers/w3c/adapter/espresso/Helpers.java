@@ -39,10 +39,7 @@ public class Helpers {
 
         if (toolType == TOOL_TYPE_FINGER) {
             // Ignore button code conversion for the unsupported tool type
-            if (w3cButton != null) {
-                return w3cButton;
-            }
-            return 0;
+            return w3cButton != null ? w3cButton : 0;
         }
 
         int androidButton = ActionsConstants.MOUSE_BUTTON_LEFT;
@@ -52,17 +49,15 @@ public class Helpers {
         // W3C button codes are different from Android constants. Converting...
         switch (androidButton) {
             case MOUSE_BUTTON_LEFT:
-                if (toolType == MotionEvent.TOOL_TYPE_STYLUS && Build.VERSION.SDK_INT >= 23) {
-                    return MotionEvent.BUTTON_STYLUS_PRIMARY;
-                }
-                return MotionEvent.BUTTON_PRIMARY;
+                return (toolType == MotionEvent.TOOL_TYPE_STYLUS && Build.VERSION.SDK_INT >= 23) ?
+                    MotionEvent.BUTTON_STYLUS_PRIMARY :
+                    MotionEvent.BUTTON_PRIMARY;
             case MOUSE_BUTTON_MIDDLE:
                 return MotionEvent.BUTTON_TERTIARY;
             case MOUSE_BUTTON_RIGHT:
-                if (toolType == MotionEvent.TOOL_TYPE_STYLUS && Build.VERSION.SDK_INT >= 23) {
-                    return MotionEvent.BUTTON_STYLUS_SECONDARY;
-                }
-                return MotionEvent.BUTTON_SECONDARY;
+                return (toolType == MotionEvent.TOOL_TYPE_STYLUS && Build.VERSION.SDK_INT >= 23) ?
+                    MotionEvent.BUTTON_STYLUS_SECONDARY :
+                    MotionEvent.BUTTON_SECONDARY;
             default:
                 return androidButton;
         }

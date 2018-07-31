@@ -132,7 +132,7 @@ public class PointerDispatch {
      * @param actionObject Action object that defines the pointer action
      * @param pointerInputState Current state of the input source
      * @param tickDuration How long is this tick (in ms)
-     * @param timeAtBeginningOfTick Time since current tick started (in ms)
+     * @param timeAtBeginningOfTick Time when the current tick started (in ms)
      * @param globalKeyInputState Global key input state
      * @return Returns a callable that returns when the pointer move is complete
      * @throws AppiumException

@@ -26,7 +26,7 @@ public class PeformActions implements RequestHandler<Actions, Void>  {
 
         ActionsPerformer actionsPerformer = new ActionsPerformer(actions);
         try {
-            viewInteraction.perform(actionsPerformer, closeSoftKeyboard());
+            viewInteraction.perform(actionsPerformer);
         } catch (NoMatchingViewException nme) {
             // Ignore this. The viewMatcher is a hack to begin with
         }
