@@ -1,14 +1,39 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
+import request from 'request-promise';
+import { initSession, deleteSession, MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
 
 chai.should();
 chai.use(chaiAsPromised);
 
+
 describe('keyboard', function () {
   this.timeout(MOCHA_TIMEOUT);
+
+  let idCounter = 0;
+
+  const performActions = async function (...actionsArrays) {
+    const actionsRoot = [];
+
+    for (let actions of actionsArrays) {
+      actionsRoot.push({
+        type: 'key',
+        id: `id_${idCounter++}`,
+        actions,
+      });
+    }
+
+    let sessionId = await driver.getSessionId();
+    const options = {
+      method: 'POST',
+      uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/actions`,
+      body: {actions: actionsRoot},
+      json: true,
+    };
+    return request(options);
+  };
 
   let driver;
   before(async function () {
@@ -35,5 +60,29 @@ describe('keyboard', function () {
     await el.setImmediateValue('!!!');
     await el.text().should.eventually.equal('hello world!!!');
     await el.clear();
+  });
+
+  it('should perform key events', async function () {
+    /*let el1 = await driver.elementByAccessibilityId("Views");
+    await el1.click();
+    let el2 = await driver.elementByAccessibilityId("Auto Complete");
+    await el2.click();
+    let el3 = await driver.elementByAccessibilityId("1. Screen Top");
+    await el3.click();*/
+    let el4 = await driver.elementByXPath("//android.widget.AutoCompleteTextView");
+    await el4.click();
+    const keyActions = [
+      {"type": "keyDown", "value": "\uE008"},
+      {"type": "keyDown", "value": "h"},
+      {"type": "keyUp", "value": "h"},
+      {"type": "keyDown", "value": 29},
+      {"type": "keyUp", "value": 29},
+      {"type": "pause", "duration": 2000},
+      {"type": "keyUp", "value": "\uE008"},
+      {"type": "keyDown", "value": "t"},
+      {"type": "keyUp", "value": "t"},
+    ];
+    await performActions(keyActions);
+    await el4.text().should.eventually.equal('HAt');
   });
 });

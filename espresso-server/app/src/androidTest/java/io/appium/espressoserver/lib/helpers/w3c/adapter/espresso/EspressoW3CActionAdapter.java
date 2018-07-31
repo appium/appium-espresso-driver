@@ -1,9 +1,12 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.os.SystemClock;
+import android.support.test.espresso.InjectEventSecurityException;
 import android.support.test.espresso.UiController;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +33,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
     private UiController uiController;
     private final MultiTouchState multiTouchState = new MultiTouchState();
+    private Map<Integer, android.view.KeyEvent> keyDownEvents = new HashMap<>();
 
     public EspressoW3CActionAdapter() {
         // Only used in unit testing
@@ -40,22 +44,56 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void keyDown(KeyEvent keyEvent) throws AppiumException {
-        // Stub.
-        /*android.view.KeyEvent androidKeyEvent = new android.view.KeyEvent(
+        getLogger().info(String.format("Calling key down event on character: %s", keyEvent.getKeyCode()));
+        android.view.KeyEvent androidKeyEvent = new android.view.KeyEvent(
                 System.currentTimeMillis(), System.currentTimeMillis(),
-                ACTION_DOWN, Character.getNumericValue(keyEvent.getKey().charAt(0)),
-                0
+                android.view.KeyEvent.ACTION_DOWN, keyEvent.getKeyCode(),
+                0, getMetaState(keyEvent)
         );
 
         try {
-            uiController.injectKeyEvent(androidKeyEvent);
+            boolean isSuccess = uiController.injectKeyEvent(androidKeyEvent);
+            keyDownEvents.put(keyEvent.getKeyCode(), androidKeyEvent);
+            if (!isSuccess) {
+                throw new AppiumException(String.format("Could not inject key event %s", keyEvent.getKey()));
+            }
         } catch (InjectEventSecurityException e) {
             throw new AppiumException(e.getCause().toString());
-        }*/
+        }
     }
 
-    public void keyUp(KeyEvent keyEvent) {
-        // Stub.
+    public void keyUp(KeyEvent keyEvent) throws AppiumException {
+        getLogger().info(String.format("Calling key up event on character: %s", keyEvent.getKey()));
+        android.view.KeyEvent downEvent = keyDownEvents.get(keyEvent.getKeyCode());
+        android.view.KeyEvent androidKeyEvent = new android.view.KeyEvent(
+                downEvent.getDownTime(), System.currentTimeMillis(),
+                android.view.KeyEvent.ACTION_UP, keyEvent.getKeyCode(),
+                0, getMetaState(keyEvent)
+        );
+
+        try {
+            boolean isSuccess = uiController.injectKeyEvent(androidKeyEvent);
+            if (!isSuccess) {
+                throw new AppiumException(String.format("Could not inject key event %s", keyEvent.getKey()));
+            }
+        } catch (InjectEventSecurityException e) {
+            throw new AppiumException(e.getCause().toString());
+        }
+    }
+
+    public int getMetaState(KeyEvent keyEvent) {
+        int metaState = 0;
+
+        if (keyEvent.isAltKey()) {
+            metaState |= META_ALT_MASK;
+        }
+        if (keyEvent.isCtrlKey()) {
+            metaState |= META_CTRL_MASK;
+        }
+        if (keyEvent.isShiftKey()) {
+            metaState |= META_SHIFT_MASK;
+        }
+        return metaState;
     }
 
     public void pointerDown(int button, String sourceId, PointerType pointerType,

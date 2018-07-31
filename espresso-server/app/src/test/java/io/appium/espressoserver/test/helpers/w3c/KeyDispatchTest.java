@@ -7,6 +7,8 @@ import java.util.List;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
@@ -134,5 +136,11 @@ public class KeyDispatchTest {
         // Release a key and check that it's not pressed
         dispatchKeyUp(adapter, actionObject, keyInputState, inputStateTable);
         assertFalse(keyInputState.isPressed(value));
+    }
+
+    @Test
+    public void shouldNormalizeKeys() throws AppiumException {
+        String normalizedKey = KeyNormalizer.getInstance().getNormalizedKey("\uE008");
+        assertEquals(normalizedKey, NormalizedKeys.SHIFT);
     }
 }
