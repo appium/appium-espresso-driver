@@ -235,9 +235,6 @@ public class ViewElement {
     @Nullable
     public String getViewTag() {
         Object tag = view.getTag();
-        if (tag != null) {
-            return tag.toString();
-        }
-        return null;
+        return tag == null ? null : tag.toString();
     }
 }
