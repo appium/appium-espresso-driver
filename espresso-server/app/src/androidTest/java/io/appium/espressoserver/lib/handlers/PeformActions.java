@@ -11,7 +11,6 @@ import io.appium.espressoserver.lib.viewaction.ActionsPerformer;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
 
 

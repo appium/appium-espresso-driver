@@ -2,8 +2,6 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import wd from 'wd';
 import request from 'request-promise';
-import B from 'bluebird';
-import _ from 'lodash';
 import { HOST, PORT, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 import { startServer } from '../../..';
@@ -11,6 +9,8 @@ import { startServer } from '../../..';
 
 chai.should();
 chai.use(chaiAsPromised);
+
+// TODO: Add missing client features to admc/wd
 
 describe('elementByXPath', function () {
   this.timeout(MOCHA_TIMEOUT);

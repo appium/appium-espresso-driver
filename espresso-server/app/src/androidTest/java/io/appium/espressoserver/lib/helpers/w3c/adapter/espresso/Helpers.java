@@ -7,9 +7,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants;
 
-import static android.view.MotionEvent.TOOL_TYPE_FINGER;
-import static android.view.MotionEvent.TOOL_TYPE_MOUSE;
-import static android.view.MotionEvent.TOOL_TYPE_STYLUS;
+import static android.view.MotionEvent.*;
 
 public class Helpers {
 
@@ -49,13 +47,13 @@ public class Helpers {
         // W3C button codes are different from Android constants. Converting...
         switch (androidButton) {
             case MOUSE_BUTTON_LEFT:
-                return (toolType == MotionEvent.TOOL_TYPE_STYLUS && Build.VERSION.SDK_INT >= 23) ?
+                return (toolType == TOOL_TYPE_STYLUS && Build.VERSION.SDK_INT >= 23) ?
                     MotionEvent.BUTTON_STYLUS_PRIMARY :
                     MotionEvent.BUTTON_PRIMARY;
             case MOUSE_BUTTON_MIDDLE:
                 return MotionEvent.BUTTON_TERTIARY;
             case MOUSE_BUTTON_RIGHT:
-                return (toolType == MotionEvent.TOOL_TYPE_STYLUS && Build.VERSION.SDK_INT >= 23) ?
+                return (toolType == TOOL_TYPE_STYLUS && Build.VERSION.SDK_INT >= 23) ?
                     MotionEvent.BUTTON_STYLUS_SECONDARY :
                     MotionEvent.BUTTON_SECONDARY;
             default:
