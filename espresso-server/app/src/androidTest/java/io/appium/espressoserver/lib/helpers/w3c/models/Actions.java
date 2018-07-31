@@ -25,10 +25,11 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.state.ActiveInputSources;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
+import io.appium.espressoserver.lib.model.AppiumParams;
 
 
 @SuppressWarnings("unused")
-public class Actions {
+public class Actions extends AppiumParams {
     private List<InputSource> actions;
     private W3CActionAdapter adapter;
 

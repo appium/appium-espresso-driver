@@ -116,7 +116,7 @@ public class PointerDispatch {
 
     /**
      * Perform the 'dispatch a pointer cancel' event
-     * @param dispatcherAdapter Actions adapter
+     * @param dispatcherAdapter ActionsPerformer adapter
      * @param actionObject Action object
      * @throws AppiumException
      */
@@ -132,7 +132,7 @@ public class PointerDispatch {
      * @param actionObject Action object that defines the pointer action
      * @param pointerInputState Current state of the input source
      * @param tickDuration How long is this tick (in ms)
-     * @param timeSinceBeginningOfTick Time since current tick started (in ms)
+     * @param timeAtBeginningOfTick Time when the current tick started (in ms)
      * @param globalKeyInputState Global key input state
      * @return Returns a callable that returns when the pointer move is complete
      * @throws AppiumException
@@ -142,7 +142,7 @@ public class PointerDispatch {
                                                      final ActionObject actionObject,
                                                      final PointerInputState pointerInputState,
                                                      final long tickDuration,
-                                                     final long timeSinceBeginningOfTick,
+                                                     final long timeAtBeginningOfTick,
                                                      final KeyInputState globalKeyInputState) throws AppiumException {
         // 1.5 Variable definitions
         long xOffset = actionObject.getX();
@@ -194,7 +194,7 @@ public class PointerDispatch {
                 duration,
                 startX, startY,
                 x, y,
-                timeSinceBeginningOfTick,
+                timeAtBeginningOfTick,
                 globalKeyInputState
         );
 
@@ -225,7 +225,7 @@ public class PointerDispatch {
                                                     final long duration,
                                                     final long startX, final long startY,
                                                     final long targetX, final long targetY,
-                                                    final long timeSinceBeginningOfTick,
+                                                    final long timeAtBeginningOfTick,
                                                     final KeyInputState globalKeyInputState) {
         return new Callable<BaseDispatchResult>() {
             @Override
@@ -233,7 +233,7 @@ public class PointerDispatch {
                 boolean isLast;
 
                 // 2. Let time delta be the time since the beginning of the current tick, measured in milliseconds on a monotonic clock
-                long timeDelta = System.currentTimeMillis() - timeSinceBeginningOfTick;
+                long timeDelta = System.currentTimeMillis() - timeAtBeginningOfTick;
 
                 // 3. Let duration ratio be the ratio of time delta and duration, if duration is greater than 0, or 1 otherwise
                 float durationRatio = duration > 0 ? timeDelta / ((float) duration) : 1;
@@ -282,7 +282,7 @@ public class PointerDispatch {
                                     duration,
                                     startX, startY,
                                     targetX, targetY,
-                                    timeSinceBeginningOfTick,
+                                    timeAtBeginningOfTick,
                                     globalKeyInputState
                             )
                     );
