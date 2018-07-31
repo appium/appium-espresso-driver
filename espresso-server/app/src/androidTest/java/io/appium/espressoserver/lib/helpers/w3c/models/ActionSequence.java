@@ -65,7 +65,7 @@ public class ActionSequence implements Iterator<Tick> {
 
     /**
      * Call the dispatchAll algorithm defined in 17.4
-     * @param adapter W3C Actions adapter
+     * @param adapter W3C ActionsPerformer adapter
      * @param inputStateTable Input states for this session
      * @throws AppiumException
      * @throws InterruptedException
