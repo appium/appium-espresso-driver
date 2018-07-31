@@ -38,7 +38,8 @@ public enum ViewAttributesEnum {
     INSTANCE,
     INDEX,
     ADAPTERS,
-    ADAPTER_TYPE, VIEW_TAG;
+    ADAPTER_TYPE,
+    VIEW_TAG;
 
 
     @Override

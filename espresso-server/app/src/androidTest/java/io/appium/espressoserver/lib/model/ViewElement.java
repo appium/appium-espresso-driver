@@ -43,23 +43,6 @@ public class ViewElement {
     public ViewElement(View view) {
         this.view = view;
 
-        // TODO: Attributes that need to be added with examples
-        // resource-id android:id/decor_content_parent
-        // index 0
-        // package	io.appium.android.apis
-        // content-desc
-        // checkable	false
-        // checked	false
-        // enabled	true
-        // focusable	false
-        // scrollable	false
-        // password	false
-        // selected	false
-        // bounds	[0,0][1440,2560]
-        // resource-id	android:id/decor_content_parent
-        // instance	0
-        // visibility
-
     }
 
     public synchronized Activity extractActivity() {
@@ -247,5 +230,11 @@ public class ViewElement {
 
     public String getPackageName() {
         return InstrumentationRegistry.getTargetContext().getPackageName();
+    }
+
+    @Nullable
+    public String getViewTag() {
+        Object tag = view.getTag();
+        return tag == null ? null : tag.toString();
     }
 }
