@@ -149,7 +149,7 @@ public class KeyDispatch {
         // 2. Let key be equal to the normalised key value for raw key
         String key = KeyNormalizer.getInstance().getNormalizedKey(rawKey);
 
-        // 4. Let code be 'code' for raw keyp
+        // 4. Let code be 'code' for raw keypress
         String code = KeyCodeMapper.getCode(rawKey);
 
         // 5. Let location be the key location for raw key
