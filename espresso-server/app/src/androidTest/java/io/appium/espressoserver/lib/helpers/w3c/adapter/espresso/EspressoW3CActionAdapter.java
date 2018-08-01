@@ -278,6 +278,8 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                 return KEYCODE_INSERT;
             case DELETE:
                 return KEYCODE_FORWARD_DEL;
+            default:
+                break;
         }
 
         KeyCharacterMap keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
