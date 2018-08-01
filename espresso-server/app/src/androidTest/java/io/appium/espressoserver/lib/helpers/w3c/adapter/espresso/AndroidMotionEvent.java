@@ -39,17 +39,18 @@ public class AndroidMotionEvent {
 
         this.downTime = downEvent != null ? downEvent.getDownTime() : eventTime;
 
-        return (new MotionEventBuilder(uiController))
-                .setAction(action)
-                .setButtonState(extractButton(button, pointerType))
-                .setPointerType(pointerType)
-                .setDownTime(downTime)
-                .setEventTime(eventTime)
-                .setX(x)
-                .setY(y)
-                .setMetaState(metaState)
-                .setSource(downEvent != null ? downEvent.getSource() : 0)
-                .run();
+        return (new MotionEventBuilder())
+                .withAction(action)
+                .withButtonState(extractButton(button, pointerType))
+                .withPointerType(pointerType)
+                .withDownTime(downTime)
+                .withEventTime(eventTime)
+                .withX(x)
+                .withY(y)
+                .withMetaState(metaState)
+                .withSource(downEvent != null ? downEvent.getSource() : 0)
+                .build()
+                .run(uiController);
     }
 
     public void pointerMove(List<Long> x, List<Long> y,
@@ -59,15 +60,16 @@ public class AndroidMotionEvent {
         // TODO: Use globalKeyInputState to get metaState
         int metaState = 0;
 
-        (new MotionEventBuilder(uiController))
-                .setAction(ACTION_MOVE)
-                .setDownTime(downTime)
-                .setPointerType(pointerType)
-                .setX(x)
-                .setY(y)
-                .setMetaState(metaState)
-                .setSource(downEvent.getSource())
-                .run();
+        (new MotionEventBuilder())
+                .withAction(ACTION_MOVE)
+                .withDownTime(downTime)
+                .withPointerType(pointerType)
+                .withX(x)
+                .withY(y)
+                .withMetaState(metaState)
+                .withSource(downEvent.getSource())
+                .build()
+                .run(uiController);
     }
 
     public void pointerCancel() throws AppiumException {
@@ -78,14 +80,16 @@ public class AndroidMotionEvent {
         // TODO: Use globalKeyInputState to get metaState
         int metaState = 0;
 
-        (new MotionEventBuilder(uiController))
-                .setAction(ACTION_CANCEL)
-                .setDownTime(downTime)
-                .setX(x)
-                .setY(y)
-                .setPointerType(PointerType.TOUCH)
-                .setMetaState(metaState)
-                .run();
+        (new MotionEventBuilder())
+                .withAction(ACTION_CANCEL)
+                .withDownTime(downTime)
+                .withX(x)
+                .withY(y)
+                .withPointerType(PointerType.TOUCH)
+                .withMetaState(metaState)
+                .build()
+                .run(uiController);
+
     }
 
     public static synchronized AndroidMotionEvent getMotionEvent(

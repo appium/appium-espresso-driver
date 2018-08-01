@@ -4,8 +4,6 @@ import android.os.SystemClock;
 import android.support.test.espresso.InjectEventSecurityException;
 import android.support.test.espresso.UiController;
 import android.view.MotionEvent;
-import android.view.MotionEvent.PointerCoords;
-import android.view.MotionEvent.PointerProperties;
 
 import java.util.List;
 
@@ -23,153 +21,79 @@ import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.Helpers.
 
 public class MotionEventBuilder {
 
-    private MotionEventParams params;
-    private final UiController uiController;
+    private MotionEventParams motionEventParams;
 
-    public MotionEventBuilder(UiController uiController) {
-        this.uiController = uiController;
-        params = new MotionEventParams();
+    public MotionEventBuilder() {
+        motionEventParams = new MotionEventParams();
     }
 
-    public MotionEventBuilder setX(List<Long> x) {
-        params.x = x;
+    public MotionEventBuilder withX(List<Long> x) {
+        motionEventParams.x = x;
         return this;
     }
 
-    public MotionEventBuilder setY(List<Long> y) {
-        params.y = y;
+    public MotionEventBuilder withY(List<Long> y) {
+        motionEventParams.y = y;
         return this;
     }
 
-    public MotionEventBuilder setDownTime(long downTime) {
-        params.downTime = downTime;
+    public MotionEventBuilder withDownTime(long downTime) {
+        motionEventParams.downTime = downTime;
         return this;
     }
 
-    public MotionEventBuilder setEventTime(long eventTime) {
-        params.eventTime = eventTime;
+    public MotionEventBuilder withEventTime(long eventTime) {
+        motionEventParams.eventTime = eventTime;
         return this;
     }
 
-    public MotionEventBuilder setAction(int action) {
-        params.action = action;
+    public MotionEventBuilder withAction(int action) {
+        motionEventParams.action = action;
         return this;
     }
 
-    public MotionEventBuilder setMetaState(int metaState) {
-        params.metaState = metaState;
+    public MotionEventBuilder withMetaState(int metaState) {
+        motionEventParams.metaState = metaState;
         return this;
     }
 
-    public MotionEventBuilder setButtonState(int buttonState) {
-        params.buttonState = buttonState;
+    public MotionEventBuilder withButtonState(int buttonState) {
+        motionEventParams.buttonState = buttonState;
         return this;
     }
 
-    public MotionEventBuilder setXPrecision(float xPrecision) {
-        params.xPrecision = xPrecision;
+    public MotionEventBuilder withXPrecision(float xPrecision) {
+        motionEventParams.xPrecision = xPrecision;
         return this;
     }
 
-    public MotionEventBuilder setYPrecision(float yPrecision) {
-        params.yPrecision = yPrecision;
+    public MotionEventBuilder withYPrecision(float yPrecision) {
+        motionEventParams.yPrecision = yPrecision;
         return this;
     }
 
-    public MotionEventBuilder setDeviceId(int deviceId) {
-        params.deviceId = deviceId;
+    public MotionEventBuilder withDeviceId(int deviceId) {
+        motionEventParams.deviceId = deviceId;
         return this;
     }
 
-    public MotionEventBuilder setSource(int source) {
-        params.source = source;
+    public MotionEventBuilder withSource(int source) {
+        motionEventParams.source = source;
         return this;
     }
 
-    public MotionEventBuilder setEdgeFlags(int edgeFlags) {
-        params.edgeFlags = edgeFlags;
+    public MotionEventBuilder withEdgeFlags(int edgeFlags) {
+        motionEventParams.edgeFlags = edgeFlags;
         return this;
     }
 
-    public MotionEventBuilder setPointerType(PointerType pointerType) {
-        params.pointerType = pointerType;
+    public MotionEventBuilder withPointerType(PointerType pointerType) {
+        motionEventParams.pointerType = pointerType;
         return this;
     }
 
-    public MotionEvent run () throws AppiumException {
-        int pointerCount = params.x == null ? 0 : params.x.size();
-
-        AndroidLogger.logger.info("Calling pointers", pointerCount);
-
-        // Don't do anything if no pointers were provided
-        if (pointerCount == 0 && params.action != ACTION_CANCEL) {
-            return null;
-        }
-
-        PointerCoords[] pointerCoords = new PointerCoords[pointerCount];
-        PointerProperties[] pointerProperties = new PointerProperties[pointerCount];
-
-        for (int pointerIndex = 0; pointerIndex < pointerCount; pointerIndex++) {
-            // Set pointer coordinates
-            pointerCoords[pointerIndex] = new PointerCoords();
-            pointerCoords[pointerIndex].clear();
-            pointerCoords[pointerIndex].pressure = 1;
-            pointerCoords[pointerIndex].size = 1;
-            pointerCoords[pointerIndex].x = params.x.get(pointerIndex);
-            pointerCoords[pointerIndex].y = params.y.get(pointerIndex);
-
-            // Set pointer properties
-            pointerProperties[pointerIndex] = new PointerProperties();
-            pointerProperties[pointerIndex].toolType = getToolType(params.pointerType);
-            pointerProperties[pointerIndex].id = pointerIndex;
-
-        }
-
-        // ACTION_POINTER_DOWN and ACTION_POINTER_UP need a bit mask
-        int action = params.action;
-        if (pointerCount > 1 && (action == ACTION_POINTER_DOWN || action == ACTION_POINTER_UP)) {
-            action += (pointerProperties[1].id << ACTION_POINTER_INDEX_SHIFT);
-        }
-
-        // ACTION_DOWN and ACTION_UP and ACTION_CANCEL has a pointer count of 1
-        if (action == ACTION_DOWN || action == ACTION_UP || action == ACTION_CANCEL) {
-            if (params.x != null && params.y != null) {
-                pointerCount = 1;
-            } else {
-                pointerCount = 0;
-            }
-        }
-
-        MotionEvent evt = MotionEvent.obtain(
-                params.downTime,
-                params.eventTime > 0 ? params.eventTime : SystemClock.uptimeMillis(),
-                action,
-                pointerCount,
-                pointerProperties,
-                pointerCoords,
-                params.metaState,
-                params.buttonState,
-                params.xPrecision,
-                params.yPrecision,
-                params.deviceId,
-                params.edgeFlags,
-                params.source,
-                0 // TODO: How to get Motion Event flags?
-        );
-
-        try {
-            boolean success = uiController.injectMotionEvent(evt);
-            if (!success) {
-                throw new AppiumException("Could not complete pointer operation");
-            }
-        } catch (InjectEventSecurityException e) {
-            throw new AppiumException(String.format(
-                    "Could not complete pointer operation. An internal server error occurred: %s",
-                    e.getCause()
-            ));
-        }
-
-        return evt;
+    public MotionEventRunner build() {
+        return new MotionEventRunner(motionEventParams);
     }
 
     static class MotionEventParams {
@@ -186,5 +110,89 @@ public class MotionEventBuilder {
         private int source;
         private PointerType pointerType;
         private long eventTime;
+    }
+
+    static class MotionEventRunner {
+        private final MotionEventParams motionEventParams;
+
+        public MotionEventRunner(final MotionEventParams motionEventParams) {
+            this.motionEventParams = motionEventParams;
+        }
+
+        public MotionEvent run (UiController uiController) throws AppiumException {
+            int pointerCount = motionEventParams.x == null ? 0 : motionEventParams.x.size();
+
+            AndroidLogger.logger.info("Calling pointers", pointerCount);
+
+            // Don't do anything if no pointers were provided
+            if (pointerCount == 0 && motionEventParams.action != ACTION_CANCEL) {
+                return null;
+            }
+
+            MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[pointerCount];
+            MotionEvent.PointerProperties[] pointerProperties = new MotionEvent.PointerProperties[pointerCount];
+
+            for (int pointerIndex = 0; pointerIndex < pointerCount; pointerIndex++) {
+                // Set pointer coordinates
+                pointerCoords[pointerIndex] = new MotionEvent.PointerCoords();
+                pointerCoords[pointerIndex].clear();
+                pointerCoords[pointerIndex].pressure = 1;
+                pointerCoords[pointerIndex].size = 1;
+                pointerCoords[pointerIndex].x = motionEventParams.x.get(pointerIndex);
+                pointerCoords[pointerIndex].y = motionEventParams.y.get(pointerIndex);
+
+                // Set pointer properties
+                pointerProperties[pointerIndex] = new MotionEvent.PointerProperties();
+                pointerProperties[pointerIndex].toolType = getToolType(motionEventParams.pointerType);
+                pointerProperties[pointerIndex].id = pointerIndex;
+
+            }
+
+            // ACTION_POINTER_DOWN and ACTION_POINTER_UP need a bit mask
+            int action = motionEventParams.action;
+            if (pointerCount > 1 && (action == ACTION_POINTER_DOWN || action == ACTION_POINTER_UP)) {
+                action += (pointerProperties[1].id << ACTION_POINTER_INDEX_SHIFT);
+            }
+
+            // ACTION_DOWN and ACTION_UP and ACTION_CANCEL has a pointer count of 1
+            if (action == ACTION_DOWN || action == ACTION_UP || action == ACTION_CANCEL) {
+                if (motionEventParams.x != null && motionEventParams.y != null) {
+                    pointerCount = 1;
+                } else {
+                    pointerCount = 0;
+                }
+            }
+
+            MotionEvent evt = MotionEvent.obtain(
+                    motionEventParams.downTime,
+                    motionEventParams.eventTime > 0 ? motionEventParams.eventTime : SystemClock.uptimeMillis(),
+                    action,
+                    pointerCount,
+                    pointerProperties,
+                    pointerCoords,
+                    motionEventParams.metaState,
+                    motionEventParams.buttonState,
+                    motionEventParams.xPrecision,
+                    motionEventParams.yPrecision,
+                    motionEventParams.deviceId,
+                    motionEventParams.edgeFlags,
+                    motionEventParams.source,
+                    0 // TODO: How to get Motion Event flags?
+            );
+
+            try {
+                boolean success = uiController.injectMotionEvent(evt);
+                if (!success) {
+                    throw new AppiumException("Could not complete pointer operation");
+                }
+            } catch (InjectEventSecurityException e) {
+                throw new AppiumException(String.format(
+                        "Could not complete pointer operation. An internal server error occurred: %s",
+                        e.getCause()
+                ));
+            }
+
+            return evt;
+        }
     }
 }

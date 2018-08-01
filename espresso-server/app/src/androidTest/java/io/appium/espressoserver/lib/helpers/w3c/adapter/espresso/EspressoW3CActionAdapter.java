@@ -83,10 +83,12 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             // touch up actions need to be grouped together
             multiTouchState.updateTouchState(ACTION_UP, sourceId, x, y, globalKeyInputState, button);
         } else {
+            List<Long> xList = Collections.singletonList(x);
+            List<Long> yList = Collections.singletonList(y);
             AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController);
-            androidMotionEvent.pointerUpOrDown(Collections.singletonList(x), Collections.singletonList(y),
+            androidMotionEvent.pointerUpOrDown(xList, yList,
                     ACTION_POINTER_UP, button, pointerType, globalKeyInputState, null, 0);
-            androidMotionEvent.pointerUpOrDown(Collections.singletonList(x), Collections.singletonList(y),
+            androidMotionEvent.pointerUpOrDown(xList, yList,
                     ACTION_UP, button, pointerType, globalKeyInputState, null, 0);
         }
     }
