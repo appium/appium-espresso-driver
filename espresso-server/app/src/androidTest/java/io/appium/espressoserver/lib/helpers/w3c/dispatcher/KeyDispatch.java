@@ -3,7 +3,6 @@ package io.appium.espressoserver.lib.helpers.w3c.dispatcher;
 import javax.annotation.Nullable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyCodeMapper;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyLocationMapper;

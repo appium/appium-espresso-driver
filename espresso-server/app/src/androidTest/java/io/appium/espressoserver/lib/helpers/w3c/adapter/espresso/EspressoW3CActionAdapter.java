@@ -3,6 +3,7 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 import android.os.SystemClock;
 import android.support.test.espresso.InjectEventSecurityException;
 import android.support.test.espresso.UiController;
+import android.view.KeyCharacterMap;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -169,155 +170,9 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public int getKeyCode(String keyValue, int location) throws AppiumException {
-        switch (keyValue) {
-            case UNIDENTIFIED:
-                return KEYCODE_UNKNOWN;
-            case HELP:
-                return KEYCODE_HELP;
-            case BACKSPACE:
-                return KEYCODE_DEL;
-            case TAB:
-                return KEYCODE_TAB;
-            case CLEAR:
-                return KEYCODE_CLEAR;
-            case RETURN:
-                return KEYCODE_ENTER;
-            case PAUSE:
-                return KEYCODE_BREAK;
-            case ESCAPE:
-                return KEYCODE_ESCAPE;
-            case WHITESPACE:
-                return KEYCODE_SPACE;
-            case SEMICOLON:
-                return KEYCODE_SEMICOLON;
-            case EQUALS:
-                return KEYCODE_EQUALS;
-            case ZERO:
-                return KEYCODE_0;
-            case ONE:
-                return KEYCODE_1;
-            case TWO:
-                return KEYCODE_2;
-            case THREE:
-                return KEYCODE_3;
-            case FOUR:
-                return KEYCODE_4;
-            case FIVE:
-                return KEYCODE_5;
-            case SIX:
-                return KEYCODE_6;
-            case SEVEN:
-                return KEYCODE_7;
-            case EIGHT:
-                return KEYCODE_8;
-            case NINE:
-                return KEYCODE_9;
-            case ASTERISK:
-                return KEYCODE_STAR;
-            case PLUS:
-                return KEYCODE_NUMPAD_ADD;
-            case COMMA:
-                return KEYCODE_COMMA;
-            case HYPHEN:
-                return KEYCODE_MINUS;
-            case PERIOD:
-                return KEYCODE_PERIOD;
-            case FORWARD_SLASH:
-                return KEYCODE_SLASH;
-            case F1:
-                return KEYCODE_F1;
-            case F2:
-                return KEYCODE_F2;
-            case F3:
-                return KEYCODE_F3;
-            case F4:
-                return KEYCODE_F4;
-            case F5:
-                return KEYCODE_F5;
-            case F6:
-                return KEYCODE_F6;
-            case F7:
-                return KEYCODE_F7;
-            case F8:
-                return KEYCODE_F8;
-            case F9:
-                return KEYCODE_F9;
-            case F10:
-                return KEYCODE_F10;
-            case F11:
-                return KEYCODE_F11;
-            case F12:
-                return KEYCODE_F12;
-            case ZENKAKU_HANKAKU:
-                return KEYCODE_ZENKAKU_HANKAKU;
-            case SHIFT:
-                return KEYCODE_SHIFT_LEFT;
-            case CONTROL:
-                return KEYCODE_CTRL_LEFT;
-            case ALT:
-                return KEYCODE_ALT_LEFT;
-            case META:
-                return KEYCODE_META_LEFT;
-            case PAGEUP:
-                return KEYCODE_PAGE_UP;
-            case PAGEDOWN:
-                return KEYCODE_PAGE_DOWN;
-            case END:
-                return KEYCODE_MOVE_END;
-            case HOME:
-                return KEYCODE_HOME;
-            case ARROW_LEFT:
-                return KEYCODE_DPAD_LEFT;
-            case ARROW_UP:
-                return KEYCODE_DPAD_DOWN;
-            case ARROW_RIGHT:
-                return KEYCODE_DPAD_RIGHT;
-            case ARROW_DOWN:
-                return KEYCODE_DPAD_DOWN;
-            case INSERT:
-                return KEYCODE_INSERT;
-            case DELETE:
-                return KEYCODE_FORWARD_DEL;
-        }
-
-        // If a single key was provided, try mapping it to an ANDROID keyCode
-        if (keyValue.length() == 1) {
-            // If we couldn't find a normalized key, then it's a single unicode character
-            char ch = keyValue.charAt(0);
-
-            if (ch >= '0' && ch <= '9') {
-                return KEYCODE_0 + (ch - '0');
-            }
-
-            if (ch >= 'a' && ch <= 'z') {
-                return KEYCODE_A + (ch - 'a');
-            }
-
-            if (ch >= 'A' && ch <= 'Z') {
-                return KEYCODE_A + (ch - 'A');
-            }
-
-            switch (ch) {
-                case '\u82F1':
-                    return KEYCODE_EISU;
-                case '\u6570':
-                    return KEYCODE_EISU;
-                case '`':
-                    return KEYCODE_GRAVE;
-                case '(':
-                    return KEYCODE_NUMPAD_LEFT_PAREN;
-                case ')':
-                    return KEYCODE_NUMPAD_RIGHT_PAREN;
-                case '[':
-                    return KEYCODE_LEFT_BRACKET;
-                case ']':
-                    return KEYCODE_RIGHT_BRACKET;
-                case '\u00A5':
-                    return KEYCODE_YEN;
-            }
-        }
-
-        throw new InvalidArgumentException(String.format("Character '%s' does not map to an Android KeyEvent", keyValue));
+        KeyCharacterMap keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
+        android.view.KeyEvent[] keyEvent = keyCharacterMap.getEvents(keyValue.toCharArray());
+        return keyEvent[0].getKeyCode();
     }
 
     public long getViewportHeight() {

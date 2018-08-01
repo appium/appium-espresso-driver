@@ -88,18 +88,6 @@ public class KeyDispatchTest {
     }
 
     @Test
-    public void shouldMapRawKeyToLocation() throws AppiumException {
-        DummyW3CActionAdapter adapter = new DummyW3CActionAdapter();
-        InputStateTable inputStateTable = new InputStateTable();
-        String id = "keyboard";
-        ActionObject actionObject = new ActionObject(id, KEY, KEY_DOWN, 0);
-        actionObject.setValue("\uE007");
-        KeyInputState keyInputState = new KeyInputState();
-        KeyEvent keyEvent = dispatchKeyDown(adapter, actionObject, keyInputState, inputStateTable);
-        assertEquals(keyEvent.getLocation(), 1);
-    }
-
-    @Test
     public void shouldReleaseAltOnAltKeyUp() throws AppiumException {
         DummyW3CActionAdapter adapter = new DummyW3CActionAdapter();
         InputStateTable inputStateTable = new InputStateTable();

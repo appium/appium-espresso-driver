@@ -2,7 +2,7 @@ package io.appium.espressoserver.lib.helpers.w3c.dispatcher;
 
 
 public class KeyEvent {
-    private Object key;
+    private String key;
     private String code;
     private int location;
     private int keyCode;
@@ -24,11 +24,11 @@ public class KeyEvent {
         );
     }
 
-    public Object getKey() {
+    public String getKey() {
         return key;
     }
 
-    public void setKey(Object key) {
+    public void setKey(String key) {
         this.key = key;
     }
 
