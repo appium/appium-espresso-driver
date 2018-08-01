@@ -53,6 +53,9 @@ public class PointerInputState implements InputState {
     }
 
     public PointerType getType() {
+        if (type == null) {
+            return PointerType.TOUCH;
+        }
         return type;
     }
 

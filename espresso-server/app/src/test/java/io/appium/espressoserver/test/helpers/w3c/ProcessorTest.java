@@ -267,18 +267,6 @@ public class ProcessorTest {
     }
 
     @Test
-    public void shouldRejectPointerCancel() throws InvalidArgumentException {
-        Action action = new Action();
-        action.setType(ActionType.POINTER_CANCEL);
-        try {
-            processPointerAction(action, pointerInputSource, "any", 0);
-            fail("expected exception was not occured.");
-        } catch (NotYetImplementedException ie) {
-            assertTrue(ie.getMessage().contains("not yet implemented"));
-        }
-    }
-
-    @Test
     public void shouldNotPassProcessorIfNoType() throws InvalidArgumentException, NotYetImplementedException {
         InputSource inputSource = new InputSource();
         try {

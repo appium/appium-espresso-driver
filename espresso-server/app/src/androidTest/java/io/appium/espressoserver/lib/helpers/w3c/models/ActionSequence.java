@@ -86,6 +86,8 @@ public class ActionSequence implements Iterator<Tick> {
             List<Callable<BaseDispatchResult>> callables = tick.dispatchAll(adapter, inputStateTable, tickDuration);
             int callableCount = callables.size();
 
+            adapter.sychronousTickActionsComplete();
+
             // 2. Wait until the following conditions are all met:
 
             //  2.1 Wait for any pending async operations

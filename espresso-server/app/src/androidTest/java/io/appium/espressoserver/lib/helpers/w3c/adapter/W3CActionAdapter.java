@@ -57,4 +57,6 @@ public interface W3CActionAdapter {
     long getViewportHeight();
 
     Logger getLogger();
+
+    void sychronousTickActionsComplete() throws AppiumException;
 }
