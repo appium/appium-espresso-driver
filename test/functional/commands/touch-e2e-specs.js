@@ -69,17 +69,15 @@ describe('elementByXPath', function () {
       await (await driver.elementByAccessibilityId("FingerPaint")).click();
       let canvas = await driver.elementById("android:id/content");
       let {x, y} = await canvas.getLocation();
-      let startTime = +(new Date());
       const touchActions = [
         {"type": "pointerMove", duration: 100, x: x + 10, y: y + 10},
         {"type": "pointerDown", "button": 0},
-        {"type": "pointerMove", duration: 2000,  x: x + 10, y: y + 1000},
-        {"type": "pause", duration: 2000},
-        {"type": "pointerMove", duration: 2000,  x: x + 1000, y: y + 1000},
-        {"type": "pointerUp", "button": 0},
+        {"type": "pointerMove", duration: 100,  x: x + 10, y: y + 1000},
+        {"type": "pause", duration: 100},
+        {"type": "pointerMove", duration: 100,  x: x + 1000, y: y + 1000},
+        {"type": "pointerCancel", "button": 0},
       ];
       await performTouchAction(touchActions);
-      console.log('Duration', +(new Date()) - startTime);
     });
 
     it('should draw two parallel lines on fingerpaint', async function () {
@@ -87,22 +85,25 @@ describe('elementByXPath', function () {
       await (await driver.elementByAccessibilityId("FingerPaint")).click();
       let canvas = await driver.elementById("android:id/content");
       let {x, y} = await canvas.getLocation();
-      const touchActions = [
+      const touchActionOne = [
         {"type": "pointerMove", x: x + 10, y: y + 10},
         {"type": "pointerDown", "button": 0},
         {"type": "pointerMove", duration: 2000,  x: x + 10, y: y + 1000},
         {"type": "pointerUp", "button": 0},
+      ];
+
+      const touchActionTwo = [
         {"type": "pointerMove", x: x + 200, y: y + 10},
         {"type": "pointerDown", "button": 0},
         {"type": "pointerMove", duration: 2000,  x: x + 200, y: y + 1000},
         {"type": "pointerUp", "button": 0},
       ];
-      await performTouchAction(touchActions);
+      await performTouchAction(touchActionOne, touchActionTwo);
     });
   });
 
   describe('scrolling/swiping', async function () {
-    it('should scroll up menu', async function () {
+    it.skip('should scroll up menu', async function () {
       await (await driver.elementByAccessibilityId("Views")).click();
       let gcEl = await driver.elementByAccessibilityId("Game Controller Input");
       let {x, y} = await gcEl.getLocation();
@@ -119,7 +120,7 @@ describe('elementByXPath', function () {
       await driver.elementByXPath("//*[@text='ImageButton']");
     });
 
-    it('should swipe up menu', async function () {
+    it.skip('should swipe up menu', async function () {
       await (await driver.elementByAccessibilityId("Views")).click();
       let gcEl = await driver.elementByAccessibilityId("Game Controller Input");
       let {x, y} = await gcEl.getLocation();
@@ -168,7 +169,7 @@ describe('elementByXPath', function () {
   });
 
   describe('mjsonwp touch actions', function () {
-    it('should touch down at a location and then touch up', async function () {
+    it.skip('should touch down at a location and then touch up', async function () {
       let el = await driver.elementByAccessibilityId("Animation");
       let sessionId = await driver.getSessionId();
       let {x, y} = await el.getLocation();

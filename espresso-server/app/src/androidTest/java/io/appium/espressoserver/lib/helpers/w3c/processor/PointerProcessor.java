@@ -75,7 +75,8 @@ public class PointerProcessor {
                 actionObject = processPointerMoveAction(action, inputSource.getType(), id, index);
                 break;
             case POINTER_CANCEL:
-                throw new NotYetImplementedException();
+                actionObject = processPointerCancelAction(action, inputSource.getType(), id, index);
+                break;
             default:
                 // Technically unreachable because the 'validKeyTypes' check catches this
                 throw new InvalidArgumentException(String.format("Invalid pointer type %s", subType));
@@ -102,6 +103,10 @@ public class PointerProcessor {
         }
         actionObject.setButton(button);
         return actionObject;
+    }
+
+    public static ActionObject processPointerCancelAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
+        return new ActionObject(id, inputSourceType, action.getType(), index);
     }
 
     /**

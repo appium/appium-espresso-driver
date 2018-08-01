@@ -2,10 +2,9 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.os.SystemClock;
 import android.support.test.espresso.UiController;
-import android.support.test.espresso.action.MotionEvents;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
@@ -16,13 +15,20 @@ import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
+
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_MOVE;
+import static android.view.MotionEvent.ACTION_POINTER_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_UP;
+import static android.view.MotionEvent.ACTION_UP;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
     private final UiController uiController;
-    private final Map<String, PointerDevice> pointerDevices = new HashMap<>();
+    private final MultiTouchState multiTouchState = new MultiTouchState();
 
     public EspressoW3CActionAdapter(UiController uiController) {
         this.uiController = uiController;
@@ -47,33 +53,70 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         // Stub.
     }
 
-    public void pointerDown(int button, String sourceId, InputSource.PointerType pointerType,
+    public void pointerDown(int button, String sourceId, PointerType pointerType,
                      Long x, Long y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer down at coordinates: %s %s", x, y));
-        AndroidMotionEvent.getMotionEvent(sourceId, uiController)
-                .pointerDown(x, y, button, pointerType, globalKeyInputState);
+
+        if (pointerType == TOUCH) {
+            // touch down actions need to be grouped together
+            multiTouchState.updateTouchState(ACTION_DOWN, sourceId, x, y, globalKeyInputState, button);
+        } else {
+            AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController);
+            List<Long> xList = Collections.singletonList(x);
+            List<Long> yList = Collections.singletonList(y);
+            androidMotionEvent.pointerUpOrDown(
+                    xList, yList,
+                    ACTION_DOWN, button, pointerType, globalKeyInputState, null, 0);
+
+            androidMotionEvent.pointerUpOrDown(
+                    xList, yList,
+                    ACTION_POINTER_DOWN, button, pointerType, globalKeyInputState, null, 0);
+        }
     }
 
-    public void pointerUp(int button, String sourceId, InputSource.PointerType pointerType,
+    public void pointerUp(int button, String sourceId, PointerType pointerType,
                    Long x, Long y, Set<Integer> depressedButtons,
                    KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer up at coordinates: %s %s", x, y));
-        AndroidMotionEvent.getMotionEvent(sourceId, uiController)
-                .pointerUp(x, y, button, pointerType, globalKeyInputState);
+        if (pointerType == TOUCH) {
+            // touch up actions need to be grouped together
+            multiTouchState.updateTouchState(ACTION_UP, sourceId, x, y, globalKeyInputState, button);
+        } else {
+            List<Long> xList = Collections.singletonList(x);
+            List<Long> yList = Collections.singletonList(y);
+            AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController);
+            androidMotionEvent.pointerUpOrDown(xList, yList,
+                    ACTION_POINTER_UP, button, pointerType, globalKeyInputState, null, 0);
+            androidMotionEvent.pointerUpOrDown(xList, yList,
+                    ACTION_UP, button, pointerType, globalKeyInputState, null, 0);
+        }
     }
 
-    public void pointerMove(String sourceId, InputSource.PointerType pointerType,
+    public void pointerMove(String sourceId, PointerType pointerType,
                             long currentX, long currentY, long x, long y,
                             Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
-        // TODO: This should probably be
-        this.getLogger().info(String.format("Running pointer move at coordinates: %s %s", x, y));
-        AndroidMotionEvent.getMotionEvent(sourceId, uiController)
-                .pointerMove(x, y, globalKeyInputState);
+        this.getLogger().info(String.format("Running pointer move at coordinates: %s %s %s", x, y, pointerType));
+        if (pointerType == TOUCH) {
+            multiTouchState.updateTouchState(ACTION_MOVE, sourceId, x, y, globalKeyInputState, null);
+            multiTouchState.pointerMove(uiController);
+        } else {
+            AndroidMotionEvent.getMotionEvent(sourceId, uiController)
+                    .pointerMove(Collections.singletonList(x), Collections.singletonList(y), pointerType, globalKeyInputState, null);
+        }
     }
 
-    public void pointerCancel(String sourceId, InputSource.PointerType pointerType) throws AppiumException {
-        // Stub.
+    public void pointerCancel(String sourceId, PointerType pointerType) throws AppiumException {
+        if (pointerType == TOUCH) {
+            multiTouchState.pointerCancel(uiController);
+        } else {
+            AndroidMotionEvent.getMotionEvent(sourceId, uiController).pointerCancel();
+        }
+    }
+
+    public void sychronousTickActionsComplete() throws AppiumException {
+        AndroidLogger.logger.info("Pointer event: Tick complete");
+        multiTouchState.perform(uiController);
     }
 
     public long getViewportHeight() {

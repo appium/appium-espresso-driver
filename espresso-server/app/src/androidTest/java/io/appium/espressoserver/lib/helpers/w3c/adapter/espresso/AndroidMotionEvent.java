@@ -1,8 +1,9 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
-import android.os.SystemClock;
 import android.support.test.espresso.UiController;
+import android.view.MotionEvent;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,71 +11,85 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
-import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_MOVE;
-import static android.view.MotionEvent.ACTION_UP;
 import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.Helpers.extractButton;
 
 public class AndroidMotionEvent {
 
+    private static AndroidMotionEvent touchMotionEvent;
     private long downTime;
     private final UiController uiController;
     private static final Map<String, AndroidMotionEvent> motionEvents = new ConcurrentHashMap<>();
 
     private AndroidMotionEvent(UiController uiController) {
-        this.downTime = SystemClock.uptimeMillis();
         this.uiController = uiController;
-
-        // TODO: How do we distinguish STYLUS, MOUSE and TOUCH?
     }
 
-    public void pointerDown(long x, long y,
-                            Integer button, PointerType pointerType,
-                            final KeyInputState globalKeyInputState)
+    public MotionEvent pointerUpOrDown(List<Long> x, List<Long> y,
+                                       int action,
+                                       Integer button, PointerType pointerType,
+                                       final KeyInputState globalKeyInputState,
+                                       final MotionEvent downEvent,
+                                       final long eventTime)
             throws AppiumException {
 
         // TODO: Use globalKeyInputState to get metaState
         int metaState = 0;
 
-        (new MotionEventBuilder(uiController))
-                .setAction(ACTION_DOWN)
-                .setButtonState(extractButton(button, pointerType))
-                .setDownTime(downTime)
-                .setX(x)
-                .setY(y)
-                .setMetaState(metaState)
-                .run();
+        this.downTime = downEvent != null ? downEvent.getDownTime() : eventTime;
+
+        return (new MotionEventBuilder())
+                .withAction(action)
+                .withButtonState(extractButton(button, pointerType))
+                .withPointerType(pointerType)
+                .withDownTime(downTime)
+                .withEventTime(eventTime)
+                .withX(x)
+                .withY(y)
+                .withMetaState(metaState)
+                .withSource(downEvent != null ? downEvent.getSource() : 0)
+                .build()
+                .run(uiController);
     }
 
-    public void pointerUp(long x, long y,
-                          Integer button, PointerType pointerType,
-                          final KeyInputState globalKeyInputState)
-            throws AppiumException {
-
+    public void pointerMove(List<Long> x, List<Long> y,
+                            final PointerType pointerType,
+                            final KeyInputState globalKeyInputState,
+                            final MotionEvent downEvent) throws AppiumException {
         // TODO: Use globalKeyInputState to get metaState
         int metaState = 0;
 
-        (new MotionEventBuilder(uiController))
-                .setAction(ACTION_UP)
-                .setButtonState(extractButton(button, pointerType))
-                .setDownTime(downTime)
-                .setX(x)
-                .setY(y)
-                .setMetaState(metaState)
-                .run();
+        (new MotionEventBuilder())
+                .withAction(ACTION_MOVE)
+                .withDownTime(downTime)
+                .withPointerType(pointerType)
+                .withX(x)
+                .withY(y)
+                .withMetaState(metaState)
+                .withSource(downEvent.getSource())
+                .build()
+                .run(uiController);
     }
 
-    public void pointerMove(long x, long y, final KeyInputState globalKeyInputState) throws AppiumException {
+    public void pointerCancel() throws AppiumException {
+        pointerCancel(null, null);
+    }
+
+    public void pointerCancel(List<Long> x, List<Long> y) throws AppiumException {
         // TODO: Use globalKeyInputState to get metaState
         int metaState = 0;
 
-        (new MotionEventBuilder(uiController))
-                .setAction(ACTION_MOVE)
-                .setDownTime(downTime)
-                .setX(x)
-                .setY(y)
-                .setMetaState(metaState)
-                .run();
+        (new MotionEventBuilder())
+                .withAction(ACTION_CANCEL)
+                .withDownTime(downTime)
+                .withX(x)
+                .withY(y)
+                .withPointerType(PointerType.TOUCH)
+                .withMetaState(metaState)
+                .build()
+                .run(uiController);
+
     }
 
     public static synchronized AndroidMotionEvent getMotionEvent(
@@ -83,5 +98,12 @@ public class AndroidMotionEvent {
             motionEvents.put(sourceId, new AndroidMotionEvent(uiController));
         }
         return motionEvents.get(sourceId);
+    }
+
+    public static synchronized AndroidMotionEvent getTouchMotionEvent(UiController uiController) {
+        if (touchMotionEvent == null) {
+            touchMotionEvent = new AndroidMotionEvent(uiController);
+        }
+        return touchMotionEvent;
     }
 }
