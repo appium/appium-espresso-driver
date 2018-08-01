@@ -59,12 +59,12 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                 keyCode
         ));
         long downTime = isDown ?
-                System.currentTimeMillis() :
+                SystemClock.uptimeMillis() :
                 keyDownEvents.get(keyCode).getDownTime();
 
         android.view.KeyEvent androidKeyEvent = new android.view.KeyEvent(
                 downTime,
-                System.currentTimeMillis(),
+                isDown ? downTime : SystemClock.uptimeMillis(),
                 action,
                 keyCode,
                 0,
