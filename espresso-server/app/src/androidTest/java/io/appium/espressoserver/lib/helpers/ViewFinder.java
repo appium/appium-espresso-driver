@@ -22,6 +22,7 @@ import android.support.test.espresso.DataInteraction;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 import android.view.View;
+import android.widget.AdapterView;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -38,6 +39,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.Strategy;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
+import io.appium.espressoserver.lib.viewmatcher.WithView;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -169,7 +171,7 @@ public class ViewFinder {
 
                 // If the item is not found on the screen, use 'onData' to try
                 // to scroll it into view and then locate it again
-                if (views.isEmpty() && canScrollToViewWithContentDescription(selector)) {
+                if (views.isEmpty() && canScrollToViewWithContentDescription(root, selector)) {
                     views = getViews(root, withContentDescription(selector), findOne);
                 }
                 break;
@@ -197,11 +199,18 @@ public class ViewFinder {
      * @param contentDesc Content description
      * @return
      */
-    private static boolean canScrollToViewWithContentDescription (String contentDesc) {
+    private static boolean canScrollToViewWithContentDescription (@Nullable final View parentView,
+                                                                  String contentDesc) {
         try {
             DataInteraction dataInteraction = onData(
                     hasEntry(Matchers.equalTo("contentDescription"), is(contentDesc))
             );
+
+            // If the parentView provided is an AdapterView, set 'inAdapterView' so that the
+            // selector is restricted to the adapter subtree
+            if (parentView != null && parentView instanceof AdapterView) {
+                dataInteraction.inAdapterView(WithView.withView(parentView));
+            }
             dataInteraction.check(matches(isDisplayed()));
         } catch (Exception e) {
             return false;
