@@ -63,14 +63,8 @@ describe('keyboard', function () {
   });
 
   it('should perform key events', async function () {
-    /*let el1 = await driver.elementByAccessibilityId("Views");
-    await el1.click();
-    let el2 = await driver.elementByAccessibilityId("Auto Complete");
-    await el2.click();
-    let el3 = await driver.elementByAccessibilityId("1. Screen Top");
-    await el3.click();*/
-    let el4 = await driver.elementByXPath("//android.widget.AutoCompleteTextView");
-    await el4.click();
+    let autocompleteEl = await driver.elementByXPath("//android.widget.AutoCompleteTextView");
+    await autocompleteEl.click();
     const keyActions = [
       {"type": "keyDown", "value": "\uE008"},
       {"type": "keyDown", "value": "h"},
@@ -83,6 +77,7 @@ describe('keyboard', function () {
       {"type": "keyUp", "value": "t"},
     ];
     await performActions(keyActions);
-    await el4.text().should.eventually.equal('HAt');
+    await autocompleteEl.text().should.eventually.equal('HAt');
+    await autocompleteEl.clear();
   });
 });
