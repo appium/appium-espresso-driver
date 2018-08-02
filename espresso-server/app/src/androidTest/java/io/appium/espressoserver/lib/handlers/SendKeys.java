@@ -34,8 +34,6 @@ import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
-import static android.support.test.espresso.Espresso.onView;
-
 public class SendKeys implements RequestHandler<TextParams, Void> {
 
     @Override
