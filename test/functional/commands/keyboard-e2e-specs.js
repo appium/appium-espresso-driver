@@ -24,15 +24,16 @@ describe('keyboard', function () {
   it('should send keys to the correct element', async function () {
     let el = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
     await el.click();
-
     await el.sendKeys('hello');
+    await el.clear();
   });
 
-  it.only('should send keys to the correct element', async function () {
+  it('should send keys to the correct element', async function () {
     let el = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
     await el.setImmediateValue('hello world');
     await el.text().should.eventually.equal('hello world');
     await el.setImmediateValue('!!!');
     await el.text().should.eventually.equal('hello world!!!');
+    await el.clear();
   });
 });
