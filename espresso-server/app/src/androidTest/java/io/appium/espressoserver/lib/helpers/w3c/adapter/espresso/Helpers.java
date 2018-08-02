@@ -8,7 +8,9 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants;
 
-import static android.view.MotionEvent.*;
+import static android.view.MotionEvent.TOOL_TYPE_FINGER;
+import static android.view.MotionEvent.TOOL_TYPE_MOUSE;
+import static android.view.MotionEvent.TOOL_TYPE_STYLUS;
 
 public class Helpers {
 
