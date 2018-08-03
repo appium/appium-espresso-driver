@@ -75,9 +75,11 @@ describe('keyboard', function () {
       {"type": "keyUp", "value": "\uE008"},
       {"type": "keyDown", "value": "t"},
       {"type": "keyUp", "value": "t"},
+      {"type": "keyDown", "value": "S"},
+      {"type": "keyUp", "value": "S"},
     ];
     await performActions(keyActions);
-    await autocompleteEl.text().should.eventually.equal('HAt');
+    await autocompleteEl.text().should.eventually.equal('HAtS');
     await autocompleteEl.clear();
   });
 });
