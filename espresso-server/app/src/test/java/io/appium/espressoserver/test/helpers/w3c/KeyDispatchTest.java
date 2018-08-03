@@ -6,7 +6,7 @@ import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
@@ -70,7 +70,7 @@ public class KeyDispatchTest {
         ActionObject actionObject = new ActionObject(id, KEY, KEY_DOWN, 0);
         actionObject.setValue("F");
         KeyInputState keyInputState = new KeyInputState();
-        KeyEvent keyEvent = dispatchKeyDown(adapter, actionObject, keyInputState, inputStateTable);
+        W3CKeyEvent keyEvent = dispatchKeyDown(adapter, actionObject, keyInputState, inputStateTable);
         assertEquals(keyEvent.getCode(), "KeyF");
     }
 
@@ -82,7 +82,7 @@ public class KeyDispatchTest {
         ActionObject actionObject = new ActionObject(id, KEY, KEY_DOWN, 0);
         actionObject.setValue("\uFFFF");
         KeyInputState keyInputState = new KeyInputState();
-        KeyEvent keyEvent = dispatchKeyDown(adapter, actionObject, keyInputState, inputStateTable);
+        W3CKeyEvent keyEvent = dispatchKeyDown(adapter, actionObject, keyInputState, inputStateTable);
         assertNull(keyEvent.getCode());
         assertEquals(keyEvent.getLocation(), 0);
     }

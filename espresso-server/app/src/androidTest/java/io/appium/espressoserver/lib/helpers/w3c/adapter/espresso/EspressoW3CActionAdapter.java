@@ -4,7 +4,9 @@ import android.os.SystemClock;
 import android.support.test.espresso.InjectEventSecurityException;
 import android.support.test.espresso.UiController;
 import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,20 +14,21 @@ import java.util.Map;
 import java.util.Set;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
 import static android.view.KeyEvent.*;
-import static android.view.MotionEvent.*;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_UP;
+import static android.view.MotionEvent.ACTION_MOVE;
+import static android.view.MotionEvent.ACTION_POINTER_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.*;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 
@@ -33,61 +36,105 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
     private UiController uiController;
     private final MultiTouchState multiTouchState = new MultiTouchState();
-    private Map<Integer, android.view.KeyEvent> keyDownEvents = new HashMap<>();
-
-    public EspressoW3CActionAdapter() {
-        // Only used in unit testing
-    }
+    private Map<String, List<KeyEvent>> keyDownEvents = new HashMap<>();
+    private final KeyCharacterMap keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
 
     public EspressoW3CActionAdapter(UiController uiController) {
         this.uiController = uiController;
     }
 
-    public void keyDown(final KeyEvent keyEvent) throws AppiumException {
+    public void keyDown(final W3CKeyEvent keyEvent) throws AppiumException {
         keyUpOrDown(keyEvent, true);
     }
 
-    public void keyUp(final KeyEvent keyEvent) throws AppiumException {
+    public void keyUp(final W3CKeyEvent keyEvent) throws AppiumException {
         keyUpOrDown(keyEvent, false);
     }
 
-    private void keyUpOrDown(final KeyEvent keyEvent, boolean isDown) throws AppiumException {
-        int action = isDown ? android.view.KeyEvent.ACTION_DOWN : android.view.KeyEvent.ACTION_UP;
-        int keyCode = keyEvent.getKeyCode();
-        getLogger().info(String.format("Calling key %s event on character: %s",
-                isDown ? "down" : "up",
-                keyCode
-        ));
-        long downTime = isDown ?
-                SystemClock.uptimeMillis() :
-                keyDownEvents.get(keyCode).getDownTime();
+    private void keyUpOrDown(final W3CKeyEvent w3cKeyEvent, boolean isDown) throws AppiumException {
+        int action = isDown ? KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP;
+        String key = w3cKeyEvent.getKey();
+        int keyCode = w3cKeyEvent.getKeyCode();
 
-        android.view.KeyEvent androidKeyEvent = new android.view.KeyEvent(
-                downTime,
-                isDown ? downTime : SystemClock.uptimeMillis(),
-                action,
-                keyCode,
-                0,
-                getMetaState(keyEvent)
-        );
+        List<KeyEvent> keyEvents;
 
-        try {
-            boolean isSuccess = uiController.injectKeyEvent(androidKeyEvent);
-            if (!isSuccess) {
-                throw new AppiumException(String.format("Could not inject key event %s", keyEvent.getKey()));
+        long now = SystemClock.uptimeMillis();
+
+        if (keyCode >= 0) {
+
+            // If the keyCode is known, send it now
+            long downTime = isDown ?
+                    SystemClock.uptimeMillis() :
+                    keyDownEvents.get(key).get(0).getDownTime();
+            keyEvents = Collections.singletonList(new KeyEvent(
+                    downTime,
+                    isDown ? downTime : now,
+                    action,
+                    keyCode,
+                    w3cKeyEvent.isRepeat() ? 1 : 0,
+                    getMetaState(w3cKeyEvent),
+                    KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0
+            ));
+        } else {
+            // If there's no keyCode, map the characters to Android keys
+            // This method produces both DOWN and UP so we have to skip over odd events
+            final KeyEvent[] keyEventsFromChar = keyCharacterMap.getEvents(key.toCharArray());
+
+            if (keyEventsFromChar == null) {
+                throw new InvalidArgumentException(String.format("Could not find matching keycode for character %s", key));
             }
 
-            if (isDown) {
-                keyDownEvents.put(keyCode, androidKeyEvent);
-            } else {
-                keyDownEvents.remove(keyCode);
+            int keyEventIndex = 0;
+            keyEvents = new ArrayList<>();
+
+
+            while (keyEventIndex * 2 < keyEventsFromChar.length) {
+                // getEvents produces UP and DOWN events, so we need to skip over every other event
+                final KeyEvent keyEvent = keyEventsFromChar[keyEventIndex * 2];
+
+                long downTime = isDown ?
+                        SystemClock.uptimeMillis() :
+                        keyDownEvents.get(key).get(keyEventIndex).getDownTime();
+
+                keyEvents.add(new KeyEvent(
+                        downTime,
+                        isDown ? downTime : now,
+                        action,
+                        keyEvent.getKeyCode(),
+                        w3cKeyEvent.isRepeat() ? 1 : 0,
+                        getMetaState(w3cKeyEvent) | keyEvent.getMetaState(),
+                        KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0
+                ));
+
+                keyEventIndex++;
+            }
+        }
+
+        getLogger().info(String.format("Calling key %s event on character: %s",
+                isDown ? "down" : "up",
+                w3cKeyEvent.getKey()
+        ));
+
+        // Save references to KeyEvents
+        if (isDown) {
+            keyDownEvents.put(key, keyEvents);
+        } else {
+            keyDownEvents.remove(key);
+        }
+
+        try {
+            for (final KeyEvent androidKeyEvent : keyEvents){
+                boolean isSuccess = uiController.injectKeyEvent(androidKeyEvent);
+                if (!isSuccess) {
+                    throw new AppiumException(String.format("Could not inject key event %s", key));
+                }
             }
         } catch (InjectEventSecurityException e) {
             throw new AppiumException(e.getCause().toString());
         }
     }
 
-    public int getMetaState(KeyEvent keyEvent) {
+    public int getMetaState(final W3CKeyEvent keyEvent) {
         int metaState = 0;
 
         if (keyEvent.isAltKey()) {
@@ -99,6 +146,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         if (keyEvent.isShiftKey()) {
             metaState |= META_SHIFT_MASK;
         }
+
         return metaState;
     }
 
@@ -169,6 +217,8 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public int getKeyCode(String keyValue, int location) throws AppiumException {
+        // If it's a normalized keyvalue, map it to it's appropriate key code,
+        // otherwise just return -1
         switch (keyValue) {
             case UNIDENTIFIED:
                 return KEYCODE_UNKNOWN;
@@ -279,12 +329,8 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             case DELETE:
                 return KEYCODE_FORWARD_DEL;
             default:
-                break;
+                return -1;
         }
-
-        KeyCharacterMap keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
-        android.view.KeyEvent[] keyEvent = keyCharacterMap.getEvents(keyValue.toCharArray());
-        return keyEvent[0].getKeyCode();
     }
 
     public long getViewportHeight() {
