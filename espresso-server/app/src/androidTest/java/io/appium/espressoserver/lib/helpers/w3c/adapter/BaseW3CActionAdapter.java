@@ -9,7 +9,7 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
 
     private static ReentrantLock reentrantLock = new ReentrantLock();
 
-    public int getKeyCode(String keyValue, int location) {
+    public int getKeyCode(String keyValue, int location) throws AppiumException {
         return Character.getNumericValue(keyValue.charAt(0));
     }
 

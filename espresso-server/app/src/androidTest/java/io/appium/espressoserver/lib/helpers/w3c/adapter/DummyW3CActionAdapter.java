@@ -9,7 +9,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.helpers.Logger;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
@@ -39,11 +39,11 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
 
     private Logger logger = new DummyLogger();
 
-    public void keyDown(KeyEvent keyEvent) {
+    public void keyDown(W3CKeyEvent keyEvent) {
         // No-op
     }
 
-    public void keyUp(KeyEvent keyEvent) {
+    public void keyUp(W3CKeyEvent keyEvent) {
         // No-op
     }
 

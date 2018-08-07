@@ -155,11 +155,11 @@ public class ActionSequenceTest {
 
         String unicodeChar = Character.toString('\uE009');
 
-        ActionType[] expectedSubTypes = new ActionType[] { KEY_DOWN, PAUSE, KEY_DOWN, KEY_UP, KEY_UP };
-        String[] expectedValue = new String[]{ unicodeChar, null, "s", unicodeChar, "s" };
+        ActionType[] expectedSubTypes = new ActionType[]{KEY_DOWN, PAUSE, KEY_DOWN, KEY_UP, KEY_UP};
+        String[] expectedValue = new String[]{unicodeChar, null, "s", unicodeChar, "s"};
 
 
-        for (int i=0; i<expectedSubTypes.length; i++) {
+        for (int i = 0; i < expectedSubTypes.length; i++) {
             tick = actionSequence.next();
             action = tick.next();
             assertEquals(action.getType(), KEY);
@@ -218,7 +218,5 @@ public class ActionSequenceTest {
         long elapsedTime = System.currentTimeMillis() - timeBefore;
         assertTrue(elapsedTime >= 500);
         assertTrue(elapsedTime <= 600);
-
     }
-
 }

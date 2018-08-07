@@ -19,17 +19,19 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action
  */
 public class KeyDispatch {
 
-    private static KeyEvent dispatchKeyEvent(W3CActionAdapter dispatcherAdapter,
-                                             ActionObject actionObject,
-                                             KeyInputState inputState,
-                                             InputStateTable inputStateTable,
-                                             long tickDuration, boolean down) throws AppiumException {
+    private static W3CKeyEvent dispatchKeyEvent(W3CActionAdapter dispatcherAdapter,
+                                                ActionObject actionObject,
+                                                KeyInputState inputState,
+                                                InputStateTable inputStateTable,
+                                                long tickDuration, boolean down) throws AppiumException {
         // Get the base Key Event
-        KeyEvent keyEvent = getKeyEvent(dispatcherAdapter, actionObject);
+        W3CKeyEvent keyEvent = getKeyEvent(dispatcherAdapter, actionObject);
         String key = keyEvent.getKey();
 
         // 3. If the input state's pressed property contains key, let repeat be true, otherwise let repeat be false.
-        //    (Doesn't do this step because the value doesn't get used)
+        if (inputState.isPressed(key)) {
+            keyEvent.setRepeat(true);
+        }
 
         // 6. Let charCode, keyCode and which be the implementation-specific values of the charCode,
         // keyCode and which properties.
@@ -51,6 +53,12 @@ public class KeyDispatch {
             inputState.setCtrl(inputState.isCtrl() && !key.equals(NormalizedKeys.CONTROL));
             inputState.setMeta(inputState.isMeta() && !key.equals(NormalizedKeys.META));
         }
+
+        // Set the alt, shift, ctrl and meta states on the Key Event
+        keyEvent.setAltKey(inputState.isAlt());
+        keyEvent.setCtrlKey(inputState.isCtrl());
+        keyEvent.setShiftKey(inputState.isShift());
+        keyEvent.setMetaKey(inputState.isMeta());
 
         // 11: Add key to the set corresponding to input state's pressed property
         if (down) {
@@ -96,20 +104,20 @@ public class KeyDispatch {
      * @param inputState State of the input source
      * @param inputStateTable All of the input states for this session
      * @param tickDuration How long the 'tick' is. This is unused currently but may be used in the future
-     * @return KeyEvent (for testing purposes). 'null' if the dispatch failed.
+     * @return W3CKeyEvent (for testing purposes). 'null' if the dispatch failed.
      */
     @Nullable
-    public static KeyEvent dispatchKeyDown(W3CActionAdapter dispatcherAdapter,
-                                            ActionObject actionObject, KeyInputState inputState,
-                                            InputStateTable inputStateTable, long tickDuration) throws AppiumException {
+    public static W3CKeyEvent dispatchKeyDown(W3CActionAdapter dispatcherAdapter,
+                                              ActionObject actionObject, KeyInputState inputState,
+                                              InputStateTable inputStateTable, long tickDuration) throws AppiumException {
 
         return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable ,tickDuration, true);
     }
 
     @Nullable
-    public static KeyEvent dispatchKeyDown(W3CActionAdapter dispatcherAdapter,
-                                           ActionObject actionObject, KeyInputState inputState,
-                                           InputStateTable inputStateTable) throws AppiumException {
+    public static W3CKeyEvent dispatchKeyDown(W3CActionAdapter dispatcherAdapter,
+                                              ActionObject actionObject, KeyInputState inputState,
+                                              InputStateTable inputStateTable) throws AppiumException {
         return dispatchKeyDown(dispatcherAdapter, actionObject, inputState, inputStateTable, 0);
     }
 
@@ -121,28 +129,28 @@ public class KeyDispatch {
      * @param inputState State of the input source
      * @param inputStateTable All of the input states for this session
      * @param tickDuration How long the 'tick' is. This is unused currently but may be used in the future
-     * @return KeyEvent (for testing purposes). 'null' if the dispatch failed.
+     * @return W3CKeyEvent (for testing purposes). 'null' if the dispatch failed.
      */
     @Nullable
-    public static KeyEvent dispatchKeyUp(W3CActionAdapter dispatcherAdapter,
-                                         ActionObject actionObject, KeyInputState inputState,
-                                         InputStateTable inputStateTable, long tickDuration) throws AppiumException {
+    public static W3CKeyEvent dispatchKeyUp(W3CActionAdapter dispatcherAdapter,
+                                            ActionObject actionObject, KeyInputState inputState,
+                                            InputStateTable inputStateTable, long tickDuration) throws AppiumException {
         return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable, tickDuration, false);
     }
 
     @Nullable
-    public static KeyEvent dispatchKeyUp(W3CActionAdapter dispatcherAdapter,
-                                         ActionObject actionObject, KeyInputState inputState,
-                                         InputStateTable inputStateTable) throws AppiumException {
+    public static W3CKeyEvent dispatchKeyUp(W3CActionAdapter dispatcherAdapter,
+                                            ActionObject actionObject, KeyInputState inputState,
+                                            InputStateTable inputStateTable) throws AppiumException {
         return dispatchKeyUp(dispatcherAdapter, actionObject, inputState, inputStateTable, 0);
     }
 
     /**
      * Helper method to get a Key Event that has common attributes between KeyUp and KeyDispatch
      * @param actionObject Action Object to get key event info for
-     * @return KeyEvent Key event info used by adapter
+     * @return W3CKeyEvent Key event info used by adapter
      */
-    private static KeyEvent getKeyEvent(W3CActionAdapter dispatcherAdapter, ActionObject actionObject) {
+    private static W3CKeyEvent getKeyEvent(W3CActionAdapter dispatcherAdapter, ActionObject actionObject) throws AppiumException {
         // 1. Let raw key be action's value property
         String rawKey = actionObject.getValue();
 
@@ -159,10 +167,10 @@ public class KeyDispatch {
         // keyCode and which properties appropriate for a key with key key and location location on
         // a 102 key US keyboard
         int keyCode = dispatcherAdapter.getKeyCode(key, location);
-        int charCode = dispatcherAdapter.getCharCode(key, location);
+        int charCode = dispatcherAdapter.getCharCode(code, location);
         int which = dispatcherAdapter.getWhich(key, location);
 
-        KeyEvent keyEvent = new KeyEvent();
+        W3CKeyEvent keyEvent = new W3CKeyEvent();
         keyEvent.setKey(key);
         keyEvent.setCode(code);
         keyEvent.setLocation(location);

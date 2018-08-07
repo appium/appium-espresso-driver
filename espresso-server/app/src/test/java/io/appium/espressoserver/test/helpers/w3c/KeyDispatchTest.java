@@ -6,7 +6,9 @@ import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
@@ -68,7 +70,7 @@ public class KeyDispatchTest {
         ActionObject actionObject = new ActionObject(id, KEY, KEY_DOWN, 0);
         actionObject.setValue("F");
         KeyInputState keyInputState = new KeyInputState();
-        KeyEvent keyEvent = dispatchKeyDown(adapter, actionObject, keyInputState, inputStateTable);
+        W3CKeyEvent keyEvent = dispatchKeyDown(adapter, actionObject, keyInputState, inputStateTable);
         assertEquals(keyEvent.getCode(), "KeyF");
     }
 
@@ -80,21 +82,9 @@ public class KeyDispatchTest {
         ActionObject actionObject = new ActionObject(id, KEY, KEY_DOWN, 0);
         actionObject.setValue("\uFFFF");
         KeyInputState keyInputState = new KeyInputState();
-        KeyEvent keyEvent = dispatchKeyDown(adapter, actionObject, keyInputState, inputStateTable);
+        W3CKeyEvent keyEvent = dispatchKeyDown(adapter, actionObject, keyInputState, inputStateTable);
         assertNull(keyEvent.getCode());
         assertEquals(keyEvent.getLocation(), 0);
-    }
-
-    @Test
-    public void shouldMapRawKeyToLocation() throws AppiumException {
-        DummyW3CActionAdapter adapter = new DummyW3CActionAdapter();
-        InputStateTable inputStateTable = new InputStateTable();
-        String id = "keyboard";
-        ActionObject actionObject = new ActionObject(id, KEY, KEY_DOWN, 0);
-        actionObject.setValue("\uE007");
-        KeyInputState keyInputState = new KeyInputState();
-        KeyEvent keyEvent = dispatchKeyDown(adapter, actionObject, keyInputState, inputStateTable);
-        assertEquals(keyEvent.getLocation(), 1);
     }
 
     @Test
@@ -134,5 +124,11 @@ public class KeyDispatchTest {
         // Release a key and check that it's not pressed
         dispatchKeyUp(adapter, actionObject, keyInputState, inputStateTable);
         assertFalse(keyInputState.isPressed(value));
+    }
+
+    @Test
+    public void shouldNormalizeKeys() throws AppiumException {
+        String normalizedKey = KeyNormalizer.getInstance().getNormalizedKey("\uE008");
+        assertEquals(normalizedKey, NormalizedKeys.SHIFT);
     }
 }
