@@ -52,13 +52,11 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     private void keyUpOrDown(final W3CKeyEvent w3cKeyEvent, boolean isDown) throws AppiumException {
-        int action = isDown ? KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP;
+        int action = isDown ? ACTION_DOWN : ACTION_UP;
         String key = w3cKeyEvent.getKey();
         int keyCode = w3cKeyEvent.getKeyCode();
 
         List<KeyEvent> keyEvents;
-
-        long now = SystemClock.uptimeMillis();
 
         if (keyCode >= 0) {
 
@@ -68,7 +66,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                     keyDownEvents.get(key).get(0).getDownTime();
             keyEvents = Collections.singletonList(new KeyEvent(
                     downTime,
-                    isDown ? downTime : now,
+                    isDown ? downTime : SystemClock.uptimeMillis(),
                     action,
                     keyCode,
                     w3cKeyEvent.isRepeat() ? 1 : 0,
@@ -77,41 +75,51 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             ));
         } else {
             // If there's no keyCode, map the characters to Android keys
-            // This method produces both DOWN and UP so we have to skip over odd events
-            final KeyEvent[] keyEventsFromChar = keyCharacterMap.getEvents(key.toCharArray());
-
-            if (keyEventsFromChar == null) {
-                throw new InvalidArgumentException(String.format("Could not find matching keycode for character %s", key));
-            }
-
-            int keyEventIndex = 0;
-            keyEvents = new ArrayList<>();
-
-            while (keyEventIndex * 2 < keyEventsFromChar.length) {
-                // getEvents produces UP and DOWN events, so we need to skip over every other event
-                final KeyEvent keyEvent = keyEventsFromChar[keyEventIndex * 2];
-
-                long downTime = isDown ?
-                        SystemClock.uptimeMillis() :
-                        keyDownEvents.get(key).get(keyEventIndex).getDownTime();
-
-                keyEvents.add(new KeyEvent(
-                        downTime,
-                        isDown ? downTime : now,
-                        action,
-                        keyEvent.getKeyCode(),
-                        w3cKeyEvent.isRepeat() ? 1 : 0,
-                        getMetaState(w3cKeyEvent) | keyEvent.getMetaState(),
-                        KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0
-                ));
-
-                keyEventIndex++;
-            }
+            keyEvents = getKeyEventsFromString(key, isDown, w3cKeyEvent.isRepeat(), getMetaState(w3cKeyEvent));
         }
 
+        injectKeyEvents(uiController, isDown, key, keyEvents);
+    }
+
+    private List<KeyEvent> getKeyEventsFromString(String key, boolean isDown, boolean isRepeat, int metaState) throws InvalidArgumentException {
+        final KeyEvent[] keyEventsFromChar = keyCharacterMap.getEvents(key.toCharArray());
+
+        if (keyEventsFromChar == null) {
+            throw new InvalidArgumentException(String.format("Could not find matching keycode for character %s", key));
+        }
+
+        long now = SystemClock.uptimeMillis();
+
+        List<KeyEvent> keyEvents = new ArrayList<>();
+        int keyEventIndex = 0;
+        while (keyEventIndex * 2 < keyEventsFromChar.length) {
+            // getEvents produces UP and DOWN events, so we need to skip over every other event
+            final KeyEvent keyEvent = keyEventsFromChar[keyEventIndex * 2];
+
+            long downTime = isDown ?
+                    SystemClock.uptimeMillis() :
+                    keyDownEvents.get(key).get(keyEventIndex).getDownTime();
+
+            keyEvents.add(new KeyEvent(
+                    downTime,
+                    isDown ? downTime : now,
+                    isDown ? KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP,
+                    keyEvent.getKeyCode(),
+                    isRepeat ? 1 : 0,
+                    metaState | keyEvent.getMetaState(),
+                    KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0
+            ));
+
+            keyEventIndex++;
+        }
+
+        return keyEvents;
+    }
+
+    private void injectKeyEvents(UiController uiController, boolean isDown, String key, List<KeyEvent> keyEvents) throws AppiumException {
         getLogger().info(String.format("Calling key %s event on character: %s",
                 isDown ? "down" : "up",
-                w3cKeyEvent.getKey()
+                key
         ));
 
         // Save references to KeyEvents
@@ -134,7 +142,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         }
     }
 
-    public int getMetaState(final W3CKeyEvent keyEvent) {
+    private int getMetaState(final W3CKeyEvent keyEvent) {
         int metaState = 0;
 
         if (keyEvent.isAltKey()) {

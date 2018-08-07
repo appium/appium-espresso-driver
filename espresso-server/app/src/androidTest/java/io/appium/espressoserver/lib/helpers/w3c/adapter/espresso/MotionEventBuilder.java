@@ -4,6 +4,8 @@ import android.os.SystemClock;
 import android.support.test.espresso.InjectEventSecurityException;
 import android.support.test.espresso.UiController;
 import android.view.MotionEvent;
+import android.view.MotionEvent.PointerCoords;
+import android.view.MotionEvent.PointerProperties;
 
 import java.util.List;
 
@@ -129,12 +131,12 @@ public class MotionEventBuilder {
                 return null;
             }
 
-            MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[pointerCount];
-            MotionEvent.PointerProperties[] pointerProperties = new MotionEvent.PointerProperties[pointerCount];
+            PointerCoords[] pointerCoords = new PointerCoords[pointerCount];
+            PointerProperties[] pointerProperties = new PointerProperties[pointerCount];
 
             for (int pointerIndex = 0; pointerIndex < pointerCount; pointerIndex++) {
                 // Set pointer coordinates
-                pointerCoords[pointerIndex] = new MotionEvent.PointerCoords();
+                pointerCoords[pointerIndex] = new PointerCoords();
                 pointerCoords[pointerIndex].clear();
                 pointerCoords[pointerIndex].pressure = 1;
                 pointerCoords[pointerIndex].size = 1;
@@ -142,7 +144,7 @@ public class MotionEventBuilder {
                 pointerCoords[pointerIndex].y = motionEventParams.y.get(pointerIndex);
 
                 // Set pointer properties
-                pointerProperties[pointerIndex] = new MotionEvent.PointerProperties();
+                pointerProperties[pointerIndex] = new PointerProperties();
                 pointerProperties[pointerIndex].toolType = getToolType(motionEventParams.pointerType);
                 pointerProperties[pointerIndex].id = pointerIndex;
 
@@ -177,7 +179,7 @@ public class MotionEventBuilder {
                     motionEventParams.deviceId,
                     motionEventParams.edgeFlags,
                     motionEventParams.source,
-                    0 // TODO: How to get Motion Event flags?
+                    0 // MotionEvent flags. Don't think we need to set these.
             );
 
             try {
