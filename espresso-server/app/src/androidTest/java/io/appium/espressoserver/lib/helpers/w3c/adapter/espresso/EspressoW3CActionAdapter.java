@@ -30,6 +30,8 @@ import io.appium.espressoserver.lib.model.Element;
 
 import static android.support.test.InstrumentationRegistry.getContext;
 import static android.view.KeyEvent.*;
+import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.KeyEvent.ACTION_UP;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
@@ -108,7 +110,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             keyEvents.add(new KeyEvent(
                     downTime,
                     isDown ? downTime : now,
-                    isDown ? KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP,
+                    isDown ? ACTION_DOWN : ACTION_UP,
                     keyEvent.getKeyCode(),
                     isRepeat ? 1 : 0,
                     metaState | keyEvent.getMetaState(),
