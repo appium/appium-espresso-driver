@@ -16,7 +16,6 @@
 
 package io.appium.espressoserver.lib.model;
 
-import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewInteraction;
 import android.view.View;
 
@@ -28,9 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
 
 

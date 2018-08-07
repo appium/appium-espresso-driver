@@ -10,13 +10,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import java.util.Map;
+
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.MotionEventBuilder;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.model.Element;
-import io.appium.espressoserver.lib.model.TouchParams;
+import io.appium.espressoserver.lib.model.MotionEventParams;
 import io.appium.espressoserver.lib.model.ViewElement;
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer;
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable;
@@ -27,13 +29,15 @@ import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.MOUSE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 
-public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
+public class PointerEventHandler implements RequestHandler<MotionEventParams, Void> {
 
     private final TouchType touchType;
     @Nullable
     private static MotionEvent globalTouchDownEvent;
+    private static Map<Integer, MotionEvent> globalMouseButtonDownEvents; // Map mouse down events to android MotionEvent
     private static final DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
 
     public enum TouchType {
@@ -43,9 +47,11 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
         SCROLL,
         TOUCH_DOWN,
         TOUCH_UP,
-        TOUCH_MOVE, TOUCH_SCROLL;
-
-        // TODO: Add mouse events here
+        TOUCH_MOVE,
+        TOUCH_SCROLL,
+        MOUSE_UP,
+        MOUSE_DOWN,
+        MOUSE_MOVE;
     }
 
     public PointerEventHandler(TouchType touchType) {
@@ -53,7 +59,7 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
     }
 
     @Override
-    public Void handle(TouchParams params) throws AppiumException {
+    public Void handle(MotionEventParams params) throws AppiumException {
         switch (touchType) {
             case CLICK:
                 handleClick(params);
@@ -63,9 +69,6 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
                 break;
             case LONG_CLICK:
                 handleLongClick(params);
-                break;
-            case SCROLL:
-                handleScroll(params);
                 break;
             case TOUCH_DOWN:
                 handleTouchDown(params);
@@ -79,6 +82,12 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
             case TOUCH_SCROLL:
                 handleTouchScroll(params);
                 break;
+            case MOUSE_DOWN:
+                handleMouseButtonDown(params);
+            case MOUSE_UP:
+                handleMouseButtonUp(params);
+            case MOUSE_MOVE:
+                handleMouseMove(params);
             default:
                 break;
         }
@@ -92,14 +101,14 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
         }
     }
 
-    private static synchronized MotionEvent handlePointerEvent(final TouchParams params,
+    private static synchronized MotionEvent handlePointerEvent(final MotionEventParams params,
                                            final int action,
                                            final PointerType pointerType,
                                            @Nullable final Long downTime,
                                            @Nullable final Long eventTime)
             throws AppiumException {
         checkBounds(params.getX(), params.getY());
-        UiControllerRunnable<MotionEvent> runnable = new UiControllerRunnable<MotionEvent>() {
+        final UiControllerRunnable<MotionEvent> runnable = new UiControllerRunnable<MotionEvent>() {
             @Override
             public MotionEvent run(UiController uiController) throws AppiumException {
                 return new MotionEventBuilder()
@@ -108,6 +117,7 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
                         .withX(params.getX())
                         .withY(params.getY())
                         .withPointerType(pointerType)
+                        .withButtonState(params.getAndroidButtonState())
                         .withAction(action)
                         .build()
                         .run(uiController);
@@ -118,7 +128,7 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
         return uiControllerPerformer.run();
     }
 
-    private static synchronized MotionEvent handlePointerEvent(final TouchParams params,
+    private static synchronized MotionEvent handlePointerEvent(final MotionEventParams params,
                                                                final int action,
                                                                final PointerType pointerType,
                                                                final Long downTime)
@@ -126,7 +136,7 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
         return handlePointerEvent(params, action, pointerType, downTime, SystemClock.uptimeMillis());
     }
 
-    private static synchronized MotionEvent handlePointerEvent(final TouchParams params,
+    private static synchronized MotionEvent handlePointerEvent(final MotionEventParams params,
                                            final int action,
                                            final PointerType pointerType)
             throws AppiumException {
@@ -134,7 +144,7 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
     }
 
 
-    private void handleTouchDown(final TouchParams params) throws AppiumException {
+    private void handleTouchDown(final MotionEventParams params) throws AppiumException {
         if (globalTouchDownEvent != null) {
             throw new AppiumException("Cannot call touch down while another touch event is still down");
         }
@@ -142,7 +152,7 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
         globalTouchDownEvent = handlePointerEvent(params, ACTION_DOWN, TOUCH);
     }
 
-    private void handleTouchUp(final TouchParams params) throws AppiumException {
+    private void handleTouchUp(final MotionEventParams params) throws AppiumException {
         AndroidLogger.logger.info(String.format("Calling touch up event on (%s %s)", params.getX(), params.getY()));
         if (globalTouchDownEvent == null) {
             throw new AppiumException("Touch up event must be preceded by a touch down event");
@@ -151,14 +161,15 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
         globalTouchDownEvent = null;
     }
 
-    private void handleTouchMove(final TouchParams params) throws AppiumException {
+    private void handleTouchMove(final MotionEventParams params) throws AppiumException {
         if (globalTouchDownEvent == null) {
             throw new AppiumException("Touch move event must have a touch down event");
         }
         handlePointerEvent(params, ACTION_MOVE, TOUCH, globalTouchDownEvent.getDownTime());
     }
 
-    private void handleTouchScroll(final TouchParams params) throws AppiumException {
+    private void handleTouchScroll(final MotionEventParams params) throws AppiumException {
+        // Fabricate a scroll event
         long startX;
         long startY;
         if (params.getElementId() != null) {
@@ -173,7 +184,7 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
         }
 
         // Do down event
-        TouchParams downParams = new TouchParams();
+        MotionEventParams downParams = new MotionEventParams();
         downParams.setX(startX);
         downParams.setY(startY);
         MotionEvent downEvent = handlePointerEvent(downParams, ACTION_DOWN, TOUCH);
@@ -185,39 +196,43 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
         long scrollDuration = (long) (ViewConfiguration.getTapTimeout() * 1.5);
 
         eventTime += scrollDuration;
-        TouchParams moveParams = new TouchParams();
+        MotionEventParams moveParams = new MotionEventParams();
         moveParams.setX(startX + params.getX());
         moveParams.setY(startY + params.getY());
         handlePointerEvent(moveParams, ACTION_MOVE, TOUCH, downTime, eventTime);
 
         // Release finger after another 'scroll' duration
         eventTime += scrollDuration;
-        TouchParams upParams = new TouchParams();
+        MotionEventParams upParams = new MotionEventParams();
         upParams.setX(startX + params.getX());
         upParams.setY(startY + params.getY());
         handlePointerEvent(upParams, ACTION_UP, TOUCH, downTime, eventTime);
     }
 
-    private void handleMouseDown(final TouchParams params) throws AppiumException {
-        handlePointerEvent(params, ACTION_DOWN, PointerType.MOUSE);
+    private void handleMouseButtonDown(final MotionEventParams params) throws AppiumException {
+        MotionEvent mouseDownEvent = handlePointerEvent(params, ACTION_DOWN, MOUSE);
+        globalMouseButtonDownEvents.put(params.getButton(), mouseDownEvent);
+        handlePointerEvent(params, ACTION_DOWN, MOUSE, SystemClock.uptimeMillis());
     }
 
-    private void handleMouseUp(final TouchParams params) throws AppiumException {
-        handlePointerEvent(params, ACTION_UP, PointerType.MOUSE);
-    }
-
-    private void handleMouseMove(final TouchParams params) throws AppiumException {
-        handlePointerEvent(params, ACTION_UP, PointerType.MOUSE);
-    }
-
-    private void handleScroll(final TouchParams params) throws AppiumException {
-        if (params.getElementId() == null) {
-            throw new InvalidArgumentException("Element ID must not be blank for scroll event");
+    private void handleMouseButtonUp(final MotionEventParams params) throws AppiumException {
+        MotionEvent mouseDownEvent = globalMouseButtonDownEvents.get(params.getButton());
+        if (mouseDownEvent == null) {
+            throw new AppiumException(String.format(
+                    "Mouse button up event '%s' must be preceded by a mouse down event",
+                    params.getButton()
+            ));
         }
-        // Stub.
+        handlePointerEvent(params, ACTION_UP, MOUSE, mouseDownEvent.getDownTime());
+        globalMouseButtonDownEvents.remove(params.getButton());
     }
 
-    private void handleClick(final TouchParams params) throws AppiumException {
+    private void handleMouseMove(final MotionEventParams params) throws AppiumException {
+        params.setButton(getGlobalButtonState());
+        handlePointerEvent(params, ACTION_MOVE, MOUSE);
+    }
+
+    private void handleClick(final MotionEventParams params) throws AppiumException {
         if (params.getElementId() == null) {
             throw new InvalidArgumentException("Element ID must not be blank for click event");
         }
@@ -225,7 +240,7 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
         viewInteraction.perform(click());
     }
 
-    private void handleDoubleClick(final TouchParams params) throws AppiumException {
+    private void handleDoubleClick(final MotionEventParams params) throws AppiumException {
         if (params.getElementId() == null) {
             throw new InvalidArgumentException("Element ID must not be blank for double click event");
         }
@@ -233,11 +248,19 @@ public class PointerEventHandler implements RequestHandler<TouchParams, Void> {
         viewInteraction.perform(doubleClick());
     }
 
-    private void handleLongClick(final TouchParams params) throws AppiumException {
+    private void handleLongClick(final MotionEventParams params) throws AppiumException {
         if (params.getElementId() == null) {
             throw new InvalidArgumentException("Element ID must not be blank for long click event");
         }
         ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         viewInteraction.perform(longClick());
+    }
+
+    private int getGlobalButtonState() throws InvalidArgumentException {
+        int buttonState = 0;
+        for(final Map.Entry<Integer, MotionEvent> mouseDownEventEntry: globalMouseButtonDownEvents.entrySet()) {
+            buttonState |= MotionEventParams.getAndroidButtonState(mouseDownEventEntry.getKey());
+        }
+        return buttonState;
     }
 }
