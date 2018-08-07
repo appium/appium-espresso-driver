@@ -87,7 +87,6 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             int keyEventIndex = 0;
             keyEvents = new ArrayList<>();
 
-
             while (keyEventIndex * 2 < keyEventsFromChar.length) {
                 // getEvents produces UP and DOWN events, so we need to skip over every other event
                 final KeyEvent keyEvent = keyEventsFromChar[keyEventIndex * 2];
@@ -122,15 +121,16 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             keyDownEvents.remove(key);
         }
 
-        try {
-            for (final KeyEvent androidKeyEvent : keyEvents){
-                boolean isSuccess = uiController.injectKeyEvent(androidKeyEvent);
-                if (!isSuccess) {
-                    throw new AppiumException(String.format("Could not inject key event %s", key));
-                }
+        for (final KeyEvent androidKeyEvent : keyEvents){
+            boolean isSuccess;
+            try {
+                isSuccess = uiController.injectKeyEvent(androidKeyEvent);
+            } catch (InjectEventSecurityException e) {
+                throw new AppiumException(e.getCause().toString());
             }
-        } catch (InjectEventSecurityException e) {
-            throw new AppiumException(e.getCause().toString());
+            if (!isSuccess) {
+                throw new AppiumException(String.format("Could not inject key event %s", key));
+            }
         }
     }
 
