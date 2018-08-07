@@ -25,6 +25,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.processor.PauseProcessor.
 import static io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerAction;
 import static io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerMoveAction;
 import static io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerUpOrDownAction;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
@@ -94,7 +95,7 @@ public class ProcessorTest {
     public void shouldRejectNullIfTypeNotPause() throws InvalidArgumentException {
         Action action = new Action();
         try {
-            ActionObject actionObject = processPauseAction(action, InputSourceType.NONE, "any", 0);
+            processPauseAction(action, InputSourceType.NONE, "any", 0);
         } catch (InvalidArgumentException ie) {
             assertTrue(ie.getMessage().contains("type 'pause'"));
         }
@@ -295,7 +296,7 @@ public class ProcessorTest {
         inputSource.setActions(new ArrayList<Action>());
         inputSource.setType(InputSourceType.KEY);
         inputSource.setId("anything");
-        assertTrue(!activeInputSources.hasInputSource("anything"));
+        assertFalse(activeInputSources.hasInputSource("anything"));
         processSourceActionSequence(inputSource, activeInputSources, inputStateTable);
         assertEquals(activeInputSources.getInputSource("anything"), inputSource);
         assertTrue(inputStateTable.getInputState("anything") instanceof KeyInputState);

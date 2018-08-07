@@ -31,10 +31,18 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     private class DummyLogger implements Logger {
-        public void error(Object... messages) { }
-        public void error(String message, Throwable throwable) { }
-        public void info(Object... messages) { }
-        public void debug(Object... messages) { }
+        public void error(Object... messages) {
+            // No-op
+        }
+        public void error(String message, Throwable throwable) {
+            // No-op
+        }
+        public void info(Object... messages) {
+            // No-op
+        }
+        public void debug(Object... messages) {
+            // No-op
+        }
     }
 
     private Logger logger = new DummyLogger();
@@ -60,7 +68,7 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void pointerCancel(String sourceId, PointerType pointerType) throws AppiumException {
-
+        // No-op
     }
 
     public double getPointerMoveDurationMargin(PointerInputState pointerInputState) {

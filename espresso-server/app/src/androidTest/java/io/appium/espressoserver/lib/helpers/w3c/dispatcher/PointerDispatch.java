@@ -254,8 +254,10 @@ public class PointerDispatch {
                 // Prepare the result
                 DispatchPointerMoveResult dispatchResult = new DispatchPointerMoveResult(
                         dispatcherAdapter,
-                        sourceId, pointerInputState.getType(),
-                        currentX, currentY, x, y,
+                        sourceId,
+                        pointerInputState.getType(),
+                        currentX, currentY,
+                        x, y,
                         pointerInputState.getButtons(),
                         globalKeyInputState
                 );

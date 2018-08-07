@@ -15,8 +15,6 @@ public class W3CKeyEvent {
     private boolean repeat;
     private boolean isComposing = false;
 
-    public W3CKeyEvent() { }
-
     public String logMessage() {
         return String.format(
                 "key=[%s] code=[%s] altKey=[%s] shiftKey=[%s] ctrlKey=[%s] metaKey=[%s]",
