@@ -39,7 +39,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.Strategy;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
-import io.appium.espressoserver.lib.viewmatcher.WithView;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -51,6 +50,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withContentDesc
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
 import static io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -208,8 +208,8 @@ public class ViewFinder {
 
             // If the parentView provided is an AdapterView, set 'inAdapterView' so that the
             // selector is restricted to the adapter subtree
-            if (parentView != null && parentView instanceof AdapterView) {
-                dataInteraction.inAdapterView(WithView.withView(parentView));
+            if (parentView instanceof AdapterView) {
+                dataInteraction.inAdapterView(withView(parentView));
             }
             dataInteraction.check(matches(isDisplayed()));
         } catch (Exception e) {
