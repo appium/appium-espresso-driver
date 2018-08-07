@@ -62,14 +62,14 @@ public class ActionsTest {
         assertEquals(finger2.getY(), 400);
 
         // Sanity check that it's recording pointer move events
-        List<PointerMoveEvent> pointerMoveEvents = ((DummyW3CActionAdapter)actions.getAdapter()).getPointerMoveEvents();
+        List<PointerMoveEvent> pointerMoveEvents = ((DummyW3CActionAdapter) actions.getAdapter()).getPointerMoveEvents();
         assertTrue(pointerMoveEvents.size() > 0);
     }
 
     @Test
     public void shouldPerformKeyActionsOnASetOfInputSources() throws IOException, AppiumException {
-        String multiTouchJson = Helpers.readAssetFile("key-actions.json");
-        Actions actions = Actions.class.cast((new Gson()).fromJson(multiTouchJson, Actions.class));
+        String keyJson = Helpers.readAssetFile("key-actions.json");
+        Actions actions = Actions.class.cast((new Gson()).fromJson(keyJson, Actions.class));
         actions.setAdapter(new AlteredDummyAdapter());
 
         String sessionId = "123";

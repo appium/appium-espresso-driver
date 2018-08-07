@@ -59,7 +59,8 @@ public class KeyProcessor {
 
         // 5-7 get the Unicode value of the keystroke (verify that it's a single character)
         String key = action.getValue();
-        if (key == null || key.length() != 1) {
+
+        if (key.length() != 1) {
             throwArgException(index, id, String.format("has invalid 'value' %s. Must be a unicode point", key));
         }
 

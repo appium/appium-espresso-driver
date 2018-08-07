@@ -1,7 +1,7 @@
 package io.appium.espressoserver.lib.helpers.w3c.dispatcher;
 
 
-public class KeyEvent {
+public class W3CKeyEvent {
     private String key;
     private String code;
     private int location;
@@ -15,7 +15,7 @@ public class KeyEvent {
     private boolean repeat;
     private boolean isComposing = false;
 
-    public KeyEvent() { }
+    public W3CKeyEvent() { }
 
     public String logMessage() {
         return String.format(

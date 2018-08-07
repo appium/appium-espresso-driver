@@ -7,16 +7,16 @@ import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.helpers.Logger;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.KeyEvent;
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 public interface W3CActionAdapter {
 
-    void keyDown(KeyEvent keyDownEvent) throws AppiumException;
+    void keyDown(W3CKeyEvent keyDownEvent) throws AppiumException;
 
-    void keyUp(KeyEvent keyUpEvent) throws AppiumException;
+    void keyUp(W3CKeyEvent keyUpEvent) throws AppiumException;
 
     void pointerDown(int button, String sourceId, PointerType pointerType,
                      Long x, Long y, Set<Integer> depressedButtons,
@@ -36,11 +36,11 @@ public interface W3CActionAdapter {
 
     void unlockAdapter();
 
-    int getKeyCode(String keyValue, int location);
+    int getKeyCode(String keyValue, int location) throws AppiumException;
 
-    int getCharCode(String keyValue, int location);
+    int getCharCode(String keyValue, int location) throws AppiumException;
 
-    int getWhich(String keyValue, int location);
+    int getWhich(String keyValue, int location) throws AppiumException;
     
     double getPointerMoveDurationMargin(PointerInputState pointerInputState);
 
