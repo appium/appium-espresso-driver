@@ -1,5 +1,7 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter;
 
+import android.graphics.Point;
+
 import java.util.Set;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
@@ -50,7 +52,7 @@ public interface W3CActionAdapter {
 
     void waitForUiThread();
 
-    long[] getElementCenterPoint(String elementId) throws NoSuchElementException, StaleElementException, NotYetImplementedException;
+    Point getElementCenterPoint(String elementId) throws NoSuchElementException, StaleElementException, NotYetImplementedException;
 
     long getViewportWidth();
 

@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
+import android.graphics.Point;
 import android.os.SystemClock;
 import android.support.test.espresso.InjectEventSecurityException;
 import android.support.test.espresso.UiController;
@@ -356,15 +357,15 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         return displayMetrics.widthPixels;
     }
 
-    public long[] getElementCenterPoint(String elementId)
+    public Point getElementCenterPoint(String elementId)
             throws NoSuchElementException, StaleElementException, NotYetImplementedException {
         View view = Element.getViewById(elementId);
         int[] out = new int[2];
         view.getLocationInWindow(out);
-        long[] res = new long[2];
-        res[0] = out[0] + ((view.getWidth()) / 2);
-        res[1] = out[1] + ((view.getHeight()) / 2);
-        return res;
+        Point point = new Point();
+        point.x = out[0] + ((view.getWidth()) / 2);
+        point.y = out[1] + ((view.getHeight()) / 2);
+        return point;
     }
 
     public void waitForUiThread() {

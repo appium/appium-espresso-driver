@@ -1,5 +1,7 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter;
 
+import android.graphics.Point;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -104,7 +106,7 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
         return pointerMoveEvents;
     }
 
-    public long[] getElementCenterPoint(String elementId)
+    public Point getElementCenterPoint(String elementId)
             throws NoSuchElementException, StaleElementException, NotYetImplementedException {
         if ("none".equals(elementId)) {
             throw new NoSuchElementException(String.format("Could not find element with id: %s", elementId));
@@ -112,7 +114,10 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
             throw new StaleElementException(String.format("Element with id %s no longer exists", elementId));
         }
 
-        return new long[]  { 10L, 10L };
+        Point point = new Point();
+        point.x = 10;
+        point.y = 10;
+        return point;
     }
 
     public long getViewportHeight() {
