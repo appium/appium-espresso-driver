@@ -7,10 +7,10 @@ import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.MotionEvent.PointerProperties;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
@@ -38,6 +38,18 @@ public class MotionEventBuilder {
         motionEventParams.y = y;
         return this;
     }
+
+    public MotionEventBuilder withX(Long x) {
+        motionEventParams.x = Collections.singletonList(x);
+        return this;
+    }
+
+    public MotionEventBuilder withY(Long y) {
+        motionEventParams.y = Collections.singletonList(y);
+        return this;
+    }
+
+
 
     public MotionEventBuilder withDownTime(long downTime) {
         motionEventParams.downTime = downTime;
@@ -114,7 +126,7 @@ public class MotionEventBuilder {
         private long eventTime;
     }
 
-    static class MotionEventRunner {
+    public static class MotionEventRunner {
         private final MotionEventParams motionEventParams;
 
         public MotionEventRunner(final MotionEventParams motionEventParams) {
@@ -123,8 +135,6 @@ public class MotionEventBuilder {
 
         public MotionEvent run (UiController uiController) throws AppiumException {
             int pointerCount = motionEventParams.x == null ? 0 : motionEventParams.x.size();
-
-            AndroidLogger.logger.info("Calling pointers", pointerCount);
 
             // Don't do anything if no pointers were provided
             if (pointerCount == 0 && motionEventParams.action != ACTION_CANCEL) {

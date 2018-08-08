@@ -54,7 +54,7 @@ public class MultiTouchState {
             this.button = button;
         }
 
-        // Record if we're in the DOWN or UP phase
+        // Record if we're in the TOUCH_DOWN or TOUCH_UP phase
         if (actionType == ACTION_DOWN) {
             touchPhase = DOWN;
         } else if (actionType == ACTION_UP) {

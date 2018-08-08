@@ -52,9 +52,9 @@ import io.appium.espressoserver.lib.handlers.GetSize;
 import io.appium.espressoserver.lib.handlers.GetWindowRect;
 import io.appium.espressoserver.lib.handlers.GetWindowSize;
 import io.appium.espressoserver.lib.handlers.LongPressKeyCode;
-import io.appium.espressoserver.lib.handlers.MoveTo;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
 import io.appium.espressoserver.lib.handlers.PeformActions;
+import io.appium.espressoserver.lib.handlers.PointerEventHandler;
 import io.appium.espressoserver.lib.handlers.PressKeyCode;
 import io.appium.espressoserver.lib.handlers.RequestHandler;
 import io.appium.espressoserver.lib.handlers.Screenshot;
@@ -84,13 +84,23 @@ import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.ElementValueParams;
 import io.appium.espressoserver.lib.model.KeyEventParams;
 import io.appium.espressoserver.lib.model.Locator;
-import io.appium.espressoserver.lib.model.MoveToParams;
+import io.appium.espressoserver.lib.model.MotionEventParams;
 import io.appium.espressoserver.lib.model.OrientationParams;
 import io.appium.espressoserver.lib.model.Session;
 import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
 
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.CLICK;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.DOUBLE_CLICK;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.LONG_CLICK;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_DOWN;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_MOVE;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_UP;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_DOWN;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_MOVE;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_SCROLL;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_UP;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 
@@ -136,7 +146,6 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/window/:windowHandle/size", new GetWindowSize(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/window/rect", new GetWindowRect(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/elements", new FindElements(), Locator.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/moveto", new MoveTo(), MoveToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/sessions", new GetSessions(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/start_activity", new StartActivity(), StartActivityParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/press_keycode", new PressKeyCode(), KeyEventParams.class));
@@ -145,14 +154,28 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/element/:elementId/value", new ElementValue(false), ElementValueParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/element/:elementId/replace_value", new ElementValue(true), ElementValueParams.class));
 
+        // touch events
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/click", new PointerEventHandler(CLICK), MotionEventParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/longclick", new PointerEventHandler(LONG_CLICK), MotionEventParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/doubleclick", new PointerEventHandler(DOUBLE_CLICK), MotionEventParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/down", new PointerEventHandler(TOUCH_DOWN), MotionEventParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/up", new PointerEventHandler(TOUCH_UP), MotionEventParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/move", new PointerEventHandler(TOUCH_MOVE), MotionEventParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/scroll", new PointerEventHandler(TOUCH_SCROLL), MotionEventParams.class));
+
+        // mouse events
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/buttondown", new PointerEventHandler(MOUSE_DOWN), MotionEventParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/buttonup", new PointerEventHandler(MOUSE_UP), MotionEventParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/moveto", new PointerEventHandler(MOUSE_MOVE), MotionEventParams.class));
+
         // Not implemented
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/click", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/down", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/up", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/move", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/longclick", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/keys", new NotYetImplemented(), TextParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/perform", new NotYetImplemented(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/multi/perform", new NotYetImplemented(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/click", new NotYetImplemented(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/doubleclick", new NotYetImplemented(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/alert_text", new NotYetImplemented(), AppiumParams.class));
 
         // Probably will never implement
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/context", new NotYetImplemented(), AppiumParams.class));
@@ -184,9 +207,6 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/title", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/submit", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/css/:propertyName", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/alert_text", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/attribute", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/click", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/location", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/location", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/log", new NotYetImplemented(), AppiumParams.class));
