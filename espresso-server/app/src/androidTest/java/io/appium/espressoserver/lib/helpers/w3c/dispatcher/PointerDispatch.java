@@ -183,7 +183,6 @@ public class PointerDispatch {
                 ));
                 x = elementCoordinates.x + xOffset;
                 y = elementCoordinates.y + yOffset;
-                dispatcherAdapter.getLogger().info("Element center point: ", x, y);
                 break;
             case VIEWPORT:
                 x = xOffset;
