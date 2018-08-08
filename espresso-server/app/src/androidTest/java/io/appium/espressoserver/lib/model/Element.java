@@ -59,17 +59,8 @@ public class Element {
         if (!exists(elementId)) {
             throw new NoSuchElementException(String.format("Invalid element ID %s", elementId));
         }
-        View view = cache.get(elementId);
-        ViewInteraction viewInteraction = onView(withView(view));
-
-        // Check if the element is stale
-        try {
-            viewInteraction.check(matches(isDisplayed()));
-        } catch (NoMatchingViewException nme) {
-            throw new StaleElementException(elementId);
-        }
-
-        return viewInteraction;
+        View view = Element.getViewById(elementId);
+        return onView(withView(view));
     }
 
     /**
@@ -78,17 +69,12 @@ public class Element {
      * @return
      */
     public static View getViewById(String elementId) throws NoSuchElementException, StaleElementException {
-        logger.info(String.format("Retrieving element %s", elementId));
         if (!exists(elementId)) {
             throw new NoSuchElementException(String.format("Invalid element ID %s", elementId));
         }
         View view = cache.get(elementId);
 
-        try {
-            // Check if the element is stale
-            ViewInteraction viewInteraction = onView(withView(view));
-            viewInteraction.check(matches(isDisplayed()));
-        } catch (NoMatchingViewException nme) {
+        if (!view.isShown()) {
             throw new StaleElementException(elementId);
         }
         return view;

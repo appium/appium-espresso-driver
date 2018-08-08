@@ -206,7 +206,7 @@ public class PointerDispatchTest {
 
         String V = VIEWPORT;
         String P = POINTER;
-        String E = "element";
+        String E = "element-6066-11e4-a52e-4f735466cecf";
 
         // Make a matrix of pointers that are out-of-bounds
         long[] badX =           new long[]  { -1,  0, 201, 200, 191, 190, 191, 190  };
@@ -242,7 +242,7 @@ public class PointerDispatchTest {
 
         String V = VIEWPORT;
         String P = POINTER;
-        String E = "element";
+        String E = "element-6066-11e4-a52e-4f735466cecf";
 
         // Make a matrix of pointers and the expected state changes
         long[] xCoords =    new long[]  {  10, -5, 15, -5, 15  };

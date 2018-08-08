@@ -21,7 +21,7 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 public class InputSource {
     public static final String VIEWPORT = "viewport";
     public static final String POINTER = "pointer";
-    public static final String ELEMENT = "element";
+    public static final String ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 
     private InputSourceType type;
     private String id;

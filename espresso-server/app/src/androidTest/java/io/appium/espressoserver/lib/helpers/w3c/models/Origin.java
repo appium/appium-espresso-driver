@@ -2,6 +2,8 @@ package io.appium.espressoserver.lib.helpers.w3c.models;
 
 import com.google.gson.annotations.JsonAdapter;
 
+import javax.annotation.Nullable;
+
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 
 @JsonAdapter(OriginDeserializer.class)
@@ -16,6 +18,7 @@ public class Origin {
         this.type = type;
     }
 
+    @Nullable
     public String getType() {
         return type;
     }

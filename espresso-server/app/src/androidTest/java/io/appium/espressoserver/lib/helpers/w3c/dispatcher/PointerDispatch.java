@@ -1,8 +1,11 @@
 package io.appium.espressoserver.lib.helpers.w3c.dispatcher;
 
+import android.graphics.Point;
+
 import java.util.concurrent.Callable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
@@ -12,6 +15,7 @@ import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_UP;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ELEMENT;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTER;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
@@ -160,20 +164,32 @@ public class PointerDispatch {
         long y;
 
         // 6. Run the substeps of the first matching value of origin
+        String originType = origin.getType();
+        if (originType == null) {
+            originType = VIEWPORT;
+        }
+        dispatcherAdapter.getLogger().info("Element type is: ", originType);
         switch (origin.getType()) {
-            case VIEWPORT:
-                x = xOffset;
-                y = yOffset;
-                break;
             case POINTER:
                 x = startX + xOffset;
                 y = startY + yOffset;
                 break;
-            default:
-                long[] elementCoordinates = dispatcherAdapter.getElementCenterPoint(origin.getElementId());
-                x = elementCoordinates[0] + xOffset;
-                y = elementCoordinates[1] + yOffset;
+            case ELEMENT:
+                dispatcherAdapter.getLogger().info("Getting element center point: ", origin.getElementId());
+                final Point elementCoordinates = dispatcherAdapter.getElementCenterPoint(origin.getElementId());
+                dispatcherAdapter.getLogger().info(String.format(
+                        "Element center is: %s %s",
+                        elementCoordinates.x, elementCoordinates.y
+                ));
+                x = elementCoordinates.x + xOffset;
+                y = elementCoordinates.y + yOffset;
                 break;
+            case VIEWPORT:
+                x = xOffset;
+                y = yOffset;
+                break;
+            default:
+                throw new InvalidArgumentException(String.format("'%s' is not a valid origin type", originType));
         }
 
         // 7-8. Bounds check

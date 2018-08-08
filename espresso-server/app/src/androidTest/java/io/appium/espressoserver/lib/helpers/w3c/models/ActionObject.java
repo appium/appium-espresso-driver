@@ -185,18 +185,16 @@ public class ActionObject {
         this.origin = origin;
     }
 
-    @Nullable
-    public Long getX() {
-        return x;
+    public long getX() {
+        return x == null ? 0 : x;
     }
 
     public void setX(Long x) {
         this.x = x;
     }
 
-    @Nullable
-    public Long getY() {
-        return y;
+    public long getY() {
+        return y == null ? 0 : y;
     }
 
     public void setY(Long y) {

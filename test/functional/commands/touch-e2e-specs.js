@@ -166,6 +166,21 @@ describe('elementByXPath', function () {
       await driver.elementByAccessibilityId("Accessibility Node Provider").should.eventually.exist;
     });
 
+    it('should touch down and up on an element by id', async function () {
+      const el = await driver.elementByAccessibilityId("Accessibility");
+      const touchActions = [
+        {"type": "pointerMove", "duration": 0, "origin": {"element-6066-11e4-a52e-4f735466cecf": el.value}},
+        {"type": "pointerDown", "button": 0},
+        {"type": "pause", "duration": 100},
+        {"type": "pointerUp", "button": 0},
+      ];
+      await performTouchAction(touchActions);
+      await driver.elementByAccessibilityId("Accessibility Node Provider").should.eventually.exist;
+
+      // Check that it throws a stale element exception if we try again on the same element after it has become stale
+      await performTouchAction(touchActions).should.eventually.be.rejectedWith(/no longer exists /);
+    });
+
   });
 
   describe('mjsonwp touch actions', function () {
