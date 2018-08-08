@@ -9,7 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
