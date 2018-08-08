@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.test.espresso.UiController;
@@ -38,7 +39,12 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
     @Nullable
     private static MotionEvent globalTouchDownEvent;
     private static Map<Integer, MotionEvent> globalMouseButtonDownEvents = new HashMap<>();
+    private static Long globalMouseLocationX = 0L;
+    private static Long globalMouseLocationY = 0L;
     private static final DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
+
+    // Make the duration of a 'tap' or 'click' event half of the tap timeout
+    private final long TAP_DURATION = ViewConfiguration.getTapTimeout() / 2;
 
     public enum TouchType {
         CLICK,
@@ -51,7 +57,9 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
         TOUCH_SCROLL,
         MOUSE_UP,
         MOUSE_DOWN,
-        MOUSE_MOVE;
+        MOUSE_MOVE,
+        MOUSE_CLICK,
+        MOUSE_DOUBLECLICK;
     }
 
     public PointerEventHandler(TouchType touchType) {
@@ -90,6 +98,12 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
                 break;
             case MOUSE_MOVE:
                 handleMouseMove(params);
+                break;
+            case MOUSE_CLICK:
+                handleMouseClick(params);
+                break;
+            case MOUSE_DOUBLECLICK:
+                handleMouseDoubleClick(params);
                 break;
             default:
                 break;
@@ -232,6 +246,8 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
     private void handleMouseMove(final MotionEventParams params) throws AppiumException {
         params.setButton(getGlobalButtonState());
         handlePointerEvent(params, ACTION_MOVE, MOUSE);
+        globalMouseLocationX = params.getX();
+        globalMouseLocationY = params.getY();
     }
 
     private void handleClick(final MotionEventParams params) throws AppiumException {
@@ -257,6 +273,27 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
 
         Element.getViewInteractionById(params.getElementId()).perform(longClick());
     }
+
+    private void handleMouseDoubleClick(MotionEventParams params) throws AppiumException {
+        params.setX(globalMouseLocationX);
+        params.setY(globalMouseLocationY);
+        long downTime = SystemClock.uptimeMillis();
+        for (int clickNumber = 1; clickNumber <= 2; clickNumber++) {
+            handlePointerEvent(params, ACTION_DOWN, MOUSE, downTime);
+            SystemClock.sleep(TAP_DURATION);
+            handlePointerEvent(params, ACTION_UP, MOUSE, downTime);
+        }
+    }
+
+    private void handleMouseClick(MotionEventParams params) throws AppiumException {
+        params.setX(globalMouseLocationX);
+        params.setY(globalMouseLocationY);
+        long downTime = SystemClock.uptimeMillis();
+        handlePointerEvent(params, ACTION_DOWN, MOUSE, downTime);
+        SystemClock.sleep(TAP_DURATION);
+        handlePointerEvent(params, ACTION_UP, MOUSE, downTime);
+    }
+
 
     private int getGlobalButtonState() throws InvalidArgumentException {
         int buttonState = 0;
