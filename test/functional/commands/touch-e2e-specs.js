@@ -184,7 +184,7 @@ describe('elementByXPath', function () {
 
   });
 
-  describe.only('mjsonwp touch actions', function () {
+  describe('mjsonwp touch actions', function () {
     let sessionId;
 
     it('should do touch/click event', async function () {
