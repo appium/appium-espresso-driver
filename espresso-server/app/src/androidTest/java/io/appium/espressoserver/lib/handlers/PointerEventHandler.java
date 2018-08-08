@@ -1,7 +1,6 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.test.espresso.UiController;
@@ -45,6 +44,7 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
 
     // Make the duration of a 'tap' or 'click' event half of the tap timeout
     private final long TAP_DURATION = ViewConfiguration.getTapTimeout() / 2;
+    private final long DOUBLE_TAP_DURATION = ViewConfiguration.getDoubleTapTimeout() / 2;
 
     public enum TouchType {
         CLICK,
@@ -277,11 +277,13 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
     private void handleMouseDoubleClick(MotionEventParams params) throws AppiumException {
         params.setX(globalMouseLocationX);
         params.setY(globalMouseLocationY);
-        long downTime = SystemClock.uptimeMillis();
+        long eventTime = SystemClock.uptimeMillis();
         for (int clickNumber = 1; clickNumber <= 2; clickNumber++) {
-            handlePointerEvent(params, ACTION_DOWN, MOUSE, downTime);
-            SystemClock.sleep(TAP_DURATION);
-            handlePointerEvent(params, ACTION_UP, MOUSE, downTime);
+            long downTime = eventTime;
+            handlePointerEvent(params, ACTION_DOWN, MOUSE, downTime, eventTime);
+            eventTime += TAP_DURATION;
+            handlePointerEvent(params, ACTION_UP, MOUSE, downTime, eventTime);
+            eventTime += DOUBLE_TAP_DURATION;
         }
     }
 
@@ -289,9 +291,8 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
         params.setX(globalMouseLocationX);
         params.setY(globalMouseLocationY);
         long downTime = SystemClock.uptimeMillis();
-        handlePointerEvent(params, ACTION_DOWN, MOUSE, downTime);
-        SystemClock.sleep(TAP_DURATION);
-        handlePointerEvent(params, ACTION_UP, MOUSE, downTime);
+        handlePointerEvent(params, ACTION_DOWN, MOUSE, downTime, downTime);
+        handlePointerEvent(params, ACTION_UP, MOUSE, downTime, downTime + TAP_DURATION);
     }
 
 
