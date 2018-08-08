@@ -18,6 +18,11 @@ public class MotionEventParams extends AppiumParams {
     private Long y;
     private Integer button;
 
+
+    public static final int MOUSE_LEFT = 0;
+    public static final int MOUSE_MIDDLE = 1;
+    public static final int MOUSE_RIGHT = 2;
+
     @Nullable
     public String getElementId() {
         return elementId;
@@ -46,7 +51,7 @@ public class MotionEventParams extends AppiumParams {
     public Integer getButton() {
         // Left button is the default
         if (button == null) {
-            return 0;
+            return MOUSE_LEFT;
         }
         return button;
     }
@@ -65,10 +70,6 @@ public class MotionEventParams extends AppiumParams {
             return BUTTON_PRIMARY;
         }
 
-        final int MOUSE_LEFT = 0;
-        final int MOUSE_MIDDLE = 1;
-        final int MOUSE_RIGHT = 2;
-
         switch (button) {
             case MOUSE_LEFT:
                 return BUTTON_PRIMARY;
@@ -77,10 +78,8 @@ public class MotionEventParams extends AppiumParams {
             case MOUSE_RIGHT:
                 return BUTTON_SECONDARY;
             default:
-                break;
+                throw new InvalidArgumentException(String.format("'%s' is not a valid button type", button));
         }
-
-        throw new InvalidArgumentException(String.format("'%s' is not a valid button type", button));
 
     }
 }

@@ -23,9 +23,7 @@ public class PeformActions implements RequestHandler<Actions, Void>  {
             }
         };
 
-        UiControllerPerformer<Void> uiControllerPerformer = new UiControllerPerformer<>(runnable);
-        uiControllerPerformer.run();
-
+        new UiControllerPerformer<>(runnable).run();
         return null;
     }
 }

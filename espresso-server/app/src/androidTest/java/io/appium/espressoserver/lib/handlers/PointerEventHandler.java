@@ -4,12 +4,13 @@ import android.content.res.Resources;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewInteraction;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
@@ -37,7 +38,7 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
     private final TouchType touchType;
     @Nullable
     private static MotionEvent globalTouchDownEvent;
-    private static Map<Integer, MotionEvent> globalMouseButtonDownEvents; // Map mouse down events to android MotionEvent
+    private static Map<Integer, MotionEvent> globalMouseButtonDownEvents = new HashMap<>();
     private static final DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
 
     public enum TouchType {
@@ -84,10 +85,13 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
                 break;
             case MOUSE_DOWN:
                 handleMouseButtonDown(params);
+                break;
             case MOUSE_UP:
                 handleMouseButtonUp(params);
+                break;
             case MOUSE_MOVE:
                 handleMouseMove(params);
+                break;
             default:
                 break;
         }
@@ -124,8 +128,7 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
             }
         };
 
-        UiControllerPerformer<MotionEvent> uiControllerPerformer = new UiControllerPerformer<>(runnable);
-        return uiControllerPerformer.run();
+        return new UiControllerPerformer<>(runnable).run();
     }
 
     private static synchronized MotionEvent handlePointerEvent(final MotionEventParams params,
@@ -236,30 +239,30 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
         if (params.getElementId() == null) {
             throw new InvalidArgumentException("Element ID must not be blank for click event");
         }
-        ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
-        viewInteraction.perform(click());
+
+        Element.getViewInteractionById(params.getElementId()).perform(click());
     }
 
     private void handleDoubleClick(final MotionEventParams params) throws AppiumException {
         if (params.getElementId() == null) {
             throw new InvalidArgumentException("Element ID must not be blank for double click event");
         }
-        ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
-        viewInteraction.perform(doubleClick());
+
+        Element.getViewInteractionById(params.getElementId()).perform(doubleClick());
     }
 
     private void handleLongClick(final MotionEventParams params) throws AppiumException {
         if (params.getElementId() == null) {
             throw new InvalidArgumentException("Element ID must not be blank for long click event");
         }
-        ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
-        viewInteraction.perform(longClick());
+
+        Element.getViewInteractionById(params.getElementId()).perform(longClick());
     }
 
     private int getGlobalButtonState() throws InvalidArgumentException {
         int buttonState = 0;
-        for(final Map.Entry<Integer, MotionEvent> mouseDownEventEntry: globalMouseButtonDownEvents.entrySet()) {
-            buttonState |= MotionEventParams.getAndroidButtonState(mouseDownEventEntry.getKey());
+        for(final Integer button: globalMouseButtonDownEvents.keySet()) {
+            buttonState |= MotionEventParams.getAndroidButtonState(button);
         }
         return buttonState;
     }
