@@ -185,7 +185,7 @@ public class ActionObject {
         this.origin = origin;
     }
 
-    public Long getX() {
+    public long getX() {
         return x == null ? 0 : x;
     }
 
@@ -193,7 +193,7 @@ public class ActionObject {
         this.x = x;
     }
 
-    public Long getY() {
+    public long getY() {
         return y == null ? 0 : y;
     }
 

@@ -153,8 +153,8 @@ public class ProcessorTest {
         action.setY(200);
         action.setDuration(300);
         ActionObject actionObject = processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
-        assertEquals(actionObject.getX(), new Long(100));
-        assertEquals(actionObject.getY(), new Long(200));
+        assertEquals(actionObject.getX(), 100);
+        assertEquals(actionObject.getY(), 200);
         assertEquals(actionObject.getDuration(), new Long(300));
     }
 
