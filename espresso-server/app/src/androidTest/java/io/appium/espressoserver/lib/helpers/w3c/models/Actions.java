@@ -95,4 +95,28 @@ public class Actions extends AppiumParams {
         this.actions = actions;
     }
 
+    public static class ActionsBuilder {
+
+        private List<InputSource> actions;
+        private W3CActionAdapter adapter;
+
+        public ActionsBuilder withActions(List<InputSource> actions) {
+            this.actions = actions;
+            return this;
+        }
+
+        public ActionsBuilder withAdapter(W3CActionAdapter adapter) {
+            this.adapter = adapter;
+            return this;
+        }
+
+        public Actions build() {
+            Actions actions = new Actions();
+            actions.setAdapter(this.adapter);
+            actions.setActions(this.actions);
+            return actions;
+        }
+
+    }
+
 }

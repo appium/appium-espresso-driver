@@ -97,4 +97,20 @@ describe('EspressoDriver', function () {
       await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
     });
   });
+  describe('keys', function () {
+    before(async function () {
+      await driver.init({
+        ...APIDEMO_CAPS,
+        appActivity: 'io.appium.android.apis.view.AutoComplete1'
+      });
+    });
+    after(async function () {
+      await driver.quit();
+    });
+    it('should send keys to focused-on element', async function () {
+      await driver.keys("Hello World!".split(""));
+      const editEl = await driver.elementByXPath("//android.widget.AutoCompleteTextView");
+      await editEl.text().should.eventually.equal('Hello World!');
+    });
+  });
 });
