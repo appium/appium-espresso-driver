@@ -25,8 +25,11 @@ import java.util.List;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
+import io.appium.espressoserver.lib.helpers.w3c.models.Actions.ActionsBuilder;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionBuilder;
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceBuilder;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer;
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable;
@@ -42,34 +45,35 @@ public class Keys implements RequestHandler<TextParams, Void> {
         UiControllerRunnable<Void> runnable = new UiControllerRunnable<Void>() {
             @Override
             public Void run(UiController uiController) throws AppiumException {
-                // Call the 'keys' endpoint by translating to equivalent /actions keys events
-                Actions actions = new Actions();
-                actions.setAdapter(new EspressoW3CActionAdapter(uiController));
-
-                // Create keyboard input source
-                InputSource inputSource = new InputSource();
-                inputSource.setType(KEY);
-                inputSource.setId("keyboard");
-
                 // Add a list of keyDown + keyUp actions for each key
                 List<Action> keyActions = new ArrayList<>();
                 for (final String key:params.getValue()) {
-                    // Key down event
-                    Action keyDownAction = new Action();
-                    keyDownAction.setType(KEY_DOWN);
-                    keyDownAction.setValue(key);
-                    keyActions.add(keyDownAction);
+                    keyActions.add(new ActionBuilder()
+                        .withType(KEY_DOWN)
+                        .withValue(key)
+                        .build()
+                    );
 
                     // Key up event
-                    Action keyUpAction = new Action();
-                    keyUpAction.setType(KEY_UP);
-                    keyUpAction.setValue(key);
-                    keyActions.add(keyUpAction);
+                    keyActions.add(new ActionBuilder()
+                            .withType(KEY_UP)
+                            .withValue(key)
+                            .build()
+                    );
                 }
-                inputSource.setActions(keyActions);
 
-                actions.setActions(Collections.singletonList(inputSource));
-                actions.performActions(params.getSessionId());
+                InputSource keyInputSource = new InputSourceBuilder()
+                        .withId("keyboard")
+                        .withType(KEY)
+                        .withActions(keyActions)
+                        .build();
+
+                new ActionsBuilder()
+                        .withActions(Collections.singletonList(keyInputSource))
+                        .withAdapter(new EspressoW3CActionAdapter(uiController))
+                        .build()
+                        .performActions(params.getSessionId());
+
                 return null;
             }
         };

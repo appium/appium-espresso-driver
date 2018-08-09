@@ -95,6 +95,10 @@ public class InputSource {
         return null;
     }
 
+    public void setParameters(Parameters parameters) {
+        this.parameters = parameters;
+    }
+
     public enum InputSourceType {
         @SerializedName("pointer")
         POINTER,
@@ -186,6 +190,10 @@ public class InputSource {
         public Origin getOrigin() {
             return origin;
         }
+
+        public void setOrigin(Origin origin) {
+            this.origin = origin;
+        }
     }
 
     public enum ActionType {
@@ -224,5 +232,108 @@ public class InputSource {
         PEN,
         @SerializedName("touch")
         TOUCH
+    }
+
+    public static class InputSourceBuilder {
+
+        private InputSourceType type;
+        private String id;
+        private Parameters parameters;
+        private List<Action> actions;
+
+        public InputSourceBuilder withType(InputSourceType type) {
+            this.type = type;
+            return this;
+        }
+
+        public InputSourceBuilder withId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public InputSourceBuilder withParameters(Parameters parameters) {
+            this.parameters = parameters;
+            return this;
+        }
+
+        public InputSourceBuilder withActions(List<Action> actions) {
+            this.actions = actions;
+            return this;
+        }
+
+        public InputSource build() {
+            InputSource inputSource = new InputSource();
+            inputSource.setActions(actions);
+            inputSource.setType(type);
+            inputSource.setId(id);
+            inputSource.setParameters(parameters);
+            return inputSource;
+        }
+
+    }
+
+    public static class ActionBuilder {
+        private ActionType type;
+        private Long duration;
+        private Integer button;
+        private Long x;
+        private Long y;
+        private String value;
+        private Origin origin = new Origin();
+
+        public ActionBuilder withType(ActionType type) {
+            this.type = type;
+            return this;
+        }
+
+        public ActionBuilder withDuration(Long duration) {
+            this.duration = duration;
+            return this;
+        }
+
+        public ActionBuilder withButton(Integer button) {
+            this.button = button;
+            return this;
+        }
+
+        public ActionBuilder withX(Long x) {
+            this.x = x;
+            return this;
+        }
+
+        public ActionBuilder withY(Long y) {
+            this.y = y;
+            return this;
+        }
+
+        public ActionBuilder withValue(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public ActionBuilder withOrigin(String originType) {
+            this.origin.setType(originType);
+            return this;
+        }
+
+        public Action build() {
+            Action action = new Action();
+            if (duration != null) {
+                action.setDuration(duration);
+            }
+            action.setType(type);
+            if (button != null) {
+                action.setButton(button);
+            }
+            action.setValue(value);
+            if (x != null) {
+                action.setX(x);
+            }
+            if (y != null) {
+                action.setY(y);
+            }
+            action.setOrigin(origin);
+            return action;
+        }
     }
 }
