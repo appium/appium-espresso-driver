@@ -24,6 +24,7 @@ import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter;
+import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions.ActionsBuilder;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action;
@@ -67,11 +68,13 @@ public class Keys implements RequestHandler<TextParams, Void> {
                         .withActions(keyActions)
                         .build();
 
-                new ActionsBuilder()
+                Actions actions = new ActionsBuilder()
                         .withActions(Collections.singletonList(keyInputSource))
                         .withAdapter(new EspressoW3CActionAdapter(uiController))
-                        .build()
-                        .performActions(params.getSessionId());
+                        .build();
+
+                actions.performActions(params.getSessionId());
+                actions.releaseActions(params.getSessionId());
 
                 return null;
             }
