@@ -56,6 +56,7 @@ import io.appium.espressoserver.lib.handlers.NotYetImplemented;
 import io.appium.espressoserver.lib.handlers.PeformActions;
 import io.appium.espressoserver.lib.handlers.PointerEventHandler;
 import io.appium.espressoserver.lib.handlers.PressKeyCode;
+import io.appium.espressoserver.lib.handlers.ReleaseActions;
 import io.appium.espressoserver.lib.handlers.RequestHandler;
 import io.appium.espressoserver.lib.handlers.Screenshot;
 import io.appium.espressoserver.lib.handlers.SendKeys;
@@ -115,6 +116,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session", new CreateSession(), SessionParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId", new GetSession(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/actions", new PeformActions(), Actions.class));
+        routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId/actions", new ReleaseActions(), Actions.class));
         routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId", new DeleteSession(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/back", new Back(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/accept_alert", new AcceptAlert(), AppiumParams.class));
