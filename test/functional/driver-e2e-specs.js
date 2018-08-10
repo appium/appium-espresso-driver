@@ -133,7 +133,7 @@ describe('EspressoDriver', function () {
         };
         await request(options);
         const editEl = await driver.elementByXPath("//android.widget.AutoCompleteTextView");
-        await editEl.text().should.eventually.equal('G');
+        await editEl.text().should.eventually.equal(endpoint === 'press_keycode' ? 'G' : 'GG');
         await editEl.clear();
       }
     });

@@ -23,35 +23,17 @@ import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.ViewConfiguration;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
-import io.appium.espressoserver.lib.helpers.AndroidLogger;
-import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter;
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent;
-import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.model.KeyEventParams;
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer;
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable;
-
-import static io.appium.espressoserver.lib.helpers.InteractionHelper.injectEventSync;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_DOWN;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_UP;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
 
 public class PressKeyCode implements RequestHandler<KeyEventParams, Void> {
 
     private final boolean isLongPress;
 
-    // Make LONG_PRESS the long press timeout plus an extra 100ms so that it's above the threshold
-    private final int LONG_PRESS_DURATION = ViewConfiguration.getLongPressTimeout() + 100;
-
-    // Make SHORT_PRESS an arbitrarily low number (10 ms)
-    private final int SHORT_PRESS_DURATION = 10;
+    private final int LONG_PRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
 
     public PressKeyCode(boolean isLongPress) {
         this.isLongPress = isLongPress;
@@ -59,7 +41,6 @@ public class PressKeyCode implements RequestHandler<KeyEventParams, Void> {
 
     @Override
     public Void handle(final KeyEventParams params) throws AppiumException {
-
         UiControllerRunnable<Void> runnable = new UiControllerRunnable<Void>() {
             @Override
             public Void run(UiController uiController) throws AppiumException {
@@ -70,16 +51,22 @@ public class PressKeyCode implements RequestHandler<KeyEventParams, Void> {
                 flags = flags == null ? 0 : flags;
                 final long downTime = SystemClock.uptimeMillis();
 
-                AndroidLogger.logger.info("meta state with shift on");
-
                 try {
                     boolean isSuccessful = uiController.injectKeyEvent(new KeyEvent(downTime, downTime,
                             KeyEvent.ACTION_DOWN, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
                             0, flags));
 
+                    if (isLongPress) {
+                        // https://developer.android.com/reference/android/view/KeyEvent#FLAG_LONG_PRESS
+                        // The FLAG_LONG_PRESS flag is set after the first key repeat that occurs after the long press timeout
+                        isSuccessful &= uiController.injectKeyEvent(new KeyEvent(downTime, SystemClock.uptimeMillis() + LONG_PRESS_TIMEOUT,
+                                KeyEvent.ACTION_DOWN, keyCode, 1, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
+                                0, flags | KeyEvent.FLAG_LONG_PRESS));
+                    }
+
 
                     isSuccessful &= uiController.injectKeyEvent(new KeyEvent(downTime,
-                            downTime + (isLongPress ? LONG_PRESS_DURATION : SHORT_PRESS_DURATION),
+                            SystemClock.uptimeMillis() + (isLongPress ? LONG_PRESS_TIMEOUT : 0),
                             KeyEvent.ACTION_UP, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
                             0, flags));
 

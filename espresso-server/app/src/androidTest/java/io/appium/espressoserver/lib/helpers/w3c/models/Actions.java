@@ -38,7 +38,7 @@ public class Actions extends AppiumParams {
      * @param sessionId ID of the session to perform actions on
      * @throws AppiumException
      */
-    public void performActions(String sessionId) throws AppiumException {
+    public void perform(String sessionId) throws AppiumException {
 
         if (adapter == null) {
             throw new AppiumException("An internal server error has occurred: Failed to initialize /actions adapter");
@@ -65,7 +65,7 @@ public class Actions extends AppiumParams {
      * Release actions (17.6)
      * @param sessionId ID of the session to release actions on
      */
-    public void releaseActions(String sessionId) throws AppiumException {
+    public void release(String sessionId) throws AppiumException {
         if (adapter == null) {
             throw new AppiumException("An internal server error has occurred: Failed to initialize /actions adapter");
         }

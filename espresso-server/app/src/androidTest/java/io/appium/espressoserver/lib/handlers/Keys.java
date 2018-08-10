@@ -73,8 +73,8 @@ public class Keys implements RequestHandler<TextParams, Void> {
                         .withAdapter(new EspressoW3CActionAdapter(uiController))
                         .build();
 
-                actions.performActions(params.getSessionId());
-                actions.releaseActions(params.getSessionId());
+                actions.perform(params.getSessionId());
+                actions.release(params.getSessionId());
 
                 return null;
             }

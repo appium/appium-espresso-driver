@@ -36,7 +36,7 @@ public class ActionsTest {
         Actions actions = Actions.class.cast((new Gson()).fromJson(multiTouchJson, Actions.class));
 
         try {
-            actions.performActions("123");
+            actions.perform("123");
         } catch (AppiumException e) {
             assertTrue(e.getMessage().contains("Failed to initialize /actions adapter"));
         }
@@ -50,7 +50,7 @@ public class ActionsTest {
         actions.setAdapter(new AlteredDummyAdapter());
 
         String sessionId = "123";
-        actions.performActions(sessionId);
+        actions.perform(sessionId);
         InputStateTable inputStateTable = InputStateTable.getInputStateTableOfSession(sessionId);
         PointerInputState finger1 = (PointerInputState) inputStateTable.getInputState("finger1");
         PointerInputState finger2 = (PointerInputState) inputStateTable.getInputState("finger2");
@@ -73,7 +73,7 @@ public class ActionsTest {
         actions.setAdapter(new AlteredDummyAdapter());
 
         String sessionId = "123";
-        actions.performActions(sessionId);
+        actions.perform(sessionId);
         InputStateTable inputStateTable = InputStateTable.getInputStateTableOfSession(sessionId);
         KeyInputState keyboard = (KeyInputState) inputStateTable.getInputState("keyboard");
         assertFalse(keyboard.isPressed("\\uE009"));
