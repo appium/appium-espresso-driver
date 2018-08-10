@@ -326,4 +326,39 @@ describe('elementByXPath', function () {
       await B.delay(1000);
     });
   });
+
+  describe('multi touch actions', function () {
+    it('should perform single tap/press/longPress actions', async function () {
+      for (let method of ['tap', 'press', 'longPress']) {
+        let action = new wd.TouchAction();
+        const el = await driver.elementByAccessibilityId("Accessibility");
+        let {x, y} = await el.getLocation();
+        action[method]({x: x + 10, y: y + 10});
+        action.release();
+        let multiAction = new wd.MultiAction(driver);
+        multiAction.add(action);
+        multiAction.perform();
+        await driver.elementByAccessibilityId("Accessibility Node Provider").should.eventually.exist;
+        await driver.back();
+      }
+    });
+
+    it('should perform single tap/press/longPress actions on an element', async function () {
+      for (let method of ['tap', 'press', 'longPress']) {
+        let action = new wd.TouchAction();
+        const {value:elementId} = await driver.elementByAccessibilityId("Accessibility");
+        action[method]({element: elementId});
+        action.release();
+        let multiAction = new wd.MultiAction(driver);
+        multiAction.add(action);
+        multiAction.perform();
+        await driver.elementByAccessibilityId("Accessibility Node Provider").should.eventually.exist;
+        await driver.back();
+      }
+    });
+  });
+
+  describe('touch actions', function () {
+
+  });
 });

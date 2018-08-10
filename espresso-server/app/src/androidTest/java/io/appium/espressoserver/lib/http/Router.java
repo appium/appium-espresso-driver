@@ -52,6 +52,8 @@ import io.appium.espressoserver.lib.handlers.GetSize;
 import io.appium.espressoserver.lib.handlers.GetWindowRect;
 import io.appium.espressoserver.lib.handlers.GetWindowSize;
 import io.appium.espressoserver.lib.handlers.Keys;
+import io.appium.espressoserver.lib.handlers.MultiTouchAction;
+import io.appium.espressoserver.lib.handlers.MultiTouchActionsParams;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
 import io.appium.espressoserver.lib.handlers.PeformActions;
 import io.appium.espressoserver.lib.handlers.PointerEventHandler;
@@ -178,7 +180,7 @@ class Router {
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/perform", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/multi/perform", new NotYetImplemented(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/multi/perform", new MultiTouchAction(), MultiTouchActionsParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/alert_text", new NotYetImplemented(), AppiumParams.class));
 
         // Probably will never implement

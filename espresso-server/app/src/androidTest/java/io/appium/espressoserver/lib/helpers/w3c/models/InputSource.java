@@ -316,6 +316,12 @@ public class InputSource {
             return this;
         }
 
+        public ActionBuilder withElementId(String elementId) {
+            this.origin.setType(InputSource.ELEMENT);
+            this.origin.setElementId(elementId);
+            return this;
+        }
+
         public Action build() {
             Action action = new Action();
             if (duration != null) {
