@@ -338,8 +338,8 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void sychronousTickActionsComplete() throws AppiumException {
-        AndroidLogger.logger.info("Pointer event: Tick complete");
         multiTouchState.perform(uiController);
+        AndroidLogger.logger.info("Pointer event: Tick complete");
     }
 
     public int getKeyCode(String keyValue, int location) throws AppiumException {
@@ -483,7 +483,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void sleep(long duration) throws AppiumException {
-        SystemClock.sleep(duration);
+        uiController.loopMainThreadForAtLeast(duration);
     }
     
     public Logger getLogger() {

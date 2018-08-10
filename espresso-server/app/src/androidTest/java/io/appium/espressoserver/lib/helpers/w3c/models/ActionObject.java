@@ -139,6 +139,10 @@ public class ActionObject {
                         );
                         return null;
                     default:
+                        adapter.getLogger().info(String.format(
+                                "Dispatching pause event for %s milliseconds",
+                                getDuration()
+                        ));
                         break;
                 }
             }

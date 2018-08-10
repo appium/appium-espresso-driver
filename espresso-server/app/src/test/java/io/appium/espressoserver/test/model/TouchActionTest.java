@@ -12,11 +12,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.List;
 
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action;
 import io.appium.espressoserver.lib.model.TouchAction;
 import io.appium.espressoserver.lib.model.TouchAction.ActionType;
 import io.appium.espressoserver.lib.model.TouchAction.TouchActionOptions;
 
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.PAUSE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_DOWN;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
 import static io.appium.espressoserver.lib.model.TouchAction.ActionType.LONG_PRESS;
@@ -37,7 +39,7 @@ public class TouchActionTest {
     }
 
     @Test
-    public void shouldConvertMoveTo() {
+    public void shouldConvertMoveTo() throws AppiumException {
         TouchAction touchAction = new TouchAction();
         touchAction.setAction(MOVE_TO);
         TouchActionOptions options = new TouchActionOptions();
@@ -45,7 +47,9 @@ public class TouchActionTest {
         options.setY(200L);
         touchAction.setOptions(options);
         List<Action> actions = touchAction.toW3CAction();
-        Action action = actions.get(0);
+        assertEquals(actions.get(0).getType(), PAUSE);
+        assertEquals(actions.get(1).getType(), PAUSE);
+        Action action = actions.get(2);
         assertEquals(action.getX(), new Long(100));
         assertEquals(action.getY(), new Long(200));
         assertEquals(action.getType(), POINTER_MOVE);
@@ -53,7 +57,7 @@ public class TouchActionTest {
     }
 
     @Test
-    public void shouldConvertPress() {
+    public void shouldConvertPress() throws AppiumException {
 
         ActionType[] actionTypes = new ActionType[]{ TAP, PRESS, LONG_PRESS };
 
@@ -71,23 +75,21 @@ public class TouchActionTest {
             assertEquals(moveAction.getX(), new Long(100));
             assertEquals(moveAction.getY(), new Long(200));
 
-            if (actionType == PRESS) {
-                assertTrue(moveAction.getDuration() > ViewConfiguration.getTapTimeout());
-                assertTrue(moveAction.getDuration() < ViewConfiguration.getLongPressTimeout());
-            } else if (actionType == TAP) {
-                assertTrue(moveAction.getDuration() < ViewConfiguration.getTapTimeout());
-            } else if (actionType == LONG_PRESS) {
-                assertTrue(moveAction.getDuration() > ViewConfiguration.getLongPressTimeout());
-            }
-
-
-            Action downAction = actions.get(1);
-            assertEquals(downAction.getType(), POINTER_DOWN);
-            assertEquals(downAction.getButton(), 0);
-
-            Action upAction = actions.get(2);
+            Action upAction = actions.get(1);
             assertEquals(upAction.getType(), POINTER_DOWN);
             assertEquals(upAction.getButton(), 0);
+
+            Action waitAction = actions.get(2);
+            assertEquals(waitAction.getType(), PAUSE);
+
+            if (actionType == PRESS) {
+                assertTrue(waitAction.getDuration() > ViewConfiguration.getTapTimeout());
+                assertTrue(waitAction.getDuration() < ViewConfiguration.getLongPressTimeout());
+            } else if (actionType == TAP) {
+                assertTrue(waitAction.getDuration() < ViewConfiguration.getTapTimeout());
+            } else if (actionType == LONG_PRESS) {
+                assertTrue(waitAction.getDuration() > ViewConfiguration.getLongPressTimeout());
+            }
         }
     }
 }

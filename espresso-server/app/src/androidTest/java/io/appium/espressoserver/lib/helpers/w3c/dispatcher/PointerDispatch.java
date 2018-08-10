@@ -168,7 +168,7 @@ public class PointerDispatch {
         if (originType == null) {
             originType = VIEWPORT;
         }
-        dispatcherAdapter.getLogger().info("Element type is: ", originType);
+        dispatcherAdapter.getLogger().info("Origin type is: ", originType);
         switch (origin.getType()) {
             case POINTER:
                 x = startX + xOffset;

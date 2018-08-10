@@ -15,6 +15,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionBuilder;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceBuilder;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Parameters;
+import io.appium.espressoserver.lib.helpers.w3c.models.Origin;
 
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.PAUSE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_CANCEL;
@@ -54,27 +55,36 @@ public class TouchAction {
         this.options = options;
     }
 
-    public List<Action> toW3CAction() {
+    public List<Action> toW3CAction() throws InvalidArgumentException {
+        List<Action> w3cActions;
         switch (action) {
             case MOVE_TO:
-                return Collections.singletonList(convertMoveTo());
-            case PRESS:
-                return convertPress(PRESS_DURATION);
-            case LONG_PRESS:
-                return convertPress(LONG_PRESS_TIMEOUT + TIMEOUT_BUFFER);
-            case TAP:
-                return convertPress(TAP_TIMEOUT - TIMEOUT_BUFFER);
-            case RELEASE:
-                return Collections.singletonList(convertRelease());
-            case WAIT:
-                return Collections.singletonList(convertWait());
-            case CANCEL:
-                return Collections.singletonList(convertCancel());
-            default:
+                w3cActions = Collections.singletonList(convertMoveTo());
                 break;
+            case PRESS:
+                w3cActions = convertPress(PRESS_DURATION);
+                break;
+            case LONG_PRESS:
+                w3cActions = convertPress(LONG_PRESS_TIMEOUT + TIMEOUT_BUFFER);
+                break;
+            case TAP:
+                w3cActions = convertPress(TAP_TIMEOUT - TIMEOUT_BUFFER);
+                break;
+            case RELEASE:
+                w3cActions = Collections.singletonList(convertRelease());
+                break;
+            case WAIT:
+                w3cActions = Collections.singletonList(convertWait());
+                break;
+            case CANCEL:
+                w3cActions = Collections.singletonList(convertCancel());
+                break;
+            default:
+                throw new InvalidArgumentException(String.format("Unsupported action type %s", action));
         }
 
-        return null;
+        // All touch actions map to 3 actions
+        return padActionsList(w3cActions);
     }
 
     private Action convertCancel() {
@@ -95,68 +105,83 @@ public class TouchAction {
                 .build();
     }
 
-    private Action getMoveTo(Long duration) {
-        ActionBuilder actionBuilder = new ActionBuilder()
-                .withType(POINTER_MOVE)
-                .withDuration(duration)
-                .withX(options.getX())
-                .withY(options.getY());
-
+    private Origin getOrigin() {
+        Origin origin = new Origin();
         if (options.getElementId() != null) {
-            actionBuilder.withElementId(options.getElementId());
+            origin.setType(InputSource.ELEMENT);
+            origin.setElementId(options.getElementId());
         } else {
-            actionBuilder.withOrigin(InputSource.VIEWPORT);
+            origin.setType(InputSource.VIEWPORT);
         }
+        return origin;
+    }
 
-        return actionBuilder.build();
-
+    private Action getMoveTo() {
+        return new ActionBuilder()
+                .withType(POINTER_MOVE)
+                .withX(options.getX())
+                .withY(options.getY())
+                .withOrigin(getOrigin())
+                .build();
     }
 
     private Action convertMoveTo() {
-        return getMoveTo(0L);
+        return getMoveTo();
     }
 
     private List<Action> convertPress(Long pressDuration) {
-        Action moveAction = getMoveTo(pressDuration);
+        // Move to spot
+        Action moveAction = getMoveTo();
 
+        // Press down
         Action downAction = new ActionBuilder()
                 .withType(POINTER_DOWN)
                 .build();
 
-        Action upAction = new ActionBuilder()
-                .withType(POINTER_DOWN)
+        // Wait for the press duration
+        Action waitAction = new ActionBuilder()
+                .withType(PAUSE)
+                .withDuration(pressDuration)
                 .build();
 
         List<Action> ret = new ArrayList<>();
         ret.add(moveAction);
         ret.add(downAction);
-        ret.add(upAction);
+        ret.add(waitAction);
+
         return ret;
+    }
+
+    private Action getPause() {
+        return new ActionBuilder()
+                .withType(PAUSE)
+                .withDuration(0L)
+                .build();
+    }
+
+    // If an action list has fewer than three actions, pad them with 'pauses' of 0 duration
+    private List<Action> padActionsList(List<Action> actions) {
+        // One Jsonwp Touch Action maps to three W3C Actions
+        final int W3C_ACTIONS_PER_TOUCH_ACTION = 3;
+
+        List<Action> paddedActions = new ArrayList<>(3);
+        for (int padIndex = 0; padIndex < W3C_ACTIONS_PER_TOUCH_ACTION - actions.size(); padIndex++) {
+            paddedActions.add(getPause());
+        }
+        for (int actionIndex = 0; actionIndex < actions.size(); actionIndex++) {
+            paddedActions.add(actions.get(actionIndex));
+        }
+
+        return paddedActions;
     }
 
     public static List<InputSource> toW3CInputSources(List<List<TouchAction>> touchActionsLists) throws AppiumException {
         int touchInputIndex = 0;
 
-        // Not all actions lists are the same size so we need to know the max size at each step
-        boolean isMultiTouch = touchActionsLists.size() > 1;
-
         List<InputSource> inputSources = new ArrayList<>();
         for (List<TouchAction> touchActions: touchActionsLists) {
             List<Action> w3cActions = new ArrayList<>();
             for (TouchAction touchAction: touchActions) {
-                if (isMultiTouch) {
-                    // Don't accept TAP, PRESS or LONG_PRESS
-                    switch (touchAction.getAction()) {
-                        case TAP:
-                        case PRESS:
-                        case LONG_PRESS:
-                            throw new InvalidArgumentException("'tap', 'press', and 'long press' are not " +
-                                    "supported in multi touch events because they do not follow Android " +
-                                    "consistency guarantees " +
-                                    "(https://developer.android.com/reference/android/view/MotionEvent#consistency-guarantees)");
-                    }
-                }
-
                 w3cActions.addAll(touchAction.toW3CAction());
             }
 

@@ -311,6 +311,11 @@ public class InputSource {
             return this;
         }
 
+        public ActionBuilder withOrigin(Origin origin) {
+            this.origin = origin;
+            return this;
+        }
+
         public ActionBuilder withOrigin(String originType) {
             this.origin.setType(originType);
             return this;
