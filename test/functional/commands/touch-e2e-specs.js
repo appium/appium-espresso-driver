@@ -71,11 +71,11 @@ describe('elementByXPath', function () {
       let canvas = await driver.elementById("android:id/content");
       let {x, y} = await canvas.getLocation();
       const touchActions = [
-        {"type": "pointerMove", duration: 100, x: x + 10, y: y + 10},
+        {"type": "pointerMove", duration: 1000, x: x + 10, y: y + 10},
         {"type": "pointerDown", "button": 0},
-        {"type": "pointerMove", duration: 100,  x: x + 10, y: y + 1000},
-        {"type": "pause", duration: 100},
-        {"type": "pointerMove", duration: 100,  x: x + 1000, y: y + 1000},
+        {"type": "pointerMove", duration: 1000,  x: x + 10, y: y + 1000},
+        {"type": "pause", duration: 1000},
+        {"type": "pointerMove", duration: 1000,  x: x + 1000, y: y + 1000},
         {"type": "pointerCancel", "button": 0},
       ];
       await performTouchAction(touchActions);
@@ -149,7 +149,7 @@ describe('elementByXPath', function () {
         {"type": "pointerMove", "duration": 0, x: x + 30, y: y + 30},
         {"type": "pointerDown", "button": 0},
         {"type": "pointerMove", "duration": 100,  x: x + 10, y: y + 10},
-        {"type": "pointerUp", "button": 0}
+        {"type": "pointerUp", "button": 0},
       ];
       await performTouchAction(touchActions);
     });
@@ -158,9 +158,9 @@ describe('elementByXPath', function () {
       const el = await driver.elementByAccessibilityId("Accessibility");
       let {x, y} = await el.getLocation();
       const touchActions = [
-        {"type": "pointerMove", "duration": 0, x: x + 10, y: y + 10},
+        {"type": "pointerMove", "duration": 100, x: x + 10, y: y + 10},
         {"type": "pointerDown", "button": 0},
-        {"type": "pause", "duration": 100},
+        {"type": "pause", "duration": 3000},
         {"type": "pointerUp", "button": 0},
       ];
       await performTouchAction(touchActions);
@@ -327,38 +327,109 @@ describe('elementByXPath', function () {
     });
   });
 
-  describe('multi touch actions', function () {
-    it('should perform single tap/press/longPress actions', async function () {
-      for (let method of ['tap', 'press', 'longPress']) {
-        let action = new wd.TouchAction();
-        const el = await driver.elementByAccessibilityId("Accessibility");
-        let {x, y} = await el.getLocation();
-        action[method]({x: x + 10, y: y + 10});
-        action.release();
-        let multiAction = new wd.MultiAction(driver);
-        multiAction.add(action);
-        multiAction.perform();
-        await driver.elementByAccessibilityId("Accessibility Node Provider").should.eventually.exist;
-        await driver.back();
-      }
+  describe('mjsonwp touch actions', function () {
+    describe('multi touch actions', function () {
+      it('should perform single tap/press/longPress actions', async function () {
+        for (let method of ['tap', 'press', 'longPress']) {
+          let action = new wd.TouchAction();
+          const el = await driver.elementByAccessibilityId("Accessibility");
+          let {x, y} = await el.getLocation();
+          action[method]({x: x + 10, y: y + 10});
+          action.release();
+          let multiAction = new wd.MultiAction(driver);
+          multiAction.add(action);
+          multiAction.perform();
+          await driver.elementByAccessibilityId("Accessibility Node Provider").should.eventually.exist;
+          await driver.back();
+        }
+      });
+
+      it('should perform single tap/press/longPress actions on an element', async function () {
+        for (let method of ['tap', 'press', 'longPress']) {
+          let action = new wd.TouchAction();
+          const el = await driver.elementByAccessibilityId("Animation");
+          action[method]({el});
+          action.release();
+          let multiAction = new wd.MultiAction(driver);
+          multiAction.add(action);
+          multiAction.perform();
+          await driver.elementByAccessibilityId("Bouncing Balls").should.eventually.exist;
+          await driver.back();
+        }
+      });
     });
 
-    it('should perform single tap/press/longPress actions on an element', async function () {
-      for (let method of ['tap', 'press', 'longPress']) {
-        let action = new wd.TouchAction();
-        const {value:elementId} = await driver.elementByAccessibilityId("Accessibility");
-        action[method]({element: elementId});
-        action.release();
-        let multiAction = new wd.MultiAction(driver);
-        multiAction.add(action);
-        multiAction.perform();
-        await driver.elementByAccessibilityId("Accessibility Node Provider").should.eventually.exist;
-        await driver.back();
-      }
+    describe('touch actions', function () {
+      it('should perform single tap/press/longPress actions', async function () {
+        for (let method of ['tap', 'press', 'longPress']) {
+          let action = new wd.TouchAction(driver);
+          const el = await driver.elementByAccessibilityId("Accessibility");
+          let {x, y} = await el.getLocation();
+          action[method]({x: x + 10, y: y + 10});
+          action.release();
+          action.perform();
+          await driver.elementByAccessibilityId("Accessibility Node Provider").should.eventually.exist;
+          await driver.back();
+        }
+      });
+      it('should perform single tap/press/longPress actions on an element', async function () {
+        for (let method of ['tap', 'press', 'longPress']) {
+          let action = new wd.TouchAction(driver);
+          const el = await driver.elementByAccessibilityId("Animation");
+          action[method]({el});
+          action.release();
+          action.perform();
+          await driver.elementByAccessibilityId("Bouncing Balls").should.eventually.exist;
+          await driver.back();
+        }
+      });
+      /*it.skip('should touch down, move, touch up and cause a scroll event', async function () {
+        await (await driver.elementByAccessibilityId("Views")).click();
+
+        sessionId = await driver.getSessionId();
+        let el = await driver.elementByAccessibilityId("Gallery");
+        let {x:startX, y:startY} = await el.getLocation();
+        el = await driver.elementByAccessibilityId("Controls");
+        let {x:endX, y:endY} = await el.getLocation();
+        let action = new wd.TouchAction(driver);
+        action.press();
+        let options = {
+          method: 'POST',
+          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/down`,
+          body: {
+            x: startX + 1,
+            y: startY + 1,
+          },
+          json: true,
+        };
+        await request(options);
+        await B.delay(1000);
+
+        options = {
+          method: 'POST',
+          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/move`,
+          body: {
+            x: endX + 1,
+            y: endY + 1,
+          },
+          json: true,
+        };
+        await request(options);
+        await B.delay(1000);
+
+        options = {
+          method: 'POST',
+          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/up`,
+          body: {
+            x: endX + 1,
+            y: endY + 1,
+          },
+          json: true,
+        };
+        await request(options);
+        await driver.elementByAccessibilityId("Hover Events").should.eventually.exist;
+
+      });*/
     });
-  });
-
-  describe('touch actions', function () {
-
   });
 });

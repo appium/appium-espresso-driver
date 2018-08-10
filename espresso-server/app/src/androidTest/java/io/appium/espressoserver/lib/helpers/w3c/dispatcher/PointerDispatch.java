@@ -287,7 +287,7 @@ public class PointerDispatch {
 
                 // Sleep for a fixed period of time
                 if (duration > 0) {
-                    dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
+                    Thread.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
                 }
 
                 if (!isLast) {
