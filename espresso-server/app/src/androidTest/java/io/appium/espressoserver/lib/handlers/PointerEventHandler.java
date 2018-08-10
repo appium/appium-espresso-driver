@@ -42,7 +42,8 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
     private static Long globalMouseLocationY = 0L;
     private static final DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
 
-    // Make the duration of a 'tap' or 'click' event half of the tap timeout
+    // Make the duration of the TAP and DOUBLE_TAP events less than the timeout. So make the number
+    // half of the timeouts.
     private final long TAP_DURATION = ViewConfiguration.getTapTimeout() / 2;
     private final long DOUBLE_TAP_DURATION = ViewConfiguration.getDoubleTapTimeout() / 2;
 
