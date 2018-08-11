@@ -192,7 +192,7 @@ public class TouchAction {
             inputSources.add(new InputSourceBuilder()
                     .withType(POINTER)
                     .withParameters(parameters)
-                    .withId(String.format("finger%s", touchInputIndex))
+                    .withId(String.format("finger%s", touchInputIndex++))
                     .withActions(w3cActions)
                     .build());
         }

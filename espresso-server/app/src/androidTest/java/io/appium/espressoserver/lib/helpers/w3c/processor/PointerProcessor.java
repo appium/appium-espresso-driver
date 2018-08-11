@@ -131,12 +131,10 @@ public class PointerProcessor {
 
         // 8-10 Add the X coordinate
         Long x = action.getX();
-        assertNullOrPositive(index, id, "x", x);
         actionObject.setX(x);
 
         // 11-14 Add the Y coordinate
         Long y = action.getY();
-        assertNullOrPositive(index, id, "y", y);
         actionObject.setY(y);
 
         return actionObject;

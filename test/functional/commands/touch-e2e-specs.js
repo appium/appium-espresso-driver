@@ -104,7 +104,7 @@ describe('elementByXPath', function () {
   });
 
   describe('scrolling/swiping', async function () {
-    it.skip('should scroll up menu', async function () {
+    it('should scroll up menu', async function () {
       await (await driver.elementByAccessibilityId("Views")).click();
       let gcEl = await driver.elementByAccessibilityId("Game Controller Input");
       let {x, y} = await gcEl.getLocation();
@@ -121,7 +121,7 @@ describe('elementByXPath', function () {
       await driver.elementByXPath("//*[@text='ImageButton']");
     });
 
-    it.skip('should swipe up menu', async function () {
+    it('should swipe up menu', async function () {
       await (await driver.elementByAccessibilityId("Views")).click();
       let gcEl = await driver.elementByAccessibilityId("Game Controller Input");
       let {x, y} = await gcEl.getLocation();
@@ -136,6 +136,29 @@ describe('elementByXPath', function () {
       ];
       await performTouchAction(actions);
       await driver.elementByXPath("//*[@text='ImageButton']");
+    });
+
+    it('should do multiple scrolls on multiple views', async function () {
+      await driver.startActivity({appActivity: '.view.SplitTouchView', appPackage: 'io.appium.android.apis'});
+      let [leftEl, rightEl] = await driver.elementsByClassName('android.widget.ListView');
+
+      const leftActions = [
+        {"type": "pointerMove",  "origin": {"element-6066-11e4-a52e-4f735466cecf": leftEl.value}},
+        {"type": "pointerDown",  "button": 0},
+        {"type": "pointerMove",  "origin": {"element-6066-11e4-a52e-4f735466cecf": leftEl.value}, "x": 10, "y": -500, "duration": 3000},
+        {"type": "pointerMove",  "origin": "pointer", "x": 10, "y": -500, "duration": 3000},
+        {"type": "pointerUp", "button": 0},
+      ];
+
+      const rightActions = [
+        {"type": "pointerMove",  "origin": {"element-6066-11e4-a52e-4f735466cecf": rightEl.value}},
+        {"type": "pointerDown",  "button": 0},
+        {"type": "pointerMove",  "origin": {"element-6066-11e4-a52e-4f735466cecf": rightEl.value}, "x": 10, "y": -500, "duration": 3000},
+        {"type": "pointerMove",  "origin": "pointer", "x": 10, "y": -500, "duration": 3000},
+        {"type": "pointerUp", "button": 0},
+      ];
+
+      await performTouchAction(leftActions, rightActions);
     });
   });
 
@@ -383,53 +406,47 @@ describe('elementByXPath', function () {
           await driver.back();
         }
       });
-      /*it.skip('should touch down, move, touch up and cause a scroll event', async function () {
-        await (await driver.elementByAccessibilityId("Views")).click();
-
-        sessionId = await driver.getSessionId();
-        let el = await driver.elementByAccessibilityId("Gallery");
-        let {x:startX, y:startY} = await el.getLocation();
-        el = await driver.elementByAccessibilityId("Controls");
-        let {x:endX, y:endY} = await el.getLocation();
+      it('should perform a scroll event', async function () {
+        await (await driver.elementByAccessibilityId('Views')).click();
         let action = new wd.TouchAction(driver);
-        action.press();
-        let options = {
-          method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/down`,
-          body: {
-            x: startX + 1,
-            y: startY + 1,
-          },
-          json: true,
-        };
-        await request(options);
-        await B.delay(1000);
+        const startEl = await driver.elementByAccessibilityId("Gallery");
+        const endEl = await driver.elementByAccessibilityId("Buttons");
+        action.press({el: startEl});
+        action.moveTo({el: endEl});
+        action.release();
+        action.perform();
+        await driver.elementByAccessibilityId("ImageView").should.eventually.exist;
+        await driver.back();
+      });
+      it('should do multiple scrolls on multiple views', async function () {
+        await driver.startActivity({appActivity: '.view.SplitTouchView', appPackage: 'io.appium.android.apis'});
+        let [leftEl, rightEl] = await driver.elementsByClassName('android.widget.ListView');
+        const leftGesture = new wd.TouchAction()
+          .press({element: leftEl})
+          .moveTo({element: leftEl, x: 10, y: 0})
+          .moveTo({element: leftEl, x: 10, y: -25})
+          .moveTo({element: leftEl, x: 10, y: -50})
+          .moveTo({element: leftEl, x: 10, y: -75})
+          .moveTo({element: leftEl, x: 10, y: -100})
+          .moveTo({element: leftEl, x: 10, y: -125})
+          .moveTo({element: leftEl, x: 10, y: -500});
 
-        options = {
-          method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/move`,
-          body: {
-            x: endX + 1,
-            y: endY + 1,
-          },
-          json: true,
-        };
-        await request(options);
-        await B.delay(1000);
+        const rightGesture = new wd.TouchAction()
+          .press({element: rightEl})
+          .moveTo({element: rightEl, x: 10, y: 0})
+          .moveTo({element: rightEl, x: 10, y: -25})
+          .moveTo({element: rightEl, x: 10, y: -50})
+          .moveTo({element: rightEl, x: 10, y: -75})
+          .moveTo({element: rightEl, x: 10, y: -100})
+          .moveTo({element: rightEl, x: 10, y: -125})
+          .moveTo({element: rightEl, x: 10, y: -500});
 
-        options = {
-          method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/up`,
-          body: {
-            x: endX + 1,
-            y: endY + 1,
-          },
-          json: true,
-        };
-        await request(options);
-        await driver.elementByAccessibilityId("Hover Events").should.eventually.exist;
+        const multiAction = new wd.MultiAction();
+        multiAction.add(leftGesture, rightGesture);
 
-      });*/
+        await driver.performMultiAction(multiAction);
+        await B.delay(5000);
+      });
     });
   });
 });
