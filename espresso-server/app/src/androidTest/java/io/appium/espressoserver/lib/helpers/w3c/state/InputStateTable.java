@@ -91,6 +91,7 @@ public class InputStateTable {
 
         // Clear the cancel list now that the Undo operations are all fulfilled
         cancelList.clear();
+        adapter.sychronousTickActionsComplete();
     }
 
 

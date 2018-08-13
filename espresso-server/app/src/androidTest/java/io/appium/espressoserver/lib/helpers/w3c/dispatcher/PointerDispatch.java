@@ -44,7 +44,6 @@ public class PointerDispatch {
         }
         Long x = pointerInputState.getX();
         Long y = pointerInputState.getY();
-        // TODO: Do cancel list stuff
         if (down) {
             pointerInputState.addPressed(button);
         } else {

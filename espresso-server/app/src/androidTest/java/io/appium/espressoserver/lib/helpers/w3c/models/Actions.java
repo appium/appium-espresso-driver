@@ -74,7 +74,7 @@ public class Actions extends AppiumParams {
         InputStateTable inputStateTable = InputStateTable.getInputStateTableOfSession(sessionId);
 
         // Undo all actions
-        adapter.getLogger().info("Releasing actions performed during session %s");
+        adapter.getLogger().info(String.format("Releasing actions performed during session %s", sessionId));
         inputStateTable.undoAll(adapter, System.currentTimeMillis());
     }
 
