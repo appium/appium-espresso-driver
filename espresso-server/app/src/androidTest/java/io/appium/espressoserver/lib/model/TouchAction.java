@@ -87,6 +87,11 @@ public class TouchAction {
         }
 
         // All touch actions map to 3 actions
+        // For multi-touch actions we need each event to happen synchronously with eachother
+
+        // e.g.) if one input calls press (which maps to move + down + wait) and another input is
+        // calling pause (which maps to wait) we need to add two no-ops to the wait event so that it
+        // doesn't prematurely advance to the next action before the 'press' event finishes
         return padActionsList(w3cActions);
     }
 
