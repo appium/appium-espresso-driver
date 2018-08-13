@@ -8,6 +8,7 @@ import java.util.List;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
+import io.appium.espressoserver.lib.helpers.w3c.models.Actions.ActionsBuilder;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer;
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable;
@@ -22,7 +23,7 @@ public class TouchAction implements RequestHandler<TouchActionsParams, Void> {
             @Override
             public Void run(UiController uiController) throws AppiumException {
                 List<InputSource> inputSources = toW3CInputSources(Collections.singletonList(params.getActions()));
-                Actions actions = new Actions.ActionsBuilder()
+                Actions actions = new ActionsBuilder()
                         .withAdapter(new EspressoW3CActionAdapter(uiController))
                         .withActions(inputSources)
                         .build();

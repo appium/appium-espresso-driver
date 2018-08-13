@@ -5,8 +5,11 @@ import android.view.ViewConfiguration;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
@@ -144,12 +147,7 @@ public class TouchAction {
                 .withDuration(pressDuration)
                 .build();
 
-        List<Action> ret = new ArrayList<>();
-        ret.add(moveAction);
-        ret.add(downAction);
-        ret.add(waitAction);
-
-        return ret;
+        return Arrays.asList(moveAction, downAction, waitAction);
     }
 
     private Action getPause() {
@@ -223,6 +221,7 @@ public class TouchAction {
         private Long x;
         private Long y;
 
+        @Nullable
         public String getElementId() {
             return elementId;
         }

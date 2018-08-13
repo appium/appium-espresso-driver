@@ -13,7 +13,7 @@ public class MultiTouchActionsParams extends AppiumParams {
         return actions;
     }
 
-    public void setActions(List<List<TouchAction>> actions) {
+    public void setActions(final List<List<TouchAction>> actions) {
         this.actions = actions;
     }
 }

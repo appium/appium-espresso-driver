@@ -27,12 +27,12 @@ public class AndroidMotionEvent {
         this.uiController = uiController;
     }
 
-    public MotionEvent pointerUpOrDownOrCancel(List<Long> x, List<Long> y,
-                                               int action,
-                                               Integer button, PointerType pointerType,
-                                               final KeyInputState globalKeyInputState,
-                                               final MotionEvent downEvent,
-                                               final long eventTime)
+    public MotionEvent pointerEvent(List<Long> x, List<Long> y,
+                                    int action,
+                                    Integer button, PointerType pointerType,
+                                    final KeyInputState globalKeyInputState,
+                                    final MotionEvent downEvent,
+                                    final long eventTime)
             throws AppiumException {
 
         int metaState = getMetaState(globalKeyInputState);
