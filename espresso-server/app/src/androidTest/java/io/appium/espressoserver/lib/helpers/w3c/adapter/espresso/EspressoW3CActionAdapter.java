@@ -164,7 +164,9 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void keyUp(final W3CKeyEvent keyEvent) throws AppiumException {
-        keyUpOrDown(keyEvent, false);
+        if (keyDownEvents.containsKey(keyEvent.getKey())) {
+            keyUpOrDown(keyEvent, false);
+        }
     }
 
     private void keyUpOrDown(final W3CKeyEvent w3cKeyEvent, boolean isDown) throws AppiumException {

@@ -18,7 +18,7 @@ public class PeformActions implements RequestHandler<Actions, Void>  {
             @Override
             public Void run(UiController uiController) throws AppiumException {
                 actions.setAdapter(new EspressoW3CActionAdapter(uiController));
-                actions.performActions(actions.getSessionId());
+                actions.perform(actions.getSessionId());
                 return null;
             }
         };

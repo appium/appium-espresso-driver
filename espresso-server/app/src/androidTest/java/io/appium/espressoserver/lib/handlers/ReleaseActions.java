@@ -17,7 +17,7 @@ public class ReleaseActions implements RequestHandler<AppiumParams, Void>  {
         UiControllerRunnable<Void> runnable = new UiControllerRunnable<Void>() {
             @Override
             public Void run(UiController uiController) throws AppiumException {
-                (new Actions()).releaseActions(params.getSessionId());
+                (new Actions()).release(params.getSessionId());
                 return null;
             }
         };
