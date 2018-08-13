@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 
+import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
@@ -95,12 +96,12 @@ public class MultiTouchState {
         Long eventTime = SystemClock.uptimeMillis();
         List<Long> xCoords = getXCoords();
         List<Long> yCoords = getYCoords();
-        this.downEvent = androidMotionEvent.pointerUpOrDown(
+        this.downEvent = androidMotionEvent.pointerEvent(
                 xCoords, yCoords,
                 ACTION_DOWN, this.button, TOUCH, this.globalKeyInputState, null, eventTime);
 
         if (xCoords.size() > 1) {
-            androidMotionEvent.pointerUpOrDown(xCoords, yCoords,
+            androidMotionEvent.pointerEvent(xCoords, yCoords,
                     ACTION_POINTER_DOWN, this.button, TOUCH, this.globalKeyInputState, downEvent, eventTime);
         }
 
@@ -112,12 +113,12 @@ public class MultiTouchState {
         List<Long> xCoords = getXCoords();
         List<Long> yCoords = getYCoords();
         if (xCoords.size() > 1) {
-            androidMotionEvent.pointerUpOrDown(
+            androidMotionEvent.pointerEvent(
                     xCoords, yCoords,
                     ACTION_POINTER_UP, this.button, TOUCH, this.globalKeyInputState, downEvent, eventTime);
         }
 
-        androidMotionEvent.pointerUpOrDown(
+        androidMotionEvent.pointerEvent(
                 xCoords, yCoords,
                 ACTION_UP, this.button, TOUCH, this.globalKeyInputState, downEvent, eventTime);
 
@@ -127,7 +128,10 @@ public class MultiTouchState {
     public void pointerCancel(UiController uiController) throws AppiumException {
         List<Long> xCoords = getXCoords();
         List<Long> yCoords = getYCoords();
-        AndroidMotionEvent.getTouchMotionEvent(uiController).pointerCancel(xCoords, yCoords);
+        AndroidMotionEvent.getTouchMotionEvent(uiController).pointerEvent(
+                xCoords, yCoords,
+                ACTION_CANCEL, this.button, TOUCH, this.globalKeyInputState, downEvent, SystemClock.uptimeMillis()
+        );
         this.downEvent = null;
         touchPhase = NONE;
     }
@@ -157,6 +161,6 @@ public class MultiTouchState {
     public enum TouchPhase {
         DOWN,
         UP,
-        NONE;
+        NONE
     }
 }

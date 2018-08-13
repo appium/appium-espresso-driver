@@ -52,6 +52,8 @@ import io.appium.espressoserver.lib.handlers.GetSize;
 import io.appium.espressoserver.lib.handlers.GetWindowRect;
 import io.appium.espressoserver.lib.handlers.GetWindowSize;
 import io.appium.espressoserver.lib.handlers.Keys;
+import io.appium.espressoserver.lib.handlers.MultiTouchAction;
+import io.appium.espressoserver.lib.handlers.MultiTouchActionsParams;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
 import io.appium.espressoserver.lib.handlers.PeformActions;
 import io.appium.espressoserver.lib.handlers.PointerEventHandler;
@@ -65,6 +67,8 @@ import io.appium.espressoserver.lib.handlers.Source;
 import io.appium.espressoserver.lib.handlers.StartActivity;
 import io.appium.espressoserver.lib.handlers.Status;
 import io.appium.espressoserver.lib.handlers.Text;
+import io.appium.espressoserver.lib.handlers.TouchAction;
+import io.appium.espressoserver.lib.handlers.TouchActionsParams;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
@@ -92,18 +96,7 @@ import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
 
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.CLICK;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.DOUBLE_CLICK;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.LONG_CLICK;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_CLICK;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_DOUBLECLICK;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_DOWN;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_MOVE;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_UP;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_DOWN;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_MOVE;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_SCROLL;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_UP;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.*;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 
@@ -174,11 +167,11 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/moveto", new PointerEventHandler(MOUSE_MOVE), MotionEventParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/click", new PointerEventHandler(MOUSE_CLICK), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/doubleclick", new PointerEventHandler(MOUSE_DOUBLECLICK), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/perform", new TouchAction(), TouchActionsParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/multi/perform", new MultiTouchAction(), MultiTouchActionsParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/perform", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/multi/perform", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/alert_text", new NotYetImplemented(), AppiumParams.class));
 
         // Probably will never implement

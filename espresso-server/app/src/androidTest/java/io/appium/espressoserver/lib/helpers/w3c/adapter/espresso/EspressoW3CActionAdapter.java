@@ -288,11 +288,11 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController);
             List<Long> xList = Collections.singletonList(x);
             List<Long> yList = Collections.singletonList(y);
-            androidMotionEvent.pointerUpOrDown(
+            androidMotionEvent.pointerEvent(
                     xList, yList,
                     ACTION_DOWN, button, pointerType, globalKeyInputState, null, 0);
 
-            androidMotionEvent.pointerUpOrDown(
+            androidMotionEvent.pointerEvent(
                     xList, yList,
                     ACTION_POINTER_DOWN, button, pointerType, globalKeyInputState, null, 0);
         }
@@ -309,9 +309,9 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
             List<Long> xList = Collections.singletonList(x);
             List<Long> yList = Collections.singletonList(y);
             AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController);
-            androidMotionEvent.pointerUpOrDown(xList, yList,
+            androidMotionEvent.pointerEvent(xList, yList,
                     ACTION_POINTER_UP, button, pointerType, globalKeyInputState, null, 0);
-            androidMotionEvent.pointerUpOrDown(xList, yList,
+            androidMotionEvent.pointerEvent(xList, yList,
                     ACTION_UP, button, pointerType, globalKeyInputState, null, 0);
         }
     }
@@ -338,8 +338,8 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void sychronousTickActionsComplete() throws AppiumException {
-        AndroidLogger.logger.info("Pointer event: Tick complete");
         multiTouchState.perform(uiController);
+        AndroidLogger.logger.info("Pointer event: Tick complete");
     }
 
     public int getKeyCode(String keyValue, int location) throws AppiumException {
@@ -483,7 +483,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void sleep(long duration) throws AppiumException {
-        SystemClock.sleep(duration);
+        uiController.loopMainThreadForAtLeast(duration);
     }
     
     public Logger getLogger() {

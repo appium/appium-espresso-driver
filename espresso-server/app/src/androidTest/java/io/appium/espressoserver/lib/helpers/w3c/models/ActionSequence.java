@@ -81,7 +81,7 @@ public class ActionSequence implements Iterator<Tick> {
             // 1. Dispatch all of the events
             adapter.getLogger().info(String.format(
                     "Dispatching tick #%s of %s",
-                    tickIndex, ticks.size()
+                    tickIndex + 1, ticks.size()
             ));
             List<Callable<BaseDispatchResult>> callables = tick.dispatchAll(adapter, inputStateTable, tickDuration);
             int callableCount = callables.size();
@@ -114,7 +114,9 @@ public class ActionSequence implements Iterator<Tick> {
             //  2.2 At least tick duration milliseconds have passed
             long timeSinceBeginningOfTick = System.currentTimeMillis() - timeAtBeginningOfTick;
             if (timeSinceBeginningOfTick < tickDuration) {
-                adapter.sleep(tickDuration - timeSinceBeginningOfTick);
+                long timeToSleep = tickDuration - timeSinceBeginningOfTick;
+                adapter.getLogger().info(String.format("Wait for tick to finish for %s ms", timeToSleep));
+                adapter.sleep(timeToSleep);
             }
 
             // 2.3 The UI thread is complete

@@ -44,7 +44,6 @@ public class PointerDispatch {
         }
         Long x = pointerInputState.getX();
         Long y = pointerInputState.getY();
-        // TODO: Do cancel list stuff
         if (down) {
             pointerInputState.addPressed(button);
         } else {
@@ -168,7 +167,7 @@ public class PointerDispatch {
         if (originType == null) {
             originType = VIEWPORT;
         }
-        dispatcherAdapter.getLogger().info("Element type is: ", originType);
+        dispatcherAdapter.getLogger().info("Origin type is: ", originType);
         switch (origin.getType()) {
             case POINTER:
                 x = startX + xOffset;
@@ -287,7 +286,7 @@ public class PointerDispatch {
 
                 // Sleep for a fixed period of time
                 if (duration > 0) {
-                    dispatcherAdapter.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
+                    Thread.sleep(dispatcherAdapter.pointerMoveIntervalDuration());
                 }
 
                 if (!isLast) {

@@ -71,11 +71,11 @@ describe('elementByXPath', function () {
       let canvas = await driver.elementById("android:id/content");
       let {x, y} = await canvas.getLocation();
       const touchActions = [
-        {"type": "pointerMove", duration: 100, x: x + 10, y: y + 10},
+        {"type": "pointerMove", duration: 1000, x: x + 10, y: y + 10},
         {"type": "pointerDown", "button": 0},
-        {"type": "pointerMove", duration: 100,  x: x + 10, y: y + 1000},
-        {"type": "pause", duration: 100},
-        {"type": "pointerMove", duration: 100,  x: x + 1000, y: y + 1000},
+        {"type": "pointerMove", duration: 1000,  x: x + 10, y: y + 1000},
+        {"type": "pause", duration: 1000},
+        {"type": "pointerMove", duration: 1000,  x: x + 1000, y: y + 1000},
         {"type": "pointerCancel", "button": 0},
       ];
       await performTouchAction(touchActions);
@@ -104,7 +104,7 @@ describe('elementByXPath', function () {
   });
 
   describe('scrolling/swiping', async function () {
-    it.skip('should scroll up menu', async function () {
+    it('should scroll up menu', async function () {
       await (await driver.elementByAccessibilityId("Views")).click();
       let gcEl = await driver.elementByAccessibilityId("Game Controller Input");
       let {x, y} = await gcEl.getLocation();
@@ -121,7 +121,7 @@ describe('elementByXPath', function () {
       await driver.elementByXPath("//*[@text='ImageButton']");
     });
 
-    it.skip('should swipe up menu', async function () {
+    it('should swipe up menu', async function () {
       await (await driver.elementByAccessibilityId("Views")).click();
       let gcEl = await driver.elementByAccessibilityId("Game Controller Input");
       let {x, y} = await gcEl.getLocation();
@@ -137,6 +137,29 @@ describe('elementByXPath', function () {
       await performTouchAction(actions);
       await driver.elementByXPath("//*[@text='ImageButton']");
     });
+
+    it('should do multiple scrolls on multiple views', async function () {
+      await driver.startActivity({appActivity: '.view.SplitTouchView', appPackage: 'io.appium.android.apis'});
+      let [leftEl, rightEl] = await driver.elementsByClassName('android.widget.ListView');
+
+      const leftActions = [
+        {"type": "pointerMove",  "origin": {"element-6066-11e4-a52e-4f735466cecf": leftEl.value}},
+        {"type": "pointerDown",  "button": 0},
+        {"type": "pointerMove",  "origin": {"element-6066-11e4-a52e-4f735466cecf": leftEl.value}, "x": 10, "y": -500, "duration": 3000},
+        {"type": "pointerMove",  "origin": "pointer", "x": 10, "y": -500, "duration": 3000},
+        {"type": "pointerUp", "button": 0},
+      ];
+
+      const rightActions = [
+        {"type": "pointerMove",  "origin": {"element-6066-11e4-a52e-4f735466cecf": rightEl.value}},
+        {"type": "pointerDown",  "button": 0},
+        {"type": "pointerMove",  "origin": {"element-6066-11e4-a52e-4f735466cecf": rightEl.value}, "x": 10, "y": -500, "duration": 3000},
+        {"type": "pointerMove",  "origin": "pointer", "x": 10, "y": -500, "duration": 3000},
+        {"type": "pointerUp", "button": 0},
+      ];
+
+      await performTouchAction(leftActions, rightActions);
+    });
   });
 
   describe('touches', async function () {
@@ -149,7 +172,7 @@ describe('elementByXPath', function () {
         {"type": "pointerMove", "duration": 0, x: x + 30, y: y + 30},
         {"type": "pointerDown", "button": 0},
         {"type": "pointerMove", "duration": 100,  x: x + 10, y: y + 10},
-        {"type": "pointerUp", "button": 0}
+        {"type": "pointerUp", "button": 0},
       ];
       await performTouchAction(touchActions);
     });
@@ -158,9 +181,9 @@ describe('elementByXPath', function () {
       const el = await driver.elementByAccessibilityId("Accessibility");
       let {x, y} = await el.getLocation();
       const touchActions = [
-        {"type": "pointerMove", "duration": 0, x: x + 10, y: y + 10},
+        {"type": "pointerMove", "duration": 100, x: x + 10, y: y + 10},
         {"type": "pointerDown", "button": 0},
-        {"type": "pause", "duration": 100},
+        {"type": "pause", "duration": 3000},
         {"type": "pointerUp", "button": 0},
       ];
       await performTouchAction(touchActions);
@@ -324,6 +347,106 @@ describe('elementByXPath', function () {
       };
       await request(options);
       await B.delay(1000);
+    });
+  });
+
+  describe('mjsonwp touch actions', function () {
+    describe('multi touch actions', function () {
+      it('should perform single tap/press/longPress actions', async function () {
+        for (let method of ['tap', 'press', 'longPress']) {
+          let action = new wd.TouchAction();
+          const el = await driver.elementByAccessibilityId("Accessibility");
+          let {x, y} = await el.getLocation();
+          action[method]({x: x + 10, y: y + 10});
+          action.release();
+          let multiAction = new wd.MultiAction(driver);
+          multiAction.add(action);
+          multiAction.perform();
+          await driver.elementByAccessibilityId("Accessibility Node Provider").should.eventually.exist;
+          await driver.back();
+        }
+      });
+
+      it('should perform single tap/press/longPress actions on an element', async function () {
+        for (let method of ['tap', 'press', 'longPress']) {
+          let action = new wd.TouchAction();
+          const el = await driver.elementByAccessibilityId("Animation");
+          action[method]({el});
+          action.release();
+          let multiAction = new wd.MultiAction(driver);
+          multiAction.add(action);
+          multiAction.perform();
+          await driver.elementByAccessibilityId("Bouncing Balls").should.eventually.exist;
+          await driver.back();
+        }
+      });
+    });
+
+    describe('touch actions', function () {
+      it('should perform single tap/press/longPress actions', async function () {
+        for (let method of ['tap', 'press', 'longPress']) {
+          let action = new wd.TouchAction(driver);
+          const el = await driver.elementByAccessibilityId("Accessibility");
+          let {x, y} = await el.getLocation();
+          action[method]({x: x + 10, y: y + 10});
+          action.release();
+          action.perform();
+          await driver.elementByAccessibilityId("Accessibility Node Provider").should.eventually.exist;
+          await driver.back();
+        }
+      });
+      it('should perform single tap/press/longPress actions on an element', async function () {
+        for (let method of ['tap', 'press', 'longPress']) {
+          let action = new wd.TouchAction(driver);
+          const el = await driver.elementByAccessibilityId("Animation");
+          action[method]({el});
+          action.release();
+          action.perform();
+          await driver.elementByAccessibilityId("Bouncing Balls").should.eventually.exist;
+          await driver.back();
+        }
+      });
+      it('should perform a scroll event', async function () {
+        await (await driver.elementByAccessibilityId('Views')).click();
+        let action = new wd.TouchAction(driver);
+        const startEl = await driver.elementByAccessibilityId("Gallery");
+        const endEl = await driver.elementByAccessibilityId("Buttons");
+        action.press({el: startEl});
+        action.moveTo({el: endEl});
+        action.release();
+        action.perform();
+        await driver.elementByAccessibilityId("ImageView").should.eventually.exist;
+        await driver.back();
+      });
+      it('should do multiple scrolls on multiple views', async function () {
+        await driver.startActivity({appActivity: '.view.SplitTouchView', appPackage: 'io.appium.android.apis'});
+        let [leftEl, rightEl] = await driver.elementsByClassName('android.widget.ListView');
+        const leftGesture = new wd.TouchAction()
+          .press({element: leftEl})
+          .moveTo({element: leftEl, x: 10, y: 0})
+          .moveTo({element: leftEl, x: 10, y: -25})
+          .moveTo({element: leftEl, x: 10, y: -50})
+          .moveTo({element: leftEl, x: 10, y: -75})
+          .moveTo({element: leftEl, x: 10, y: -100})
+          .moveTo({element: leftEl, x: 10, y: -125})
+          .moveTo({element: leftEl, x: 10, y: -500});
+
+        const rightGesture = new wd.TouchAction()
+          .press({element: rightEl})
+          .moveTo({element: rightEl, x: 10, y: 0})
+          .moveTo({element: rightEl, x: 10, y: -25})
+          .moveTo({element: rightEl, x: 10, y: -50})
+          .moveTo({element: rightEl, x: 10, y: -75})
+          .moveTo({element: rightEl, x: 10, y: -100})
+          .moveTo({element: rightEl, x: 10, y: -125})
+          .moveTo({element: rightEl, x: 10, y: -500});
+
+        const multiAction = new wd.MultiAction();
+        multiAction.add(leftGesture, rightGesture);
+
+        await driver.performMultiAction(multiAction);
+        await B.delay(5000);
+      });
     });
   });
 });
