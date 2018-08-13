@@ -88,10 +88,10 @@ public class InputStateTable {
         for (ActionObject actionObject:cancelList) {
             actionObject.dispatch(adapter, this, 0, timeAtBeginningOfTick);
         }
+        adapter.sychronousTickActionsComplete();
 
         // Clear the cancel list now that the Undo operations are all fulfilled
         cancelList.clear();
-        adapter.sychronousTickActionsComplete();
     }
 
 
