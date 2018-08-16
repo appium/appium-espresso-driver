@@ -423,7 +423,7 @@ describe('touch actions -', function () {
 
           const multiAction = new wd.MultiAction(driver);
           multiAction.add(action);
-          multiAction.perform();
+          await multiAction.perform();
 
           await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
         });
@@ -435,7 +435,7 @@ describe('touch actions -', function () {
 
           const multiAction = new wd.MultiAction(driver);
           multiAction.add(action);
-          multiAction.perform();
+          await multiAction.perform();
 
           await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
         });
@@ -462,7 +462,7 @@ describe('touch actions -', function () {
             const action = new wd.TouchAction(driver);
             action[method]({x: x + 10, y: y + 10});
             action.release();
-            action.perform();
+            await action.perform();
 
             await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
           });
@@ -470,7 +470,7 @@ describe('touch actions -', function () {
             let action = new wd.TouchAction(driver);
             action[method]({el: nextEl});
             action.release();
-            action.perform();
+            await action.perform();
 
             await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
           });
