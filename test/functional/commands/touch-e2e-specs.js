@@ -270,6 +270,7 @@ describe('touch actions -', function () {
 
         nextEl = await driver.elementByAccessibilityId('Next');
       });
+
       it('should do touch/click event', async function () {
         const {value:elementId} = nextEl;
         await request({
@@ -414,12 +415,9 @@ describe('touch actions -', function () {
       });
 
       for (const method of ['tap', 'press', 'longPress']) {
-        it(`should perform single ${method} actions`, async function () {
-          const {x, y} = await nextEl.getLocation();
-
+        it(`should perform single ${method} actions on an element`, async function () {
           const action = new wd.TouchAction();
-          action[method]({x: x + 10, y: y + 10});
-          action.release();
+          action[method]({el: nextEl});
 
           const multiAction = new wd.MultiAction(driver);
           multiAction.add(action);
@@ -428,10 +426,11 @@ describe('touch actions -', function () {
           await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
         });
 
-        it(`should perform single ${method} actions on an element`, async function () {
+        it(`should perform single ${method} actions`, async function () {
+          const {x, y} = await nextEl.getLocation();
+
           const action = new wd.TouchAction();
-          action[method]({el: nextEl});
-          action.release();
+          action[method]({x: x + 10, y: y + 10});
 
           const multiAction = new wd.MultiAction(driver);
           multiAction.add(action);
@@ -461,7 +460,6 @@ describe('touch actions -', function () {
 
             const action = new wd.TouchAction(driver);
             action[method]({x: x + 10, y: y + 10});
-            action.release();
             await action.perform();
 
             await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
@@ -469,7 +467,6 @@ describe('touch actions -', function () {
           it(`should perform single ${method} actions on an element`, async function () {
             let action = new wd.TouchAction(driver);
             action[method]({el: nextEl});
-            action.release();
             await action.perform();
 
             await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
@@ -502,6 +499,7 @@ describe('touch actions -', function () {
           for (let i = 0; i < 8; i++) {
             action.moveTo({element: el, x: 10, y: -i * increment});
           }
+          action.release();
           return action;
         });
 
