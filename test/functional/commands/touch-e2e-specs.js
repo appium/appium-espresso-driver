@@ -412,6 +412,19 @@ describe('touch actions -', function () {
 
         nextEl = await driver.elementByAccessibilityId('Next');
       });
+      it.only(`should perform single tap actions`, async function () { // eslint-disable-line
+        const {x, y} = await nextEl.getLocation();
+
+        const action = new wd.TouchAction();
+        action.tap({x: x + 10, y: y + 10});
+        action.release();
+
+        const multiAction = new wd.MultiAction(driver);
+        multiAction.add(action);
+        await multiAction.perform();
+
+        await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
+      });
 
       for (const method of ['tap', 'press', 'longPress']) {
         it(`should perform single ${method} actions`, async function () {
