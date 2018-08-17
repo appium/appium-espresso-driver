@@ -39,8 +39,8 @@ env:
     - RECURSIVE=""
     - CC=gcc-4.9 CXX=g++-4.9
   matrix:
-    # - TEST=unit START_EMU=0 RECURSIVE="--recursive"
-    # - TEST=functional
+    - TEST=unit START_EMU=0 RECURSIVE="--recursive"
+    - TEST=functional
     - TEST=functional/commands
 before_install:
   - |
