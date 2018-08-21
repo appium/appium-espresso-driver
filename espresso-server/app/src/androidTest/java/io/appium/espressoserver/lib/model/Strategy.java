@@ -43,7 +43,7 @@ public enum Strategy {
     ACCESSIBILITY_ID("accessibility id"),
     @SerializedName("text")
     TEXT("text"),
-    @SerializedName("-android viewtag")
+    @SerializedName(value="-android viewtag", alternate={"tag name"})
     VIEW_TAG("-android viewtag");
 
     private final String strategyName;
@@ -56,8 +56,8 @@ public enum Strategy {
                 }
             }
         }
-        throw new InvalidStrategyException("Locator strategy '" + text
-                + "' is not supported on Android");
+        throw new InvalidStrategyException(String.format(
+                "Locator strategy '%s' is not supported in NATIVE context", text));
     }
 
     Strategy(final String name) {
