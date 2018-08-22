@@ -141,8 +141,8 @@ public class MotionEventBuilder {
                 return null;
             }
 
-            PointerCoords[] pointerCoords = new PointerCoords[pointerCount];
-            PointerProperties[] pointerProperties = new PointerProperties[pointerCount];
+            final PointerCoords[] pointerCoords = new PointerCoords[pointerCount];
+            final PointerProperties[] pointerProperties = new PointerProperties[pointerCount];
 
             for (int pointerIndex = 0; pointerIndex < pointerCount; pointerIndex++) {
                 // Set pointer coordinates
@@ -199,7 +199,7 @@ public class MotionEventBuilder {
                 }
             } catch (InjectEventSecurityException e) {
                 throw new AppiumException(String.format(
-                        "Could not complete pointer operation. An internal server error occurred: %s",
+                        "Could not complete pointer operation. Pointer operation is not within bounds of the app-under-test. Cause: %s",
                         e.getCause()
                 ));
             }

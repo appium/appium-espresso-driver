@@ -29,14 +29,14 @@ public class AndroidMotionEvent {
 
     public MotionEvent pointerEvent(List<Long> x, List<Long> y,
                                     int action,
-                                    Integer button, PointerType pointerType,
+                                    final Integer button,
+                                    PointerType pointerType,
                                     final KeyInputState globalKeyInputState,
                                     final MotionEvent downEvent,
                                     final long eventTime)
             throws AppiumException {
 
         int metaState = getMetaState(globalKeyInputState);
-
         this.downTime = downEvent != null ? downEvent.getDownTime() : eventTime;
 
         return (new MotionEventBuilder())
@@ -66,7 +66,7 @@ public class AndroidMotionEvent {
                 .withX(x)
                 .withY(y)
                 .withMetaState(metaState)
-                .withSource(downEvent.getSource())
+                .withSource(downEvent != null ? downEvent.getSource() : 0)
                 .build()
                 .run(uiController);
     }
