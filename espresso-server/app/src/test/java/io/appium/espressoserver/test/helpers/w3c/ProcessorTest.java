@@ -123,30 +123,6 @@ public class ProcessorTest {
     }
 
     @Test
-    public void shouldRejectPointerMoveIfNegativeX() throws InvalidArgumentException {
-        Action action = new Action();
-        action.setX(-100);
-        try {
-            processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
-            fail("expected exception was not occured.");
-        } catch (InvalidArgumentException ie) {
-            assertTrue(ie.getMessage().contains("'x' be greater than or equal to 0"));
-        }
-    }
-
-    @Test
-    public void shouldRejectPointerMoveIfNegativeY() throws InvalidArgumentException {
-        Action action = new Action();
-        action.setY(-100);
-        try {
-            processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
-            fail("expected exception was not occured.");
-        } catch (InvalidArgumentException ie) {
-            assertTrue(ie.getMessage().contains("'y' be greater than or equal to 0"));
-        }
-    }
-
-    @Test
     public void shouldPassValidPointerMove() throws InvalidArgumentException {
         Action action = new Action();
         action.setX(100);

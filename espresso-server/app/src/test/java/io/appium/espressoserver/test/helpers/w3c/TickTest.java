@@ -175,7 +175,7 @@ public class TickTest {
 
         final String sourceId = "something4";
         final String sourceId2 = "something5";
-        PointerInputState pointerInputState = new PointerInputState();
+        PointerInputState pointerInputState = new PointerInputState(TOUCH);
         pointerInputState.setType(TOUCH);
         pointerInputState.setX(5L);
         pointerInputState.setY(6L);
@@ -245,7 +245,7 @@ public class TickTest {
         InputStateTable inputStateTable = new InputStateTable();
         Tick tick = new Tick();
         final String sourceId = "something4";
-        PointerInputState pointerInputState = new PointerInputState();
+        PointerInputState pointerInputState = new PointerInputState(TOUCH);
         inputStateTable.addInputState(sourceId, pointerInputState);
 
         // Depress the shift key

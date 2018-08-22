@@ -35,6 +35,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatc
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_UP;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTER;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -48,7 +49,7 @@ public class PointerDispatchTest {
     @Test
     public void shouldNoopPointerMoveIfNoButtons() throws ExecutionException, InterruptedException, AppiumException {
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
-        pointerInputSource = new PointerInputState();
+        pointerInputSource = new PointerInputState(TOUCH);
         pointerInputSource.setType(PointerType.TOUCH);
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -67,7 +68,7 @@ public class PointerDispatchTest {
     public void shouldDoOneMoveIfDurationZero()
             throws ExecutionException, InterruptedException, AppiumException {
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
-        pointerInputSource = new PointerInputState();
+        pointerInputSource = new PointerInputState(TOUCH);
         pointerInputSource.setType(PointerType.TOUCH);
         pointerInputSource.setX(10);
         pointerInputSource.setY(20);
@@ -92,7 +93,7 @@ public class PointerDispatchTest {
     @Test
     public void shouldMovePointerInIntervals() throws ExecutionException, InterruptedException, AppiumException {
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
-        pointerInputSource = new PointerInputState();
+        pointerInputSource = new PointerInputState(TOUCH);
         pointerInputSource.setType(PointerType.TOUCH);
         pointerInputSource.setX(10);
         pointerInputSource.setY(20);
@@ -140,13 +141,13 @@ public class PointerDispatchTest {
     @Test
     public void shouldRunMultiplePointerMoves() throws InterruptedException, ExecutionException, AppiumException{
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
-        pointerInputSource = new PointerInputState();
+        pointerInputSource = new PointerInputState(TOUCH);
         pointerInputSource.setType(PointerType.TOUCH);
         pointerInputSource.setX(10);
         pointerInputSource.setY(20);
         pointerInputSource.addPressed(0);
 
-        PointerInputState pointerInputSourceTwo = new PointerInputState();
+        PointerInputState pointerInputSourceTwo = new PointerInputState(TOUCH);
         pointerInputSourceTwo.setType(PointerType.TOUCH);
         pointerInputSourceTwo.setX(10);
         pointerInputSourceTwo.setY(20);
@@ -215,7 +216,7 @@ public class PointerDispatchTest {
 
         for (int i=0; i<badX.length; i++) {
             DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
-            PointerInputState pointerInputState = new PointerInputState();
+            PointerInputState pointerInputState = new PointerInputState(TOUCH);
 
             pointerInputState.setX(10);
             pointerInputState.setY(10);
@@ -253,7 +254,7 @@ public class PointerDispatchTest {
 
         for (int i=0; i<xCoords.length; i++) {
             DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
-            PointerInputState pointerInputState = new PointerInputState();
+            PointerInputState pointerInputState = new PointerInputState(TOUCH);
 
             pointerInputState.setX(50);
             pointerInputState.setY(70);
@@ -279,7 +280,7 @@ public class PointerDispatchTest {
     public void shouldAddButtonToDepressedOnDispatchDown() throws AppiumException {
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
         InputStateTable inputStateTable = new InputStateTable();
-        PointerInputState pointerInputState = new PointerInputState();
+        PointerInputState pointerInputState = new PointerInputState(TOUCH);
 
         ActionObject actionObject = new ActionObject(
                 "id", InputSourceType.POINTER, POINTER_MOVE, 0
@@ -309,7 +310,7 @@ public class PointerDispatchTest {
 
         }
         W3CActionAdapter dummyW3CActionAdapter = new TempDummyAdapter();
-        PointerInputState pointerInputState = new PointerInputState();
+        PointerInputState pointerInputState = new PointerInputState(TOUCH);
         pointerInputState.addPressed(1);
         ActionObject actionObject = new ActionObject(
                 "id", InputSourceType.POINTER, POINTER_MOVE, 0
@@ -326,7 +327,7 @@ public class PointerDispatchTest {
     @Test
     public void shouldRemoveButtonFromDepressedOnDispatchUp() throws AppiumException {
         DummyW3CActionAdapter dummyW3CActionAdapter = new DummyW3CActionAdapter();
-        PointerInputState pointerInputState = new PointerInputState();
+        PointerInputState pointerInputState = new PointerInputState(TOUCH);
         pointerInputState.addPressed(1);
 
         ActionObject actionObject = new ActionObject(
@@ -353,7 +354,7 @@ public class PointerDispatchTest {
 
         }
         W3CActionAdapter dummyW3CActionAdapter = new TempDummyAdapter();
-        PointerInputState pointerInputState = new PointerInputState();
+        PointerInputState pointerInputState = new PointerInputState(TOUCH);
         ActionObject actionObject = new ActionObject(
                 "id", InputSourceType.POINTER, POINTER_MOVE, 0
         );

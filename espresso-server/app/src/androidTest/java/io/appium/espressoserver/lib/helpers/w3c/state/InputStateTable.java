@@ -38,7 +38,7 @@ public class InputStateTable {
                     newInputState = new KeyInputState();
                     break;
                 case POINTER:
-                    newInputState = new PointerInputState();
+                    newInputState = new PointerInputState(actionObject.getPointer());
                     break;
                 // Don't need to track state of null input types
                 case NONE:
