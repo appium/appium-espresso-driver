@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
@@ -175,9 +176,30 @@ public class MotionEventBuilder {
                 }
             }
 
+            long eventTime = motionEventParams.eventTime > 0 ? motionEventParams.eventTime : SystemClock.uptimeMillis();
+
+            AndroidLogger.logger.info(String.format(
+                    "Running Android MotionEvent.obtain with parameters: " +
+                    "[%s] [%s], [%s], [%s], [%s], [%s], [%s]" +
+                    "[%s] [%s], [%s], [%s], [%s], [%s], [%s]",
+                    motionEventParams.downTime,
+                    eventTime,
+                    action,
+                    pointerCount,
+                    pointerProperties,
+                    pointerCoords,
+                    motionEventParams.metaState,
+                    motionEventParams.buttonState,
+                    motionEventParams.xPrecision,
+                    motionEventParams.yPrecision,
+                    motionEventParams.deviceId,
+                    motionEventParams.edgeFlags,
+                    motionEventParams.source,
+                    0
+            ));
             MotionEvent evt = MotionEvent.obtain(
                     motionEventParams.downTime,
-                    motionEventParams.eventTime > 0 ? motionEventParams.eventTime : SystemClock.uptimeMillis(),
+                    eventTime,
                     action,
                     pointerCount,
                     pointerProperties,
