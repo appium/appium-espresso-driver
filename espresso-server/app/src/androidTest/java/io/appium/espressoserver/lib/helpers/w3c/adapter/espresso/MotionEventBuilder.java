@@ -184,6 +184,7 @@ public class MotionEventBuilder {
                     "pointerProperties=[%s], pointerCoords=[%s], metaState=[%s], buttonState=[%s], " +
                     "xPrecision=[%s], yPrecision=[%s], deviceId=[%s], edgeFlags=[%s], source=[%s], " +
                     "flags=[%s]",
+                    "For more information, see https://developer.android.com/reference/android/view/MotionEvent#obtain(long,%20long,%20int,%20int,%20android.view.MotionEvent.PointerProperties[],%20android.view.MotionEvent.PointerCoords[],%20int,%20int,%20float,%20float,%20int,%20int,%20int,%20int)",
                     motionEventParams.downTime,
                     eventTime,
                     action,
