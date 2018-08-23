@@ -503,10 +503,8 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     private boolean isTouchScreen() {
-        int[] deviceIds = InputDevice.getDeviceIds();
-
         // If we find one deviceId that is a touchscreen, assume it's a touch screen
-        for (int deviceId : deviceIds) {
+        for (int deviceId : InputDevice.getDeviceIds()) {
             int sources = InputDevice.getDevice(deviceId).getSources();
             if ((sources & InputDevice.SOURCE_TOUCHSCREEN) == InputDevice.SOURCE_TOUCHSCREEN) {
                 return true;
