@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
+import android.support.annotation.Nullable;
 import android.support.test.espresso.UiController;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -29,14 +30,14 @@ public class AndroidMotionEvent {
 
     public MotionEvent pointerEvent(List<Long> x, List<Long> y,
                                     int action,
-                                    Integer button, PointerType pointerType,
+                                    final Integer button,
+                                    PointerType pointerType,
                                     final KeyInputState globalKeyInputState,
-                                    final MotionEvent downEvent,
+                                    @Nullable final MotionEvent downEvent,
                                     final long eventTime)
             throws AppiumException {
 
         int metaState = getMetaState(globalKeyInputState);
-
         this.downTime = downEvent != null ? downEvent.getDownTime() : eventTime;
 
         return (new MotionEventBuilder())
@@ -56,7 +57,7 @@ public class AndroidMotionEvent {
     public void pointerMove(List<Long> x, List<Long> y,
                             final PointerType pointerType,
                             final KeyInputState globalKeyInputState,
-                            final MotionEvent downEvent) throws AppiumException {
+                            @Nullable final MotionEvent downEvent) throws AppiumException {
         int metaState = getMetaState(globalKeyInputState);
 
         (new MotionEventBuilder())
@@ -66,7 +67,7 @@ public class AndroidMotionEvent {
                 .withX(x)
                 .withY(y)
                 .withMetaState(metaState)
-                .withSource(downEvent.getSource())
+                .withSource(downEvent != null ? downEvent.getSource() : 0)
                 .build()
                 .run(uiController);
     }

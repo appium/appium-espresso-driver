@@ -5,6 +5,7 @@ import android.os.SystemClock;
 import android.support.test.espresso.InjectEventSecurityException;
 import android.support.test.espresso.UiController;
 import android.util.DisplayMetrics;
+import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
@@ -145,10 +146,12 @@ import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.Norm
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.WHITESPACE;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ZENKAKU_HANKAKU;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ZERO;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.MOUSE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
+    private final boolean isTouchScreen;
     private UiController uiController;
     private final MultiTouchState multiTouchState = new MultiTouchState();
     private Map<String, List<KeyEvent>> keyDownEvents = new HashMap<>();
@@ -156,6 +159,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     private final DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
 
     public EspressoW3CActionAdapter(UiController uiController) {
+        this.isTouchScreen = isTouchScreen();
         this.uiController = uiController;
     }
 
@@ -279,9 +283,9 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     public void pointerDown(int button, String sourceId, PointerType pointerType,
                      Long x, Long y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException {
-        this.getLogger().info(String.format("Running pointer down at coordinates: %s %s", x, y));
+        this.getLogger().info(String.format("Running pointer down at coordinates: %s %s %s", x, y, pointerType));
 
-        if (pointerType == TOUCH) {
+        if (isTouch(pointerType)) {
             // touch down actions need to be grouped together
             multiTouchState.updateTouchState(ACTION_DOWN, sourceId, x, y, globalKeyInputState, button);
         } else {
@@ -301,8 +305,8 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     public void pointerUp(int button, String sourceId, PointerType pointerType,
                    Long x, Long y, Set<Integer> depressedButtons,
                    KeyInputState globalKeyInputState) throws AppiumException {
-        this.getLogger().info(String.format("Running pointer up at coordinates: %s %s", x, y));
-        if (pointerType == TOUCH) {
+        this.getLogger().info(String.format("Running pointer up at coordinates: %s %s %s", x, y, pointerType));
+        if (isTouch(pointerType)) {
             // touch up actions need to be grouped together
             multiTouchState.updateTouchState(ACTION_UP, sourceId, x, y, globalKeyInputState, button);
         } else {
@@ -320,7 +324,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                             long currentX, long currentY, long x, long y,
                             Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer move at coordinates: %s %s %s", x, y, pointerType));
-        if (pointerType == TOUCH) {
+        if (isTouch(pointerType)) {
             multiTouchState.updateTouchState(ACTION_MOVE, sourceId, x, y, globalKeyInputState, null);
             multiTouchState.pointerMove(uiController);
         } else {
@@ -330,7 +334,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void pointerCancel(String sourceId, PointerType pointerType) throws AppiumException {
-        if (pointerType == TOUCH) {
+        if (isTouch(pointerType)) {
             multiTouchState.pointerCancel(uiController);
         } else {
             AndroidMotionEvent.getMotionEvent(sourceId, uiController).pointerCancel();
@@ -488,5 +492,24 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     
     public Logger getLogger() {
         return AndroidLogger.logger;
+    }
+
+    // If a 'mouse' event was provided, but it's a touchscreen, switch to 'touch'
+    // This is because some clients only send 'mouse' events and the assumption is that if they
+    // send 'mouse' events to a device that has a touch screen, it needs to be converted
+    // This may need to be re-visited in the future if we wish to support Android laptops
+    private boolean isTouch(PointerType type) {
+        return type == TOUCH || (type == MOUSE && isTouchScreen);
+    }
+
+    private boolean isTouchScreen() {
+        // If we find one deviceId that is a touchscreen, assume it's a touch screen
+        for (int deviceId : InputDevice.getDeviceIds()) {
+            int sources = InputDevice.getDevice(deviceId).getSources();
+            if ((sources & InputDevice.SOURCE_TOUCHSCREEN) == InputDevice.SOURCE_TOUCHSCREEN) {
+                return true;
+            }
+        }
+        return false;
     }
 }
