@@ -74,7 +74,7 @@ public class InputSource {
     public InputState getDefaultState() {
         switch (getType()) {
             case POINTER:
-                return new PointerInputState();
+                return new PointerInputState(getPointerType());
             case KEY:
                 return new KeyInputState();
             default:

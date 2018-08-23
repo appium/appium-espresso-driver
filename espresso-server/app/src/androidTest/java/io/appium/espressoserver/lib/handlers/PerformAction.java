@@ -9,7 +9,7 @@ import io.appium.espressoserver.lib.viewaction.UiControllerPerformer;
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable;
 
 
-public class PeformActions implements RequestHandler<Actions, Void>  {
+public class PerformAction implements RequestHandler<Actions, Void>  {
 
     @Override
     public Void handle(final Actions actions) throws AppiumException {

@@ -16,6 +16,10 @@ public class PointerInputState implements InputState {
     private long x = 0;
     private long y = 0;
 
+    public PointerInputState(PointerType pointerType) {
+        this.type = pointerType;
+    }
+
     public boolean isPressed(int num) {
         return pressed.contains(num);
     }
