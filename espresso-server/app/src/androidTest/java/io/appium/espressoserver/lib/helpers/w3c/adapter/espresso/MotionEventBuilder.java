@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
@@ -175,9 +176,33 @@ public class MotionEventBuilder {
                 }
             }
 
+            long eventTime = motionEventParams.eventTime > 0 ? motionEventParams.eventTime : SystemClock.uptimeMillis();
+
+            AndroidLogger.logger.info(String.format(
+                    "Running Android MotionEvent.obtain with parameters: " +
+                    "downTime=[%s], eventTime=[%s], action=[%s], pointerCount=[%s], " + "" +
+                    "pointerProperties=[%s], pointerCoords=[%s], metaState=[%s], buttonState=[%s], " +
+                    "xPrecision=[%s], yPrecision=[%s], deviceId=[%s], edgeFlags=[%s], source=[%s], " +
+                    "flags=[%s]",
+                    "For more information, see https://developer.android.com/reference/android/view/MotionEvent#obtain(long,%20long,%20int,%20int,%20android.view.MotionEvent.PointerProperties[],%20android.view.MotionEvent.PointerCoords[],%20int,%20int,%20float,%20float,%20int,%20int,%20int,%20int)",
+                    motionEventParams.downTime,
+                    eventTime,
+                    action,
+                    pointerCount,
+                    pointerProperties,
+                    pointerCoords,
+                    motionEventParams.metaState,
+                    motionEventParams.buttonState,
+                    motionEventParams.xPrecision,
+                    motionEventParams.yPrecision,
+                    motionEventParams.deviceId,
+                    motionEventParams.edgeFlags,
+                    motionEventParams.source,
+                    0
+            ));
             MotionEvent evt = MotionEvent.obtain(
                     motionEventParams.downTime,
-                    motionEventParams.eventTime > 0 ? motionEventParams.eventTime : SystemClock.uptimeMillis(),
+                    eventTime,
                     action,
                     pointerCount,
                     pointerProperties,
