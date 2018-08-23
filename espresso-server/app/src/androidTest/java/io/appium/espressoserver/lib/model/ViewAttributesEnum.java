@@ -41,7 +41,6 @@ public enum ViewAttributesEnum {
     ADAPTER_TYPE,
     VIEW_TAG;
 
-
     @Override
     public String toString() {
         return this.name().replace("_", "-").toLowerCase();
