@@ -180,8 +180,10 @@ public class MotionEventBuilder {
 
             AndroidLogger.logger.info(String.format(
                     "Running Android MotionEvent.obtain with parameters: " +
-                    "[%s] [%s], [%s], [%s], [%s], [%s], [%s]" +
-                    "[%s] [%s], [%s], [%s], [%s], [%s], [%s]",
+                    "downTime=[%s], eventTime=[%s], action=[%s], pointerCount=[%s], " + "" +
+                    "pointerProperties=[%s], pointerCoords=[%s], metaState=[%s], buttonState=[%s], " +
+                    "xPrecision=[%s], yPrecision=[%s], deviceId=[%s], edgeFlags=[%s], source=[%s], " +
+                    "flags=[%s]",
                     motionEventParams.downTime,
                     eventTime,
                     action,
