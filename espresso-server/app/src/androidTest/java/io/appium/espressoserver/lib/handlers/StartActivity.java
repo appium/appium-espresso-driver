@@ -53,8 +53,7 @@ public class StartActivity implements RequestHandler<StartActivityParams, Void> 
         if (appActivity.startsWith(".")) {
             fullyQualifiedAppActivity = context.getPackageName() + appActivity;
         }
-        intent.setClassName(mInstrumentation.getTargetContext(), fullyQualifiedAppActivity)
-        ;
+        intent.setClassName(mInstrumentation.getTargetContext(), fullyQualifiedAppActivity);
         mInstrumentation.startActivitySync(intent);
 
         if (waitForActivity) {
