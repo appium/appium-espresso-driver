@@ -79,7 +79,7 @@ public class IMEHelpers {
         }
 
         if (action == null) {
-            logger.debug("Performing the default editor action on the focused view");
+            logger.debug("Performing the default editor action on the focused element");
             try {
                 viewInteraction.perform(pressImeActionButton());
                 return;
@@ -90,7 +90,7 @@ public class IMEHelpers {
         }
 
         int actionCode = toActionCode(action);
-        logger.debug(String.format("Performing editor action %s on the focused view", actionCode));
+        logger.debug(String.format("Performing editor action %s on the focused element", actionCode));
         View view = new ViewGetter().getView(viewInteraction);
         InputConnection ic = view.onCreateInputConnection(new EditorInfo());
         if (!ic.performEditorAction(actionCode)) {
