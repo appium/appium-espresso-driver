@@ -68,10 +68,10 @@ describe('touch actions -', function () {
     // the last element is the title of the view, and often the
     // second-to-last is actually off the screen
     const startEl = els[els.length - 3];
-    const {x:startX, y:startY} = await startEl.getLocation();
+    const {x: startX, y: startY} = await startEl.getLocation();
 
     const endEl = _.first(els);
-    const {x:endX, y:endY} = await endEl.getLocation();
+    const {x: endX, y: endY} = await endEl.getLocation();
 
     return {startX, startY, endX, endY, startEl, endEl};
   }
@@ -105,7 +105,7 @@ describe('touch actions -', function () {
     });
   };
 
-  describe('fingerpaint', async function () {
+  describe('fingerpaint', function () {
     beforeEach(startFingerPaintActivity);
 
     it('should draw the letter L on fingerpaint', async function () {
@@ -121,9 +121,9 @@ describe('touch actions -', function () {
       const touchActions = [
         {type: "pointerMove", duration: 1000, x: startX, y: startY},
         {type: "pointerDown", button: 0},
-        {type: "pointerMove", duration: 1000,  x: startX, y: endY},
+        {type: "pointerMove", duration: 1000, x: startX, y: endY},
         {type: "pause", duration: 1000},
-        {type: "pointerMove", duration: 1000,  x: endX, y: endY},
+        {type: "pointerMove", duration: 1000, x: endX, y: endY},
         {type: "pointerCancel", button: 0},
       ];
       await performTouchAction(touchActions);
@@ -138,7 +138,7 @@ describe('touch actions -', function () {
         touchActions.push([
           {type: "pointerMove", x: x + xOffset, y: y + 10},
           {type: "pointerDown", button: 0},
-          {type: "pointerMove", duration: 2000,  x: x + xOffset, y: y + Math.round(height / 2)},
+          {type: "pointerMove", duration: 2000, x: x + xOffset, y: y + Math.round(height / 2)},
           {type: "pointerUp", button: 0},
         ]);
         return touchActions;
@@ -147,7 +147,7 @@ describe('touch actions -', function () {
     });
   });
 
-  describe('scrolling/swiping', async function () {
+  describe('scrolling/swiping', function () {
     describe('single', function () {
       beforeEach(startListActivity);
 
@@ -157,7 +157,7 @@ describe('touch actions -', function () {
         const actions = [
           {type: "pointerMove", duration: 0, x: startX + 5, y: startY + 5},
           {type: "pointerDown", button: 0},
-          {type: "pointerMove", duration: 200,  x: endX + 5, y: endY + 5},
+          {type: "pointerMove", duration: 200, x: endX + 5, y: endY + 5},
           {type: "pointerUp", button: 0}
         ];
         await performTouchAction(actions);
@@ -169,9 +169,9 @@ describe('touch actions -', function () {
         const {startX, startY, endX, endY} = await getScrollData();
 
         const actions = [
-          {type: "pointerMove", duration: 0,  x: startX + 5, y: startY + 5},
+          {type: "pointerMove", duration: 0, x: startX + 5, y: startY + 5},
           {type: "pointerDown", button: 0},
-          {type: "pointerMove", duration: 100,  x: endX + 5, y: endY + 5},
+          {type: "pointerMove", duration: 100, x: endX + 5, y: endY + 5},
           {type: "pointerUp", button: 0}
         ];
         await performTouchAction(actions);
@@ -213,14 +213,14 @@ describe('touch actions -', function () {
       const touchActions = [
         {type: "pointerMove", duration: 0, x: x + 30, y: y + 30},
         {type: "pointerDown", button: 0},
-        {type: "pointerMove", duration: 100,  x: x + 10, y: y + 10},
+        {type: "pointerMove", duration: 100, x: x + 10, y: y + 10},
         {type: "pointerUp", button: 0},
       ];
       await performTouchAction(touchActions);
     });
   });
 
-  describe('touches', async function () {
+  describe('touches', function () {
     let nextEl;
 
     beforeEach(async function () {
@@ -272,7 +272,7 @@ describe('touch actions -', function () {
       });
 
       it('should do touch/click event', async function () {
-        const {value:elementId} = nextEl;
+        const {value: elementId} = nextEl;
         await request({
           method: 'POST',
           uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/click`,
@@ -286,7 +286,7 @@ describe('touch actions -', function () {
       });
 
       it('should do touch/longclick event', async function () {
-        const {value:elementId} = nextEl;
+        const {value: elementId} = nextEl;
         await request({
           method: 'POST',
           uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/longclick`,
@@ -302,7 +302,7 @@ describe('touch actions -', function () {
       it('should do touch/doubleclick event', async function () {
         await driver.elementByXPath("//*[@text='2']").should.eventually.be.rejectedWith(/NoSuchElement/);
 
-        const {value:elementId} = nextEl;
+        const {value: elementId} = nextEl;
         await request({
           method: 'POST',
           uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/doubleclick`,

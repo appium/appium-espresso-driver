@@ -28,7 +28,7 @@ android:
     - sys-img-armeabi-v7a-android-24
 env:
   global:
-    - NODE_VERSION=6
+    - NODE_VERSION=8
     - DEVICE=android
     - START_EMU=1
     - ANDROID_EMU_TARGET=android-21

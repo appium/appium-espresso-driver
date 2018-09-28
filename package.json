@@ -25,23 +25,30 @@
   "directories": {
     "lib": "lib"
   },
+  "files": [
+    "index.js",
+    "lib",
+    "build/index.js",
+    "build/lib",
+    "espresso-server/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"
+  ],
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "appium-adb": "^6.15.2",
     "appium-android-driver": "^4.0.0",
     "appium-base-driver": "^3.5.0",
     "appium-support": "^2.20.0",
     "asyncbox": "^2.3.1",
-    "babel-runtime": "=5.8.24",
     "bluebird": "^3.5.0",
     "lodash": "^4.17.11",
     "portscanner": "^2.1.1",
+    "request": "^2.88.0",
     "request-promise": "^4.2.1",
     "source-map-support": "^0.5.8",
-    "teen_process": "^1.13.0",
     "yargs": "^12.0.1"
   },
   "scripts": {
-    "clean": "rm -rf node_modules && rm -f package-locks.json && npm install",
+    "clean": "rm -rf node_modules && rm -f package-lock.json && npm install",
     "build": "gulp transpile && npm run build:server",
     "build:server": "cd espresso-server && ./gradlew clean assembleAndroidTest && cd ..",
     "mocha": "mocha",
@@ -49,7 +56,7 @@
     "e2e-test": "gulp e2e-test",
     "watch": "gulp watch",
     "coverage": "gulp coveralls",
-    "prepublish": "gulp prepublish && npm run build:server",
+    "prepare": "gulp prepublish && npm run build:server",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "precommit-test": "REPORTER=dot gulp once",
     "lint": "gulp eslint",
@@ -57,42 +64,29 @@
   },
   "pre-commit": [
     "precommit-msg",
-    "lint",
     "precommit-test"
   ],
   "devDependencies": {
+    "ajv": "^6.5.3",
     "android-apidemos": "^3.0.0",
-    "appium-gulp-plugins": "^2.4.1",
-    "appium-test-support": "^1.0.0",
-    "babel-eslint": "^7.1.1",
+    "appium-gulp-plugins": "^3.1.0",
+    "babel-eslint": "^10.0.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^3.10.2",
-    "eslint-config-appium": "^2.0.1",
-    "eslint-plugin-babel": "^3.3.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-mocha": "^4.7.0",
-    "eslint-plugin-promise": "^3.8.0",
+    "eslint": "^5.2.0",
+    "eslint-config-appium": "^3.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-mocha": "^5.0.0",
+    "eslint-plugin-promise": "^4.0.0",
     "gps-demo-app": "^2.1.1",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "mocha": "^5.1.1",
     "pre-commit": "^1.2.2",
-    "sinon": "^6.1.5",
     "wd": "^1.10.3",
     "xmldom": "^0.1.27",
     "xpath": "0.0.27"
   },
   "greenkeeper": {
-    "ignore": [
-      "babel-eslint",
-      "babel-preset-env",
-      "eslint",
-      "eslint-plugin-babel",
-      "eslint-plugin-import",
-      "eslint-plugin-mocha",
-      "eslint-plugin-promise",
-      "gulp",
-      "babel-runtime"
-    ]
+    "ignore": []
   }
 }
