@@ -2,9 +2,12 @@
 
 import yargs from 'yargs';
 import { asyncify } from 'asyncbox';
-import EspressoDriver from './lib/driver';
-import startServer from './lib/server';
+import * as driver from './lib/driver';
+import * as server from './lib/server';
 
+
+const { EspressoDriver } = driver;
+const { startServer } = server;
 
 const DEFAULT_HOST = "localhost";
 const DEFAULT_PORT = 4884;
@@ -21,4 +24,3 @@ if (require.main === module) {
 
 export { EspressoDriver, startServer };
 export default EspressoDriver;
-
