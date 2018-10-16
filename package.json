@@ -53,7 +53,7 @@
     "build:server": "cd espresso-server && ./gradlew clean assembleAndroidTest && cd ..",
     "mocha": "mocha",
     "test": "gulp once",
-    "e2e-test": "gulp e2e-test",
+    "e2e-test": "gulp transpile && mocha --timeout 600000 build/test/functional/",
     "watch": "gulp watch",
     "coverage": "gulp coveralls",
     "prepare": "gulp prepublish && npm run build:server",
