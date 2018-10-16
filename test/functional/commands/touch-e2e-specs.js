@@ -12,8 +12,6 @@ import { APIDEMO_CAPS } from '../desired';
 chai.should();
 chai.use(chaiAsPromised);
 
-// TODO: Add missing client features to admc/wd
-
 describe('touch actions -', function () {
   this.timeout(MOCHA_TIMEOUT);
 
@@ -83,7 +81,7 @@ describe('touch actions -', function () {
 
   let idCounter = 0;
 
-  const performTouchAction = async function (...actionsArrays) {
+  const performAction = async function (pointerType, ...actionsArrays) {
     const actionsRoot = [];
 
     for (let actions of actionsArrays) {
@@ -91,7 +89,7 @@ describe('touch actions -', function () {
         type: 'pointer',
         id: `id_${idCounter++}`,
         parameters: {
-          pointerType: 'touch'
+          pointerType
         },
         actions,
       });
@@ -103,6 +101,11 @@ describe('touch actions -', function () {
       body: {actions: actionsRoot},
       json: true,
     });
+
+  };
+
+  const performTouchAction = async function (...actionsArrays) {
+    return performAction('touch', ...actionsArrays);
   };
 
   describe('fingerpaint', function () {
@@ -175,6 +178,20 @@ describe('touch actions -', function () {
           {type: "pointerUp", button: 0}
         ];
         await performTouchAction(actions);
+
+        await assertScroll();
+      });
+
+      it('should swipe up menu when pointerType is mouse', async function () {
+        const {startX, startY, endX, endY} = await getScrollData();
+
+        const actions = [
+          {type: "pointerMove", duration: 0, x: startX + 5, y: startY + 5},
+          {type: "pointerDown", button: 0},
+          {type: "pointerMove", duration: 100, x: endX + 5, y: endY + 5},
+          {type: "pointerUp", button: 0}
+        ];
+        await performAction('mouse', actions);
 
         await assertScroll();
       });
