@@ -3,7 +3,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a877b7395f2d475aa79c08daf665dc3c)](https://www.codacy.com/app/dpgraham/appium-espresso-driver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=appium/appium-espresso-driver&amp;utm_campaign=Badge_Grade)
 [![Greenkeeper badge](https://badges.greenkeeper.io/appium/appium-espresso-driver.svg)](https://greenkeeper.io/)
 
-Appium Espresso Driver is a test automation framework for Android that uses [Espresso](https://developer.android.com/training/testing/espresso/) as the underlying test technology. Appium Espresso Driver is part of the Appium framework.
+Appium's Espresso Driver is a test automation server for Android that uses [Espresso](https://developer.android.com/training/testing/espresso/) as the underlying test technology. The Espresso Driver is a part of the Appium framework.
 
 ## Comparison with UiAutomator2
 
@@ -12,6 +12,7 @@ The key difference between [UiAutomator2 Driver](https://github.com/appium/appiu
 ## Troubleshooting
 
 * If there are ever problems starting a session, try setting the capability `forceEspressoRebuild=true` and retrying. This will rebuild a fresh Espresso Server APK. If the session is succcesful, set it back to false so that it doesn't re-install on every single test.
+* Espresso requires the debug APK and app-under-test APK (AUT) to have the same signature. It automatically signs the AUT with the `io.appium.espressoserver.test` signature. This may have problems if you're using an outdated Android SDK tools and/or an outdated Java version.
 
 ## Contributing
 
