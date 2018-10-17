@@ -105,7 +105,7 @@ describe('touch actions -', function () {
   };
 
   const performTouchAction = async function (...actionsArrays) {
-    return performAction('touch', ...actionsArrays);
+    return await performAction('touch', ...actionsArrays);
   };
 
   describe('fingerpaint', function () {
