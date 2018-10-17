@@ -25,7 +25,7 @@ describe('mobile', function () {
       await driver.source().should.eventually.contain('Animation');
       let {value: element} = await driver.elementById('android:id/list');
       await driver.execute('mobile: swipe', {direction: 'up', element});
-      await driver.source().should.eventually.contain('Spinner');
+      await driver.source().should.eventually.contain('Spinner'); 
       await driver.execute('mobile: swipe', {direction: 'down', element});
       await driver.source().should.eventually.contain('Animation');
       await driver.back();
