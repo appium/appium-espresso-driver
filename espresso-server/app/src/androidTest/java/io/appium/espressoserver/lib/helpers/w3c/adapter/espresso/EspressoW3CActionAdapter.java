@@ -494,12 +494,12 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         return AndroidLogger.logger;
     }
 
-    // If a 'mouse' event was provided, but it's a touchscreen, switch to 'touch'
+    // If a 'mouse' event was provided, convert it to 'touch'
     // This is because some clients only send 'mouse' events and the assumption is that if they
     // send 'mouse' events to a device that has a touch screen, it needs to be converted
-    // This may need to be re-visited in the future if we wish to support Android laptops
     private boolean isTouch(PointerType type) {
-        return type == TOUCH || (type == MOUSE && isTouchScreen);
+        // return type == TOUCH || (type == MOUSE && isTouchScreen); // TODO Revisit this if we wish to support MOUSE on Android
+        return type == TOUCH || type == MOUSE;
     }
 
     private boolean isTouchScreen() {
