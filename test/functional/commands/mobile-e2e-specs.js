@@ -23,10 +23,10 @@ describe('mobile', function () {
       let el = await driver.elementByAccessibilityId('Views');
       await el.click();
       await driver.source().should.eventually.contain('Animation');
-      let {value: element} = await driver.elementById('android:id/list');
-      await driver.execute('mobile: swipe', {direction: 'up', element});
+      let {value: elementId} = await driver.elementById('android:id/list');
+      await driver.execute('mobile: swipe', {direction: 'up', elementId});
       await driver.source().should.eventually.contain('Spinner'); 
-      await driver.execute('mobile: swipe', {direction: 'down', element});
+      await driver.execute('mobile: swipe', {direction: 'down', elementId});
       await driver.source().should.eventually.contain('Animation');
       await driver.back();
     });

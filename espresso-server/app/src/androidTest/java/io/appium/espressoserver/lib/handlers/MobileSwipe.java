@@ -33,7 +33,6 @@ import static android.support.test.espresso.action.ViewActions.swipeUp;
 public class MobileSwipe implements RequestHandler<MobileSwipeParams, Void> {
 
     @Override
-    @Nullable
     public Void handle(final MobileSwipeParams params) throws AppiumException {
         if (params.getDirection() == null) {
             throw new InvalidArgumentException("Direction must not be empty and must be of type: UP, DOWN, LEFT or RIGHT");
