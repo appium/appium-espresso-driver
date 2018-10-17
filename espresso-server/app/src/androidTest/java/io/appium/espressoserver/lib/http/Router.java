@@ -52,6 +52,7 @@ import io.appium.espressoserver.lib.handlers.GetSize;
 import io.appium.espressoserver.lib.handlers.GetWindowRect;
 import io.appium.espressoserver.lib.handlers.GetWindowSize;
 import io.appium.espressoserver.lib.handlers.Keys;
+import io.appium.espressoserver.lib.handlers.MobileSwipe;
 import io.appium.espressoserver.lib.handlers.MultiTouchAction;
 import io.appium.espressoserver.lib.handlers.MultiTouchActionsParams;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
@@ -91,6 +92,7 @@ import io.appium.espressoserver.lib.model.EditorActionParams;
 import io.appium.espressoserver.lib.model.ElementValueParams;
 import io.appium.espressoserver.lib.model.KeyEventParams;
 import io.appium.espressoserver.lib.model.Locator;
+import io.appium.espressoserver.lib.model.MobileSwipeParams;
 import io.appium.espressoserver.lib.model.MotionEventParams;
 import io.appium.espressoserver.lib.model.OrientationParams;
 import io.appium.espressoserver.lib.model.Session;
@@ -172,6 +174,9 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/doubleclick", new PointerEventHandler(MOUSE_DOUBLECLICK), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/perform", new TouchAction(), TouchActionsParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/multi/perform", new MultiTouchAction(), MultiTouchActionsParams.class));
+
+        // 'execute mobile commands'
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/swipe", new MobileSwipe(), MobileSwipeParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
