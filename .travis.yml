@@ -1,31 +1,19 @@
 language: android
-dist: precise
-jdk:
-  - oraclejdk8
+sudo: required
+jdk: oraclejdk8
+dist: trusty
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-4.9
+      - g++-6
 android:
   components:
-    # use the latest revision of Android SDK Tools
-    - platform-tools
     - tools
-    - build-tools-$ANDROID_BUILD_TOOLS
-    - android-24
-    - android-25
-
-    # Additional components
-    - extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - addon-google_apis-google-19
-
-    # Specify at least one system image,
-    # if you need to run emulator(s) during your tests
-    - sys-img-armeabi-v7a-android-24
+    - platform-tools
+    # https://developer.android.com/studio/releases/build-tools
+    - build-tools
 env:
   global:
     - NODE_VERSION=8
@@ -34,10 +22,12 @@ env:
     - ANDROID_EMU_TARGET=android-21
     - ANDROID_EMU_NAME=test
     - ANDROID_EMU_ABI=armeabi-v7a
-    - ANDROID_BUILD_TOOLS=27.0.3
+    - ANDROID_EMU_TAG=default
+    - ANDROID_BUILD_TOOLS=28.0.3
+    - ANDROID_PLATFORM=android-28
     - MOCHA_TIMEOUT=0
     - RECURSIVE=""
-    - CC=gcc-4.9 CXX=g++-4.9
+    - CC=gcc-6 CXX=g++-6
   matrix:
     - TEST=unit START_EMU=0 RECURSIVE="--recursive"
     - TEST=functional
@@ -45,14 +35,22 @@ env:
 before_install:
   - |
     if [ ${START_EMU} = "1" ]; then
-      echo y | android update sdk --all --filter build-tools-$ANDROID_BUILD_TOOLS --no-ui --force
-      echo y | android update sdk --no-ui -t platform-tools;
-      echo y | android update sdk --no-ui -t tools;
-      echo no | android create avd --force -n ${ANDROID_EMU_NAME} -t ${ANDROID_EMU_TARGET} --abi ${ANDROID_EMU_ABI} --sdcard 200M;
-      QEMU_AUDIO_DRV=none emulator -avd ${ANDROID_EMU_NAME} -no-window &
-      adb shell settings put global window_animation_scale 0 &
-      adb shell settings put global transition_animation_scale 0 &
-      adb shell settings put global animator_duration_scale 0 &
+      echo y | android update sdk --no-ui -t tools
+      echo yes | sdkmanager tools > /dev/null
+      echo yes | sdkmanager --update > /dev/null
+      echo yes | sdkmanager "platforms;${ANDROID_PLATFORM}" > /dev/null
+      echo yes | sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" > /dev/null
+      export ANDROID_EMU_IMAGE="system-images;${ANDROID_EMU_TARGET};${ANDROID_EMU_TAG};${ANDROID_EMU_ABI}"
+      for retry in 1 2 3; do
+        echo yes | sdkmanager "${ANDROID_EMU_IMAGE}" > /dev/null && break
+        echo "sdkmanager was not able to download the ${ANDROID_EMU_IMAGE} image (retry ${retry})"
+        sleep 5
+      done
+      sdkmanager --list
+      export TOOLS=${ANDROID_HOME}/tools
+      export PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
+      echo no | avdmanager create avd -k "${ANDROID_EMU_IMAGE}" -n "${ANDROID_EMU_NAME}" -f --abi "${ANDROID_EMU_ABI}" --tag "${ANDROID_EMU_TAG}" || exit 1
+      emulator -avd "${ANDROID_EMU_NAME}" -no-window -camera-back none -camera-front none &
     fi
 install:
   # node stuff
@@ -74,6 +72,9 @@ before_script:
     if [ ${START_EMU} = "1" ]; then
       # make sure emulator started
       $(npm bin)/android-emu-travis-post;
+      adb shell settings put global window_animation_scale 0
+      adb shell settings put global transition_animation_scale 0
+      adb shell settings put global animator_duration_scale 0
     fi
 script:
   - npm run lint && npm run mocha -- -t ${MOCHA_TIMEOUT} ${RECURSIVE} build/test/${TEST} -g @skip-ci -i --exit;
