@@ -38,6 +38,7 @@ import io.appium.espressoserver.lib.handlers.FindElement;
 import io.appium.espressoserver.lib.handlers.FindElements;
 import io.appium.espressoserver.lib.handlers.GetAlertText;
 import io.appium.espressoserver.lib.handlers.GetAttribute;
+import io.appium.espressoserver.lib.handlers.GetDeviceInfo;
 import io.appium.espressoserver.lib.handlers.GetDisplayed;
 import io.appium.espressoserver.lib.handlers.GetEnabled;
 import io.appium.espressoserver.lib.handlers.GetLocation;
@@ -149,6 +150,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/window/rect", new GetWindowRect(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/elements", new FindElements(), Locator.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/sessions", new GetSessions(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/appium/device/info", new GetDeviceInfo(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/start_activity", new StartActivity(), StartActivityParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/press_keycode", new PressKeyCode(false), KeyEventParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/long_press_keycode", new PressKeyCode(true), KeyEventParams.class));
