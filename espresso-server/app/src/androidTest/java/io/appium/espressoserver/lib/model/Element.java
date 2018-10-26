@@ -37,7 +37,6 @@ import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
 @SuppressWarnings("unused")
 public class Element {
     private final String ELEMENT;
-    private final int WAIT_FOR_ELEMENT_LIMIT = 5000;
     private final static Map<String, View> cache = new ConcurrentHashMap<>();
 
     public Element (View view) {
