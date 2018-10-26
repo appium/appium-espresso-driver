@@ -107,7 +107,7 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public Point getElementCenterPoint(String elementId)
-            throws NoSuchElementException, StaleElementException, NotYetImplementedException {
+            throws AppiumException {
         if ("none".equals(elementId)) {
             throw new NoSuchElementException(String.format("Could not find element with id: %s", elementId));
         } else if ("stale".equals(elementId)) {
