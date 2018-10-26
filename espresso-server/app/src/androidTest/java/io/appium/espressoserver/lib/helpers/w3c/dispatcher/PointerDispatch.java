@@ -192,8 +192,10 @@ public class PointerDispatch {
         }
 
         // 7-8. Bounds check
-        if (x < 0 || y < 0 || x > dispatcherAdapter.getViewportWidth() || y > dispatcherAdapter.getViewportHeight()) {
-            throw new MoveTargetOutOfBoundsException(x, y);
+        final long viewportWidth = dispatcherAdapter.getViewportWidth();
+        final long viewportHeight = dispatcherAdapter.getViewportHeight();
+        if (x < 0 || y < 0 || x > viewportWidth || y > viewportHeight) {
+            throw new MoveTargetOutOfBoundsException(x, y, viewportWidth, viewportHeight);
         }
 
         // 9. Let duration be equal to action object's duration property if it is not undefined, or tick duration otherwise

@@ -3,7 +3,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { DOMParser } from 'xmldom';
 import xpath from 'xpath';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { APIDEMO_CAPS, REACT_NATIVE_CAPS } from '../desired';
+import { APIDEMO_CAPS } from '../desired';
 
 
 chai.should();
@@ -22,24 +22,6 @@ describe('source commands', function () {
     });
 
     it('should get sourceXML, parse it, and find a node by xpath', async function () {
-      const sourceXML = await driver.source();
-      sourceXML.should.be.a.string;
-      const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
-      const node = xpath.select('//*[content-desc=Animation]', doc);
-      node.should.exist;
-    });
-  });
-
-  // TODO: where is the app for this?
-  describe.skip('react native app', function () {
-    before(async function () {
-      driver = await initSession(REACT_NATIVE_CAPS);
-    });
-    after(async function () {
-      await deleteSession();
-    });
-
-    it('should get sourceXML with view-tags', async function () {
       const sourceXML = await driver.source();
       sourceXML.should.be.a.string;
       const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');

@@ -211,7 +211,6 @@ describe('touch actions -', function () {
             {type: "pointerMove", origin: {"element-6066-11e4-a52e-4f735466cecf": el.value}},
             {type: "pointerDown", button: 0},
             {type: "pointerMove", origin: {"element-6066-11e4-a52e-4f735466cecf": el.value}, x: 10, y: -yMove, duration: 3000},
-            {type: "pointerMove", origin: "pointer", x: 10, y: -yMove, duration: 3000},
             {type: "pointerUp", button: 0},
           ];
           return action;
@@ -509,7 +508,7 @@ describe('touch actions -', function () {
         const els = await driver.elementsByClassName('android.widget.ListView');
         const actions = await B.map(els, async function (el) {
           const {height} = await el.getSize();
-          const increment = Math.round((height - 10) / 8);
+          const increment = Math.round((height / 2 - 10) / 8);
 
           let action = new wd.TouchAction()
             .press({element: el});
@@ -524,7 +523,6 @@ describe('touch actions -', function () {
         multiAction.add(...actions);
 
         await driver.performMultiAction(multiAction);
-        await B.delay(5000);
       });
     });
   });
