@@ -37,14 +37,16 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class EspressoServerRunnerTest {
+    private Server espressoServer = Server.getInstance();
 
     @Test
     public void startEspressoServer() throws InterruptedException, IOException, DuplicateRouteException {
-        new Server();
+        espressoServer.start();
 
-        // The server should run permanently. The test gets closed externally.
-        Thread.sleep(Long.MAX_VALUE);
-
+        while (!espressoServer.isStopRequestReceived()) {
+            Thread.sleep(1000);
+        }
+        espressoServer.stop();
         assertEquals(true, true); // Keep Codacy happy
     }
 }
