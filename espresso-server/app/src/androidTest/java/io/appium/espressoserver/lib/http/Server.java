@@ -39,8 +39,8 @@ public class Server extends NanoHTTPD {
     private Router router;
     private static final int DEFAULT_PORT = 8080;
 
-    private boolean isStopRequestReceived;
-    private static Server server = new Server();
+    private volatile boolean isStopRequestReceived;
+    private final static Server server = new Server();
 
     private Server() {
         super(DEFAULT_PORT);
@@ -87,7 +87,7 @@ public class Server extends NanoHTTPD {
     }
 
     public void start() throws IOException {
-        if(super.isAlive()) {
+        if (super.isAlive()) {
             //kill the server if its already running
             try {
                 super.stop();

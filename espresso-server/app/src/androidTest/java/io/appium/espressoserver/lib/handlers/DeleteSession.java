@@ -31,6 +31,6 @@ public class DeleteSession implements RequestHandler<AppiumParams, AppiumRespons
     public AppiumResponse handle(AppiumParams params) {
         Session.deleteGlobalSession();
         Server.getInstance().makeRequestForServerToStop();
-        return new AppiumResponse(AppiumStatus.SUCCESS, "Session deleted");
+        return new AppiumResponse(AppiumStatus.SUCCESS, null);
     }
 }
