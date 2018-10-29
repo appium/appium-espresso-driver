@@ -11,4 +11,8 @@ public class MoveTargetOutOfBoundsException extends AppiumException {
             targetX, targetY, boundingRect.toShortString()
         ));
     }
+
+    public MoveTargetOutOfBoundsException(final String message) {
+        super(message);
+    }
 }
