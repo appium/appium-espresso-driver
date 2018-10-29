@@ -225,7 +225,7 @@ public class MotionEventBuilder {
                 }
             } catch (InjectEventSecurityException e) {
                 throw new MoveTargetOutOfBoundsException(String.format(
-                        "Could not complete pointer operation. Pointer operation is within the viewport but is not within bounds of the app-under-test. Cause: %s",
+                        "Could not complete pointer operation. Pointer operation is within the viewport but is nott within bounds of the app-under-test. Cause: %s",
                         e.getCause()
                 ));
             }
