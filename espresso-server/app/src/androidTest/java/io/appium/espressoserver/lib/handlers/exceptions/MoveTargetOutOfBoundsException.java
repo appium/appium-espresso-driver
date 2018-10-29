@@ -1,15 +1,14 @@
 package io.appium.espressoserver.lib.handlers.exceptions;
 
 
-public class MoveTargetOutOfBoundsException extends AppiumException {
-    public MoveTargetOutOfBoundsException() {
-        super("The target for pointer interaction is not in the viewport and cannot be brought into that viewport");
-    }
+import android.graphics.Rect;
 
-    public MoveTargetOutOfBoundsException(long targetX, long targetY) {
+public class MoveTargetOutOfBoundsException extends AppiumException {
+
+    public MoveTargetOutOfBoundsException(long targetX, long targetY, final Rect boundingRect) {
         super(String.format(
-            "The target [%s, %s] for pointer interaction is not in the viewport and cannot be brought into that viewport",
-            targetX, targetY
+            "The target [%s, %s] for pointer interaction is not in the viewport [%s, %s] and cannot be brought into the viewport",
+            targetX, targetY, boundingRect.toShortString()
         ));
     }
 }

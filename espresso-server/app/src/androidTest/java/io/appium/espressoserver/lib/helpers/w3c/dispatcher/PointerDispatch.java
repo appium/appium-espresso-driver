@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.helpers.w3c.dispatcher;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 
 import java.util.concurrent.Callable;
 
@@ -192,8 +193,9 @@ public class PointerDispatch {
         }
 
         // 7-8. Bounds check
-        if (x < 0 || y < 0 || x > dispatcherAdapter.getViewportWidth() || y > dispatcherAdapter.getViewportHeight()) {
-            throw new MoveTargetOutOfBoundsException(x, y);
+        final Rect boundingRect = new Rect(0, 0, (int) dispatcherAdapter.getViewportWidth(), (int) dispatcherAdapter.getViewportHeight());
+        if (boundingRect.contains((int) x, (int) y)) {
+            throw new MoveTargetOutOfBoundsException(x, y, boundingRect);
         }
 
         // 9. Let duration be equal to action object's duration property if it is not undefined, or tick duration otherwise
