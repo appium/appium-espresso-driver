@@ -26,7 +26,6 @@ import java.util.Map;
 import javax.ws.rs.core.MediaType;
 
 import fi.iki.elonen.NanoHTTPD;
-import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.model.AppiumStatus;
@@ -40,11 +39,15 @@ public class Server extends NanoHTTPD {
     private Router router;
     private static final int DEFAULT_PORT = 8080;
 
-    public Server() throws IOException, DuplicateRouteException {
+    private volatile boolean isStopRequestReceived;
+    private final static Server server = new Server();
+
+    private Server() {
         super(DEFAULT_PORT);
-        start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
-        logger.info(String.format("\nRunning Appium Espresso Server at port %d \n", DEFAULT_PORT));
-        router = new Router();
+    }
+
+    public static Server getInstance() {
+        return server;
     }
 
     private Response buildFixedLengthResponse(BaseResponse response) {
@@ -81,5 +84,32 @@ public class Server extends NanoHTTPD {
             return buildFixedLengthResponse(
                     new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e)));
         }
+    }
+
+    public void start() throws IOException {
+        if (super.isAlive()) {
+            //kill the server if its already running
+            try {
+                super.stop();
+            } catch (Exception e) {
+                //ignore the exception
+            }
+        }
+        super.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+        logger.info(String.format("\nRunning Appium Espresso Server at port %d \n", DEFAULT_PORT));
+        router = new Router();
+    }
+
+    public void stop() {
+        super.stop();
+        logger.info(String.format("\nStopping Appium Espresso stop at port %d \n", DEFAULT_PORT));
+    }
+
+    public void makeRequestForServerToStop() {
+        isStopRequestReceived = true;
+    }
+
+    public boolean isStopRequestReceived() {
+        return isStopRequestReceived;
     }
 }

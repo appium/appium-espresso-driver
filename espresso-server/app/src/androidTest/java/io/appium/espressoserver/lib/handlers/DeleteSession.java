@@ -18,15 +18,19 @@ package io.appium.espressoserver.lib.handlers;
 
 import javax.annotation.Nullable;
 
+import io.appium.espressoserver.lib.http.Server;
+import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.model.AppiumParams;
+import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.Session;
 
-public class DeleteSession implements RequestHandler<AppiumParams, Void> {
+public class DeleteSession implements RequestHandler<AppiumParams, AppiumResponse> {
 
     @Override
     @Nullable
-    public Void handle(AppiumParams params) {
+    public AppiumResponse handle(AppiumParams params) {
         Session.deleteGlobalSession();
-        return null;
+        Server.getInstance().makeRequestForServerToStop();
+        return new AppiumResponse(AppiumStatus.SUCCESS, null);
     }
 }
