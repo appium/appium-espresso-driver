@@ -52,7 +52,7 @@ public interface W3CActionAdapter {
 
     void waitForUiThread();
 
-    Point getElementCenterPoint(String elementId) throws NoSuchElementException, StaleElementException, NotYetImplementedException;
+    Point getElementCenterPoint(String elementId) throws AppiumException;
 
     long getViewportWidth();
 

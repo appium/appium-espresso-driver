@@ -472,8 +472,8 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public Point getElementCenterPoint(String elementId)
-            throws NoSuchElementException, StaleElementException, NotYetImplementedException {
-        View view = Element.getViewById(elementId);
+            throws AppiumException {
+        View view = Element.getViewById(elementId, true);
         int[] out = new int[2];
         view.getLocationInWindow(out);
         Point point = new Point();

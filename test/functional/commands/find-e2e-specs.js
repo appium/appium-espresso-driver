@@ -1,5 +1,6 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import { retryInterval } from 'asyncbox';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
@@ -38,7 +39,7 @@ describe('elementByXPath', function () {
   it('should throw a stale element exception if clicking on element that does not exist', async function () {
     let el = await driver.elementByXPath("//*[@content-desc='Animation']");
     await el.click();
-    await el.click().should.eventually.be.rejectedWith(/no longer exists /);
+    await retryInterval(5, 1000, async () => await el.click().should.eventually.be.rejectedWith(/no longer exists /));
     await driver.back();
   });
   it('should get the isDisplayed attribute on the same element twice', async function () {
