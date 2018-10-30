@@ -194,7 +194,7 @@ public class PointerDispatch {
 
         // 7-8. Bounds check
         final Rect boundingRect = new Rect(0, 0, (int) dispatcherAdapter.getViewportWidth(), (int) dispatcherAdapter.getViewportHeight());
-        if (boundingRect.contains((int) x, (int) y)) {
+        if (!boundingRect.contains((int) x, (int) y)) {
             throw new MoveTargetOutOfBoundsException(x, y, boundingRect);
         }
 

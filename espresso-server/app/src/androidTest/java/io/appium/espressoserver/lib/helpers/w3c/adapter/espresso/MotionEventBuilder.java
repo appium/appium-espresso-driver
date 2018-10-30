@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException;
 import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 
@@ -223,8 +224,8 @@ public class MotionEventBuilder {
                     throw new AppiumException("Could not complete pointer operation");
                 }
             } catch (InjectEventSecurityException e) {
-                throw new AppiumException(String.format(
-                        "Could not complete pointer operation. Pointer operation is not within bounds of the app-under-test. Cause: %s",
+                throw new MoveTargetOutOfBoundsException(String.format(
+                        "Could not complete pointer operation. Pointer operation is within the viewport but is not within bounds of the app-under-test. Cause: %s",
                         e.getCause()
                 ));
             }

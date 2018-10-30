@@ -524,6 +524,30 @@ describe('touch actions -', function () {
 
         await driver.performMultiAction(multiAction);
       });
+      it('should throw out-of-bounds when tapping coordinates outside of viewport', async function () {
+        const {width, height} = await driver.getWindowSize();
+        const outOfBoundsCoordinates = [
+          [-10, 10], [10, -10], [width + 10, height - 10], [width - 10, height + 10], [width, height]
+        ];
+        for (let [x, y] of outOfBoundsCoordinates) {
+          const action = new wd.TouchAction(driver);
+          action.press({x, y});
+          action.release();
+          await action.perform().should.eventually.be.rejectedWith(/MoveTargetOutOfBoundsException/);
+        }
+      });
+      it('should not throw out-of-bounds exception if tapping a coordinate within viewport/', async function () {
+        const {width, height} = await driver.getWindowSize();
+        const inOfBoundsCoordinates = [
+          [100, 100], [width - 100, height - 100]
+        ];
+        for (let [x, y] of inOfBoundsCoordinates) {
+          const action = new wd.TouchAction(driver);
+          action.press({x, y});
+          action.release();
+          await action.perform().should.eventually.be.fulfilled;
+        }
+      });
     });
   });
 });
