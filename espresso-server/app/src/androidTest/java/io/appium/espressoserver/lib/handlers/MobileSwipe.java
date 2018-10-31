@@ -18,8 +18,6 @@ package io.appium.espressoserver.lib.handlers;
 
 import android.support.test.espresso.ViewInteraction;
 
-import javax.annotation.Nullable;
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.model.Element;

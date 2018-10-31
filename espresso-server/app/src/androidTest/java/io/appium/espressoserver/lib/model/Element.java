@@ -16,9 +16,13 @@
 
 package io.appium.espressoserver.lib.model;
 
-import android.support.test.espresso.UiController;
+import android.support.test.espresso.DataInteraction;
 import android.support.test.espresso.ViewInteraction;
 import android.view.View;
+import android.view.ViewParent;
+import android.widget.AdapterView;
+
+import org.hamcrest.Matchers;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -27,21 +31,34 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
-import io.appium.espressoserver.lib.viewaction.UiControllerPerformer;
-import io.appium.espressoserver.lib.viewaction.UiControllerRunnable;
+import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasEntry;
 
 
 @SuppressWarnings("unused")
 public class Element {
     private final String ELEMENT;
     private final static Map<String, View> cache = new ConcurrentHashMap<>();
+    private final static Map<String, String> contentDescriptionCache = new ConcurrentHashMap<>();
 
     public Element (View view) {
         ELEMENT = UUID.randomUUID().toString();
         cache.put(ELEMENT, view);
+
+        // Cache the content description as well
+        CharSequence contentDesc = view.getContentDescription();
+
+        if (contentDesc != null) {
+            contentDescriptionCache.put(ELEMENT, contentDesc.toString());
+        }
     }
 
     public String getElementId() {
@@ -68,46 +85,67 @@ public class Element {
      * @param elementId
      * @return
      */
-    public static View getViewById(final String elementId) throws AppiumException {
-        UiControllerRunnable<View> runnable = new UiControllerRunnable<View>() {
-            @Override
-            public View run(UiController uiController) throws NoSuchElementException, StaleElementException {
-                if (!exists(elementId)) {
-                    throw new NoSuchElementException(String.format("Invalid element ID %s", elementId));
-                }
+    public static View getViewById(String elementId) throws AppiumException {
+        View view = getCachedView(elementId);
 
-                // Don't try accessing the View until the main thread is idle
-                uiController.loopMainThreadUntilIdle();
-
-                // Get the cached view
-                View view = cache.get(elementId);
-                if (!view.isShown()) {
-                    throw new StaleElementException(elementId);
-                }
-
-                return view;
-            }
-        };
-
-        return new UiControllerPerformer<>(runnable).run();
-    }
-
-    public static View getViewById(String elementId, boolean skipWaitForMainThreadIdle) throws AppiumException {
-        if (skipWaitForMainThreadIdle) {
-            if (!exists(elementId)) {
-                throw new NoSuchElementException(String.format("Invalid element ID %s", elementId));
-            }
-            View view = cache.get(elementId);
-
-            if (!view.isShown()) {
-                throw new StaleElementException(elementId);
-            }
-            return view;
+        if (!view.isShown()) {
+            throw new StaleElementException(elementId);
         }
-        return getViewById(elementId);
+        return view;
     }
 
     public static boolean exists(String elementId) {
         return cache.containsKey(elementId);
+    }
+
+    public static View getCachedView(String elementId) throws NoSuchElementException, StaleElementException {
+        if (!exists(elementId)) {
+            throw new NoSuchElementException(String.format("No such element with ID %s", elementId));
+        }
+
+        View view = cache.get(elementId);
+
+        if (!view.isShown()) {
+            throw new StaleElementException(elementId);
+        }
+
+        // This is a special case:
+        //
+        // If the contentDescription of a cached view changed, it almost certainly means the rendering of an
+        // AdapterView (ListView, GridView, Scroll, etc...) changed and the View contents were shuffled around.
+        //
+        // If we encounter this, try to scroll the element with the expected contentDescription into
+        // view and return that element
+        if (contentDescriptionCache.containsKey(elementId)) {
+            String expectedContentDesc = contentDescriptionCache.get(elementId);
+
+            if (view.getContentDescription() != null && !view.getContentDescription().equals(expectedContentDesc)) {
+
+                // Look up the view hierarchy to find the closest ancestor AdapterView
+                ViewParent ancestorAdapter = view.getParent();
+                while (ancestorAdapter != null && !(ancestorAdapter instanceof AdapterView)) {
+                    ancestorAdapter = ancestorAdapter.getParent();
+                }
+
+                try {
+                    // Try scrolling the view with the expected content description into the viewport
+                    DataInteraction dataInteraction = onData(
+                            hasEntry(Matchers.equalTo("contentDescription"), is(expectedContentDesc))
+                    );
+                    if (ancestorAdapter != null) {
+                        dataInteraction.inAdapterView(withView((AdapterView) ancestorAdapter));
+                    }
+                    dataInteraction.check(matches(isDisplayed()));
+
+                    // If successful, use that view instead of the cached view
+                    view = (new ViewGetter()).getView(onView(withContentDescription(expectedContentDesc)));
+                    cache.put(elementId, view);
+                } catch (Exception e) {
+                    throw new StaleElementException(elementId);
+                }
+            }
+        }
+
+        return view;
     }
 }

@@ -19,9 +19,6 @@ import java.util.Set;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
-import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
-import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
-import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter;
@@ -473,7 +470,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
     public Point getElementCenterPoint(String elementId)
             throws AppiumException {
-        View view = Element.getViewById(elementId, true);
+        View view = Element.getViewById(elementId);
         int[] out = new int[2];
         view.getLocationInWindow(out);
         Point point = new Point();

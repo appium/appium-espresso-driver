@@ -50,8 +50,9 @@
   },
   "scripts": {
     "clean": "rm -rf node_modules && rm -f package-lock.json && npm install",
-    "build": "gulp transpile && npm run build:server",
     "build:server": "cd espresso-server && ./gradlew clean assembleAndroidTest && cd ..",
+    "build:node": "gulp transpile",
+    "build": "npm run build:node && npm run build:server",
     "mocha": "mocha",
     "test": "gulp once",
     "e2e-test": "gulp transpile && mocha --timeout 600000 build/test/functional/",
