@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.model;
 
 import android.support.test.espresso.DataInteraction;
+import android.support.test.espresso.EspressoException;
 import android.support.test.espresso.ViewInteraction;
 import android.view.View;
 import android.view.ViewParent;
@@ -26,6 +27,7 @@ import org.hamcrest.Matchers;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -119,7 +121,7 @@ public class Element {
         if (contentDescriptionCache.containsKey(elementId)) {
             String expectedContentDesc = contentDescriptionCache.get(elementId);
 
-            if (view.getContentDescription() != null && !view.getContentDescription().equals(expectedContentDesc)) {
+            if (!Objects.equals(view.getContentDescription(), expectedContentDesc)) {
 
                 // Look up the view hierarchy to find the closest ancestor AdapterView
                 ViewParent ancestorAdapter = view.getParent();
@@ -141,7 +143,10 @@ public class Element {
                     view = (new ViewGetter()).getView(onView(withContentDescription(expectedContentDesc)));
                     cache.put(elementId, view);
                 } catch (Exception e) {
-                    throw new StaleElementException(elementId);
+                    if (e instanceof EspressoException) {
+                        throw new StaleElementException(elementId);
+                    }
+                    throw e;
                 }
             }
         }
