@@ -66,4 +66,16 @@ describe('elementByXPath', function () {
     await el.equals(elAgain).should.eventually.be.true;
     await el.equals(elNonMatch).should.eventually.be.false;
   });
+  it('should scroll element back into view if was scrolled out of view (regression test for https://github.com/appium/appium-espresso-driver/issues/276)', async function () {
+    // If we find an element by 'contentDescription', scroll out of view of that element, we should be able to scroll it back into view, as long
+    // as that element has a content description associated with an adapter item
+    let el = await driver.elementByAccessibilityId('Views');
+    await el.click();
+    el = await driver.elementByAccessibilityId('Custom');
+    await el.text().should.eventually.equal('Custom');
+    let {value: element} = await driver.elementById('android:id/list');
+    await driver.execute('mobile: swipe', {direction: 'up', element});
+    await el.text().should.eventually.equal('Custom');
+    await driver.back();
+  });
 });

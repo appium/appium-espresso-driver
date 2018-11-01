@@ -8,7 +8,6 @@ import java.util.Set;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException;
-import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.helpers.Logger;
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent;

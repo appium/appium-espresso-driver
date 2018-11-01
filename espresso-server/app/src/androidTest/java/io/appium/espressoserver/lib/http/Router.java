@@ -177,7 +177,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/perform", new TouchAction(), TouchActionsParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/multi/perform", new MultiTouchAction(), MultiTouchActionsParams.class));
 
-        // 'execute mobile commands'
+        // 'execute mobile' commands
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/swipe", new MobileSwipe(), MobileSwipeParams.class));
 
         // Not implemented
