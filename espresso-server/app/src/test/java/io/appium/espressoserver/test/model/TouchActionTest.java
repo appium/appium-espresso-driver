@@ -3,12 +3,13 @@ package io.appium.espressoserver.test.model;
 import android.view.ViewConfiguration;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.rule.PowerMockRule;
 
 import java.util.List;
 
@@ -28,14 +29,17 @@ import static io.appium.espressoserver.lib.model.TouchAction.ActionType.TAP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*" })
 @PrepareForTest(ViewConfiguration.class)
 public class TouchActionTest {
+    @Rule
+    public PowerMockRule rule = new PowerMockRule();
+
     @Before
     public void before() {
         PowerMockito.mockStatic(ViewConfiguration.class);
-        BDDMockito.given(ViewConfiguration.getTapTimeout()).willReturn(10);
-        BDDMockito.given(ViewConfiguration.getLongPressTimeout()).willReturn(100);
+        Mockito.when(ViewConfiguration.getTapTimeout()).thenReturn(10);
+        Mockito.when(ViewConfiguration.getLongPressTimeout()).thenReturn(100);
     }
 
     @Test

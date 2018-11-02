@@ -17,10 +17,8 @@
 package io.appium.espressoserver;
 
 import android.support.test.filters.LargeTest;
-import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
@@ -34,22 +32,24 @@ import static org.junit.Assert.assertEquals;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-@RunWith(AndroidJUnit4.class)
 @LargeTest
 public class EspressoServerRunnerTest {
     private final Server espressoServer = Server.getInstance();
 
     @Test
     public void startEspressoServer() throws InterruptedException, IOException, DuplicateRouteException {
-        try {
-            espressoServer.start();
+        System.out.println(System.getProperty("UNITTEST"));
+        if (System.getProperty("UNITTEST") == null) {
+            try {
+                espressoServer.start();
 
-            while (!espressoServer.isStopRequestReceived()) {
-                Thread.sleep(1000);
+                while (!espressoServer.isStopRequestReceived()) {
+                    Thread.sleep(1000);
+                }
+            } finally {
+                espressoServer.stop();
             }
-        } finally {
-            espressoServer.stop();
+            assertEquals(true, true); // Keep Codacy happy
         }
-        assertEquals(true, true); // Keep Codacy happy
     }
 }

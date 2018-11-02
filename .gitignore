@@ -13,3 +13,4 @@ espresso-server/app/build
 node_modules
 build
 .DS_Store
+.gradle/

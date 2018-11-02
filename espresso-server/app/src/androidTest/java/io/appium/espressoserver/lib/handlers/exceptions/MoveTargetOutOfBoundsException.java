@@ -1,7 +1,7 @@
 package io.appium.espressoserver.lib.handlers.exceptions;
 
 
-import android.graphics.Rect;
+import io.appium.espressoserver.lib.helpers.Rect;
 
 public class MoveTargetOutOfBoundsException extends AppiumException {
 

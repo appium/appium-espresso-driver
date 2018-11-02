@@ -101,7 +101,18 @@ import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
 
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.*;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.CLICK;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.DOUBLE_CLICK;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.LONG_CLICK;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_CLICK;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_DOUBLECLICK;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_DOWN;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_MOVE;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_UP;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_DOWN;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_MOVE;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_SCROLL;
+import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_UP;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 
