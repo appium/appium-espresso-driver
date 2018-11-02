@@ -139,9 +139,22 @@ public class SourceDocument {
 
         // If it's an AdapterView, get the adapters as a String
         if (view instanceof AdapterView) {
-            String[] adapterInfo = getAdaptersAsString((AdapterView) view);
-            setAttribute(element, ViewAttributesEnum.ADAPTER_TYPE, adapterInfo[0]);
-            setAttribute(element, ViewAttributesEnum.ADAPTERS, adapterInfo[1]);
+            AdapterView adapterView = (AdapterView) view;
+            Adapter adapter = adapterView.getAdapter();
+            StringBuilder adapterData = new StringBuilder();
+            for (int i = 0; i < adapter.getCount(); i++) {
+                Object adapterItem = adapter.getItem(i);
+                adapterData.append(adapterItem);
+                if (i < adapter.getCount() - 1) {
+                    adapterData.append(",");
+                }
+
+                // Get the type of the adapter item
+                if (i == 0) {
+                    setAttribute(element, ViewAttributesEnum.ADAPTER_TYPE, adapterItem.getClass().getSimpleName());
+                }
+                setAttribute(element, ViewAttributesEnum.ADAPTERS, adapterData);
+            }
         }
 
         // If cacheElementReferences == true, then cache a reference to the View
@@ -158,30 +171,6 @@ public class SourceDocument {
         } catch (ClassCastException e) {
             // If it couldn't be cast to a ViewGroup, it has no children
         }
-    }
-
-    /**
-     * Get the type of adapter that the view is and get a comma separated list of the adapter strings
-     * @param adapterView
-     * @return
-     */
-    private String[] getAdaptersAsString(AdapterView adapterView) {
-        Adapter adapter = adapterView.getAdapter();
-        StringBuilder adapterData = new StringBuilder();
-        String adapterType = "";
-        for (int i = 0; i < adapter.getCount(); i++) {
-            Object adapterItem = adapter.getItem(i);
-            adapterData.append(adapterItem);
-            if (i < adapter.getCount() - 1) {
-                adapterData.append(",");
-            }
-
-            // Get the type of the adapter item
-            if (i == 0) {
-                adapterType = adapterItem.getClass().getSimpleName();
-            }
-        }
-        return new String[]{ adapterType, adapterData.toString() };
     }
 
     public String toXMLString() throws TransformerException {

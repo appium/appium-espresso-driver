@@ -38,18 +38,15 @@ public class EspressoServerRunnerTest {
 
     @Test
     public void startEspressoServer() throws InterruptedException, IOException, DuplicateRouteException {
-        System.out.println(System.getProperty("UNITTEST"));
-        if (System.getProperty("UNITTEST") == null) {
-            try {
-                espressoServer.start();
+        try {
+            espressoServer.start();
 
-                while (!espressoServer.isStopRequestReceived()) {
-                    Thread.sleep(1000);
-                }
-            } finally {
-                espressoServer.stop();
+            while (!espressoServer.isStopRequestReceived()) {
+                Thread.sleep(1000);
             }
-            assertEquals(true, true); // Keep Codacy happy
+        } finally {
+            espressoServer.stop();
         }
+        assertEquals(true, true); // Keep Codacy happy
     }
 }
