@@ -18,6 +18,7 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action.ELEMENT_CODE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -155,11 +156,11 @@ public class InputSourceTest {
 
         // Check the initial state
         PointerInputState inputState = (PointerInputState) inputSource.getDefaultState();
-        assertTrue(!inputState.isPressed(1));
+        assertFalse(inputState.isPressed(1));
         inputState.addPressed(1);
         assertTrue(inputState.isPressed(1));
         inputState.removePressed(1);
-        assertTrue(!inputState.isPressed(1));
+        assertFalse(inputState.isPressed(1));
     }
 
     @Test
