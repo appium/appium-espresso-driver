@@ -37,7 +37,7 @@ import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 public class Server extends NanoHTTPD {
 
     private Router router;
-    private static final int DEFAULT_PORT = 8080;
+    private static final int DEFAULT_PORT = 6791;
 
     private volatile boolean isStopRequestReceived;
     private final static Server server = new Server();
