@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.model;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -141,20 +142,18 @@ public class SourceDocument {
         if (view instanceof AdapterView) {
             AdapterView adapterView = (AdapterView) view;
             Adapter adapter = adapterView.getAdapter();
-            StringBuilder adapterData = new StringBuilder();
-            for (int i = 0; i < adapter.getCount(); i++) {
+            int adapterCount = adapter.getCount();
+            List<String> adapterData = new ArrayList<>(adapterCount);
+            for (int i = 0; i < adapterCount; i++) {
                 Object adapterItem = adapter.getItem(i);
-                adapterData.append(adapterItem);
-                if (i < adapter.getCount() - 1) {
-                    adapterData.append(",");
-                }
+                adapterData.set(i, adapterItem.toString());
 
                 // Get the type of the adapter item
                 if (i == 0) {
                     setAttribute(element, ViewAttributesEnum.ADAPTER_TYPE, adapterItem.getClass().getSimpleName());
                 }
-                setAttribute(element, ViewAttributesEnum.ADAPTERS, adapterData);
             }
+            setAttribute(element, ViewAttributesEnum.ADAPTERS, TextUtils.join(",", adapterData));
         }
 
         // If cacheElementReferences == true, then cache a reference to the View
