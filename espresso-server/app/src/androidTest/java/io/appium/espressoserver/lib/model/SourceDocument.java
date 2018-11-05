@@ -146,7 +146,7 @@ public class SourceDocument {
             List<String> adapterData = new ArrayList<>(adapterCount);
             for (int i = 0; i < adapterCount; i++) {
                 Object adapterItem = adapter.getItem(i);
-                adapterData.set(i, adapterItem.toString());
+                adapterData.add(adapterItem.toString());
 
                 // Get the type of the adapter item
                 if (i == 0) {
