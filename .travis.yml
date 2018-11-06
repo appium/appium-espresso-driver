@@ -64,7 +64,7 @@ install:
   - npm --version
 
   # npm stuff
-  - npm install --chromedriver-version="2.12"
+  - npm install
 
   # build the server
   - |
@@ -73,7 +73,7 @@ install:
     fi
 
   # Install Chromedriver
-  #- npm install -g chromedriver@2.12
+  - npm install -g chromedriver@2.12
 before_script:
   - |
     if [ ${START_EMU} = "1" ]; then
