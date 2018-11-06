@@ -35,7 +35,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "appium-adb": "^6.15.2",
+    "appium-adb": "^6.25.0",
     "appium-android-driver": "^4.0.0",
     "appium-base-driver": "^3.5.0",
     "appium-support": "^2.20.0",
@@ -85,6 +85,7 @@
     "gulp": "^4.0.0",
     "mocha": "^5.1.1",
     "pre-commit": "^1.2.2",
+    "sinon": "^6.0.0",
     "wd": "^1.10.3",
     "xmldom": "^0.1.27",
     "xpath": "0.0.27"
