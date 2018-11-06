@@ -5,7 +5,6 @@ import android.os.SystemClock;
 import android.support.test.espresso.InjectEventSecurityException;
 import android.support.test.espresso.UiController;
 import android.util.DisplayMetrics;
-import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
@@ -148,7 +147,6 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Pointe
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
-    private final boolean isTouchScreen;
     private UiController uiController;
     private final MultiTouchState multiTouchState = new MultiTouchState();
     private Map<String, List<KeyEvent>> keyDownEvents = new HashMap<>();
@@ -156,7 +154,6 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     private final DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
 
     public EspressoW3CActionAdapter(UiController uiController) {
-        this.isTouchScreen = isTouchScreen();
         this.uiController = uiController;
     }
 
@@ -497,16 +494,5 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     private boolean isTouch(PointerType type) {
         // return type == TOUCH || (type == MOUSE && isTouchScreen); // TODO Revisit this if we wish to support MOUSE on Android
         return type == TOUCH || type == MOUSE;
-    }
-
-    private boolean isTouchScreen() {
-        // If we find one deviceId that is a touchscreen, assume it's a touch screen
-        for (int deviceId : InputDevice.getDeviceIds()) {
-            int sources = InputDevice.getDevice(deviceId).getSources();
-            if ((sources & InputDevice.SOURCE_TOUCHSCREEN) == InputDevice.SOURCE_TOUCHSCREEN) {
-                return true;
-            }
-        }
-        return false;
     }
 }

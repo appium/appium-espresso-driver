@@ -28,6 +28,12 @@ public class ActionsTest {
             // Bump up viewport width so we don't get out of bounds issues
             return 300;
         }
+
+        @Override
+        public long getViewportHeight() {
+            // Bump up viewport width so we don't get out of bounds issues
+            return 500;
+        }
     }
 
     @Test

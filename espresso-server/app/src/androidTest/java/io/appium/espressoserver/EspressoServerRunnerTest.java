@@ -17,10 +17,8 @@
 package io.appium.espressoserver;
 
 import android.support.test.filters.LargeTest;
-import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
@@ -34,7 +32,6 @@ import static org.junit.Assert.assertEquals;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-@RunWith(AndroidJUnit4.class)
 @LargeTest
 public class EspressoServerRunnerTest {
     private final Server espressoServer = Server.getInstance();

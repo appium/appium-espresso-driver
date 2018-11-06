@@ -19,6 +19,7 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
 
     // Keep a log of pointer move events so the values can be checked in the unit tests
     private List<PointerMoveEvent> pointerMoveEvents = new ArrayList<>();
+    private Logger logger = new DummyLogger();
 
     public static class PointerMoveEvent {
         public String sourceId;
@@ -45,8 +46,6 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
             // No-op
         }
     }
-
-    private Logger logger = new DummyLogger();
 
     public void keyDown(W3CKeyEvent keyEvent) {
         // No-op

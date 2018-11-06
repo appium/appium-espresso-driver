@@ -34,7 +34,6 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-
 public class ActionSequenceTest {
 
     @Test
@@ -178,7 +177,12 @@ public class ActionSequenceTest {
             @Override
             public long getViewportWidth() {
                 // Bump up viewport width so we don't get out of bounds issues
-                return 300;
+                return 251;
+            }
+
+            @Override
+            public long getViewportHeight() {
+                return 401;
             }
         }
 
