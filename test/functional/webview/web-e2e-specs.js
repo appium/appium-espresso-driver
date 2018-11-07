@@ -69,7 +69,7 @@ describe('web', function () {
   });
 
   describe('Chrome Browser', function () {
-    it('should reject "browserName=Chrome" sessions with a helpful error message (Chrome is not available in Espresso automation context)', async function () {
+    it('should reject "browserName=Chrome" sessions', async function () {
       await initSession({
         ...GENERIC_CAPS,
         browserName: 'Chrome',
