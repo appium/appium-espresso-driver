@@ -67,7 +67,7 @@ install:
 
   # npm stuff
   - npm install
-  - npm install appium-chromedriver --chromedriver_version="2.6"
+  - npm install appium-chromedriver --chromedriver_version="2.9"
 
   # build the server
   - |
