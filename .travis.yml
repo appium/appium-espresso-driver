@@ -33,7 +33,7 @@ env:
     - TEST=functional
     - TEST=functional/commands
     # TODO: Make Chromedriver work for webviews
-    #- TEST=functional/webview
+    - TEST=functional/webview
 before_install:
   - |
     echo y | android update sdk --no-ui -t tools
