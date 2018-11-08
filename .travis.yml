@@ -32,6 +32,8 @@ env:
     - TEST=unit START_EMU=0 RECURSIVE="--recursive"
     - TEST=functional
     - TEST=functional/commands
+    # TODO: Figure out Chromedriver for Travis
+    #- TEST=functional/webview
 before_install:
   - |
     echo y | android update sdk --no-ui -t tools
@@ -65,6 +67,7 @@ install:
 
   # npm stuff
   - npm install
+  - npm install appium-chromedriver --chromedriver_version="2.9"
 
   # build the server
   - |
