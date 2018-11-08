@@ -73,7 +73,7 @@ describe('web', function () {
       await initSession({
         ...GENERIC_CAPS,
         browserName: 'Chrome',
-      }).should.eventually.be.rejectedWith(/unavailable/);
+      }).should.eventually.be.rejectedWith(/doesn't have permission/);
     });
   });
 
