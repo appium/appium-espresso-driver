@@ -32,7 +32,8 @@ env:
     - TEST=unit START_EMU=0 RECURSIVE="--recursive"
     - TEST=functional
     - TEST=functional/commands
-    - TEST=functional/webview
+    # TODO: Figure out Chromedriver for Travis
+    #- TEST=functional/webview
 before_install:
   - |
     echo y | android update sdk --no-ui -t tools
