@@ -143,17 +143,24 @@ public class SourceDocument {
             AdapterView adapterView = (AdapterView) view;
             Adapter adapter = adapterView.getAdapter();
             int adapterCount = adapter.getCount();
-            List<String> adapterData = new ArrayList<>(adapterCount);
+            List<String> adapterData = new ArrayList<>();
+            boolean isAdapterTypeSet = false;
             for (int i = 0; i < adapterCount; i++) {
                 Object adapterItem = adapter.getItem(i);
+                if (adapterItem == null) {
+                    continue;
+                }
                 adapterData.add(adapterItem.toString());
 
                 // Get the type of the adapter item
-                if (i == 0) {
+                if (!isAdapterTypeSet) {
                     setAttribute(element, ViewAttributesEnum.ADAPTER_TYPE, adapterItem.getClass().getSimpleName());
+                    isAdapterTypeSet = true;
                 }
             }
-            setAttribute(element, ViewAttributesEnum.ADAPTERS, TextUtils.join(",", adapterData));
+            if (!adapterData.isEmpty()) {
+                setAttribute(element, ViewAttributesEnum.ADAPTERS, TextUtils.join(",", adapterData));
+            }
         }
 
         // If cacheElementReferences == true, then cache a reference to the View

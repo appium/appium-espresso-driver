@@ -42,7 +42,6 @@ public class ViewElement {
 
     public ViewElement(View view) {
         this.view = view;
-
     }
 
     public synchronized Activity extractActivity() {
