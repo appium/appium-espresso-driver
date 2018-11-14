@@ -16,220 +16,188 @@
 
 package io.appium.espressoserver.lib.model;
 
+import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.SparseArray;
+import android.util.Xml;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 
-import org.apache.xml.utils.XMLChar;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xmlpull.v1.XmlSerializer;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nullable;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
+import static io.appium.espressoserver.lib.helpers.XMLHelpers.toNodeName;
+import static io.appium.espressoserver.lib.helpers.XMLHelpers.toSafeString;
+
 public class SourceDocument {
-
-    private Document doc;
-    private final Map<Element, View> viewMap = new HashMap<>();
-    private boolean cacheElementReferences;
-    private final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-    private final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-    private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-    private Transformer transformer;
     private static XPath xpath = XPathFactory.newInstance().newXPath();
+    private static final String NON_XML_CHAR_REPLACEMENT = "?";
+    private static final String VIEW_INDEX = "viewIndex";
+    private XmlSerializer serializer;
+    @Nullable
+    private final SparseArray<View> viewMap;
+    @Nullable
+    private final View root;
+    private static final String NAMESPACE = "";
 
-    public SourceDocument() throws ParserConfigurationException, TransformerException {
-        init();
-        this.cacheElementReferences = false;
-        buildXML();
+    public SourceDocument() {
+        this(null, null);
     }
 
-    private SourceDocument(boolean cacheElementReferences) throws ParserConfigurationException, TransformerException {
-        init();
-        this.cacheElementReferences = cacheElementReferences;
-        buildXML();
+    private SourceDocument(@Nullable View root, @Nullable SparseArray<View> viewMap) {
+        this.root = root;
+        this.viewMap = viewMap;
     }
 
-    private void init() throws TransformerException {
-        transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-    }
+    private void recordAdapterViewInfo(AdapterView adapterView) throws IOException {
+        Adapter adapter = adapterView.getAdapter();
+        int adapterCount = adapter.getCount();
+        List<String> adapterData = new ArrayList<>();
+        boolean isAdapterTypeSet = false;
+        for (int i = 0; i < adapterCount; i++) {
+            Object adapterItem = adapter.getItem(i);
+            if (adapterItem == null) {
+                continue;
+            }
+            adapterData.add(adapterItem.toString());
 
-    /**
-     * Recursively visit all of the views and map them to XML elements
-     */
-    private void buildXML() {
-        // Create an empty document
-        doc = docBuilder.newDocument();
-
-        // Get reference to root view
-        View rootView = (new ViewGetter()).getRootView();
-        buildXML(doc, null, rootView);
+            // Get the type of the adapter item
+            if (!isAdapterTypeSet) {
+                setAttribute(serializer, ViewAttributesEnum.ADAPTER_TYPE, adapterItem.getClass().getSimpleName());
+                isAdapterTypeSet = true;
+            }
+        }
+        if (!adapterData.isEmpty()) {
+            setAttribute(serializer, ViewAttributesEnum.ADAPTERS, TextUtils.join(",", adapterData));
+        }
     }
 
     /**
      * Recursively visit all of the views and map them to XML elements
      *
-     * @param doc           XML Document
-     * @param parentElement Element that this new element will be appended to
-     * @param view          Android View that will map to an Element
+     * @param view The root view
      */
-    private void buildXML(Document doc, Element parentElement, View view) {
+    private void serializeView(View view) throws IOException {
         ViewElement viewElement = new ViewElement(view);
-        Element element = doc.createElement(viewElement.getClassName());
+        final String tagName = toNodeName(viewElement.getClassName());
+        serializer.startTag(NAMESPACE, tagName);
 
         // Set attributes
-        setAttribute(element, ViewAttributesEnum.INDEX, Integer.toString(viewElement.getIndex()));
-        setAttribute(element, ViewAttributesEnum.PACKAGE, viewElement.getPackageName());
-        setAttribute(element, ViewAttributesEnum.CLASS, viewElement.getClassName());
-        setAttribute(element, ViewAttributesEnum.CONTENT_DESC, viewElement.getContentDescription());
-        setAttribute(element, ViewAttributesEnum.CHECKABLE, Boolean.toString(viewElement.isCheckable()));
-        setAttribute(element, ViewAttributesEnum.CHECKED, Boolean.toString(viewElement.isChecked()));
-        setAttribute(element, ViewAttributesEnum.CLICKABLE, Boolean.toString(viewElement.isClickable()));
-        setAttribute(element, ViewAttributesEnum.ENABLED, Boolean.toString(viewElement.isEnabled()));
-        setAttribute(element, ViewAttributesEnum.FOCUSABLE, Boolean.toString(viewElement.isFocusable()));
-        setAttribute(element, ViewAttributesEnum.FOCUSED, Boolean.toString(viewElement.isFocused()));
-        setAttribute(element, ViewAttributesEnum.SCROLLABLE, Boolean.toString(viewElement.isScrollable()));
-        setAttribute(element, ViewAttributesEnum.LONG_CLICKABLE, Boolean.toString(viewElement.isLongClickable()));
-        setAttribute(element, ViewAttributesEnum.PASSWORD, Boolean.toString(viewElement.isPassword()));
-        setAttribute(element, ViewAttributesEnum.SELECTED, Boolean.toString(viewElement.isSelected()));
-        setAttribute(element, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
+        setAttribute(serializer, ViewAttributesEnum.INDEX, viewElement.getIndex());
+        setAttribute(serializer, ViewAttributesEnum.PACKAGE, viewElement.getPackageName());
+        setAttribute(serializer, ViewAttributesEnum.CLASS, viewElement.getClassName());
+        setAttribute(serializer, ViewAttributesEnum.CONTENT_DESC, viewElement.getContentDescription());
+        setAttribute(serializer, ViewAttributesEnum.CHECKABLE, viewElement.isCheckable());
+        setAttribute(serializer, ViewAttributesEnum.CHECKED, viewElement.isChecked());
+        setAttribute(serializer, ViewAttributesEnum.CLICKABLE, viewElement.isClickable());
+        setAttribute(serializer, ViewAttributesEnum.ENABLED, viewElement.isEnabled());
+        setAttribute(serializer, ViewAttributesEnum.FOCUSABLE, viewElement.isFocusable());
+        setAttribute(serializer, ViewAttributesEnum.FOCUSED, viewElement.isFocused());
+        setAttribute(serializer, ViewAttributesEnum.SCROLLABLE, viewElement.isScrollable());
+        setAttribute(serializer, ViewAttributesEnum.LONG_CLICKABLE, viewElement.isLongClickable());
+        setAttribute(serializer, ViewAttributesEnum.PASSWORD, viewElement.isPassword());
+        setAttribute(serializer, ViewAttributesEnum.SELECTED, viewElement.isSelected());
+        setAttribute(serializer, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
 
         final ViewText viewText = viewElement.getText();
         if (viewText != null) {
-            setAttribute(element, ViewAttributesEnum.TEXT, viewText.getRawText());
+            setAttribute(serializer, ViewAttributesEnum.TEXT, viewText.getRawText());
+            setAttribute(serializer, ViewAttributesEnum.HINT, viewText.isHint());
         }
-        setAttribute(element, ViewAttributesEnum.RESOURCE_ID, viewElement.getResourceId());
-
-        if (view.getTag() != null) {
-            setAttribute(element, ViewAttributesEnum.VIEW_TAG, viewElement.getViewTag());
-        }
-
-        // If this is the rootElement, append it to the document
-        if (parentElement == null) {
-            doc.appendChild(element);
-        } else {
-            parentElement.appendChild(element);
-        }
+        setAttribute(serializer, ViewAttributesEnum.RESOURCE_ID, viewElement.getResourceId());
+        setAttribute(serializer, ViewAttributesEnum.VIEW_TAG, viewElement.getViewTag());
 
         // If it's an AdapterView, get the adapters as a String
         if (view instanceof AdapterView) {
-            AdapterView adapterView = (AdapterView) view;
-            Adapter adapter = adapterView.getAdapter();
-            int adapterCount = adapter.getCount();
-            List<String> adapterData = new ArrayList<>();
-            boolean isAdapterTypeSet = false;
-            for (int i = 0; i < adapterCount; i++) {
-                Object adapterItem = adapter.getItem(i);
-                if (adapterItem == null) {
-                    continue;
-                }
-                adapterData.add(adapterItem.toString());
-
-                // Get the type of the adapter item
-                if (!isAdapterTypeSet) {
-                    setAttribute(element, ViewAttributesEnum.ADAPTER_TYPE, adapterItem.getClass().getSimpleName());
-                    isAdapterTypeSet = true;
-                }
-            }
-            if (!adapterData.isEmpty()) {
-                setAttribute(element, ViewAttributesEnum.ADAPTERS, TextUtils.join(",", adapterData));
-            }
+            recordAdapterViewInfo((AdapterView) view);
         }
 
         // If cacheElementReferences == true, then cache a reference to the View
-        if (cacheElementReferences) {
-            viewMap.put(element, view);
+        if (viewMap != null) {
+            serializer.attribute(NAMESPACE, VIEW_INDEX, Integer.toString(viewMap.size()));
+            viewMap.put(viewMap.size(), view);
         }
 
         // Visit the children and build them too
-        try {
+        if (view instanceof ViewGroup) {
             for (int index = 0; index < ((ViewGroup) view).getChildCount(); ++index) {
                 View childView = ((ViewGroup) view).getChildAt(index);
-                buildXML(doc, element, childView);
+                serializeView(childView);
             }
-        } catch (ClassCastException e) {
-            // If it couldn't be cast to a ViewGroup, it has no children
+        }
+        serializer.endTag(NAMESPACE, tagName);
+    }
+
+    public synchronized String toXMLString() throws AppiumException {
+        serializer = Xml.newSerializer();
+        if (viewMap != null) {
+            viewMap.clear();
+        }
+        final StringWriter writer = new StringWriter();
+        try {
+            serializer.setOutput(writer);
+            serializer.startDocument("UTF-8", true);
+            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+            final long startTime = SystemClock.uptimeMillis();
+            serializeView(root == null ? new ViewGetter().getRootView() : root);
+            serializer.endDocument();
+            logger.info(String.format("The source XML tree has been fetched in %sms", SystemClock.uptimeMillis() - startTime));
+            return writer.toString();
+        } catch (Exception e) {
+            throw new AppiumException(e);
         }
     }
 
-    public String toXMLString() throws TransformerException {
-        DOMSource source = new DOMSource(doc);
-        StringWriter stringWriter = new StringWriter();
-        StreamResult result = new StreamResult(stringWriter);
-        transformer.transform(source, result);
-        return stringWriter.toString();
-    }
-
-    public static List<View> findViewsByXPath(String xpathSelector) throws XPathLookupException {
+    public static List<View> findViewsByXPath(@Nullable View root, String xpathSelector) throws AppiumException {
+        final SparseArray<View> viewMap = new SparseArray<>();
         try {
             // Get the Nodes that match the provided xpath
-            SourceDocument sourceDocument = new SourceDocument(true);
             XPathExpression expr = xpath.compile(xpathSelector);
-            NodeList list = (NodeList) expr.evaluate(sourceDocument.doc, XPathConstants.NODESET);
+            NodeList list = (NodeList) expr.evaluate(
+                    new InputSource(new StringReader(new SourceDocument(root, viewMap).toXMLString())),
+                    XPathConstants.NODESET);
 
             // Get a list of elements that are associated with that node
             List<View> views = new ArrayList<>();
             for (int i = 0; i < list.getLength(); i++) {
                 Element element = (Element) list.item(i);
-                views.add(sourceDocument.viewMap.get(element));
+                //noinspection ConstantConditions
+                views.add(viewMap.get(Integer.parseInt(element.getAttribute(VIEW_INDEX))));
             }
             return views;
-        } catch (ParserConfigurationException pe) {
-            throw new XPathLookupException(xpathSelector, pe.getMessage());
         } catch (XPathExpressionException xe) {
             throw new XPathLookupException(xpathSelector, xe.getMessage());
-        } catch (TransformerException te) {
-            throw new XPathLookupException(xpathSelector, te.getMessage());
         }
     }
 
-    // Original Google code here broke UTF characters
-    private static String stripInvalidXMLChars(CharSequence charSequence) {
-        final StringBuilder sb = new StringBuilder(charSequence.length());
-        for (int i = 0; i < charSequence.length(); i++) {
-            char c = charSequence.charAt(i);
-            if (XMLChar.isValid(c)) {
-                sb.append(c);
-            }
-        }
-
-        return sb.toString();
-    }
-
-    private static void setAttribute(Element element, ViewAttributesEnum viewAttributesEnum,
-                                     @Nullable CharSequence attrValue) {
+    private static void setAttribute(XmlSerializer serializer, ViewAttributesEnum attrName,
+                                     @Nullable Object attrValue) throws IOException {
         if (attrValue == null) {
             // Do not write attributes, whose values equal to null
             return;
         }
-        element.setAttribute(stripInvalidXMLChars(viewAttributesEnum.toString()),
-                stripInvalidXMLChars(attrValue));
+        serializer.attribute(NAMESPACE, attrName.toString(), toSafeString(String.valueOf(attrValue), NON_XML_CHAR_REPLACEMENT));
     }
 }

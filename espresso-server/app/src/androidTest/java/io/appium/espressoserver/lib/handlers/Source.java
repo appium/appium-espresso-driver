@@ -17,8 +17,6 @@
 package io.appium.espressoserver.lib.handlers;
 
 import javax.annotation.Nullable;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
@@ -29,10 +27,6 @@ public class Source implements RequestHandler<AppiumParams, String> {
     @Override
     @Nullable
     public String handle(AppiumParams params) throws AppiumException {
-        try {
-            return new SourceDocument().toXMLString();
-        } catch (TransformerException | ParserConfigurationException e) {
-            throw new AppiumException("Could not parse XML from source", e);
-        }
+        return new SourceDocument().toXMLString();
     }
 }
