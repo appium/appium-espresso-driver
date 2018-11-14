@@ -121,6 +121,10 @@ public class SourceDocument {
      * @param view The root view
      */
     private void serializeView(View view) throws IOException {
+        if (view == null) {
+            return;
+        }
+
         ViewElement viewElement = new ViewElement(view);
         final String tagName = toXmlNodeName(viewElement.getClassName());
         serializer.startTag(NAMESPACE, tagName);
