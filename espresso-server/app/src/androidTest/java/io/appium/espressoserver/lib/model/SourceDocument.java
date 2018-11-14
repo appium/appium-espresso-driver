@@ -141,7 +141,6 @@ public class SourceDocument {
         setAttribute(serializer, ViewAttributesEnum.PASSWORD, viewElement.isPassword());
         setAttribute(serializer, ViewAttributesEnum.SELECTED, viewElement.isSelected());
         setAttribute(serializer, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
-
         final ViewText viewText = viewElement.getText();
         if (viewText != null) {
             setAttribute(serializer, ViewAttributesEnum.TEXT, viewText.getRawText());
@@ -149,13 +148,10 @@ public class SourceDocument {
         }
         setAttribute(serializer, ViewAttributesEnum.RESOURCE_ID, viewElement.getResourceId());
         setAttribute(serializer, ViewAttributesEnum.VIEW_TAG, viewElement.getViewTag());
-
-        // If it's an AdapterView, get the adapters as a String
         if (view instanceof AdapterView) {
             recordAdapterViewInfo((AdapterView) view);
         }
 
-        // If cacheElementReferences == true, then cache a reference to the View
         if (viewMap != null) {
             serializer.attribute(NAMESPACE, VIEW_INDEX, Integer.toString(viewMap.size()));
             viewMap.put(viewMap.size(), view);
@@ -219,6 +215,7 @@ public class SourceDocument {
             // Do not write attributes, whose values equal to null
             return;
         }
-        serializer.attribute(NAMESPACE, attrName.toString(), toSafeString(String.valueOf(attrValue), NON_XML_CHAR_REPLACEMENT));
+        serializer.attribute(NAMESPACE, attrName.toString(),
+                toSafeString(String.valueOf(attrValue), NON_XML_CHAR_REPLACEMENT));
     }
 }
