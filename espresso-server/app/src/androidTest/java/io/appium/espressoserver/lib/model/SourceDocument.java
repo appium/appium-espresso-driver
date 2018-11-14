@@ -55,12 +55,14 @@ public class SourceDocument {
     private static XPath xpath = XPathFactory.newInstance().newXPath();
     private static final String NON_XML_CHAR_REPLACEMENT = "?";
     private static final String VIEW_INDEX = "viewIndex";
+    private static final String NAMESPACE = "";
+    private final static String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
+
     private XmlSerializer serializer;
     @Nullable
     private final SparseArray<View> viewMap;
     @Nullable
     private final View root;
-    private static final String NAMESPACE = "";
 
     public SourceDocument() {
         this(null, null);
@@ -94,6 +96,25 @@ public class SourceDocument {
         }
     }
 
+    private static String toXmlNodeName(@Nullable String className) {
+        if (className == null || className.trim().isEmpty()) {
+            return DEFAULT_VIEW_CLASS_NAME;
+        }
+
+        String fixedName = className
+                .replaceAll("[$@#&]", ".")
+                .replaceAll("\\.+", ".")
+                .replaceAll("(^\\.|\\.$)", "");
+        fixedName = toNodeName(fixedName);
+        if (fixedName.trim().isEmpty()) {
+            fixedName = DEFAULT_VIEW_CLASS_NAME;
+        }
+        if (!fixedName.equals(className)) {
+            logger.info(String.format("Rewrote class name '%s' to XML node name '%s'", className, fixedName));
+        }
+        return fixedName;
+    }
+
     /**
      * Recursively visit all of the views and map them to XML elements
      *
@@ -101,7 +122,7 @@ public class SourceDocument {
      */
     private void serializeView(View view) throws IOException {
         ViewElement viewElement = new ViewElement(view);
-        final String tagName = toNodeName(viewElement.getClassName());
+        final String tagName = toXmlNodeName(viewElement.getClassName());
         serializer.startTag(NAMESPACE, tagName);
 
         // Set attributes
