@@ -8,6 +8,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-6
+      - xvfb
 android:
   components:
     - tools
@@ -28,12 +29,12 @@ env:
     - MOCHA_TIMEOUT=0
     - RECURSIVE=""
     - CC=gcc-6 CXX=g++-6
+    - START_XVFB=0
   matrix:
     - TEST=unit START_EMU=0 RECURSIVE="--recursive"
     - TEST=functional
     - TEST=functional/commands
-    # TODO: Figure out Chromedriver for Travis
-    #- TEST=functional/webview
+    - TEST=functional/webview START_XVFB=1
 before_install:
   - |
     echo y | android update sdk --no-ui -t tools
@@ -66,14 +67,7 @@ install:
   - npm --version
 
   # npm stuff
-  - npm install
-  - npm install appium-chromedriver --chromedriver_version="2.9"
-
-  # build the server
-  - |
-    if [ ${START_EMU} = "1" ]; then
-      npm run build:server
-    fi
+  - npm install --chromedriver_version="2.24"
 before_script:
   - |
     if [ ${START_EMU} = "1" ]; then
@@ -82,6 +76,11 @@ before_script:
       adb shell settings put global window_animation_scale 0
       adb shell settings put global transition_animation_scale 0
       adb shell settings put global animator_duration_scale 0
+    fi
+  - |
+    if [ ${START_XVFB} = "1" ]; then
+      export DISPLAY=':99.0'
+      Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
     fi
 script:
   - npm run lint && npm run mocha -- -t ${MOCHA_TIMEOUT} ${RECURSIVE} build/test/${TEST} -g @skip-ci -i --exit;
