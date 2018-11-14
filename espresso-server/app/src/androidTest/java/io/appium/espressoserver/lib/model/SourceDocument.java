@@ -73,6 +73,15 @@ public class SourceDocument {
         this.viewMap = viewMap;
     }
 
+    private void setAttribute(ViewAttributesEnum attrName, @Nullable Object attrValue) throws IOException {
+        if (attrValue == null) {
+            // Do not write attributes, whose values equal to null
+            return;
+        }
+        serializer.attribute(NAMESPACE, attrName.toString(),
+                toSafeString(String.valueOf(attrValue), NON_XML_CHAR_REPLACEMENT));
+    }
+
     private void recordAdapterViewInfo(AdapterView adapterView) throws IOException {
         Adapter adapter = adapterView.getAdapter();
         int adapterCount = adapter.getCount();
@@ -87,12 +96,12 @@ public class SourceDocument {
 
             // Get the type of the adapter item
             if (!isAdapterTypeSet) {
-                setAttribute(serializer, ViewAttributesEnum.ADAPTER_TYPE, adapterItem.getClass().getSimpleName());
+                setAttribute(ViewAttributesEnum.ADAPTER_TYPE, adapterItem.getClass().getSimpleName());
                 isAdapterTypeSet = true;
             }
         }
         if (!adapterData.isEmpty()) {
-            setAttribute(serializer, ViewAttributesEnum.ADAPTERS, TextUtils.join(",", adapterData));
+            setAttribute(ViewAttributesEnum.ADAPTERS, TextUtils.join(",", adapterData));
         }
     }
 
@@ -130,28 +139,28 @@ public class SourceDocument {
         serializer.startTag(NAMESPACE, tagName);
 
         // Set attributes
-        setAttribute(serializer, ViewAttributesEnum.INDEX, viewElement.getIndex());
-        setAttribute(serializer, ViewAttributesEnum.PACKAGE, viewElement.getPackageName());
-        setAttribute(serializer, ViewAttributesEnum.CLASS, viewElement.getClassName());
-        setAttribute(serializer, ViewAttributesEnum.CONTENT_DESC, viewElement.getContentDescription());
-        setAttribute(serializer, ViewAttributesEnum.CHECKABLE, viewElement.isCheckable());
-        setAttribute(serializer, ViewAttributesEnum.CHECKED, viewElement.isChecked());
-        setAttribute(serializer, ViewAttributesEnum.CLICKABLE, viewElement.isClickable());
-        setAttribute(serializer, ViewAttributesEnum.ENABLED, viewElement.isEnabled());
-        setAttribute(serializer, ViewAttributesEnum.FOCUSABLE, viewElement.isFocusable());
-        setAttribute(serializer, ViewAttributesEnum.FOCUSED, viewElement.isFocused());
-        setAttribute(serializer, ViewAttributesEnum.SCROLLABLE, viewElement.isScrollable());
-        setAttribute(serializer, ViewAttributesEnum.LONG_CLICKABLE, viewElement.isLongClickable());
-        setAttribute(serializer, ViewAttributesEnum.PASSWORD, viewElement.isPassword());
-        setAttribute(serializer, ViewAttributesEnum.SELECTED, viewElement.isSelected());
-        setAttribute(serializer, ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
+        setAttribute(ViewAttributesEnum.INDEX, viewElement.getIndex());
+        setAttribute(ViewAttributesEnum.PACKAGE, viewElement.getPackageName());
+        setAttribute(ViewAttributesEnum.CLASS, viewElement.getClassName());
+        setAttribute(ViewAttributesEnum.CONTENT_DESC, viewElement.getContentDescription());
+        setAttribute(ViewAttributesEnum.CHECKABLE, viewElement.isCheckable());
+        setAttribute(ViewAttributesEnum.CHECKED, viewElement.isChecked());
+        setAttribute(ViewAttributesEnum.CLICKABLE, viewElement.isClickable());
+        setAttribute(ViewAttributesEnum.ENABLED, viewElement.isEnabled());
+        setAttribute(ViewAttributesEnum.FOCUSABLE, viewElement.isFocusable());
+        setAttribute(ViewAttributesEnum.FOCUSED, viewElement.isFocused());
+        setAttribute(ViewAttributesEnum.SCROLLABLE, viewElement.isScrollable());
+        setAttribute(ViewAttributesEnum.LONG_CLICKABLE, viewElement.isLongClickable());
+        setAttribute(ViewAttributesEnum.PASSWORD, viewElement.isPassword());
+        setAttribute(ViewAttributesEnum.SELECTED, viewElement.isSelected());
+        setAttribute(ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
         final ViewText viewText = viewElement.getText();
         if (viewText != null) {
-            setAttribute(serializer, ViewAttributesEnum.TEXT, viewText.getRawText());
-            setAttribute(serializer, ViewAttributesEnum.HINT, viewText.isHint());
+            setAttribute(ViewAttributesEnum.TEXT, viewText.getRawText());
+            setAttribute(ViewAttributesEnum.HINT, viewText.isHint());
         }
-        setAttribute(serializer, ViewAttributesEnum.RESOURCE_ID, viewElement.getResourceId());
-        setAttribute(serializer, ViewAttributesEnum.VIEW_TAG, viewElement.getViewTag());
+        setAttribute(ViewAttributesEnum.RESOURCE_ID, viewElement.getResourceId());
+        setAttribute(ViewAttributesEnum.VIEW_TAG, viewElement.getViewTag());
         if (view instanceof AdapterView) {
             recordAdapterViewInfo((AdapterView) view);
         }
@@ -211,15 +220,5 @@ public class SourceDocument {
         } catch (XPathExpressionException xe) {
             throw new XPathLookupException(xpathSelector, xe.getMessage());
         }
-    }
-
-    private static void setAttribute(XmlSerializer serializer, ViewAttributesEnum attrName,
-                                     @Nullable Object attrValue) throws IOException {
-        if (attrValue == null) {
-            // Do not write attributes, whose values equal to null
-            return;
-        }
-        serializer.attribute(NAMESPACE, attrName.toString(),
-                toSafeString(String.valueOf(attrValue), NON_XML_CHAR_REPLACEMENT));
     }
 }
