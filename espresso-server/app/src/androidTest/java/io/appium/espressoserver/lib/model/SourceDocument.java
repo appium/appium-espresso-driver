@@ -74,16 +74,18 @@ public class SourceDocument {
     }
 
     private void setAttribute(ViewAttributesEnum attrName, @Nullable Object attrValue) throws IOException {
-        if (attrValue == null) {
-            // Do not write attributes, whose values equal to null
-            return;
+        // Do not write attributes, whose values equal to null
+        if (attrValue != null) {
+            serializer.attribute(NAMESPACE, attrName.toString(),
+                    toSafeString(String.valueOf(attrValue), NON_XML_CHAR_REPLACEMENT));
         }
-        serializer.attribute(NAMESPACE, attrName.toString(),
-                toSafeString(String.valueOf(attrValue), NON_XML_CHAR_REPLACEMENT));
     }
 
     private void recordAdapterViewInfo(AdapterView adapterView) throws IOException {
         Adapter adapter = adapterView.getAdapter();
+        if (adapter == null) {
+            return;
+        }
         int adapterCount = adapter.getCount();
         List<String> adapterData = new ArrayList<>();
         boolean isAdapterTypeSet = false;
