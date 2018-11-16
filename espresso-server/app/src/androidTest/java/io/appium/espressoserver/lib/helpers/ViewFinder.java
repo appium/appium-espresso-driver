@@ -35,6 +35,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.Strategy;
@@ -65,8 +66,7 @@ import static org.hamcrest.Matchers.instanceOf;
 public class ViewFinder {
 
     @Nullable
-    public static View findBy(Strategy strategy, String selector)
-            throws InvalidStrategyException, XPathLookupException {
+    public static View findBy(Strategy strategy, String selector) throws AppiumException {
         return findBy(null, strategy, selector);
     }
 
@@ -83,8 +83,7 @@ public class ViewFinder {
      */
     @Nullable
     public static View findBy(
-            @Nullable View root, Strategy strategy, String selector)
-            throws InvalidStrategyException, XPathLookupException {
+            @Nullable View root, Strategy strategy, String selector) throws AppiumException {
         List<View> viewInteractions = findAllBy(root, strategy, selector, true);
         if (viewInteractions.isEmpty()) {
             return null;
@@ -93,8 +92,7 @@ public class ViewFinder {
     }
 
     @Nullable
-    public static List<View> findAllBy(Strategy strategy, String selector)
-            throws InvalidStrategyException, XPathLookupException {
+    public static List<View> findAllBy(Strategy strategy, String selector) throws AppiumException {
         return findAllBy(null, strategy, selector, false);
     }
 
@@ -110,8 +108,7 @@ public class ViewFinder {
      * @throws XPathLookupException
      */
     public static List<View> findAllBy(@Nullable View root,
-                                                  Strategy strategy, String selector)
-            throws InvalidStrategyException, XPathLookupException {
+                                                  Strategy strategy, String selector) throws AppiumException {
         return findAllBy(root, strategy, selector, false);
     }
 
@@ -143,9 +140,8 @@ public class ViewFinder {
     }
 
     ///Find By different strategies
-    private static List<View> findAllBy(@Nullable View root,
-                                                   Strategy strategy, String selector, boolean findOne)
-            throws InvalidStrategyException, XPathLookupException {
+    private static List<View> findAllBy(@Nullable View root, Strategy strategy,
+                                        String selector, boolean findOne) throws AppiumException {
         List<View> views;
         switch (strategy) {
             case ID: // with ID
@@ -179,9 +175,9 @@ public class ViewFinder {
                 // If we're only looking for one item that matches xpath, pass it index 0 or else
                 // Espresso throws an AmbiguousMatcherException
                 if (findOne) {
-                    views = getViews(root, withXPath(selector, 0), true);
+                    views = getViews(root, withXPath(root, selector, 0), true);
                 } else {
-                    views = getViews(root, withXPath(selector), false);
+                    views = getViews(root, withXPath(root, selector), false);
                 }
                 break;
             case VIEW_TAG:

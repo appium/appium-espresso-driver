@@ -25,14 +25,14 @@ import org.hamcrest.TypeSafeMatcher;
 
 import java.util.List;
 
-import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.SourceDocument;
 
 public class WithXPath {
-    public static Matcher<View> withXPath(final String xpath, @Nullable final Integer index) throws XPathLookupException {
-
+    public static Matcher<View> withXPath(@Nullable final View root, final String xpath,
+                                          @Nullable final Integer index) throws AppiumException {
         // Get a list of the Views that match the provided xpath
-        final List<View> matchedXPathViews = SourceDocument.findViewsByXPath(xpath);
+        final List<View> matchedXPathViews = SourceDocument.findViewsByXPath(root, xpath);
 
         return new TypeSafeMatcher<View>() {
             @Override
@@ -57,7 +57,7 @@ public class WithXPath {
         };
     }
 
-    public static Matcher<View> withXPath(final String xpath) throws XPathLookupException {
-        return withXPath(xpath, null);
+    public static Matcher<View> withXPath(@Nullable final View root, final String xpath) throws AppiumException {
+        return withXPath(root, xpath, null);
     }
 }
