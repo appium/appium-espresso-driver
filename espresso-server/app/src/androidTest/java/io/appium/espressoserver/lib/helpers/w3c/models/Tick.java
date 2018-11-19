@@ -39,19 +39,17 @@ public class Tick implements Iterator<ActionObject> {
      * Get max tick duration for a tick
      * @return Max tick duration
      */
-    public long calculateTickDuration(){
-        long maxDuration = 0;
+    public float calculateTickDuration(){
+        float maxDuration = 0;
         for(ActionObject actionObject: tickActions) {
-            long currDuration = 0;
+            float currDuration = 0.0F;
 
             InputSourceType type = actionObject.getType();
-            Long duration = actionObject.getDuration();
+            Float duration = actionObject.getDuration();
             ActionType subType = actionObject.getSubType();
 
             if (duration != null) {
-                if (type == POINTER && subType == POINTER_MOVE) {
-                    currDuration = duration;
-                } else if (subType == PAUSE) {
+                if ((type == POINTER && subType == POINTER_MOVE) || subType == PAUSE) {
                     currDuration = duration;
                 }
             }
@@ -63,7 +61,7 @@ public class Tick implements Iterator<ActionObject> {
         return maxDuration;
     }
 
-    public List<Callable<BaseDispatchResult>> dispatchAll(W3CActionAdapter adapter, InputStateTable inputStateTable, long tickDuration)
+    public List<Callable<BaseDispatchResult>> dispatchAll(W3CActionAdapter adapter, InputStateTable inputStateTable, float tickDuration)
             throws AppiumException {
         long timeAtBeginningOfTick = System.currentTimeMillis();
         List<Callable<BaseDispatchResult>> asyncOperations = new ArrayList<>();

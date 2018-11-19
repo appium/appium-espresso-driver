@@ -21,4 +21,5 @@ public interface Logger {
     void error(String message, Throwable throwable);
     void info(Object... messages);
     void debug(Object... messages);
+    void warn(Object... messages);
 }

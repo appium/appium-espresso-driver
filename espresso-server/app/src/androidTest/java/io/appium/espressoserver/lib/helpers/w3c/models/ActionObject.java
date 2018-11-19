@@ -30,9 +30,9 @@ public class ActionObject {
     private InputSourceType type;
     private ActionType subType;
     private String id;
-    private Long duration;
-    private Long x;
-    private Long y;
+    private Float duration;
+    private Float x;
+    private Float y;
     private int button;
     private String value;
     private PointerType pointer;
@@ -76,7 +76,7 @@ public class ActionObject {
     @Nullable
     public Callable<BaseDispatchResult> dispatch(W3CActionAdapter adapter,
                                                  InputStateTable inputStateTable,
-                                                 long tickDuration, long timeAtBeginningOfTick) throws AppiumException {
+                                                 float tickDuration, long timeAtBeginningOfTick) throws AppiumException {
         InputSourceType inputSourceType = this.getType();
         ActionType actionType = this.getSubType();
         adapter.getLogger().info(String.format(
@@ -172,11 +172,11 @@ public class ActionObject {
     }
 
     @Nullable
-    public Long getDuration() {
+    public Float getDuration() {
         return duration;
     }
 
-    public void setDuration(Long duration) {
+    public void setDuration(Float duration) {
         this.duration = duration;
     }
 
@@ -189,19 +189,19 @@ public class ActionObject {
         this.origin = origin;
     }
 
-    public long getX() {
+    public float getX() {
         return x == null ? 0 : x;
     }
 
-    public void setX(Long x) {
+    public void setX(Float x) {
         this.x = x;
     }
 
-    public long getY() {
+    public float getY() {
         return y == null ? 0 : y;
     }
 
-    public void setY(Long y) {
+    public void setY(Float y) {
         this.y = y;
     }
 

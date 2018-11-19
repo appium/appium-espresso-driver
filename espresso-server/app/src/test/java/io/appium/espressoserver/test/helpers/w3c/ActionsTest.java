@@ -37,7 +37,7 @@ public class ActionsTest {
     }
 
     @Test
-    public void shouldThrowIfAdapterNotSet() throws IOException, AppiumException {
+    public void shouldThrowIfAdapterNotSet() throws IOException {
         String multiTouchJson = Helpers.readAssetFile("multi-touch-actions.json");
         Actions actions = Actions.class.cast((new Gson()).fromJson(multiTouchJson, Actions.class));
 
@@ -62,10 +62,10 @@ public class ActionsTest {
         PointerInputState finger2 = (PointerInputState) inputStateTable.getInputState("finger2");
 
         // Check the state
-        assertEquals(finger1.getX(), 120);
-        assertEquals(finger1.getY(), 100);
-        assertEquals(finger2.getX(), 250);
-        assertEquals(finger2.getY(), 400);
+        assertEquals(finger1.getX(), 120, 1e-15);
+        assertEquals(finger1.getY(), 100, 1e-15);
+        assertEquals(finger2.getX(), 250, 1e-15);
+        assertEquals(finger2.getY(), 400, 1e-15);
 
         // Sanity check that it's recording pointer move events
         List<PointerMoveEvent> pointerMoveEvents = ((DummyW3CActionAdapter) actions.getAdapter()).getPointerMoveEvents();

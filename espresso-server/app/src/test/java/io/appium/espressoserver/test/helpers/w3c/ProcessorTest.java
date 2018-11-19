@@ -88,11 +88,11 @@ public class ProcessorTest {
         Action action = new Action();
         action.setDuration(10L);
         ActionObject actionObject = processPauseAction(action, InputSourceType.NONE, "any", 0);
-        assertEquals(actionObject.getDuration(), new Long(10));
+        assertEquals(actionObject.getDuration(), new Float(10));
     }
 
     @Test
-    public void shouldRejectNullIfTypeNotPause() throws InvalidArgumentException {
+    public void shouldRejectNullIfTypeNotPause() {
         Action action = new Action();
         try {
             processPauseAction(action, InputSourceType.NONE, "any", 0);
@@ -107,11 +107,11 @@ public class ProcessorTest {
         action.setDuration(100);
         action.setType(ActionType.PAUSE);
         processPauseAction(action, InputSourceType.NONE, "any", 0);
-        assertEquals(action.getDuration(), new Long(100));
+        assertEquals(action.getDuration(), new Float(100));
     }
 
     @Test
-    public void shouldRejectPointerMoveIfNegativeDuration() throws InvalidArgumentException {
+    public void shouldRejectPointerMoveIfNegativeDuration() {
         Action action = new Action();
         action.setDuration(-1);
         try {
@@ -129,13 +129,13 @@ public class ProcessorTest {
         action.setY(200);
         action.setDuration(300);
         ActionObject actionObject = processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
-        assertEquals(actionObject.getX(), 100);
-        assertEquals(actionObject.getY(), 200);
-        assertEquals(actionObject.getDuration(), new Long(300));
+        assertEquals(actionObject.getX(), 100, 1e-15);
+        assertEquals(actionObject.getY(), 200, 1e-15);
+        assertEquals(actionObject.getDuration(), new Float(300));
     }
 
     @Test
-    public void shouldRejectPointerUpOrDownIfButtonNegative() throws InvalidArgumentException {
+    public void shouldRejectPointerUpOrDownIfButtonNegative() {
         Action action = new Action();
         action.setButton(-100);
         try {
@@ -164,13 +164,13 @@ public class ProcessorTest {
         action.setType(ActionType.PAUSE);
         action.setDuration(300);
         ActionObject actionObject = processKeyAction(action, InputSourceType.KEY, "any", 0);
-        assertEquals(actionObject.getDuration(), new Long(300));
+        assertEquals(actionObject.getDuration(), new Float(300));
         assertEquals(actionObject.getSubType(), ActionType.PAUSE);
         assertEquals(actionObject.getType(), InputSourceType.KEY);
     }
 
     @Test
-    public void shouldRejectKeyIfNotUnicode() throws InvalidArgumentException {
+    public void shouldRejectKeyIfNotUnicode() {
         Action action = new Action();
         action.setType(ActionType.KEY_DOWN);
         action.setValue("asdfafsd");
@@ -211,7 +211,7 @@ public class ProcessorTest {
         action.setType(ActionType.PAUSE);
         action.setDuration(300);
         ActionObject actionObject = processPointerAction(action, pointerInputSource, "any", 0);
-        assertEquals(actionObject.getDuration(), new Long(300));
+        assertEquals(actionObject.getDuration(), new Float(300));
         assertEquals(actionObject.getSubType(), ActionType.PAUSE);
         assertEquals(actionObject.getType(), InputSourceType.POINTER);
     }
@@ -244,7 +244,7 @@ public class ProcessorTest {
     }
 
     @Test
-    public void shouldNotPassProcessorIfNoType() throws InvalidArgumentException, NotYetImplementedException {
+    public void shouldNotPassProcessorIfNoType() throws NotYetImplementedException {
         InputSource inputSource = new InputSource();
         try {
             processSourceActionSequence(inputSource, new ActiveInputSources(), new InputStateTable());
@@ -254,7 +254,7 @@ public class ProcessorTest {
     }
 
     @Test
-    public void shouldNotPassProcessorIfNoId() throws InvalidArgumentException, NotYetImplementedException {
+    public void shouldNotPassProcessorIfNoId() throws NotYetImplementedException {
         InputSource inputSource = new InputSource();
         inputSource.setType(InputSourceType.KEY);
         try {

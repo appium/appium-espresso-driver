@@ -54,8 +54,8 @@ public class TouchActionTest {
         assertEquals(actions.get(0).getType(), PAUSE);
         assertEquals(actions.get(1).getType(), PAUSE);
         Action action = actions.get(2);
-        assertEquals(action.getX(), new Long(100));
-        assertEquals(action.getY(), new Long(200));
+        assertEquals(action.getX(), 100.0, 1e-15);
+        assertEquals(action.getY(), 200.0, 1e-15);
         assertEquals(action.getType(), POINTER_MOVE);
         assertTrue(action.isOriginViewport());
     }
@@ -76,8 +76,8 @@ public class TouchActionTest {
 
             Action moveAction = actions.get(0);
             assertEquals(moveAction.getType(), POINTER_MOVE);
-            assertEquals(moveAction.getX(), new Long(100));
-            assertEquals(moveAction.getY(), new Long(200));
+            assertEquals(moveAction.getX(), 100.0, 1e-15);
+            assertEquals(moveAction.getY(), 200.0, 1e-15);
 
             Action upAction = actions.get(1);
             assertEquals(upAction.getType(), POINTER_DOWN);

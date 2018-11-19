@@ -18,15 +18,15 @@ public interface W3CActionAdapter {
     void keyUp(W3CKeyEvent keyUpEvent) throws AppiumException;
 
     void pointerDown(int button, String sourceId, PointerType pointerType,
-                     Long x, Long y, Set<Integer> depressedButtons,
+                     Float x, Float y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException;
 
     void pointerUp(int button, String sourceId, PointerType pointerType,
-                     Long x, Long y, Set<Integer> depressedButtons,
+                   Float x, Float y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException;
 
     void pointerMove(String sourceId, PointerType pointerType,
-                     long currentX, long currentY, long x, long y,
+                     float currentX, float currentY, float x, float y,
                      Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException;
 
     void pointerCancel(String sourceId, PointerType pointerType) throws AppiumException;
@@ -45,7 +45,7 @@ public interface W3CActionAdapter {
 
     int pointerMoveIntervalDuration();
 
-    void sleep(long duration) throws AppiumException;
+    void sleep(float duration) throws AppiumException;
 
     void waitForUiThread();
 

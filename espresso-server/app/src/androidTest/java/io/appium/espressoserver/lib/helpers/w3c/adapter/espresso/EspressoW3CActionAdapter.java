@@ -275,17 +275,18 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void pointerDown(int button, String sourceId, PointerType pointerType,
-                     Long x, Long y, Set<Integer> depressedButtons,
+                            Float x, Float y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer down at coordinates: %s %s %s", x, y, pointerType));
+        final Point roundedCoords = getRoundedCoordinates(x, y);
 
         if (isTouch(pointerType)) {
             // touch down actions need to be grouped together
-            multiTouchState.updateTouchState(ACTION_DOWN, sourceId, x, y, globalKeyInputState, button);
+            multiTouchState.updateTouchState(ACTION_DOWN, sourceId,  (long) roundedCoords.x, (long) roundedCoords.y, globalKeyInputState, button);
         } else {
             AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController);
-            List<Long> xList = Collections.singletonList(x);
-            List<Long> yList = Collections.singletonList(y);
+            List<Long> xList = Collections.singletonList((long) roundedCoords.x);
+            List<Long> yList = Collections.singletonList((long) roundedCoords.y);
             androidMotionEvent.pointerEvent(
                     xList, yList,
                     ACTION_DOWN, button, pointerType, globalKeyInputState, null, 0);
@@ -297,15 +298,16 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void pointerUp(int button, String sourceId, PointerType pointerType,
-                   Long x, Long y, Set<Integer> depressedButtons,
+                          Float x, Float y, Set<Integer> depressedButtons,
                    KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer up at coordinates: %s %s %s", x, y, pointerType));
+        final Point roundedCoords = getRoundedCoordinates(x, y);
         if (isTouch(pointerType)) {
             // touch up actions need to be grouped together
-            multiTouchState.updateTouchState(ACTION_UP, sourceId, x, y, globalKeyInputState, button);
+            multiTouchState.updateTouchState(ACTION_UP, sourceId, (long) roundedCoords.x, (long) roundedCoords.y, globalKeyInputState, button);
         } else {
-            List<Long> xList = Collections.singletonList(x);
-            List<Long> yList = Collections.singletonList(y);
+            List<Long> xList = Collections.singletonList((long) roundedCoords.x);
+            List<Long> yList = Collections.singletonList((long) roundedCoords.y);
             AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController);
             androidMotionEvent.pointerEvent(xList, yList,
                     ACTION_POINTER_UP, button, pointerType, globalKeyInputState, null, 0);
@@ -315,15 +317,16 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void pointerMove(String sourceId, PointerType pointerType,
-                            long currentX, long currentY, long x, long y,
+                            float currentX, float currentY, float x, float y,
                             Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer move at coordinates: %s %s %s", x, y, pointerType));
+        final Point roundedCoords = getRoundedCoordinates(x, y);
         if (isTouch(pointerType)) {
-            multiTouchState.updateTouchState(ACTION_MOVE, sourceId, x, y, globalKeyInputState, null);
+            multiTouchState.updateTouchState(ACTION_MOVE, sourceId, (long) roundedCoords.x, (long) roundedCoords.y,  globalKeyInputState, null);
             multiTouchState.pointerMove(uiController);
         } else {
             AndroidMotionEvent.getMotionEvent(sourceId, uiController)
-                    .pointerMove(Collections.singletonList(x), Collections.singletonList(y), pointerType, globalKeyInputState, null);
+                    .pointerMove(Collections.singletonList((long) roundedCoords.x), Collections.singletonList((long) roundedCoords.y), pointerType, globalKeyInputState, null);
         }
     }
 
@@ -340,7 +343,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         AndroidLogger.logger.info("Pointer event: Tick complete");
     }
 
-    public int getKeyCode(String keyValue, int location) throws AppiumException {
+    public int getKeyCode(String keyValue, int location) {
         // If it's a normalized keyvalue, map it to it's appropriate key code,
         // otherwise just return -1
         switch (keyValue) {
@@ -480,8 +483,12 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         uiController.loopMainThreadUntilIdle();
     }
 
-    public void sleep(long duration) throws AppiumException {
-        uiController.loopMainThreadForAtLeast(duration);
+    public void sleep(float duration) {
+        long roundedDuration = Math.round(duration);
+        if (duration != roundedDuration) {
+            this.getLogger().warn(String.format("Rounding provided duration %sms to %sms", duration, roundedDuration));
+        }
+        uiController.loopMainThreadForAtLeast(roundedDuration);
     }
     
     public Logger getLogger() {
@@ -494,5 +501,24 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     private boolean isTouch(PointerType type) {
         // return type == TOUCH || (type == MOUSE && isTouchScreen); // TODO Revisit this if we wish to support MOUSE on Android
         return type == TOUCH || type == MOUSE;
+    }
+
+    /**
+     * Convert [x,y] coordinates from float to long.
+     *
+     * Gives warning if the long values are different from the float values
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return Rounded x and y coordinates
+     */
+    private Point getRoundedCoordinates(float x, float y) {
+        int roundedX = Math.round(x);
+        int roundedY = Math.round(y);
+        if (x != roundedX || y != roundedY) {
+            this.getLogger().warn(String.format("Coordinates provided [%s, %s] will be rounded to integers [%s %s]", x, y, roundedX, roundedY));
+        }
+
+        return new Point(roundedX, roundedY);
     }
 }

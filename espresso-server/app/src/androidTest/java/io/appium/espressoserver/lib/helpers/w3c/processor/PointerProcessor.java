@@ -19,7 +19,6 @@ package io.appium.espressoserver.lib.helpers.w3c.processor;
 import java.util.Arrays;
 
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
-import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action;
@@ -48,7 +47,7 @@ public class PointerProcessor {
      * @throws InvalidArgumentException If failed to process, throw this. Means that args are bad.
      */
     public static ActionObject processPointerAction(Action action, InputSource inputSource, String id, int index)
-            throws InvalidArgumentException, NotYetImplementedException {
+            throws InvalidArgumentException {
 
         // 1 -2 get and validate the type
         ActionType subType = action.getType();
@@ -105,7 +104,7 @@ public class PointerProcessor {
         return actionObject;
     }
 
-    public static ActionObject processPointerCancelAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
+    public static ActionObject processPointerCancelAction(Action action, InputSourceType inputSourceType, String id, int index) {
         return new ActionObject(id, inputSourceType, action.getType(), index);
     }
 
@@ -122,7 +121,7 @@ public class PointerProcessor {
         ActionObject actionObject = new ActionObject(id, inputSourceType, action.getType(), index);
 
         // 1-3 Add the duration
-        Long duration = action.getDuration();
+        Float duration = action.getDuration();
         assertNullOrPositive(index, id, "duration", duration);
         actionObject.setDuration(duration);
 
@@ -130,11 +129,11 @@ public class PointerProcessor {
         actionObject.setOrigin(action.getOrigin());
 
         // 8-10 Add the X coordinate
-        Long x = action.getX();
+        Float x = action.getX();
         actionObject.setX(x);
 
         // 11-14 Add the Y coordinate
-        Long y = action.getY();
+        Float y = action.getY();
         actionObject.setY(y);
 
         return actionObject;

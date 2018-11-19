@@ -23,7 +23,7 @@ public class KeyDispatch {
                                                 ActionObject actionObject,
                                                 KeyInputState inputState,
                                                 InputStateTable inputStateTable,
-                                                long tickDuration, boolean down) throws AppiumException {
+                                                float tickDuration, boolean down) throws AppiumException {
         // Get the base Key Event
         W3CKeyEvent keyEvent = getKeyEvent(dispatcherAdapter, actionObject);
         String key = keyEvent.getKey();
@@ -109,7 +109,7 @@ public class KeyDispatch {
     @Nullable
     public static W3CKeyEvent dispatchKeyDown(W3CActionAdapter dispatcherAdapter,
                                               ActionObject actionObject, KeyInputState inputState,
-                                              InputStateTable inputStateTable, long tickDuration) throws AppiumException {
+                                              InputStateTable inputStateTable, float tickDuration) throws AppiumException {
 
         return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable ,tickDuration, true);
     }
@@ -134,7 +134,7 @@ public class KeyDispatch {
     @Nullable
     public static W3CKeyEvent dispatchKeyUp(W3CActionAdapter dispatcherAdapter,
                                             ActionObject actionObject, KeyInputState inputState,
-                                            InputStateTable inputStateTable, long tickDuration) throws AppiumException {
+                                            InputStateTable inputStateTable, float tickDuration) throws AppiumException {
         return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable, tickDuration, false);
     }
 

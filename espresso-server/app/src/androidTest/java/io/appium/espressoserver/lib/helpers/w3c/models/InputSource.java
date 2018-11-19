@@ -110,10 +110,10 @@ public class InputSource {
 
     public static class Action {
         private ActionType type; // type of action
-        private Long duration; // time in milliseconds
+        private Float duration; // time in milliseconds
         private Integer button; // Button that is being pressed. Defaults to 0.
-        private Long x; // x coordinate of pointer
-        private Long y; // y coordinate of pointer
+        private Float x; // x coordinate of pointer
+        private Float y; // y coordinate of pointer
         private String value; // a string containing a single Unicode code point or a number
         private Origin origin = new Origin(); // origin; could be viewport, pointer or <{element-6066-11e4-a52e-4f735466cecf: <element-uuid>}>
 
@@ -131,11 +131,11 @@ public class InputSource {
         }
 
         @Nullable
-        public Long getDuration(){
+        public Float getDuration(){
             return duration;
         }
 
-        public void setDuration(long duration){
+        public void setDuration(float duration){
             this.duration = duration;
         }
 
@@ -162,19 +162,19 @@ public class InputSource {
             return origin.getType().equalsIgnoreCase(ELEMENT_CODE);
         }
 
-        public Long getX(){
+        public Float getX(){
             return x;
         }
 
-        public void setX(long x){
+        public void setX(float x){
             this.x = x;
         }
 
-        public Long getY(){
+        public Float getY(){
             return y;
         }
 
-        public void setY(long y){
+        public void setY(float y){
             this.y = y;
         }
 
