@@ -49,16 +49,16 @@ public class ActionSequenceTest {
         assertEquals(action.getType(), POINTER);
         assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Float(0));
-        assertEquals(action.getX(), 100, 1e-15);
-        assertEquals(action.getY(), 100, 1e-15);
+        assertEquals(action.getX(), 100, Math.ulp(1.0));
+        assertEquals(action.getY(), 100, Math.ulp(1.0));
 
         action = tick.next();
         assertEquals(action.getId(), "finger2");
         assertEquals(action.getType(), POINTER);
         assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Float(10));
-        assertEquals(action.getX(), 200, 1e-15);
-        assertEquals(action.getY(), 400, 1e-15);
+        assertEquals(action.getX(), 200, Math.ulp(1.0));
+        assertEquals(action.getY(), 400, Math.ulp(1.0));
 
         assertFalse(tick.hasNext());
 
@@ -100,8 +100,8 @@ public class ActionSequenceTest {
         assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Float(1000));
         assertTrue(action.getPointer().equals(PointerType.TOUCH));
-        assertEquals(action.getX(), 20, 1e-15);
-        assertEquals(action.getY(), 0, 1e-15);
+        assertEquals(action.getX(), 20, Math.ulp(1.0));
+        assertEquals(action.getY(), 0, Math.ulp(1.0));
 
         action = tick.next();
         assertEquals(action.getId(), "finger2");
@@ -109,8 +109,8 @@ public class ActionSequenceTest {
         assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Float(1000));
         assertEquals(action.getOrigin().getType(), InputSource.POINTER);
-        assertEquals(action.getX(), 50, 1e-15);
-        assertEquals(action.getY(), 0, 1e-15);
+        assertEquals(action.getX(), 50, Math.ulp(1.0));
+        assertEquals(action.getY(), 0, Math.ulp(1.0));
 
         assertFalse(tick.hasNext());
 
@@ -204,10 +204,10 @@ public class ActionSequenceTest {
         PointerInputState finger1State = (PointerInputState) inputStateTable.getInputState("finger1");
         PointerInputState finger2State = (PointerInputState) inputStateTable.getInputState("finger2");
 
-        assertEquals(finger1State.getX(), 120, 1e-15);
-        assertEquals(finger1State.getY(), 100, 1e-15);
-        assertEquals(finger2State.getX(), 250, 1e-15);
-        assertEquals(finger2State.getY(), 400, 1e-15);
+        assertEquals(finger1State.getX(), 120, Math.ulp(1.0));
+        assertEquals(finger1State.getY(), 100, Math.ulp(1.0));
+        assertEquals(finger2State.getX(), 250, Math.ulp(1.0));
+        assertEquals(finger2State.getY(), 400, Math.ulp(1.0));
     }
 
     @Test

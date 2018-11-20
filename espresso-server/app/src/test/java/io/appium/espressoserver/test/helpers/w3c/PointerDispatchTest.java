@@ -86,8 +86,8 @@ public class PointerDispatchTest {
 
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
         assertEquals(dummyW3CActionAdapter.getPointerMoveEvents().size(), 1);
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30, 1e-15);
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40, 1e-15);
+        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30, Math.ulp(1.0));
+        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40, Math.ulp(1.0));
     }
 
     @Test
@@ -116,10 +116,10 @@ public class PointerDispatchTest {
 
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
         assertTrue(Math.abs(pointerMoveEvents.size() - 20) <= 2); // Should be 20 moves per the 1 second (give or take 1)
-        assertEquals(pointerMoveEvents.get(0).currentX, 10, 1e-15);
-        assertEquals(pointerMoveEvents.get(0).currentY, 20, 1e-15);
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30, 1e-15);
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40, 1e-15);
+        assertEquals(pointerMoveEvents.get(0).currentX, 10, Math.ulp(1.0));
+        assertEquals(pointerMoveEvents.get(0).currentY, 20, Math.ulp(1.0));
+        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30, Math.ulp(1.0));
+        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40, Math.ulp(1.0));
 
         float prevX = 10;
         float prevY = 10;
@@ -134,8 +134,8 @@ public class PointerDispatchTest {
             prevY = currY;
         }
 
-        assertEquals(pointerInputSource.getX(), 30, 1e-15);
-        assertEquals(pointerInputSource.getY(), 40, 1e-15);
+        assertEquals(pointerInputSource.getX(), 30, Math.ulp(1.0));
+        assertEquals(pointerInputSource.getY(), 40, Math.ulp(1.0));
     }
 
     @Test
@@ -271,8 +271,8 @@ public class PointerDispatchTest {
             executorService.submit(callable).get();
             executorService.shutdown();
 
-            assertEquals(pointerInputState.getX(), expectedX[i], 1e-15);
-            assertEquals(pointerInputState.getY(), expectedY[i], 1e-15);
+            assertEquals(pointerInputState.getX(), expectedX[i], Math.ulp(1.0));
+            assertEquals(pointerInputState.getY(), expectedY[i], Math.ulp(1.0));
         }
     }
 

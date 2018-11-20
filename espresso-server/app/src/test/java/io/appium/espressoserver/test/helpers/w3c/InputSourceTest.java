@@ -63,9 +63,9 @@ public class InputSourceTest {
         List<Action> actions = inputSource.getActions();
         Action actionOne = actions.get(0);
         assertEquals(actionOne.getType(), ActionType.POINTER_MOVE);
-        assertEquals(actionOne.getDuration(), 0.0, 1e-15);
-        assertEquals(actionOne.getX(), 100.0, 1e-15);
-        assertEquals(actionOne.getY(), 200.0, 1e-15);
+        assertEquals(actionOne.getDuration(), 0.0, Math.ulp(1.0));
+        assertEquals(actionOne.getX(), 100.0, Math.ulp(1.0));
+        assertEquals(actionOne.getY(), 200.0, Math.ulp(1.0));
 
         Action actionTwo = actions.get(1);
         assertEquals(actionTwo.getType(), ActionType.POINTER_DOWN);
@@ -73,15 +73,15 @@ public class InputSourceTest {
 
         Action actionThree = actions.get(2);
         assertEquals(actionThree.getType(), ActionType.PAUSE);
-        assertEquals(actionThree.getDuration(), 500.0, 1e-15);
+        assertEquals(actionThree.getDuration(), 500.0, Math.ulp(1.0));
 
         Action actionFour = actions.get(3);
         assertEquals(actionFour.getType(), ActionType.POINTER_MOVE);
-        assertEquals(actionFour.getDuration(), 1000.0, 1e-15);
+        assertEquals(actionFour.getDuration(), 1000.0, Math.ulp(1.0));
         assertEquals(actionFour.getOrigin().getType(), "pointer");
         assertTrue(actionFour.isOriginPointer());
-        assertEquals(actionFour.getX(), 50.0, 1e-15);
-        assertEquals(actionFour.getY(), 10.0, 1e-15);
+        assertEquals(actionFour.getX(), 50.0, Math.ulp(1.0));
+        assertEquals(actionFour.getY(), 10.0, Math.ulp(1.0));
 
         Action actionFive = actions.get(4);
         assertEquals(actionFive.getType(), ActionType.POINTER_UP);

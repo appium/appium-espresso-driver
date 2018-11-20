@@ -47,7 +47,7 @@ public class TickTest {
     public void shouldCalculateMaxDurationZeroIfNoDurations() {
         Tick tick = new Tick();
         tick.addAction(new ActionObject());
-        assertEquals(tick.calculateTickDuration(), 0, 1e-15);
+        assertEquals(tick.calculateTickDuration(), 0, Math.ulp(1.0));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class TickTest {
             tick.addAction(actionObjectTwo);
             tick.addAction(actionObjectThree);
 
-            assertEquals(tick.calculateTickDuration(), expectedMax[i], 1e-15);
+            assertEquals(tick.calculateTickDuration(), expectedMax[i], Math.ulp(1.0));
         }
     }
 

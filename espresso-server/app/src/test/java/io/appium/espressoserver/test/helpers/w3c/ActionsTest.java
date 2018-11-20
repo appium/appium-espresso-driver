@@ -62,10 +62,10 @@ public class ActionsTest {
         PointerInputState finger2 = (PointerInputState) inputStateTable.getInputState("finger2");
 
         // Check the state
-        assertEquals(finger1.getX(), 120, 1e-15);
-        assertEquals(finger1.getY(), 100, 1e-15);
-        assertEquals(finger2.getX(), 250, 1e-15);
-        assertEquals(finger2.getY(), 400, 1e-15);
+        assertEquals(finger1.getX(), 120, Math.ulp(1.0));
+        assertEquals(finger1.getY(), 100, Math.ulp(1.0));
+        assertEquals(finger2.getX(), 250, Math.ulp(1.0));
+        assertEquals(finger2.getY(), 400, Math.ulp(1.0));
 
         // Sanity check that it's recording pointer move events
         List<PointerMoveEvent> pointerMoveEvents = ((DummyW3CActionAdapter) actions.getAdapter()).getPointerMoveEvents();

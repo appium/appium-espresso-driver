@@ -278,7 +278,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                             Float x, Float y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer down at coordinates: %s %s %s", x, y, pointerType));
-        final Point roundedCoords = getRoundedCoordinates(x, y);
+        final Point roundedCoords = toCoordinates(x, y);
 
         if (isTouch(pointerType)) {
             // touch down actions need to be grouped together
@@ -301,7 +301,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                           Float x, Float y, Set<Integer> depressedButtons,
                    KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer up at coordinates: %s %s %s", x, y, pointerType));
-        final Point roundedCoords = getRoundedCoordinates(x, y);
+        final Point roundedCoords = toCoordinates(x, y);
         if (isTouch(pointerType)) {
             // touch up actions need to be grouped together
             multiTouchState.updateTouchState(ACTION_UP, sourceId, (long) roundedCoords.x, (long) roundedCoords.y, globalKeyInputState, button);
@@ -320,7 +320,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
                             float currentX, float currentY, float x, float y,
                             Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer move at coordinates: %s %s %s", x, y, pointerType));
-        final Point roundedCoords = getRoundedCoordinates(x, y);
+        final Point roundedCoords = toCoordinates(x, y);
         if (isTouch(pointerType)) {
             multiTouchState.updateTouchState(ACTION_MOVE, sourceId, (long) roundedCoords.x, (long) roundedCoords.y,  globalKeyInputState, null);
             multiTouchState.pointerMove(uiController);
@@ -512,7 +512,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
      * @param y Y coordinate
      * @return Rounded x and y coordinates
      */
-    private Point getRoundedCoordinates(float x, float y) {
+    private Point toCoordinates(float x, float y) {
         int roundedX = Math.round(x);
         int roundedY = Math.round(y);
         if (x != roundedX || y != roundedY) {
