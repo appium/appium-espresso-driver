@@ -208,15 +208,15 @@ public class TickTest {
             @Override
             public void pointerMove(String sourceIdCalled,
                                     PointerType pointerType,
-                                    float currentX, float currentY,
-                                    float x, float y,
+                                    Float currentX, Float currentY,
+                                    Float x, Float y,
                                     Set<Integer> buttons,
                                     KeyInputState globalKeyInputState) {
                 assertEquals(pointerType, TOUCH);
-                assertEquals(currentX, 5L);
-                assertEquals(currentY, 6L);
-                assertEquals(x, 10L);
-                assertEquals(y, 20L);
+                assertEquals(currentX, new Float(5));
+                assertEquals(currentY, new Float(6));
+                assertEquals(x, new Float(10));
+                assertEquals(y, new Float(20));
                 assertTrue(buttons.contains(0));
                 assertTrue(buttons.contains(1));
                 assertTrue(globalKeyInputState.isShift());

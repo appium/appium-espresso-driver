@@ -9,7 +9,7 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
 
     private static ReentrantLock reentrantLock = new ReentrantLock();
 
-    public int getKeyCode(String keyValue, int location) throws AppiumException {
+    public int getKeyCode(String keyValue, int location) {
         return Character.getNumericValue(keyValue.charAt(0));
     }
 
@@ -52,7 +52,7 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
         return 5;
     }
 
-    public void sleep(float duration) throws AppiumException {
+    public void sleep(Float duration) throws AppiumException {
         try {
             Thread.sleep(Math.round(duration));
         } catch (InterruptedException ie) {
