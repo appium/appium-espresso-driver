@@ -213,10 +213,10 @@ public class TickTest {
                                     Set<Integer> buttons,
                                     KeyInputState globalKeyInputState) {
                 assertEquals(pointerType, TOUCH);
-                assertEquals(currentX, new Float(5));
-                assertEquals(currentY, new Float(6));
-                assertEquals(x, new Float(10));
-                assertEquals(y, new Float(20));
+                assertEquals(currentX, 5, Math.ulp(1.0));
+                assertEquals(currentY, 6, Math.ulp(1.0));
+                assertEquals(x, 10, Math.ulp(1.0));
+                assertEquals(y, 20, Math.ulp(1.0));
                 assertTrue(buttons.contains(0));
                 assertTrue(buttons.contains(1));
                 assertTrue(globalKeyInputState.isShift());
