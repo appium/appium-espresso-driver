@@ -12,18 +12,18 @@ public class DispatchPointerMoveResult extends BaseDispatchResult {
     private W3CActionAdapter dispatcherAdapter;
     private String sourceId;
     private InputSource.PointerType pointerType;
-    private long currentX;
-    private long currentY;
-    private long x;
-    private long y;
+    private float currentX;
+    private float currentY;
+    private float x;
+    private float y;
     private Set<Integer> buttons;
     private KeyInputState globalKeyInputState;
 
     public DispatchPointerMoveResult(final W3CActionAdapter dispatcherAdapter,
                                      final String sourceId,
                                      final InputSource.PointerType pointerType,
-                                     final long currentX, final long currentY,
-                                     final long x, final long y,
+                                     final float currentX, final float currentY,
+                                     final float x, final float y,
                                      final Set<Integer> buttons,
                                      final KeyInputState globalKeyInputState) {
         this.dispatcherAdapter = dispatcherAdapter;

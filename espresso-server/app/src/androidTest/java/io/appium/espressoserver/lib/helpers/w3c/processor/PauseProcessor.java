@@ -54,7 +54,7 @@ public class PauseProcessor {
      * @throws InvalidArgumentException If failed to process, throw this. Means that args are bad.
      */
     public static ActionObject processPauseAction(Action action, InputSourceType inputSourceType, String id, int index) throws InvalidArgumentException {
-        Long duration = action.getDuration();
+        Float duration = action.getDuration();
         assertNullOrPositive(index, id, "duration", duration);
         ActionObject actionObject = new ActionObject(id, inputSourceType, PAUSE, index);
         actionObject.setDuration(duration);

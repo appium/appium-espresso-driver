@@ -52,9 +52,9 @@ public abstract class BaseW3CActionAdapter implements W3CActionAdapter {
         return 5;
     }
 
-    public void sleep(long duration) throws AppiumException {
+    public void sleep(float duration) throws AppiumException {
         try {
-            Thread.sleep(duration);
+            Thread.sleep(Math.round(duration));
         } catch (InterruptedException ie) {
             throw new AppiumException(String.format("Could not run 'sleep' method: %s", ie.getCause()));
         }

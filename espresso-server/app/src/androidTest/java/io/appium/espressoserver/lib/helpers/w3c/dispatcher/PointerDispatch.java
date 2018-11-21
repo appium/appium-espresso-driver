@@ -43,8 +43,8 @@ public class PointerDispatch {
                 return;
             }
         }
-        Long x = pointerInputState.getX();
-        Long y = pointerInputState.getY();
+        Float x = pointerInputState.getX();
+        Float y = pointerInputState.getY();
         if (down) {
             pointerInputState.addPressed(button);
         } else {
@@ -145,14 +145,14 @@ public class PointerDispatch {
                                                      final String sourceId,
                                                      final ActionObject actionObject,
                                                      final PointerInputState pointerInputState,
-                                                     final long tickDuration,
+                                                     final float tickDuration,
                                                      final long timeAtBeginningOfTick,
                                                      final KeyInputState globalKeyInputState) throws AppiumException {
         // 1.5 Variable definitions
-        long xOffset = actionObject.getX();
-        long yOffset = actionObject.getY();
-        long startX = pointerInputState.getX();
-        long startY = pointerInputState.getY();
+        float xOffset = actionObject.getX();
+        float yOffset = actionObject.getY();
+        float startX = pointerInputState.getX();
+        float startY = pointerInputState.getY();
         Origin origin = actionObject.getOrigin();
         
         dispatcherAdapter.getLogger().info(String.format(
@@ -160,8 +160,8 @@ public class PointerDispatch {
             pointerInputState.getType(), sourceId, origin, xOffset, yOffset
         ));
 
-        long x;
-        long y;
+        float x;
+        float y;
 
         // 6. Run the substeps of the first matching value of origin
         String originType = origin.getType();
@@ -199,7 +199,7 @@ public class PointerDispatch {
         }
 
         // 9. Let duration be equal to action object's duration property if it is not undefined, or tick duration otherwise
-        Long duration = actionObject.getDuration();
+        Float duration = actionObject.getDuration();
         if (duration == null) {
             duration = tickDuration;
         }
@@ -239,9 +239,9 @@ public class PointerDispatch {
     public static Callable<BaseDispatchResult> performPointerMove(final W3CActionAdapter dispatcherAdapter,
                                                     final String sourceId,
                                                     final PointerInputState pointerInputState,
-                                                    final long duration,
-                                                    final long startX, final long startY,
-                                                    final long targetX, final long targetY,
+                                                    final float duration,
+                                                    final float startX, final float startY,
+                                                    final float targetX, final float targetY,
                                                     final long timeAtBeginningOfTick,
                                                     final KeyInputState globalKeyInputState) {
         return new Callable<BaseDispatchResult>() {
@@ -253,7 +253,7 @@ public class PointerDispatch {
                 long timeDelta = System.currentTimeMillis() - timeAtBeginningOfTick;
 
                 // 3. Let duration ratio be the ratio of time delta and duration, if duration is greater than 0, or 1 otherwise
-                float durationRatio = duration > 0 ? timeDelta / ((float) duration) : 1;
+                float durationRatio = duration > 0 ? timeDelta / duration : 1;
 
                 // 4. If duration ratio is 1, or close enough to 1 that the implementation will not further subdivide the move action,
                 //    let last be true. Otherwise let last be false
@@ -261,12 +261,12 @@ public class PointerDispatch {
 
                 // 5. If last is true, let x equal target x and y equal target y
                 // 6. Otherwise let x equal an approximation to duration ratio × (target x - start x) + start x,, ...
-                final long x = isLast ? targetX : Math.round(durationRatio * (targetX - startX)) + startX;
-                final long y = isLast ? targetY : Math.round(durationRatio * (targetY - startY)) + startY;
+                final float x = isLast ? targetX : Math.round(durationRatio * (targetX - startX)) + startX;
+                final float y = isLast ? targetY : Math.round(durationRatio * (targetY - startY)) + startY;
 
                 // 7-8: Let currentX and currentY be pointer input state
-                final long currentX = pointerInputState.getX();
-                final long currentY = pointerInputState.getY();
+                final float currentX = pointerInputState.getX();
+                final float currentY = pointerInputState.getY();
 
                 // Prepare the result
                 DispatchPointerMoveResult dispatchResult = new DispatchPointerMoveResult(

@@ -86,8 +86,8 @@ public class PointerDispatchTest {
 
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
         assertEquals(dummyW3CActionAdapter.getPointerMoveEvents().size(), 1);
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30);
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40);
+        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30, Math.ulp(1.0));
+        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40, Math.ulp(1.0));
     }
 
     @Test
@@ -116,15 +116,15 @@ public class PointerDispatchTest {
 
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
         assertTrue(Math.abs(pointerMoveEvents.size() - 20) <= 2); // Should be 20 moves per the 1 second (give or take 1)
-        assertEquals(pointerMoveEvents.get(0).currentX, 10);
-        assertEquals(pointerMoveEvents.get(0).currentY, 20);
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30);
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40);
+        assertEquals(pointerMoveEvents.get(0).currentX, 10, Math.ulp(1.0));
+        assertEquals(pointerMoveEvents.get(0).currentY, 20, Math.ulp(1.0));
+        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30, Math.ulp(1.0));
+        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40, Math.ulp(1.0));
 
-        long prevX = 10;
-        long prevY = 10;
-        long currX;
-        long currY;
+        float prevX = 10;
+        float prevY = 10;
+        float currX;
+        float currY;
         for(PointerMoveEvent pointerMoveEvent:pointerMoveEvents) {
             currX = pointerMoveEvent.x;
             currY = pointerMoveEvent.y;
@@ -134,8 +134,8 @@ public class PointerDispatchTest {
             prevY = currY;
         }
 
-        assertEquals(pointerInputSource.getX(), 30);
-        assertEquals(pointerInputSource.getY(), 40);
+        assertEquals(pointerInputSource.getX(), 30, Math.ulp(1.0));
+        assertEquals(pointerInputSource.getY(), 40, Math.ulp(1.0));
     }
 
     @Test
@@ -223,8 +223,8 @@ public class PointerDispatchTest {
             ActionObject actionObject = new ActionObject(
                     "id", InputSourceType.POINTER, POINTER_MOVE, 0
             );
-            actionObject.setX(badX[i]);
-            actionObject.setY(badY[i]);
+            actionObject.setX((float) badX[i]);
+            actionObject.setY((float) badY[i]);
             actionObject.setOrigin(new Origin(badOrigin[i]));
 
             try {
@@ -261,8 +261,8 @@ public class PointerDispatchTest {
             ActionObject actionObject = new ActionObject(
                     "id", InputSourceType.POINTER, POINTER_MOVE, 0
             );
-            actionObject.setX(xCoords[i]);
-            actionObject.setY(yCoords[i]);
+            actionObject.setX((float) xCoords[i]);
+            actionObject.setY((float) yCoords[i]);
             actionObject.setOrigin(new Origin(origins[i]));
 
             ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -271,8 +271,8 @@ public class PointerDispatchTest {
             executorService.submit(callable).get();
             executorService.shutdown();
 
-            assertEquals(pointerInputState.getX(), expectedX[i]);
-            assertEquals(pointerInputState.getY(), expectedY[i]);
+            assertEquals(pointerInputState.getX(), expectedX[i], Math.ulp(1.0));
+            assertEquals(pointerInputState.getY(), expectedY[i], Math.ulp(1.0));
         }
     }
 
@@ -303,7 +303,7 @@ public class PointerDispatchTest {
         class TempDummyAdapter extends DummyW3CActionAdapter {
             @Override
             public void pointerDown(int button, String sourceId, PointerType pointerType,
-                                    Long x, Long y, Set<Integer> depressedButtons,
+                                    Float x, Float y, Set<Integer> depressedButtons,
                                     KeyInputState globalKeyInputState) throws AppiumException {
                 throw new AppiumException("Should not reach this point. Button already pressed.");
             }
@@ -347,7 +347,7 @@ public class PointerDispatchTest {
         class TempDummyAdapter extends DummyW3CActionAdapter {
             @Override
             public void pointerUp(int button, String sourceId, PointerType pointerType,
-                                  Long x, Long y, Set<Integer> depressedButtons,
+                                  Float x, Float y, Set<Integer> depressedButtons,
                                   KeyInputState globalKeyInputState) throws AppiumException {
                 throw new AppiumException("Should not reach this point. Button already pressed.");
             }

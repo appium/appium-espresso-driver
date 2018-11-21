@@ -24,10 +24,10 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
     public static class PointerMoveEvent {
         public String sourceId;
         public PointerType pointerType;
-        public long currentX;
-        public long currentY;
-        public long x;
-        public long y;
+        public float currentX;
+        public float currentY;
+        public float x;
+        public float y;
         public Set<Integer> buttons;
         public KeyInputState globalKeyInputState;
     }
@@ -45,6 +45,9 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
         public void debug(Object... messages) {
             // No-op
         }
+        public void warn(Object... messages) {
+            // No-op
+        }
     }
 
     public void keyDown(W3CKeyEvent keyEvent) {
@@ -56,18 +59,18 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void pointerUp(int button, String sourceId, PointerType pointerType,
-                            Long x, Long y, Set<Integer> depressedButtons,
+                            Float x, Float y, Set<Integer> depressedButtons,
                             KeyInputState globalKeyInputState) throws AppiumException {
         // No-op
     }
 
     public void pointerDown(int button, String sourceId, PointerType pointerType,
-                     Long x, Long y, Set<Integer> depressedButtons,
+                            Float x, Float y, Set<Integer> depressedButtons,
                      KeyInputState globalKeyInputState) throws AppiumException {
         // No-op
     }
 
-    public void pointerCancel(String sourceId, PointerType pointerType) throws AppiumException {
+    public void pointerCancel(String sourceId, PointerType pointerType) {
         // No-op
     }
 
@@ -85,7 +88,7 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void pointerMove(String sourceId, PointerType pointerType,
-                            long currentX, long currentY, long x, long y,
+                            float currentX, float currentY, float x, float y,
                             Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
         // Add the pointer move event to the logs
         PointerMoveEvent pointerMoveEvent = new PointerMoveEvent();

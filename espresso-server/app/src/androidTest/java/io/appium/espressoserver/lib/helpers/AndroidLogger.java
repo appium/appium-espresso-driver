@@ -47,5 +47,9 @@ public class AndroidLogger implements Logger {
         android.util.Log.d(TAG, toString(messages));
     }
 
+    public void warn(Object... messages) {
+        android.util.Log.w(TAG, toString(messages));
+    }
+
     public static Logger logger = new AndroidLogger();
 }

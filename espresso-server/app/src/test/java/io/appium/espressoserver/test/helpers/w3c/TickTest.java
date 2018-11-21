@@ -44,10 +44,10 @@ import static org.junit.Assert.fail;
 public class TickTest {
 
     @Test
-    public void shouldCalculateMaxDurationZeroIfNoDurations() throws ExecutionException, InterruptedException {
+    public void shouldCalculateMaxDurationZeroIfNoDurations() {
         Tick tick = new Tick();
         tick.addAction(new ActionObject());
-        assertEquals(tick.calculateTickDuration(), 0);
+        assertEquals(tick.calculateTickDuration(), 0, Math.ulp(1.0));
     }
 
     @Test
@@ -62,12 +62,12 @@ public class TickTest {
             ActionObject actionObjectOne = new ActionObject();
             actionObjectOne.setType(NONE);
             actionObjectOne.setSubType(PAUSE);
-            actionObjectOne.setDuration(valueOne[i]);
+            actionObjectOne.setDuration((float) valueOne[i]);
 
             ActionObject actionObjectTwo = new ActionObject();
             actionObjectTwo.setType(POINTER);
             actionObjectTwo.setSubType(POINTER_MOVE);
-            actionObjectTwo.setDuration(valueTwo[i]);
+            actionObjectTwo.setDuration((float) valueTwo[i]);
 
             ActionObject actionObjectThree = new ActionObject();
             actionObjectTwo.setType(POINTER);
@@ -77,7 +77,7 @@ public class TickTest {
             tick.addAction(actionObjectTwo);
             tick.addAction(actionObjectThree);
 
-            assertEquals(tick.calculateTickDuration(), expectedMax[i]);
+            assertEquals(tick.calculateTickDuration(), expectedMax[i], Math.ulp(1.0));
         }
     }
 
@@ -188,16 +188,16 @@ public class TickTest {
         ActionObject actionObjectOne = new ActionObject(sourceId, POINTER, null, 0);
         actionObjectOne.setSubType(POINTER_MOVE);
         actionObjectOne.setPointer(TOUCH);
-        actionObjectOne.setX(10L);
-        actionObjectOne.setY(20L);
+        actionObjectOne.setX(10.0F);
+        actionObjectOne.setY(20.0F);
         actionObjectOne.setOrigin(new Origin(VIEWPORT));
 
         // Construct another pointer move event
         ActionObject actionObjectTwo = new ActionObject(sourceId2, POINTER, null, 0);
         actionObjectTwo.setSubType(POINTER_MOVE);
         actionObjectTwo.setPointer(TOUCH);
-        actionObjectTwo.setX(10L);
-        actionObjectTwo.setY(20L);
+        actionObjectTwo.setX(10.0F);
+        actionObjectTwo.setY(20.0F);
         actionObjectTwo.setOrigin(new Origin(VIEWPORT));
 
         // Add two pointer move actions to verify that they can run on multiple threads separately
@@ -208,10 +208,10 @@ public class TickTest {
             @Override
             public void pointerMove(String sourceIdCalled,
                                     PointerType pointerType,
-                                    long currentX, long currentY,
-                                    long x, long y,
+                                    float currentX, float currentY,
+                                    float x, float y,
                                     Set<Integer> buttons,
-                                    KeyInputState globalKeyInputState) throws AppiumException {
+                                    KeyInputState globalKeyInputState) {
                 assertEquals(pointerType, TOUCH);
                 assertEquals(currentX, 5L);
                 assertEquals(currentY, 6L);
@@ -221,7 +221,7 @@ public class TickTest {
                 assertTrue(buttons.contains(1));
                 assertTrue(globalKeyInputState.isShift());
             }
-        };
+        }
 
         final W3CActionAdapter dummyAdapter = new ExtendedDummyW3CActionAdapter();
 

@@ -76,7 +76,7 @@ public class ActionSequence implements Iterator<Tick> {
         int tickIndex = 0;
         for(Tick tick: ticks) {
             long timeAtBeginningOfTick = System.currentTimeMillis();
-            long tickDuration = tick.calculateTickDuration();
+            float tickDuration = tick.calculateTickDuration();
 
             // 1. Dispatch all of the events
             adapter.getLogger().info(String.format(
@@ -112,9 +112,9 @@ public class ActionSequence implements Iterator<Tick> {
             }
 
             //  2.2 At least tick duration milliseconds have passed
-            long timeSinceBeginningOfTick = System.currentTimeMillis() - timeAtBeginningOfTick;
+            float timeSinceBeginningOfTick = System.currentTimeMillis() - timeAtBeginningOfTick;
             if (timeSinceBeginningOfTick < tickDuration) {
-                long timeToSleep = tickDuration - timeSinceBeginningOfTick;
+                float timeToSleep = tickDuration - timeSinceBeginningOfTick;
                 adapter.getLogger().info(String.format("Wait for tick to finish for %s ms", timeToSleep));
                 adapter.sleep(timeToSleep);
             }

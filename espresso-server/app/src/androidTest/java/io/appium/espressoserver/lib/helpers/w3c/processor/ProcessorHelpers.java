@@ -21,6 +21,10 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 @SuppressWarnings("unused")
 public class ProcessorHelpers {
     public static boolean isNullOrPositive(Long num) {
+        return isNullOrPositive((float) num);
+    }
+
+    public static boolean isNullOrPositive(Float num) {
         return num == null || num >= 0;
     }
 
@@ -30,6 +34,10 @@ public class ProcessorHelpers {
     }
 
     public static void assertNullOrPositive(int index, String id, String propertyName, Long propertyValue) throws InvalidArgumentException {
+        assertNullOrPositive(index, id, propertyName, (float) propertyValue);
+    }
+
+    public static void assertNullOrPositive(int index, String id, String propertyName, Float propertyValue) throws InvalidArgumentException {
         if (!isNullOrPositive(propertyValue)) {
             throwArgException(index, id, String.format(
                     "must have property '%s' be greater than or equal to 0 or undefined. Found %s", propertyName, propertyValue)
