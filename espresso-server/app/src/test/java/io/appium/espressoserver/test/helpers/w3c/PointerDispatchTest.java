@@ -37,6 +37,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTER;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
+import static io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -86,8 +87,8 @@ public class PointerDispatchTest {
 
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
         assertEquals(dummyW3CActionAdapter.getPointerMoveEvents().size(), 1);
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30, Math.ulp(1.0));
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40, Math.ulp(1.0));
+        assertFloatEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30);
+        assertFloatEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40);
     }
 
     @Test
@@ -116,10 +117,10 @@ public class PointerDispatchTest {
 
         List<PointerMoveEvent> pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents();
         assertTrue(Math.abs(pointerMoveEvents.size() - 20) <= 2); // Should be 20 moves per the 1 second (give or take 1)
-        assertEquals(pointerMoveEvents.get(0).currentX, 10, Math.ulp(1.0));
-        assertEquals(pointerMoveEvents.get(0).currentY, 20, Math.ulp(1.0));
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30, Math.ulp(1.0));
-        assertEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40, Math.ulp(1.0));
+        assertFloatEquals(pointerMoveEvents.get(0).currentX, 10);
+        assertFloatEquals(pointerMoveEvents.get(0).currentY, 20);
+        assertFloatEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).x, 30);
+        assertFloatEquals(pointerMoveEvents.get(pointerMoveEvents.size() - 1).y, 40);
 
         float prevX = 10;
         float prevY = 10;
@@ -134,8 +135,8 @@ public class PointerDispatchTest {
             prevY = currY;
         }
 
-        assertEquals(pointerInputSource.getX(), 30, Math.ulp(1.0));
-        assertEquals(pointerInputSource.getY(), 40, Math.ulp(1.0));
+        assertFloatEquals(pointerInputSource.getX(), 30);
+        assertFloatEquals(pointerInputSource.getY(), 40);
     }
 
     @Test
@@ -271,8 +272,8 @@ public class PointerDispatchTest {
             executorService.submit(callable).get();
             executorService.shutdown();
 
-            assertEquals(pointerInputState.getX(), expectedX[i], Math.ulp(1.0));
-            assertEquals(pointerInputState.getY(), expectedY[i], Math.ulp(1.0));
+            assertFloatEquals(pointerInputState.getX(), expectedX[i]);
+            assertFloatEquals(pointerInputState.getY(), expectedY[i]);
         }
     }
 

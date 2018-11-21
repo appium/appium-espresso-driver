@@ -26,7 +26,7 @@ public interface W3CActionAdapter {
                      KeyInputState globalKeyInputState) throws AppiumException;
 
     void pointerMove(String sourceId, PointerType pointerType,
-                     float currentX, float currentY, float x, float y,
+                     Float currentX, Float currentY, Float x, Float y,
                      Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException;
 
     void pointerCancel(String sourceId, PointerType pointerType) throws AppiumException;
@@ -45,7 +45,7 @@ public interface W3CActionAdapter {
 
     int pointerMoveIntervalDuration();
 
-    void sleep(float duration) throws AppiumException;
+    void sleep(Float duration) throws AppiumException;
 
     void waitForUiThread();
 

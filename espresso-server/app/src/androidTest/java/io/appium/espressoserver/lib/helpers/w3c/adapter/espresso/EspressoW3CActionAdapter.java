@@ -317,7 +317,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void pointerMove(String sourceId, PointerType pointerType,
-                            float currentX, float currentY, float x, float y,
+                            Float currentX, Float currentY, Float x, Float y,
                             Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
         this.getLogger().info(String.format("Running pointer move at coordinates: %s %s %s", x, y, pointerType));
         final Point roundedCoords = toCoordinates(x, y);
@@ -483,7 +483,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
         uiController.loopMainThreadUntilIdle();
     }
 
-    public void sleep(float duration) {
+    public void sleep(Float duration) {
         long roundedDuration = Math.round(duration);
         if (duration != roundedDuration) {
             this.getLogger().warn(String.format("Rounding provided duration %sms to %sms", duration, roundedDuration));
@@ -512,7 +512,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
      * @param y Y coordinate
      * @return Rounded x and y coordinates
      */
-    private Point toCoordinates(float x, float y) {
+    private Point toCoordinates(Float x, Float y) {
         int roundedX = Math.round(x);
         int roundedY = Math.round(y);
         if (x != roundedX || y != roundedY) {

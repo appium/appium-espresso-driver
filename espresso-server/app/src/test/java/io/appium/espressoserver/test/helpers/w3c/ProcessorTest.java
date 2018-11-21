@@ -25,6 +25,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.processor.PauseProcessor.
 import static io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerAction;
 import static io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerMoveAction;
 import static io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerUpOrDownAction;
+import static io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
@@ -129,8 +130,8 @@ public class ProcessorTest {
         action.setY(200);
         action.setDuration(300);
         ActionObject actionObject = processPointerMoveAction(action, InputSourceType.POINTER, "any", 0);
-        assertEquals(actionObject.getX(), 100, Math.ulp(1.0));
-        assertEquals(actionObject.getY(), 200, Math.ulp(1.0));
+        assertFloatEquals(actionObject.getX(), 100);
+        assertFloatEquals(actionObject.getY(), 200);
         assertEquals(actionObject.getDuration(), new Float(300));
     }
 

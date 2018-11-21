@@ -88,8 +88,8 @@ public class DummyW3CActionAdapter extends BaseW3CActionAdapter {
     }
 
     public void pointerMove(String sourceId, PointerType pointerType,
-                            float currentX, float currentY, float x, float y,
-                            Set<Integer> buttons, KeyInputState globalKeyInputState) throws AppiumException {
+                            Float currentX, Float currentY, Float x, Float y,
+                            Set<Integer> buttons, KeyInputState globalKeyInputState) {
         // Add the pointer move event to the logs
         PointerMoveEvent pointerMoveEvent = new PointerMoveEvent();
         pointerMoveEvent.sourceId = sourceId;

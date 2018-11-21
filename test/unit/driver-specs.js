@@ -19,7 +19,7 @@ describe('driver', function () {
       sandbox.stub(driver, 'initEspressoServer');
       sandbox.stub(driver, 'addDeviceInfoToCaps');
       driver.espresso = new EspressoRunner({
-        adb: new ADB.createADB(), tmpDir: 'tmp', systemPort: 4724, host: 'localhost', devicePort: 6790, appPackage: driver.caps.appPackage, forceEspressoRebuild: false
+        adb: ADB.createADB(), tmpDir: 'tmp', systemPort: 4724, host: 'localhost', devicePort: 6790, appPackage: driver.caps.appPackage, forceEspressoRebuild: false
       });
       sandbox.stub(driver.espresso, 'startSession');
     });

@@ -26,6 +26,7 @@ import static io.appium.espressoserver.lib.model.TouchAction.ActionType.LONG_PRE
 import static io.appium.espressoserver.lib.model.TouchAction.ActionType.MOVE_TO;
 import static io.appium.espressoserver.lib.model.TouchAction.ActionType.PRESS;
 import static io.appium.espressoserver.lib.model.TouchAction.ActionType.TAP;
+import static io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -54,8 +55,8 @@ public class TouchActionTest {
         assertEquals(actions.get(0).getType(), PAUSE);
         assertEquals(actions.get(1).getType(), PAUSE);
         Action action = actions.get(2);
-        assertEquals(action.getX(), 100.0, Math.ulp(1.0));
-        assertEquals(action.getY(), 200.0, Math.ulp(1.0));
+        assertFloatEquals(action.getX(), 100);
+        assertFloatEquals(action.getY(), 200);
         assertEquals(action.getType(), POINTER_MOVE);
         assertTrue(action.isOriginViewport());
     }
@@ -76,8 +77,8 @@ public class TouchActionTest {
 
             Action moveAction = actions.get(0);
             assertEquals(moveAction.getType(), POINTER_MOVE);
-            assertEquals(moveAction.getX(), 100.0, Math.ulp(1.0));
-            assertEquals(moveAction.getY(), 200.0, Math.ulp(1.0));
+            assertFloatEquals(moveAction.getX(), 100);
+            assertFloatEquals(moveAction.getY(), 200);
 
             Action upAction = actions.get(1);
             assertEquals(upAction.getType(), POINTER_DOWN);
