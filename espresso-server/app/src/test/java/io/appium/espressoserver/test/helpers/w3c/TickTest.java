@@ -36,6 +36,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputS
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
+import static io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -47,7 +48,7 @@ public class TickTest {
     public void shouldCalculateMaxDurationZeroIfNoDurations() {
         Tick tick = new Tick();
         tick.addAction(new ActionObject());
-        assertEquals(tick.calculateTickDuration(), 0, Math.ulp(1.0));
+        assertFloatEquals(tick.calculateTickDuration(), 0);
     }
 
     @Test
@@ -77,7 +78,7 @@ public class TickTest {
             tick.addAction(actionObjectTwo);
             tick.addAction(actionObjectThree);
 
-            assertEquals(tick.calculateTickDuration(), expectedMax[i], Math.ulp(1.0));
+            assertFloatEquals(tick.calculateTickDuration(), expectedMax[i]);
         }
     }
 
@@ -213,10 +214,10 @@ public class TickTest {
                                     Set<Integer> buttons,
                                     KeyInputState globalKeyInputState) {
                 assertEquals(pointerType, TOUCH);
-                assertEquals(currentX, 5, Math.ulp(1.0));
-                assertEquals(currentY, 6, Math.ulp(1.0));
-                assertEquals(x, 10, Math.ulp(1.0));
-                assertEquals(y, 20, Math.ulp(1.0));
+                assertFloatEquals(currentX, 5);
+                assertFloatEquals(currentY, 6);
+                assertFloatEquals(x, 10);
+                assertFloatEquals(y, 20);
                 assertTrue(buttons.contains(0));
                 assertTrue(buttons.contains(1));
                 assertTrue(globalKeyInputState.isShift());

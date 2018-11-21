@@ -16,6 +16,7 @@ import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 import io.appium.espressoserver.test.assets.Helpers;
 
+import static io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -62,10 +63,10 @@ public class ActionsTest {
         PointerInputState finger2 = (PointerInputState) inputStateTable.getInputState("finger2");
 
         // Check the state
-        assertEquals(finger1.getX(), 120, Math.ulp(1.0));
-        assertEquals(finger1.getY(), 100, Math.ulp(1.0));
-        assertEquals(finger2.getX(), 250, Math.ulp(1.0));
-        assertEquals(finger2.getY(), 400, Math.ulp(1.0));
+        assertFloatEquals(finger1.getX(), 120);
+        assertFloatEquals(finger1.getY(), 100);
+        assertFloatEquals(finger2.getX(), 250);
+        assertFloatEquals(finger2.getY(), 400);
 
         // Sanity check that it's recording pointer move events
         List<PointerMoveEvent> pointerMoveEvents = ((DummyW3CActionAdapter) actions.getAdapter()).getPointerMoveEvents();

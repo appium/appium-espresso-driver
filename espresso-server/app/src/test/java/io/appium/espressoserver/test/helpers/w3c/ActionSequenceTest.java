@@ -30,6 +30,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER;
+import static io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -49,16 +50,16 @@ public class ActionSequenceTest {
         assertEquals(action.getType(), POINTER);
         assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Float(0));
-        assertEquals(action.getX(), 100, Math.ulp(1.0));
-        assertEquals(action.getY(), 100, Math.ulp(1.0));
+        assertFloatEquals(action.getX(), 100);
+        assertFloatEquals(action.getY(), 100);
 
         action = tick.next();
         assertEquals(action.getId(), "finger2");
         assertEquals(action.getType(), POINTER);
         assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Float(10));
-        assertEquals(action.getX(), 200, Math.ulp(1.0));
-        assertEquals(action.getY(), 400, Math.ulp(1.0));
+        assertFloatEquals(action.getX(), 200);
+        assertFloatEquals(action.getY(), 400);
 
         assertFalse(tick.hasNext());
 
@@ -100,8 +101,8 @@ public class ActionSequenceTest {
         assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Float(1000));
         assertTrue(action.getPointer().equals(PointerType.TOUCH));
-        assertEquals(action.getX(), 20, Math.ulp(1.0));
-        assertEquals(action.getY(), 0, Math.ulp(1.0));
+        assertFloatEquals(action.getX(), 20);
+        assertFloatEquals(action.getY(), 0);
 
         action = tick.next();
         assertEquals(action.getId(), "finger2");
@@ -109,8 +110,8 @@ public class ActionSequenceTest {
         assertEquals(action.getSubType(), POINTER_MOVE);
         assertEquals(action.getDuration(), new Float(1000));
         assertEquals(action.getOrigin().getType(), InputSource.POINTER);
-        assertEquals(action.getX(), 50, Math.ulp(1.0));
-        assertEquals(action.getY(), 0, Math.ulp(1.0));
+        assertFloatEquals(action.getX(), 50);
+        assertFloatEquals(action.getY(), 0);
 
         assertFalse(tick.hasNext());
 
@@ -204,10 +205,10 @@ public class ActionSequenceTest {
         PointerInputState finger1State = (PointerInputState) inputStateTable.getInputState("finger1");
         PointerInputState finger2State = (PointerInputState) inputStateTable.getInputState("finger2");
 
-        assertEquals(finger1State.getX(), 120, Math.ulp(1.0));
-        assertEquals(finger1State.getY(), 100, Math.ulp(1.0));
-        assertEquals(finger2State.getX(), 250, Math.ulp(1.0));
-        assertEquals(finger2State.getY(), 400, Math.ulp(1.0));
+        assertFloatEquals(finger1State.getX(), 120);
+        assertFloatEquals(finger1State.getY(), 100);
+        assertFloatEquals(finger2State.getX(), 250);
+        assertFloatEquals(finger2State.getY(), 400);
     }
 
     @Test

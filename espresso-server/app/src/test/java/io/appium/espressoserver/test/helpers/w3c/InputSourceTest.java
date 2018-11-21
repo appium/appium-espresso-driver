@@ -17,6 +17,7 @@ import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action.ELEMENT_CODE;
+import static io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -63,9 +64,9 @@ public class InputSourceTest {
         List<Action> actions = inputSource.getActions();
         Action actionOne = actions.get(0);
         assertEquals(actionOne.getType(), ActionType.POINTER_MOVE);
-        assertEquals(actionOne.getDuration(), 0.0, Math.ulp(1.0));
-        assertEquals(actionOne.getX(), 100.0, Math.ulp(1.0));
-        assertEquals(actionOne.getY(), 200.0, Math.ulp(1.0));
+        assertFloatEquals(actionOne.getDuration(), 0);
+        assertFloatEquals(actionOne.getX(), 100);
+        assertFloatEquals(actionOne.getY(), 200);
 
         Action actionTwo = actions.get(1);
         assertEquals(actionTwo.getType(), ActionType.POINTER_DOWN);
@@ -73,15 +74,15 @@ public class InputSourceTest {
 
         Action actionThree = actions.get(2);
         assertEquals(actionThree.getType(), ActionType.PAUSE);
-        assertEquals(actionThree.getDuration(), 500.0, Math.ulp(1.0));
+        assertFloatEquals(actionThree.getDuration(), 500);
 
         Action actionFour = actions.get(3);
         assertEquals(actionFour.getType(), ActionType.POINTER_MOVE);
-        assertEquals(actionFour.getDuration(), 1000.0, Math.ulp(1.0));
+        assertFloatEquals(actionFour.getDuration(), 1000);
         assertEquals(actionFour.getOrigin().getType(), "pointer");
         assertTrue(actionFour.isOriginPointer());
-        assertEquals(actionFour.getX(), 50.0, Math.ulp(1.0));
-        assertEquals(actionFour.getY(), 10.0, Math.ulp(1.0));
+        assertFloatEquals(actionFour.getX(), 50);
+        assertFloatEquals(actionFour.getY(), 10);
 
         Action actionFive = actions.get(4);
         assertEquals(actionFive.getType(), ActionType.POINTER_UP);
