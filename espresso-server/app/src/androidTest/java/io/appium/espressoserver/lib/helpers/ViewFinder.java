@@ -19,7 +19,7 @@ package io.appium.espressoserver.lib.helpers;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.DataInteraction;
-import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.espresso.EspressoException;
 import android.support.test.espresso.ViewInteraction;
 import android.view.View;
 import android.widget.AdapterView;
@@ -228,10 +228,11 @@ public class ViewFinder {
                 }
                 View view = (new ViewGetter()).getView(interaction);
                 return Collections.singletonList(view);
-            } catch (NoMatchingViewException e) {
-                return Collections.emptyList();
             } catch (Exception e) {
-                return Collections.emptyList();
+                if (e instanceof EspressoException) {
+                    return Collections.emptyList();
+                }
+                throw e;
             }
         }
 
@@ -251,8 +252,11 @@ public class ViewFinder {
                 }
                 View view = (new ViewGetter()).getView(viewInteraction);
                 viewInteractions.add(view);
-            } catch (NoMatchingViewException e) {
-                return viewInteractions;
+            } catch (Exception e) {
+                if (e instanceof EspressoException) {
+                    return viewInteractions;
+                }
+                throw e;
             }
         } while (i < Integer.MAX_VALUE);
         return viewInteractions;
