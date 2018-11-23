@@ -37,17 +37,13 @@ public class WithXPath {
         return new TypeSafeMatcher<View>() {
             @Override
             protected boolean matchesSafely(View item) {
-                try {
-                    if (index != null) {
-                        // If index is not null, match it with the xpath in the list at the provided index
-                        return matchedXPathViews.get(index).equals(item);
-                    }
-
-                    // If index is null, then we only check that the view is contained in the list of matched xpaths
-                    return matchedXPathViews.contains(item);
-                } catch (NullPointerException npe) {
-                    return false;
+                if (index != null) {
+                    // If index is not null, match it with the xpath in the list at the provided index
+                    return index < matchedXPathViews.size() && matchedXPathViews.get(index).equals(item);
                 }
+
+                // If index is null, then we only check that the view is contained in the list of matched xpaths
+                return matchedXPathViews.contains(item);
             }
 
             @Override
