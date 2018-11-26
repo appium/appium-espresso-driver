@@ -45,7 +45,7 @@ import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
+import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -109,7 +109,7 @@ public class ViewFinder {
      * @throws XPathLookupException
      */
     public static List<View> findAllBy(@Nullable View root,
-                                                  Strategy strategy, String selector) throws AppiumException {
+                                       Strategy strategy, String selector) throws AppiumException {
         return findAllBy(root, strategy, selector, false);
     }
 
@@ -192,11 +192,12 @@ public class ViewFinder {
 
     /**
      * Attempts to scroll to a view with the content description using onData
+     *
      * @param contentDesc Content description
      * @return
      */
-    private static boolean canScrollToViewWithContentDescription (@Nullable final View parentView,
-                                                                  String contentDesc) {
+    private static boolean canScrollToViewWithContentDescription(@Nullable final View parentView,
+                                                                 String contentDesc) {
         try {
             DataInteraction dataInteraction = onData(
                     hasEntry(Matchers.equalTo("contentDescription"), is(contentDesc))
@@ -220,13 +221,10 @@ public class ViewFinder {
         // If it's just one view we want, return a singleton list
         if (findOne) {
             try {
-                ViewInteraction interaction;
-                if (root == null) {
-                    interaction = onView(withIndex(matcher, 0));
-                } else {
-                    interaction = onView(withIndex(matcher, 0)).inRoot(withDecorView(is(root)));
-                }
-                View view = (new ViewGetter()).getView(interaction);
+                ViewInteraction viewInteraction = root == null
+                        ? onView(withIndex(matcher, 0))
+                        : onView(allOf(isDescendantOfA(is(root)), withIndex(matcher, 0)));
+                View view = (new ViewGetter()).getView(viewInteraction);
                 return Collections.singletonList(view);
             } catch (Exception e) {
                 if (e instanceof EspressoException) {
@@ -243,13 +241,9 @@ public class ViewFinder {
         int i = 0;
         do {
             try {
-                ViewInteraction viewInteraction;
-                if (root == null) {
-                    viewInteraction = onView(withIndex(matcher, i++));
-                } else {
-                    viewInteraction = onView(withIndex(matcher, i++))
-                            .inRoot(withDecorView(is(root)));
-                }
+                ViewInteraction viewInteraction = root == null
+                        ? onView(withIndex(matcher, i++))
+                        : onView(allOf(isDescendantOfA(is(root)), withIndex(matcher, i++)));
                 View view = (new ViewGetter()).getView(viewInteraction);
                 viewInteractions.add(view);
             } catch (Exception e) {
