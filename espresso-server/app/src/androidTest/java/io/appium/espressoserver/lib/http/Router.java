@@ -50,6 +50,7 @@ import io.appium.espressoserver.lib.handlers.GetSelected;
 import io.appium.espressoserver.lib.handlers.GetSession;
 import io.appium.espressoserver.lib.handlers.GetSessions;
 import io.appium.espressoserver.lib.handlers.GetSize;
+import io.appium.espressoserver.lib.handlers.GetToastVisibility;
 import io.appium.espressoserver.lib.handlers.GetWindowRect;
 import io.appium.espressoserver.lib.handlers.GetWindowSize;
 import io.appium.espressoserver.lib.handlers.HideKeyboard;
@@ -101,6 +102,7 @@ import io.appium.espressoserver.lib.model.Session;
 import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
+import io.appium.espressoserver.lib.model.ToastLookupParams;
 
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.CLICK;
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.DOUBLE_CLICK;
@@ -192,6 +194,7 @@ class Router {
 
         // 'execute mobile' commands
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/swipe", new MobileSwipe(), MobileSwipeParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/is_toast_displayed", new GetToastVisibility(), ToastLookupParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
