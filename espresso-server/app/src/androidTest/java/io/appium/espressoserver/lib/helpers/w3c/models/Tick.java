@@ -48,8 +48,10 @@ public class Tick implements Iterator<ActionObject> {
             Float duration = actionObject.getDuration();
             ActionType subType = actionObject.getSubType();
 
-            if (duration != null && ((type == POINTER && subType == POINTER_MOVE) || subType == PAUSE)) {
-                currDuration = duration;
+            if (duration != null) {
+                if (subType == PAUSE || (type == POINTER && subType == POINTER_MOVE)) {
+                    currDuration = duration;
+                }
             }
 
             if (currDuration > maxDuration) {
