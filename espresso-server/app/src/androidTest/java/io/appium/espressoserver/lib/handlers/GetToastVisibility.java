@@ -37,11 +37,7 @@ public class GetToastVisibility implements RequestHandler<ToastLookupParams, Boo
             ViewInteraction viewInteraction = params.isRegexp()
                     ? onView(withRegexp(Pattern.compile(params.getText()))).inRoot(new ToastMatcher())
                     : onView(withText(params.getText())).inRoot(new ToastMatcher());
-            if (params.isRegexp()) {
-                viewInteraction.check(matches(isDisplayed()));
-            } else {
-                viewInteraction.check(matches(isDisplayed()));
-            }
+            viewInteraction.check(matches(isDisplayed()));
             return true;
         } catch (Exception e) {
             if (e instanceof EspressoException) {
