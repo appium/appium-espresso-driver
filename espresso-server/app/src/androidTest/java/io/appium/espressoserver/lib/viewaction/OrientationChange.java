@@ -17,15 +17,15 @@
 package io.appium.espressoserver.lib.viewaction;
 
 import android.content.pm.ActivityInfo;
-import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewAction;
 import android.view.View;
 
 import org.hamcrest.Matcher;
 
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import io.appium.espressoserver.lib.model.ViewElement;
 
-import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 
 public class OrientationChange implements ViewAction {
     private final int orientation;

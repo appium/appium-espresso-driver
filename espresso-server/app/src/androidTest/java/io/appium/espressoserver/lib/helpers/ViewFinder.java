@@ -17,10 +17,10 @@
 package io.appium.espressoserver.lib.helpers;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.DataInteraction;
-import android.support.test.espresso.EspressoException;
-import android.support.test.espresso.ViewInteraction;
+
+import androidx.test.espresso.DataInteraction;
+import androidx.test.espresso.EspressoException;
+import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -41,16 +41,17 @@ import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.Strategy;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+import static androidx.test.espresso.Espresso.onData;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
 import static io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath;
 import static org.hamcrest.CoreMatchers.allOf;
@@ -147,9 +148,8 @@ public class ViewFinder {
             case ID: // with ID
 
                 // find id from target context
-                Context context = InstrumentationRegistry.getTargetContext();
-                int id = context.getResources().getIdentifier(selector, "Id",
-                        InstrumentationRegistry.getTargetContext().getPackageName());
+                Context context = getApplicationContext();
+                int id = context.getResources().getIdentifier(selector, "Id", context.getPackageName());
 
                 views = getViews(root, withId(id), findOne);
                 break;

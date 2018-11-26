@@ -2,8 +2,8 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.graphics.Point;
 import android.os.SystemClock;
-import android.support.test.espresso.InjectEventSecurityException;
-import android.support.test.espresso.UiController;
+import androidx.test.espresso.InjectEventSecurityException;
+import androidx.test.espresso.UiController;
 import android.util.DisplayMetrics;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -26,7 +26,6 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 import io.appium.espressoserver.lib.model.Element;
 
-import static android.support.test.InstrumentationRegistry.getContext;
 import static android.view.KeyEvent.ACTION_DOWN;
 import static android.view.KeyEvent.ACTION_UP;
 import static android.view.KeyEvent.KEYCODE_0;
@@ -88,6 +87,7 @@ import static android.view.KeyEvent.META_SHIFT_MASK;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ALT;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ARROW_DOWN;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ARROW_LEFT;
@@ -151,7 +151,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     private final MultiTouchState multiTouchState = new MultiTouchState();
     private Map<String, List<KeyEvent>> keyDownEvents = new HashMap<>();
     private final KeyCharacterMap keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
-    private final DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+    private final DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
 
     public EspressoW3CActionAdapter(UiController uiController) {
         this.uiController = uiController;

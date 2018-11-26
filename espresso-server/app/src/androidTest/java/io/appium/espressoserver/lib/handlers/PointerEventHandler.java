@@ -3,7 +3,6 @@ package io.appium.espressoserver.lib.handlers;
 import android.content.res.Resources;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.support.test.espresso.UiController;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.view.ViewConfiguration;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.test.espresso.UiController;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.AndroidLogger;
@@ -23,12 +23,12 @@ import io.appium.espressoserver.lib.model.ViewElement;
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer;
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable;
 
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.doubleClick;
-import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.doubleClick;
+import static androidx.test.espresso.action.ViewActions.longClick;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.MOUSE;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 

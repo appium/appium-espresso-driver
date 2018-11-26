@@ -16,8 +16,8 @@
 
 package io.appium.espressoserver.lib.viewaction;
 
-import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewAction;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import android.view.View;
 import android.widget.AbsListView;
 
@@ -25,8 +25,8 @@ import org.hamcrest.Matcher;
 
 import javax.annotation.Nullable;
 
-import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
-import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 
 public class ScrollTo implements ViewAction {
 

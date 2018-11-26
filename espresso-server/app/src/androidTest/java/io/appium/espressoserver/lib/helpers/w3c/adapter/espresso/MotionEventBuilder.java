@@ -1,8 +1,6 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.os.SystemClock;
-import android.support.test.espresso.InjectEventSecurityException;
-import android.support.test.espresso.UiController;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.MotionEvent.PointerProperties;
@@ -10,6 +8,8 @@ import android.view.MotionEvent.PointerProperties;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.test.espresso.InjectEventSecurityException;
+import androidx.test.espresso.UiController;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException;
 import io.appium.espressoserver.lib.helpers.AndroidLogger;

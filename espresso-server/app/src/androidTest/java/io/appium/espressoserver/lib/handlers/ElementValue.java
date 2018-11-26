@@ -1,6 +1,6 @@
 package io.appium.espressoserver.lib.handlers;
 
-import android.support.test.espresso.ViewInteraction;
+import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
@@ -10,8 +10,8 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.ElementValueParams;
 
-import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.typeText;
 
 public class ElementValue implements RequestHandler<ElementValueParams, Void> {
 
