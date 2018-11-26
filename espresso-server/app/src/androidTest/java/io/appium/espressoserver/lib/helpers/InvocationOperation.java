@@ -1,6 +1,5 @@
 package io.appium.espressoserver.lib.helpers;
 
-import android.support.test.InstrumentationRegistry;
 import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import androidx.test.platform.app.InstrumentationRegistry;
 import io.appium.espressoserver.lib.model.BackdoorResultVoid;
 
 //https://github.com/calabash/calabash-android-server/blob/develop/server/app/src/androidTest/java/sh/calaba/instrumentationbackend/query/InvocationOperation.java

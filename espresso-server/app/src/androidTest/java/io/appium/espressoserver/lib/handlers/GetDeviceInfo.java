@@ -16,9 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.app.Instrumentation;
-import android.support.test.InstrumentationRegistry;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,12 +23,12 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.DeviceInfoHelper;
 import io.appium.espressoserver.lib.model.AppiumParams;
 
-public class GetDeviceInfo implements RequestHandler<AppiumParams, Map<String, Object>> {
-    private final Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
+public class GetDeviceInfo implements RequestHandler<AppiumParams, Map<String, Object>> {
     @Override
     public Map<String, Object> handle(AppiumParams params) throws AppiumException {
-        final DeviceInfoHelper deviceInfoHelper = new DeviceInfoHelper(mInstrumentation.getTargetContext());
+        final DeviceInfoHelper deviceInfoHelper = new DeviceInfoHelper(getApplicationContext());
         final Map<String, Object> result = new HashMap<>();
         result.put("androidId", deviceInfoHelper.getAndroidId());
         result.put("manufacturer", deviceInfoHelper.getManufacturer());

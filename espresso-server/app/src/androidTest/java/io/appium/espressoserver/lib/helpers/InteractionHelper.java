@@ -1,9 +1,9 @@
 package io.appium.espressoserver.lib.helpers;
 
-import android.support.test.InstrumentationRegistry;
-import android.support.test.uiautomator.UiDevice;
 import android.view.InputEvent;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 
 import static io.appium.espressoserver.lib.helpers.ReflectionUtils.getField;

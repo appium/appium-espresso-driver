@@ -12,7 +12,7 @@
     <instrumentation android:functionalTest="false"
                      android:handleProfiling="false"
                      android:label="Tests for io.appium.espressoserver"
-                     android:name="android.support.test.runner.AndroidJUnitRunner"
+                     android:name="androidx.test.runner.AndroidJUnitRunner"
                      android:targetPackage="io.appium.espressoserver" />
 
     <application>

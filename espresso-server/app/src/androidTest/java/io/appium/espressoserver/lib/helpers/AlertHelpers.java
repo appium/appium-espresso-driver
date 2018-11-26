@@ -17,8 +17,6 @@
 package io.appium.espressoserver.lib.helpers;
 
 import android.support.annotation.Nullable;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiObject2;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -30,6 +28,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiObject2;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.handlers.exceptions.NoAlertOpenException;
 

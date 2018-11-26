@@ -1,6 +1,6 @@
 package io.appium.espressoserver.lib.handlers;
 
-import android.support.test.espresso.ViewInteraction;
+import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 
 import java.util.ArrayList;

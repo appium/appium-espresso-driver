@@ -16,9 +16,9 @@
 
 package io.appium.espressoserver.lib.model;
 
-import android.support.test.espresso.DataInteraction;
-import android.support.test.espresso.EspressoException;
-import android.support.test.espresso.ViewInteraction;
+import androidx.test.espresso.DataInteraction;
+import androidx.test.espresso.EspressoException;
+import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.AdapterView;
@@ -35,11 +35,11 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static androidx.test.espresso.Espresso.onData;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasEntry;

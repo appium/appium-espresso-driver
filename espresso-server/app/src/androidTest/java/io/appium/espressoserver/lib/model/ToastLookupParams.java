@@ -14,17 +14,29 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.model;
 
-import androidx.test.espresso.Espresso;
+import javax.annotation.Nullable;
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
+@SuppressWarnings("unused")
+public class ToastLookupParams extends AppiumParams {
+    private String text;
+    private Boolean isRegexp;
 
-public class HideKeyboard implements RequestHandler<AppiumParams, Void> {
-    @Override
-    public Void handle(AppiumParams params) throws AppiumException {
-        Espresso.closeSoftKeyboard();
-        return null;
+    @Nullable
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public boolean isRegexp() {
+        return isRegexp == null ? false : isRegexp;
+    }
+
+    public void setIsRegexp(Boolean isRegexp) {
+        this.isRegexp = isRegexp;
     }
 }

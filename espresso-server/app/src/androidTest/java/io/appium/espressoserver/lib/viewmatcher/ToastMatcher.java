@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.viewmatcher;
 
-import androidx.test.espresso.Espresso;
+import android.view.WindowManager;
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
-public class HideKeyboard implements RequestHandler<AppiumParams, Void> {
+import androidx.test.espresso.Root;
+
+public class ToastMatcher extends TypeSafeMatcher<Root> {
     @Override
-    public Void handle(AppiumParams params) throws AppiumException {
-        Espresso.closeSoftKeyboard();
-        return null;
+    public void describeTo(Description description) {
+        description.appendText("is toast");
+    }
+
+    @Override
+    public boolean matchesSafely(Root root) {
+        if (root.getWindowLayoutParams().get().type != WindowManager.LayoutParams.TYPE_TOAST) {
+            return false;
+        }
+        return root.getDecorView().getWindowToken() == root.getDecorView().getApplicationWindowToken();
     }
 }

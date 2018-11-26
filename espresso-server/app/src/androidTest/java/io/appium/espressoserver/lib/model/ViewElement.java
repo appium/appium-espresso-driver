@@ -21,8 +21,8 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.matcher.ViewMatchers;
+
+import androidx.test.espresso.matcher.ViewMatchers;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -35,6 +35,7 @@ import android.widget.TextView;
 import javax.annotation.Nullable;
 
 import static android.view.View.NO_ID;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 public class ViewElement {
     private final View view;
@@ -228,7 +229,7 @@ public class ViewElement {
     }
 
     public String getPackageName() {
-        return InstrumentationRegistry.getTargetContext().getPackageName();
+        return getApplicationContext().getPackageName();
     }
 
     @Nullable
