@@ -1,7 +1,7 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.support.annotation.Nullable;
-import android.support.test.espresso.UiController;
+import androidx.test.espresso.UiController;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 

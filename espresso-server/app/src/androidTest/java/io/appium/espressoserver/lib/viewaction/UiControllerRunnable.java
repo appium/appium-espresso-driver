@@ -1,6 +1,6 @@
 package io.appium.espressoserver.lib.viewaction;
 
-import android.support.test.espresso.UiController;
+import androidx.test.espresso.UiController;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 

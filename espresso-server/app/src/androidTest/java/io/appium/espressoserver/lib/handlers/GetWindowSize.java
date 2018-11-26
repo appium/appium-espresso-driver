@@ -17,7 +17,6 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -25,6 +24,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.WindowSize;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
 public class GetWindowSize implements RequestHandler<AppiumParams, WindowSize> {
@@ -33,7 +33,7 @@ public class GetWindowSize implements RequestHandler<AppiumParams, WindowSize> {
     public WindowSize handle(AppiumParams params) throws AppiumException {
         logger.info("Get window size of the device");
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        Context context = getApplicationContext();
         WindowManager winManager = (WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
 
         winManager.getDefaultDisplay().getMetrics(displayMetrics);

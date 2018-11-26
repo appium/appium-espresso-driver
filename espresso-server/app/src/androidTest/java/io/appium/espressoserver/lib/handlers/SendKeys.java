@@ -16,8 +16,8 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.support.test.espresso.PerformException;
-import android.support.test.espresso.ViewInteraction;
+import androidx.test.espresso.PerformException;
+import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
@@ -30,8 +30,8 @@ import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.model.ViewText;
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter;
 
-import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
 public class SendKeys implements RequestHandler<TextParams, Void> {

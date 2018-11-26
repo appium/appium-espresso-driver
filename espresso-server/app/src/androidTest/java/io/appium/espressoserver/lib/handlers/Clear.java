@@ -16,8 +16,8 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.support.test.espresso.PerformException;
-import android.support.test.espresso.ViewInteraction;
+import androidx.test.espresso.PerformException;
+import androidx.test.espresso.ViewInteraction;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +26,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateExcep
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.Element;
 
-import static android.support.test.espresso.action.ViewActions.clearText;
+import static androidx.test.espresso.action.ViewActions.clearText;
 
 public class Clear implements RequestHandler<AppiumParams, Void> {
 

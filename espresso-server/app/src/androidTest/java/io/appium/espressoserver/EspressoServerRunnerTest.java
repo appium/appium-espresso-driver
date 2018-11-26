@@ -16,12 +16,11 @@
 
 package io.appium.espressoserver;
 
-import android.support.test.filters.LargeTest;
-
 import org.junit.Test;
 
 import java.io.IOException;
 
+import androidx.test.filters.LargeTest;
 import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException;
 import io.appium.espressoserver.lib.http.Server;
 
@@ -47,6 +46,7 @@ public class EspressoServerRunnerTest {
         } finally {
             espressoServer.stop();
         }
+        //noinspection SimplifiableJUnitAssertion
         assertEquals(true, true); // Keep Codacy happy
     }
 }

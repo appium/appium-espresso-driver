@@ -17,8 +17,8 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.os.SystemClock;
-import android.support.test.espresso.InjectEventSecurityException;
-import android.support.test.espresso.UiController;
+import androidx.test.espresso.InjectEventSecurityException;
+import androidx.test.espresso.UiController;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.ViewConfiguration;

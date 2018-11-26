@@ -16,7 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.support.test.espresso.UiController;
+import androidx.test.espresso.UiController;
 
 import java.util.ArrayList;
 import java.util.Collections;
