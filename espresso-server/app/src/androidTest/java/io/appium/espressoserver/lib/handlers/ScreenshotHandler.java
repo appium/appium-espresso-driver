@@ -16,13 +16,8 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.graphics.Bitmap;
-import android.util.Base64;
+import android.view.View;
 
-import java.io.ByteArrayOutputStream;
-
-import androidx.test.runner.screenshot.ScreenCapture;
-import androidx.test.runner.screenshot.Screenshot;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
 import io.appium.espressoserver.lib.model.AppiumParams;
@@ -32,11 +27,7 @@ public class ScreenshotHandler implements RequestHandler<AppiumParams, String> {
 
     @Override
     public String handle(AppiumParams params) throws AppiumException {
-        final ScreenCapture screenCap = Screenshot.capture();
-        final Bitmap bitmapScreenCap = screenCap.getBitmap();
-
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmapScreenCap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
+        View rootView = new ViewGetter().getRootView();
+        return (new ScreenshotsHelper(rootView)).getScreenshot();
     }
 }
