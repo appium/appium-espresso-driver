@@ -21,13 +21,11 @@ import android.view.View;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
 import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
 public class ScreenshotHandler implements RequestHandler<AppiumParams, String> {
 
     @Override
     public String handle(AppiumParams params) throws AppiumException {
-        View rootView = new ViewGetter().getRootView();
-        return (new ScreenshotsHelper(rootView)).getScreenshot();
+        return (new ScreenshotsHelper()).getScreenshot();
     }
 }

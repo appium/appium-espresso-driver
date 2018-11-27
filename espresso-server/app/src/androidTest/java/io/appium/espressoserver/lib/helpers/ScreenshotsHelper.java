@@ -32,6 +32,10 @@ import io.appium.espressoserver.lib.model.ViewElement;
 public class ScreenshotsHelper {
     private final View view;
 
+    public ScreenshotsHelper() {
+        this.view = null;
+    }
+
     public ScreenshotsHelper(View view) {
         this.view = view;
     }
@@ -43,12 +47,14 @@ public class ScreenshotsHelper {
      * @throws IllegalStateException if the view has no visible area.
      */
     public String getScreenshot() throws AppiumException {
-        if (new ViewElement(view).getBounds().isEmpty()) {
-            throw new ElementNotVisibleException("Cannot get a screenshot of the invisible view");
+        if (view != null) {
+            if (new ViewElement(view).getBounds().isEmpty()) {
+                throw new ElementNotVisibleException("Cannot get a screenshot of the invisible view");
+            }
         }
 
 
-        final ScreenCapture screenCap = Screenshot.capture();
+        final ScreenCapture screenCap = view == null ? Screenshot.capture() : Screenshot.capture(view);
         final Bitmap bitmapScreenCap = screenCap.getBitmap();
 
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
