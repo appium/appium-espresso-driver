@@ -39,4 +39,23 @@ describe('mobile', function () {
       await driver.execute('mobile: closeDrawer', {element: el, gravity: 1}).should.eventually.be.rejectedWith(/close drawer with gravity/);
     });
   });
+
+  describe('mobile: setDate, mobile: setTime', function () {
+    it('should set the date on a DatePicker', async function () {
+      await driver.startActivity({appPackage: 'io.appium.android.apis', appActivity: 'io.appium.android.apis.view.DateWidgets1'});
+      let dateEl = await driver.elementByAccessibilityId('change the date');
+      await dateEl.click();
+      let datePicker = await driver.elementById('android:id/datePicker');
+      await driver.execute('mobile: setDate', {year: 2020, monthOfYear: 10, dayOfMonth: 25, element: datePicker});
+      let okButton = await driver.elementById('android:id/button1');
+      await okButton.click();
+      //let dateDisplay = await driver.elementById('dateDisplay');
+      let source = await driver.source();
+      source.includes('10-25-2020').should.be.true;
+      await driver.back();
+    });
+    it('should set the date on a datepicker', async function () {
+
+    });
+  });
 });
