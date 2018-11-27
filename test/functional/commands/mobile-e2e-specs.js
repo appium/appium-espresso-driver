@@ -54,15 +54,11 @@ describe('mobile', function () {
       await driver.back();
     });
     it('should set the time on a timepicker', async function () {
-      await driver.startActivity({appPackage: 'io.appium.android.apis', appActivity: 'io.appium.android.apis.view.DateWidgets1'});
-      let timeEl = await driver.elementByAccessibilityId('change the time');
-      await dateEl.click();
-      let datePicker = await driver.elementById('android:id/datePicker');
-      await driver.execute('mobile: setDate', {year: 2020, monthOfYear: 10, dayOfMonth: 25, element: datePicker});
-      let okButton = await driver.elementById('android:id/button1');
-      await okButton.click();
+      await driver.startActivity({appPackage: 'io.appium.android.apis', appActivity: 'io.appium.android.apis.view.DateWidgets2'});
+      let timeEl = await driver.elementByXPath('//android.widget.TimePicker');
+      await driver.execute('mobile: setTime', {hours: 10, minutes: 58, element: timeEl});
       let source = await driver.source();
-      source.includes('10-25-2020').should.be.true;
+      source.includes('10:58').should.be.true;
       await driver.back();
     });
   });

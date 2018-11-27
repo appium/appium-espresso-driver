@@ -70,6 +70,7 @@ import io.appium.espressoserver.lib.handlers.ScreenshotHandler;
 import io.appium.espressoserver.lib.handlers.SendKeys;
 import io.appium.espressoserver.lib.handlers.SetDate;
 import io.appium.espressoserver.lib.handlers.SetOrientation;
+import io.appium.espressoserver.lib.handlers.SetTime;
 import io.appium.espressoserver.lib.handlers.Source;
 import io.appium.espressoserver.lib.handlers.StartActivity;
 import io.appium.espressoserver.lib.handlers.Status;
@@ -104,6 +105,7 @@ import io.appium.espressoserver.lib.model.OrientationParams;
 import io.appium.espressoserver.lib.model.Session;
 import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.SetDateParams;
+import io.appium.espressoserver.lib.model.SetTimeParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.model.ToastLookupParams;
@@ -202,6 +204,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/open_drawer", new DrawerActionHandler(true), DrawerActionParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/close_drawer", new DrawerActionHandler(false), DrawerActionParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/set_date", new SetDate(), SetDateParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/set_time", new SetTime(), SetTimeParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
