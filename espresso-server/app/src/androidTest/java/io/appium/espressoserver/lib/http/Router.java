@@ -30,6 +30,7 @@ import io.appium.espressoserver.lib.handlers.Click;
 import io.appium.espressoserver.lib.handlers.CreateSession;
 import io.appium.espressoserver.lib.handlers.DeleteSession;
 import io.appium.espressoserver.lib.handlers.DismissAlert;
+import io.appium.espressoserver.lib.handlers.DrawerActionHandler;
 import io.appium.espressoserver.lib.handlers.ElementEquals;
 import io.appium.espressoserver.lib.handlers.ElementScreenshot;
 import io.appium.espressoserver.lib.handlers.ElementValue;
@@ -91,6 +92,7 @@ import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.AppiumStatus;
+import io.appium.espressoserver.lib.model.DrawerActionParams;
 import io.appium.espressoserver.lib.model.EditorActionParams;
 import io.appium.espressoserver.lib.model.ElementValueParams;
 import io.appium.espressoserver.lib.model.KeyEventParams;
@@ -195,6 +197,8 @@ class Router {
         // 'execute mobile' commands
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/swipe", new MobileSwipe(), MobileSwipeParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/is_toast_displayed", new GetToastVisibility(), ToastLookupParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/open_drawer", new DrawerActionHandler(true), DrawerActionParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/close_drawer", new DrawerActionHandler(false), DrawerActionParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));

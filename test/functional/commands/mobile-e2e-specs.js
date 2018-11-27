@@ -31,4 +31,12 @@ describe('mobile', function () {
       await driver.back();
     });
   });
+
+  describe('mobile: openDrawer, mobile: closeDrawer', function () {
+    it('should call these two commands but fail because element is not a drawer', async function () {
+      let el = await driver.elementByAccessibilityId('Views');
+      await driver.execute('mobile: openDrawer', {element: el, gravity: 1}).should.eventually.be.rejectedWith(/open drawer with gravity/);
+      await driver.execute('mobile: closeDrawer', {element: el, gravity: 1}).should.eventually.be.rejectedWith(/close drawer with gravity/);
+    });
+  });
 });
