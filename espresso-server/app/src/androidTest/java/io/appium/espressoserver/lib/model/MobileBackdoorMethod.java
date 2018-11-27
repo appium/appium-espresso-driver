@@ -18,11 +18,11 @@ public class MobileBackdoorMethod {
 
     @Nullable
     public List<Object> getArgs() {
-        if (args == null) {
-            return null;
-        }
-
         List<Object> list = new ArrayList<>();
+
+        if (args == null) {
+            return list;
+        }
 
         for (Object object : args) {
             if (object instanceof Double) {
