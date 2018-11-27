@@ -21,8 +21,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Rect;
-
-import androidx.test.espresso.matcher.ViewMatchers;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -33,6 +31,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import javax.annotation.Nullable;
+
+import androidx.test.espresso.matcher.ViewMatchers;
 
 import static android.view.View.NO_ID;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;

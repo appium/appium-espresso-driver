@@ -16,21 +16,9 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import java.util.regex.Pattern;
-
-import androidx.test.espresso.EspressoException;
-import androidx.test.espresso.ViewInteraction;
 import androidx.test.runner.permission.PermissionRequester;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.RequestPermissionsParams;
-import io.appium.espressoserver.lib.model.ToastLookupParams;
-import io.appium.espressoserver.lib.viewmatcher.ToastMatcher;
-
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static io.appium.espressoserver.lib.viewmatcher.RegexpTextMatcher.withRegexp;
 
 public class RequestPermissionsHandler implements RequestHandler<RequestPermissionsParams, Void> {
     @Override

@@ -18,8 +18,6 @@ package io.appium.espressoserver.lib.model;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 @SuppressWarnings("unused")
 public class RequestPermissionsParams extends AppiumParams {
     private List<String> permissions;

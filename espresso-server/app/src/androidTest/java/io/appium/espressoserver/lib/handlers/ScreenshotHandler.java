@@ -24,9 +24,7 @@ import java.io.ByteArrayOutputStream;
 import androidx.test.runner.screenshot.ScreenCapture;
 import androidx.test.runner.screenshot.Screenshot;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
 import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
 public class ScreenshotHandler implements RequestHandler<AppiumParams, String> {
 

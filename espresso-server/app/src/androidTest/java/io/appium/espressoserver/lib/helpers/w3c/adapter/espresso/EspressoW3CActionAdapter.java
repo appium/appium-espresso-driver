@@ -2,8 +2,6 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.graphics.Point;
 import android.os.SystemClock;
-import androidx.test.espresso.InjectEventSecurityException;
-import androidx.test.espresso.UiController;
 import android.util.DisplayMetrics;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -16,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import androidx.test.espresso.InjectEventSecurityException;
+import androidx.test.espresso.UiController;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.AndroidLogger;

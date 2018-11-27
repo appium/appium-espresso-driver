@@ -17,7 +17,6 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 import io.appium.espressoserver.test.assets.Helpers;
 
 import static io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals;
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 

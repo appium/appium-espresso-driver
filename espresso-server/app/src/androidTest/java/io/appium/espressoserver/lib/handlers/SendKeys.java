@@ -16,12 +16,12 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import androidx.test.espresso.PerformException;
-import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 
+import androidx.test.espresso.PerformException;
+import androidx.test.espresso.ViewInteraction;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;

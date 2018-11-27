@@ -17,10 +17,6 @@
 package io.appium.espressoserver.lib.helpers;
 
 import android.content.Context;
-
-import androidx.test.espresso.DataInteraction;
-import androidx.test.espresso.EspressoException;
-import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -35,6 +31,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import androidx.test.espresso.DataInteraction;
+import androidx.test.espresso.EspressoException;
+import androidx.test.espresso.ViewInteraction;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;

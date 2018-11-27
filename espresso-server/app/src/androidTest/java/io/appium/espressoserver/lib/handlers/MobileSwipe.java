@@ -17,7 +17,6 @@
 package io.appium.espressoserver.lib.handlers;
 
 import androidx.test.espresso.ViewInteraction;
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.model.Element;
