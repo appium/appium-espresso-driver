@@ -23,13 +23,18 @@ import android.view.View;
 
 import java.io.ByteArrayOutputStream;
 
+import androidx.test.runner.screenshot.ScreenCapture;
+import androidx.test.runner.screenshot.Screenshot;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.ElementNotVisibleException;
-import io.appium.espressoserver.lib.handlers.exceptions.ScreenCaptureException;
 import io.appium.espressoserver.lib.model.ViewElement;
 
 public class ScreenshotsHelper {
     private final View view;
+
+    public ScreenshotsHelper() {
+        this.view = null;
+    }
 
     public ScreenshotsHelper(View view) {
         this.view = view;
@@ -42,20 +47,16 @@ public class ScreenshotsHelper {
      * @throws IllegalStateException if the view has no visible area.
      */
     public String getScreenshot() throws AppiumException {
-        if (new ViewElement(view).getBounds().isEmpty()) {
-            throw new ElementNotVisibleException("Cannot get a screenshot of the invisible view");
+        if (view != null) {
+            if (new ViewElement(view).getBounds().isEmpty()) {
+                throw new ElementNotVisibleException("Cannot get a screenshot of the invisible view");
+            }
         }
 
-        view.setDrawingCacheEnabled(true);
-        final Bitmap bitmapScreenCap;
-        try {
-            bitmapScreenCap = Bitmap.createBitmap(view.getDrawingCache());
-            if (bitmapScreenCap == null) {
-                throw new ScreenCaptureException("Screen capture is impossible on the current view");
-            }
-        } finally {
-            view.setDrawingCacheEnabled(false);
-        }
+
+        final ScreenCapture screenCap = view == null ? Screenshot.capture() : Screenshot.capture(view);
+        final Bitmap bitmapScreenCap = screenCap.getBitmap();
+
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmapScreenCap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
         return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
