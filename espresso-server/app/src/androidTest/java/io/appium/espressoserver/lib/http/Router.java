@@ -65,6 +65,7 @@ import io.appium.espressoserver.lib.handlers.PointerEventHandler;
 import io.appium.espressoserver.lib.handlers.PressKeyCode;
 import io.appium.espressoserver.lib.handlers.ReleaseActions;
 import io.appium.espressoserver.lib.handlers.RequestHandler;
+import io.appium.espressoserver.lib.handlers.RequestPermissionsHandler;
 import io.appium.espressoserver.lib.handlers.ScreenshotHandler;
 import io.appium.espressoserver.lib.handlers.SendKeys;
 import io.appium.espressoserver.lib.handlers.SetOrientation;
@@ -98,6 +99,7 @@ import io.appium.espressoserver.lib.model.Locator;
 import io.appium.espressoserver.lib.model.MobileSwipeParams;
 import io.appium.espressoserver.lib.model.MotionEventParams;
 import io.appium.espressoserver.lib.model.OrientationParams;
+import io.appium.espressoserver.lib.model.RequestPermissionsParams;
 import io.appium.espressoserver.lib.model.Session;
 import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
@@ -195,6 +197,7 @@ class Router {
         // 'execute mobile' commands
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/swipe", new MobileSwipe(), MobileSwipeParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/is_toast_displayed", new GetToastVisibility(), ToastLookupParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/request_permissions", new RequestPermissionsHandler(), RequestPermissionsParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
