@@ -21,7 +21,6 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 import android.util.Xml;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 
@@ -47,6 +46,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
+import static androidx.test.espresso.util.TreeIterables.breadthFirstViewTraversal;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.XMLHelpers.toNodeName;
 import static io.appium.espressoserver.lib.helpers.XMLHelpers.toSafeString;
@@ -155,6 +155,7 @@ public class SourceDocument {
         setAttribute(ViewAttributesEnum.LONG_CLICKABLE, viewElement.isLongClickable());
         setAttribute(ViewAttributesEnum.PASSWORD, viewElement.isPassword());
         setAttribute(ViewAttributesEnum.SELECTED, viewElement.isSelected());
+        setAttribute(ViewAttributesEnum.VISIBLE, viewElement.isVisible());
         setAttribute(ViewAttributesEnum.BOUNDS, viewElement.getBounds().toShortString());
         final ViewText viewText = viewElement.getText();
         if (viewText != null) {
@@ -173,12 +174,12 @@ public class SourceDocument {
         }
 
         // Visit the children and build them too
-        if (view instanceof ViewGroup) {
-            for (int index = 0; index < ((ViewGroup) view).getChildCount(); ++index) {
-                View childView = ((ViewGroup) view).getChildAt(index);
+        for (View childView : breadthFirstViewTraversal(view)) {
+            if (childView != view) {
                 serializeView(childView);
             }
         }
+
         serializer.endTag(NAMESPACE, tagName);
     }
 
