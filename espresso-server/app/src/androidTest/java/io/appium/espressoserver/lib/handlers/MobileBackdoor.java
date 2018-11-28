@@ -33,7 +33,7 @@ public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Stri
         Object invocationResult = safeInvokeOnApplication(activity, ops);
 
         // if backdoor method not found in Application, try to find the method in urrent Activity object
-        if (invocationResult instanceof Map && ((Map) invocationResult).containsKey("error")) {
+        if (invocationResult == null) {
             invocationResult = invokeOnActivity(activity, ops);
         }
 
