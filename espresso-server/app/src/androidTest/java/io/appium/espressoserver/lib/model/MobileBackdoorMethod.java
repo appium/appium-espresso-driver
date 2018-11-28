@@ -7,10 +7,10 @@ import javax.annotation.Nullable;
 
 @SuppressWarnings("unused")
 public class MobileBackdoorMethod {
-    String name;
+    private String name;
 
     @Nullable
-    List<Object> args;
+    private List<Object> args;
 
     public String getName() {
         return name;
@@ -27,7 +27,9 @@ public class MobileBackdoorMethod {
         for (Object object : args) {
             if (object instanceof Double) {
                 Double d = (Double) object;
-                if ((d % 1) == 0) {
+                if (d > Integer.MAX_VALUE) {
+                    list.add(d);
+                } else if ((d % 1) == 0) {
                     list.add(d.intValue());
                 } else {
                     list.add(d);

@@ -44,8 +44,9 @@ public class BackdoorUtils {
 
     public static Class<?>[] parseArgumentTypes(List<?> arguments) {
         Class<?>[] types = new Class<?>[arguments.size()];
-        for (int i = 0; i < arguments.size(); i++)
+        for (int i = 0; i < arguments.size(); i++) {
             types[i] = arguments.get(i) == null ? Object.class : arguments.get(i).getClass();
+        }
 
         return types;
     }

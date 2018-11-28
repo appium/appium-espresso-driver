@@ -1,15 +1,14 @@
 package io.appium.espressoserver.lib.handlers;
 
 import android.app.Activity;
-import android.util.ArrayMap;
+import android.support.annotation.Nullable;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
+import io.appium.espressoserver.lib.helpers.ActivityHelper;
 import io.appium.espressoserver.lib.helpers.InvocationOperation;
 import io.appium.espressoserver.lib.model.MobileBackdoorMethod;
 import io.appium.espressoserver.lib.model.MobileBackdoorParams;
@@ -21,48 +20,44 @@ public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Stri
     @Override
     public String handle(final MobileBackdoorParams params) throws AppiumException {
         logger.info("Invoking Backdoor");
-        Activity activity = getCurrentActivity();
+        Activity activity = ActivityHelper.getCurrentActivity();
 
         List<InvocationOperation> ops = getBackdoorOperations(params);
 
         if (ops.isEmpty()) {
-            throw new InvalidArgumentException("Please pass name(s) of method to be invoked");
+            throw new InvalidArgumentException("Please pass name(s) of methods to be invoked");
         }
 
-//        First try to find the method in Application object
-        Object invocationResult = safeInvokeOnApplication(activity, ops);
+        // First try to find the method in Application object
+        Object invocationResult = null;
+        try {
+            invocationResult = invokeBackdoorMethods(activity.getApplication(), ops);
+        } catch (AppiumException e) {
+            e.printStackTrace();
+        }
 
-        // if backdoor method not found in Application, try to find the method in urrent Activity object
+        // if backdoor method not found in Application, try to find the method in Current Activity object
         if (invocationResult == null) {
-            invocationResult = invokeOnActivity(activity, ops);
+            invocationResult = invokeBackdoorMethods(activity, ops);
+        }
+
+        if (invocationResult == null) {
+            throw new AppiumException("Could not get valid results from Backdoor. Check adb logs");
         }
 
         return invocationResult.toString();
     }
 
-    private Object invokeOnActivity(Activity activity, List<InvocationOperation> ops) throws AppiumException {
+    @Nullable
+    private Object invokeBackdoorMethods(Object invokeOn, List<InvocationOperation> ops) throws AppiumException {
         Object invocationResult = null;
-        Object invokeOn = activity;
+
         for (InvocationOperation op : ops) {
             try {
                 invocationResult = op.apply(invokeOn);
                 invokeOn = invocationResult;
             } catch (Exception e) {
                 throw new AppiumException(e);
-            }
-        }
-        return invocationResult;
-    }
-
-    private Object safeInvokeOnApplication(Activity activity, List<InvocationOperation> ops) {
-        Object invocationResult = null;
-        Object invokeOn = activity.getApplication();
-        for (InvocationOperation op : ops) {
-            try {
-                invocationResult = op.apply(invokeOn);
-                invokeOn = invocationResult;
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         return invocationResult;
@@ -82,29 +77,4 @@ public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Stri
         return ops;
     }
 
-
-    //    https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
-    private Activity getCurrentActivity() throws AppiumException {
-        try {
-            Class activityThreadClass = Class.forName("android.app.ActivityThread");
-            Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
-            Field activitiesField = activityThreadClass.getDeclaredField("mActivities");
-            activitiesField.setAccessible(true);
-            ArrayMap activities = (ArrayMap) activitiesField.get(activityThread);
-            for (Object activityRecord : activities.values()) {
-                Class activityRecordClass = activityRecord.getClass();
-                Field pausedField = activityRecordClass.getDeclaredField("paused");
-                pausedField.setAccessible(true);
-                if (!pausedField.getBoolean(activityRecord)) {
-                    Field activityField = activityRecordClass.getDeclaredField("activity");
-                    activityField.setAccessible(true);
-                    Activity activity = (Activity) activityField.get(activityRecord);
-                    return activity;
-                }
-            }
-        } catch (Exception e) {
-            throw new AppiumException(e);
-        }
-        return null;
-    }
 }

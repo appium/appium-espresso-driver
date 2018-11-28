@@ -19,6 +19,7 @@ import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 //https://github.com/calabash/calabash-android-server/blob/develop/server/app/src/androidTest/java/sh/calaba/instrumentationbackend/query/InvocationOperation.java
 
 public class InvocationOperation {
+    public static final String VOID = "<VOID>";
     private final String methodName;
     private final List<?> arguments;
     private final Class<?>[] argumentTypes;
@@ -44,8 +45,10 @@ public class InvocationOperation {
                 try {
                     if (method.getMethod().getReturnType().equals(Void.TYPE)) {
                         method.invoke(applyOn);
-                        result = "<VOID>";
-                    } else result = method.invoke(applyOn);
+                        result = VOID;
+                    } else {
+                        result = method.invoke(applyOn);
+                    }
 
                     ref.set(result);
                 } catch (Exception e) {
@@ -55,7 +58,9 @@ public class InvocationOperation {
             }
         });
 
-        if (refEx.get() != null) throw refEx.get();
+        if (refEx.get() != null) {
+            throw refEx.get();
+        }
 
         return ref.get();
     }
@@ -73,7 +78,9 @@ public class InvocationOperation {
             noMethodMessage.add(")");
 
             logger.debug("Failed to find a suitable method using reflection");
-            throw new AppiumException(BackdoorResultVoid.instance.asMap(InvocationOperation.this.methodName, object, TextUtils.join("", noMethodMessage)).toString());
+            throw new AppiumException(BackdoorResultVoid.instance.asMap
+                    (InvocationOperation.this.methodName, object,
+                            TextUtils.join("", noMethodMessage)).toString());
 
         }
         return method;
@@ -89,7 +96,9 @@ public class InvocationOperation {
             // No immediate method found
 
             for (Method method : forClass.getMethods()) {
-                if (!method.getName().equals(methodName)) continue;
+                if (!method.getName().equals(methodName)) {
+                    continue;
+                }
 
                 try {
                     return new MethodWithArguments(method, parseToSuitableArguments(method));
@@ -105,8 +114,11 @@ public class InvocationOperation {
     private List<Object> parseToSuitableArguments(Method method) throws IncompatibleArgumentsException {
         List<Object> suitableArguments = new ArrayList<Object>(arguments.size());
 
-        if (arguments.size() != method.getParameterTypes().length)
-            throw new IncompatibleArgumentsException(String.format("Argument count mismatch. Given:'%d' - Possibility:'%d'", arguments.size(), method.getParameterTypes().length));
+        if (arguments.size() != method.getParameterTypes().length) {
+            throw new IncompatibleArgumentsException(
+                    String.format("Argument count mismatch. Given:'%d' - Possibility:'%d'", arguments.size(),
+                            method.getParameterTypes().length));
+        }
 
         for (int i = 0; i < method.getParameterTypes().length; i++) {
             Object argument = arguments.get(i);
@@ -119,16 +131,22 @@ public class InvocationOperation {
 
     private Object parseToSuitableArgument(Object argument, Class<?> parameterType) throws IncompatibleArgumentsException {
         if (argument == null) {
-            if (!parameterType.isPrimitive()) return null;
+            if (!parameterType.isPrimitive()) {
+                return null;
+            }
             throw new IncompatibleArgumentsException(String.format("Null is incompatible with primitive '%s'", parameterType));
         }
 
-        if (argument.getClass() == parameterType) return argument;
-        if (BackdoorUtils.mapToPrimitiveClass(argument.getClass()) == parameterType)
+        if (argument.getClass() == parameterType) {
             return argument;
+        }
+        if (BackdoorUtils.mapToPrimitiveClass(argument.getClass()) == parameterType) {
+            return argument;
+        }
 
-        if (parameterType.isAssignableFrom(argument.getClass()))
+        if (parameterType.isAssignableFrom(argument.getClass())) {
             return parameterType.cast(argument);
+        }
 
         // Accept any number
         if (Number.class.isAssignableFrom(BackdoorUtils.mapToBoxingClass(parameterType))) {
@@ -145,12 +163,17 @@ public class InvocationOperation {
 
         if (!parameterType.isPrimitive() && !argument.getClass().isPrimitive()
                 && CharSequence.class.isAssignableFrom(parameterType)
-                && argument instanceof CharSequence) return argument;
+                && argument instanceof CharSequence) {
+            return argument;
+        }
 
         if ((argument instanceof String) && (((String) argument).length() == 1)) {
-            if (parameterType.equals(char.class)) return ((String) argument).charAt(0);
-            if (parameterType.equals(Character.class))
+            if (parameterType.equals(char.class)) {
                 return ((String) argument).charAt(0);
+            }
+            if (parameterType.equals(Character.class)) {
+                return ((String) argument).charAt(0);
+            }
         }
 
         throw new IncompatibleArgumentsException(String.format("No suitable type '%s' for '%s'", parameterType, argument));
