@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import androidx.test.espresso.action.GeneralLocation;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.AndroidLogger;
@@ -471,11 +472,10 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     public Point getElementCenterPoint(String elementId)
             throws AppiumException {
         View view = Element.getViewById(elementId);
-        int[] out = new int[2];
-        view.getLocationInWindow(out);
+        float[] coords = GeneralLocation.CENTER.calculateCoordinates(view);
         Point point = new Point();
-        point.x = out[0] + ((view.getWidth()) / 2);
-        point.y = out[1] + ((view.getHeight()) / 2);
+        point.x = Math.round(coords[0]);
+        point.y = Math.round(coords[1]);
         return point;
     }
 
