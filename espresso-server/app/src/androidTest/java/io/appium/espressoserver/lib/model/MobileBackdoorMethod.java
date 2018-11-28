@@ -25,14 +25,18 @@ public class MobileBackdoorMethod {
         }
 
         for (Object object : args) {
+            // Convert floats back to integers because Gson parses integers as float.
+            // https://stackoverflow.com/questions/15507997/how-to-prevent-gson-from-expressing-integers-as-floats/15508288
             if (object instanceof Double) {
                 Double d = (Double) object;
+                if ((d % 1) != 0) {
+                    list.add(d);
+                    continue;
+                }
                 if (d > Integer.MAX_VALUE) {
-                    list.add(d);
-                } else if ((d % 1) == 0) {
-                    list.add(d.intValue());
+                    list.add(d.longValue());
                 } else {
-                    list.add(d);
+                    list.add(d.intValue());
                 }
 
             } else {
