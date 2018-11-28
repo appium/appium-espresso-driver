@@ -38,7 +38,7 @@ public class ScrollToPage implements RequestHandler<ScrollToPageParams, Void> {
         ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         try {
             ViewAction scrollAction;
-            Boolean smoothScroll = params.getSmoothScroll() == null ? false : params.getSmoothScroll();
+            boolean smoothScroll = params.getSmoothScroll();
             if (params.getScrollTo() != null) {
                 switch (params.getScrollTo()) {
                     case FIRST:
@@ -54,21 +54,20 @@ public class ScrollToPage implements RequestHandler<ScrollToPageParams, Void> {
                         scrollAction = ViewPagerActions.scrollRight(smoothScroll);
                         break;
                     default:
-                        throw new AppiumException(String.format("Invalid scrollTo param '%s'", params.getScrollTo()));
+                        throw new AppiumException(String.format("Invalid scrollTo param '%s'", params.getScrollTo().name()));
                 }
             } else if (params.getScrollToPage() != null) {
                 scrollAction = ViewPagerActions.scrollToPage(params.getScrollToPage(), smoothScroll);
             } else {
                 throw new InvalidArgumentException("Could not complete scrollToPage action. Must provide either 'scrollTo' or 'scrollToPage'");
             }
-            (new AndroidLogger()).info(String.format("Performing view pager action %s", scrollAction));
             viewInteraction.perform(scrollAction);
 
         } catch (ClassCastException e) {
-            throw new AppiumException(String.format("Could not perform scroll to on element %s. Reason: %s", params.getElementId(), e.getCause()));
+            throw new AppiumException(String.format("Could not perform scroll to on element %s. Reason: %s", params.getElementId(), e));
         } catch (Exception e) {
             if (e instanceof EspressoException) {
-                throw new AppiumException(String.format("Could not scroll to page. Reason: %s", e.getCause()));
+                throw new AppiumException(String.format("Could not scroll to page. Reason: %s", e));
             }
             throw e;
         }

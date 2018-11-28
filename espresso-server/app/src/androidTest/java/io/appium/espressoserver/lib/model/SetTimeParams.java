@@ -25,8 +25,8 @@ public class SetTimeParams extends AppiumParams {
         return hours;
     }
 
-    public void setHour(Integer hour) {
-        this.hours = hour;
+    public void setHour(Integer hours) {
+        this.hours = hours;
     }
 
     public Integer getMinutes() {

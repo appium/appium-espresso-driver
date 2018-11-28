@@ -80,14 +80,10 @@ describe('mobile', function () {
   describe('mobile: scrollToPage', function () {
     it('should validate the parameters', async function () {
       let el = await driver.elementByAccessibilityId('Views');
-      await driver.execute('mobile: scrollToPage', {element: el}).should.eventually.be.rejectedWith(/Must set either 'scrollTo' or 'scrollToPage' parameter/);
-      await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: 1, scrollTo: 'left'}).should.eventually.be.rejectedWith(/'scrollTo' and 'scrollToPage' are mutually exclusive parameters and cannot be set at the same time/);
-      await driver.execute('mobile: scrollToPage', {element: el, scrollTo: "SOMETHING DIFF"}).should.eventually.be.rejectedWith(/'scrollTo' options must be one of/);
-      await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: -5}).should.eventually.be.rejectedWith(/'scrollToPage' must be a non-negative integer. Found/);
-      await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: "NOT A NUMBER"}).should.eventually.be.rejectedWith(/'scrollToPage' must be a non-negative integer. Found/);
-      await driver.execute('mobile: scrollToPage', {element: el}).should.eventually.be.rejectedWith(/Must set either 'scrollTo' or 'scrollToPage' parameter/);
-      await driver.execute('mobile: scrollToPage', {element: el}).should.eventually.be.rejectedWith(/Must set either 'scrollTo' or 'scrollToPage' parameter/);
-      await driver.execute('mobile: scrollToPage', {element: el}).should.eventually.be.rejectedWith(/Must set either 'scrollTo' or 'scrollToPage' parameter/);
+      //await driver.execute('mobile: scrollToPage', {element: el}).should.eventually.be.rejectedWith(/Must provide either/);
+      await driver.execute('mobile: scrollToPage', {element: el, scrollTo: "SOMETHING DIFF"}).should.eventually.be.rejectedWith(/must be one of /);
+      await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: -5}).should.eventually.be.rejectedWith(/must be a non-negative integer/);
+      await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: "NOT A NUMBER"}).should.eventually.be.rejectedWith(/must be a non-negative integer/);
     });
     it('should call the scrollToPage method', async function () {
       // Testing for failures because ApiDemos app does not have a view pager to test on

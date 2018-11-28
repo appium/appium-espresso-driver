@@ -44,9 +44,8 @@ public class ScrollToPageParams extends AppiumParams {
         this.scrollToPage = scrollToPage;
     }
 
-    @Nullable
     public Boolean getSmoothScroll() {
-        return smoothScroll;
+        return smoothScroll == null ? false : smoothScroll;
     }
 
     public void setSmoothScroll(Boolean smoothScroll) {

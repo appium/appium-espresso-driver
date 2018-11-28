@@ -32,8 +32,9 @@ public class SetTime implements RequestHandler<SetTimeParams, Void> {
             viewInteraction.perform(PickerActions.setTime(params.getHours(), params.getMinutes()));
         } catch (Exception e) {
             if (e instanceof EspressoException) {
-                throw new AppiumException(String.format("Could not set time on element. Reason: %s", e.getCause()));
+                throw new AppiumException(String.format("Could not set time on element. Reason: %s", e));
             }
+            throw e;
         }
         return null;
     }

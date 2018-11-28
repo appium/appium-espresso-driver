@@ -37,7 +37,7 @@ public class NavigateTo implements RequestHandler<NavigateToParams, Void> {
             viewInteraction.perform(NavigationViewActions.navigateTo(menuItemId));
         } catch (Exception e) {
             if (e instanceof EspressoException) {
-                throw new AppiumException(String.format("Could not navigate to menu item %s. Reason: %s", menuItemId, e.getCause()));
+                throw new AppiumException(String.format("Could not navigate to menu item %s. Reason: %s", menuItemId, e));
             }
         }
         return null;

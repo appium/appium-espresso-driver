@@ -29,7 +29,7 @@ public class DrawerActionParams extends AppiumParams {
         return gravity;
     }
 
-    public void setText(Integer gravity) {
+    public void setGravity(Integer gravity) {
         this.gravity = gravity;
     }
 
