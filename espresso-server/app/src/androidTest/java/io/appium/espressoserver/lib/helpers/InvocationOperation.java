@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.handlers.exceptions.IncompatibleArgumentsException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.model.BackdoorResultVoid;
 
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
@@ -102,7 +102,7 @@ public class InvocationOperation {
 
                 try {
                     return new MethodWithArguments(method, parseToSuitableArguments(method));
-                } catch (IncompatibleArgumentsException e1) {
+                } catch (InvalidArgumentException e1) {
                     continue;
                 }
             }
@@ -112,11 +112,11 @@ public class InvocationOperation {
     }
 
     @Nullable
-    private List<Object> parseToSuitableArguments(Method method) throws IncompatibleArgumentsException {
+    private List<Object> parseToSuitableArguments(Method method) throws InvalidArgumentException {
         List<Object> suitableArguments = new ArrayList<Object>(arguments.size());
 
         if (arguments.size() != method.getParameterTypes().length) {
-            throw new IncompatibleArgumentsException(
+            throw new InvalidArgumentException(
                     String.format("Argument count mismatch. Given:'%d' - Possibility:'%d'", arguments.size(),
                             method.getParameterTypes().length));
         }
@@ -130,12 +130,12 @@ public class InvocationOperation {
         return suitableArguments;
     }
 
-    private Object parseToSuitableArgument(Object argument, Class<?> parameterType) throws IncompatibleArgumentsException {
+    private Object parseToSuitableArgument(Object argument, Class<?> parameterType) throws InvalidArgumentException {
         if (argument == null) {
             if (!parameterType.isPrimitive()) {
                 return null;
             }
-            throw new IncompatibleArgumentsException(String.format("Null is incompatible with primitive '%s'", parameterType));
+            throw new InvalidArgumentException(String.format("Null is incompatible with primitive '%s'", parameterType));
         }
 
         if (argument.getClass() == parameterType) {
@@ -156,7 +156,7 @@ public class InvocationOperation {
             try {
                 value = BackdoorUtils.numericValue(argument, BackdoorUtils.mapToBoxingClass(parameterType));
             } catch (NumberFormatException e) {
-                throw new IncompatibleArgumentsException(String.format("Cannot convert '%s' to class '%s'", argument, parameterType));
+                throw new InvalidArgumentException(String.format("Cannot convert '%s' to class '%s'", argument, parameterType));
             }
 
             return value;
@@ -177,7 +177,7 @@ public class InvocationOperation {
             }
         }
 
-        throw new IncompatibleArgumentsException(String.format("No suitable type '%s' for '%s'", parameterType, argument));
+        throw new InvalidArgumentException(String.format("No suitable type '%s' for '%s'", parameterType, argument));
     }
 
 
@@ -206,33 +206,32 @@ public class InvocationOperation {
                 case 3:
                     return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2));
                 case 4:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3));
+                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2),
+                            arguments.get(3));
                 case 5:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4));
+                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2),
+                            arguments.get(3), arguments.get(4));
                 case 6:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4), arguments.get(5));
+                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2),
+                            arguments.get(3), arguments.get(4), arguments.get(5));
                 case 7:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6));
+                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2),
+                            arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6));
                 case 8:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6), arguments.get(7));
+                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2),
+                            arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6),
+                            arguments.get(7));
                 case 9:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6), arguments.get(7), arguments.get(8));
+                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2),
+                            arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6),
+                            arguments.get(7), arguments.get(8));
                 case 10:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6), arguments.get(7), arguments.get(8), arguments.get(9));
-                case 11:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6), arguments.get(7), arguments.get(8), arguments.get(9), arguments.get(10));
-                case 12:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6), arguments.get(7), arguments.get(8), arguments.get(9), arguments.get(10), arguments.get(11));
-                case 13:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6), arguments.get(7), arguments.get(8), arguments.get(9), arguments.get(10), arguments.get(11), arguments.get(12));
-                case 14:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6), arguments.get(7), arguments.get(8), arguments.get(9), arguments.get(10), arguments.get(11), arguments.get(12), arguments.get(13));
-                case 15:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6), arguments.get(7), arguments.get(8), arguments.get(9), arguments.get(10), arguments.get(11), arguments.get(12), arguments.get(13), arguments.get(14));
-                case 16:
-                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6), arguments.get(7), arguments.get(8), arguments.get(9), arguments.get(10), arguments.get(11), arguments.get(12), arguments.get(13), arguments.get(14), arguments.get(15));
+                    return method.invoke(o, arguments.get(0), arguments.get(1), arguments.get(2),
+                            arguments.get(3), arguments.get(4), arguments.get(5), arguments.get(6),
+                            arguments.get(7), arguments.get(8), arguments.get(9));
                 default:
-                    throw new UnsupportedOperationException("Method with more than 16 arguments are not supported");
+                    throw new UnsupportedOperationException(
+                            "Method with more than 10 arguments are not supported");
             }
 
         }
