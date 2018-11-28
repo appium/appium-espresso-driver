@@ -18,21 +18,26 @@ package io.appium.espressoserver.lib.handlers;
 
 import androidx.test.espresso.EspressoException;
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.PickerActions;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.model.Element;
+import io.appium.espressoserver.lib.model.NavigateToParams;
+import io.appium.espressoserver.lib.model.ScrollToPageParams;
 import io.appium.espressoserver.lib.model.SetTimeParams;
 
-public class SetTime implements RequestHandler<SetTimeParams, Void> {
+public class NavigateTo implements RequestHandler<NavigateToParams, Void> {
 
     @Override
-    public Void handle(SetTimeParams params) throws AppiumException {
+    public Void handle(NavigateToParams params) throws AppiumException {
         ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
+        Integer menuItemId = params.getMenuItemId();
         try {
-            viewInteraction.perform(PickerActions.setTime(params.getHours(), params.getMinutes()));
+            viewInteraction.perform(NavigationViewActions.navigateTo(menuItemId));
         } catch (Exception e) {
             if (e instanceof EspressoException) {
-                throw new AppiumException(String.format("Could not set time on element. Reason: %s", e.getCause()));
+                throw new AppiumException(String.format("Could not navigate to menu item %s. Reason: %s", menuItemId, e.getCause()));
             }
         }
         return null;

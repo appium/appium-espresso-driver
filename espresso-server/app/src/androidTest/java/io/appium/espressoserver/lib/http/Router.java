@@ -59,6 +59,7 @@ import io.appium.espressoserver.lib.handlers.Keys;
 import io.appium.espressoserver.lib.handlers.MobileSwipe;
 import io.appium.espressoserver.lib.handlers.MultiTouchAction;
 import io.appium.espressoserver.lib.handlers.MultiTouchActionsParams;
+import io.appium.espressoserver.lib.handlers.NavigateTo;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
 import io.appium.espressoserver.lib.handlers.PerformAction;
 import io.appium.espressoserver.lib.handlers.PerformEditorAction;
@@ -67,6 +68,7 @@ import io.appium.espressoserver.lib.handlers.PressKeyCode;
 import io.appium.espressoserver.lib.handlers.ReleaseActions;
 import io.appium.espressoserver.lib.handlers.RequestHandler;
 import io.appium.espressoserver.lib.handlers.ScreenshotHandler;
+import io.appium.espressoserver.lib.handlers.ScrollToPage;
 import io.appium.espressoserver.lib.handlers.SendKeys;
 import io.appium.espressoserver.lib.handlers.SetDate;
 import io.appium.espressoserver.lib.handlers.SetOrientation;
@@ -101,7 +103,9 @@ import io.appium.espressoserver.lib.model.KeyEventParams;
 import io.appium.espressoserver.lib.model.Locator;
 import io.appium.espressoserver.lib.model.MobileSwipeParams;
 import io.appium.espressoserver.lib.model.MotionEventParams;
+import io.appium.espressoserver.lib.model.NavigateToParams;
 import io.appium.espressoserver.lib.model.OrientationParams;
+import io.appium.espressoserver.lib.model.ScrollToPageParams;
 import io.appium.espressoserver.lib.model.Session;
 import io.appium.espressoserver.lib.model.SessionParams;
 import io.appium.espressoserver.lib.model.SetDateParams;
@@ -205,6 +209,8 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/close_drawer", new DrawerActionHandler(false), DrawerActionParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/set_date", new SetDate(), SetDateParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/set_time", new SetTime(), SetTimeParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/scroll_to_page", new ScrollToPage(), ScrollToPageParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/navigate_to", new NavigateTo(), NavigateToParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));

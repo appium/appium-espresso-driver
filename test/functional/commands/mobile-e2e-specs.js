@@ -3,7 +3,6 @@ import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
-
 chai.should();
 chai.use(chaiAsPromised);
 
@@ -34,6 +33,7 @@ describe('mobile', function () {
 
   describe('mobile: openDrawer, mobile: closeDrawer', function () {
     it('should call these two commands but fail because element is not a drawer', async function () {
+      // Testing for failures because ApiDemos app does not have a drawer to test on
       let el = await driver.elementByAccessibilityId('Views');
       await driver.execute('mobile: openDrawer', {element: el, gravity: 1}).should.eventually.be.rejectedWith(/open drawer with gravity/);
       await driver.execute('mobile: closeDrawer', {element: el, gravity: 1}).should.eventually.be.rejectedWith(/close drawer with gravity/);
@@ -60,6 +60,41 @@ describe('mobile', function () {
       let source = await driver.source();
       source.includes('10:58').should.be.true;
       await driver.back();
+    });
+  });
+
+  describe('mobile: navigateTo', function () {
+    it('should validate params', async function () {
+      let element = await driver.elementByAccessibilityId('Views');
+      await driver.execute('mobile: navigateTo', {element, menuItemId: -100}).should.eventually.be.rejectedWith(/'menuItemId' must be a non-negative number/);
+      await driver.execute('mobile: navigateTo', {element, menuItemId: "fake"}).should.eventually.be.rejectedWith(/'menuItemId' must be a non-negative number/);
+      await driver.execute('mobile: navigateTo', {element}).should.eventually.be.rejectedWith(/required/);
+    });
+    it('should call the navigateTo method', async function () {
+      // Testing for failures because ApiDemos app does not have a navigator view to test on
+      let element = await driver.elementByAccessibilityId('Views');
+      await driver.execute('mobile: navigateTo', {element, menuItemId: 10}).should.eventually.be.rejectedWith(/Could not navigate to menu item 10/);
+    });
+  });
+
+  describe('mobile: scrollToPage', function () {
+    it('should validate the parameters', async function () {
+      let el = await driver.elementByAccessibilityId('Views');
+      await driver.execute('mobile: scrollToPage', {element: el}).should.eventually.be.rejectedWith(/Must set either 'scrollTo' or 'scrollToPage' parameter/);
+      await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: 1, scrollTo: 'left'}).should.eventually.be.rejectedWith(/'scrollTo' and 'scrollToPage' are mutually exclusive parameters and cannot be set at the same time/);
+      await driver.execute('mobile: scrollToPage', {element: el, scrollTo: "SOMETHING DIFF"}).should.eventually.be.rejectedWith(/'scrollTo' options must be one of/);
+      await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: -5}).should.eventually.be.rejectedWith(/'scrollToPage' must be a non-negative integer. Found/);
+      await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: "NOT A NUMBER"}).should.eventually.be.rejectedWith(/'scrollToPage' must be a non-negative integer. Found/);
+      await driver.execute('mobile: scrollToPage', {element: el}).should.eventually.be.rejectedWith(/Must set either 'scrollTo' or 'scrollToPage' parameter/);
+      await driver.execute('mobile: scrollToPage', {element: el}).should.eventually.be.rejectedWith(/Must set either 'scrollTo' or 'scrollToPage' parameter/);
+      await driver.execute('mobile: scrollToPage', {element: el}).should.eventually.be.rejectedWith(/Must set either 'scrollTo' or 'scrollToPage' parameter/);
+    });
+    it('should call the scrollToPage method', async function () {
+      // Testing for failures because ApiDemos app does not have a view pager to test on
+      let el = await driver.elementByAccessibilityId('Views');
+      await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: 1}).should.eventually.be.rejectedWith(/Could not perform scroll to on element/);
+      await driver.execute('mobile: scrollToPage', {element: el, scrollTo: 'left'}).should.eventually.be.rejectedWith(/Could not perform scroll to on element/);
+      await driver.execute('mobile: scrollToPage', {element: el, scrollTo: 'left', smoothScroll: true}).should.eventually.be.rejectedWith(/Could not perform scroll to on element/);
     });
   });
 });
