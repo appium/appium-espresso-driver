@@ -16,28 +16,22 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.support.v4.view.ViewPager;
-
 import androidx.test.espresso.EspressoException;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
-import androidx.test.espresso.action.ScrollToAction;
-import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.espresso.contrib.ViewPagerActions;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
-import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.ScrollToPageParams;
-import io.appium.espressoserver.lib.model.SetTimeParams;
 
 public class ScrollToPage implements RequestHandler<ScrollToPageParams, Void> {
 
     @Override
     public Void handle(ScrollToPageParams params) throws AppiumException {
-        ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
+        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
         try {
-            ViewAction scrollAction;
+            final ViewAction scrollAction;
             boolean smoothScroll = params.getSmoothScroll();
             if (params.getScrollTo() != null) {
                 switch (params.getScrollTo()) {
