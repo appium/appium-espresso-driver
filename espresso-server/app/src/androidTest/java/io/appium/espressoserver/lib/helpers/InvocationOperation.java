@@ -111,6 +111,7 @@ public class InvocationOperation {
         }
     }
 
+    @Nullable
     private List<Object> parseToSuitableArguments(Method method) throws IncompatibleArgumentsException {
         List<Object> suitableArguments = new ArrayList<Object>(arguments.size());
 
