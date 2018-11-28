@@ -66,7 +66,7 @@ import io.appium.espressoserver.lib.handlers.PointerEventHandler;
 import io.appium.espressoserver.lib.handlers.PressKeyCode;
 import io.appium.espressoserver.lib.handlers.ReleaseActions;
 import io.appium.espressoserver.lib.handlers.RequestHandler;
-import io.appium.espressoserver.lib.handlers.Screenshot;
+import io.appium.espressoserver.lib.handlers.ScreenshotHandler;
 import io.appium.espressoserver.lib.handlers.SendKeys;
 import io.appium.espressoserver.lib.handlers.SetOrientation;
 import io.appium.espressoserver.lib.handlers.Source;
@@ -141,7 +141,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/orientation", new SetOrientation(), OrientationParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/orientation", new GetOrientation(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/source", new Source(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/screenshot", new Screenshot(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/screenshot", new ScreenshotHandler(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element", new FindElement(), Locator.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/active", new FindActive(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/active", new FindActive(), AppiumParams.class));
