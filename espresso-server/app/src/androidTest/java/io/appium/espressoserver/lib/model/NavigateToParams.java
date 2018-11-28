@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.model;
 
-import android.graphics.Bitmap;
-import android.util.Base64;
+@SuppressWarnings("unused")
+public class NavigateToParams extends AppiumParams {
+    private Integer menuItemId;
 
-import java.io.ByteArrayOutputStream;
+    public Integer getMenuItemId() {
+        return this.menuItemId;
+    }
 
-import androidx.test.runner.screenshot.ScreenCapture;
-import androidx.test.runner.screenshot.Screenshot;
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
-import io.appium.espressoserver.lib.model.AppiumParams;
-
-public class ScreenshotHandler implements RequestHandler<AppiumParams, String> {
-
-    @Override
-    public String handle(AppiumParams params) throws AppiumException {
-        return (new ScreenshotsHelper()).getScreenshot();
+    public void setMenuItemId(Integer menuItemId) {
+        this.menuItemId = menuItemId;
     }
 }

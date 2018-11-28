@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.model;
 
-import android.graphics.Bitmap;
-import android.util.Base64;
+@SuppressWarnings("unused")
+public class SetTimeParams extends AppiumParams {
+    private Integer hours;
+    private Integer minutes;
 
-import java.io.ByteArrayOutputStream;
-
-import androidx.test.runner.screenshot.ScreenCapture;
-import androidx.test.runner.screenshot.Screenshot;
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
-import io.appium.espressoserver.lib.model.AppiumParams;
-
-public class ScreenshotHandler implements RequestHandler<AppiumParams, String> {
-
-    @Override
-    public String handle(AppiumParams params) throws AppiumException {
-        return (new ScreenshotsHelper()).getScreenshot();
+    public Integer getHours() {
+        return hours;
     }
+
+    public void setHour(Integer hours) {
+        this.hours = hours;
+    }
+
+    public Integer getMinutes() {
+        return minutes;
+    }
+
+    public void setMinutes(Integer minutes) {
+        this.minutes = minutes;
+    }
+
 }
