@@ -60,7 +60,7 @@ public class DrawerActionHandler implements RequestHandler<DrawerActionParams, V
             }
         } catch (Exception e) {
             if (e instanceof EspressoException) {
-                throw new AppiumException(String.format("Could not %s drawer. Reason: %s", isOpenAction ? "open" : "close" ,e.getMessage()));
+                throw new AppiumException(String.format("Could not %s drawer. Reason: %s", isOpenAction ? "open" : "close" ,e.getCause()));
             }
             throw e;
         }
