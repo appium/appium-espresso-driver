@@ -21,8 +21,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Rect;
-
-import androidx.test.espresso.matcher.ViewMatchers;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -33,6 +31,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import javax.annotation.Nullable;
+
+import androidx.test.espresso.matcher.ViewMatchers;
 
 import static android.view.View.NO_ID;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
@@ -164,16 +164,14 @@ public class ViewElement {
     }
 
     public int getIndex() {
-        final ViewParent parent = view.getParent();
-        try {
-            for (int index = 0; index < ((ViewGroup) parent).getChildCount(); ++index) {
-                View childView = ((ViewGroup) parent).getChildAt(index);
-                if (childView.equals(view)) {
+        final ViewParent parentView = view.getParent();
+        if (parentView instanceof ViewGroup) {
+            ViewGroup parentGroup = (ViewGroup) parentView;
+            for (int index = 0; index < parentGroup.getChildCount(); ++index) {
+                if (view.equals(parentGroup.getChildAt(index))) {
                     return index;
                 }
             }
-        } catch (ClassCastException e) {
-            // If it couldn't be cast to a ViewGroup, the parent has no children
         }
         return 0;
     }

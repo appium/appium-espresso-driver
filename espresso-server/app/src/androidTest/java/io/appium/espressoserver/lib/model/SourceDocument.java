@@ -175,7 +175,7 @@ public class SourceDocument {
 
         // Visit the children and build them too
         for (View childView : breadthFirstViewTraversal(view)) {
-            if (childView != view) {
+            if (!view.equals(childView)) {
                 serializeView(childView);
             }
         }
