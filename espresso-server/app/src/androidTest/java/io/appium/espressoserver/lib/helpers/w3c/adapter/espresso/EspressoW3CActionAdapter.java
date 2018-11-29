@@ -26,8 +26,8 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.MOUSE;
-import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
+import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.Helpers.isTouch;
+import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.Helpers.toCoordinates;
 
 public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
@@ -154,32 +154,5 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     
     public Logger getLogger() {
         return AndroidLogger.logger;
-    }
-
-    // If a 'mouse' event was provided, convert it to 'touch'
-    // This is because some clients only send 'mouse' events and the assumption is that if they
-    // send 'mouse' events to a device that has a touch screen, it needs to be converted
-    private boolean isTouch(PointerType type) {
-        // return type == TOUCH || (type == MOUSE && isTouchScreen); // TODO Revisit this if we wish to support MOUSE on Android
-        return type == TOUCH || type == MOUSE;
-    }
-
-    /**
-     * Convert [x,y] coordinates from float to long.
-     *
-     * Gives warning if the long values are different from the float values
-     *
-     * @param x X coordinate
-     * @param y Y coordinate
-     * @return Rounded x and y coordinates
-     */
-    private Point toCoordinates(Float x, Float y) {
-        int roundedX = Math.round(x);
-        int roundedY = Math.round(y);
-        if (x != roundedX || y != roundedY) {
-            this.getLogger().warn(String.format("Coordinates provided [%s, %s] will be rounded to integers [%s %s]", x, y, roundedX, roundedY));
-        }
-
-        return new Point(roundedX, roundedY);
     }
 }
