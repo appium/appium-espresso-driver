@@ -149,94 +149,6 @@ public class AndroidKeyEvent {
     }
 
     /**
-     * Translate a string into a sequence of Android Key Events
-     * @param key A key in String form
-     * @param isDown Returns true if this is a key down events
-     * @param isRepeat Returns true if this is a repeat key down
-     * @param metaState The current global meta state of Android key events
-     * @return
-     * @throws InvalidArgumentException
-     */
-    private List<KeyEvent> convertStringToAndroidKeyEvents(String key, boolean isDown,
-                                                           boolean isRepeat, int metaState) throws InvalidArgumentException {
-        final KeyEvent[] keyEventsFromChar = keyCharacterMap.getEvents(key.toCharArray());
-
-        if (keyEventsFromChar == null) {
-            throw new InvalidArgumentException(String.format("Could not find matching keycode for character %s", key));
-        }
-
-        long now = SystemClock.uptimeMillis();
-
-        List<KeyEvent> keyEvents = new ArrayList<>();
-        int keyEventIndex = 0;
-        while (keyEventIndex * 2 < keyEventsFromChar.length) {
-            // getEvents produces UP and DOWN events, so we need to skip over every other event
-            final KeyEvent keyEvent = keyEventsFromChar[keyEventIndex * 2];
-
-            long downTime = isDown ?
-                    SystemClock.uptimeMillis() :
-                    keyDownTimes.get(key).get(keyEventIndex).getDownTime();
-
-            keyEvents.add(new KeyEvent(
-                    downTime,
-                    isDown ? downTime : now,
-                    isDown ? ACTION_DOWN : ACTION_UP,
-                    keyEvent.getKeyCode(),
-                    isRepeat ? 1 : 0,
-                    metaState | keyEvent.getMetaState(),
-                    KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0
-            ));
-
-            keyEventIndex++;
-        }
-
-        return keyEvents;
-    }
-
-    /**
-     * Dispatch an Android key event
-     * @param w3cKeyEvent Key Event in W3C form (https://www.w3.org/TR/webdriver1/#keyboard-actions)
-     * @param isDown Returns true if it's keyDown, otherwise it's keyUp
-     * @throws AppiumException
-     */
-    private void keyUpOrDown(final W3CKeyEvent w3cKeyEvent, boolean isDown)
-            throws AppiumException {
-
-        int action = isDown ? ACTION_DOWN : ACTION_UP;
-        String key = w3cKeyEvent.getKey();
-        int keyCode = w3cKeyEvent.getKeyCode();
-
-        // No-op if releasing a key that isn't down
-        if (action == ACTION_UP && keyDownTimes.containsKey(key)) {
-            return;
-        }
-
-        List<KeyEvent> keyEvents;
-
-        if (keyCode >= 0) {
-
-            // If the keyCode is known, send it now
-            long downTime = isDown ?
-                    SystemClock.uptimeMillis() :
-                    keyDownTimes.get(key).get(0).getDownTime();
-            keyEvents = Collections.singletonList(new KeyEvent(
-                    downTime,
-                    isDown ? downTime : SystemClock.uptimeMillis(),
-                    action,
-                    keyCode,
-                    w3cKeyEvent.isRepeat() ? 1 : 0,
-                    getMetaState(w3cKeyEvent),
-                    KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0
-            ));
-        } else {
-            // If there's no keyCode, map the characters to Android keys
-            keyEvents = convertStringToAndroidKeyEvents(key, isDown, w3cKeyEvent.isRepeat(), getMetaState(w3cKeyEvent));
-        }
-
-        injectKeyEvents(isDown, keyEvents, key);
-    }
-
-    /**
      * Translate a W3C Key into an Android Key Event (if possible
      * @param keyValue The W3C normalized key value (https://www.w3.org/TR/webdriver1/#keyboard-actions)
      * @param location The W3C "key location"
@@ -355,6 +267,95 @@ public class AndroidKeyEvent {
             default:
                 return -1;
         }
+    }
+
+
+    /**
+     * Translate a string into a sequence of Android Key Events
+     * @param key A key in String form
+     * @param isDown Returns true if this is a key down events
+     * @param isRepeat Returns true if this is a repeat key down
+     * @param metaState The current global meta state of Android key events
+     * @return
+     * @throws InvalidArgumentException
+     */
+    private List<KeyEvent> convertStringToAndroidKeyEvents(String key, boolean isDown,
+                                                           boolean isRepeat, int metaState) throws InvalidArgumentException {
+        final KeyEvent[] keyEventsFromChar = keyCharacterMap.getEvents(key.toCharArray());
+
+        if (keyEventsFromChar == null) {
+            throw new InvalidArgumentException(String.format("Could not find matching keycode for character %s", key));
+        }
+
+        long now = SystemClock.uptimeMillis();
+
+        List<KeyEvent> keyEvents = new ArrayList<>();
+        int keyEventIndex = 0;
+        while (keyEventIndex * 2 < keyEventsFromChar.length) {
+            // getEvents produces UP and DOWN events, so we need to skip over every other event
+            final KeyEvent keyEvent = keyEventsFromChar[keyEventIndex * 2];
+
+            long downTime = isDown ?
+                    SystemClock.uptimeMillis() :
+                    keyDownTimes.get(key).get(keyEventIndex).getDownTime();
+
+            keyEvents.add(new KeyEvent(
+                    downTime,
+                    isDown ? downTime : now,
+                    isDown ? ACTION_DOWN : ACTION_UP,
+                    keyEvent.getKeyCode(),
+                    isRepeat ? 1 : 0,
+                    metaState | keyEvent.getMetaState(),
+                    KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0
+            ));
+
+            keyEventIndex++;
+        }
+
+        return keyEvents;
+    }
+
+    /**
+     * Dispatch an Android key event
+     * @param w3cKeyEvent Key Event in W3C form (https://www.w3.org/TR/webdriver1/#keyboard-actions)
+     * @param isDown Returns true if it's keyDown, otherwise it's keyUp
+     * @throws AppiumException
+     */
+    private void keyUpOrDown(final W3CKeyEvent w3cKeyEvent, boolean isDown)
+            throws AppiumException {
+
+        int action = isDown ? ACTION_DOWN : ACTION_UP;
+        String key = w3cKeyEvent.getKey();
+        int keyCode = w3cKeyEvent.getKeyCode();
+
+        // No-op if releasing a key that isn't down
+        if (action == ACTION_UP && !keyDownTimes.containsKey(key)) {
+            return;
+        }
+
+        List<KeyEvent> keyEvents;
+
+        if (keyCode >= 0) {
+
+            // If the keyCode is known, send it now
+            long downTime = isDown ?
+                    SystemClock.uptimeMillis() :
+                    keyDownTimes.get(key).get(0).getDownTime();
+            keyEvents = Collections.singletonList(new KeyEvent(
+                    downTime,
+                    isDown ? downTime : SystemClock.uptimeMillis(),
+                    action,
+                    keyCode,
+                    w3cKeyEvent.isRepeat() ? 1 : 0,
+                    getMetaState(w3cKeyEvent),
+                    KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0
+            ));
+        } else {
+            // If there's no keyCode, map the characters to Android keys
+            keyEvents = convertStringToAndroidKeyEvents(key, isDown, w3cKeyEvent.isRepeat(), getMetaState(w3cKeyEvent));
+        }
+
+        injectKeyEvents(isDown, keyEvents, key);
     }
 
     /**
