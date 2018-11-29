@@ -1,13 +1,23 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants;
 
+import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.KeyEvent.ACTION_UP;
 import static android.view.MotionEvent.TOOL_TYPE_FINGER;
 import static android.view.MotionEvent.TOOL_TYPE_MOUSE;
 import static android.view.MotionEvent.TOOL_TYPE_STYLUS;
@@ -17,6 +27,8 @@ public class Helpers {
     private static final int MOUSE_BUTTON_LEFT = 0;
     private static final int MOUSE_BUTTON_MIDDLE = 1;
     private static final int MOUSE_BUTTON_RIGHT = 2;
+
+    private static final KeyCharacterMap keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
 
     public static int extractButton(final Integer w3cButton, final PointerType pointerType)
             throws AppiumException {
@@ -70,5 +82,4 @@ public class Helpers {
                 throw new AppiumException(String.format("Invalid tool type: %s", pointerType));
         }
     }
-
 }
