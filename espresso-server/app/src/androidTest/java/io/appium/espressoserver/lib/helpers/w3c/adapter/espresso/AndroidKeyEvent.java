@@ -91,15 +91,15 @@ public class AndroidKeyEvent {
      */
     private void keyUpOrDown(final W3CKeyEvent w3cKeyEvent, boolean isDown)
             throws AppiumException {
+
         int action = isDown ? ACTION_DOWN : ACTION_UP;
-
-        // No-op if releasing a key that isn't down
-        if (action == ACTION_UP && keyDownTimes.containsKey(w3cKeyEvent.getKey())) {
-            return;
-        }
-
         String key = w3cKeyEvent.getKey();
         int keyCode = w3cKeyEvent.getKeyCode();
+
+        // No-op if releasing a key that isn't down
+        if (action == ACTION_UP && keyDownTimes.containsKey(key)) {
+            return;
+        }
 
         List<KeyEvent> keyEvents;
 
@@ -278,11 +278,6 @@ public class AndroidKeyEvent {
      * @throws AppiumException
      */
     private void injectKeyEvents(UiController uiController, boolean isDown, List<KeyEvent> keyEvents, String key) throws AppiumException {
-        AndroidLogger.logger.info(String.format("Calling key %s event on character: %s",
-                isDown ? "down" : "up",
-                key
-        ));
-
         // If it's a keydown event, record that this key went down. If it's keyup, remove pre-existing
         // record of this key going down
         if (isDown) {
@@ -293,6 +288,7 @@ public class AndroidKeyEvent {
 
         // Inject all of the key events, in order
         for (final KeyEvent androidKeyEvent : keyEvents){
+            AndroidLogger.logger.info(String.format("Calling key event: %s", androidKeyEvent));
             boolean isSuccess;
             try {
                 isSuccess = uiController.injectKeyEvent(androidKeyEvent);
