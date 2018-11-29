@@ -30,6 +30,14 @@ public class AndroidKeyEvent {
         this.uiController = uiController;
     }
 
+    public void keyDown(final W3CKeyEvent w3cKeyEvent) throws AppiumException {
+        keyUpOrDown(w3cKeyEvent, true);
+    }
+
+    public void keyUp(final W3CKeyEvent w3cKeyEvent) throws AppiumException {
+        keyUpOrDown(w3cKeyEvent, false);
+    }
+
     /**
      * Translate a string into a sequence of Android Key Events
      * @param key A key in String form
@@ -39,8 +47,8 @@ public class AndroidKeyEvent {
      * @return
      * @throws InvalidArgumentException
      */
-    public List<KeyEvent> convertStringToAndroidKeyEvents(String key, boolean isDown,
-                                                                 boolean isRepeat, int metaState) throws InvalidArgumentException {
+    private List<KeyEvent> convertStringToAndroidKeyEvents(String key, boolean isDown,
+                                                           boolean isRepeat, int metaState) throws InvalidArgumentException {
         final KeyEvent[] keyEventsFromChar = keyCharacterMap.getEvents(key.toCharArray());
 
         if (keyEventsFromChar == null) {
@@ -73,14 +81,6 @@ public class AndroidKeyEvent {
         }
 
         return keyEvents;
-    }
-
-    public void keyDown(final W3CKeyEvent w3cKeyEvent) throws AppiumException {
-        keyUpOrDown(w3cKeyEvent, true);
-    }
-
-    public void keyUp(final W3CKeyEvent w3cKeyEvent) throws AppiumException {
-        keyUpOrDown(w3cKeyEvent, false);
     }
 
     /**
@@ -123,7 +123,7 @@ public class AndroidKeyEvent {
             keyEvents = convertStringToAndroidKeyEvents(key, isDown, w3cKeyEvent.isRepeat(), getMetaState(w3cKeyEvent));
         }
 
-        injectKeyEvents(uiController, isDown, keyEvents, key);
+        injectKeyEvents(isDown, keyEvents, key);
     }
 
     /**
@@ -132,7 +132,7 @@ public class AndroidKeyEvent {
      * @param location The W3C "key location"
      * @return
      */
-    public static int getKeyCode(String keyValue, int location) {
+    private static int getKeyCode(String keyValue, int location) {
         switch (keyValue) {
             case UNIDENTIFIED:
                 return KEYCODE_UNKNOWN;
@@ -271,13 +271,12 @@ public class AndroidKeyEvent {
 
     /**
      * Inject a key event into UiController
-     * @param uiController Espresso UiController for injecting key events
      * @param isDown Is it a key down event?
      * @param keyEvents A list of the Android Key Events to inject
      * @param key The key to inject in string form (for logging purposes)
      * @throws AppiumException
      */
-    private void injectKeyEvents(UiController uiController, boolean isDown, List<KeyEvent> keyEvents, String key) throws AppiumException {
+    private void injectKeyEvents(boolean isDown, List<KeyEvent> keyEvents, String key) throws AppiumException {
         // If it's a keydown event, record that this key went down. If it's keyup, remove pre-existing
         // record of this key going down
         if (isDown) {
