@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.model;
 
-import android.graphics.Bitmap;
-import android.util.Base64;
+import com.google.gson.annotations.SerializedName;
 
-import java.io.ByteArrayOutputStream;
+import javax.annotation.Nullable;
 
-import androidx.test.runner.screenshot.ScreenCapture;
-import androidx.test.runner.screenshot.Screenshot;
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
-import io.appium.espressoserver.lib.model.AppiumParams;
+@SuppressWarnings("unused")
+public class DrawerActionParams extends AppiumParams {
+    private Integer gravity;
 
-public class ScreenshotHandler implements RequestHandler<AppiumParams, String> {
-
-    @Override
-    public String handle(AppiumParams params) throws AppiumException {
-        return (new ScreenshotsHelper()).getScreenshot();
+    @Nullable
+    public Integer getGravity() {
+        return gravity;
     }
+
+    public void setGravity(Integer gravity) {
+        this.gravity = gravity;
+    }
+
 }

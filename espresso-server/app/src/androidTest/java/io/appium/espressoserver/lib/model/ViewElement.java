@@ -21,8 +21,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Rect;
-
-import androidx.test.espresso.matcher.ViewMatchers;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -33,6 +31,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import javax.annotation.Nullable;
+
+import androidx.test.espresso.matcher.ViewMatchers;
 
 import static android.view.View.NO_ID;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
@@ -49,10 +49,8 @@ public class ViewElement {
         if (this.activity == null) {
             Activity result = getActivity(view.getContext());
             if (result == null && (view instanceof ViewGroup)) {
-                ViewGroup v = (ViewGroup) view;
-                int c = v.getChildCount();
-                for (int i = 0; i < c && result == null; ++i) {
-                    result = getActivity(v.getChildAt(i).getContext());
+                for (int i = 0; i < ((ViewGroup) view).getChildCount() && result == null; ++i) {
+                    result = getActivity(((ViewGroup) view).getChildAt(i).getContext());
                 }
             }
             this.activity = result;
@@ -73,14 +71,10 @@ public class ViewElement {
     }
 
     private static boolean isPasswordInputType(int inputType) {
-        final int variation =
-                inputType & (EditorInfo.TYPE_MASK_CLASS | EditorInfo.TYPE_MASK_VARIATION);
-        return variation
-                == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)
-                || variation
-                == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD)
-                || variation
-                == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
+        final int variation = inputType & (EditorInfo.TYPE_MASK_CLASS | EditorInfo.TYPE_MASK_VARIATION);
+        return variation == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)
+                || variation == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD)
+                || variation == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
     }
 
     @Nullable
@@ -122,6 +116,7 @@ public class ViewElement {
         return view.getId();
     }
 
+    @Nullable
     public String getResourceId() {
         final int id = getId();
         if (id != NO_ID) {
@@ -147,7 +142,7 @@ public class ViewElement {
                 }
             }
         }
-        return "";
+        return null;
     }
 
     public String getClassName() {
@@ -164,16 +159,14 @@ public class ViewElement {
     }
 
     public int getIndex() {
-        final ViewParent parent = view.getParent();
-        try {
-            for (int index = 0; index < ((ViewGroup) parent).getChildCount(); ++index) {
-                View childView = ((ViewGroup) parent).getChildAt(index);
-                if (childView.equals(view)) {
+        final ViewParent parentView = view.getParent();
+        if (parentView instanceof ViewGroup) {
+            ViewGroup parentGroup = (ViewGroup) parentView;
+            for (int index = 0; index < parentGroup.getChildCount(); ++index) {
+                if (view.equals(parentGroup.getChildAt(index))) {
                     return index;
                 }
             }
-        } catch (ClassCastException e) {
-            // If it couldn't be cast to a ViewGroup, the parent has no children
         }
         return 0;
     }
@@ -212,8 +205,7 @@ public class ViewElement {
     }
 
     public boolean isPassword() {
-        return (view instanceof TextView) &&
-                isPasswordInputType(((TextView) view).getInputType());
+        return (view instanceof TextView) && isPasswordInputType(((TextView) view).getInputType());
     }
 
     public boolean isSelected() {
