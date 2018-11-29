@@ -67,9 +67,11 @@ public class AndroidKeyEventTest {
 
     @Test
     public void keyUpNoop() throws AppiumException {
+        // Dispatch an up event that has no corresponding down event and check that the state was unchanged
         W3CKeyEvent w3CKeyEvent = new W3CKeyEvent();
         w3CKeyEvent.setKey("A");
         MockUiController mockUiController = new MockUiController();
+        assertEquals(mockUiController.keyEvents.size(), 0);
         (new AndroidKeyEvent(mockUiController)).keyUp(w3CKeyEvent);
         assertEquals(mockUiController.keyEvents.size(), 0);
     }
@@ -77,12 +79,18 @@ public class AndroidKeyEventTest {
     @Test
     public void keyDown() throws AppiumException {
         MockUiController mockUiController = new MockUiController();
+
+        // Dispatch a key event
         W3CKeyEvent w3CKeyEvent = KeyDispatch.getKeyEvent(new EspressoW3CActionAdapter(mockUiController), "B");
         w3CKeyEvent.setAltKey(true);
         w3CKeyEvent.setShiftKey(true);
         w3CKeyEvent.setCtrlKey(false);
         (new AndroidKeyEvent(mockUiController)).keyDown(w3CKeyEvent);
 
+        // Check that one was dispatched
+        assertEquals(mockUiController.keyEvents.size(), 1);
+
+        // Check the right key event was dispatched
         KeyEvent keyEvent = mockUiController.keyEvents.get(mockUiController.keyEvents.size() - 1);
         keyEvent.getKeyCode();
         assertEquals(keyEvent.getKeyCode(), KEYCODE_B);
