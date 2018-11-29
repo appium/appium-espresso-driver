@@ -14,35 +14,33 @@ import io.appium.espressoserver.lib.model.MobileBackdoorMethod;
 import io.appium.espressoserver.lib.model.MobileBackdoorParams;
 
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
+import static io.appium.espressoserver.lib.model.MobileBackdoorParams.InvokeTarget.ACTIVITY;
 
 public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, String> {
 
     @Override
     public String handle(final MobileBackdoorParams params) throws AppiumException {
         logger.info("Invoking Backdoor");
+        if (params.getTarget() == null) {
+            throw new InvalidArgumentException("Target must not be empty and must be of type: 'activity', 'application'");
+        }
+
         Activity activity = ActivityHelper.getCurrentActivity();
-
         List<InvocationOperation> ops = getBackdoorOperations(params);
-
-        if (ops.isEmpty()) {
-            throw new InvalidArgumentException("Please pass name(s) of methods to be invoked");
-        }
-
-        // First try to find the method in Application object
-        Object invocationResult = null;
-        try {
-            invocationResult = invokeBackdoorMethods(activity.getApplication(), ops);
-        } catch (AppiumException e) {
-            e.printStackTrace();
-        }
-
-        // if backdoor method not found in Application, try to find the method in Current Activity object
-        if (invocationResult == null) {
-            invocationResult = invokeBackdoorMethods(activity, ops);
+        Object invocationResult;
+        switch (params.getTarget()) {
+            case ACTIVITY:
+                invocationResult = invokeBackdoorMethods(activity, ops);
+                break;
+            case APPLICATION:
+                invocationResult = invokeBackdoorMethods(activity.getApplication(), ops);
+                break;
+            default:
+                throw new InvalidArgumentException(String.format("target cannot be %s", params.getTarget()));
         }
 
         if (invocationResult == null) {
-            throw new AppiumException("Could not get valid results from Backdoor. Check adb logs");
+            return null;
         }
 
         return invocationResult.toString();
@@ -65,7 +63,7 @@ public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Stri
 
     private List<InvocationOperation> getBackdoorOperations(MobileBackdoorParams params) throws InvalidArgumentException {
         List<InvocationOperation> ops = new ArrayList<>();
-        List<MobileBackdoorMethod> mobileBackdoorMethods = params.getOpts();
+        List<MobileBackdoorMethod> mobileBackdoorMethods = params.getMethods();
 
         for (MobileBackdoorMethod mobileBackdoorMethod : mobileBackdoorMethods) {
             String methodName = mobileBackdoorMethod.getName();
