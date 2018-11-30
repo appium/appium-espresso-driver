@@ -1,5 +1,6 @@
 package io.appium.espressoserver.test.helpers.w3c.adapter;
 
+import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -56,12 +57,12 @@ public class AndroidKeyEventTest {
 
         @Override
         public void loopMainThreadUntilIdle() {
-
+            SystemClock.sleep(100);
         }
 
         @Override
         public void loopMainThreadForAtLeast(long millisDelay) {
-
+            SystemClock.sleep(millisDelay);
         }
     }
 
