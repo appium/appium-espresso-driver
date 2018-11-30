@@ -1,26 +1,49 @@
 package io.appium.espressoserver.lib.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
+
+import io.appium.espressoserver.lib.helpers.BackdoorUtils;
 
 @SuppressWarnings("unused")
 public class MobileBackdoorMethod {
     private String name;
 
     @Nullable
-    private List<BackdoorMethodArgs> args;
+    private List<BackdoorMethodArg> args;
 
     public String getName() {
         return name;
     }
 
     @Nullable
-    public List<BackdoorMethodArgs> getArgs() {
+    public List<BackdoorMethodArg> getArgs() {
         if (args == null) {
-            return new ArrayList<>();
+            return Collections.emptyList();
+        } else {
+            return args;
         }
-        return args;
+
+    }
+
+    public Class<?>[] getParsedTypes() {
+        List<BackdoorMethodArg> rawArgs = getArgs();
+        Class<?>[] types = new Class<?>[rawArgs.size()];
+        for (int i = 0; i < rawArgs.size(); i++) {
+            types[i] = BackdoorUtils.parseType(getArgs().get(i).getType());
+        }
+        return types;
+    }
+
+    public List<Object> getParsedValues() {
+        List<Object> values = new ArrayList<>();
+        for (BackdoorMethodArg methodArg : getArgs()) {
+            Object parsedValue = BackdoorUtils.parseValue(methodArg.getValue(), BackdoorUtils.parseType(methodArg.getType()));
+            values.add(parsedValue);
+        }
+        return values;
     }
 }

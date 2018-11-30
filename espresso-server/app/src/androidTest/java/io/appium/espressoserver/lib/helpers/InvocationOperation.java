@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.BackdoorMethodArgs;
+import io.appium.espressoserver.lib.model.BackdoorMethodArg;
 
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
@@ -19,11 +19,10 @@ public class InvocationOperation {
     private final Class<?>[] argumentTypes;
     private final List<Object> argumentValues;
 
-    public InvocationOperation(String methodName, List<BackdoorMethodArgs> arguments) {
+    public InvocationOperation(String methodName, List<Object> argumentValues, Class<?>[] argumentTypes) {
         this.methodName = methodName;
-        List<BackdoorMethodArgs> parsedArguments = BackdoorUtils.parseArguments(arguments);
-        this.argumentValues = BackdoorUtils.getParsedValues(parsedArguments);
-        this.argumentTypes = BackdoorUtils.getParsedTypes(parsedArguments);
+        this.argumentValues = argumentValues;
+        this.argumentTypes = argumentTypes;
     }
 
 

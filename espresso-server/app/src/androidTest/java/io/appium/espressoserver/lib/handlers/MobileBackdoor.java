@@ -39,11 +39,8 @@ public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Stri
                 throw new InvalidArgumentException(String.format("target cannot be %s", params.getTarget()));
         }
 
-        if (invocationResult == null) {
-            return null;
-        }
+        return invocationResult == null ? null : invocationResult.toString();
 
-        return invocationResult.toString();
     }
 
     @Nullable
@@ -70,7 +67,8 @@ public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Stri
             if (methodName == null) {
                 throw new InvalidArgumentException("'name' is a required parameter for backdoor method to be invoked.");
             }
-            ops.add(new InvocationOperation(methodName, mobileBackdoorMethod.getArgs()));
+            ops.add(new InvocationOperation(methodName, mobileBackdoorMethod.getParsedValues(),
+                    mobileBackdoorMethod.getParsedTypes()));
         }
         return ops;
     }
