@@ -51,8 +51,6 @@ public class MotionEventBuilder {
         return this;
     }
 
-
-
     public MotionEventBuilder withDownTime(long downTime) {
         motionEventParams.downTime = downTime;
         return this;

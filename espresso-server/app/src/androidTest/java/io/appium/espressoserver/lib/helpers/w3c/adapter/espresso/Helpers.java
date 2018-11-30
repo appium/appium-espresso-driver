@@ -1,16 +1,20 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
+import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants;
 
 import static android.view.MotionEvent.TOOL_TYPE_FINGER;
 import static android.view.MotionEvent.TOOL_TYPE_MOUSE;
 import static android.view.MotionEvent.TOOL_TYPE_STYLUS;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.MOUSE;
+import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
 
 public class Helpers {
 
@@ -71,4 +75,30 @@ public class Helpers {
         }
     }
 
+    // If a 'mouse' event was provided, convert it to 'touch'
+    // This is because some clients only send 'mouse' events and the assumption is that if they
+    // send 'mouse' events to a device that has a touch screen, it needs to be converted
+    public static boolean isTouch(PointerType type) {
+        // return type == TOUCH || (type == MOUSE && isTouchScreen); // TODO Revisit this if we wish to support MOUSE on Android
+        return type == TOUCH || type == MOUSE;
+    }
+
+    /**
+     * Convert [x,y] coordinates from float to long.
+     *
+     * Gives warning if the long values are different from the float values
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return Rounded x and y coordinates
+     */
+    public static Point toCoordinates(Float x, Float y) {
+        int roundedX = Math.round(x);
+        int roundedY = Math.round(y);
+        if (x != roundedX || y != roundedY) {
+            AndroidLogger.logger.warn(String.format("Coordinates provided [%s, %s] will be rounded to integers [%s %s]", x, y, roundedX, roundedY));
+        }
+
+        return new Point(roundedX, roundedY);
+    }
 }

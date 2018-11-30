@@ -25,7 +25,7 @@ public class KeyDispatch {
                                                 InputStateTable inputStateTable,
                                                 float tickDuration, boolean down) throws AppiumException {
         // Get the base Key Event
-        W3CKeyEvent keyEvent = getKeyEvent(dispatcherAdapter, actionObject);
+        W3CKeyEvent keyEvent = getKeyEvent(dispatcherAdapter, actionObject.getValue());
         String key = keyEvent.getKey();
 
         // 3. If the input state's pressed property contains key, let repeat be true, otherwise let repeat be false.
@@ -147,12 +147,11 @@ public class KeyDispatch {
 
     /**
      * Helper method to get a Key Event that has common attributes between KeyUp and KeyDispatch
-     * @param actionObject Action Object to get key event info for
+     * @param rawKey The value of the key stroke
      * @return W3CKeyEvent Key event info used by adapter
      */
-    private static W3CKeyEvent getKeyEvent(W3CActionAdapter dispatcherAdapter, ActionObject actionObject) throws AppiumException {
+    public static W3CKeyEvent getKeyEvent(W3CActionAdapter dispatcherAdapter, String rawKey) throws AppiumException {
         // 1. Let raw key be action's value property
-        String rawKey = actionObject.getValue();
 
         // 2. Let key be equal to the normalised key value for raw key
         String key = KeyNormalizer.getInstance().getNormalizedKey(rawKey);

@@ -18,10 +18,8 @@ package io.appium.espressoserver.lib.handlers;
 
 import androidx.test.espresso.EspressoException;
 import androidx.test.espresso.ViewInteraction;
-import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.PickerActions;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.DrawerActionParams;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.SetDateParams;
 
