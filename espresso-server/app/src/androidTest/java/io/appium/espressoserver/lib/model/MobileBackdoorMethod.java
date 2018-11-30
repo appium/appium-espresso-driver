@@ -20,7 +20,7 @@ public class MobileBackdoorMethod {
     }
 
     @Nullable
-    public List<BackdoorMethodArg> getArgs() {
+    public List<BackdoorMethodArg> getRawArgs() {
         if (args == null) {
             return Collections.emptyList();
         } else {
@@ -29,18 +29,18 @@ public class MobileBackdoorMethod {
 
     }
 
-    public Class<?>[] getParsedTypes() {
-        List<BackdoorMethodArg> rawArgs = getArgs();
+    public Class<?>[] getArgumentTypes() {
+        List<BackdoorMethodArg> rawArgs = getRawArgs();
         Class<?>[] types = new Class<?>[rawArgs.size()];
         for (int i = 0; i < rawArgs.size(); i++) {
-            types[i] = BackdoorUtils.parseType(getArgs().get(i).getType());
+            types[i] = BackdoorUtils.parseType(getRawArgs().get(i).getType());
         }
         return types;
     }
 
-    public List<Object> getParsedValues() {
+    public List<Object> getArguments() {
         List<Object> values = new ArrayList<>();
-        for (BackdoorMethodArg methodArg : getArgs()) {
+        for (BackdoorMethodArg methodArg : getRawArgs()) {
             Object parsedValue = BackdoorUtils.parseValue(methodArg.getValue(), BackdoorUtils.parseType(methodArg.getType()));
             values.add(parsedValue);
         }

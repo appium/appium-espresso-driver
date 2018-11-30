@@ -14,7 +14,6 @@ import io.appium.espressoserver.lib.model.MobileBackdoorMethod;
 import io.appium.espressoserver.lib.model.MobileBackdoorParams;
 
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
-import static io.appium.espressoserver.lib.model.MobileBackdoorParams.InvokeTarget.ACTIVITY;
 
 public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, String> {
 
@@ -67,8 +66,8 @@ public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Stri
             if (methodName == null) {
                 throw new InvalidArgumentException("'name' is a required parameter for backdoor method to be invoked.");
             }
-            ops.add(new InvocationOperation(methodName, mobileBackdoorMethod.getParsedValues(),
-                    mobileBackdoorMethod.getParsedTypes()));
+            ops.add(new InvocationOperation(methodName, mobileBackdoorMethod.getArguments(),
+                    mobileBackdoorMethod.getArgumentTypes()));
         }
         return ops;
     }
