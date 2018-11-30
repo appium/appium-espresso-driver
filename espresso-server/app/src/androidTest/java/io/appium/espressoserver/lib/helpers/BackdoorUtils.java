@@ -1,10 +1,5 @@
 package io.appium.espressoserver.lib.helpers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.appium.espressoserver.lib.model.BackdoorMethodArg;
-
 public class BackdoorUtils {
 
     public static Object parseValue(Object o, Class<?> c) {
@@ -17,7 +12,7 @@ public class BackdoorUtils {
         if (c.equals(long.class)) return Long.parseLong(value);
         if (c.equals(float.class)) return Float.parseFloat(value);
         if (c.equals(double.class)) return Double.parseDouble(value);
-        if (c.equals(char.class)) return o.toString().charAt(0);
+        if (c.equals(char.class)) return value.charAt(0);
         return o;
     }
 
@@ -46,7 +41,7 @@ public class BackdoorUtils {
                 try {
                     return Class.forName(fqn);
                 } catch (ClassNotFoundException ex) {
-                    throw new IllegalArgumentException("Class not found: " + fqn);
+                    throw new IllegalArgumentException("Class not found: " + fqn, ex);
                 }
         }
     }

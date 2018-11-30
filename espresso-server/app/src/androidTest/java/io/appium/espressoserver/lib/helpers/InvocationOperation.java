@@ -2,12 +2,10 @@ package io.appium.espressoserver.lib.helpers;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.BackdoorMethodArg;
 
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
@@ -17,9 +15,9 @@ public class InvocationOperation {
     public static final String VOID = "<VOID>";
     private final String methodName;
     private final Class<?>[] argumentTypes;
-    private final List<Object> argumentValues;
+    private final Object[] argumentValues;
 
-    public InvocationOperation(String methodName, List<Object> argumentValues, Class<?>[] argumentTypes) {
+    public InvocationOperation(String methodName, Object[] argumentValues, Class<?>[] argumentTypes) {
         this.methodName = methodName;
         this.argumentValues = argumentValues;
         this.argumentTypes = argumentTypes;
@@ -38,11 +36,9 @@ public class InvocationOperation {
             public void run() {
                 Object result;
                 try {
+                    result = ReflectionUtils.invoke(method, applyOn, argumentValues);
                     if (method.getReturnType().equals(Void.TYPE)) {
-                        ReflectionUtils.invoke(method, applyOn, argumentValues.toArray());
                         result = VOID;
-                    } else {
-                        result = ReflectionUtils.invoke(method, applyOn, argumentValues.toArray());
                     }
 
                     ref.set(result);

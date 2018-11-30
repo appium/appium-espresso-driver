@@ -4,8 +4,6 @@ package io.appium.espressoserver.lib.model;
 public class BackdoorMethodArg {
     private String value;
     private String type;
-    private Object parsedValue;
-    private Class parsedType;
 
     public String getValue() {
         return value;

@@ -23,27 +23,26 @@ public class MobileBackdoorMethod {
     public List<BackdoorMethodArg> getRawArgs() {
         if (args == null) {
             return Collections.emptyList();
-        } else {
-            return args;
         }
-
+        return args;
     }
 
     public Class<?>[] getArgumentTypes() {
         List<BackdoorMethodArg> rawArgs = getRawArgs();
         Class<?>[] types = new Class<?>[rawArgs.size()];
         for (int i = 0; i < rawArgs.size(); i++) {
-            types[i] = BackdoorUtils.parseType(getRawArgs().get(i).getType());
+            types[i] = BackdoorUtils.parseType(rawArgs.get(i).getType());
         }
         return types;
     }
 
-    public List<Object> getArguments() {
-        List<Object> values = new ArrayList<>();
-        for (BackdoorMethodArg methodArg : getRawArgs()) {
-            Object parsedValue = BackdoorUtils.parseValue(methodArg.getValue(), BackdoorUtils.parseType(methodArg.getType()));
-            values.add(parsedValue);
+    public Object[] getArguments() {
+        List<BackdoorMethodArg> rawArgs = getRawArgs();
+        Object[] parsedArgs = new Object[rawArgs.size()];
+        for (int i = 0; i < rawArgs.size(); i++) {
+            parsedArgs[i] = BackdoorUtils.parseValue(rawArgs.get(i).getValue(),
+                    BackdoorUtils.parseType(rawArgs.get(i).getType()));
         }
-        return values;
+        return parsedArgs;
     }
 }
