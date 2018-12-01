@@ -21,6 +21,8 @@ import android.util.Log;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.net.SocketException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
@@ -58,12 +60,13 @@ public class Server extends NanoHTTPD {
     }
 
     @Override
-    public Response serve(String uri, Method method, Map<String,
-            String> headers, Map<String, String> params, Map<String, String> files) {
+    public Response serve(IHTTPSession session) {
         BaseResponse response;
+        final Map<String, String> files = new LinkedHashMap<>();
         try {
-            response = router.route(uri, method, params, files);
-        } catch (RuntimeException e) {
+            session.parseBody(files);
+            response = router.route(session.getUri(), session.getMethod(), files);
+        } catch (RuntimeException | IOException | ResponseException e) {
             response = new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e));
         }
 
@@ -95,7 +98,12 @@ public class Server extends NanoHTTPD {
                 //ignore the exception
             }
         }
-        super.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+        try {
+            super.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+        } catch (SocketException e) {
+            throw new IllegalStateException("The application under test must require android.permission.INTERNET " +
+                    "permission in its manifest", e);
+        }
         logger.info(String.format("\nRunning Appium Espresso Server at port %d \n", DEFAULT_PORT));
         router = new Router();
     }
