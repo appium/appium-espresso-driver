@@ -15,10 +15,10 @@ import io.appium.espressoserver.lib.model.MobileBackdoorParams;
 
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
-public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, String> {
+public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Object> {
 
     @Override
-    public String handle(final MobileBackdoorParams params) throws AppiumException {
+    public Object handle(final MobileBackdoorParams params) throws AppiumException {
         logger.info("Invoking Backdoor");
         if (params.getTarget() == null) {
             throw new InvalidArgumentException("Target must not be empty and must be of type: 'activity', 'application'");
@@ -38,7 +38,7 @@ public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Stri
                 throw new InvalidArgumentException(String.format("target cannot be %s", params.getTarget()));
         }
 
-        return invocationResult == null ? null : invocationResult.toString();
+        return invocationResult;
 
     }
 

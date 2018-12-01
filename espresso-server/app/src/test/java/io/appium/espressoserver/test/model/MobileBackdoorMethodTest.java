@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.appium.espressoserver.lib.handlers.MobileBackdoor;
 import io.appium.espressoserver.lib.model.BackdoorMethodArg;
 import io.appium.espressoserver.lib.model.MobileBackdoorMethod;
 import io.appium.espressoserver.lib.model.MobileBackdoorParams;
