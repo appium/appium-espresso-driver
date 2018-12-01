@@ -45,7 +45,7 @@ public class InvocationOperationTest {
     }
 
     @Test
-    public void shouldThrowExceptionIfMethodNotFound(){
+    public void shouldThrowExceptionIfMethodNotFound() {
         String nonExistent = "nonExistent";
         InvocationOperation operation = new InvocationOperation(nonExistent,
                 new Object[0], new Class[0], mainThreadExecutor);
@@ -59,21 +59,45 @@ public class InvocationOperationTest {
 
     }
 
+    @Test
+    public void shouldBeAbleToChainMethods() throws Exception {
+        InvocationOperation operation1 = new InvocationOperation("geObjectWithValue",
+                new Object[]{45}, new Class[]{int.class}, mainThreadExecutor);
+
+        InvocationOperation operation2 = new InvocationOperation("getTestValue",
+                new Object[0], new Class[0], mainThreadExecutor);
+
+        Object result = operation2.apply(operation1.apply(invokeOn));
+
+        assertEquals(45, result);
+
+    }
+
 
     public class DummyBackdoorSubject {
         public static final String RETURN_VALUE = "LOL";
 
+        private int testValue;
+
         @SuppressWarnings("unused")
-        public void voidReturn() { }
+        public void voidReturn() {
+        }
 
         @SuppressWarnings("unused")
         public Object validMethod() {
             return RETURN_VALUE;
         }
 
+
         @SuppressWarnings("unused")
-        public Object echo(Integer b) {
-            return b;
+        public Object geObjectWithValue(int testValue) {
+            this.testValue = testValue;
+            return this;
+        }
+
+        @SuppressWarnings("unused")
+        public int getTestValue() {
+            return testValue;
         }
 
     }

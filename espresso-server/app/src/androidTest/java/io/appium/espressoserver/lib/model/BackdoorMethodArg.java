@@ -10,7 +10,7 @@ public class BackdoorMethodArg {
     }
 
     public void setValue(String value) {
-        this.value =  value;
+        this.value = value;
     }
 
     public String getType() {
@@ -18,7 +18,7 @@ public class BackdoorMethodArg {
     }
 
     public void setType(String type) {
-        this.type =  type;
+        this.type = type;
     }
 
 }
