@@ -26,19 +26,15 @@ public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Obje
 
         Activity activity = ActivityHelper.getCurrentActivity();
         List<InvocationOperation> ops = getBackdoorOperations(params);
-        Object invocationResult;
+
         switch (params.getTarget()) {
             case ACTIVITY:
-                invocationResult = invokeBackdoorMethods(activity, ops);
-                break;
+                return invokeBackdoorMethods(activity, ops);
             case APPLICATION:
-                invocationResult = invokeBackdoorMethods(activity.getApplication(), ops);
-                break;
+                return invokeBackdoorMethods(activity.getApplication(), ops);
             default:
                 throw new InvalidArgumentException(String.format("target cannot be %s", params.getTarget()));
         }
-
-        return invocationResult;
 
     }
 
