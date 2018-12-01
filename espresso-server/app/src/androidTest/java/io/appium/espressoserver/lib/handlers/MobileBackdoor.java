@@ -45,11 +45,11 @@ public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Stri
     @Nullable
     private Object invokeBackdoorMethods(Object invokeOn, List<InvocationOperation> ops) throws AppiumException {
         Object invocationResult = null;
-        Object InvocationTarget = invokeOn;
+        Object invocationTarget = invokeOn;
         for (InvocationOperation op : ops) {
             try {
-                invocationResult = op.apply(InvocationTarget);
-                InvocationTarget = invocationResult;
+                invocationResult = op.apply(invocationTarget);
+                invocationTarget = invocationResult;
             } catch (Exception e) {
                 throw new AppiumException(e);
             }

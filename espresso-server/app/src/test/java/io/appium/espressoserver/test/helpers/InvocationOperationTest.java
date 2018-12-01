@@ -81,6 +81,7 @@ public class InvocationOperationTest {
 
         @SuppressWarnings("unused")
         public void voidReturn() {
+            // to test void return type
         }
 
         @SuppressWarnings("unused")

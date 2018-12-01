@@ -1,6 +1,5 @@
 package io.appium.espressoserver.lib.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class MobileBackdoorMethod {
         return args;
     }
 
-    public void setArgs(List<BackdoorMethodArg> args){
+    public void setArgs(List<BackdoorMethodArg> args) {
         this.args = args;
     }
 
