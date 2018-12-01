@@ -1,13 +1,15 @@
 package io.appium.espressoserver.lib.helpers;
 
+import android.support.annotation.NonNull;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.test.platform.app.InstrumentationRegistry;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-
-import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
 //https://github.com/calabash/calabash-android-server/blob/develop/server/app/src/androidTest/java/sh/calaba/instrumentationbackend/query/InvocationOperation.java
 
@@ -16,22 +18,34 @@ public class InvocationOperation {
     private final String methodName;
     private final Class<?>[] argumentTypes;
     private final Object[] argumentValues;
+    private final Executor executor;
 
     public InvocationOperation(String methodName, Object[] argumentValues, Class<?>[] argumentTypes) {
         this.methodName = methodName;
         this.argumentValues = argumentValues;
         this.argumentTypes = argumentTypes;
+        this.executor = new Executor() {
+            @Override
+            public void execute(@NonNull Runnable runnable) {
+                InstrumentationRegistry.getInstrumentation().runOnMainSync(runnable);
+            }
+        };
+    }
+
+    @VisibleForTesting
+    public InvocationOperation(String methodName, Object[] argumentValues, Class<?>[] argumentTypes, Executor executor) {
+        this.methodName = methodName;
+        this.argumentValues = argumentValues;
+        this.argumentTypes = argumentTypes;
+        this.executor = executor;
     }
 
 
     public Object apply(final Object applyOn) throws Exception {
-        logger.debug(String.format("Backdoor Method: %s", methodName));
-        logger.debug(String.format("Invoking on: %s", applyOn.toString()));
-
         final AtomicReference<Object> ref = new AtomicReference<Object>();
         final AtomicReference<Exception> refEx = new AtomicReference<Exception>();
         final Method method = findCompatibleMethod(applyOn);
-        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+        executor.execute(new Runnable() {
             @Override
             public void run() {
                 Object result;
@@ -56,12 +70,13 @@ public class InvocationOperation {
         return ref.get();
     }
 
-    public Method findCompatibleMethod(Object object) throws AppiumException {
+    private Method findCompatibleMethod(Object object) throws AppiumException {
         try {
             return object.getClass().getMethod(methodName, argumentTypes);
         } catch (NoSuchMethodException e) {
             throw new AppiumException(String.format
-                    ("No method %s definded on %s which takes argument %s", methodName, object.getClass(), Arrays.toString(argumentTypes))
+                    ("No public method %s definded on %s or its parents which takes argument %s", methodName,
+                            object.getClass(), Arrays.toString(argumentTypes))
                     , e);
         }
     }

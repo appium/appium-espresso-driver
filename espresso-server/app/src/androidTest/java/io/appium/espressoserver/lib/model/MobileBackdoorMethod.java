@@ -27,6 +27,10 @@ public class MobileBackdoorMethod {
         return args;
     }
 
+    public void setArgs(List<BackdoorMethodArg> args){
+        this.args = args;
+    }
+
     public Class<?>[] getArgumentTypes() {
         List<BackdoorMethodArg> rawArgs = getRawArgs();
         Class<?>[] types = new Class<?>[rawArgs.size()];
