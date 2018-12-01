@@ -21,15 +21,12 @@ public class InvocationOperation {
     private final Executor executor;
 
     public InvocationOperation(String methodName, Object[] argumentValues, Class<?>[] argumentTypes) {
-        this.methodName = methodName;
-        this.argumentValues = argumentValues;
-        this.argumentTypes = argumentTypes;
-        this.executor = new Executor() {
+        this(methodName, argumentValues, argumentTypes, new Executor() {
             @Override
             public void execute(@NonNull Runnable runnable) {
                 InstrumentationRegistry.getInstrumentation().runOnMainSync(runnable);
             }
-        };
+        });
     }
 
     @VisibleForTesting
