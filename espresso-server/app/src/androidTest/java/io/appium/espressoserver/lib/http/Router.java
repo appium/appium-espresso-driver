@@ -253,7 +253,7 @@ class Router {
     }
 
     @SuppressWarnings("unchecked")
-    public BaseResponse route(String uri, Method method, Map<String, String> params,  Map<String, String> files) {
+    public BaseResponse route(String uri, Method method, Map<String, String> files) {
         logger.debug(String.format("Started processing %s request for '%s'", method, uri));
 
         // Look for a route that matches this URL
