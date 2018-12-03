@@ -17,7 +17,6 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
  *
  * Represents a Virtual Device providing input events
  */
-@SuppressWarnings("unused")
 public class InputSource {
     public static final String VIEWPORT = "viewport";
     public static final String POINTER = "pointer";

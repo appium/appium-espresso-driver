@@ -16,7 +16,7 @@
 
 package io.appium.espressoserver.lib.helpers.w3c.models;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -27,8 +27,6 @@ import io.appium.espressoserver.lib.helpers.w3c.state.ActiveInputSources;
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable;
 import io.appium.espressoserver.lib.model.AppiumParams;
 
-
-@SuppressWarnings("unused")
 public class Actions extends AppiumParams {
     private List<InputSource> actions;
     private W3CActionAdapter adapter;

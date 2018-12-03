@@ -18,7 +18,7 @@ package io.appium.espressoserver.lib.helpers.w3c_actions;
 
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.LongSparseArray;
 import android.view.InputDevice;
 import android.view.KeyEvent;

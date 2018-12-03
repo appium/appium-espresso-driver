@@ -16,7 +16,7 @@
 
 package io.appium.espressoserver.lib.viewmatcher;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 import org.hamcrest.Description;
