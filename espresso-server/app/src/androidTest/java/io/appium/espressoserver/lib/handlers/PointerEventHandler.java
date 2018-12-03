@@ -2,7 +2,6 @@ package io.appium.espressoserver.lib.handlers;
 
 import android.content.res.Resources;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.view.ViewConfiguration;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
 import androidx.test.espresso.UiController;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;

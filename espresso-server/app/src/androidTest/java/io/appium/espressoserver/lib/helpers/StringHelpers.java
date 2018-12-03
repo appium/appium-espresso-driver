@@ -16,7 +16,7 @@
 
 package io.appium.espressoserver.lib.helpers;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class StringHelpers {
 

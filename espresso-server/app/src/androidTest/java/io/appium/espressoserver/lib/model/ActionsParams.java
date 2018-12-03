@@ -16,7 +16,7 @@
 
 package io.appium.espressoserver.lib.model;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
 

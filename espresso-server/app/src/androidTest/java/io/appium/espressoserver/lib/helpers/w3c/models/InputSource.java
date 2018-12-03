@@ -71,7 +71,11 @@ public class InputSource {
      * Get the initial state of an Input Source
      * @return Get the initial input state (see 17.3 for info on Input State)
      */
+    @Nullable
     public InputState getDefaultState() {
+        if (getType() == null) {
+            return null;
+        }
         switch (getType()) {
             case POINTER:
                 return new PointerInputState(getPointerType());
@@ -151,15 +155,15 @@ public class InputSource {
         }
 
         public boolean isOriginViewport(){
-            return origin.getType().equalsIgnoreCase(VIEWPORT);
+            return origin.getType() != null && origin.getType().equalsIgnoreCase(VIEWPORT);
         }
 
         public boolean isOriginPointer(){
-            return origin.getType().equalsIgnoreCase(POINTER);
+            return origin.getType() != null &&origin.getType().equalsIgnoreCase(POINTER);
         }
 
         public boolean isOriginElement(){
-            return origin.getType().equalsIgnoreCase(ELEMENT_CODE);
+            return origin.getType() != null &&origin.getType().equalsIgnoreCase(ELEMENT_CODE);
         }
 
         public Float getX(){
