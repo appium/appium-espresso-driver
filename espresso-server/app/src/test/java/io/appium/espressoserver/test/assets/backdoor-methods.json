@@ -1,0 +1,51 @@
+{
+  "target": "activity",
+  "methods": [
+    {
+      "name": "firstMethod",
+      "args": [
+        {
+          "value": "true",
+          "type": "boolean"
+        },
+        {
+          "value": "1",
+          "type": "int"
+        },
+        {
+          "value": "20",
+          "type": "byte"
+        },
+        {
+          "value": "X",
+          "type": "char"
+        }
+      ]
+    },
+    {
+      "name": "secondMethod",
+      "args": [
+        {
+          "value": true,
+          "type": "boolean"
+        },
+        {
+          "value": 1,
+          "type": "int"
+        },
+        {
+          "value": 20,
+          "type": "byte"
+        },
+        {
+          "value": "X",
+          "type": "Character"
+        },
+        {
+          "value": "Y",
+          "type": "java.lang.String"
+        }
+      ]
+    }
+  ]
+}
