@@ -1,12 +1,11 @@
 package io.appium.espressoserver.lib.helpers;
 
-import android.support.annotation.NonNull;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.test.platform.app.InstrumentationRegistry;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
