@@ -75,7 +75,7 @@ public class BackdoorUtils {
         for (MobileBackdoorMethod mobileBackdoorMethod : mobileBackdoorMethods) {
             String methodName = mobileBackdoorMethod.getName();
             if (methodName == null) {
-                throw new InvalidArgumentException("'name' is a required parameter for backdoor method to be invoked.");
+                throw new InvalidArgumentException("'name' of method is missing in parameters.");
             }
             ops.add(new InvocationOperation(methodName, mobileBackdoorMethod.getArguments(),
                     mobileBackdoorMethod.getArgumentTypes()));
