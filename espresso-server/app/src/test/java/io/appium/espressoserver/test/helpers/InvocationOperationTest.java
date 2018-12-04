@@ -1,12 +1,11 @@
 package io.appium.espressoserver.test.helpers;
 
-import android.support.annotation.NonNull;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.Executor;
 
+import androidx.annotation.NonNull;
 import io.appium.espressoserver.lib.helpers.InvocationOperation;
 
 import static junit.framework.Assert.fail;
