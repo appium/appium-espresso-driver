@@ -32,7 +32,6 @@ import io.appium.espressoserver.lib.handlers.DeleteSession;
 import io.appium.espressoserver.lib.handlers.DismissAlert;
 import io.appium.espressoserver.lib.handlers.DrawerActionHandler;
 import io.appium.espressoserver.lib.handlers.ElementEquals;
-import io.appium.espressoserver.lib.handlers.ElementInvoke;
 import io.appium.espressoserver.lib.handlers.ElementScreenshot;
 import io.appium.espressoserver.lib.handlers.ElementValue;
 import io.appium.espressoserver.lib.handlers.FindActive;
@@ -100,7 +99,6 @@ import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.DrawerActionParams;
 import io.appium.espressoserver.lib.model.EditorActionParams;
-import io.appium.espressoserver.lib.model.ElementInvokeParams;
 import io.appium.espressoserver.lib.model.ElementValueParams;
 import io.appium.espressoserver.lib.model.KeyEventParams;
 import io.appium.espressoserver.lib.model.Locator;
@@ -216,7 +214,6 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/scroll_to_page", new ScrollToPage(), ScrollToPageParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/navigate_to", new NavigateTo(), NavigateToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/backdoor", new MobileBackdoor(), MobileBackdoorParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/invoke_method", new ElementInvoke(), ElementInvokeParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));

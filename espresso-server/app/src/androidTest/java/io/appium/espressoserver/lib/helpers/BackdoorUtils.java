@@ -1,13 +1,5 @@
 package io.appium.espressoserver.lib.helpers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.annotation.Nullable;
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
-import io.appium.espressoserver.lib.model.MobileBackdoorMethod;
-
 public class BackdoorUtils {
 
     public static Object parseValue(Object o, Class<?> c) {
@@ -54,32 +46,4 @@ public class BackdoorUtils {
         }
     }
 
-    @Nullable
-    public static Object invokeMethods(Object invokeOn, List<InvocationOperation> ops) throws AppiumException {
-        Object invocationResult = null;
-        Object invocationTarget = invokeOn;
-        for (InvocationOperation op : ops) {
-            try {
-                invocationResult = op.apply(invocationTarget);
-                invocationTarget = invocationResult;
-            } catch (Exception e) {
-                throw new AppiumException(e);
-            }
-        }
-        return invocationResult;
-    }
-
-    public static List<InvocationOperation> getOperations(List<MobileBackdoorMethod> mobileBackdoorMethods) throws InvalidArgumentException {
-        List<InvocationOperation> ops = new ArrayList<>();
-
-        for (MobileBackdoorMethod mobileBackdoorMethod : mobileBackdoorMethods) {
-            String methodName = mobileBackdoorMethod.getName();
-            if (methodName == null) {
-                throw new InvalidArgumentException("'name' of method is missing in parameters.");
-            }
-            ops.add(new InvocationOperation(methodName, mobileBackdoorMethod.getArguments(),
-                    mobileBackdoorMethod.getArgumentTypes()));
-        }
-        return ops;
-    }
 }
