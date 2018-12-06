@@ -116,6 +116,7 @@ import io.appium.espressoserver.lib.model.SetTimeParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.model.ToastLookupParams;
+import io.appium.espressoserver.lib.model.ViewFlashParams;
 
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.CLICK;
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.DOUBLE_CLICK;
@@ -215,7 +216,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/scroll_to_page", new ScrollToPage(), ScrollToPageParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/navigate_to", new NavigateTo(), NavigateToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/backdoor", new MobileBackdoor(), MobileBackdoorParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/flash", new MobileViewFlash(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/flash", new MobileViewFlash(), ViewFlashParams.class));
 
 
         // Not implemented
