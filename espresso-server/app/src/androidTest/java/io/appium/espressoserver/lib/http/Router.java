@@ -57,6 +57,7 @@ import io.appium.espressoserver.lib.handlers.GetWindowSize;
 import io.appium.espressoserver.lib.handlers.HideKeyboard;
 import io.appium.espressoserver.lib.handlers.Keys;
 import io.appium.espressoserver.lib.handlers.MobileBackdoor;
+import io.appium.espressoserver.lib.handlers.MobileViewFlash;
 import io.appium.espressoserver.lib.handlers.MobileSwipe;
 import io.appium.espressoserver.lib.handlers.MultiTouchAction;
 import io.appium.espressoserver.lib.handlers.MultiTouchActionsParams;
@@ -214,6 +215,8 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/scroll_to_page", new ScrollToPage(), ScrollToPageParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/navigate_to", new NavigateTo(), NavigateToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/backdoor", new MobileBackdoor(), MobileBackdoorParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/flash", new MobileViewFlash(), AppiumParams.class));
+
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
