@@ -10,6 +10,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.helpers.ActivityHelper;
 import io.appium.espressoserver.lib.helpers.InvocationOperation;
+import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.MobileBackdoorMethod;
 import io.appium.espressoserver.lib.model.MobileBackdoorParams;
 
@@ -32,6 +33,8 @@ public class MobileBackdoor implements RequestHandler<MobileBackdoorParams, Obje
                 return invokeBackdoorMethods(activity, ops);
             case APPLICATION:
                 return invokeBackdoorMethods(activity.getApplication(), ops);
+            case ELEMENT:
+                return invokeBackdoorMethods(Element.getViewById(params.getElementId()), ops);
             default:
                 throw new InvalidArgumentException(String.format("target cannot be %s", params.getTarget()));
         }
