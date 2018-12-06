@@ -10,10 +10,15 @@ import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.ViewFlashParams;
 
 public class MobileViewFlash implements RequestHandler<ViewFlashParams, Void> {
+
+    private static final Integer DURATION_MILLIS = 30;
+    private static final Integer REPEAT_COUNT = 15;
+
     @Override
     public Void handle(final ViewFlashParams params) throws AppiumException {
-        final int duration = params.getDurationMillis() < 0 ? 30 : params.getDurationMillis();
-        final int repeatCount = params.getRepeatCount() < 0 ? 15 : params.getRepeatCount();
+
+        final Integer duration = params.getDurationMillis() == null ? DURATION_MILLIS : params.getDurationMillis();
+        final Integer repeatCount = params.getRepeatCount() == null ? REPEAT_COUNT : params.getRepeatCount();
 
         final View view = Element.getViewById(params.getElementId());
         InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {

@@ -1,18 +1,21 @@
 package io.appium.espressoserver.lib.model;
 
+import javax.annotation.Nullable;
+
+@SuppressWarnings("unused")
 public class ViewFlashParams extends AppiumParams {
 
-    @SuppressWarnings("unused")
-    private int durationMillis;
+    private Integer durationMillis;
 
-    @SuppressWarnings("unused")
-    private int repeatCount;
+    private Integer repeatCount;
 
-    public int getDurationMillis() {
+    @Nullable
+    public Integer getDurationMillis() {
         return durationMillis;
     }
 
-    public int getRepeatCount() {
+    @Nullable
+    public Integer getRepeatCount() {
         return repeatCount;
     }
 }
