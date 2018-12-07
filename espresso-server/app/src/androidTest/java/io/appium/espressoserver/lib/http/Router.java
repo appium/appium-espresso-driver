@@ -57,6 +57,7 @@ import io.appium.espressoserver.lib.handlers.GetWindowSize;
 import io.appium.espressoserver.lib.handlers.HideKeyboard;
 import io.appium.espressoserver.lib.handlers.Keys;
 import io.appium.espressoserver.lib.handlers.MobileBackdoor;
+import io.appium.espressoserver.lib.handlers.MobileViewFlash;
 import io.appium.espressoserver.lib.handlers.MobileSwipe;
 import io.appium.espressoserver.lib.handlers.MultiTouchAction;
 import io.appium.espressoserver.lib.handlers.MultiTouchActionsParams;
@@ -115,6 +116,7 @@ import io.appium.espressoserver.lib.model.SetTimeParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.model.ToastLookupParams;
+import io.appium.espressoserver.lib.model.ViewFlashParams;
 
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.CLICK;
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.DOUBLE_CLICK;
@@ -177,7 +179,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/elements", new FindElements(), Locator.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/sessions", new GetSessions(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/appium/device/info", new GetDeviceInfo(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST,  "/session/:sessionId/appium/device/hide_keyboard", new HideKeyboard(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/hide_keyboard", new HideKeyboard(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/start_activity", new StartActivity(), StartActivityParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/press_keycode", new PressKeyCode(false), KeyEventParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/long_press_keycode", new PressKeyCode(true), KeyEventParams.class));
@@ -214,6 +216,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/scroll_to_page", new ScrollToPage(), ScrollToPageParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/navigate_to", new NavigateTo(), NavigateToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/backdoor", new MobileBackdoor(), MobileBackdoorParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/flash", new MobileViewFlash(), ViewFlashParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
