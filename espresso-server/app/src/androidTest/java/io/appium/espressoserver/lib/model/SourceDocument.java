@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.model;
 
+import android.content.Context;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -29,9 +30,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xmlpull.v1.XmlSerializer;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +49,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.espresso.util.TreeIterables.breadthFirstViewTraversal;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
@@ -57,9 +61,11 @@ public class SourceDocument {
     private static final String NON_XML_CHAR_REPLACEMENT = "?";
     private static final String VIEW_INDEX = "viewIndex";
     private static final String NAMESPACE = "";
-    private final static String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
-    private final static int MAX_TRAVERSE_DEPTH = 70;
-    private final static int MAX_XML_VALUE_LENGTH = 64 * 1024;
+    private static final String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
+    private static final int MAX_TRAVERSE_DEPTH = 70;
+    private static final int MAX_XML_VALUE_LENGTH = 64 * 1024;
+    private static final String XML_ENCODING = "UTF-8";
+    private static final String TEMP_XML_FILE_NAME = "source.xml";
 
     private XmlSerializer serializer;
     @Nullable
@@ -134,7 +140,7 @@ public class SourceDocument {
     /**
      * Recursively visit all of the views and map them to XML elements
      *
-     * @param view The root view
+     * @param view  The root view
      * @param depth The current traversal depth
      */
     private void serializeView(View view, final int depth) throws IOException {
@@ -194,22 +200,39 @@ public class SourceDocument {
         serializer.endTag(NAMESPACE, tagName);
     }
 
-    public synchronized String toXMLString() throws AppiumException {
+    private synchronized FileInputStream toXMLStream() throws AppiumException {
         serializer = Xml.newSerializer();
         if (viewMap != null) {
             viewMap.clear();
         }
-        final StringWriter writer = new StringWriter();
+
         try {
-            serializer.setOutput(writer);
-            serializer.startDocument("UTF-8", true);
-            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-            final long startTime = SystemClock.uptimeMillis();
-            serializeView(root == null ? new ViewGetter().getRootView() : root, 0);
-            serializer.endDocument();
-            logger.info(String.format("The source XML tree has been fetched in %sms", SystemClock.uptimeMillis() - startTime));
-            return writer.toString();
-        } catch (Exception e) {
+            getApplicationContext().deleteFile(TEMP_XML_FILE_NAME);
+            try (FileOutputStream fos = getApplicationContext().openFileOutput(TEMP_XML_FILE_NAME, Context.MODE_PRIVATE)) {
+                serializer.setOutput(fos, XML_ENCODING);
+                serializer.startDocument(XML_ENCODING, true);
+                serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+                final long startTime = SystemClock.uptimeMillis();
+                serializeView(root == null ? new ViewGetter().getRootView() : root, 0);
+                serializer.endDocument();
+                logger.info(String.format("The source XML tree has been fetched in %sms", SystemClock.uptimeMillis() - startTime));
+            }
+            return getApplicationContext().openFileInput(TEMP_XML_FILE_NAME);
+        } catch (IOException e) {
+            throw new AppiumException(e);
+        }
+    }
+
+    public synchronized String toXMLString() throws AppiumException {
+        try (FileInputStream xmlStream = new SourceDocument(root, viewMap).toXMLStream()) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(xmlStream, XML_ENCODING));
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            return sb.toString();
+        } catch (IOException e) {
             throw new AppiumException(e);
         }
     }
@@ -219,9 +242,12 @@ public class SourceDocument {
         try {
             // Get the Nodes that match the provided xpath
             XPathExpression expr = xpath.compile(xpathSelector);
-            NodeList list = (NodeList) expr.evaluate(
-                    new InputSource(new StringReader(new SourceDocument(root, viewMap).toXMLString())),
-                    XPathConstants.NODESET);
+            NodeList list;
+            try (FileInputStream xmlStream = new SourceDocument(root, viewMap).toXMLStream()) {
+                list = (NodeList) expr.evaluate(new InputSource(xmlStream), XPathConstants.NODESET);
+            } catch (IOException e) {
+                throw new AppiumException(e);
+            }
 
             // Get a list of elements that are associated with that node
             List<View> views = new ArrayList<>();
