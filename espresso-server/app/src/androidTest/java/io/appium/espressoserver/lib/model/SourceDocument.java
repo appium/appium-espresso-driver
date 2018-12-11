@@ -67,7 +67,7 @@ public class SourceDocument {
     private static final String VIEW_INDEX = "viewIndex";
     private static final String NAMESPACE = "";
     private static final String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
-    private static final int MAX_TRAVERSAL_DEPTH = 70;
+    private static int MAX_TRAVERSAL_DEPTH = 70;
     private static final int MAX_XML_VALUE_LENGTH = 64 * 1024;
     private static final String XML_ENCODING = "UTF-8";
     private final Semaphore RESOURCES_GUARD = new Semaphore(1);
@@ -87,7 +87,7 @@ public class SourceDocument {
         this(root, new SparseArray<View>());
     }
 
-    private SourceDocument(@Nullable View root, @Nullable SparseArray<View> viewMap) {
+    public SourceDocument(@Nullable View root, @Nullable SparseArray<View> viewMap) {
         this.root = root;
         this.viewMap = viewMap;
     }
@@ -316,5 +316,9 @@ public class SourceDocument {
         } catch (XPathExpressionException xe) {
             throw new XPathLookupException(xpathSelector, xe.getMessage());
         }
+    }
+
+    public static void $setMaxTraverseDepth(int maxTraverseDepth) {
+        SourceDocument.MAX_TRAVERSAL_DEPTH = maxTraverseDepth;
     }
 }
