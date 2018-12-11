@@ -211,6 +211,7 @@ public class SourceDocument {
         }
 
         Throwable lastError = null;
+        final View rootView = root == null ? new ViewGetter().getRootView() : root;
         // Try to serialize the xml into the memory first, since it is fast
         // Switch to a file system serializer if the first approach causes OutOfMemory
         for (Class<?> streamType : new Class[]{ByteArrayOutputStream.class, FileOutputStream.class}) {
@@ -232,7 +233,7 @@ public class SourceDocument {
                     serializer.startDocument(XML_ENCODING, true);
                     serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
                     final long startTime = SystemClock.uptimeMillis();
-                    serializeView(root == null ? new ViewGetter().getRootView() : root, 0);
+                    serializeView(rootView, 0);
                     serializer.endDocument();
                     logger.info(String.format("The source XML tree has been fetched in %sms using %s",
                             SystemClock.uptimeMillis() - startTime, streamType.getSimpleName()));
