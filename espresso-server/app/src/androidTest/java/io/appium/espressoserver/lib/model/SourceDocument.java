@@ -40,6 +40,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 import javax.xml.xpath.XPath;
@@ -68,13 +69,13 @@ public class SourceDocument {
     private static final int MAX_TRAVERSE_DEPTH = 70;
     private static final int MAX_XML_VALUE_LENGTH = 64 * 1024;
     private static final String XML_ENCODING = "UTF-8";
-    private static final String TEMP_XML_FILE_NAME = "source.xml";
 
     private XmlSerializer serializer;
     @Nullable
     private final SparseArray<View> viewMap;
     @Nullable
     private final View root;
+    private String tmpXmlName;
 
     public SourceDocument() {
         this(null, null);
@@ -204,6 +205,11 @@ public class SourceDocument {
     }
 
     private synchronized InputStream toStream() throws AppiumException {
+        if (tmpXmlName != null) {
+            getApplicationContext().deleteFile(tmpXmlName);
+            tmpXmlName = null;
+        }
+
         Throwable lastError = null;
         // Try to serialize the xml into the memory first, since it is fast
         // Switch to a file system serializer if the first approach causes OutOfMemory
@@ -212,11 +218,12 @@ public class SourceDocument {
             if (viewMap != null) {
                 viewMap.clear();
             }
+
             try {
                 OutputStream outputStream;
                 if (streamType.equals(FileOutputStream.class)) {
-                    getApplicationContext().deleteFile(TEMP_XML_FILE_NAME);
-                    outputStream = getApplicationContext().openFileOutput(TEMP_XML_FILE_NAME, Context.MODE_PRIVATE);
+                    tmpXmlName = String.format("%s.xml", UUID.randomUUID().toString());
+                    outputStream = getApplicationContext().openFileOutput(tmpXmlName, Context.MODE_PRIVATE);
                 } else {
                     outputStream = new ByteArrayOutputStream();
                 }
@@ -235,9 +242,9 @@ public class SourceDocument {
                 } finally {
                     outputStream.close();
                 }
-                return outputStream instanceof ByteArrayOutputStream
-                        ? new ByteArrayInputStream(((ByteArrayOutputStream) outputStream).toByteArray())
-                        : getApplicationContext().openFileInput(TEMP_XML_FILE_NAME);
+                return outputStream instanceof FileOutputStream
+                        ? getApplicationContext().openFileInput(tmpXmlName)
+                        : new ByteArrayInputStream(((ByteArrayOutputStream) outputStream).toByteArray());
             } catch (IOException e) {
                 lastError = e;
             }
@@ -248,7 +255,7 @@ public class SourceDocument {
         throw new AppiumException(lastError);
     }
 
-    public synchronized String toXMLString() throws AppiumException {
+    public String toXMLString() throws AppiumException {
         try (InputStream xmlStream = new SourceDocument(root, viewMap).toStream()) {
             StringBuilder sb = new StringBuilder();
             String line;
