@@ -31,10 +31,13 @@ import org.xml.sax.InputSource;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -200,31 +203,53 @@ public class SourceDocument {
         serializer.endTag(NAMESPACE, tagName);
     }
 
-    private synchronized FileInputStream toXMLStream() throws AppiumException {
-        serializer = Xml.newSerializer();
-        if (viewMap != null) {
-            viewMap.clear();
-        }
-
-        try {
-            getApplicationContext().deleteFile(TEMP_XML_FILE_NAME);
-            try (FileOutputStream fos = getApplicationContext().openFileOutput(TEMP_XML_FILE_NAME, Context.MODE_PRIVATE)) {
-                serializer.setOutput(fos, XML_ENCODING);
-                serializer.startDocument(XML_ENCODING, true);
-                serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-                final long startTime = SystemClock.uptimeMillis();
-                serializeView(root == null ? new ViewGetter().getRootView() : root, 0);
-                serializer.endDocument();
-                logger.info(String.format("The source XML tree has been fetched in %sms", SystemClock.uptimeMillis() - startTime));
+    private synchronized InputStream toStream() throws AppiumException {
+        Throwable lastError = null;
+        // Try to serialize the xml into the memory first, since it is fast
+        // Switch to a file system serializer if the first approach causes OutOfMemory
+        for (Class<?> streamType : new Class[]{ByteArrayOutputStream.class, FileOutputStream.class}) {
+            serializer = Xml.newSerializer();
+            if (viewMap != null) {
+                viewMap.clear();
             }
-            return getApplicationContext().openFileInput(TEMP_XML_FILE_NAME);
-        } catch (IOException e) {
-            throw new AppiumException(e);
+            try {
+                OutputStream outputStream;
+                if (streamType.equals(FileOutputStream.class)) {
+                    getApplicationContext().deleteFile(TEMP_XML_FILE_NAME);
+                    outputStream = getApplicationContext().openFileOutput(TEMP_XML_FILE_NAME, Context.MODE_PRIVATE);
+                } else {
+                    outputStream = new ByteArrayOutputStream();
+                }
+                try {
+                    serializer.setOutput(outputStream, XML_ENCODING);
+                    serializer.startDocument(XML_ENCODING, true);
+                    serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+                    final long startTime = SystemClock.uptimeMillis();
+                    serializeView(root == null ? new ViewGetter().getRootView() : root, 0);
+                    serializer.endDocument();
+                    logger.info(String.format("The source XML tree has been fetched in %sms using %s",
+                            SystemClock.uptimeMillis() - startTime, streamType.getSimpleName()));
+                } catch (OutOfMemoryError e) {
+                    lastError = e;
+                    continue;
+                } finally {
+                    outputStream.close();
+                }
+                return outputStream instanceof ByteArrayOutputStream
+                        ? new ByteArrayInputStream(((ByteArrayOutputStream) outputStream).toByteArray())
+                        : getApplicationContext().openFileInput(TEMP_XML_FILE_NAME);
+            } catch (IOException e) {
+                lastError = e;
+            }
         }
+        if (lastError instanceof OutOfMemoryError) {
+            throw (OutOfMemoryError) lastError;
+        }
+        throw new AppiumException(lastError);
     }
 
     public synchronized String toXMLString() throws AppiumException {
-        try (FileInputStream xmlStream = new SourceDocument(root, viewMap).toXMLStream()) {
+        try (InputStream xmlStream = new SourceDocument(root, viewMap).toStream()) {
             StringBuilder sb = new StringBuilder();
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(xmlStream, XML_ENCODING));
@@ -243,7 +268,7 @@ public class SourceDocument {
             // Get the Nodes that match the provided xpath
             XPathExpression expr = xpath.compile(xpathSelector);
             NodeList list;
-            try (FileInputStream xmlStream = new SourceDocument(root, viewMap).toXMLStream()) {
+            try (InputStream xmlStream = new SourceDocument(root, viewMap).toStream()) {
                 list = (NodeList) expr.evaluate(new InputSource(xmlStream), XPathConstants.NODESET);
             } catch (IOException e) {
                 throw new AppiumException(e);
