@@ -48,6 +48,7 @@ import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
 import static androidx.test.espresso.util.TreeIterables.breadthFirstViewTraversal;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
+import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 import static io.appium.espressoserver.lib.helpers.XMLHelpers.toNodeName;
 import static io.appium.espressoserver.lib.helpers.XMLHelpers.toSafeString;
 
@@ -57,6 +58,8 @@ public class SourceDocument {
     private static final String VIEW_INDEX = "viewIndex";
     private static final String NAMESPACE = "";
     private final static String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
+    private final static int MAX_TRAVERSE_DEPTH = 70;
+    private final static int MAX_XML_VALUE_LENGTH = 64 * 1024;
 
     private XmlSerializer serializer;
     @Nullable
@@ -76,8 +79,10 @@ public class SourceDocument {
     private void setAttribute(ViewAttributesEnum attrName, @Nullable Object attrValue) throws IOException {
         // Do not write attributes, whose values equal to null
         if (attrValue != null) {
-            serializer.attribute(NAMESPACE, attrName.toString(),
-                    toSafeString(String.valueOf(attrValue), NON_XML_CHAR_REPLACEMENT));
+            // Cut off longer strings to avoid OOM errors
+            String xmlValue = abbreviate(toSafeString(String.valueOf(attrValue), NON_XML_CHAR_REPLACEMENT),
+                    MAX_XML_VALUE_LENGTH);
+            serializer.attribute(NAMESPACE, attrName.toString(), xmlValue);
         }
     }
 
@@ -130,8 +135,9 @@ public class SourceDocument {
      * Recursively visit all of the views and map them to XML elements
      *
      * @param view The root view
+     * @param depth The current traversal depth
      */
-    private void serializeView(View view) throws IOException {
+    private void serializeView(View view, final int depth) throws IOException {
         if (view == null) {
             return;
         }
@@ -173,11 +179,16 @@ public class SourceDocument {
             viewMap.put(viewMap.size(), view);
         }
 
-        // Visit the children and build them too
-        for (View childView : breadthFirstViewTraversal(view)) {
-            if (!view.equals(childView)) {
-                serializeView(childView);
+        if (depth < MAX_TRAVERSE_DEPTH) {
+            // Visit the children and build them too
+            for (View childView : breadthFirstViewTraversal(view)) {
+                if (!view.equals(childView)) {
+                    serializeView(childView, depth + 1);
+                }
             }
+        } else {
+            logger.warn(String.format("Skipping traversal of %s's children, since the current depth " +
+                    "has reached its maximum allowed value of %s", view.getClass().getName(), depth));
         }
 
         serializer.endTag(NAMESPACE, tagName);
@@ -194,7 +205,7 @@ public class SourceDocument {
             serializer.startDocument("UTF-8", true);
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             final long startTime = SystemClock.uptimeMillis();
-            serializeView(root == null ? new ViewGetter().getRootView() : root);
+            serializeView(root == null ? new ViewGetter().getRootView() : root, 0);
             serializer.endDocument();
             logger.info(String.format("The source XML tree has been fetched in %sms", SystemClock.uptimeMillis() - startTime));
             return writer.toString();
