@@ -21,10 +21,7 @@ import androidx.annotation.Nullable;
 public class StringHelpers {
 
     public static String abbreviate(@Nullable String str, int len) {
-        if (str != null && str.length() > len) {
-            return str.substring(0, len) + "...";
-        }
-        return str;
+        return str != null && str.length() > len ? str.substring(0, len) + "\u2026" : str;
     }
 
 }
