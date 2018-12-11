@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver;
 
+import org.junit.Assume;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -37,6 +38,10 @@ public class EspressoServerRunnerTest {
 
     @Test
     public void startEspressoServer() throws InterruptedException, IOException, DuplicateRouteException {
+        if (System.getProperty("skipespressoserver") != null) {
+            Assume.assumeTrue(true);
+            return;
+        }
         try {
             espressoServer.start();
 
