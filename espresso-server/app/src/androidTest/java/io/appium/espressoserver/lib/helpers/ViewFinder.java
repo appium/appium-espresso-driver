@@ -52,6 +52,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
 import static io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath;
 import static org.hamcrest.CoreMatchers.allOf;
@@ -65,6 +66,7 @@ import static org.hamcrest.Matchers.instanceOf;
  * Helper methods to find elements based on locator strategies and selectors
  */
 public class ViewFinder {
+    private static final String ID_PATTERN = "[\\S]+:id/[\\S]+";
 
     @Nullable
     public static View findBy(Strategy strategy, String selector) throws AppiumException {
@@ -149,6 +151,10 @@ public class ViewFinder {
 
                 // find id from target context
                 Context context = getApplicationContext();
+                if (!selector.matches(ID_PATTERN)) {
+                    selector = String.format("%s:id/%s", context.getPackageName(), selector);
+                    logger.info(String.format("Rewrote Id selector to '%s'", selector));
+                }
                 int id = context.getResources().getIdentifier(selector, "Id", context.getPackageName());
 
                 views = getViews(root, withId(id), findOne);
