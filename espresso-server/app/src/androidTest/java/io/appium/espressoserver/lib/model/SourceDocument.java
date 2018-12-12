@@ -264,7 +264,7 @@ public class SourceDocument {
         }
     }
 
-    public synchronized String toXMLString() throws AppiumException {
+    public String toXMLString() throws AppiumException {
         try {
             RESOURCES_GUARD.acquire();
         } catch (InterruptedException e) {
@@ -286,7 +286,7 @@ public class SourceDocument {
         }
     }
 
-    public synchronized List<View> findViewsByXPath(String xpathSelector) throws AppiumException {
+    public List<View> findViewsByXPath(String xpathSelector) throws AppiumException {
         try {
             // Get the Nodes that match the provided xpath
             XPathExpression expr = xpath.compile(xpathSelector);
