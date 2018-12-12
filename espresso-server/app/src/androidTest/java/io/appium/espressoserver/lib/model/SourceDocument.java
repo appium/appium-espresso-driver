@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 import android.util.Xml;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 
@@ -55,7 +56,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
-import static androidx.test.espresso.util.TreeIterables.breadthFirstViewTraversal;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 import static io.appium.espressoserver.lib.helpers.XMLHelpers.toNodeName;
@@ -67,7 +67,7 @@ public class SourceDocument {
     private static final String VIEW_INDEX = "viewIndex";
     private static final String NAMESPACE = "";
     private static final String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
-    private static final int MAX_TRAVERSE_DEPTH = 70;
+    private static final int MAX_TRAVERSAL_DEPTH = 70;
     private static final int MAX_XML_VALUE_LENGTH = 64 * 1024;
     private static final String XML_ENCODING = "UTF-8";
     private final Semaphore RESOURCES_GUARD = new Semaphore(1);
@@ -195,11 +195,11 @@ public class SourceDocument {
             viewMap.put(viewMap.size(), view);
         }
 
-        if (depth < MAX_TRAVERSE_DEPTH) {
+        if (depth < MAX_TRAVERSAL_DEPTH) {
             // Visit the children and build them too
-            for (View childView : breadthFirstViewTraversal(view)) {
-                if (!view.equals(childView)) {
-                    serializeView(childView, depth + 1);
+            if (view instanceof ViewGroup) {
+                for (int index = 0; index < ((ViewGroup) view).getChildCount(); ++index) {
+                    serializeView(((ViewGroup) view).getChildAt(index), depth + 1);
                 }
             }
         } else {
