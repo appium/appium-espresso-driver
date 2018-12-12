@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.viewmatcher;
 
 import androidx.annotation.Nullable;
+
 import android.view.View;
 
 import org.hamcrest.Description;
@@ -32,7 +33,7 @@ public class WithXPath {
     public static Matcher<View> withXPath(@Nullable final View root, final String xpath,
                                           @Nullable final Integer index) throws AppiumException {
         // Get a list of the Views that match the provided xpath
-        final List<View> matchedXPathViews = SourceDocument.findViewsByXPath(root, xpath);
+        final List<View> matchedXPathViews = new SourceDocument(root).findViewsByXPath(xpath);
 
         return new TypeSafeMatcher<View>() {
             @Override

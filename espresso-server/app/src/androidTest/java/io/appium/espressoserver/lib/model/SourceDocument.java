@@ -16,11 +16,13 @@
 
 package io.appium.espressoserver.lib.model;
 
+import android.content.Context;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.SparseArray;
 import android.util.Xml;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 
@@ -29,11 +31,18 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xmlpull.v1.XmlSerializer;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.Semaphore;
 
 import javax.annotation.Nullable;
 import javax.xml.xpath.XPath;
@@ -46,7 +55,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
-import static androidx.test.espresso.util.TreeIterables.breadthFirstViewTraversal;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 import static io.appium.espressoserver.lib.helpers.XMLHelpers.toNodeName;
@@ -57,18 +66,25 @@ public class SourceDocument {
     private static final String NON_XML_CHAR_REPLACEMENT = "?";
     private static final String VIEW_INDEX = "viewIndex";
     private static final String NAMESPACE = "";
-    private final static String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
-    private final static int MAX_TRAVERSE_DEPTH = 70;
-    private final static int MAX_XML_VALUE_LENGTH = 64 * 1024;
+    private static final String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
+    private static final int MAX_TRAVERSAL_DEPTH = 70;
+    private static final int MAX_XML_VALUE_LENGTH = 64 * 1024;
+    private static final String XML_ENCODING = "UTF-8";
+    private final Semaphore RESOURCES_GUARD = new Semaphore(1);
 
     private XmlSerializer serializer;
     @Nullable
     private final SparseArray<View> viewMap;
     @Nullable
     private final View root;
+    private String tmpXmlName;
 
     public SourceDocument() {
         this(null, null);
+    }
+
+    public SourceDocument(@Nullable View root) {
+        this(root, new SparseArray<View>());
     }
 
     private SourceDocument(@Nullable View root, @Nullable SparseArray<View> viewMap) {
@@ -134,7 +150,7 @@ public class SourceDocument {
     /**
      * Recursively visit all of the views and map them to XML elements
      *
-     * @param view The root view
+     * @param view  The root view
      * @param depth The current traversal depth
      */
     private void serializeView(View view, final int depth) throws IOException {
@@ -179,11 +195,11 @@ public class SourceDocument {
             viewMap.put(viewMap.size(), view);
         }
 
-        if (depth < MAX_TRAVERSE_DEPTH) {
+        if (depth < MAX_TRAVERSAL_DEPTH) {
             // Visit the children and build them too
-            for (View childView : breadthFirstViewTraversal(view)) {
-                if (!view.equals(childView)) {
-                    serializeView(childView, depth + 1);
+            if (view instanceof ViewGroup) {
+                for (int index = 0; index < ((ViewGroup) view).getChildCount(); ++index) {
+                    serializeView(((ViewGroup) view).getChildAt(index), depth + 1);
                 }
             }
         } else {
@@ -194,34 +210,100 @@ public class SourceDocument {
         serializer.endTag(NAMESPACE, tagName);
     }
 
-    public synchronized String toXMLString() throws AppiumException {
-        serializer = Xml.newSerializer();
-        if (viewMap != null) {
-            viewMap.clear();
+    private InputStream toStream() throws AppiumException {
+        Throwable lastError = null;
+        final View rootView = root == null ? new ViewGetter().getRootView() : root;
+        // Try to serialize the xml into the memory first, since it is fast
+        // Switch to a file system serializer if the first approach causes OutOfMemory
+        for (Class<?> streamType : new Class[]{ByteArrayOutputStream.class, FileOutputStream.class}) {
+            serializer = Xml.newSerializer();
+            if (viewMap != null) {
+                viewMap.clear();
+            }
+
+            try {
+                OutputStream outputStream;
+                if (streamType.equals(FileOutputStream.class)) {
+                    tmpXmlName = String.format("%s.xml", UUID.randomUUID().toString());
+                    outputStream = getApplicationContext().openFileOutput(tmpXmlName, Context.MODE_PRIVATE);
+                } else {
+                    outputStream = new ByteArrayOutputStream();
+                }
+                try {
+                    serializer.setOutput(outputStream, XML_ENCODING);
+                    serializer.startDocument(XML_ENCODING, true);
+                    serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+                    final long startTime = SystemClock.uptimeMillis();
+                    serializeView(rootView, 0);
+                    serializer.endDocument();
+                    logger.info(String.format("The source XML tree has been fetched in %sms using %s",
+                            SystemClock.uptimeMillis() - startTime, streamType.getSimpleName()));
+                } catch (OutOfMemoryError e) {
+                    lastError = e;
+                    continue;
+                } finally {
+                    outputStream.close();
+                }
+                return outputStream instanceof FileOutputStream
+                        ? getApplicationContext().openFileInput(tmpXmlName)
+                        : new ByteArrayInputStream(((ByteArrayOutputStream) outputStream).toByteArray());
+            } catch (IOException e) {
+                lastError = e;
+            }
         }
-        final StringWriter writer = new StringWriter();
-        try {
-            serializer.setOutput(writer);
-            serializer.startDocument("UTF-8", true);
-            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-            final long startTime = SystemClock.uptimeMillis();
-            serializeView(root == null ? new ViewGetter().getRootView() : root, 0);
-            serializer.endDocument();
-            logger.info(String.format("The source XML tree has been fetched in %sms", SystemClock.uptimeMillis() - startTime));
-            return writer.toString();
-        } catch (Exception e) {
-            throw new AppiumException(e);
+        if (lastError instanceof OutOfMemoryError) {
+            throw (OutOfMemoryError) lastError;
+        }
+        throw new AppiumException(lastError);
+    }
+
+    private void performCleanup() {
+        if (tmpXmlName != null) {
+            getApplicationContext().deleteFile(tmpXmlName);
+            tmpXmlName = null;
         }
     }
 
-    public static List<View> findViewsByXPath(@Nullable View root, String xpathSelector) throws AppiumException {
-        final SparseArray<View> viewMap = new SparseArray<>();
+    public String toXMLString() throws AppiumException {
+        try {
+            RESOURCES_GUARD.acquire();
+        } catch (InterruptedException e) {
+            throw new AppiumException(e);
+        }
+        try (InputStream xmlStream = toStream()) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(xmlStream, XML_ENCODING));
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            return sb.toString();
+        } catch (IOException e) {
+            throw new AppiumException(e);
+        } finally {
+            performCleanup();
+            RESOURCES_GUARD.release();
+        }
+    }
+
+    public List<View> findViewsByXPath(String xpathSelector) throws AppiumException {
         try {
             // Get the Nodes that match the provided xpath
             XPathExpression expr = xpath.compile(xpathSelector);
-            NodeList list = (NodeList) expr.evaluate(
-                    new InputSource(new StringReader(new SourceDocument(root, viewMap).toXMLString())),
-                    XPathConstants.NODESET);
+            NodeList list;
+            try {
+                RESOURCES_GUARD.acquire();
+            } catch (InterruptedException e) {
+                throw new AppiumException(e);
+            }
+            try (InputStream xmlStream = toStream()) {
+                list = (NodeList) expr.evaluate(new InputSource(xmlStream), XPathConstants.NODESET);
+            } catch (IOException e) {
+                throw new AppiumException(e);
+            } finally {
+                performCleanup();
+                RESOURCES_GUARD.release();
+            }
 
             // Get a list of elements that are associated with that node
             List<View> views = new ArrayList<>();
