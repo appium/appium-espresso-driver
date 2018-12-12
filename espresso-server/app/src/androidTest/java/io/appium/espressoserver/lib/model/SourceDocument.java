@@ -41,6 +41,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Semaphore;
 
 import javax.annotation.Nullable;
 import javax.xml.xpath.XPath;
@@ -69,6 +70,7 @@ public class SourceDocument {
     private static final int MAX_TRAVERSE_DEPTH = 70;
     private static final int MAX_XML_VALUE_LENGTH = 64 * 1024;
     private static final String XML_ENCODING = "UTF-8";
+    private final Semaphore RESOURCES_GUARD = new Semaphore(1);
 
     private XmlSerializer serializer;
     @Nullable
@@ -79,6 +81,10 @@ public class SourceDocument {
 
     public SourceDocument() {
         this(null, null);
+    }
+
+    public SourceDocument(@Nullable View root) {
+        this(root, new SparseArray<View>());
     }
 
     private SourceDocument(@Nullable View root, @Nullable SparseArray<View> viewMap) {
@@ -204,12 +210,7 @@ public class SourceDocument {
         serializer.endTag(NAMESPACE, tagName);
     }
 
-    private synchronized InputStream toStream() throws AppiumException {
-        if (tmpXmlName != null) {
-            getApplicationContext().deleteFile(tmpXmlName);
-            tmpXmlName = null;
-        }
-
+    private InputStream toStream() throws AppiumException {
         Throwable lastError = null;
         final View rootView = root == null ? new ViewGetter().getRootView() : root;
         // Try to serialize the xml into the memory first, since it is fast
@@ -256,8 +257,20 @@ public class SourceDocument {
         throw new AppiumException(lastError);
     }
 
-    public String toXMLString() throws AppiumException {
-        try (InputStream xmlStream = new SourceDocument(root, viewMap).toStream()) {
+    private void performCleanup() {
+        if (tmpXmlName != null) {
+            getApplicationContext().deleteFile(tmpXmlName);
+            tmpXmlName = null;
+        }
+    }
+
+    public synchronized String toXMLString() throws AppiumException {
+        try {
+            RESOURCES_GUARD.acquire();
+        } catch (InterruptedException e) {
+            throw new AppiumException(e);
+        }
+        try (InputStream xmlStream = toStream()) {
             StringBuilder sb = new StringBuilder();
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(xmlStream, XML_ENCODING));
@@ -267,19 +280,29 @@ public class SourceDocument {
             return sb.toString();
         } catch (IOException e) {
             throw new AppiumException(e);
+        } finally {
+            performCleanup();
+            RESOURCES_GUARD.release();
         }
     }
 
-    public static List<View> findViewsByXPath(@Nullable View root, String xpathSelector) throws AppiumException {
-        final SparseArray<View> viewMap = new SparseArray<>();
+    public synchronized List<View> findViewsByXPath(String xpathSelector) throws AppiumException {
         try {
             // Get the Nodes that match the provided xpath
             XPathExpression expr = xpath.compile(xpathSelector);
             NodeList list;
-            try (InputStream xmlStream = new SourceDocument(root, viewMap).toStream()) {
+            try {
+                RESOURCES_GUARD.acquire();
+            } catch (InterruptedException e) {
+                throw new AppiumException(e);
+            }
+            try (InputStream xmlStream = toStream()) {
                 list = (NodeList) expr.evaluate(new InputSource(xmlStream), XPathConstants.NODESET);
             } catch (IOException e) {
                 throw new AppiumException(e);
+            } finally {
+                performCleanup();
+                RESOURCES_GUARD.release();
             }
 
             // Get a list of elements that are associated with that node
