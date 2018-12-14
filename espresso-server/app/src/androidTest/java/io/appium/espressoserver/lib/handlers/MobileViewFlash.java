@@ -31,6 +31,7 @@ public class MobileViewFlash implements RequestHandler<ViewFlashParams, Void> {
                 view.startAnimation(animation);
             }
         });
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         return null;
     }
 }
