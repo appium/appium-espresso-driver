@@ -36,9 +36,7 @@ public class GetEnabled implements RequestHandler<AppiumParams, Boolean> {
         try {
             viewInteraction.check(matches(isEnabled()));
             return true;
-        } catch (NoMatchingViewException e) {
-            return false;
-        } catch (AssertionFailedError e) {
+        } catch (NoMatchingViewException | AssertionFailedError e) {
             return false;
         }
     }

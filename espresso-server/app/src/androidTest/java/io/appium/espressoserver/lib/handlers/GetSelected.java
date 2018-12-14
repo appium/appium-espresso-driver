@@ -36,9 +36,7 @@ public class GetSelected implements RequestHandler<AppiumParams, Boolean> {
         try {
             viewInteraction.check(matches(isSelected()));
             return true;
-        } catch (NoMatchingViewException e) {
-            return false;
-        } catch (AssertionFailedError e) {
+        } catch (NoMatchingViewException | AssertionFailedError e) {
             return false;
         }
     }
