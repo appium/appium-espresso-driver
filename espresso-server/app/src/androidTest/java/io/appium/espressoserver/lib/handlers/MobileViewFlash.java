@@ -35,7 +35,7 @@ public class MobileViewFlash implements RequestHandler<ViewFlashParams, Void> {
                 animation.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
-
+                        // Unused
                     }
 
                     @Override
@@ -45,7 +45,7 @@ public class MobileViewFlash implements RequestHandler<ViewFlashParams, Void> {
 
                     @Override
                     public void onAnimationRepeat(Animation animation) {
-
+                        // Unused
                     }
                 });
                 view.startAnimation(animation);
