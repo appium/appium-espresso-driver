@@ -16,6 +16,8 @@
 
 package io.appium.espressoserver.lib.handlers;
 
+import junit.framework.AssertionFailedError;
+
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.ViewInteraction;
 
@@ -35,6 +37,8 @@ public class GetEnabled implements RequestHandler<AppiumParams, Boolean> {
             viewInteraction.check(matches(isEnabled()));
             return true;
         } catch (NoMatchingViewException e) {
+            return false;
+        } catch (AssertionFailedError e) {
             return false;
         }
     }
