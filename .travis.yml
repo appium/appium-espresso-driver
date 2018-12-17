@@ -28,6 +28,7 @@ env:
     - RECURSIVE=""
     - CC=gcc-6 CXX=g++-6
     - START_XVFB=0
+    - TERM=dumb # Suppresses Gradlew progress output
   matrix:
     - TEST=unit START_EMU=0 RECURSIVE="--recursive"
     - TEST=functional
