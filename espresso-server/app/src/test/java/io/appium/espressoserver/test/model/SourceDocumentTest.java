@@ -3,7 +3,6 @@ package io.appium.espressoserver.test.model;
 import android.content.Context;
 import android.widget.LinearLayout;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
