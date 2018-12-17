@@ -1,7 +1,8 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { EspressoRunner, REQUIRED_PARAMS } from '../../lib/espresso-runner';
-
+import { ADB } from 'appium-adb';
+import { withMocks } from 'appium-test-support';
 
 chai.should();
 chai.use(chaiAsPromised);
@@ -29,4 +30,37 @@ describe('espresso-runner', function () {
       runConstructorTest(opts, REQUIRED_PARAMS[i]);
     }
   });
+
+  const adb = new ADB();
+  describe('installServer', withMocks({adb}, (mocks) => {
+    let espresso;
+    beforeEach(function () {
+      espresso = new EspressoRunner({
+        adb, tmpDir: 'tmp', host: 'localhost',
+        systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
+        forceEspressoRebuild: false
+      });
+    });
+    afterEach(function () {
+      mocks.verify();
+    });
+
+    it('should uninstall newer server', async function () {
+      mocks.adb.expects('getApplicationInstallState').once()
+        .returns(adb.APP_INSTALL_STATE.NEWER_VERSION_INSTALLED);
+      mocks.adb.expects('uninstallApk').once();
+      mocks.adb.expects('installOrUpgrade').once();
+
+      await espresso.installServer();
+    });
+
+    it('should not uninstall installed server', async function () {
+      mocks.adb.expects('getApplicationInstallState').once()
+        .returns(adb.APP_INSTALL_STATE.OLDER_VERSION_INSTALLED);
+      mocks.adb.expects('uninstallApk').never();
+      mocks.adb.expects('installOrUpgrade').once();
+
+      await espresso.installServer();
+    });
+  }));
 });
