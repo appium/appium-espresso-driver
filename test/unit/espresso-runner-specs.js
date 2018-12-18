@@ -1,6 +1,6 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { EspressoRunner, REQUIRED_PARAMS, INSTRUMENTATION_TARGET } from '../../lib/espresso-runner';
+import { EspressoRunner, REQUIRED_PARAMS } from '../../lib/espresso-runner';
 import { ADB } from 'appium-adb';
 import sinon from 'sinon';
 
@@ -49,8 +49,7 @@ describe('espresso-runner', function () {
       install: () => {
         installCount += 1;
         return installCount;
-      },
-      shell: () => `${INSTRUMENTATION_TARGET} (target=io.appium.android.apis)\n`,
+      }
     };
 
     afterEach(function () {
@@ -127,6 +126,32 @@ describe('espresso-runner', function () {
       await espresso.installServer();
       espresso.adb.uninstallApk().should.eql(0);
       espresso.adb.install().should.eql(1);
+    });
+
+    it('should raise an error when it fails to install an apk', async function () {
+      sandbox.stub(ADB, 'createADB').callsFake(function () {
+        uninstallCount = -1;
+        installCount = -1;
+        return Object.assign(
+          commonStub,
+          {
+            getApplicationInstallState: () => adbCmd.APP_INSTALL_STATE.NOT_INSTALLED,
+            install: () => {
+              throw new Error('error happened');
+            }
+          }
+        );
+      });
+
+      const adb = ADB.createADB();
+      const espresso = new EspressoRunner({
+        adb, tmpDir: 'tmp', host: 'localhost',
+        systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
+        forceEspressoRebuild: false
+      });
+
+      await espresso.installServer().should.eventually.to.be.rejectedWith(/error happened/i);
+      espresso.adb.uninstallApk().should.eql(0);
     });
   });
 });
