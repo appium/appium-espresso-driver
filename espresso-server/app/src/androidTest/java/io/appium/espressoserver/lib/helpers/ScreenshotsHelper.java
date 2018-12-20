@@ -27,6 +27,7 @@ import androidx.test.runner.screenshot.ScreenCapture;
 import androidx.test.runner.screenshot.Screenshot;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.ElementNotVisibleException;
+import io.appium.espressoserver.lib.handlers.exceptions.ScreenCaptureException;
 import io.appium.espressoserver.lib.model.ViewElement;
 
 public class ScreenshotsHelper {
@@ -44,19 +45,23 @@ public class ScreenshotsHelper {
      * Makes a screenshot of the particular view.
      *
      * @return the screenshot of the view as base-64 encoded string.
-     * @throws IllegalStateException if the view has no visible area.
+     * @throws ElementNotVisibleException if the view has no visible area.
+     * @throws ScreenCaptureException if it is impossible to take a screenshot.
      */
     public String getScreenshot() throws AppiumException {
-        if (view != null) {
-            if (new ViewElement(view).getBounds().isEmpty()) {
-                throw new ElementNotVisibleException("Cannot get a screenshot of the invisible view");
-            }
+        if (view != null && new ViewElement(view).getBounds().isEmpty()) {
+            throw new ElementNotVisibleException(
+                    String.format("Cannot get a screenshot of the invisible %s", view.getClass().getName()));
         }
-
 
         final ScreenCapture screenCap = view == null ? Screenshot.capture() : Screenshot.capture(view);
         final Bitmap bitmapScreenCap = screenCap.getBitmap();
-
+        if (bitmapScreenCap == null || bitmapScreenCap.getHeight() == 0 || bitmapScreenCap.getWidth() == 0) {
+            throw new ScreenCaptureException(String.format("Cannot capture a shot of the %s. " +
+                            "Make sure none of the currently visible " +
+                            "views have FLAG_SECURE set and that it is possible to take a screenshot manually",
+                    view == null ? "current screen" : view.getClass().getName()));
+        }
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmapScreenCap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
         return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
