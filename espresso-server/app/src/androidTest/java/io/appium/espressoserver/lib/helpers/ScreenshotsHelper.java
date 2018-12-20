@@ -16,13 +16,13 @@
 
 package io.appium.espressoserver.lib.helpers;
 
-
 import android.graphics.Bitmap;
 import android.util.Base64;
 import android.view.View;
 
 import java.io.ByteArrayOutputStream;
 
+import androidx.annotation.Nullable;
 import androidx.test.runner.screenshot.ScreenCapture;
 import androidx.test.runner.screenshot.Screenshot;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
@@ -31,14 +31,15 @@ import io.appium.espressoserver.lib.handlers.exceptions.ScreenCaptureException;
 import io.appium.espressoserver.lib.model.ViewElement;
 
 public class ScreenshotsHelper {
+    @Nullable
     private final View view;
-
-    public ScreenshotsHelper() {
-        this.view = null;
-    }
 
     public ScreenshotsHelper(View view) {
         this.view = view;
+    }
+
+    public ScreenshotsHelper() {
+        this(null);
     }
 
     /**
