@@ -57,12 +57,13 @@ public class ClipboardHelper {
 
     public void setTextData(@Nullable String label, String data) {
         final ClipboardManager cm = getManager();
-        if (label == null) {
-            label = data.length() >= DEFAULT_LABEL_LEN
+        String labeltoSet = label;
+        if (labeltoSet == null) {
+            labeltoSet = data.length() >= DEFAULT_LABEL_LEN
                     ? data.substring(0, DEFAULT_LABEL_LEN)
                     : data;
         }
-        cm.setPrimaryClip(ClipData.newPlainText(label, data));
+        cm.setPrimaryClip(ClipData.newPlainText(labeltoSet, data));
     }
 
     public static class ClipboardError extends RuntimeException {
