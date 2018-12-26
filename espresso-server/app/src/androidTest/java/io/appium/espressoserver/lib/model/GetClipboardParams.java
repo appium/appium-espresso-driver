@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.model;
 
-public class InvalidArgumentException extends AppiumException {
+import androidx.annotation.NonNull;
 
-    public InvalidArgumentException(String reason) {
-        super(reason);
+@SuppressWarnings("unused")
+public class GetClipboardParams extends AppiumParams {
+    private ClipboardDataType contentType;
+
+    @NonNull
+    public ClipboardDataType getContentType() {
+        return this.contentType == null ? ClipboardDataType.PLAINTEXT : this.contentType;
     }
-
-    public InvalidArgumentException(Throwable cause) {
-        super(cause);
-    }
-
 }
