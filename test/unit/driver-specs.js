@@ -2,6 +2,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import { ADB } from 'appium-adb';
+import { androidHelpers } from 'appium-android-driver';
 import EspressoDriver from '../../lib/driver';
 import EspressoRunner from '../../lib/espresso-runner';
 
@@ -18,6 +19,9 @@ describe('driver', function () {
       driver.opts = { autoLaunch: false, skipUnlock: true };
       sandbox.stub(driver, 'initEspressoServer');
       sandbox.stub(driver, 'addDeviceInfoToCaps');
+      sandbox.stub(androidHelpers, 'getDeviceInfoFromCaps').callsFake(function () {
+        return {udid: 1, emPort: 8888};
+      });
       driver.espresso = new EspressoRunner({
         adb: ADB.createADB(), tmpDir: 'tmp', systemPort: 4724, host: 'localhost', devicePort: 6790, appPackage: driver.caps.appPackage, forceEspressoRebuild: false
       });
@@ -27,7 +31,7 @@ describe('driver', function () {
       sandbox.restore();
     });
     it('should call setHiddenApiPolicy', async function () {
-      sandbox.stub(ADB, 'createADB').callsFake(function () {
+      sandbox.stub(androidHelpers, 'createADB').callsFake(function () {
         let calledCount = 0;
         return {
           getDevicesWithRetry: () => [{udid: 'emulator-1234'}],
@@ -51,7 +55,7 @@ describe('driver', function () {
       driver.adb.setHiddenApiPolicy().should.eql(2);
     });
     it('should not call setHiddenApiPolicy', async function () {
-      sandbox.stub(ADB, 'createADB').callsFake(function () {
+      sandbox.stub(androidHelpers, 'createADB').callsFake(function () {
         let calledCount = 0;
         return {
           getDevicesWithRetry: () => [{udid: 'emulator-1234'}],
