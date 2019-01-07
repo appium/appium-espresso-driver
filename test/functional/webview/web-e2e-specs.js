@@ -38,10 +38,10 @@ describe('web', function () {
       html.should.match(/Selenium/);
       const textbox = await driver.elementById('i_am_a_textbox');
       await textbox.clear();
-      await textbox.type("Text contents");
-      await textbox.getAttribute('value').should.eventually.equal("Text contents");
+      await textbox.type('Text contents');
+      await textbox.getAttribute('value').should.eventually.equal('Text contents');
       await textbox.clear();
-      await textbox.text().should.eventually.equal("");
+      await textbox.text().should.eventually.equal('');
     });
     it('should navigate between webview pages', async function () {
       const anchorLink = await driver.elementById('i am a link');

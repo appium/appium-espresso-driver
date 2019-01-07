@@ -112,7 +112,7 @@ describe('touch actions -', function () {
     beforeEach(startFingerPaintActivity);
 
     it('should draw the letter L on fingerpaint', async function () {
-      const canvas = await driver.elementById("android:id/content");
+      const canvas = await driver.elementById('android:id/content');
       const {x, y} = await canvas.getLocation();
       const {height, width} = await canvas.getSize();
 
@@ -122,27 +122,27 @@ describe('touch actions -', function () {
       const endY = y + Math.round(height / 2);
 
       const touchActions = [
-        {type: "pointerMove", duration: 1000, x: startX, y: startY},
-        {type: "pointerDown", button: 0},
-        {type: "pointerMove", duration: 1000, x: startX, y: endY},
-        {type: "pause", duration: 1000},
-        {type: "pointerMove", duration: 1000, x: endX, y: endY},
-        {type: "pointerCancel", button: 0},
+        {type: 'pointerMove', duration: 1000, x: startX, y: startY},
+        {type: 'pointerDown', button: 0},
+        {type: 'pointerMove', duration: 1000, x: startX, y: endY},
+        {type: 'pause', duration: 1000},
+        {type: 'pointerMove', duration: 1000, x: endX, y: endY},
+        {type: 'pointerCancel', button: 0},
       ];
       await performTouchAction(touchActions);
     });
 
     it('should draw two parallel lines on fingerpaint', async function () {
-      const canvas = await driver.elementById("android:id/content");
+      const canvas = await driver.elementById('android:id/content');
       const {x, y} = await canvas.getLocation();
       const {height, width} = await canvas.getSize();
 
       const touchActions = [10, width - 10].reduce(function (touchActions, xOffset) {
         touchActions.push([
-          {type: "pointerMove", x: x + xOffset, y: y + 10},
-          {type: "pointerDown", button: 0},
-          {type: "pointerMove", duration: 2000, x: x + xOffset, y: y + Math.round(height / 2)},
-          {type: "pointerUp", button: 0},
+          {type: 'pointerMove', x: x + xOffset, y: y + 10},
+          {type: 'pointerDown', button: 0},
+          {type: 'pointerMove', duration: 2000, x: x + xOffset, y: y + Math.round(height / 2)},
+          {type: 'pointerUp', button: 0},
         ]);
         return touchActions;
       }, []);
@@ -158,10 +158,10 @@ describe('touch actions -', function () {
         const {startX, startY, endX, endY} = await getScrollData();
 
         const actions = [
-          {type: "pointerMove", duration: 0, x: startX + 5, y: startY + 5},
-          {type: "pointerDown", button: 0},
-          {type: "pointerMove", duration: 200, x: endX + 5, y: endY + 5},
-          {type: "pointerUp", button: 0}
+          {type: 'pointerMove', duration: 0, x: startX + 5, y: startY + 5},
+          {type: 'pointerDown', button: 0},
+          {type: 'pointerMove', duration: 200, x: endX + 5, y: endY + 5},
+          {type: 'pointerUp', button: 0}
         ];
         await performTouchAction(actions);
 
@@ -172,10 +172,10 @@ describe('touch actions -', function () {
         const {startX, startY, endX, endY} = await getScrollData();
 
         const actions = [
-          {type: "pointerMove", duration: 0, x: startX + 5, y: startY + 5},
-          {type: "pointerDown", button: 0},
-          {type: "pointerMove", duration: 100, x: endX + 5, y: endY + 5},
-          {type: "pointerUp", button: 0}
+          {type: 'pointerMove', duration: 0, x: startX + 5, y: startY + 5},
+          {type: 'pointerDown', button: 0},
+          {type: 'pointerMove', duration: 100, x: endX + 5, y: endY + 5},
+          {type: 'pointerUp', button: 0}
         ];
         await performTouchAction(actions);
 
@@ -186,10 +186,10 @@ describe('touch actions -', function () {
         const {startX, startY, endX, endY} = await getScrollData();
 
         const actions = [
-          {type: "pointerMove", duration: 0, x: startX + 5, y: startY + 5},
-          {type: "pointerDown", button: 0},
-          {type: "pointerMove", duration: 100, x: endX + 5, y: endY + 5},
-          {type: "pointerUp", button: 0}
+          {type: 'pointerMove', duration: 0, x: startX + 5, y: startY + 5},
+          {type: 'pointerDown', button: 0},
+          {type: 'pointerMove', duration: 100, x: endX + 5, y: endY + 5},
+          {type: 'pointerUp', button: 0}
         ];
         await performAction('mouse', actions);
 
@@ -208,10 +208,10 @@ describe('touch actions -', function () {
           const yMove = Math.round(height / 2) - 10;
 
           const action = [
-            {type: "pointerMove", origin: {"element-6066-11e4-a52e-4f735466cecf": el.value}},
-            {type: "pointerDown", button: 0},
-            {type: "pointerMove", origin: {"element-6066-11e4-a52e-4f735466cecf": el.value}, x: 10, y: -yMove, duration: 3000},
-            {type: "pointerUp", button: 0},
+            {type: 'pointerMove', origin: {'element-6066-11e4-a52e-4f735466cecf': el.value}},
+            {type: 'pointerDown', button: 0},
+            {type: 'pointerMove', origin: {'element-6066-11e4-a52e-4f735466cecf': el.value}, x: 10, y: -yMove, duration: 3000},
+            {type: 'pointerUp', button: 0},
           ];
           return action;
         });
@@ -223,14 +223,14 @@ describe('touch actions -', function () {
     it('should swipe on drag and drop', async function () {
       await startDragAndDropActivity();
 
-      const el = await driver.elementById("io.appium.android.apis:id/drag_dot_1");
+      const el = await driver.elementById('io.appium.android.apis:id/drag_dot_1');
       const {x, y} = await el.getLocation();
 
       const touchActions = [
-        {type: "pointerMove", duration: 0, x: x + 30, y: y + 30},
-        {type: "pointerDown", button: 0},
-        {type: "pointerMove", duration: 100, x: x + 10, y: y + 10},
-        {type: "pointerUp", button: 0},
+        {type: 'pointerMove', duration: 0, x: x + 30, y: y + 30},
+        {type: 'pointerDown', button: 0},
+        {type: 'pointerMove', duration: 100, x: x + 10, y: y + 10},
+        {type: 'pointerUp', button: 0},
       ];
       await performTouchAction(touchActions);
     });
@@ -251,10 +251,10 @@ describe('touch actions -', function () {
       const {x, y} = await nextEl.getLocation();
 
       const touchActions = [
-        {type: "pointerMove", duration: 100, x: x + 10, y: y + 10},
-        {type: "pointerDown", button: 0},
-        {type: "pause", duration: 3000},
-        {type: "pointerUp", button: 0},
+        {type: 'pointerMove', duration: 100, x: x + 10, y: y + 10},
+        {type: 'pointerDown', button: 0},
+        {type: 'pause', duration: 3000},
+        {type: 'pointerUp', button: 0},
       ];
       await performTouchAction(touchActions);
 
@@ -263,10 +263,10 @@ describe('touch actions -', function () {
 
     it('should touch down and up on an element by id', async function () {
       const touchActions = [
-        {type: "pointerMove", duration: 0, origin: {"element-6066-11e4-a52e-4f735466cecf": nextEl.value}},
-        {type: "pointerDown", button: 0},
-        {type: "pause", duration: 100},
-        {type: "pointerUp", button: 0},
+        {type: 'pointerMove', duration: 0, origin: {'element-6066-11e4-a52e-4f735466cecf': nextEl.value}},
+        {type: 'pointerDown', button: 0},
+        {type: 'pause', duration: 100},
+        {type: 'pointerUp', button: 0},
       ];
       await performTouchAction(touchActions);
 

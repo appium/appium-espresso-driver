@@ -63,20 +63,20 @@ describe('keyboard', function () {
   });
 
   it('should perform key events', async function () {
-    let autocompleteEl = await driver.elementByXPath("//android.widget.AutoCompleteTextView");
+    let autocompleteEl = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
     await autocompleteEl.click();
     const keyActions = [
-      {"type": "keyDown", "value": "\uE008"},
-      {"type": "keyDown", "value": "h"},
-      {"type": "keyUp", "value": "h"},
-      {"type": "keyDown", "value": "a"},
-      {"type": "keyUp", "value": "a"},
-      {"type": "pause", "duration": 2000},
-      {"type": "keyUp", "value": "\uE008"},
-      {"type": "keyDown", "value": "t"},
-      {"type": "keyUp", "value": "t"},
-      {"type": "keyDown", "value": "S"},
-      {"type": "keyUp", "value": "S"},
+      {'type': 'keyDown', 'value': '\uE008'},
+      {'type': 'keyDown', 'value': 'h'},
+      {'type': 'keyUp', 'value': 'h'},
+      {'type': 'keyDown', 'value': 'a'},
+      {'type': 'keyUp', 'value': 'a'},
+      {'type': 'pause', 'duration': 2000},
+      {'type': 'keyUp', 'value': '\uE008'},
+      {'type': 'keyDown', 'value': 't'},
+      {'type': 'keyUp', 'value': 't'},
+      {'type': 'keyDown', 'value': 'S'},
+      {'type': 'keyUp', 'value': 'S'},
     ];
     await performActions(keyActions);
     await autocompleteEl.text().should.eventually.equal('HAtS');
