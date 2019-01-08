@@ -9,7 +9,7 @@ import * as server from './lib/server';
 const { EspressoDriver } = driver;
 const { startServer } = server;
 
-const DEFAULT_HOST = "localhost";
+const DEFAULT_HOST = 'localhost';
 const DEFAULT_PORT = 4884;
 
 async function main () {

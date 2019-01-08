@@ -67,7 +67,7 @@ describe('mobile', function () {
     it('should validate params', async function () {
       let element = await driver.elementByAccessibilityId('Views');
       await driver.execute('mobile: navigateTo', {element, menuItemId: -100}).should.eventually.be.rejectedWith(/'menuItemId' must be a non-negative number/);
-      await driver.execute('mobile: navigateTo', {element, menuItemId: "fake"}).should.eventually.be.rejectedWith(/'menuItemId' must be a non-negative number/);
+      await driver.execute('mobile: navigateTo', {element, menuItemId: 'fake'}).should.eventually.be.rejectedWith(/'menuItemId' must be a non-negative number/);
       await driver.execute('mobile: navigateTo', {element}).should.eventually.be.rejectedWith(/required/);
     });
     it('should call the navigateTo method', async function () {
@@ -81,9 +81,9 @@ describe('mobile', function () {
     it('should validate the parameters', async function () {
       let el = await driver.elementByAccessibilityId('Views');
       //await driver.execute('mobile: scrollToPage', {element: el}).should.eventually.be.rejectedWith(/Must provide either/);
-      await driver.execute('mobile: scrollToPage', {element: el, scrollTo: "SOMETHING DIFF"}).should.eventually.be.rejectedWith(/must be one of /);
+      await driver.execute('mobile: scrollToPage', {element: el, scrollTo: 'SOMETHING DIFF'}).should.eventually.be.rejectedWith(/must be one of /);
       await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: -5}).should.eventually.be.rejectedWith(/must be a non-negative integer/);
-      await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: "NOT A NUMBER"}).should.eventually.be.rejectedWith(/must be a non-negative integer/);
+      await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: 'NOT A NUMBER'}).should.eventually.be.rejectedWith(/must be a non-negative integer/);
     });
     it('should call the scrollToPage method', async function () {
       // Testing for failures because ApiDemos app does not have a view pager to test on

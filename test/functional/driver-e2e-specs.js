@@ -116,8 +116,8 @@ describe('EspressoDriver', function () {
       await driver.quit();
     });
     it('should send keys to focused-on element', async function () {
-      await driver.keys("Hello World!".split(""));
-      const editEl = await driver.elementByXPath("//android.widget.AutoCompleteTextView");
+      await driver.keys('Hello World!'.split(''));
+      const editEl = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
       await editEl.text().should.eventually.equal('Hello World!');
       await editEl.clear();
     });
@@ -127,7 +127,7 @@ describe('EspressoDriver', function () {
       const META_SHIFT_MASK = 193;
       let sessionId = await driver.getSessionId();
 
-      const endpoints = ["long_press_keycode", "press_keycode"];
+      const endpoints = ['long_press_keycode', 'press_keycode'];
       for (let endpoint of endpoints) {
         const options = {
           method: 'POST',
@@ -139,7 +139,7 @@ describe('EspressoDriver', function () {
           json: true,
         };
         await request(options);
-        const editEl = await driver.elementByXPath("//android.widget.AutoCompleteTextView");
+        const editEl = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
         await editEl.text().should.eventually.equal(endpoint === 'press_keycode' ? 'G' : 'GG');
         await editEl.clear();
       }
