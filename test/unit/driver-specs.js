@@ -100,4 +100,32 @@ describe('driver', function () {
       driver.adb.setDefaultHiddenApiPolicy.calledOnce.should.be.false;
     });
   });
+
+  describe('#getProxyAvidList', function () {
+    let driver;
+    describe('nativeWebScreenshot', function () {
+      let proxyAvoidList;
+      let nativeWebScreenshotFilter = (item) => item[0] === 'GET' && item[1].test('/session/xxx/screenshot/');
+      beforeEach(function () {
+        driver = new EspressoDriver({}, false);
+        driver.caps = { appPackage: 'io.appium.package', appActivity: '.MainActivity'};
+        driver.opts = { autoLaunch: false, skipUnlock: true };
+        driver.chromedriver = true;
+        sandbox.stub(driver, 'initEspressoServer');
+        sandbox.stub(driver, 'initAUT');
+        sandbox.stub(driver, 'startEspressoSession');
+      });
+
+      it('should proxy screenshot if nativeWebScreenshot is off on chromedriver mode', async function () {
+        await driver.createSession({platformName: 'Android', deviceName: 'device', appPackage: driver.caps.appPackage, nativeWebScreenshot: false});
+        proxyAvoidList = driver.getProxyAvoidList().filter(nativeWebScreenshotFilter);
+        proxyAvoidList.should.be.empty;
+      });
+      it('should not proxy screenshot if nativeWebScreenshot is on on chromedriver mode', async function () {
+        await driver.createSession({platformName: 'Android', deviceName: 'device', appPackage: driver.caps.appPackage, nativeWebScreenshot: true});
+        proxyAvoidList = driver.getProxyAvoidList().filter(nativeWebScreenshotFilter);
+        proxyAvoidList.should.not.be.empty;
+      });
+    });
+  });
 });
