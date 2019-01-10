@@ -101,7 +101,7 @@ describe('driver', function () {
     });
   });
 
-  describe('#getProxyAvidList', function () {
+  describe('#getProxyAvoidList', function () {
     let driver;
     describe('nativeWebScreenshot', function () {
       let proxyAvoidList;
