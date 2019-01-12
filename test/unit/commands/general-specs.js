@@ -22,11 +22,11 @@ describe('commands', function () {
 
       it('update settings', async function () {
         await driver.createSession({platformName: 'Android', deviceName: 'device', appPackage: driver.caps.appPackage});
-        await driver.updateSettings().should.be.empty;
+        await driver.updateSettings().should.be.rejectedWith('Method has not yet been implemented');
       });
       it('get settings', async function () {
         await driver.createSession({platformName: 'Android', deviceName: 'device', appPackage: driver.caps.appPackage});
-        await driver.getSettings().should.be.empty;
+        await driver.getSettings().should.be.rejectedWith('Method has not yet been implemented');
       });
     });
   });
