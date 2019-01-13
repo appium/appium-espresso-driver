@@ -172,7 +172,10 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/location_in_view", new GetLocationInView(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/name", new GetName(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/rect", new GetRect(), AppiumParams.class));
+        // W3C endpoint
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/screenshot", new ElementScreenshot(), AppiumParams.class));
+        // JSONWP endpoint
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/screenshot/:elementId", new ElementScreenshot(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/selected", new GetSelected(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/size", new GetSize(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/text", new Text(), AppiumParams.class));
