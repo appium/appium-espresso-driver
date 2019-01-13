@@ -172,7 +172,10 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/location_in_view", new GetLocationInView(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/name", new GetName(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/rect", new GetRect(), AppiumParams.class));
+        // W3C endpoint
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/screenshot", new ElementScreenshot(), AppiumParams.class));
+        // JSONWP endpoint
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/screenshot/:elementId", new ElementScreenshot(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/selected", new GetSelected(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/size", new GetSize(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/text", new Text(), AppiumParams.class));
@@ -223,9 +226,6 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/navigate_to", new NavigateTo(), NavigateToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/backdoor", new MobileBackdoor(), MobileBackdoorParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/flash", new MobileViewFlash(), ViewFlashParams.class));
-
-        // Compatibility for https://github.com/appium/appium-base-driver/blob/master/lib/jsonwp-proxy/protocol-converter.js
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/screenshot/:elementId", new ElementScreenshot(), AppiumParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
