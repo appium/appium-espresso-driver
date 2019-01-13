@@ -224,6 +224,9 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/backdoor", new MobileBackdoor(), MobileBackdoorParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/flash", new MobileViewFlash(), ViewFlashParams.class));
 
+        // Compatibility for https://github.com/appium/appium-base-driver/blob/master/lib/jsonwp-proxy/protocol-converter.js
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/screenshot/:elementId", new ElementScreenshot(), AppiumParams.class));
+
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/alert_text", new NotYetImplemented(), AppiumParams.class));
