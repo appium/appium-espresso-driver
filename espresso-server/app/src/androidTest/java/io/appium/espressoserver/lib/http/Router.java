@@ -58,6 +58,7 @@ import io.appium.espressoserver.lib.handlers.GetWindowSize;
 import io.appium.espressoserver.lib.handlers.HideKeyboard;
 import io.appium.espressoserver.lib.handlers.Keys;
 import io.appium.espressoserver.lib.handlers.MobileBackdoor;
+import io.appium.espressoserver.lib.handlers.MobileClickAction;
 import io.appium.espressoserver.lib.handlers.MobileViewFlash;
 import io.appium.espressoserver.lib.handlers.MobileSwipe;
 import io.appium.espressoserver.lib.handlers.MultiTouchAction;
@@ -101,6 +102,7 @@ import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.AppiumStatus;
+import io.appium.espressoserver.lib.model.MobileClickActionParams;
 import io.appium.espressoserver.lib.model.DrawerActionParams;
 import io.appium.espressoserver.lib.model.EditorActionParams;
 import io.appium.espressoserver.lib.model.ElementValueParams;
@@ -229,6 +231,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/backdoor", new MobileBackdoor(), MobileBackdoorParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/flash", new MobileViewFlash(), ViewFlashParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/uiautomator", new Uiautomator(), UiautomatorParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/click_action", new MobileClickAction(), MobileClickActionParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
