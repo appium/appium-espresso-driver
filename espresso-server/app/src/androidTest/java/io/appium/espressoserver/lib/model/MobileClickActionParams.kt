@@ -17,12 +17,83 @@
 package io.appium.espressoserver.lib.model
 
 import androidx.test.espresso.action.*
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonParseException
+import com.google.gson.annotations.JsonAdapter
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
+import java.lang.reflect.Type
 
+@JsonAdapter(MobileClickActionParams.MobileClickActionParamsDeserializer::class)
 class MobileClickActionParams : AppiumParams() {
-
     var tapper = Tap.SINGLE
     var coordinatesProvider = GeneralLocation.VISIBLE_CENTER
     var precisionDescriber = Press.FINGER
     var inputDevice = 0
     var buttonState = 0
+
+
+    class MobileClickActionParamsDeserializer : JsonDeserializer<MobileClickActionParams> {
+
+        @Throws(JsonParseException::class)
+        override fun deserialize(json: JsonElement, paramType: Type,
+                                 paramJsonDeserializationContext: JsonDeserializationContext): MobileClickActionParams {
+            val clickActionParams = MobileClickActionParams()
+            val jsonObject = json.asJsonObject
+
+            if (jsonObject.has("inputDevice")) {
+                clickActionParams.inputDevice = jsonObject.get("inputDevice").asInt
+            }
+
+            if (jsonObject.has("buttonState")) {
+                clickActionParams.buttonState = jsonObject.get("buttonState").asInt
+            }
+
+            // Deserialize TAPPER as a tap enum
+            if (jsonObject.has("tapper")) {
+                val tapperAsString = jsonObject.get("tapper").asString.toUpperCase()
+                try {
+                    clickActionParams.tapper = Tap.valueOf(tapperAsString);
+                } catch (e: Exception) {
+                    throw InvalidArgumentException(""""
+                    '${tapperAsString}' is not a valid 'tapper' type. See
+                    https://developer.android.com/reference/android/support/test/espresso/action/Tap"
+                    for list of valid tapper types
+                """.trimIndent());
+                }
+            }
+
+            // Deserialize COORDINATES_PROVIDER as a general location enum
+            if (jsonObject.has("coordinatesProvider")) {
+                val coordinatesProviderAsString = jsonObject.get("coordinatesProvider").asString.toUpperCase()
+                try {
+                    clickActionParams.coordinatesProvider = GeneralLocation.valueOf(coordinatesProviderAsString);
+                } catch (e: Exception) {
+                    throw InvalidArgumentException(""""
+                    '${coordinatesProviderAsString}' is not a valid 'coordinatesProvider' type. See
+                    https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation"
+                    for list of valid coordinates types
+                """.trimIndent());
+                }
+            }
+
+            // Deserialize PRECISION_DESCRIBER as a 'Press' enum
+            if (jsonObject.has("precisionDescriber")) {
+                val precisionDescriberAsString = jsonObject.get("precisionDescriber").asString.toUpperCase()
+                try {
+                    clickActionParams.precisionDescriber = Press.valueOf(precisionDescriberAsString);
+                } catch (e: Exception) {
+                    throw InvalidArgumentException(""""
+                    ${precisionDescriberAsString} is not a valid 'precisionDescriber' type. See
+                    https://developer.android.com/reference/android/support/test/espresso/action/Tap"
+                    for list of valid 'precisionDescriber' types
+                """.trimIndent());
+                }
+            }
+
+            return clickActionParams
+        }
+    }
+
 }

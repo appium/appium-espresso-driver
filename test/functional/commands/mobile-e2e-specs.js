@@ -106,6 +106,41 @@ describe('mobile', function () {
     it('should click on an element', async function () {
       let el = await driver.elementByAccessibilityId('Views');
       await driver.execute('mobile: clickAction', {element: el, tapper: "lOnG", coordinatesProvider: "bOtToM_rIgHt", precisionDescriber: "THUMB", inputDevice: 0, buttonState: 0});
+  describe('mobile: clickAction', function () {
+    it('should click on an element and use default parameters', async function () {
+      const element = await driver.elementByAccessibilityId('Views');
+      await driver.execute('mobile: clickAction', {element});
+      await driver.back();
     });
+    it('should click on an element and accept parameters', async function () {
+      const element = await driver.elementByAccessibilityId('Views');
+      await driver.execute('mobile: clickAction', {
+        element,
+        tapper: "LoNg",
+        coordinatesProvider: "BoTtOm_rIgHt",
+        precisionDescriber: "tHuMb",
+        inputDevice: 0,
+        buttonState: 0,
+      });
+      await driver.back();
+    });
+
+    const badParams = [
+      ["tapper", "BaD TAPPER", /is not a valid 'tapper' type/],
+      ["coordinatesProvider", "BAD_COORDINATES_prOVIDER", /is not a valid 'coordinatesProvider' type/],
+      ["precisionDescriber", "BaD PrEcIsIoN DeScRiBeR", /is not a valid 'precisionDescriber' type/],
+      ["inputDevice", "wrong", /NumberFormatException/],
+      ["buttonState", "wrong", /NumberFormatException/],
+    ];
+
+    for (let [name, value, error] of badParams) {
+      it(`should fail properly if provide an invalid parameter: '${name}'`, async function () {
+        const element = await driver.elementByAccessibilityId('Views');
+        await driver.execute('mobile: clickAction', {
+          element,
+          ...{[name]: [value]}
+        }).should.eventually.be.rejectedWith(error);
+      });
+    }
   });
 });

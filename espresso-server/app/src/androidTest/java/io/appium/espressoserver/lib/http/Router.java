@@ -19,6 +19,7 @@ package io.appium.espressoserver.lib.http;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.util.Map;
 
@@ -295,22 +296,29 @@ class Router {
         // Get the appium params
         String postJson = files.get("postData");
 
-        AppiumParams appiumParams;
-        if (postJson == null) {
-            appiumParams = new AppiumParams();
-        } else {
-            logger.debug(String.format("Got raw post data: %s", abbreviate(postJson, 300)));
-            appiumParams = paramClass.cast((new Gson()).fromJson(postJson, paramClass));
-        }
-        appiumParams.initUriMapping(uriParams);
-
-        // Validate the sessionId
-        if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSession().getId())) {
-            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, "Invalid session ID " + appiumParams.getSessionId());
-        }
-
-        // Create the result
         try {
+
+            // Parse the parameters
+            AppiumParams appiumParams;
+            if (postJson == null) {
+                appiumParams = new AppiumParams();
+            } else {
+                logger.debug(String.format("Got raw post data: %s", abbreviate(postJson, 300)));
+                try {
+                    appiumParams = paramClass.cast((new Gson()).fromJson(postJson, paramClass));
+                } catch (Exception e) {
+                    // If failed to parse params, throw an invalid argument exception
+                    return new AppiumResponse<>(AppiumStatus.INVALID_ARGUMENT, Log.getStackTraceString(e));
+                }
+            }
+            appiumParams.initUriMapping(uriParams);
+
+            // Validate the sessionId
+            if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSession().getId())) {
+                return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, "Invalid session ID " + appiumParams.getSessionId());
+            }
+
+            // Execute the matching handler
             Object handlerResult = handler.handle(appiumParams);
             String sessionId = appiumParams.getSessionId();
 
@@ -319,6 +327,7 @@ class Router {
                 sessionId = ((Session) handlerResult).getId();
             }
 
+            // Construct the response and serve it
             AppiumResponse appiumResponse = new AppiumResponse<>(AppiumStatus.SUCCESS, handlerResult, sessionId);
             logger.debug(String.format("Finished processing %s request for '%s'", method, uri));
             return appiumResponse;
