@@ -22,7 +22,7 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import com.google.gson.annotations.JsonAdapter
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
+import io.appium.espressoserver.lib.model.gsonparsers.GsonParserHelpers
 import java.lang.reflect.Type
 
 @JsonAdapter(MobileClickActionParams.MobileClickActionParamsDeserializer::class)
@@ -50,8 +50,10 @@ class MobileClickActionParams : AppiumParams() {
                 clickActionParams.buttonState = jsonObject.get("buttonState").asInt
             }
 
+            val gsonParserHelpers = GsonParserHelpers();
+
             // Deserialize TAPPER as a tap enum
-            if (jsonObject.has("tapper")) {
+            /*if (jsonObject.has("tapper")) {
                 val tapperAsString = jsonObject.get("tapper").asString.toUpperCase()
                 try {
                     clickActionParams.tapper = Tap.valueOf(tapperAsString);
@@ -62,10 +64,18 @@ class MobileClickActionParams : AppiumParams() {
                     for list of valid tapper types
                 """.trimIndent());
                 }
+            }*/
+            val tapper = gsonParserHelpers.parseEnum<Tap>(
+                    jsonObject,
+                    "tapper",
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/Tap for list of valid tapper types"
+            )
+            if (tapper != null) {
+                clickActionParams.tapper = tapper;
             }
 
             // Deserialize COORDINATES_PROVIDER as a general location enum
-            if (jsonObject.has("coordinatesProvider")) {
+            /*if (jsonObject.has("coordinatesProvider")) {
                 val coordinatesProviderAsString = jsonObject.get("coordinatesProvider").asString.toUpperCase()
                 try {
                     clickActionParams.coordinatesProvider = GeneralLocation.valueOf(coordinatesProviderAsString);
@@ -76,10 +86,18 @@ class MobileClickActionParams : AppiumParams() {
                     for list of valid coordinates types
                 """.trimIndent());
                 }
+            }*/
+            val coordinatesProvider = gsonParserHelpers.parseEnum<GeneralLocation>(
+                    jsonObject,
+                    "coordinatesProvider",
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinatesProvider types"
+            )
+            if (coordinatesProvider != null) {
+                clickActionParams.coordinatesProvider = coordinatesProvider;
             }
 
             // Deserialize PRECISION_DESCRIBER as a 'Press' enum
-            if (jsonObject.has("precisionDescriber")) {
+            /*if (jsonObject.has("precisionDescriber")) {
                 val precisionDescriberAsString = jsonObject.get("precisionDescriber").asString.toUpperCase()
                 try {
                     clickActionParams.precisionDescriber = Press.valueOf(precisionDescriberAsString);
@@ -90,6 +108,14 @@ class MobileClickActionParams : AppiumParams() {
                     for list of valid 'precisionDescriber' types
                 """.trimIndent());
                 }
+            }*/
+            val precisionDescriber = gsonParserHelpers.parseEnum<Press>(
+                    jsonObject,
+                    "precisionDescriber",
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/Press for list of valid precisionDescriber types"
+            )
+            if (precisionDescriber != null) {
+                clickActionParams.precisionDescriber = precisionDescriber;
             }
 
             return clickActionParams

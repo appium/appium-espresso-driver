@@ -14,7 +14,7 @@ class GsonParserHelpers {
                 return enumValueOf<T>(propValueAsString)
             } catch (e: Exception) {
                 throw InvalidArgumentException(""""
-                    '${propValueAsString}' is not a valid 'swiper' type. ${helperMessage}
+                    '${propValueAsString}' is not a valid '${propName}' type. ${helperMessage}
                 """.trimIndent());
             }
         }
