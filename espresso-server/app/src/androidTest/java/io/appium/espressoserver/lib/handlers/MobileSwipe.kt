@@ -46,7 +46,7 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void> {
                 DOWN -> viewInteraction.perform(swipeDown())
                 LEFT -> viewInteraction.perform(swipeLeft())
                 RIGHT -> viewInteraction.perform(swipeRight())
-                else -> throw InvalidArgumentException(String.format("Direction cannot be %s", params.direction))
+                else -> throw InvalidArgumentException("Direction cannot be ${params.direction}");
             }
         } else if (params.swiper != null) {
 
@@ -57,7 +57,6 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void> {
                         params.endCoordinates,
                         params.precisionDescriber
                 )
-                // TODO: Make it multiline without newlines in output
                 logger.info("""
                     Performing general swipe action with parameters
                     swiper=[${params.swiper}] startCoordinates=[${params.startCoordinates}]

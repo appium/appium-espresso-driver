@@ -22,7 +22,7 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import com.google.gson.annotations.JsonAdapter
-import io.appium.espressoserver.lib.model.gsonparsers.GsonParserHelpers
+import io.appium.espressoserver.lib.helpers.GsonParserHelpers
 import java.lang.reflect.Type
 
 @JsonAdapter(MobileClickActionParams.MobileClickActionParamsDeserializer::class)

@@ -1,8 +1,7 @@
-package io.appium.espressoserver.lib.model.gsonparsers
+package io.appium.espressoserver.lib.helpers
 
 import com.google.gson.JsonObject
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.helpers.AndroidLogger
 
 class GsonParserHelpers {
 

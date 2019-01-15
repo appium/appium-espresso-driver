@@ -24,8 +24,7 @@ import com.google.gson.JsonParseException
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
-import io.appium.espressoserver.lib.model.gsonparsers.GsonParserHelpers
+import io.appium.espressoserver.lib.helpers.GsonParserHelpers
 import java.lang.reflect.Type
 
 @JsonAdapter(MobileSwipeParams.MobileSwipeActionParamsDeserializer::class)
@@ -102,13 +101,13 @@ class MobileSwipeParams : AppiumParams() {
 
 
             // Deserialize 'precisionDescriber'
-            val precisionDescriber = gsonParserHelpers.parseEnum<GeneralLocation>(
+            val precisionDescriber = gsonParserHelpers.parseEnum<Press>(
                     jsonObject,
                     "precisionDescriber",
                     "See https://developer.android.com/reference/android/support/test/espresso/action/Press for list of valid precision types"
             )
             if (precisionDescriber != null) {
-                swipeActionParams.endCoordinates = precisionDescriber
+                swipeActionParams.precisionDescriber = precisionDescriber
             }
 
             return swipeActionParams
