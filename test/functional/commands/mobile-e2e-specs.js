@@ -29,6 +29,37 @@ describe('mobile', function () {
       await driver.source().should.eventually.contain('Animation');
       await driver.back();
     });
+    it('should call GeneralSwipeAction with default params', async function () {
+      let viewEl = await driver.elementByAccessibilityId('Views');
+      await viewEl.click();
+      let element = await driver.elementByClassName('android.widget.ListView');
+      await driver.execute('mobile: swipe', {element, swiper: 'slow'});
+      await driver.back();
+      //await driver.elementByAccessibilityId('Views'); // Scrolls back to top
+    });
+    it('should call GeneralSwipeAction with parameters set', async function () {
+
+    });
+    it('should call GeneralSwipe action with custom coordinate providers', async function () {
+
+    });
+    describe('failing swipe tests', function () {
+      it('should not accept "direction" and "swiper". Must be one or the other', async function () {
+        let element = await driver.elementByAccessibilityId('Views');
+        await driver.execute('mobile: swipe', {element, swiper: 'slow', direction: 'down'})
+          .should.eventually.be.rejectedWith(/Cannot set both 'direction' and 'swiper' for swipe action/);
+      });
+      it('should not accept if "direction" and "swiper" both are not set', async function () {
+        let element = await driver.elementByAccessibilityId('Views');
+        await driver.execute('mobile: swipe', {element})
+          .should.eventually.be.rejectedWith(/Must set one of 'direction' or 'swiper'/);
+
+      });
+      // TODO: Make a list of bad params that iterate through here
+      it('should reject bad parameters', async function () {
+
+      });
+    });
   });
 
   describe('mobile: openDrawer, mobile: closeDrawer', function () {
@@ -80,7 +111,6 @@ describe('mobile', function () {
   describe('mobile: scrollToPage', function () {
     it('should validate the parameters', async function () {
       let el = await driver.elementByAccessibilityId('Views');
-      //await driver.execute('mobile: scrollToPage', {element: el}).should.eventually.be.rejectedWith(/Must provide either/);
       await driver.execute('mobile: scrollToPage', {element: el, scrollTo: 'SOMETHING DIFF'}).should.eventually.be.rejectedWith(/must be one of /);
       await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: -5}).should.eventually.be.rejectedWith(/must be a non-negative integer/);
       await driver.execute('mobile: scrollToPage', {element: el, scrollToPage: 'NOT A NUMBER'}).should.eventually.be.rejectedWith(/must be a non-negative integer/);
@@ -110,6 +140,7 @@ describe('mobile', function () {
     it('should click on an element and use default parameters', async function () {
       const element = await driver.elementByAccessibilityId('Views');
       await driver.execute('mobile: clickAction', {element});
+      await driver.source().should.eventually.contain('Animation');
       await driver.back();
     });
     it('should click on an element and accept parameters', async function () {
@@ -122,6 +153,7 @@ describe('mobile', function () {
         inputDevice: 0,
         buttonState: 0,
       });
+      await driver.source().should.eventually.contain('Animation');
       await driver.back();
     });
 
