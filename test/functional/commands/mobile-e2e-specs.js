@@ -93,4 +93,18 @@ describe('mobile', function () {
       await driver.execute('mobile: scrollToPage', {element: el, scrollTo: 'left', smoothScroll: true}).should.eventually.be.rejectedWith(/Could not perform scroll to on element/);
     });
   });
+
+  describe('mobile:uiautomator', function () {
+    it('should be able to find and take action on all uiObjects', async function () {
+      await driver.elementByAccessibilityId('Views');
+      await driver.execute('mobile: uiautomator', {strategy: 'clazz', value: 'android.widget.TextView', action: 'getText'})
+                  .should.eventually.include.members(['API Demos', 'Animation', 'App', 'Content']);
+    });
+    it('should be able to find and take action on uiObject with given index', async function () {
+      await driver.elementByAccessibilityId('Views');
+      await driver.execute('mobile: uiautomator', {strategy: 'textContains', value: 'Access', index: 1, action: 'click'});
+      let el = await driver.elementByAccessibilityId('Accessibility Service');
+      el.should.exist;
+    });
+  });
 });

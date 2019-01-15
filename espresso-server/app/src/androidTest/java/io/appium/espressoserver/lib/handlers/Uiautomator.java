@@ -18,33 +18,47 @@ import static io.appium.espressoserver.lib.helpers.InteractionHelper.getUiDevice
 public class Uiautomator implements RequestHandler<UiautomatorParams, Object> {
 
     @Override
-    public Object handle(UiautomatorParams params) throws AppiumException {
-        logger.info("Invoking Uiautomator Methods");
+    public List<Object> handle(UiautomatorParams params) throws AppiumException {
+        logger.info("Invoking Uiautomator2 Methods");
 
-        ArrayList<Object> result = new ArrayList<>();
-        String byMethodName = params.getBy();
+        List<Object> result = new ArrayList<>();
+
+        if (null == params.getStrategy()) {
+            throw new AppiumException(String.format("strategy should be one of %s",
+                    UiautomatorParams.Strategy.getValidStrategyNames()));
+        }
+
+        if (null == params.getAction()) {
+            throw new AppiumException(String.format("strategy should be one of %s",
+                    UiautomatorParams.Action.getValidActionNames()));
+        }
+
         String value = params.getValue();
-        String action = params.getAction();
         Integer index = params.getIndex();
 
         try {
-            Method byMethod = ReflectionUtils.method(By.class, byMethodName, String.class);
-            BySelector selector = (BySelector) ReflectionUtils.invoke(byMethod, By.class, value);
-            List<UiObject2> uiObjects = getUiDevice().findObjects(selector);
+            Method byMethod = ReflectionUtils.method(By.class, params.getStrategy().getName(), String.class);
+            BySelector bySelector = (BySelector) ReflectionUtils.invoke(byMethod, By.class, value);
+            Method uiObjectMethod = ReflectionUtils.method(UiObject2.class, params.getAction().getName());
+            List<UiObject2> uiObjects = getUiDevice().findObjects(bySelector);
+            logger.info(String.format("Found %d UiObjects", uiObjects.size()));
 
-            Method uiObjectMethod = ReflectionUtils.method(UiObject2.class, action);
             if (index == null) {
-                for (UiObject2 uio : uiObjects) {
-                    result.add(uiObjectMethod.invoke(uio));
+                for (UiObject2 uiObject2 : uiObjects) {
+                    result.add(uiObjectMethod.invoke(uiObject2));
                 }
-            } else {
-                result.add(uiObjectMethod.invoke(uiObjects.get(index)));
+                return result;
             }
 
-        } catch ( IllegalAccessException | InvocationTargetException e) {
+            if (index >= uiObjects.size()) {
+                throw new AppiumException(
+                        String.format("Index %d is out of bounds for %d elements", index, uiObjects.size()));
+            }
+
+            result.add(uiObjectMethod.invoke(uiObjects.get(index)));
+            return result;
+        } catch (IllegalAccessException | InvocationTargetException e) {
             throw new AppiumException(e);
         }
-        return result;
     }
-
 }
