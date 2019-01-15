@@ -37,8 +37,8 @@ class MobileClickActionParams : AppiumParams() {
     class MobileClickActionParamsDeserializer : JsonDeserializer<MobileClickActionParams> {
 
         @Throws(JsonParseException::class)
-        override fun deserialize(json: JsonElement, paramType: Type,
-                                 paramJsonDeserializationContext: JsonDeserializationContext): MobileClickActionParams {
+        override fun deserialize(json: JsonElement, paramType: Type?,
+                                 paramJsonDeserializationContext: JsonDeserializationContext?): MobileClickActionParams {
             val clickActionParams = MobileClickActionParams()
             val jsonObject = json.asJsonObject
 

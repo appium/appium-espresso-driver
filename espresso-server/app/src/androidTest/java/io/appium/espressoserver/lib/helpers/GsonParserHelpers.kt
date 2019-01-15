@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.helpers
 
 import com.google.gson.JsonObject
+import com.google.gson.JsonParseException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 
 class GsonParserHelpers {
@@ -12,7 +13,7 @@ class GsonParserHelpers {
             try {
                 return enumValueOf<T>(propValueAsString)
             } catch (e: Exception) {
-                throw InvalidArgumentException(""""
+                throw JsonParseException(""""
                     '${propValueAsString}' is not a valid '${propName}' type. ${helperMessage}
                 """.trimIndent());
             }

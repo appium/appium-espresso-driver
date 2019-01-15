@@ -50,8 +50,8 @@ class MobileSwipeParams : AppiumParams() {
     class MobileSwipeActionParamsDeserializer : JsonDeserializer<MobileSwipeParams> {
 
         @Throws(JsonParseException::class)
-        override fun deserialize(json: JsonElement, paramType: Type,
-                                 paramJsonDeserializationContext: JsonDeserializationContext): MobileSwipeParams {
+        override fun deserialize(json: JsonElement, paramType: Type?,
+                                 paramJsonDeserializationContext: JsonDeserializationContext?): MobileSwipeParams {
             val swipeActionParams = MobileSwipeParams()
             val jsonObject = json.asJsonObject
 
@@ -73,9 +73,9 @@ class MobileSwipeParams : AppiumParams() {
 
             // Validate that exactly one of direction or swiper is set
             if (swipeActionParams.direction != null && swipeActionParams.swiper != null) {
-                throw InvalidArgumentException("Cannot set both 'direction' and 'swiper' for swipe action. Must set only one");
+                throw JsonParseException("Cannot set both 'direction' and 'swiper' for swipe action. Must set only one");
             } else if (swipeActionParams.direction == null && swipeActionParams.swiper == null) {
-                throw InvalidArgumentException("Must set one of 'direction' or 'swiper'");
+                throw JsonParseException("Must set one of 'direction' or 'swiper'");
             }
 
             // Deserialize 'startCoordinates'
