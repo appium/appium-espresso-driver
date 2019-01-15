@@ -25,6 +25,7 @@ import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
+import io.appium.espressoserver.lib.model.gsonparsers.GsonParserHelpers
 import java.lang.reflect.Type
 
 @JsonAdapter(MobileSwipeParams.MobileSwipeActionParamsDeserializer::class)
@@ -55,37 +56,21 @@ class MobileSwipeParams : AppiumParams() {
             val swipeActionParams = MobileSwipeParams()
             val jsonObject = json.asJsonObject
 
-            // Deserialize SWIPER as swipe enum
-            val direction = jsonObject.get("direction")
-            if (direction != null) {
-                val directionAsString = jsonObject.get("direction").asString.toUpperCase()
-                logger.info("Swiper as string ${directionAsString}")
-                try {
-                    swipeActionParams.direction = Direction.valueOf(directionAsString)
-                } catch (e: Exception) {
-                    throw InvalidArgumentException(""""
-                    '${directionAsString}' is not a valid 'swiper' type. See
-                    https://developer.android.com/reference/android/support/test/espresso/action/Swipe
-                    for list of valid tapper types
-                """.trimIndent());
-                }
-            }
+            val gsonParserHelpers = GsonParserHelpers();
 
-            // Deserialize SWIPER as swipe enum
-            val swiper = jsonObject.get("swiper")
-            if (swiper != null) {
-                val swiperAsString = jsonObject.get("swiper").asString.toUpperCase()
-                logger.info("Swiper as string ${swiperAsString}")
-                try {
-                    swipeActionParams.swiper = Swipe.valueOf(swiperAsString)
-                } catch (e: Exception) {
-                    throw InvalidArgumentException(""""
-                    '${swiperAsString}' is not a valid 'swiper' type. See
-                    https://developer.android.com/reference/android/support/test/espresso/action/Swipe
-                    for list of valid tapper types
-                """.trimIndent());
-                }
-            }
+            // Deserialize 'direction'
+            swipeActionParams.direction = gsonParserHelpers.parseEnum<Direction>(
+                    jsonObject,
+                    "direction",
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/Swipe for list of valid tapper types"
+            );
+
+            // Deserialize 'swiper'
+            swipeActionParams.swiper = gsonParserHelpers.parseEnum<Swipe>(
+                    jsonObject,
+                    "swiper",
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/Swipe for list of valid tapper types"
+            )
 
             // Validate that exactly one of direction or swiper is set
             if (swipeActionParams.direction != null && swipeActionParams.swiper != null) {
@@ -94,46 +79,36 @@ class MobileSwipeParams : AppiumParams() {
                 throw InvalidArgumentException("Must set one of 'direction' or 'swiper'");
             }
 
-            // Deserialize TAPPER as a tap enum
-            if (jsonObject.has("startCoordinates")) {
-                val startCoordinatesAsString = jsonObject.get("startCoordinates").asString.toUpperCase()
-                try {
-                    swipeActionParams.startCoordinates = GeneralLocation.valueOf(startCoordinatesAsString);
-                } catch (e: Exception) {
-                    throw InvalidArgumentException(""""
-                    '${startCoordinatesAsString}' is not a valid 'startCoordinates' type. See
-                    https://developer.android.com/reference/android/support/test/espresso/action/Tap
-                    for list of valid tapper types
-                """.trimIndent());
-                }
+            // Deserialize 'startCoordinates'
+            val startCoordinates = gsonParserHelpers.parseEnum<GeneralLocation>(
+                    jsonObject,
+                    "startCoordinates",
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinate types"
+            )
+            if (startCoordinates != null) {
+                swipeActionParams.startCoordinates = startCoordinates
             }
 
-            // Deserialize COORDINATES_PROVIDER as a general location enum
-            if (jsonObject.has("endCoordinates")) {
-                val endCoordinatesAsString = jsonObject.get("endCoordinates").asString.toUpperCase()
-                try {
-                    swipeActionParams.endCoordinates = GeneralLocation.valueOf(endCoordinatesAsString)
-                } catch (e: Exception) {
-                    throw InvalidArgumentException(""""
-                    '${endCoordinatesAsString}' is not a valid 'endCoordinates' type. See
-                    https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation
-                    for list of valid coordinates types
-                """.trimIndent());
-                }
+
+            // Deserialize 'endCoordinates'
+            val endCoordinates = gsonParserHelpers.parseEnum<GeneralLocation>(
+                    jsonObject,
+                    "endCoordinates",
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinate types"
+            )
+            if (endCoordinates != null) {
+                swipeActionParams.endCoordinates = endCoordinates
             }
 
-            // Deserialize PRECISION_DESCRIBER as a 'Press' enum
-            if (jsonObject.has("precisionDescriber")) {
-                val precisionDescriberAsString = jsonObject.get("precisionDescriber").asString.toUpperCase()
-                try {
-                    swipeActionParams.precisionDescriber = Press.valueOf(precisionDescriberAsString);
-                } catch (e: Exception) {
-                    throw InvalidArgumentException(""""
-                    ${precisionDescriberAsString} is not a valid 'precisionDescriber' type. See
-                    https://developer.android.com/reference/android/support/test/espresso/action/Tap
-                    for list of valid 'precisionDescriber' types
-                """.trimIndent());
-                }
+
+            // Deserialize 'precisionDescriber'
+            val precisionDescriber = gsonParserHelpers.parseEnum<GeneralLocation>(
+                    jsonObject,
+                    "precisionDescriber",
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/Press for list of valid precision types"
+            )
+            if (precisionDescriber != null) {
+                swipeActionParams.endCoordinates = precisionDescriber
             }
 
             return swipeActionParams
