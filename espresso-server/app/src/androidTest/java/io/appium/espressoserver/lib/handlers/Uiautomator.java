@@ -1,3 +1,19 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.espressoserver.lib.handlers;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,8 +37,6 @@ public class Uiautomator implements RequestHandler<UiautomatorParams, List<Objec
     public List<Object> handle(UiautomatorParams params) throws AppiumException {
         logger.info("Invoking Uiautomator2 Methods");
 
-        List<Object> result = new ArrayList<>();
-
         if (null == params.getStrategy()) {
             throw new AppiumException(String.format("strategy should be one of %s",
                     UiautomatorParams.Strategy.getValidStrategyNames()));
@@ -42,6 +56,8 @@ public class Uiautomator implements RequestHandler<UiautomatorParams, List<Objec
             Method uiObjectMethod = ReflectionUtils.method(UiObject2.class, params.getAction().getName());
             List<UiObject2> uiObjects = getUiDevice().findObjects(bySelector);
             logger.info(String.format("Found %d UiObjects", uiObjects.size()));
+
+            List<Object> result = new ArrayList<>();
 
             if (index == null) {
                 for (UiObject2 uiObject2 : uiObjects) {
