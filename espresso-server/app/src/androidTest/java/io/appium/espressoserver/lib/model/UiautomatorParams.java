@@ -156,11 +156,11 @@ public class UiautomatorParams extends AppiumParams {
         }
 
         public static List<String> getValidActionNames() {
-            List<String> validStrategies = new ArrayList<>();
+            List<String> validActions = new ArrayList<>();
             for (Action action : Action.values()) {
-                validStrategies.add(action.getName());
+                validActions.add(action.getName());
             }
-            return validStrategies;
+            return validActions;
         }
     }
 }

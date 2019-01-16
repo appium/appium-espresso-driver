@@ -15,7 +15,7 @@ import io.appium.espressoserver.lib.model.UiautomatorParams;
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 import static io.appium.espressoserver.lib.helpers.InteractionHelper.getUiDevice;
 
-public class Uiautomator implements RequestHandler<UiautomatorParams, Object> {
+public class Uiautomator implements RequestHandler<UiautomatorParams, List<Object>> {
 
     @Override
     public List<Object> handle(UiautomatorParams params) throws AppiumException {
