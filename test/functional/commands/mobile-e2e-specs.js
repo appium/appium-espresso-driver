@@ -100,7 +100,7 @@ describe('mobile', function () {
       text.should.include('Views');
     });
     it('should be able to find and take action on uiObject with given index', async function () {
-      let text = await driver.execute('mobile: uiautomator', {strategy: 'textContains', value: 'Views', index: 0, action: 'getText'});
+      const text = await driver.execute('mobile: uiautomator', {strategy: 'textContains', value: 'Views', index: 0, action: 'getText'});
       text.should.eql(['Views']);
     });
   });
