@@ -25,7 +25,7 @@ import java.util.*
 @JsonAdapter(WebAtom.WebAtomDeserializer::class)
 class WebAtom : AppiumParams() {
     var name: String? = null
-    var args: List<Any>? = null
+    var args: List<Any> = Collections.emptyList()
 
     class WebAtomDeserializer : JsonDeserializer<WebAtom> {
         @Throws(JsonParseException::class)
