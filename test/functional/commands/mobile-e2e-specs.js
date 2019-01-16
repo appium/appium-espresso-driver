@@ -181,9 +181,9 @@ describe('mobile', function () {
     it('should click on an element and accept parameters', async function () {
       await driver.execute('mobile: clickAction', {
         element: viewEl,
-        tapper: "LoNg",
-        coordinatesProvider: "BoTtOm_rIgHt",
-        precisionDescriber: "tHuMb",
+        tapper: 'LoNg',
+        coordinatesProvider: 'BoTtOm_rIgHt',
+        precisionDescriber: 'tHuMb',
         inputDevice: 0,
         buttonState: 0,
       });
@@ -192,11 +192,11 @@ describe('mobile', function () {
     });
 
     const badParams = [
-      ["tapper", "BaD TAPPER", /is not a valid 'tapper' type/],
-      ["coordinatesProvider", "BAD_COORDINATES_prOVIDER", /is not a valid 'coordinatesProvider' type/],
-      ["precisionDescriber", "BaD PrEcIsIoN DeScRiBeR", /is not a valid 'precisionDescriber' type/],
-      ["inputDevice", "wrong", /NumberFormatException/],
-      ["buttonState", "wrong", /NumberFormatException/],
+      ['tapper', 'BaD TAPPER', /is not a valid 'tapper' type/],
+      ['coordinatesProvider', 'BAD_COORDINATES_prOVIDER', /is not a valid 'coordinatesProvider' type/],
+      ['precisionDescriber', 'BaD PrEcIsIoN DeScRiBeR', /is not a valid 'precisionDescriber' type/],
+      ['inputDevice', 'wrong', /NumberFormatException/],
+      ['buttonState', 'wrong', /NumberFormatException/],
     ];
 
     for (let [name, value, error] of badParams) {

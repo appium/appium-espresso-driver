@@ -31,9 +31,9 @@ import java.lang.reflect.Type
 class MobileSwipeParams : AppiumParams() {
     var direction: Direction? = null
     var swiper: Swiper? = null
-    var startCoordinates = GeneralLocation.BOTTOM_CENTER
-    var endCoordinates = GeneralLocation.TOP_CENTER
-    var precisionDescriber = Press.THUMB
+    var startCoordinates: CoordinatesProvider? = null
+    var endCoordinates: CoordinatesProvider? = null
+    var precisionDescriber: PrecisionDescriber? = null
 
 
     enum class Direction {
@@ -79,36 +79,28 @@ class MobileSwipeParams : AppiumParams() {
             }
 
             // Deserialize 'startCoordinates'
-            val startCoordinates = gsonParserHelpers.parseEnum<GeneralLocation>(
+            swipeActionParams.startCoordinates = gsonParserHelpers.parseEnum<GeneralLocation>(
                     jsonObject,
                     "startCoordinates",
-                    "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinate types"
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinate types",
+                    GeneralLocation.BOTTOM_CENTER
             )
-            if (startCoordinates != null) {
-                swipeActionParams.startCoordinates = startCoordinates
-            }
-
 
             // Deserialize 'endCoordinates'
-            val endCoordinates = gsonParserHelpers.parseEnum<GeneralLocation>(
+            swipeActionParams.endCoordinates = gsonParserHelpers.parseEnum<GeneralLocation>(
                     jsonObject,
                     "endCoordinates",
-                    "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinate types"
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinate types",
+                    GeneralLocation.TOP_CENTER
             )
-            if (endCoordinates != null) {
-                swipeActionParams.endCoordinates = endCoordinates
-            }
-
 
             // Deserialize 'precisionDescriber'
-            val precisionDescriber = gsonParserHelpers.parseEnum<Press>(
+            swipeActionParams.precisionDescriber = gsonParserHelpers.parseEnum<Press>(
                     jsonObject,
                     "precisionDescriber",
-                    "See https://developer.android.com/reference/android/support/test/espresso/action/Press for list of valid precision types"
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/Press for list of valid precision types",
+                    Press.THUMB
             )
-            if (precisionDescriber != null) {
-                swipeActionParams.precisionDescriber = precisionDescriber
-            }
 
             return swipeActionParams
         }

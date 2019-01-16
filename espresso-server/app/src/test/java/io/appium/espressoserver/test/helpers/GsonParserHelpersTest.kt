@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class GsonHelpersTest {
+class GsonParserHelpersTest {
     enum class BasicEnum { A, B, C }
 
     @Test

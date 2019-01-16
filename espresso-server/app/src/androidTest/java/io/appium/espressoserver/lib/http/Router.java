@@ -19,7 +19,7 @@ package io.appium.espressoserver.lib.http;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.JsonParseException;
 
 import java.util.Map;
 
@@ -306,7 +306,7 @@ class Router {
                 logger.debug(String.format("Got raw post data: %s", abbreviate(postJson, 300)));
                 try {
                     appiumParams = paramClass.cast((new Gson()).fromJson(postJson, paramClass));
-                } catch (Exception e) {
+                } catch (JsonParseException e) {
                     // If failed to parse params, throw an invalid argument exception
                     return new AppiumResponse<>(AppiumStatus.INVALID_ARGUMENT, Log.getStackTraceString(e));
                 }
