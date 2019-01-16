@@ -54,6 +54,8 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'androidx.test:core:1.1.0'
     androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-web:3.1.1'
+    androidTestImplementation 'androidx.test:rules:1.1.1'
     androidTestImplementation 'com.google.code.gson:gson:2.8.5'
     androidTestImplementation 'javax.ws.rs:jsr311-api:1.1.1'
     androidTestImplementation 'org.nanohttpd:nanohttpd-webserver:2.3.1'
