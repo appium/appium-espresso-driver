@@ -23,10 +23,7 @@ import java.lang.reflect.Type
 import java.util.*
 
 @JsonAdapter(WebAtom.WebAtomDeserializer::class)
-class WebAtom : AppiumParams() {
-    var name: String? = null
-    var args: List<Any> = Collections.emptyList()
-
+data class WebAtom(var name: String? = null, var args: List<Any> = Collections.emptyList()) : AppiumParams() {
     class WebAtomDeserializer : JsonDeserializer<WebAtom> {
         @Throws(JsonParseException::class)
         override fun deserialize(json: JsonElement, paramType: Type?,
