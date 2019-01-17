@@ -1,8 +1,8 @@
 package io.appium.espressoserver.test.model.web
 
 import com.google.gson.Gson
-import io.appium.espressoserver.lib.model.web.WebAtoms
-import io.appium.espressoserver.lib.model.web.WebAtoms.WebAtomsMethod
+import io.appium.espressoserver.lib.model.web.WebAtomsParams
+import io.appium.espressoserver.lib.model.web.WebAtomsParams.WebAtomsMethod
 import org.junit.Test
 import java.util.*
 import kotlin.test.assertEquals
@@ -55,7 +55,7 @@ class WebAtomsTest {
               }
            ]
         }"""
-        val webAtoms = g.fromJson(json, WebAtoms::class.java)
+        val webAtoms = g.fromJson(json, WebAtomsParams::class.java)
         assertEquals(webAtoms.webviewElement, "abc")
         assertEquals(webAtoms.forceJavascriptEnabled, true)
         assertEquals(webAtoms.methodChain.get(0).name, "withElement")
