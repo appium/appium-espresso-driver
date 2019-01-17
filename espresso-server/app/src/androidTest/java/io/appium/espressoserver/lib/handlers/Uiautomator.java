@@ -47,12 +47,12 @@ public class Uiautomator implements RequestHandler<UiautomatorParams, List<Objec
                     UiautomatorParams.Action.getValidActionNames()));
         }
 
-        String value = params.getLocator();
+        String locator = params.getLocator();
         Integer index = params.getIndex();
 
         try {
             Method byMethod = ReflectionUtils.method(By.class, params.getStrategy().getName(), String.class);
-            BySelector bySelector = (BySelector) ReflectionUtils.invoke(byMethod, By.class, value);
+            BySelector bySelector = (BySelector) ReflectionUtils.invoke(byMethod, By.class, locator);
             Method uiObjectMethod = ReflectionUtils.method(UiObject2.class, params.getAction().getName());
             List<UiObject2> uiObjects = getUiDevice().findObjects(bySelector);
             logger.info(String.format("Found %d UiObjects", uiObjects.size()));
