@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    ext.kotlin_version = '1.3.11'
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
@@ -16,7 +15,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
     }
 

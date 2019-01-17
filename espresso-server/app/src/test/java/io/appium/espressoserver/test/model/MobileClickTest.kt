@@ -1,23 +1,20 @@
 package io.appium.espressoserver.test.model
 
-import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.action.GeneralLocation.TOP_RIGHT
 import androidx.test.espresso.action.GeneralLocation.VISIBLE_CENTER
-import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Press.*
-import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.Tap.DOUBLE
 import androidx.test.espresso.action.Tap.SINGLE
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import io.appium.espressoserver.lib.model.MobileClickActionParams
-import io.appium.espressoserver.lib.model.MobileSwipeParams
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class MobileClickTest {
+class `mobile clickAction test` {
+
     @Test
-    fun shouldParseMobileClickParamsAndSetDefaults () {
+    fun `should parse "MobileClickParams" and set defaults if some params not provided` () {
         val jsonElement = JsonObject()
         val clickActionParams = MobileClickActionParams.MobileClickActionParamsDeserializer()
                 .deserialize(jsonElement, null, null)
@@ -29,7 +26,7 @@ class MobileClickTest {
     }
 
     @Test
-    fun shouldParseMobileClickParams () {
+    fun `should parse "MobileClickParams" and set values if all params provided` () {
         val jsonElement = JsonObject()
         jsonElement.add("inputDevice", JsonPrimitive(2))
         jsonElement.add("buttonState", JsonPrimitive("3"))
