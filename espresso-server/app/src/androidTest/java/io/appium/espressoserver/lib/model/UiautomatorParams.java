@@ -25,20 +25,20 @@ import javax.annotation.Nullable;
 
 public class UiautomatorParams extends AppiumParams {
     private Strategy strategy;
-    private String value;
+    private String locator;
     private Integer index;
     private Action action;
 
-    @androidx.annotation.Nullable
+    @Nullable
     public Action getAction() {
         return action;
     }
 
-    public String getValue() {
-        return value;
+    public String getLocator() {
+        return locator;
     }
 
-    @androidx.annotation.Nullable
+    @Nullable
     public Strategy getStrategy() {
         return strategy;
     }

@@ -47,7 +47,7 @@ public class Uiautomator implements RequestHandler<UiautomatorParams, List<Objec
                     UiautomatorParams.Action.getValidActionNames()));
         }
 
-        String value = params.getValue();
+        String value = params.getLocator();
         Integer index = params.getIndex();
 
         try {

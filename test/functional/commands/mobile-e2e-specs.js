@@ -96,11 +96,11 @@ describe('mobile', function () {
 
   describe('mobile:uiautomator', function () {
     it('should be able to find and take action on all uiObjects', async function () {
-      const text = await driver.execute('mobile: uiautomator', {strategy: 'clazz', value: 'android.widget.TextView', action: 'getText'});
+      const text = await driver.execute('mobile: uiautomator', {strategy: 'clazz', locator: 'android.widget.TextView', action: 'getText'});
       text.should.include('Views');
     });
     it('should be able to find and take action on uiObject with given index', async function () {
-      const text = await driver.execute('mobile: uiautomator', {strategy: 'textContains', value: 'Views', index: 0, action: 'getText'});
+      const text = await driver.execute('mobile: uiautomator', {strategy: 'textContains', locator: 'Views', index: 0, action: 'getText'});
       text.should.eql(['Views']);
     });
   });
