@@ -1,8 +1,6 @@
 package io.appium.espressoserver.test.helpers
 
 import androidx.test.espresso.web.model.Atom
-import androidx.test.espresso.web.model.ElementReference
-import androidx.test.espresso.web.sugar.Web
 import androidx.test.espresso.web.webdriver.DriverAtoms
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.KReflectionUtils
@@ -12,9 +10,6 @@ import org.robolectric.RobolectricTestRunner
 import kotlin.reflect.full.memberFunctions
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import androidx.test.espresso.web.sugar.Web.onWebView
-import androidx.test.espresso.web.webdriver.DriverAtoms.findElement
-import androidx.test.espresso.web.webdriver.Locator
 
 @RunWith(RobolectricTestRunner::class)
 class `KReflectionUtils Test` {
@@ -54,13 +49,6 @@ class `KReflectionUtils Test` {
     fun `should parse Driver Atoms "findElement"`() {
         val findElementAtom = KReflectionUtils.invokeMethod(DriverAtoms::class, "findElement", "ID", "some Identifier")
         assertTrue(findElementAtom is Atom<*>);
-    }
-
-    @Test
-    fun `should parse WebInteraction methods`() {
-        val webInteraction = onWebView()
-        KReflectionUtils.invokeInstanceMethod(webInteraction, "withElement", findElement(Locator.ID, "someID"))
-
     }
 
     class TestClass {

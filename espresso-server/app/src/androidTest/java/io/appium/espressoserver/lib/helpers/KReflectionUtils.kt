@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.helpers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import java.lang.IllegalArgumentException
 import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -45,7 +46,8 @@ object KReflectionUtils {
                 // Attempt to call this function. If it fails, try the next function definition.
                 try {
                     return func.call(*treatedParams.toTypedArray())
-                } catch (e:InvocationTargetException) {
+                } catch (e:IllegalArgumentException) {
+                    // If IllegalArguments that means parameters didn't match, try with other definition
                     continue;
                 }
             }
