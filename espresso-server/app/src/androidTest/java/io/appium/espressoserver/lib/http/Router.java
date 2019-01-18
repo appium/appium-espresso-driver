@@ -83,6 +83,7 @@ import io.appium.espressoserver.lib.handlers.Status;
 import io.appium.espressoserver.lib.handlers.Text;
 import io.appium.espressoserver.lib.handlers.TouchAction;
 import io.appium.espressoserver.lib.handlers.TouchActionsParams;
+import io.appium.espressoserver.lib.handlers.Uiautomator;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
@@ -120,6 +121,7 @@ import io.appium.espressoserver.lib.model.SetTimeParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.model.ToastLookupParams;
+import io.appium.espressoserver.lib.model.UiautomatorParams;
 import io.appium.espressoserver.lib.model.ViewFlashParams;
 
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.CLICK;
@@ -226,6 +228,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/navigate_to", new NavigateTo(), NavigateToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/backdoor", new MobileBackdoor(), MobileBackdoorParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/flash", new MobileViewFlash(), ViewFlashParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/uiautomator", new Uiautomator(), UiautomatorParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
