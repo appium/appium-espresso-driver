@@ -1,31 +1,32 @@
 package io.appium.espressoserver.lib.helpers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 import kotlin.reflect.full.createType
+import kotlin.reflect.full.functions
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaType
 
 object KReflectionUtils {
 
-    fun invokeMethod(kclass: KClass<*>, methodName: String, vararg providedParams: Any): Any? {
+    fun invokeMethod(functions: Collection<KFunction<*>>, methodName: String, vararg providedParams: Any): Any? {
         val treatedParams = providedParams.clone().toMutableList()
-        for (func in kclass.memberFunctions) {
+        for (func in functions) {
             // Look for function names that match provided methodName
             if (func.name == methodName) {
 
-                // Test that the provided parameters match the function parameters
+                // If the length of func parameters provided isn't same as expected, go to next.
                 val funcParams = func.parameters
                 if (funcParams.size != providedParams.size) {
                     continue
                 }
 
-                // Find a function that matches the provided parameters
-                var isMatch = true
-                for (index in 1 until funcParams.size) {
+                // Look through function parameters and do an enum hack to translate strings to enums
+                for (index in 0 until funcParams.size) {
                     val funcParamType = funcParams.get(index).type
                     val providedParam = providedParams.get(index)
-                    val providedParamType = providedParams.get(index)::class.createType()
 
                     // Hack Enum Case
                     // If function param is Enum and provided param is String, try `enumValueOf` on that String value
@@ -37,27 +38,28 @@ object KReflectionUtils {
                             continue;
                         }
                     } catch (e:Exception) {
-                        // Ignore exceptions and try matching String -> String
-                    }
-
-                    // If this function param doesn't match what's provided, skip to next
-                    if (funcParamType != providedParamType) {
-                        isMatch = false
-                        break
+                        // Ignore exceptions and move on to try matching String -> String
                     }
                 }
 
-                if (isMatch) {
+                // Attempt to call this function. If it fails, try the next function definition.
+                try {
                     return func.call(*treatedParams.toTypedArray())
+                } catch (e:InvocationTargetException) {
+                    continue;
                 }
             }
         }
 
-        throw AppiumException("Could not find method to invoke: class=[${kclass.qualifiedName}] " +
+        throw AppiumException("Could not invoke method: " +
                 "methodName=[${methodName}] args=[${providedParams.joinToString(", ")}]");
     }
 
+    fun invokeMethod(kclass: KClass<*>, methodName: String, vararg providedParams: Any): Any? {
+        return invokeMethod(kclass.functions, methodName, *providedParams)
+    }
+
     fun invokeInstanceMethod (instance: Any, methodName: String, vararg providedParams: Any): Any? {
-        return invokeMethod(instance::class, methodName, instance, *providedParams);
+        return invokeMethod(instance::class.memberFunctions, methodName, instance, *providedParams);
     }
 }
