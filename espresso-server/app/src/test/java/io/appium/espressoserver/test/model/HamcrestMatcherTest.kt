@@ -71,11 +71,4 @@ class HamcrestMatcherTest {
             {"args": "Hello World!"}
         """.trimIndent(), HamcrestMatcher::class.java)
     }
-
-    @Test(expected = JsonParseException::class)
-    fun `should fail if primitive is provided` () {
-        val matcher = g.fromJson("""
-            true
-        """.trimIndent(), HamcrestMatcher::class.java)
-    }
 }
