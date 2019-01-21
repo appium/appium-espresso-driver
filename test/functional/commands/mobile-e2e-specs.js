@@ -166,12 +166,6 @@ describe('mobile', function () {
     });
   });
   describe('mobile: clickAction', function () {
-    it('should click on an element', async function () {
-      let el = await driver.elementByAccessibilityId('Views');
-      await driver.execute('mobile: clickAction', {element: el, tapper: 'lOnG', coordinatesProvider: 'bOtToM_rIgHt', precisionDescriber: 'THUMB', inputDevice: 0, buttonState: 0});
-    });
-  });
-  describe('mobile: clickAction', function () {
     let viewEl;
     beforeEach(async function () {
       viewEl = await driver.elementByAccessibilityId('Views');
