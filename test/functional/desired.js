@@ -3,7 +3,7 @@ const apidemosApp = require.resolve('android-apidemos');
 
 
 const GENERIC_CAPS = {
-  androidInstallTimeout: 90000,
+  androidInstallTimeout: process.env.CI ? 120000 : 90000,
   deviceName: 'Android',
   platformName: 'Android',
   forceEspressoRebuild: true,
