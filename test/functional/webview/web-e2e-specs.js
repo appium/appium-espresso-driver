@@ -75,6 +75,7 @@ describe('web', function () {
         ...GENERIC_CAPS,
         browserName: 'Chrome',
       }).should.eventually.be.rejectedWith(/doesn't have permission/);
+      await deleteSession();
     });
   });
 
