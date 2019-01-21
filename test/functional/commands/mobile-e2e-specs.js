@@ -163,10 +163,14 @@ describe('mobile', function () {
     it('should be able to find and take action on uiObject with given index', async function () {
       const text = await driver.execute('mobile: uiautomator', {strategy: 'textContains', locator: 'Views', index: 0, action: 'getText'});
       text.should.eql(['Views']);
+    });
+  });
   describe('mobile: clickAction', function () {
     it('should click on an element', async function () {
       let el = await driver.elementByAccessibilityId('Views');
-      await driver.execute('mobile: clickAction', {element: el, tapper: "lOnG", coordinatesProvider: "bOtToM_rIgHt", precisionDescriber: "THUMB", inputDevice: 0, buttonState: 0});
+      await driver.execute('mobile: clickAction', {element: el, tapper: 'lOnG', coordinatesProvider: 'bOtToM_rIgHt', precisionDescriber: 'THUMB', inputDevice: 0, buttonState: 0});
+    });
+  });
   describe('mobile: clickAction', function () {
     let viewEl;
     beforeEach(async function () {
