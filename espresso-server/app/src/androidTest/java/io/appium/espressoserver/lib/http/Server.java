@@ -53,8 +53,9 @@ public class Server extends NanoHTTPD {
     }
 
     private Response buildFixedLengthResponse(BaseResponse response) {
-        GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
-        gsonBuilder.registerTypeAdapter(AppiumStatus.class, new AppiumStatusAdapter());
+        GsonBuilder gsonBuilder = new GsonBuilder()
+                .serializeNulls()
+                .registerTypeAdapter(AppiumStatus.class, new AppiumStatusAdapter());
         return newFixedLengthResponse(response.getHttpStatus(),
                 MediaType.APPLICATION_JSON, gsonBuilder.create().toJson(response));
     }

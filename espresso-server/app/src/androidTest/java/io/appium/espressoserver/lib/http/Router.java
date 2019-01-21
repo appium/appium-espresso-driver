@@ -19,6 +19,7 @@ package io.appium.espressoserver.lib.http;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 import java.util.Map;
 
@@ -58,6 +59,7 @@ import io.appium.espressoserver.lib.handlers.GetWindowSize;
 import io.appium.espressoserver.lib.handlers.HideKeyboard;
 import io.appium.espressoserver.lib.handlers.Keys;
 import io.appium.espressoserver.lib.handlers.MobileBackdoor;
+import io.appium.espressoserver.lib.handlers.MobileClickAction;
 import io.appium.espressoserver.lib.handlers.MobileViewFlash;
 import io.appium.espressoserver.lib.handlers.MobileSwipe;
 import io.appium.espressoserver.lib.handlers.MultiTouchAction;
@@ -101,6 +103,7 @@ import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.AppiumStatus;
+import io.appium.espressoserver.lib.model.MobileClickActionParams;
 import io.appium.espressoserver.lib.model.DrawerActionParams;
 import io.appium.espressoserver.lib.model.EditorActionParams;
 import io.appium.espressoserver.lib.model.ElementValueParams;
@@ -229,6 +232,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/backdoor", new MobileBackdoor(), MobileBackdoorParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/flash", new MobileViewFlash(), ViewFlashParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/uiautomator", new Uiautomator(), UiautomatorParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/click_action", new MobileClickAction(), MobileClickActionParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
@@ -292,22 +296,29 @@ class Router {
         // Get the appium params
         String postJson = files.get("postData");
 
-        AppiumParams appiumParams;
-        if (postJson == null) {
-            appiumParams = new AppiumParams();
-        } else {
-            logger.debug(String.format("Got raw post data: %s", abbreviate(postJson, 300)));
-            appiumParams = paramClass.cast((new Gson()).fromJson(postJson, paramClass));
-        }
-        appiumParams.initUriMapping(uriParams);
-
-        // Validate the sessionId
-        if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSession().getId())) {
-            return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, "Invalid session ID " + appiumParams.getSessionId());
-        }
-
-        // Create the result
         try {
+
+            // Parse the parameters
+            AppiumParams appiumParams;
+            if (postJson == null) {
+                appiumParams = new AppiumParams();
+            } else {
+                logger.debug(String.format("Got raw post data: %s", abbreviate(postJson, 300)));
+                try {
+                    appiumParams = paramClass.cast((new Gson()).fromJson(postJson, paramClass));
+                } catch (JsonParseException e) {
+                    // If failed to parse params, throw an invalid argument exception
+                    return new AppiumResponse<>(AppiumStatus.INVALID_ARGUMENT, Log.getStackTraceString(e));
+                }
+            }
+            appiumParams.initUriMapping(uriParams);
+
+            // Validate the sessionId
+            if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSession().getId())) {
+                return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, "Invalid session ID " + appiumParams.getSessionId());
+            }
+
+            // Execute the matching handler
             Object handlerResult = handler.handle(appiumParams);
             String sessionId = appiumParams.getSessionId();
 
@@ -316,6 +327,7 @@ class Router {
                 sessionId = ((Session) handlerResult).getId();
             }
 
+            // Construct the response and serve it
             AppiumResponse appiumResponse = new AppiumResponse<>(AppiumStatus.SUCCESS, handlerResult, sessionId);
             logger.debug(String.format("Finished processing %s request for '%s'", method, uri));
             return appiumResponse;
