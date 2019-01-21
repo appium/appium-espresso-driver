@@ -64,6 +64,3 @@ dependencies {
 tasks.withType(Test) {
     systemProperty "skipespressoserver", "true"
 }
-repositories {
-    mavenCentral()
-}
