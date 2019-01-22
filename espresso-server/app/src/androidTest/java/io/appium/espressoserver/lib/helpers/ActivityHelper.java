@@ -68,10 +68,11 @@ public class ActivityHelper {
     public static void startActivityViaInstruments(String appActivity, boolean waitForActivity) {
         logger.info(String.format("Starting activity '%s'", appActivity));
         Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
-        Instrumentation.ActivityMonitor mSessionMonitor = mInstrumentation.addMonitor(appActivity, null, false);
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         String fullyQualifiedAppActivity = getFullyQualifiedActivityName(mInstrumentation, appActivity);
+        Instrumentation.ActivityMonitor mSessionMonitor = mInstrumentation
+                .addMonitor(fullyQualifiedAppActivity, null, false);
         intent.setClassName(mInstrumentation.getTargetContext(), fullyQualifiedAppActivity);
         mInstrumentation.startActivitySync(intent);
         if (waitForActivity) {
