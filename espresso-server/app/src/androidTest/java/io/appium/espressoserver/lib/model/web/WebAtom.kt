@@ -20,33 +20,57 @@ import com.google.gson.*
 import com.google.gson.annotations.JsonAdapter
 import io.appium.espressoserver.lib.model.AppiumParams
 import java.lang.reflect.Type
-import java.util.*
 
 @JsonAdapter(WebAtom.WebAtomDeserializer::class)
-data class WebAtom(var name: String? = null, var args: List<Any> = Collections.emptyList()) : AppiumParams() {
+data class WebAtom(val name: String, val args: List<Any> = emptyList()) : AppiumParams() {
     class WebAtomDeserializer : JsonDeserializer<WebAtom> {
         @Throws(JsonParseException::class)
         override fun deserialize(json: JsonElement, paramType: Type?,
                                  paramJsonDeserializationContext: JsonDeserializationContext?): WebAtom {
-            val webAtom = WebAtom();
 
             if (json.isJsonObject) {
                 val jsonObj = json.asJsonObject
 
-                // Parse the name of the Web Atom
+                // Parse the name of the Atom
                 val name = jsonObj.get("name")
-                if (name != null && name.isJsonPrimitive) {
-                    webAtom.name = jsonObj.get("name").asString
+
+                if (name == null || !name.isJsonPrimitive) {
+                    throw JsonParseException("'name' property must be provided to WebAtom and must be a string")
+                }
+
+                val webAtomName = name.asString
+
+                // Parse the Locator shorthand. If it was provided.
+                jsonObj.get("locator")?.let {
+                    // Validate the locator
+                    if (!it.isJsonObject) {
+                        throw JsonParseException("'locator' must be an object with properties 'using' and 'value'");
+                    }
+
+                    val locator = it.asJsonObject;
+                    if (!locator.has("using") || !locator.has("value")) {
+                        throw JsonParseException("'locator' must have properties 'using' and 'value'");
+                    }
+
+                    if (!locator.get("using").isJsonPrimitive || !locator.get("value").isJsonPrimitive) {
+                        throw JsonParseException("'using' and 'value' must be primitive types. " +
+                                "Found 'using=${locator.get("using")}, value=${locator.get("value")}'")
+                    }
+
+                    // Set the args as locator
+                    return WebAtom(webAtomName, arrayListOf(
+                            locator.get("using").asString,
+                            locator.get("value").asString
+                    ))
                 }
 
                 // Parse the args
-                val args = jsonObj.get("args")
-                if (args != null) {
-                    if (args.isJsonPrimitive) {
-                        webAtom.args = Collections.singletonList(args.asString)
-                    } else if (args.isJsonArray){
+                jsonObj.get("args")?.let {
+                    if (it.isJsonPrimitive) {
+                        return WebAtom(webAtomName, arrayListOf(it.asString))
+                    } else if (it.isJsonArray){
                         val argsAsList = ArrayList<Any>()
-                        for (arg in args.asJsonArray) {
+                        for (arg in it.asJsonArray) {
                             if (arg.isJsonPrimitive) {
                                 val argPrimitive = arg.asJsonPrimitive
                                 if (argPrimitive.isBoolean) argsAsList.add(argPrimitive.asBoolean)
@@ -56,25 +80,24 @@ data class WebAtom(var name: String? = null, var args: List<Any> = Collections.e
                                 throw JsonParseException("'${arg}' is not a valid 'arg' type");
                             }
                         }
-                        webAtom.args = argsAsList
+                        return WebAtom(webAtomName, argsAsList)
+                    } else {
+                        throw JsonParseException("'args' must be an array or a singleton primitive JSON type. Found '${it}' ")
                     }
                 }
 
-                // Parse the Locator shorthand
-                val locator = jsonObj.get("locator")
-                if (locator != null) {
-                    webAtom.args = mutableListOf(
-                            locator.asJsonObject.get("using").asString,
-                            locator.asJsonObject.get("value").asString
-                    )
+                // If no args provided, treat it as a function call with no parameters
+                if (!jsonObj.has("args")) {
+                    return WebAtom(webAtomName, emptyList());
                 }
 
-            } else if (json.isJsonPrimitive && json.asJsonPrimitive.isString) {
-                // If JSON was provided as a String, treat it as a function call with no args
-                webAtom.name = json.asString
+            } else if (json.isJsonPrimitive) {
+                // If JSON was provided as a String, treat it as a function call with no parameters
+                return WebAtom(json.asString, emptyList())
             }
 
-            return webAtom;
+            // This block is unreachable
+            throw JsonParseException("Expected atom to be a string or an object. Found '${json}'")
         }
     }
 

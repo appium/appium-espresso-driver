@@ -32,18 +32,15 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void> {
 
     @Throws(AppiumException::class)
     override fun handle(webAtomsParams: WebAtomsParams): Void? {
-        var webViewInteraction: WebInteraction<*>
+        var webViewInteraction:WebInteraction<*> = onWebView()
 
         // TODO: Add a 'waitForDocument' feature
 
         // Initialize onWebView with web view matcher (if webviewEl provided)
-        if (webAtomsParams.webviewElement != null) {
-            logger.info("Initializing webView interaction on webview with el: '${webAtomsParams.webviewElement}")
-            val matcher = withView(Element.getViewById(webAtomsParams.webviewElement))
+        webAtomsParams.webviewElement?.let{
+            logger.info("Initializing webView interaction on webview with el: '${it}")
+            val matcher = withView(Element.getViewById(it))
             webViewInteraction = onWebView(matcher)
-        } else {
-            logger.info("Initializing webView without selector")
-            webViewInteraction = onWebView()
         }
 
         // Set forceJavascript enabled if provided
@@ -53,24 +50,17 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void> {
 
         // Iterate through methodsChain and call the atoms
         for (method in webAtomsParams.methodChain) {
-            logger.info("Calling method '${method.name}' with atom '${method.atom}'");
+            val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args.toTypedArray());
 
-            logger.info("Calling atom '${method.atom.name!!}' with args '${method.atom.args.joinToString(", ")}'")
-            val atom = invokeMethod(DriverAtoms::class, method.atom.name!!, *method.atom.args.toTypedArray());
+            logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
+            val args = if (atom == null) emptyList<Any>() else atom;
+            val res = invokeInstanceMethod(webViewInteraction, method.name, args);
 
-            logger.info("Calling interaction '${method.name}' with the atom")
-            var res:Any?
-            if (atom != null) {
-                res = invokeInstanceMethod(webViewInteraction, method.name, atom);
-            } else {
-                res = invokeInstanceMethod(webViewInteraction, method.name);
-            }
-
-            if (res is WebInteraction<*>) {
-                webViewInteraction = res;
-            } else {
+            if (!(res is WebInteraction<*>)) {
                 throw InvalidArgumentException("'${method.name}' does not return a 'WebViewInteraction' object");
             }
+
+            webViewInteraction = res;
         }
 
         return null

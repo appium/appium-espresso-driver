@@ -31,8 +31,8 @@ class WebAtomTest {
         jsonObject.addProperty("args", "Hello World!")
         val webAtom = WebAtom.WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "webKeys")
-        assertEquals(webAtom.args!!.first(), "Hello World!")
-        assertEquals(webAtom.args!!.size, 1);
+        assertEquals(webAtom.args.first(), "Hello World!")
+        assertEquals(webAtom.args.size, 1);
     }
 
     @Test
@@ -47,11 +47,8 @@ class WebAtomTest {
         jsonObject.add("args", argsArr)
         val webAtom = WebAtom.WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "someFakeAtom")
-        assertEquals(webAtom.args!!.get(0), "hello")
-        assertEquals(webAtom.args!!.get(1), true)
-        assertEquals(webAtom.args!!.get(2), 100)
-        assertEquals(webAtom.args!!.get(3), 1.1)
-        assertEquals(webAtom.args!!.size, 4);
+        assertEquals(webAtom.args, arrayListOf("hello", true, 100, 1.1))
+        assertEquals(webAtom.args.size, 4);
     }
 
     @Test
@@ -64,8 +61,8 @@ class WebAtomTest {
         jsonObject.add("locator", locatorObject);
         val webAtom = WebAtom.WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "findElement")
-        assertEquals(webAtom.args!!.get(0), "id")
-        assertEquals(webAtom.args!!.get(1), "some_html_id")
-        assertEquals(webAtom.args!!.size, 2)
+        assertEquals(webAtom.args.get(0), "id")
+        assertEquals(webAtom.args.get(1), "some_html_id")
+        assertEquals(webAtom.args.size, 2)
     }
 }

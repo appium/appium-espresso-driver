@@ -1,6 +1,7 @@
 package io.appium.espressoserver.lib.helpers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import java.lang.ClassCastException
 import java.lang.IllegalArgumentException
 import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KClass
@@ -38,8 +39,10 @@ object KReflectionUtils {
                             treatedParams.set(index, enumValueOf(null, providedParam.toUpperCase()))
                             continue;
                         }
-                    } catch (e:Exception) {
-                        // Ignore exceptions and move on to try matching String -> String
+                    } catch (e:ReflectiveOperationException) {
+                        // Ignore reflection exceptions and move on to try matching String -> String
+                    } catch (e:ClassCastException) {
+                        // Ignore class cast exceptions that come up when setting `jFuncType`
                     }
                 }
 

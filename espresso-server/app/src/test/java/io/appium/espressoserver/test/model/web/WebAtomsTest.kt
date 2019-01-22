@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import io.appium.espressoserver.lib.model.web.WebAtomsParams.WebAtomsMethod
 import org.junit.Test
-import java.util.*
 import kotlin.test.assertEquals
 
 class WebAtomsTest {
@@ -22,8 +21,8 @@ class WebAtomsTest {
           }
         }""".trimIndent(), WebAtomsMethod::class.java)
         assertEquals(webAtomsMethod.name, "withElement");
-        assertEquals(webAtomsMethod.atom!!.name, "findElement");
-        assertEquals(webAtomsMethod.atom!!.args, mutableListOf("id", "text_input"));
+        assertEquals(webAtomsMethod.atom.name, "findElement");
+        assertEquals(webAtomsMethod.atom.args, arrayListOf("id", "text_input"));
     }
 
     @Test
@@ -58,17 +57,24 @@ class WebAtomsTest {
         val webAtoms = g.fromJson(json, WebAtomsParams::class.java)
         assertEquals(webAtoms.webviewElement, "abc")
         assertEquals(webAtoms.forceJavascriptEnabled, true)
-        assertEquals(webAtoms.methodChain.get(0).name, "withElement")
-        assertEquals(webAtoms.methodChain.get(0).atom!!.name, "findElement")
-        assertEquals(webAtoms.methodChain.get(0).atom!!.args, mutableListOf("id", "text_input"))
 
-        assertEquals(webAtoms.methodChain.get(1).name, "perform")
-        assertEquals(webAtoms.methodChain.get(1).atom!!.name, "clearElement")
-        assertEquals(webAtoms.methodChain.get(1).atom!!.args, Collections.emptyList())
+        webAtoms.methodChain.get(0).let {
+            assertEquals(it.name, "withElement")
+            assertEquals(it.atom.name, "findElement")
+            assertEquals(it.atom.args, arrayListOf("id", "text_input"))
+        }
 
-        assertEquals(webAtoms.methodChain.get(2).name, "perform")
-        assertEquals(webAtoms.methodChain.get(2).atom!!.name, "webKeys")
-        assertEquals(webAtoms.methodChain.get(2).atom!!.args, mutableListOf("Foo"))
+        webAtoms.methodChain.get(1).let {
+            assertEquals(it.name, "perform")
+            assertEquals(it.atom.name, "clearElement")
+            assertEquals(it.atom.args, emptyList())
+        }
+
+        webAtoms.methodChain.get(2).let {
+            assertEquals(it.name, "perform")
+            assertEquals(it.atom.name, "webKeys")
+            assertEquals(it.atom.args, arrayListOf("Foo"))
+        }
 
     }
 }
