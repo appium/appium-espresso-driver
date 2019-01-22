@@ -25,7 +25,7 @@ public class StartActivity implements RequestHandler<StartActivityParams, Void> 
 
     @Override
     public Void handle(StartActivityParams params) throws AppiumException {
-        startActivityViaScenario(params.getAppActivity());
+        startActivityViaScenario(params.getAppPackage(), params.getAppActivity());
         return null;
     }
 }

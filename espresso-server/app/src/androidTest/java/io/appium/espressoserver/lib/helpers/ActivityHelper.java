@@ -18,7 +18,6 @@ package io.appium.espressoserver.lib.helpers;
 
 import android.app.Activity;
 import android.app.Instrumentation;
-import android.content.Context;
 import android.content.Intent;
 import android.util.ArrayMap;
 
@@ -27,6 +26,7 @@ import java.lang.reflect.Field;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.platform.app.InstrumentationRegistry;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
@@ -58,11 +58,11 @@ public class ActivityHelper {
     }
 
     private static String getFullyQualifiedActivityName(Instrumentation mInstrumentation, String appActivity) {
-        Context context = mInstrumentation.getTargetContext();
-        // If it's not fully qualified, make it fully qualified
-        return appActivity.startsWith(".")
-                ? context.getPackageName() + appActivity
-                : appActivity;
+        return getFullyQualifiedActivityName(mInstrumentation.getTargetContext().getPackageName(), appActivity);
+    }
+
+    private static String getFullyQualifiedActivityName(String pkg, String appActivity) {
+        return appActivity.startsWith(".") ? pkg + appActivity : appActivity;
     }
 
     public static void startActivityViaInstruments(String appActivity, boolean waitForActivity) {
@@ -80,16 +80,15 @@ public class ActivityHelper {
         }
     }
 
-    public static void startActivityViaScenario(String activity) throws AppiumException {
+    public static void startActivityViaScenario(String pkg, String activity) throws AppiumException {
         logger.info(String.format("Starting activity '%s'", activity));
-        Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
         final Class<? extends Activity> activityClass;
         try {
             //noinspection unchecked
             activityClass = (Class<? extends Activity>) Class
-                    .forName(getFullyQualifiedActivityName(mInstrumentation, activity));
+                    .forName(getFullyQualifiedActivityName(pkg, activity));
         } catch (ClassNotFoundException | ClassCastException e) {
-            throw new AppiumException(e);
+            throw new InvalidArgumentException(e);
         }
         ActivityScenario.launch(activityClass);
         logger.info(String.format("Activity '%s' started", activityClass.getName()));
