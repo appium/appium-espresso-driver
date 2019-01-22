@@ -37,7 +37,7 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void> {
         // TODO: Add a 'waitForDocument' feature
 
         // Initialize onWebView with web view matcher (if webviewEl provided)
-        webAtomsParams.webviewElement?.let{
+        webAtomsParams.webviewElement.let{
             logger.info("Initializing webView interaction on webview with el: '${it}")
             val matcher = withView(Element.getViewById(it))
             webViewInteraction = onWebView(matcher)
