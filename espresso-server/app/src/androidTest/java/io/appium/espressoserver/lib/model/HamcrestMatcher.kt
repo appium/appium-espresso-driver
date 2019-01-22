@@ -8,14 +8,27 @@ import com.google.gson.annotations.JsonAdapter
 import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
+import androidx.test.espresso.matcher.CursorMatchers
+import androidx.test.espresso.Espresso.onData;
+import org.hamcrest.Matchers;
 
 @JsonAdapter(HamcrestMatcher.HamcrestMatcherDeserializer::class)
 data class HamcrestMatcher (var name:String, var args:List<Any?>) {
+
+    fun evaluate() {
+        // TODO: Make a method here that uses reflection to invoke the Hamcrest matcher
+        // and add tests for this
+    }
 
     class HamcrestMatcherDeserializer : JsonDeserializer<HamcrestMatcher> {
         @Throws(JsonParseException::class)
         override fun deserialize(json: JsonElement, paramType: Type?,
                                  paramJsonDeserializationContext: JsonDeserializationContext?): HamcrestMatcher {
+
+            onData(Matchers.is(androidx.test.espresso.matcher.ViewMatchers.isChecked())
+            // TODO: Handle special case of "instanceOf", expects a className
+
+            // TODO: Handle different types of "matchers" (CursorMatcher, etc...)
 
             if (json.isJsonObject) {
                 val name: String;
@@ -28,7 +41,7 @@ data class HamcrestMatcher (var name:String, var args:List<Any?>) {
                 if (nameProp != null && nameProp.isJsonPrimitive) {
                     name = jsonObj.get("name").asString
                 } else {
-                    throw JsonParseException("Matcher must contain 'name' property");
+                    throw JsonParseException("Matcher must contain 'name' property")
                 }
 
                 // Parse args property
