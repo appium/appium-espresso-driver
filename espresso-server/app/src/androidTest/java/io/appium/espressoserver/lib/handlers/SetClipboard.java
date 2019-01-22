@@ -71,7 +71,7 @@ public class SetClipboard implements RequestHandler<SetClipboardParams, Void> {
                 default:
                     throw new IllegalArgumentException(
                             String.format("Only '%s' content types are supported. '%s' is given instead",
-                                    ClipboardDataType.supportedDataTypes(), contentType));
+                                    ClipboardDataType.Companion.supportedDataTypes(), contentType));
             }
         }
     }

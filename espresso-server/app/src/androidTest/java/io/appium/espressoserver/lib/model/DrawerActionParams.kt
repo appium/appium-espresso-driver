@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import javax.annotation.Nullable;
+import com.google.gson.annotations.SerializedName
 
-@SuppressWarnings("unused")
-public class EditorActionParams extends AppiumParams {
-    private Object action;
+class DrawerActionParams : AppiumParams() {
+    var gravity: Int? = null
 
-    @Nullable
-    public Object getAction() {
-        return this.action;
-    }
 }

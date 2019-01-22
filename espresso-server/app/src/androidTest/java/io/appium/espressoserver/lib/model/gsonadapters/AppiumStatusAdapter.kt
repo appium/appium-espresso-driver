@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model.gsonadapters
 
-import androidx.annotation.Nullable;
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
 
-import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
+import java.lang.reflect.Type
 
-@SuppressWarnings("unused")
-public class ActionsParams extends AppiumParams {
-    private Actions actions;
+import io.appium.espressoserver.lib.model.AppiumStatus
 
-    @Nullable
-    public Actions getActions() {
-        return actions;
+class AppiumStatusAdapter : JsonSerializer<AppiumStatus> {
+
+    override fun serialize(status: AppiumStatus, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
+        return JsonPrimitive(status.code)
     }
 
-    public void setActions(Actions actions) {
-        this.actions = actions;
-    }
 }

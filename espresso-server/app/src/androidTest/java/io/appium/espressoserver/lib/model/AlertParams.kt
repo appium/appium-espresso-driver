@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import com.google.gson.annotations.SerializedName;
-
-import javax.annotation.Nullable;
-
-@SuppressWarnings("unused")
-public class DrawerActionParams extends AppiumParams {
-    private Integer gravity;
-
-    @Nullable
-    public Integer getGravity() {
-        return gravity;
-    }
-
-    public void setGravity(Integer gravity) {
-        this.gravity = gravity;
-    }
-
+class AlertParams : AppiumParams() {
+    var buttonLabel: String? = null
 }
