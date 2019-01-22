@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 public class AppiumParams {
     private static final String SESSION_ID_PARAM_NAME = "sessionId";
     private static final String ELEMENT_ID_PARAM_NAME = "elementId";
-    private final Map<String, String> uriParams = new HashMap<>();
+    private Map<String, String> uriParams = null;
 
     @Nullable
     public String getSessionId() {
@@ -42,6 +42,9 @@ public class AppiumParams {
     }
 
     public void initUriMapping(Map<String, String> params) {
+        if (uriParams == null) {
+            uriParams = new HashMap<>();
+        }
         uriParams.clear();
         uriParams.putAll(params);
     }
