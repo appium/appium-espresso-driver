@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-public class MoveToParams extends AppiumParams {
-    @SerializedName("element")
-    private String elementId;
-    private int xoffset;
-    private int yoffset;
+class ScrollToPageParams : AppiumParams() {
+    var scrollTo: ScrollTo? = null
+    var scrollToPage: Int? = null
+        private set
+    var smoothScroll: Boolean? = null
+        get() = if (field == null) false else field
 
-    public String getElementId() {
-        return elementId;
+    fun setScrollTo(scrollToPage: Int?) {
+        this.scrollToPage = scrollToPage
     }
 
-    public void setElementId(String elementId) {
-        this.elementId = elementId;
-    }
 
-    public int getXOffset() {
-        return xoffset;
-    }
-
-    public int getYOffset() {
-        return yoffset;
+    enum class ScrollTo {
+        @SerializedName("first")
+        FIRST,
+        @SerializedName("last")
+        LAST,
+        @SerializedName("left")
+        LEFT,
+        @SerializedName("right")
+        RIGHT
     }
 }

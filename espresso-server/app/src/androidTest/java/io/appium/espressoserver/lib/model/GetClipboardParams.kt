@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-@SuppressWarnings("unused")
-public class NavigateToParams extends AppiumParams {
-    private Integer menuItemId;
+import androidx.annotation.NonNull
 
-    public Integer getMenuItemId() {
-        return this.menuItemId;
-    }
+class GetClipboardParams : AppiumParams() {
+    private val contentType: ClipboardDataType? = null
 
-    public void setMenuItemId(Integer menuItemId) {
-        this.menuItemId = menuItemId;
+    @NonNull
+    fun getContentType(): ClipboardDataType {
+        return this.contentType ?: ClipboardDataType.PLAINTEXT
     }
 }

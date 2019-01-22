@@ -300,7 +300,7 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
     private int getGlobalButtonState() throws InvalidArgumentException {
         int buttonState = 0;
         for(final Integer button: globalMouseButtonDownEvents.keySet()) {
-            buttonState |= MotionEventParams.getAndroidButtonState(button);
+            buttonState |= MotionEventParams.Companion.getAndroidButtonState(button);
         }
         return buttonState;
     }

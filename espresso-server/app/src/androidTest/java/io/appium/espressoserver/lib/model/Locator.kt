@@ -14,25 +14,9 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import javax.annotation.Nullable;
-
-@SuppressWarnings("unused")
-public class KeyEventParams extends AppiumParams {
-    private int keycode;
-    private Integer metastate;
-    private Integer flags;
-
-    public int getKeycode() {
-        return keycode;
-    }
-
-    @Nullable
-    public Integer getMetastate() {
-        return metastate;
-    }
-
-    @Nullable
-    public Integer getFlags() { return flags; }
+class Locator : AppiumParams() {
+    var using: Strategy? = null
+    var value: String? = null
 }

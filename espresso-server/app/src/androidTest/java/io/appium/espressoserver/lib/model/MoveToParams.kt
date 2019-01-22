@@ -14,31 +14,13 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import javax.annotation.Nullable;
+import com.google.gson.annotations.SerializedName
 
-@SuppressWarnings("unused")
-public class Location extends AppiumParams {
-    private Integer x = null;
-    private Integer y = null;
-
-    @Nullable
-    public Integer getX() {
-        return x;
-    }
-
-    public void setX(Integer x) {
-        this.x = x;
-    }
-
-    @Nullable
-    public Integer getY() {
-        return y;
-    }
-
-    public void setY(Integer y) {
-        this.y = y;
-    }
-
+class MoveToParams : AppiumParams() {
+    @SerializedName("element")
+    override var elementId: String? = null
+    val xOffset: Int = 0
+    val yOffset: Int = 0
 }
