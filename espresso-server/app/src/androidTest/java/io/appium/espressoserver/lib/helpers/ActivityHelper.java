@@ -23,8 +23,10 @@ import android.util.ArrayMap;
 
 import java.lang.reflect.Field;
 
-import androidx.test.core.app.ActivityScenario;
+import javax.annotation.Nullable;
+
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.ActivityTestRule;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 
@@ -57,41 +59,43 @@ public class ActivityHelper {
         throw new AppiumException("Failed to get current Activity");
     }
 
-    private static String getFullyQualifiedActivityName(Instrumentation mInstrumentation, String appActivity) {
-        return getFullyQualifiedActivityName(mInstrumentation.getTargetContext().getPackageName(), appActivity);
+    private static String getFullyQualifiedActivityName(Instrumentation instrumentation, String activity) {
+        final String pkg = instrumentation.getTargetContext().getPackageName();
+        return activity.startsWith(".") ? pkg + activity : activity;
     }
 
-    private static String getFullyQualifiedActivityName(String pkg, String appActivity) {
-        return appActivity.startsWith(".") ? pkg + appActivity : appActivity;
-    }
-
-    public static void startActivityViaInstruments(String appActivity, boolean waitForActivity) {
-        logger.info(String.format("Starting activity '%s'", appActivity));
-        Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
+    public static void startActivityViaInstruments(String activity, @Nullable String waitActivity, boolean waitForActivity) {
+        logger.info(String.format("Starting activity '%s'", activity));
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        String fullyQualifiedAppActivity = getFullyQualifiedActivityName(mInstrumentation, appActivity);
-        Instrumentation.ActivityMonitor mSessionMonitor = mInstrumentation
-                .addMonitor(fullyQualifiedAppActivity, null, false);
-        intent.setClassName(mInstrumentation.getTargetContext(), fullyQualifiedAppActivity);
-        mInstrumentation.startActivitySync(intent);
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        String fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, activity);
+        String fullyQualifiedWaitActivity = waitActivity == null
+                ? fullyQualifiedAppActivity
+                : getFullyQualifiedActivityName(instrumentation, waitActivity);
+        Instrumentation.ActivityMonitor mSessionMonitor = instrumentation
+                .addMonitor(fullyQualifiedWaitActivity, null, false);
+        intent.setClassName(instrumentation.getTargetContext(), fullyQualifiedAppActivity);
+        instrumentation.startActivitySync(intent);
         if (waitForActivity) {
-            Activity mCurrentActivity = mInstrumentation.waitForMonitor(mSessionMonitor);
+            Activity mCurrentActivity = instrumentation.waitForMonitor(mSessionMonitor);
             logger.info(String.format("Activity '%s' started", mCurrentActivity.getLocalClassName()));
         }
     }
 
-    public static void startActivityViaScenario(String pkg, String activity) throws AppiumException {
+    public static void startActivityViaTestRule(String activity) throws AppiumException {
         logger.info(String.format("Starting activity '%s'", activity));
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         final Class<? extends Activity> activityClass;
         try {
             //noinspection unchecked
             activityClass = (Class<? extends Activity>) Class
-                    .forName(getFullyQualifiedActivityName(pkg, activity));
+                    .forName(getFullyQualifiedActivityName(instrumentation, activity));
         } catch (ClassNotFoundException | ClassCastException e) {
             throw new InvalidArgumentException(e);
         }
-        ActivityScenario.launch(activityClass);
-        logger.info(String.format("Activity '%s' started", activityClass.getName()));
+        ActivityTestRule activityTestRule = new ActivityTestRule<>(activityClass, true);
+        activityTestRule.launchActivity(null);
+        logger.info(String.format("Started '%s' activity", activityClass.getName()));
     }
 }
