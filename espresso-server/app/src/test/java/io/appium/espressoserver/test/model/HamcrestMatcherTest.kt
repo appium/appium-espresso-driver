@@ -1,5 +1,6 @@
 package io.appium.espressoserver.test.model
 
+import androidx.test.espresso.matcher.CursorMatchers
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import io.appium.espressoserver.lib.model.HamcrestMatcher
@@ -7,6 +8,7 @@ import org.hamcrest.Matcher
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class HamcrestMatcherTest {
@@ -18,7 +20,7 @@ class HamcrestMatcherTest {
             {"name": "containsString", "args": "Hello World!"}
         """.trimIndent(), HamcrestMatcher::class.java)
         assertEquals(matcher.name, "containsString")
-        assertEquals(matcher.args, arrayListOf("Hello World!"))
+        assertTrue(matcher.args contentEquals arrayOf<Any?>("Hello World!"))
     }
 
     @Test
@@ -56,14 +58,14 @@ class HamcrestMatcherTest {
             {"name": "isAThing"}
         """.trimIndent(), HamcrestMatcher::class.java)
         assertEquals(matcher.name, "isAThing")
-        assertEquals(matcher.args, Collections.emptyList())
+        assertTrue(matcher.args contentEquals emptyArray())
     }
 
     @Test
     fun `should parse string as matcher with no args` () {
         val matcher = g.fromJson("arglessMethod", HamcrestMatcher::class.java)
         assertEquals(matcher.name, "arglessMethod")
-        assertEquals(matcher.args, Collections.emptyList())
+        assertTrue(matcher.args contentEquals emptyArray())
     }
 
     @Test
@@ -72,30 +74,39 @@ class HamcrestMatcherTest {
             {"name": "containsString", "args": "Hello"}
         """.trimIndent(), HamcrestMatcher::class.java)
         assertEquals(matcher.matcherClass, org.hamcrest.Matchers::class)
-        /*val containsStringMatcher:Matcher<*> = matcher.invoke()
-        containsStringMatcher*/
+        val containsStringMatcher = matcher.invoke();
+        assertTrue(containsStringMatcher.matches("Hello World"))
+        assertFalse(containsStringMatcher.matches("Goodbye World"))
     }
 
     @Test
     fun `should parse the matcher class type` () {
         val matcher = g.fromJson("""
-            {"name": "containsString", "args": "Hello", "class": "androidx.test.espresso.matcher.CursorMatchers"}
+            {"name": "withRowBlob", "class": "androidx.test.espresso.matcher.CursorMatchers"}
         """.trimIndent(), HamcrestMatcher::class.java)
-        assertEquals(matcher.matcherClass, androidx.test.espresso.matcher.CursorMatchers::class)
+        assertEquals(matcher.matcherClass, CursorMatchers::class)
     }
 
     @Test
     fun `should use 'androidx_test_espresso_matcher' when class provided but package not provided` () {
         val matcher = g.fromJson("""
-            {"name": "containsString", "args": "Hello", "class": "CursorMatchers"}
+            {"name": "withRowBlob", "args": "Hello", "class": "CursorMatchers"}
         """.trimIndent(), HamcrestMatcher::class.java)
-        assertEquals(matcher.matcherClass, androidx.test.espresso.matcher.CursorMatchers::class)
+        assertEquals(matcher.matcherClass, CursorMatchers::class)
+    }
 
+    @Test
+    fun `should parse matchers that have Class as an arg` () {
+        val matcher = g.fromJson("""
+            {"name": "instanceOf", "args": "String.class"}
+        """.trimIndent(), HamcrestMatcher::class.java)
+        assertTrue(matcher.invoke().matches("Hello World"))
+        assertFalse(matcher.invoke().matches(123))
     }
 
     @Test(expected = JsonParseException::class)
     fun `should fail if name not provided` () {
-        val matcher = g.fromJson("""
+        g.fromJson("""
             {"args": "Hello World!"}
         """.trimIndent(), HamcrestMatcher::class.java)
     }

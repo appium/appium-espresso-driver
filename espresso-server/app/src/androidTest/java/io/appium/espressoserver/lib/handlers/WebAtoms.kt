@@ -50,11 +50,11 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void> {
 
         // Iterate through methodsChain and call the atoms
         for (method in webAtomsParams.methodChain) {
-            val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args.toTypedArray());
+            val atom = invokeMethod(DriverAtoms::class, method.atom.name, method.atom.args);
 
             logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
-            val args = if (atom == null) emptyList<Any>() else atom;
-            val res = invokeInstanceMethod(webViewInteraction, method.name, args);
+            val args: Array<Any?> = if (atom == null) emptyArray() else arrayOf(atom)
+            val res = invokeInstanceMethod(webViewInteraction, method.name, *args)
 
             if (!(res is WebInteraction<*>)) {
                 throw InvalidArgumentException("'${method.name}' does not return a 'WebViewInteraction' object");
