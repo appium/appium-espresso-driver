@@ -189,6 +189,7 @@ public class ViewFinder {
             case VIEW_TAG:
                 views = getViews(root, withTagValue(allOf(instanceOf(String.class), equalTo((Object) selector))), findOne);
                 break;
+            // TODO: Add a Hamcrest Matcher here
             default:
                 throw new InvalidStrategyException(String.format("Strategy is not implemented: %s", strategy.getStrategyName()));
         }

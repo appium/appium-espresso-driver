@@ -1,6 +1,7 @@
 package io.appium.espressoserver.test.model
 
 import androidx.test.espresso.matcher.CursorMatchers
+import androidx.test.espresso.matcher.CursorMatchers.CursorMatcher
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import io.appium.espressoserver.lib.model.HamcrestMatcher
@@ -78,7 +79,7 @@ class HamcrestMatcherTest {
             {"name": "withRowDouble", "args": ["Hello", 2.0], "class": "CursorMatchers"}
         """.trimIndent(), HamcrestMatcher::class.java)
         assertEquals(matcher.matcherClass, CursorMatchers::class)
-        assertTrue(matcher.invoke() is Matcher)
+        assertTrue(matcher.invoke() is CursorMatcher)
     }
 
     @Test
@@ -102,7 +103,6 @@ class HamcrestMatcherTest {
         assertTrue(nestedMatcher.matches(100))
         assertFalse(nestedMatcher.matches("World"))
         assertFalse(nestedMatcher.matches(100.1))
-
     }
 
     @Test(expected = JsonParseException::class)

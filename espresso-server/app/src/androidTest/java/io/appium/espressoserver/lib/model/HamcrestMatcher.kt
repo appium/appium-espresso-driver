@@ -48,7 +48,7 @@ data class HamcrestMatcher (var name:String, var args:Array<Any?>, var matcherCl
                 // Parse args property
                 val args = arrayListOf<Any?>()
                 jsonObj.get("args")?.let {
-                    var listOfArgs: Iterable<JsonElement> = emptyList()
+                    val listOfArgs: Iterable<JsonElement>
                     if (it.isJsonArray) {
                         listOfArgs = it.asJsonArray
                     } else {

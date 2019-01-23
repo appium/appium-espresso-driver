@@ -16,9 +16,7 @@
 
 package io.appium.espressoserver.lib.helpers
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonParseException
-import com.google.gson.JsonPrimitive
+import com.google.gson.*
 import java.lang.IllegalArgumentException
 
 object GsonParserHelpers {
@@ -57,5 +55,37 @@ object GsonParserHelpers {
 
         // Should be unreachable. Boolean, string and number should cover the primitives
         throw JsonParseException("Unknown error occurred. Could not parse primitive '${jsonPrimitive}'");
+    }
+
+    fun assertIsPrimitive (jsonObj: JsonObject, key: String) {
+        jsonObj.get(key).let {
+            if (it == null || !it.isJsonPrimitive) {
+                throw JsonParseException("'${key}' must be a primitive type. Found '${jsonObj.get("key").asString}'");
+            }
+        }
+    }
+
+    fun assertExists (jsonObj: JsonObject, key: String) {
+        jsonObj.get(key).let {
+            if (it == null) {
+                throw JsonParseException("'${key}' is a required field");
+            }
+        }
+    }
+
+    fun asArray (jsonObj: JsonObject, key: String): JsonArray {
+        jsonObj.get(key).let {
+            if (it == null) {
+                val jsonArr = JsonArray()
+                jsonArr.add(JsonNull())
+                return jsonArr
+            } else if (it.isJsonArray) {
+                return it.asJsonArray
+            } else {
+                val jsonArr = JsonArray()
+                jsonArr.add(it)
+                return jsonArr
+            }
+        }
     }
 }
