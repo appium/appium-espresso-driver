@@ -3,6 +3,7 @@ package io.appium.espressoserver.test.model
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import io.appium.espressoserver.lib.model.HamcrestMatcher
+import org.hamcrest.Matcher
 import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -63,6 +64,33 @@ class HamcrestMatcherTest {
         val matcher = g.fromJson("arglessMethod", HamcrestMatcher::class.java)
         assertEquals(matcher.name, "arglessMethod")
         assertEquals(matcher.args, Collections.emptyList())
+    }
+
+    @Test
+    fun `should default the matcher class type to 'org_hamcrest_Matchers'` () {
+        val matcher = g.fromJson("""
+            {"name": "containsString", "args": "Hello"}
+        """.trimIndent(), HamcrestMatcher::class.java)
+        assertEquals(matcher.matcherClass, org.hamcrest.Matchers::class)
+        /*val containsStringMatcher:Matcher<*> = matcher.invoke()
+        containsStringMatcher*/
+    }
+
+    @Test
+    fun `should parse the matcher class type` () {
+        val matcher = g.fromJson("""
+            {"name": "containsString", "args": "Hello", "class": "androidx.test.espresso.matcher.CursorMatchers"}
+        """.trimIndent(), HamcrestMatcher::class.java)
+        assertEquals(matcher.matcherClass, androidx.test.espresso.matcher.CursorMatchers::class)
+    }
+
+    @Test
+    fun `should use 'androidx_test_espresso_matcher' when class provided but package not provided` () {
+        val matcher = g.fromJson("""
+            {"name": "containsString", "args": "Hello", "class": "CursorMatchers"}
+        """.trimIndent(), HamcrestMatcher::class.java)
+        assertEquals(matcher.matcherClass, androidx.test.espresso.matcher.CursorMatchers::class)
+
     }
 
     @Test(expected = JsonParseException::class)

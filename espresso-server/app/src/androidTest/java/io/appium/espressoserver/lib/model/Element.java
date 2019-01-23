@@ -42,6 +42,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.is;
 
 
 @SuppressWarnings("unused")
