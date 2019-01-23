@@ -83,6 +83,9 @@ public class ActivityHelper {
         Instrumentation.ActivityMonitor activityStateMonitor = instrumentation
                 .addMonitor(fullyQualifiedWaitActivity, null, false);
         instrumentation.startActivitySync(intent);
+        if (waitDuration == null) {
+            waitDuration = ACTIVITY_STARTUP_TIMEOUT;
+        }
         Activity currentActivity = instrumentation.waitForMonitorWithTimeout(activityStateMonitor, waitDuration);
         if (currentActivity == null) {
             throw new IllegalStateException(String.format("Activity '%s' was unable to start within %sms timeout",
