@@ -21,7 +21,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedExcepti
 import io.appium.espressoserver.lib.model.Session;
 import io.appium.espressoserver.lib.model.SessionParams;
 
-import static io.appium.espressoserver.lib.handlers.StartActivity.startActivity;
+import static io.appium.espressoserver.lib.helpers.ActivityHelper.startActivity;
 
 
 public class CreateSession implements RequestHandler<SessionParams, Session> {
@@ -30,9 +30,11 @@ public class CreateSession implements RequestHandler<SessionParams, Session> {
     public Session handle(SessionParams params) throws AppiumException {
         Session appiumSession = Session.createGlobalSession(params.getDesiredCapabilities());
         String activityName = params.getDesiredCapabilities().getAppActivity();
+        String waitActivityName = params.getDesiredCapabilities().getAppWaitActivity();
+        Long appWaitDuration = params.getDesiredCapabilities().getAppWaitDuration();
         try {
             if (activityName != null) {
-                startActivity(activityName, true);
+                startActivity(activityName, waitActivityName, appWaitDuration);
             }
         } catch (Exception e) {
             throw new SessionNotCreatedException(e);

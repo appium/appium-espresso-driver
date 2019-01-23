@@ -16,6 +16,8 @@
 
 package io.appium.espressoserver.lib.model;
 
+import javax.annotation.Nullable;
+
 @SuppressWarnings("unused")
 public class SessionParams extends AppiumParams {
     private DesiredCapabilities desiredCapabilities;
@@ -27,9 +29,22 @@ public class SessionParams extends AppiumParams {
     @SuppressWarnings("unused")
     public class DesiredCapabilities {
         private String appActivity;
+        private String appWaitActivity;
+        private Long appWaitDuration;
 
+        @Nullable
         public String getAppActivity() {
             return appActivity;
+        }
+
+        @Nullable
+        public String getAppWaitActivity() {
+            return appWaitActivity;
+        }
+
+        @Nullable
+        public Long getAppWaitDuration() {
+            return appWaitDuration;
         }
     }
 }

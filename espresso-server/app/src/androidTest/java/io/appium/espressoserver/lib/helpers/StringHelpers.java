@@ -24,4 +24,8 @@ public class StringHelpers {
         return str != null && str.length() > len ? str.substring(0, len) + "\u2026" : str;
     }
 
+    public static boolean isBlank(@Nullable String str) {
+        return str == null || str.trim().equals("");
+    }
+
 }
