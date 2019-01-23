@@ -49,10 +49,10 @@ data class HamcrestMatcher (var name:String, var args:Array<Any?>, var matcherCl
                 val args = arrayListOf<Any?>()
                 jsonObj.get("args")?.let {
                     var listOfArgs: Iterable<JsonElement> = emptyList()
-                    if (it.isJsonPrimitive || it.isJsonObject || it.isJsonNull) {
-                        listOfArgs = arrayListOf(it)
-                    } else if (it.isJsonArray) {
+                    if (it.isJsonArray) {
                         listOfArgs = it.asJsonArray
+                    } else {
+                        listOfArgs = arrayListOf(it)
                     }
 
                     for (arg in listOfArgs) {
@@ -61,7 +61,7 @@ data class HamcrestMatcher (var name:String, var args:Array<Any?>, var matcherCl
                         } else if (arg.isJsonNull) {
                             args.add(null)
                         } else if (arg.isJsonObject) {
-                            args.add(HamcrestMatcherDeserializer().deserialize(arg, null, null))
+                            args.add(HamcrestMatcherDeserializer().deserialize(arg, null, null).invoke())
                         }
                     }
                 }

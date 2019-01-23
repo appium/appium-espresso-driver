@@ -38,21 +38,6 @@ class HamcrestMatcherTest {
     }
 
     @Test
-    fun `should parse Hamcrest matcher with an matcher object as an arg` () {
-        val matcher = g.fromJson("""
-            {"name": "fakeMatcher", "args": [{
-                "name": "nestedFakeMatcher", "args": ["hello"]
-            }]}
-        """.trimIndent(), HamcrestMatcher::class.java)
-        assertEquals(matcher.name, "fakeMatcher")
-        val arg = matcher.args.get(0)
-        assertEquals(matcher.name, "fakeMatcher")
-        assertTrue(arg is HamcrestMatcher)
-        assertEquals(arg.name, "nestedFakeMatcher")
-        assertEquals(arg.args.get(0), "hello")
-    }
-
-    @Test
     fun `should parse empty args` () {
         val matcher = g.fromJson("""
             {"name": "isAThing"}
@@ -103,6 +88,21 @@ class HamcrestMatcherTest {
         """.trimIndent(), HamcrestMatcher::class.java)
         assertTrue(matcher.invoke().matches("Hello World"))
         assertFalse(matcher.invoke().matches(123))
+    }
+
+    @Test
+    fun `should parse nested Hamcrest matchers` () {
+        val matcher = g.fromJson("""
+            {"name": "anyOf", "args": [
+                {"name": "containsString", "args": "Hello"},
+                {"name": "instanceOf", "args": "Integer"}
+        ]}""".trimIndent(), HamcrestMatcher::class.java)
+        val nestedMatcher = matcher.invoke();
+        assertTrue(nestedMatcher.matches("Hello"))
+        assertTrue(nestedMatcher.matches(100))
+        assertFalse(nestedMatcher.matches("World"))
+        assertFalse(nestedMatcher.matches(100.1))
+
     }
 
     @Test(expected = JsonParseException::class)
