@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-@SuppressWarnings("unused")
-public class SessionParams extends AppiumParams {
-    private DesiredCapabilities desiredCapabilities;
+class SetTimeParams : AppiumParams() {
+    var hours: Int? = null
+        private set
+    var minutes: Int? = null
 
-    public DesiredCapabilities getDesiredCapabilities() {
-        return desiredCapabilities;
+    fun setHour(hours: Int?) {
+        this.hours = hours
     }
 
-    @SuppressWarnings("unused")
-    public class DesiredCapabilities {
-        private String appActivity;
-
-        public String getAppActivity() {
-            return appActivity;
-        }
-    }
 }

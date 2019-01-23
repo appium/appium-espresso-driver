@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.model
 
-import javax.annotation.Nullable;
+import androidx.annotation.NonNull
+import androidx.annotation.Nullable
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.model.Session;
-import io.appium.espressoserver.lib.model.SessionParams;
+class SetClipboardParams : AppiumParams() {
+    private val contentType: ClipboardDataType? = null
+    @get:Nullable
+    val content: String? = null
+    @get:Nullable
+    val label: String? = null
 
-public class GetSession implements RequestHandler<AppiumParams, SessionParams.DesiredCapabilities> {
-
-    @Override
-    @Nullable
-    public SessionParams.DesiredCapabilities handle(AppiumParams params) throws AppiumException {
-        return Session.Companion.getGlobalSession().getDesiredCapabilities();
+    @NonNull
+    fun getContentType(): ClipboardDataType {
+        return this.contentType ?: ClipboardDataType.PLAINTEXT
     }
-
 }

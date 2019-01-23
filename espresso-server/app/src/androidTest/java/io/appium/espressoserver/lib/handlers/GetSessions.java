@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 
-import static io.appium.espressoserver.lib.model.Session.getGlobalSession;
+import static io.appium.espressoserver.lib.model.Session.Companion;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 
@@ -33,9 +33,9 @@ public class GetSessions implements RequestHandler<AppiumParams, Collection<Stri
     @Override
     @Nullable
     public Collection<String> handle(AppiumParams params) throws AppiumException {
-        if(getGlobalSession() == null)
+        if(Companion.getGlobalSession() == null)
             return unmodifiableList(Collections.<String>emptyList());
-        return unmodifiableList(singletonList(getGlobalSession().getId()));
+        return unmodifiableList(singletonList(Companion.getGlobalSession().getId()));
     }
 
 }

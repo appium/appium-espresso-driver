@@ -29,7 +29,7 @@ public class DeleteSession implements RequestHandler<AppiumParams, AppiumRespons
     @Override
     @Nullable
     public AppiumResponse handle(AppiumParams params) {
-        Session.deleteGlobalSession();
+        Session.Companion.deleteGlobalSession();
         Server.getInstance().makeRequestForServerToStop();
         return new AppiumResponse(AppiumStatus.SUCCESS, null);
     }

@@ -28,7 +28,7 @@ public class CreateSession implements RequestHandler<SessionParams, Session> {
 
     @Override
     public Session handle(SessionParams params) throws AppiumException {
-        Session appiumSession = Session.createGlobalSession(params.getDesiredCapabilities());
+        Session appiumSession = Session.Companion.createGlobalSession(params.getDesiredCapabilities());
         String activityName = params.getDesiredCapabilities().getAppActivity();
         try {
             if (activityName != null) {
