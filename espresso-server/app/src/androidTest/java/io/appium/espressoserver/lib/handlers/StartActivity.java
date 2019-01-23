@@ -19,13 +19,13 @@ package io.appium.espressoserver.lib.handlers;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 
-import static io.appium.espressoserver.lib.helpers.ActivityHelper.startActivityViaTestRule;
+import static io.appium.espressoserver.lib.helpers.ActivityHelper.startActivity;
 
 public class StartActivity implements RequestHandler<StartActivityParams, Void> {
 
     @Override
     public Void handle(StartActivityParams params) throws AppiumException {
-        startActivityViaTestRule(params.getAppActivity());
+        startActivity(params.getAppActivity(), params.getAppWaitActivity());
         return null;
     }
 }

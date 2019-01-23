@@ -26,13 +26,13 @@ import java.lang.reflect.Field;
 import javax.annotation.Nullable;
 
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
 
 public class ActivityHelper {
+    private static final long ACTIVITY_STARTUP_TIMEOUT = 60 * 1000;
+
     //    https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
     public static Activity getCurrentActivity() throws AppiumException {
         try {
@@ -64,38 +64,24 @@ public class ActivityHelper {
         return activity.startsWith(".") ? pkg + activity : activity;
     }
 
-    public static void startActivityViaInstruments(String activity, @Nullable String waitActivity, boolean waitForActivity) {
+    public static void startActivity(String activity, @Nullable String waitActivity) {
         logger.info(String.format("Starting activity '%s'", activity));
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         String fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, activity);
         String fullyQualifiedWaitActivity = waitActivity == null
                 ? fullyQualifiedAppActivity
                 : getFullyQualifiedActivityName(instrumentation, waitActivity);
-        Instrumentation.ActivityMonitor mSessionMonitor = instrumentation
-                .addMonitor(fullyQualifiedWaitActivity, null, false);
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClassName(instrumentation.getTargetContext(), fullyQualifiedAppActivity);
+        Instrumentation.ActivityMonitor activityStateMonitor = instrumentation
+                .addMonitor(fullyQualifiedWaitActivity, null, false);
         instrumentation.startActivitySync(intent);
-        if (waitForActivity) {
-            Activity mCurrentActivity = instrumentation.waitForMonitor(mSessionMonitor);
-            logger.info(String.format("Activity '%s' started", mCurrentActivity.getLocalClassName()));
+        Activity currentActivity = instrumentation.waitForMonitorWithTimeout(activityStateMonitor, ACTIVITY_STARTUP_TIMEOUT);
+        if (currentActivity == null) {
+            throw new IllegalStateException(String.format("Activity '%s' was unable to start within %sms timeout",
+                    fullyQualifiedWaitActivity, ACTIVITY_STARTUP_TIMEOUT));
         }
-    }
-
-    public static void startActivityViaTestRule(String activity) throws AppiumException {
-        logger.info(String.format("Starting activity '%s'", activity));
-        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        final Class<? extends Activity> activityClass;
-        try {
-            //noinspection unchecked
-            activityClass = (Class<? extends Activity>) Class
-                    .forName(getFullyQualifiedActivityName(instrumentation, activity));
-        } catch (ClassNotFoundException | ClassCastException e) {
-            throw new InvalidArgumentException(e);
-        }
-        ActivityTestRule activityTestRule = new ActivityTestRule<>(activityClass, true);
-        activityTestRule.launchActivity(null);
-        logger.info(String.format("Started '%s' activity", activityClass.getName()));
+        logger.info(String.format("Activity '%s' started", currentActivity.getLocalClassName()));
     }
 }
