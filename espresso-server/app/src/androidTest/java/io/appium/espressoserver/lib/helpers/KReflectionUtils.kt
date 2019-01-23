@@ -26,7 +26,6 @@ object KReflectionUtils {
                 }
 
                 // Look through function parameters and do an enum hack to translate strings to enums
-                //for (index in 0 until funcParams.size) {
                 funcParams.forEachIndexed { index, funcParam ->
                     val providedParam = providedParams.get(index)
 
@@ -39,9 +38,9 @@ object KReflectionUtils {
                             treatedParams.set(index, enumValueOf(null, providedParam.toUpperCase()))
                         }
                     } catch (e:ReflectiveOperationException) {
-                        // Ignore reflection exceptions and move on to try matching String -> String
+                        // Ignore reflection exceptions and don't try matching String to Enum
                     } catch (e:ClassCastException) {
-                        // Ignore class cast exceptions that come up when setting `jFuncType`
+                        // Ignore class cast exceptions and don't try matching String to Enum
                     }
                 }
 
@@ -49,14 +48,13 @@ object KReflectionUtils {
                 try {
                     return func.call(*treatedParams.toTypedArray())
                 } catch (e:IllegalArgumentException) {
-                    // If IllegalArguments that means parameters didn't match, try with other definition
-                    continue;
+                    // If IllegalArguments that means parameters didn't match, move on to the next
                 }
             }
         }
 
         throw AppiumException("Could not invoke method: " +
-                "methodName=[${methodName}] args=[${providedParams.joinToString(", ")}]");
+                "methodName=[${methodName}] args=[${providedParams.joinToString(", ")}]")
     }
 
     fun invokeMethod(kclass: KClass<*>, methodName: String, vararg providedParams: Any): Any? {
@@ -64,6 +62,6 @@ object KReflectionUtils {
     }
 
     fun invokeInstanceMethod (instance: Any, methodName: String, vararg providedParams: Any): Any? {
-        return invokeMethod(instance::class.memberFunctions, methodName, instance, *providedParams);
+        return invokeMethod(instance::class.memberFunctions, methodName, instance, *providedParams)
     }
 }
