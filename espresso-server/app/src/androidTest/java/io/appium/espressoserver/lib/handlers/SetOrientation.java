@@ -17,6 +17,8 @@
 package io.appium.espressoserver.lib.handlers;
 
 import androidx.test.espresso.ViewInteraction;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.Espresso.onView;
 
 import java.util.Arrays;
 
@@ -32,7 +34,10 @@ public class SetOrientation implements RequestHandler<OrientationParams, Void> {
     @Override
     @Nullable
     public Void handle(OrientationParams params) throws AppiumException {
-        final ViewInteraction viewInteraction = Element.getViewInteractionById(params.getElementId());
+        final String elementId = params.getElementId();
+        final ViewInteraction viewInteraction = elementId == null
+                ? onView(isRoot()) 
+                : Element.getViewInteractionById(elementId);
         final String orientation = params.getOrientation();
         if (orientation == null ||
                 !Arrays.asList(new String[] {"LANDSCAPE", "PORTRAIT"}).
