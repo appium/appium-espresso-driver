@@ -30,6 +30,7 @@ public class SessionParams extends AppiumParams {
     public class DesiredCapabilities {
         private String appActivity;
         private String appWaitActivity;
+        private Long appWaitDuration;
 
         @Nullable
         public String getAppActivity() {
@@ -39,6 +40,11 @@ public class SessionParams extends AppiumParams {
         @Nullable
         public String getAppWaitActivity() {
             return appWaitActivity;
+        }
+
+        @Nullable
+        public Long getAppWaitDuration() {
+            return appWaitDuration;
         }
     }
 }

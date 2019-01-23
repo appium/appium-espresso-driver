@@ -29,6 +29,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
+import static io.appium.espressoserver.lib.helpers.StringHelpers.isBlank;
 
 public class ActivityHelper {
     private static final long ACTIVITY_STARTUP_TIMEOUT = 60 * 1000;
@@ -65,10 +66,15 @@ public class ActivityHelper {
     }
 
     public static void startActivity(String activity, @Nullable String waitActivity) {
+        startActivity(activity, waitActivity, ACTIVITY_STARTUP_TIMEOUT);
+    }
+
+    public static void startActivity(String activity, @Nullable String waitActivity,
+                                     @Nullable Long waitDuration) {
         logger.info(String.format("Starting activity '%s'", activity));
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         String fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, activity);
-        String fullyQualifiedWaitActivity = waitActivity == null
+        String fullyQualifiedWaitActivity = isBlank(waitActivity)
                 ? fullyQualifiedAppActivity
                 : getFullyQualifiedActivityName(instrumentation, waitActivity);
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -77,10 +83,10 @@ public class ActivityHelper {
         Instrumentation.ActivityMonitor activityStateMonitor = instrumentation
                 .addMonitor(fullyQualifiedWaitActivity, null, false);
         instrumentation.startActivitySync(intent);
-        Activity currentActivity = instrumentation.waitForMonitorWithTimeout(activityStateMonitor, ACTIVITY_STARTUP_TIMEOUT);
+        Activity currentActivity = instrumentation.waitForMonitorWithTimeout(activityStateMonitor, waitDuration);
         if (currentActivity == null) {
             throw new IllegalStateException(String.format("Activity '%s' was unable to start within %sms timeout",
-                    fullyQualifiedWaitActivity, ACTIVITY_STARTUP_TIMEOUT));
+                    fullyQualifiedWaitActivity, waitDuration));
         }
         logger.info(String.format("Activity '%s' started", currentActivity.getLocalClassName()));
     }

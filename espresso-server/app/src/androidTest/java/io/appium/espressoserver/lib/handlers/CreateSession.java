@@ -31,9 +31,10 @@ public class CreateSession implements RequestHandler<SessionParams, Session> {
         Session appiumSession = Session.createGlobalSession(params.getDesiredCapabilities());
         String activityName = params.getDesiredCapabilities().getAppActivity();
         String waitActivityName = params.getDesiredCapabilities().getAppWaitActivity();
+        Long appWaitDuration = params.getDesiredCapabilities().getAppWaitDuration();
         try {
             if (activityName != null) {
-                startActivity(activityName, waitActivityName);
+                startActivity(activityName, waitActivityName, appWaitDuration);
             }
         } catch (Exception e) {
             throw new SessionNotCreatedException(e);
