@@ -16,14 +16,14 @@ class GsonParserHelpersTest {
     fun shouldParseEnumsFromJsonObj() {
         val jsonObj = JsonObject()
         jsonObj.add("b", JsonPrimitive("b"))
-        val enumValue = GsonParserHelpers().parseEnum<BasicEnum>(jsonObj, "b", "")
+        val enumValue = GsonParserHelpers.parseEnum<BasicEnum>(jsonObj, "b", "")
         assertEquals(enumValue, BasicEnum.B)
     }
 
     @Test
     fun shouldReturnNullIfNoObject() {
         val jsonObj = JsonObject()
-        val enumValue = GsonParserHelpers().parseEnum<BasicEnum>(jsonObj, "b", "")
+        val enumValue = GsonParserHelpers.parseEnum<BasicEnum>(jsonObj, "b", "")
         assertNull(enumValue)
     }
 
@@ -32,7 +32,7 @@ class GsonParserHelpersTest {
         try {
             val jsonObj = JsonObject()
             jsonObj.add("b", JsonPrimitive("z"))
-            GsonParserHelpers().parseEnum<BasicEnum>(jsonObj, "b", "")
+            GsonParserHelpers.parseEnum<BasicEnum>(jsonObj, "b", "")
         } catch (jpe:JsonParseException) {
             return assertTrue(true);
         }

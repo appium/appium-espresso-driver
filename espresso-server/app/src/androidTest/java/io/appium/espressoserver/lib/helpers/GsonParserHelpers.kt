@@ -18,9 +18,10 @@ package io.appium.espressoserver.lib.helpers
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
+import com.google.gson.JsonPrimitive
 import java.lang.IllegalArgumentException
 
-class GsonParserHelpers {
+object GsonParserHelpers {
 
     inline fun <reified T : Enum<T>> parseEnum(jsonObj: JsonObject, propName: String,
                                                helperMessage: String = "", defaultValue: T? = null): T? {
@@ -36,5 +37,25 @@ class GsonParserHelpers {
             }
         }
         return defaultValue
+    }
+
+    fun parsePrimitive(jsonPrimitive: JsonPrimitive):Any {
+        if (jsonPrimitive.isNumber) {
+            // Gson doesn't have internal way of distinguishing floats from ints... so check string
+            val hasDecimal = if (jsonPrimitive.asString.contains(".")) true else false
+
+            if (hasDecimal) {
+                return jsonPrimitive.asDouble;
+            } else {
+                return jsonPrimitive.asLong;
+            }
+        } else if (jsonPrimitive.isBoolean) {
+            return jsonPrimitive.asBoolean;
+        } else if (jsonPrimitive.isString) {
+            return jsonPrimitive.asString;
+        }
+
+        // Should be unreachable. Boolean, string and number should cover the primitives
+        throw JsonParseException("Unknown error occurred. Could not parse primitive '${jsonPrimitive}'");
     }
 }

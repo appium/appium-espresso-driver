@@ -90,9 +90,10 @@ class HamcrestMatcherTest {
     @Test
     fun `should use 'androidx_test_espresso_matcher' when class provided but package not provided` () {
         val matcher = g.fromJson("""
-            {"name": "withRowBlob", "args": "Hello", "class": "CursorMatchers"}
+            {"name": "withRowDouble", "args": ["Hello", 2.0], "class": "CursorMatchers"}
         """.trimIndent(), HamcrestMatcher::class.java)
         assertEquals(matcher.matcherClass, CursorMatchers::class)
+        assertTrue(matcher.invoke() is Matcher)
     }
 
     @Test

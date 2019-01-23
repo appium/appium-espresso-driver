@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.helpers
 
+import com.google.gson.internal.LazilyParsedNumber
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import java.lang.ClassCastException
 import java.lang.IllegalArgumentException
@@ -7,10 +8,7 @@ import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KType
-import kotlin.reflect.full.createType
-import kotlin.reflect.full.functions
-import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.full.*
 import kotlin.reflect.jvm.javaType
 
 object KReflectionUtils {
@@ -63,6 +61,10 @@ object KReflectionUtils {
                             val clazz = Class.forName("java.lang.${className}")
                             treatedParams.set(index, clazz)
                         } catch (e: ClassNotFoundException) { }
+                    }
+
+                    if (providedParam is LazilyParsedNumber) {
+                        treatedParams.set(index, providedParam.toDouble())
                     }
                 }
 

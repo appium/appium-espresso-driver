@@ -6,6 +6,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import com.google.gson.annotations.JsonAdapter
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
+import io.appium.espressoserver.lib.helpers.GsonParserHelpers
 import io.appium.espressoserver.lib.helpers.KReflectionUtils
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
@@ -56,10 +57,7 @@ data class HamcrestMatcher (var name:String, var args:Array<Any?>, var matcherCl
 
                     for (arg in listOfArgs) {
                         if (arg.isJsonPrimitive) {
-                            val argPrimitive = arg.asJsonPrimitive;
-                            if (argPrimitive.isString) args.add(argPrimitive.asString)
-                            else if (argPrimitive.isNumber) args.add(argPrimitive.asNumber)
-                            else if (argPrimitive.isBoolean) args.add(argPrimitive.asBoolean)
+                            args.add(GsonParserHelpers.parsePrimitive(arg.asJsonPrimitive))
                         } else if (arg.isJsonNull) {
                             args.add(null)
                         } else if (arg.isJsonObject) {
