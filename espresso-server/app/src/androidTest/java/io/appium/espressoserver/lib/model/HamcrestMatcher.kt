@@ -21,7 +21,7 @@ data class HamcrestMatcher (var name:String, var args:List<Any?>, var matcherCla
         @Throws(JsonParseException::class)
         override fun deserialize(json: JsonElement, paramType: Type?,
                                  paramJsonDeserializationContext: JsonDeserializationContext?): HamcrestMatcher {
-            
+
             if (json.isJsonObject) {
 
                 val jsonObj = json.asJsonObject
