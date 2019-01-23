@@ -26,18 +26,17 @@ object KReflectionUtils {
                 }
 
                 // Look through function parameters and do an enum hack to translate strings to enums
-                for (index in 0 until funcParams.size) {
-                    val funcParamType = funcParams.get(index).type
+                //for (index in 0 until funcParams.size) {
+                funcParams.forEachIndexed { index, funcParam ->
                     val providedParam = providedParams.get(index)
 
                     // Hack Enum Case
                     // If function param is Enum and provided param is String, try `enumValueOf` on that String value
                     try {
-                        val jFuncType = funcParamType.javaType as Class<*>
+                        val jFuncType = funcParam.type.javaType as Class<*>
                         if (jFuncType.isEnum && providedParam is String) {
                             val enumValueOf = jFuncType.getDeclaredMethod("valueOf", String::class.java)
                             treatedParams.set(index, enumValueOf(null, providedParam.toUpperCase()))
-                            continue;
                         }
                     } catch (e:ReflectiveOperationException) {
                         // Ignore reflection exceptions and move on to try matching String -> String
