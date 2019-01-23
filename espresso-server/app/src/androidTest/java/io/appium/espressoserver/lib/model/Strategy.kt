@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
 
 /**
  * Enumerate all possible locator strategies
  */
-@SuppressWarnings("unused")
-public enum Strategy {
+enum class Strategy private constructor(val strategyName: String) {
     @SerializedName("class name")
     CLASS_NAME("class name"),
     @SerializedName("css selector")
@@ -43,28 +42,23 @@ public enum Strategy {
     ACCESSIBILITY_ID("accessibility id"),
     @SerializedName("text")
     TEXT("text"),
-    @SerializedName(value="-android viewtag", alternate={"tag name"})
+    @SerializedName(value = "-android viewtag", alternate = arrayOf("tag name"))
     VIEW_TAG("-android viewtag");
 
-    private final String strategyName;
 
-    public static Strategy fromString(final String text) throws InvalidStrategyException {
-        if (text != null) {
-            for (final Strategy s : Strategy.values()) {
-                if (text.equalsIgnoreCase(s.strategyName)) {
-                    return s;
+    companion object {
+
+        @Throws(InvalidStrategyException::class)
+        fun fromString(text: String?): Strategy {
+            if (text != null) {
+                for (s in Strategy.values()) {
+                    if (text.equals(s.strategyName, ignoreCase = true)) {
+                        return s
+                    }
                 }
             }
+            throw InvalidStrategyException(String.format(
+                    "Locator strategy '%s' is not supported in NATIVE context", text))
         }
-        throw new InvalidStrategyException(String.format(
-                "Locator strategy '%s' is not supported in NATIVE context", text));
-    }
-
-    Strategy(final String name) {
-        strategyName = name;
-    }
-
-    public String getStrategyName() {
-        return strategyName;
     }
 }

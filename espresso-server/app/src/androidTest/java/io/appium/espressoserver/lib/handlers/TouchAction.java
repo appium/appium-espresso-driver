@@ -13,7 +13,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer;
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable;
 
-import static io.appium.espressoserver.lib.model.TouchAction.toW3CInputSources;
+import static io.appium.espressoserver.lib.model.TouchAction.Companion;
 
 public class TouchAction implements RequestHandler<TouchActionsParams, Void> {
 
@@ -22,7 +22,7 @@ public class TouchAction implements RequestHandler<TouchActionsParams, Void> {
         UiControllerRunnable<Void> runnable = new UiControllerRunnable<Void>() {
             @Override
             public Void run(UiController uiController) throws AppiumException {
-                List<InputSource> inputSources = toW3CInputSources(Collections.singletonList(params.getActions()));
+                List<InputSource> inputSources = Companion.toW3CInputSources(Collections.singletonList(params.getActions()));
                 Actions actions = new ActionsBuilder()
                         .withAdapter(new EspressoW3CActionAdapter(uiController))
                         .withActions(inputSources)

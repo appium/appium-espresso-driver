@@ -14,36 +14,15 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-public enum ViewAttributesEnum {
-
-    CONTENT_DESC,
-    CLASS,
-    TEXT,
-    PACKAGE,
-    CHECKABLE,
-    CHECKED,
-    CLICKABLE,
-    ENABLED,
-    FOCUSABLE,
-    FOCUSED,
-    SCROLLABLE,
-    LONG_CLICKABLE,
-    PASSWORD,
-    SELECTED,
-    VISIBLE,
-    BOUNDS,
-    RESOURCE_ID,
-    INSTANCE,
-    INDEX,
-    ADAPTERS,
-    ADAPTER_TYPE,
-    HINT,
-    VIEW_TAG;
-
-    @Override
-    public String toString() {
-        return this.name().replace("_", "-").toLowerCase();
-    }
+class ToastLookupParams : AppiumParams() {
+    var text: String? = null
+    var isRegexp: Boolean? = null
+        get() {
+            if (field == null) {
+                return false
+            }
+            return field
+        }
 }

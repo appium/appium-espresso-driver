@@ -14,21 +14,35 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import androidx.annotation.Nullable;
+enum class ViewAttributesEnum {
 
-@SuppressWarnings("unused")
-public class TextParams extends AppiumParams {
-    private String[] value;
-    private String text;
+    CONTENT_DESC,
+    CLASS,
+    TEXT,
+    PACKAGE,
+    CHECKABLE,
+    CHECKED,
+    CLICKABLE,
+    ENABLED,
+    FOCUSABLE,
+    FOCUSED,
+    SCROLLABLE,
+    LONG_CLICKABLE,
+    PASSWORD,
+    SELECTED,
+    VISIBLE,
+    BOUNDS,
+    RESOURCE_ID,
+    INSTANCE,
+    INDEX,
+    ADAPTERS,
+    ADAPTER_TYPE,
+    HINT,
+    VIEW_TAG;
 
-    public String[] getValue() {
-        return value;
-    }
-
-    @Nullable
-    public String getText() {
-        return text;
+    override fun toString(): String {
+        return this.name.replace("_", "-").toLowerCase()
     }
 }

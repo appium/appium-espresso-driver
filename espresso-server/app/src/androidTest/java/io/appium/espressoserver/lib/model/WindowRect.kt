@@ -14,31 +14,11 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import javax.annotation.Nullable;
-
-@SuppressWarnings("unused")
-public class WindowSize extends AppiumParams {
-    private Integer width = null;
-    private Integer height = null;
-
-    @Nullable
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
-    @Nullable
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
+class WindowRect : AppiumParams() {
+    var width: Int? = null
+    var height: Int? = null
+    var x: Int? = null
+    var y: Int? = null
 }

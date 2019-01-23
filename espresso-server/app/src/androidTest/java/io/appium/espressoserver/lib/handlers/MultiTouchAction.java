@@ -11,7 +11,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer;
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable;
 
-import static io.appium.espressoserver.lib.model.TouchAction.toW3CInputSources;
+import static io.appium.espressoserver.lib.model.TouchAction.Companion;
 
 public class MultiTouchAction implements RequestHandler<MultiTouchActionsParams, Void> {
 
@@ -20,7 +20,7 @@ public class MultiTouchAction implements RequestHandler<MultiTouchActionsParams,
         UiControllerRunnable<Void> runnable = new UiControllerRunnable<Void>() {
             @Override
             public Void run(UiController uiController) throws AppiumException {
-                List<InputSource> inputSources = toW3CInputSources(params.getActions());
+                List<InputSource> inputSources = Companion.toW3CInputSources(params.getActions());
                 Actions actions = new Actions.ActionsBuilder()
                         .withAdapter(new EspressoW3CActionAdapter(uiController))
                         .withActions(inputSources)

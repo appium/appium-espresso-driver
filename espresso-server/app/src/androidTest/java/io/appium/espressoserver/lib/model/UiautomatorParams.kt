@@ -14,41 +14,19 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList
 
-import javax.annotation.Nullable;
+class UiautomatorParams : AppiumParams() {
+    val strategy: Strategy? = null
+    val locator: String? = null
+    val index: Int? = null
+    val action: Action? = null
 
-public class UiautomatorParams extends AppiumParams {
-    private Strategy strategy;
-    private String locator;
-    private Integer index;
-    private Action action;
-
-    @Nullable
-    public Action getAction() {
-        return action;
-    }
-
-    public String getLocator() {
-        return locator;
-    }
-
-    @Nullable
-    public Strategy getStrategy() {
-        return strategy;
-    }
-
-    @Nullable
-    public Integer getIndex() {
-        return index;
-    }
-
-    public enum Strategy {
+    enum class Strategy private constructor(val nameOfStrategy: String) {
         @SerializedName("clazz")
         CLASS_NAME("clazz"),
 
@@ -80,29 +58,24 @@ public class UiautomatorParams extends AppiumParams {
         DESC_STARTS_WITH("descStartsWith"),
 
         @SerializedName("pkg")
-        APPLICATION_PACKAGE("pkg"),;
+        APPLICATION_PACKAGE("pkg");
 
-        private final String name;
 
-        Strategy(final String name) {
-            this.name = name;
-        }
+        companion object {
 
-        public String getName() {
-            return name;
-        }
-
-        public static List<String> getValidStrategyNames() {
-            List<String> validStrategies = new ArrayList<>();
-            for (Strategy strategy : Strategy.values()) {
-                validStrategies.add(strategy.getName());
-            }
-            return validStrategies;
+            val validStrategyNames: List<String>
+                get() {
+                    val validStrategies = ArrayList<String>()
+                    for (strategy in Strategy.values()) {
+                        validStrategies.add(strategy.name)
+                    }
+                    return validStrategies
+                }
         }
     }
 
 
-    public enum Action {
+    enum class Action private constructor(val nameOfAction: String) {
         @SerializedName("click")
         CLICK("click"),
 
@@ -161,24 +134,19 @@ public class UiautomatorParams extends AppiumParams {
         IS_SCROLLABLE("isScrollable"),
 
         @SerializedName("isSelected")
-        IS_SELECTED("isSelected"),;
+        IS_SELECTED("isSelected");
 
-        private final String name;
 
-        Action(final String name) {
-            this.name = name;
-        }
+        companion object {
 
-        public String getName() {
-            return name;
-        }
-
-        public static List<String> getValidActionNames() {
-            List<String> validActions = new ArrayList<>();
-            for (Action action : Action.values()) {
-                validActions.add(action.getName());
-            }
-            return validActions;
+            val validActionNames: List<String>
+                get() {
+                    val validActions = ArrayList<String>()
+                    for (action in Action.values()) {
+                        validActions.add(action.name)
+                    }
+                    return validActions
+                }
         }
     }
 }

@@ -39,21 +39,21 @@ public class Uiautomator implements RequestHandler<UiautomatorParams, List<Objec
 
         if (null == params.getStrategy()) {
             throw new AppiumException(String.format("strategy should be one of %s",
-                    UiautomatorParams.Strategy.getValidStrategyNames()));
+                    UiautomatorParams.Strategy.Companion.getValidStrategyNames()));
         }
 
         if (null == params.getAction()) {
             throw new AppiumException(String.format("strategy should be one of %s",
-                    UiautomatorParams.Action.getValidActionNames()));
+                    UiautomatorParams.Action.Companion.getValidActionNames()));
         }
 
         String locator = params.getLocator();
         Integer index = params.getIndex();
 
         try {
-            Method byMethod = ReflectionUtils.method(By.class, params.getStrategy().getName(), String.class);
+            Method byMethod = ReflectionUtils.method(By.class, params.getStrategy().getNameOfStrategy(), String.class);
             BySelector bySelector = (BySelector) ReflectionUtils.invoke(byMethod, By.class, locator);
-            Method uiObjectMethod = ReflectionUtils.method(UiObject2.class, params.getAction().getName());
+            Method uiObjectMethod = ReflectionUtils.method(UiObject2.class, params.getAction().getNameOfAction());
             List<UiObject2> uiObjects = getUiDevice().findObjects(bySelector);
             logger.info(String.format("Found %d UiObjects", uiObjects.size()));
 
