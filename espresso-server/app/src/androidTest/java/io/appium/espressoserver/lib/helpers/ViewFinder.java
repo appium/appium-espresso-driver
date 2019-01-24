@@ -20,11 +20,13 @@ import android.content.Context;
 
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.EspressoException;
+import androidx.test.espresso.PerformException;
 import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -195,8 +197,17 @@ public class ViewFinder {
                 views = getViews(root, withTagValue(allOf(instanceOf(String.class), equalTo((Object) selector))), findOne);
                 break;
             case DATAMATCHER:
-                DataMatcherJson matcher = (new Gson()).fromJson(selector, DataMatcherJson.class);
-                views = getViewsFromDataInteraction(root, matcher.invoke());
+                try {
+                    DataMatcherJson matcher = (new Gson()).fromJson(selector, DataMatcherJson.class);
+                    views = getViewsFromDataInteraction(root, matcher.invoke());
+                } catch (Exception e) {
+                    // NOTE: `catch (AppiumException e) {` not working so falling back to this
+                    // Probably some issue with Kotlin + Java interoperability
+                    if(e.getClass() == AppiumException.class) {
+                        throw new InvalidStrategyException(String.format("Not a valid selector '%s'. Reason: '%s'", selector, e.getCause()));
+                    }
+                    throw e;
+                }
                 break;
             default:
                 throw new InvalidStrategyException(String.format("Strategy is not implemented: %s", strategy.getStrategyName()));
@@ -235,7 +246,12 @@ public class ViewFinder {
             @Nullable View root, DataInteraction dataInteraction
     ) {
         // TODO: Do the 'inAdapterView' thing here. Check the root.
-        return Collections.singletonList(new ViewGetter().getView(dataInteraction));
+        try {
+            return Collections.singletonList(new ViewGetter().getView(dataInteraction));
+        } catch (PerformException e) {
+            // Perform Exception means nothing was found. Return empty list
+            return Collections.emptyList();
+        }
     }
 
     private static List<View> getViews(

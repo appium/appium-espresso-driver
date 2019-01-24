@@ -88,8 +88,7 @@ describe('find elements', function () {
         name: 'hasEntry', args: ['title', 'Animation']
       }));
       await el.click();
-      // TODO: Do a test to confirm we're on the Animation page
-      // console.log(await driver.source());
+      await driver.elementByAccessibilityId('Bouncing Balls').should.eventually.exist;
       await driver.back();
     });
     it('should find an offscreen element using a data matcher', async function () {
@@ -99,10 +98,19 @@ describe('find elements', function () {
         name: 'hasEntry', args: ['title', 'WebView3']
       }));
       await el.click();
-      // TODO: Make a test here
-      //console.log(await driver.source());
       await driver.back();
+      await driver.elementByAccessibilityId('Controls').should.eventually.exist;
       await driver.back();
+    });
+    it('should fail to find elements with helpful error messages', async function () {
+      await driver.element('-android datamatcher', JSON.stringify({
+        name: 'hasEntry', args: ['title', 'A Fake Item']
+      })).should.eventually.be.rejectedWith(/NoSuchElement/);
+    });
+    it('should fail with invalid selector with helpful error messages', async function () {
+      await driver.element('-android datamatcher', JSON.stringify({
+        name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item']
+      })).should.eventually.be.rejectedWith(/InvalidSelector/);
     });
   });
 });
