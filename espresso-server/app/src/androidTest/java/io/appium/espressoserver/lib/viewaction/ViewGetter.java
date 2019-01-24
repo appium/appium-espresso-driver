@@ -22,11 +22,13 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 
 /**
@@ -81,6 +83,11 @@ public class ViewGetter {
 
     public View getView(ViewInteraction viewInteraction) {
         viewInteraction.perform(new GetViewAction());
+        return views[0];
+    }
+
+    public View getView(DataInteraction dataInteraction) {
+        dataInteraction.perform(new GetViewAction());
         return views[0];
     }
 }

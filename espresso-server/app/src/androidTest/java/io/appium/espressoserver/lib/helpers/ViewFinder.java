@@ -24,6 +24,8 @@ import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.google.gson.Gson;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -38,12 +40,14 @@ import javax.annotation.Nullable;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
+import io.appium.espressoserver.lib.model.DataMatcherJson;
 import io.appium.espressoserver.lib.model.Strategy;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -58,6 +62,7 @@ import static io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.instanceOf;
@@ -189,7 +194,10 @@ public class ViewFinder {
             case VIEW_TAG:
                 views = getViews(root, withTagValue(allOf(instanceOf(String.class), equalTo((Object) selector))), findOne);
                 break;
-            // TODO: Add a Hamcrest Matcher here
+            case DATAMATCHER:
+                DataMatcherJson matcher = (new Gson()).fromJson(selector, DataMatcherJson.class);
+                views = getViewsFromDataInteraction(root, matcher.invoke());
+                break;
             default:
                 throw new InvalidStrategyException(String.format("Strategy is not implemented: %s", strategy.getStrategyName()));
         }
@@ -221,6 +229,13 @@ public class ViewFinder {
         }
 
         return true;
+    }
+
+    private static List<View> getViewsFromDataInteraction(
+            @Nullable View root, DataInteraction dataInteraction
+    ) {
+        // TODO: Do the 'inAdapterView' thing here. Check the root.
+        return Collections.singletonList(new ViewGetter().getView(dataInteraction));
     }
 
     private static List<View> getViews(

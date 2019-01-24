@@ -44,7 +44,9 @@ public enum Strategy {
     @SerializedName("text")
     TEXT("text"),
     @SerializedName(value="-android viewtag", alternate={"tag name"})
-    VIEW_TAG("-android viewtag");
+    VIEW_TAG("-android viewtag"),
+    @SerializedName(value="-android datamatcher")
+    DATAMATCHER("-android datamatcher");
 
     private final String strategyName;
 
