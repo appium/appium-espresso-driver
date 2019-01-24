@@ -18,11 +18,13 @@ package io.appium.espressoserver.lib.helpers;
 
 import android.content.Context;
 
+import androidx.test.espresso.AmbiguousViewMatcherException;
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.EspressoException;
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.ViewInteraction;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.AdapterView;
 
 import com.google.gson.Gson;
@@ -45,6 +47,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.model.DataMatcherJson;
 import io.appium.espressoserver.lib.model.Strategy;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
+import io.appium.espressoserver.lib.viewmatcher.WithView;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.espresso.Espresso.onData;
@@ -204,7 +207,7 @@ public class ViewFinder {
                     // NOTE: `catch (AppiumException e) {` not working so falling back to this
                     // Probably some issue with Kotlin + Java interoperability
                     if(e.getClass() == AppiumException.class) {
-                        throw new InvalidStrategyException(String.format("Not a valid selector '%s'. Reason: '%s'", selector, e.getCause()));
+                        throw new InvalidStrategyException(String.format("Not a valid selector '%s'. Reason: '%s'", selector, e.getMessage()));
                     }
                     throw e;
                 }
@@ -245,7 +248,15 @@ public class ViewFinder {
     private static List<View> getViewsFromDataInteraction(
             @Nullable View root, DataInteraction dataInteraction
     ) {
-        // TODO: Do the 'inAdapterView' thing here. Check the root.
+        // Look up the view hierarchy to find the closest ancestor AdapterView
+        View ancestorAdapter = root;
+        while (ancestorAdapter != null && !(ancestorAdapter instanceof AdapterView)) {
+            ancestorAdapter = (View) ancestorAdapter.getParent();
+        }
+        if (ancestorAdapter != null) {
+            dataInteraction = dataInteraction.inAdapterView(WithView.withView(ancestorAdapter));
+        }
+
         try {
             return Collections.singletonList(new ViewGetter().getView(dataInteraction));
         } catch (PerformException e) {

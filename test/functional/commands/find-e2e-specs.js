@@ -112,5 +112,28 @@ describe('find elements', function () {
         name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item']
       })).should.eventually.be.rejectedWith(/InvalidSelector/);
     });
+    it('should be able to set a specific AdapterView as a root element when activity has multiple AdapterViews', async function () {
+      const viewsEl = await driver.elementByAccessibilityId('Views');
+      await viewsEl.click();
+      const splittingEl = await driver.elementByAccessibilityId('Splitting Touches across Views');
+      await splittingEl.click();
+
+      // Finding by adapter equalTo 'Zamorano' should be ambiguous, because there are two
+      // adapter items with the same matcher
+      await driver.element('-android datamatcher', JSON.stringify({
+        name: 'equalTo', args: 'Zamorano'
+      })).should.eventually.be.rejectedWith(/AmbiguousViewMatcherException/);
+
+      // Narrow them down by making the root an adapter view
+      const listOneEl = await driver.elementById('list1');
+      await listOneEl.element('-android datamatcher', JSON.stringify({
+        name: 'equalTo', args: 'Zamorano'
+      })).should.eventually.exist;
+
+      const listTwoEl = await driver.elementById('list2');
+      await listTwoEl.element('-android datamatcher', JSON.stringify({
+        name: 'equalTo', args: 'Zamorano'
+      })).should.eventually.exist;
+    });
   });
 });

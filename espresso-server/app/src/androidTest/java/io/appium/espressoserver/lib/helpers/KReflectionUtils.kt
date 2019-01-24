@@ -82,10 +82,19 @@ object KReflectionUtils {
     }
 
     fun invokeMethod(kclass: KClass<*>, methodName: String, vararg providedParams: Any?): Any? {
-        return invokeMethod(kclass.functions, methodName, *providedParams)
+        try {
+            return invokeMethod(kclass.functions, methodName, *providedParams)
+        } catch (e:AppiumException) {
+            throw AppiumException("Cannot execute method on '${kclass.qualifiedName}'. Reason: ${e.message}'");
+        }
     }
 
     fun invokeInstanceMethod (instance: Any, methodName: String, vararg providedParams: Any?): Any? {
-        return invokeMethod(instance::class.memberFunctions, methodName, instance, *providedParams)
+        try {
+            return invokeMethod(instance::class.memberFunctions, methodName, instance, *providedParams)
+        } catch (e:AppiumException) {
+            throw AppiumException("Cannot execute method for instance of " +
+                    "'${instance::class.qualifiedName}'. Reason: ${e.message}'");
+        }
     }
 }
