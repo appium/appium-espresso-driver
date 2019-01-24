@@ -2,11 +2,10 @@ package io.appium.espressoserver.lib.model
 
 import androidx.test.espresso.DataInteraction
 import androidx.test.espresso.Espresso.onData
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
-import com.google.gson.JsonParseException
+import com.google.gson.*
 import com.google.gson.annotations.JsonAdapter
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
 import org.hamcrest.Matcher
 import java.lang.reflect.Type
 
@@ -30,6 +29,16 @@ data class DataMatcherJson(val matcher:Matcher<*>) : AppiumParams() {
                     .invoke();
 
             return DataMatcherJson(matcher)
+        }
+    }
+
+    companion object {
+        fun fromJson(selector:String): DataMatcherJson {
+            try {
+                return Gson().fromJson(selector, DataMatcherJson::class.java)
+            } catch (e: AppiumException) {
+                throw InvalidStrategyException(String.format("Not a valid selector '%s'. Reason: '%s'", selector, e.message))
+            }
         }
     }
 }

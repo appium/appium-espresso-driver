@@ -112,6 +112,11 @@ describe('find elements', function () {
         name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item']
       })).should.eventually.be.rejectedWith(/InvalidSelector/);
     });
+    it('should allow "class" property with fully qualified className', async function () {
+      await driver.element('-android datamatcher', JSON.stringify({
+        name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item'], class: 'org.hamcrest.Matchers',
+      })).should.eventually.be.rejectedWith(/InvalidSelector/);
+    });
     it('should be able to set a specific AdapterView as a root element when activity has multiple AdapterViews', async function () {
       const viewsEl = await driver.elementByAccessibilityId('Views');
       await viewsEl.click();

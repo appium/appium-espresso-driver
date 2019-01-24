@@ -200,17 +200,8 @@ public class ViewFinder {
                 views = getViews(root, withTagValue(allOf(instanceOf(String.class), equalTo((Object) selector))), findOne);
                 break;
             case DATAMATCHER:
-                try {
-                    DataMatcherJson matcher = (new Gson()).fromJson(selector, DataMatcherJson.class);
-                    views = getViewsFromDataInteraction(root, matcher.invoke());
-                } catch (Exception e) {
-                    // NOTE: `catch (AppiumException e) {` not working so falling back to this
-                    // Probably some issue with Kotlin + Java interoperability
-                    if(e.getClass() == AppiumException.class) {
-                        throw new InvalidStrategyException(String.format("Not a valid selector '%s'. Reason: '%s'", selector, e.getMessage()));
-                    }
-                    throw e;
-                }
+                DataMatcherJson matcher = DataMatcherJson.Companion.fromJson(selector);
+                views = getViewsFromDataInteraction(root, matcher.invoke());
                 break;
             default:
                 throw new InvalidStrategyException(String.format("Strategy is not implemented: %s", strategy.getStrategyName()));

@@ -55,7 +55,7 @@ class `KReflectionUtils Test` {
     }
 
     @Test
-    fun `should parse Hamcrest 'is' matcher with className`() {
+    fun `should parse Hamcrest 'instanceOf' matcher with className`() {
         arrayOf("java.lang.String", "java.lang.String.class", "String", "String.class")
             .forEach {className ->
                 val hamcrestMatcher = KReflectionUtils.invokeMethod(Matchers::class, "instanceOf", className)

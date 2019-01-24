@@ -57,22 +57,6 @@ object GsonParserHelpers {
         throw JsonParseException("Unknown error occurred. Could not parse primitive '${jsonPrimitive}'");
     }
 
-    fun assertIsPrimitive (jsonObj: JsonObject, key: String) {
-        jsonObj.get(key).let {
-            if (it == null || !it.isJsonPrimitive) {
-                throw JsonParseException("'${key}' must be a primitive type. Found '${jsonObj.get("key").asString}'");
-            }
-        }
-    }
-
-    fun assertExists (jsonObj: JsonObject, key: String) {
-        jsonObj.get(key).let {
-            if (it == null) {
-                throw JsonParseException("'${key}' is a required field");
-            }
-        }
-    }
-
     fun asArray (jsonObj: JsonObject, key: String): JsonArray {
         jsonObj.get(key).let {
             if (it == null) {
