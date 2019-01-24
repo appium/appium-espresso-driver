@@ -63,7 +63,7 @@
     "coverage": "gulp coveralls",
     "prepare": "gulp prepublish && npm run build:server",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
-    "precommit-test": "REPORTER=dot gulp once",
+    "precommit-test": "REPORTER=dot gulp once && npm run test:server",
     "lint": "gulp eslint",
     "lint:fix": "gulp eslint --fix"
   },

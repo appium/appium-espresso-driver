@@ -58,12 +58,8 @@ object GsonParserHelpers {
     }
 
     fun asArray (jsonObj: JsonObject, key: String): JsonArray {
-        jsonObj.get(key).let {
-            if (it == null) {
-                val jsonArr = JsonArray()
-                jsonArr.add(JsonNull())
-                return jsonArr
-            } else if (it.isJsonArray) {
+        jsonObj.get(key)?.let {
+            if (it.isJsonArray) {
                 return it.asJsonArray
             } else {
                 val jsonArr = JsonArray()
@@ -71,5 +67,6 @@ object GsonParserHelpers {
                 return jsonArr
             }
         }
+        return JsonArray();
     }
 }
