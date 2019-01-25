@@ -38,7 +38,7 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void> {
 
         // Initialize onWebView with web view matcher (if webviewEl provided)
         webAtomsParams.webviewElement.let{
-            logger.info("Initializing webView interaction on webview with el: '${it}")
+            logger.info("Initializing webView interaction on webview with el: '${it}'")
             val matcher = withView(Element.getViewById(it))
             webViewInteraction = onWebView(matcher)
         }
@@ -50,7 +50,7 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void> {
 
         // Iterate through methodsChain and call the atoms
         for (method in webAtomsParams.methodChain) {
-            val atom = invokeMethod(DriverAtoms::class, method.atom.name, method.atom.args);
+            val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args);
 
             logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
             val args: Array<Any?> = if (atom == null) emptyArray() else arrayOf(atom)
