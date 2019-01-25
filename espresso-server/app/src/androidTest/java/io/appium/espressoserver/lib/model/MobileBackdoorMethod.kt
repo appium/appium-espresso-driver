@@ -1,41 +1,24 @@
 package io.appium.espressoserver.lib.model
 
-import java.util.Collections
-
 import io.appium.espressoserver.lib.helpers.BackdoorUtils
 
-class MobileBackdoorMethod {
-    val name: String? = null
-
-    private var args: List<BackdoorMethodArg>? = null
-
-    val rawArgs: List<BackdoorMethodArg>?
-        get() = if (args == null) {
-            emptyList()
-        } else args
-
+data class MobileBackdoorMethod(val name: String? = null, var args: List<BackdoorMethodArg> = emptyList()) {
     val argumentTypes: Array<Class<*>?>
         get() {
-            val rawArgs = rawArgs
-            val types = arrayOfNulls<Class<*>>(rawArgs!!.size)
-            for (i in rawArgs.indices) {
-                types[i] = BackdoorUtils.parseType(rawArgs[i].type!!)
+            val types = arrayOfNulls<Class<*>>(args.size)
+            for (i in args.indices) {
+                types[i] = BackdoorUtils.parseType(args[i].type)
             }
             return types
         }
 
     val arguments: Array<Any?>
         get() {
-            val rawArgs = rawArgs
-            val parsedArgs = arrayOfNulls<Any>(rawArgs!!.size)
-            for (i in rawArgs.indices) {
-                parsedArgs[i] = BackdoorUtils.parseValue(rawArgs[i].value,
-                        BackdoorUtils.parseType(rawArgs[i].type!!))
+            val parsedArgs = arrayOfNulls<Any>(args.size)
+            for (i in args.indices) {
+                parsedArgs[i] = BackdoorUtils.parseValue(args[i].value,
+                        BackdoorUtils.parseType(args[i].type))
             }
             return parsedArgs
         }
-
-    fun setArgs(args: List<BackdoorMethodArg>) {
-        this.args = args
-    }
 }
