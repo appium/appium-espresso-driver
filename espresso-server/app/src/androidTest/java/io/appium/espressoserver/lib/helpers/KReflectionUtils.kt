@@ -49,7 +49,7 @@ object KReflectionUtils {
                     if (classifier is KClass<*> && classifier.isSubclassOf(Class::class)) {
                         var className: String = providedParam.toString()
                         if (className.endsWith(".class")) {
-                            className = className.substring(0, className.length - ".class".length)
+                            className = className.take(className.length - ".class".length)
                         }
 
                         try {

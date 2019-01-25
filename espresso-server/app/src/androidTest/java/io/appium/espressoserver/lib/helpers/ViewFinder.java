@@ -242,7 +242,8 @@ public class ViewFinder {
         // Look up the view hierarchy to find the closest ancestor AdapterView
         View ancestorAdapter = root;
         while (ancestorAdapter != null && !(ancestorAdapter instanceof AdapterView)) {
-            ancestorAdapter = (View) ancestorAdapter.getParent();
+            ViewParent parent = ancestorAdapter.getParent();
+            ancestorAdapter = parent == null ? null : (View) parent;
         }
         if (ancestorAdapter != null) {
             dataInteraction = dataInteraction.inAdapterView(WithView.withView(ancestorAdapter));

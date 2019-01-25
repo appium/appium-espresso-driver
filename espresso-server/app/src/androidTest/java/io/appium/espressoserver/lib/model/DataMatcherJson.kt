@@ -38,6 +38,8 @@ data class DataMatcherJson(val matcher:Matcher<*>) : AppiumParams() {
                 return Gson().fromJson(selector, DataMatcherJson::class.java)
             } catch (e: AppiumException) {
                 throw InvalidStrategyException(String.format("Not a valid selector '%s'. Reason: '%s'", selector, e.message))
+            } catch (e: JsonParseException) {
+                throw InvalidStrategyException(String.format("Could not parse selector '%s'. Reason: '%s'", selector, e.message))
             }
         }
     }

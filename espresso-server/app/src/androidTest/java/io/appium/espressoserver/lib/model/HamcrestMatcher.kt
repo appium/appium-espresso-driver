@@ -19,7 +19,7 @@ data class HamcrestMatcher (var name:String, var args:Array<Any?>, var matcherCl
 
     fun invoke():Matcher<*> {
         val matcher = KReflectionUtils.invokeMethod(this.matcherClass, this.name, *this.args)
-        if (!(matcher is Matcher<*>)) {
+        if (matcher !is Matcher<*>) {
             throw InvalidArgumentException("'${this}' does not return a Matcher when invoked. Found '${matcher!!::class.qualifiedName}'");
         }
         return matcher;
@@ -79,9 +79,9 @@ data class HamcrestMatcher (var name:String, var args:Array<Any?>, var matcherCl
                         } catch (cnfe: ClassCastException) {
                             throw JsonParseException("No such class found '${className}'")
                         }
-                    } else {
-                        throw JsonParseException("'matcherClass' must be a string. Found '${it}'")
                     }
+                    
+                    throw JsonParseException("'matcherClass' must be a string. Found '${it}'")
                 }
 
                 return HamcrestMatcher(name, args.toTypedArray())

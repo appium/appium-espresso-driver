@@ -37,16 +37,13 @@ object GsonParserHelpers {
         return defaultValue
     }
 
-    fun parsePrimitive(jsonPrimitive: JsonPrimitive):Any {
+    fun parsePrimitive(jsonPrimitive: JsonPrimitive): Any {
         if (jsonPrimitive.isNumber) {
             // Gson doesn't have internal way of distinguishing floats from ints... so check string
-            val hasDecimal = if (jsonPrimitive.asString.contains(".")) true else false
-
-            if (hasDecimal) {
-                return jsonPrimitive.asDouble;
-            } else {
-                return jsonPrimitive.asLong;
-            }
+            return if (jsonPrimitive.asString.contains("."))
+                jsonPrimitive.asDouble
+            else
+                jsonPrimitive.asLong
         } else if (jsonPrimitive.isBoolean) {
             return jsonPrimitive.asBoolean;
         } else if (jsonPrimitive.isString) {
@@ -61,11 +58,10 @@ object GsonParserHelpers {
         jsonObj.get(key)?.let {
             if (it.isJsonArray) {
                 return it.asJsonArray
-            } else {
-                val jsonArr = JsonArray()
-                jsonArr.add(it)
-                return jsonArr
             }
+            val jsonArr = JsonArray()
+            jsonArr.add(it)
+            return jsonArr
         }
         return JsonArray();
     }
