@@ -16,10 +16,9 @@
 
 package io.appium.espressoserver.lib.http.response;
 
-import androidx.annotation.Nullable;
-
 import java.util.UUID;
 
+import androidx.annotation.Nullable;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 

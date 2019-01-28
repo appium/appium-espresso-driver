@@ -5,8 +5,6 @@ import androidx.test.espresso.matcher.CursorMatchers.CursorMatcher
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import io.appium.espressoserver.lib.model.HamcrestMatcher
-import org.hamcrest.Matcher
-import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

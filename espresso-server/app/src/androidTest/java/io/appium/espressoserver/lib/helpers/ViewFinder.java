@@ -17,18 +17,9 @@
 package io.appium.espressoserver.lib.helpers;
 
 import android.content.Context;
-
-import androidx.test.espresso.AmbiguousViewMatcherException;
-import androidx.test.espresso.DataInteraction;
-import androidx.test.espresso.EspressoException;
-import androidx.test.espresso.PerformException;
-import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.AdapterView;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -41,6 +32,10 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import androidx.test.espresso.DataInteraction;
+import androidx.test.espresso.EspressoException;
+import androidx.test.espresso.PerformException;
+import androidx.test.espresso.ViewInteraction;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
@@ -52,7 +47,6 @@ import io.appium.espressoserver.lib.viewmatcher.WithView;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -67,7 +61,6 @@ import static io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.instanceOf;

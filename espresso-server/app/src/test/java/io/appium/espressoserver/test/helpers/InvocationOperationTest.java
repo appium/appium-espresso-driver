@@ -9,7 +9,8 @@ import androidx.annotation.NonNull;
 import io.appium.espressoserver.lib.helpers.InvocationOperation;
 
 import static junit.framework.Assert.fail;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class InvocationOperationTest {
 

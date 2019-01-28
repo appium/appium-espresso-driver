@@ -1,13 +1,13 @@
 package io.appium.espressoserver.lib.viewaction;
 
-import androidx.test.espresso.NoMatchingViewException;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 
 import org.hamcrest.Matcher;
 
+import androidx.test.espresso.NoMatchingViewException;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.ViewInteraction;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.AndroidLogger;
 

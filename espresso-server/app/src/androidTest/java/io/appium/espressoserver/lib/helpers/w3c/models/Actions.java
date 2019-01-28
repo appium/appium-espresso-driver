@@ -16,11 +16,10 @@
 
 package io.appium.espressoserver.lib.helpers.w3c.models;
 
-import androidx.annotation.Nullable;
-
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import androidx.annotation.Nullable;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter;
 import io.appium.espressoserver.lib.helpers.w3c.state.ActiveInputSources;

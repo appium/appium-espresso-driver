@@ -10,7 +10,6 @@ import io.appium.espressoserver.lib.helpers.GsonParserHelpers
 import io.appium.espressoserver.lib.helpers.KReflectionUtils
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
-import java.lang.ClassCastException
 import java.lang.reflect.Type
 import kotlin.reflect.KClass
 

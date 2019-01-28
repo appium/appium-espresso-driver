@@ -18,7 +18,6 @@ package io.appium.espressoserver.lib.helpers.w3c_actions;
 
 import android.graphics.Rect;
 import android.os.Build;
-import androidx.annotation.Nullable;
 import android.util.LongSparseArray;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -36,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import androidx.annotation.Nullable;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.ViewElement;
 

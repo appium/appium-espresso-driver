@@ -17,7 +17,6 @@
 package io.appium.espressoserver.lib.handlers;
 
 import androidx.test.espresso.Espresso;
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.AppiumParams;
 

@@ -16,7 +16,10 @@
 
 package io.appium.espressoserver.lib.model.web
 
-import com.google.gson.*
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonParseException
 import com.google.gson.annotations.JsonAdapter
 import io.appium.espressoserver.lib.helpers.GsonParserHelpers
 import io.appium.espressoserver.lib.model.AppiumParams

@@ -18,8 +18,8 @@ package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.action.GeneralClickAction
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.MobileClickActionParams
 import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.MobileClickActionParams
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 

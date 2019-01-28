@@ -16,8 +16,10 @@
 
 package io.appium.espressoserver.lib.helpers
 
-import com.google.gson.*
-import java.lang.IllegalArgumentException
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.JsonParseException
+import com.google.gson.JsonPrimitive
 
 object GsonParserHelpers {
 
@@ -37,21 +39,14 @@ object GsonParserHelpers {
         return defaultValue
     }
 
-    fun parsePrimitive(jsonPrimitive: JsonPrimitive): Any {
-        if (jsonPrimitive.isNumber) {
-            // Gson doesn't have internal way of distinguishing floats from ints... so check string
-            return if (jsonPrimitive.asString.contains("."))
-                jsonPrimitive.asDouble
-            else
-                jsonPrimitive.asLong
-        } else if (jsonPrimitive.isBoolean) {
-            return jsonPrimitive.asBoolean;
-        } else if (jsonPrimitive.isString) {
-            return jsonPrimitive.asString;
+    fun parsePrimitive(jsonPrimitive: JsonPrimitive): Any = when {
+        jsonPrimitive.isNumber -> {
+            val hasDecimal = jsonPrimitive.asString.contains(".") // this returns true or false
+            if (hasDecimal) jsonPrimitive.asDouble else jsonPrimitive.asLong
         }
-
-        // Should be unreachable. Boolean, string and number should cover the primitives
-        throw JsonParseException("Unknown error occurred. Could not parse primitive '${jsonPrimitive}'");
+        jsonPrimitive.isBoolean -> jsonPrimitive.asBoolean
+        jsonPrimitive.isString -> jsonPrimitive.asString
+        else -> throw JsonParseException("Could not parse primitive '${jsonPrimitive}'");
     }
 
     fun asArray (jsonObj: JsonObject, key: String): JsonArray {

@@ -17,15 +17,15 @@
 package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.web.sugar.Web.WebInteraction
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import androidx.test.espresso.web.sugar.Web.onWebView
 import androidx.test.espresso.web.webdriver.DriverAtoms
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
 import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeInstanceMethod
 import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeMethod
 import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import io.appium.espressoserver.lib.viewmatcher.WithView.withView
 
 class WebAtoms : RequestHandler<WebAtomsParams, Void> {

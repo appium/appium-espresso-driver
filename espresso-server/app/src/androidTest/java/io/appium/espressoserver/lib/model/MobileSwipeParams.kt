@@ -23,7 +23,6 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.GsonParserHelpers
 import java.lang.reflect.Type
 
