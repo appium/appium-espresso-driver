@@ -16,6 +16,4 @@
 
 package io.appium.espressoserver.lib.model
 
-class EditorActionParams : AppiumParams() {
-    val action: Any? = null
-}
+data class EditorActionParams(val action: Any? = null) : AppiumParams()

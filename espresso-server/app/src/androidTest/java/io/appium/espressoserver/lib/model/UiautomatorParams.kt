@@ -20,11 +20,12 @@ import com.google.gson.annotations.SerializedName
 
 import java.util.ArrayList
 
-class UiautomatorParams : AppiumParams() {
-    val strategy: Strategy? = null
-    val locator: String? = null
-    val index: Int? = null
-    val action: Action? = null
+class UiautomatorParams(
+        val strategy: Strategy?,
+        val locator: String?,
+        val index: Int?,
+        val action: Action?
+) : AppiumParams() {
 
     enum class Strategy private constructor(val nameOfStrategy: String) {
         @SerializedName("clazz")

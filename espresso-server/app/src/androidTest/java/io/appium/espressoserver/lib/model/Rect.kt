@@ -16,9 +16,9 @@
 
 package io.appium.espressoserver.lib.model
 
-class Rect : AppiumParams() {
-    var x: Int? = null
-    var y: Int? = null
-    var width: Int? = null
-    var height: Int? = null
-}
+class Rect(
+    val x: Int,
+    val y: Int,
+    val width: Int,
+    val height: Int
+) : AppiumParams()

@@ -16,10 +16,7 @@
 
 package io.appium.espressoserver.lib.model
 
-class SessionParams : AppiumParams() {
-    val desiredCapabilities: DesiredCapabilities? = null
+data class SessionParams(val desiredCapabilities: DesiredCapabilities) : AppiumParams() {
 
-    inner class DesiredCapabilities {
-        val appActivity: String? = null
-    }
+    data class DesiredCapabilities(val appActivity: String? = null)
 }

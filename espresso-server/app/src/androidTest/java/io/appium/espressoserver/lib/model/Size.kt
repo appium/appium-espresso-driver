@@ -16,7 +16,4 @@
 
 package io.appium.espressoserver.lib.model
 
-class Size : AppiumParams() {
-    var width: Int? = null
-    var height: Int? = null
-}
+data class Size(val width: Int, val height: Int): AppiumParams()

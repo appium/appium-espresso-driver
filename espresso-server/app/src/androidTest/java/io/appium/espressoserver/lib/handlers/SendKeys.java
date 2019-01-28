@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException;
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.model.ViewText;
@@ -42,6 +43,9 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
         View view = Element.getViewById(id);
 
         // Convert the array of text to a String
+        if (params.getValue() == null) {
+            throw new InvalidStrategyException("'value' parameter cannot be blank for 'sendKeys'");
+        }
         String[] textArray = params.getValue();
         StringBuilder stringBuilder = new StringBuilder();
         for (String text : textArray) {
@@ -79,7 +83,7 @@ public class SendKeys implements RequestHandler<TextParams, Void> {
             logger.debug(String.format("Trying replaceText action as a workaround " +
                     "to type the '%s' text into the input field", value));
             ViewText currentText = new ViewTextGetter().get(viewInteraction);
-            if (currentText.getText().isEmpty() || currentText.isHint()) {
+            if (currentText.getRawText().isEmpty() || currentText.isHint()) {
                 viewInteraction.perform(replaceText(value));
             } else {
                 logger.debug(String.format("Current input field's text: '%s'", currentText));

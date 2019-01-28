@@ -16,8 +16,7 @@
 
 package io.appium.espressoserver.lib.model
 
-class Location : AppiumParams() {
-    var x: Int? = null
-    var y: Int? = null
-
-}
+data class Location (
+    val x: Int,
+    var y: Int
+)

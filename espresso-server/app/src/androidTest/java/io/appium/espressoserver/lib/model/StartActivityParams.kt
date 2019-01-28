@@ -1,6 +1,3 @@
 package io.appium.espressoserver.lib.model
 
-class StartActivityParams : AppiumParams() {
-
-    var appActivity: String? = null
-}
+data class StartActivityParams(val appActivity: String) : AppiumParams()

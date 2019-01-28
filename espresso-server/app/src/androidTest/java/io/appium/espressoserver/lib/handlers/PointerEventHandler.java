@@ -189,8 +189,8 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
         // Fabricate a scroll event
         long startX;
         long startY;
-        if (params.getElementId() != null) {
-            final View view = Element.getViewById(params.getElementId());
+        if (params.getTargetElement() != null) {
+            final View view = Element.getViewById(params.getTargetElement());
             final ViewElement viewElement = new ViewElement(view);
             startX = viewElement.getBounds().left;
             startY = viewElement.getBounds().top;
@@ -201,9 +201,7 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
         }
 
         // Do down event
-        MotionEventParams downParams = new MotionEventParams();
-        downParams.setX(startX);
-        downParams.setY(startY);
+        MotionEventParams downParams = new MotionEventParams(startX, startY);
         MotionEvent downEvent = handlePointerEvent(downParams, ACTION_DOWN, TOUCH);
 
         Long downTime = downEvent.getDownTime();
@@ -213,16 +211,12 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
         long scrollDuration = (long) (ViewConfiguration.getTapTimeout() * 1.5);
 
         eventTime += scrollDuration;
-        MotionEventParams moveParams = new MotionEventParams();
-        moveParams.setX(startX + params.getX());
-        moveParams.setY(startY + params.getY());
+        MotionEventParams moveParams = new MotionEventParams(startX + params.getX(), startY + params.getY());
         handlePointerEvent(moveParams, ACTION_MOVE, TOUCH, downTime, eventTime);
 
         // Release finger after another 'scroll' duration
         eventTime += scrollDuration;
-        MotionEventParams upParams = new MotionEventParams();
-        upParams.setX(startX + params.getX());
-        upParams.setY(startY + params.getY());
+        MotionEventParams upParams = new MotionEventParams(startX + params.getX(), startY + params.getY());
         handlePointerEvent(upParams, ACTION_UP, TOUCH, downTime, eventTime);
     }
 
@@ -252,27 +246,27 @@ public class PointerEventHandler implements RequestHandler<MotionEventParams, Vo
     }
 
     private void handleClick(final MotionEventParams params) throws AppiumException {
-        if (params.getElementId() == null) {
+        if (params.getTargetElement() == null) {
             throw new InvalidArgumentException("Element ID must not be blank for click event");
         }
 
-        Element.getViewInteractionById(params.getElementId()).perform(click());
+        Element.getViewInteractionById(params.getTargetElement()).perform(click());
     }
 
     private void handleDoubleClick(final MotionEventParams params) throws AppiumException {
-        if (params.getElementId() == null) {
+        if (params.getTargetElement() == null) {
             throw new InvalidArgumentException("Element ID must not be blank for double click event");
         }
 
-        Element.getViewInteractionById(params.getElementId()).perform(doubleClick());
+        Element.getViewInteractionById(params.getTargetElement()).perform(doubleClick());
     }
 
     private void handleLongClick(final MotionEventParams params) throws AppiumException {
-        if (params.getElementId() == null) {
+        if (params.getTargetElement() == null) {
             throw new InvalidArgumentException("Element ID must not be blank for long click event");
         }
 
-        Element.getViewInteractionById(params.getElementId()).perform(longClick());
+        Element.getViewInteractionById(params.getTargetElement()).perform(longClick());
     }
 
     private void handleMouseDoubleClick(MotionEventParams params) throws AppiumException {

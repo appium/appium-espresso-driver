@@ -16,9 +16,9 @@
 
 package io.appium.espressoserver.lib.model
 
-class WindowRect : AppiumParams() {
-    var width: Int? = null
-    var height: Int? = null
-    var x: Int? = null
-    var y: Int? = null
-}
+data class WindowRect(
+    val width: Int,
+    val height: Int,
+    val x: Int,
+    val y: Int
+) : AppiumParams()

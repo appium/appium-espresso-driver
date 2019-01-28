@@ -43,11 +43,11 @@ public class GetWindowRect implements RequestHandler<AppiumParams, WindowRect> {
 
         winManager.getDefaultDisplay().getMetrics(displayMetrics);
 
-        final WindowRect windowRect = new WindowRect();
-        windowRect.setHeight(displayMetrics.heightPixels);
-        windowRect.setWidth(displayMetrics.widthPixels);
-        windowRect.setX(0);
-        windowRect.setY(0);
-        return windowRect;
+        return new WindowRect(
+                displayMetrics.widthPixels,
+                displayMetrics.heightPixels,
+                0,
+                0
+        );
     }
 }

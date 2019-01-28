@@ -16,8 +16,8 @@
 
 package io.appium.espressoserver.lib.model
 
-class SetDateParams : AppiumParams() {
-    var year: Int? = null
-    var monthOfYear: Int? = null
-    var dayOfMonth: Int? = null
-}
+class SetDateParams (
+    val year: Int,
+    var monthOfYear: Int,
+    var dayOfMonth: Int
+) : AppiumParams()

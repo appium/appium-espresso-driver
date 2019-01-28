@@ -16,11 +16,7 @@
 
 package io.appium.espressoserver.lib.model
 
-import java.util.HashMap
-
-open class AppiumParams {
-    private val uriParams = HashMap<String, String?>()
-
+open class AppiumParams(var uriParams: MutableMap<String, String?> = mutableMapOf()) {
     val sessionId: String?
         get() = getUriParameterValue(SESSION_ID_PARAM_NAME)
 
@@ -28,17 +24,12 @@ open class AppiumParams {
         get() = getUriParameterValue(ELEMENT_ID_PARAM_NAME)
         set(elementId) = setUriParameterValue(ELEMENT_ID_PARAM_NAME, elementId)
 
-    fun initUriMapping(params: Map<String, String>) {
-        uriParams.clear()
-        uriParams.putAll(params)
-    }
-
     fun getUriParameterValue(name: String): String? {
         return uriParams[name]
     }
 
     private fun setUriParameterValue(name: String, value: String?) {
-        uriParams[name] = value
+        uriParams.set(name, value)
     }
 
     companion object {

@@ -16,8 +16,7 @@
 
 package io.appium.espressoserver.lib.model
 
-class WindowSize : AppiumParams() {
-    var width: Int? = null
-    var height: Int? = null
-
-}
+data class WindowSize (
+    val width: Int,
+    val height: Int
+): AppiumParams()

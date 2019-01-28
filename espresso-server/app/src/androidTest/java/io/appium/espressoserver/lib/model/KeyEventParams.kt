@@ -16,8 +16,8 @@
 
 package io.appium.espressoserver.lib.model
 
-class KeyEventParams : AppiumParams() {
-    val keycode: Int = 0
-    val metastate: Int? = null
+data class KeyEventParams(
+    val keycode: Int? = null,
+    val metastate: Int? = null,
     val flags: Int? = null
-}
+) : AppiumParams()

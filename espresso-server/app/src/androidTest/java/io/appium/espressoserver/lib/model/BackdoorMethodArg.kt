@@ -1,7 +1,3 @@
 package io.appium.espressoserver.lib.model
 
-class BackdoorMethodArg {
-    var value: String? = null
-    var type: String? = null
-
-}
+data class BackdoorMethodArg(val type: String?, val value: String?)

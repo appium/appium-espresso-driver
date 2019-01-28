@@ -2,23 +2,34 @@ package io.appium.espressoserver.lib.model
 
 import io.appium.espressoserver.lib.helpers.BackdoorUtils
 
-data class MobileBackdoorMethod(val name: String? = null, var args: List<BackdoorMethodArg> = emptyList()) {
+data class MobileBackdoorMethod(
+        val name: String?,
+        var args: List<BackdoorMethodArg>?
+) {
     val argumentTypes: Array<Class<*>?>
         get() {
-            val types = arrayOfNulls<Class<*>>(args.size)
-            for (i in args.indices) {
-                types[i] = BackdoorUtils.parseType(args[i].type)
+            args?.let {
+                val types = arrayOfNulls<Class<*>>(it.size)
+                for (i in it.indices) {
+                    types[i] = BackdoorUtils.parseType(it[i].type)
+                }
+                return types
             }
-            return types
+            return emptyArray()
         }
 
     val arguments: Array<Any?>
         get() {
-            val parsedArgs = arrayOfNulls<Any>(args.size)
-            for (i in args.indices) {
-                parsedArgs[i] = BackdoorUtils.parseValue(args[i].value,
-                        BackdoorUtils.parseType(args[i].type))
+            args?.let {
+                val parsedArgs = arrayOfNulls<Any>(it.size)
+                for (i in it.indices) {
+                    parsedArgs[i] = BackdoorUtils.parseValue(
+                            it[i].value,
+                            BackdoorUtils.parseType(it[i].type)
+                    )
+                }
+                return parsedArgs
             }
-            return parsedArgs
+            return emptyArray()
         }
 }

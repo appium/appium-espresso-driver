@@ -30,9 +30,6 @@ public class GetLocation implements RequestHandler<AppiumParams, Location> {
     public Location handle(AppiumParams params) throws AppiumException {
         final View view = Element.getViewById(params.getElementId());
         final ViewElement viewElement = new ViewElement(view);
-        final Location result = new Location();
-        result.setX(viewElement.getBounds().left);
-        result.setY(viewElement.getBounds().top);
-        return result;
+        return new Location(viewElement.getBounds().left, viewElement.getBounds().top);
     }
 }

@@ -16,6 +16,4 @@
 
 package io.appium.espressoserver.lib.model
 
-class NavigateToParams : AppiumParams() {
-    var menuItemId: Int? = null
-}
+data class NavigateToParams(var menuItemId: Int = 0) : AppiumParams()

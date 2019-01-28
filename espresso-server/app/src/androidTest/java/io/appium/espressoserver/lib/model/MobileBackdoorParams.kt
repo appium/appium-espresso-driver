@@ -2,11 +2,11 @@ package io.appium.espressoserver.lib.model
 
 import com.google.gson.annotations.SerializedName
 
-class MobileBackdoorParams : AppiumParams() {
-    val target: InvocationTarget? = null
-    override var elementId: String? = null
-
-    val methods: List<MobileBackdoorMethod>? = null
+data class MobileBackdoorParams(
+    val target: InvocationTarget?,
+    val methods: List<MobileBackdoorMethod>?
+)  : AppiumParams() {
+    //override var elementId: String? = null
 
     enum class InvocationTarget {
         @SerializedName("activity")
@@ -16,6 +16,5 @@ class MobileBackdoorParams : AppiumParams() {
         @SerializedName("element")
         ELEMENT
     }
-
 }
 

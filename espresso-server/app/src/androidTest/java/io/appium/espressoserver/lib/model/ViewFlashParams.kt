@@ -1,8 +1,10 @@
 package io.appium.espressoserver.lib.model
 
-class ViewFlashParams : AppiumParams() {
+private val DURATION_MILLIS = 30
+private val REPEAT_COUNT = 15
 
-    val durationMillis: Int? = null
+data class ViewFlashParams(
+    val durationMillis: Int = DURATION_MILLIS,
+   val repeatCount: Int = REPEAT_COUNT
+) : AppiumParams()
 
-    val repeatCount: Int? = null
-}

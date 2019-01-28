@@ -16,7 +16,7 @@
 
 package io.appium.espressoserver.lib.model
 
-class Locator : AppiumParams() {
-    var using: Strategy? = null
-    var value: String? = null
-}
+data class Locator(
+    val using: Strategy? = null,
+    val value: String? = null
+) : AppiumParams()

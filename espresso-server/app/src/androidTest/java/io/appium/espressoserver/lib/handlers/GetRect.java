@@ -30,12 +30,9 @@ public class GetRect implements RequestHandler<AppiumParams, Rect> {
     public Rect handle(AppiumParams params) throws AppiumException {
         final View view = Element.getViewById(params.getElementId());
         final ViewElement viewElement = new ViewElement(view);
-        final Rect result = new Rect();
         final android.graphics.Rect elementBounds = viewElement.getBounds();
-        result.setX(elementBounds.left);
-        result.setY(elementBounds.top);
-        result.setHeight(elementBounds.height());
-        result.setWidth(elementBounds.width());
-        return result;
+        return new Rect(
+            elementBounds.left, elementBounds.top, elementBounds.width(), elementBounds.height()
+        );
     }
 }

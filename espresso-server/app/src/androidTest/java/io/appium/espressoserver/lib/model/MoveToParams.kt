@@ -16,11 +16,7 @@
 
 package io.appium.espressoserver.lib.model
 
-import com.google.gson.annotations.SerializedName
-
-class MoveToParams : AppiumParams() {
-    @SerializedName("element")
-    override var elementId: String? = null
-    val xOffset: Int = 0
+data class MoveToParams(
+    val xOffset: Int = 0,
     val yOffset: Int = 0
-}
+) : AppiumParams()

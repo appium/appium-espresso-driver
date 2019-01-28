@@ -16,10 +16,4 @@
 
 package io.appium.espressoserver.lib.model
 
-import androidx.annotation.Nullable
-
-class TextParams : AppiumParams() {
-    val value: Array<String>? = null
-    @get:Nullable
-    val text: String? = null
-}
+data class TextParams(val value: Array<String>?, val text: String?) : AppiumParams()

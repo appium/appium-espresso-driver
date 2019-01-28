@@ -16,13 +16,4 @@
 
 package io.appium.espressoserver.lib.model
 
-class SetTimeParams : AppiumParams() {
-    var hours: Int? = null
-        private set
-    var minutes: Int? = null
-
-    fun setHour(hours: Int?) {
-        this.hours = hours
-    }
-
-}
+class SetTimeParams(val hours: Int, val minutes: Int) : AppiumParams();

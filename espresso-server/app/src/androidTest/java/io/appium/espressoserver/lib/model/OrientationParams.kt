@@ -16,6 +16,4 @@
 
 package io.appium.espressoserver.lib.model
 
-class OrientationParams : AppiumParams() {
-    var orientation: String? = null
-}
+data class OrientationParams(var orientation: String? = null) : AppiumParams()

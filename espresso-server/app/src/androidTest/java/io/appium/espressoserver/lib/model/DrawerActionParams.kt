@@ -16,9 +16,4 @@
 
 package io.appium.espressoserver.lib.model
 
-import com.google.gson.annotations.SerializedName
-
-class DrawerActionParams : AppiumParams() {
-    var gravity: Int? = null
-
-}
+data class DrawerActionParams(val gravity: Int? = null) : AppiumParams()

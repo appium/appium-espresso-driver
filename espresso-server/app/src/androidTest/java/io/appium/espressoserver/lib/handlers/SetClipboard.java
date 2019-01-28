@@ -39,7 +39,7 @@ public class SetClipboard implements RequestHandler<SetClipboardParams, Void> {
         }
         try {
             mInstrumentation.runOnMainSync(new SetClipboardRunnable(
-                    params.getContentType(), params.getLabel(), fromBase64String(params.getContent())));
+                    params.getContenttype(), params.getLabel(), fromBase64String(params.getContent())));
         } catch (IllegalArgumentException e) {
             throw new InvalidArgumentException(e);
         }

@@ -16,11 +16,6 @@
 
 package io.appium.espressoserver.lib.model
 
-import androidx.annotation.Nullable
-
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions
 
-class ActionsParams : AppiumParams() {
-    @get:Nullable
-    var actions: Actions? = null
-}
+data class ActionsParams(val actions: Actions? = null) : AppiumParams()

@@ -30,9 +30,6 @@ public class GetSize implements RequestHandler<AppiumParams, Size> {
     public Size handle(AppiumParams params) throws AppiumException {
         final View view = Element.getViewById(params.getElementId());
         final ViewElement viewElement = new ViewElement(view);
-        final Size result = new Size();
-        result.setHeight(viewElement.getBounds().height());
-        result.setWidth(viewElement.getBounds().width());
-        return result;
+        return new Size(viewElement.getBounds().width(), viewElement.getBounds().height());
     }
 }

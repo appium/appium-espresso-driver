@@ -40,9 +40,6 @@ public class GetWindowSize implements RequestHandler<AppiumParams, WindowSize> {
         int height = displayMetrics.heightPixels;
         int width = displayMetrics.widthPixels;
 
-        final WindowSize windowSize = new WindowSize();
-        windowSize.setHeight(height);
-        windowSize.setWidth(width);
-        return windowSize;
+        return new WindowSize(width, height);
     }
 }

@@ -16,13 +16,4 @@
 
 package io.appium.espressoserver.lib.model
 
-class ToastLookupParams : AppiumParams() {
-    var text: String? = null
-    var isRegexp: Boolean? = null
-        get() {
-            if (field == null) {
-                return false
-            }
-            return field
-        }
-}
+data class ToastLookupParams(val text: String, val isRegexp: Boolean = false) : AppiumParams()

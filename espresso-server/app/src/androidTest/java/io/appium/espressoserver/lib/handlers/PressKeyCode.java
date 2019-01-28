@@ -44,11 +44,9 @@ public class PressKeyCode implements RequestHandler<KeyEventParams, Void> {
         UiControllerRunnable<Void> runnable = new UiControllerRunnable<Void>() {
             @Override
             public Void run(UiController uiController) throws AppiumException {
-                final int keyCode = params.getKeycode();
-                Integer metaState = params.getMetastate();
-                metaState = metaState == null ? 0 : metaState;
-                Integer flags = params.getFlags();
-                flags = flags == null ? 0 : flags;
+                final int keyCode = params.getKeycode() == null ? 0 : params.getKeycode();
+                Integer metaState = params.getMetastate() == null ? 0 : params.getMetastate();
+                Integer flags = params.getFlags() == null ? 0 : params.getFlags();
                 final long downTime = SystemClock.uptimeMillis();
 
                 try {

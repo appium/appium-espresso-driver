@@ -23,24 +23,16 @@ public class MobileBackdoorMethodTest {
     public void shouldParseArgumentsAndTypes() {
         MobileBackdoorMethod method = new MobileBackdoorMethod();
         List<BackdoorMethodArg> args = new ArrayList<>();
-        BackdoorMethodArg arg1 = new BackdoorMethodArg();
-        arg1.setType("java.lang.String");
-        arg1.setValue("Oh");
+        BackdoorMethodArg arg1 = new BackdoorMethodArg("java.lang.String", "Oh");
         args.add(arg1);
 
-        BackdoorMethodArg arg2 = new BackdoorMethodArg();
-        arg2.setType("java.lang.Integer");
-        arg2.setValue("10");
+        BackdoorMethodArg arg2 = new BackdoorMethodArg("java.lang.Integer", "10");
         args.add(arg2);
 
-        BackdoorMethodArg arg3 = new BackdoorMethodArg();
-        arg3.setType("int");
-        arg3.setValue("20");
+        BackdoorMethodArg arg3 = new BackdoorMethodArg("int", "20");
         args.add(arg3);
 
-        BackdoorMethodArg arg4 = new BackdoorMethodArg();
-        arg4.setType("Boolean");
-        arg4.setValue("true");
+        BackdoorMethodArg arg4 = new BackdoorMethodArg("Boolean", "true");
         args.add(arg4);
 
         method.setArgs(args);
@@ -53,9 +45,7 @@ public class MobileBackdoorMethodTest {
     public void shouldNotAllowInvalidArgumentTypes() {
         MobileBackdoorMethod method = new MobileBackdoorMethod();
         List<BackdoorMethodArg> args = new ArrayList<>();
-        BackdoorMethodArg arg1 = new BackdoorMethodArg();
-        arg1.setType("java.lang.Lol");
-        arg1.setValue("Oh");
+        BackdoorMethodArg arg1 = new BackdoorMethodArg("java.lang.Lol", "Oh");
         args.add(arg1);
         method.setArgs(args);
         try {
@@ -72,9 +62,7 @@ public class MobileBackdoorMethodTest {
     public void shouldNotAllowIncompatibleValueForGivenType() {
         MobileBackdoorMethod method = new MobileBackdoorMethod();
         List<BackdoorMethodArg> args = new ArrayList<>();
-        BackdoorMethodArg arg1 = new BackdoorMethodArg();
-        arg1.setType("int");
-        arg1.setValue("lol");
+        BackdoorMethodArg arg1 = new BackdoorMethodArg("int", "lol");
         args.add(arg1);
         method.setArgs(args);
         try {

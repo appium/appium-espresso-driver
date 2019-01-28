@@ -16,6 +16,4 @@
 
 package io.appium.espressoserver.lib.model
 
-class AlertParams : AppiumParams() {
-    var buttonLabel: String? = null
-}
+data class AlertParams(var buttonLabel: String? = null) : AppiumParams()

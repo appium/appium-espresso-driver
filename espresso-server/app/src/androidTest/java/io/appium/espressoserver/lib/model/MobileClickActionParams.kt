@@ -26,12 +26,13 @@ import io.appium.espressoserver.lib.helpers.GsonParserHelpers
 import java.lang.reflect.Type
 
 @JsonAdapter(MobileClickActionParams.MobileClickActionParamsDeserializer::class)
-class MobileClickActionParams : AppiumParams() {
-    var tapper : Tapper? = null
-    var coordinatesProvider : CoordinatesProvider? = null
-    var precisionDescriber : PrecisionDescriber? = null
-    var inputDevice = 0
-    var buttonState = 0
+data class MobileClickActionParams(
+        val tapper : Tapper,
+        val coordinatesProvider : CoordinatesProvider,
+        val precisionDescriber : PrecisionDescriber,
+        val inputDevice: Int,
+        val buttonState: Int
+) : AppiumParams() {
 
 
     class MobileClickActionParamsDeserializer : JsonDeserializer<MobileClickActionParams> {
@@ -39,44 +40,40 @@ class MobileClickActionParams : AppiumParams() {
         @Throws(JsonParseException::class)
         override fun deserialize(json: JsonElement, paramType: Type?,
                                  paramJsonDeserializationContext: JsonDeserializationContext?): MobileClickActionParams {
-            val clickActionParams = MobileClickActionParams()
             val jsonObject = json.asJsonObject
 
-            if (jsonObject.has("inputDevice")) {
-                clickActionParams.inputDevice = jsonObject.get("inputDevice").asInt
-            }
+            val inputDevice = if (jsonObject.has("inputDevice"))
+                    jsonObject.get("inputDevice").asInt
+                else 0
 
-            if (jsonObject.has("buttonState")) {
-                clickActionParams.buttonState = jsonObject.get("buttonState").asInt
-            }
+            val buttonState = if (jsonObject.has("buttonState"))
+                jsonObject.get("buttonState").asInt
+                else 0
 
             val gsonParserHelpers = GsonParserHelpers();
 
             // Deserialize TAPPER as a tap enum
-            clickActionParams.tapper = gsonParserHelpers.parseEnum<Tap>(
+            val tapper = gsonParserHelpers.parseEnum<Tap>(
                     jsonObject,
                     "tapper",
-                    "See https://developer.android.com/reference/android/support/test/espresso/action/Tap for list of valid tapper types",
-                    Tap.SINGLE
-            )
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/Tap for list of valid tapper types"
+            ) ?: Tap.SINGLE
 
             // Deserialize COORDINATES_PROVIDER as a general location enum
-            clickActionParams.coordinatesProvider = gsonParserHelpers.parseEnum<GeneralLocation>(
+            val coordinatesProvider = gsonParserHelpers.parseEnum<GeneralLocation>(
                     jsonObject,
                     "coordinatesProvider",
-                    "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinatesProvider types",
-                    GeneralLocation.VISIBLE_CENTER
-            )
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinatesProvider types"
+            ) ?: GeneralLocation.VISIBLE_CENTER
 
             // Deserialize PRECISION_DESCRIBER as a 'Press' enum
-            clickActionParams.precisionDescriber = gsonParserHelpers.parseEnum<Press>(
+            val precisionDescriber = gsonParserHelpers.parseEnum<Press>(
                     jsonObject,
                     "precisionDescriber",
-                    "See https://developer.android.com/reference/android/support/test/espresso/action/Press for list of valid precisionDescriber types",
-                    Press.FINGER
-            )
+                    "See https://developer.android.com/reference/android/support/test/espresso/action/Press for list of valid precisionDescriber types"
+            ) ?: Press.FINGER
 
-            return clickActionParams
+            return MobileClickActionParams(tapper, coordinatesProvider, precisionDescriber, inputDevice, buttonState);
         }
     }
 

@@ -301,7 +301,7 @@ class Router {
             // Parse the parameters
             AppiumParams appiumParams;
             if (postJson == null) {
-                appiumParams = new AppiumParams();
+                appiumParams = new AppiumParams(uriParams);
             } else {
                 logger.debug(String.format("Got raw post data: %s", abbreviate(postJson, 300)));
                 try {
@@ -311,7 +311,7 @@ class Router {
                     return new AppiumResponse<>(AppiumStatus.INVALID_ARGUMENT, Log.getStackTraceString(e));
                 }
             }
-            appiumParams.initUriMapping(uriParams);
+            appiumParams.setUriParams(uriParams);
 
             // Validate the sessionId
             if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.Companion.getGlobalSession().getId())) {

@@ -23,7 +23,7 @@ import java.lang.IllegalArgumentException
 class GsonParserHelpers {
 
     inline fun <reified T : Enum<T>> parseEnum(jsonObj: JsonObject, propName: String,
-                                               helperMessage: String = "", defaultValue: T? = null): T? {
+                                               helperMessage: String = ""): T? {
         val property = jsonObj.get(propName)
         if (property != null) {
             val propValueAsString = property.asString.toUpperCase()
@@ -35,6 +35,6 @@ class GsonParserHelpers {
                 """.trimIndent());
             }
         }
-        return defaultValue
+        return null
     }
 }

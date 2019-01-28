@@ -14,14 +14,11 @@ import io.appium.espressoserver.lib.model.ViewFlashParams;
 
 public class MobileViewFlash implements RequestHandler<ViewFlashParams, Void> {
 
-    private static final int DURATION_MILLIS = 30;
-    private static final int REPEAT_COUNT = 15;
-
     @Override
     public Void handle(final ViewFlashParams params) throws AppiumException {
 
-        final int duration = params.getDurationMillis() == null ? DURATION_MILLIS : params.getDurationMillis();
-        final int repeatCount = params.getRepeatCount() == null ? REPEAT_COUNT : params.getRepeatCount();
+        final int duration = params.getDurationMillis();
+        final int repeatCount = params.getRepeatCount();
 
         final View view = Element.getViewById(params.getElementId());
         final CountDownLatch latch = new CountDownLatch(1);

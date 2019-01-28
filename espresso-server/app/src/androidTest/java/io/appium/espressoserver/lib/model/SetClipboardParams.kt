@@ -16,18 +16,8 @@
 
 package io.appium.espressoserver.lib.model
 
-import androidx.annotation.NonNull
-import androidx.annotation.Nullable
-
-class SetClipboardParams : AppiumParams() {
-    private val contentType: ClipboardDataType? = null
-    @get:Nullable
-    val content: String? = null
-    @get:Nullable
-    val label: String? = null
-
-    @NonNull
-    fun getContentType(): ClipboardDataType {
-        return this.contentType ?: ClipboardDataType.PLAINTEXT
-    }
-}
+data class SetClipboardParams(
+        val content: String?,
+        val label: String?,
+        val contenttype: ClipboardDataType = ClipboardDataType.PLAINTEXT
+) : AppiumParams()
