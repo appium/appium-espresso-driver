@@ -49,6 +49,7 @@ describe('driver', function () {
           startLogcat: () => {},
           forwardPort: () => {},
           isAnimationOn: () => false,
+          installOrUpgrade: () => {},
         };
       });
       await driver.startEspressoSession();
