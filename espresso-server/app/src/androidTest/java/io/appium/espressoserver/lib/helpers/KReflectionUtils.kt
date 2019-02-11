@@ -46,8 +46,9 @@ object KReflectionUtils {
                     val classifier = type.classifier;
                     if (classifier is KClass<*> && classifier.isSubclassOf(Class::class)) {
                         var className: String = providedParam.toString()
-                        if (className.endsWith(".class")) {
-                            className = className.take(className.length - ".class".length)
+                        val classExtension = ".class";
+                        if (className.endsWith(classExtension)) {
+                            className = className.take(className.length - classExtension.length)
                         }
 
                         try {
