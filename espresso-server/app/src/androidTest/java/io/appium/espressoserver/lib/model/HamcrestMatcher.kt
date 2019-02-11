@@ -49,13 +49,10 @@ data class HamcrestMatcher (var name:String, var args:Array<Any?>, var matcherCl
 
                 val args = arrayListOf<Any?>()
                 for (arg in listOfArgs) {
-                    if (arg.isJsonPrimitive) {
-                        args.add(GsonParserHelpers.parsePrimitive(arg.asJsonPrimitive))
-                    } else if (arg.isJsonNull) {
-                        args.add(null)
-                    } else if (arg.isJsonObject) {
-                        // If an 'arg' is an Object, deserialize it as another Hamcrest object
-                        args.add(HamcrestMatcherDeserializer().deserialize(arg, null, null).invoke())
+                    when {
+                        arg.isJsonPrimitive -> args.add(GsonParserHelpers.parsePrimitive(arg.asJsonPrimitive))
+                        arg.isJsonNull -> args.add(null)
+                        arg.isJsonObject -> args.add(HamcrestMatcherDeserializer().deserialize(arg, null, null).invoke())
                     }
                 }
 
