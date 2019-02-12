@@ -152,6 +152,7 @@ describe('touch actions -', function () {
 
   describe('scrolling/swiping', function () {
     describe('single', function () {
+      this.retries(2);
       beforeEach(startListActivity);
 
       it('should scroll up menu', async function () {
