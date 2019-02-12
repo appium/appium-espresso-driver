@@ -22,17 +22,17 @@ import android.widget.AdapterView;
 
 import org.hamcrest.Matchers;
 
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.EspressoException;
 import androidx.test.espresso.ViewInteraction;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
+import io.appium.espressoserver.lib.helpers.ViewState;
+import io.appium.espressoserver.lib.helpers.ViewsCache;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
 import static androidx.test.espresso.Espresso.onData;
@@ -41,25 +41,22 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.collection.IsMapContaining.hasEntry;
 
 
 @SuppressWarnings("unused")
 public class Element {
     private final String ELEMENT;
-    private final static Map<String, View> cache = new ConcurrentHashMap<>();
-    private final static Map<String, String> contentDescriptionCache = new ConcurrentHashMap<>();
+    private final static ViewsCache cache = ViewsCache.INSTANCE;
 
-    public Element (View view) {
-        ELEMENT = UUID.randomUUID().toString();
-        cache.put(ELEMENT, view);
-
-        // Cache the content description as well
-        CharSequence contentDesc = view.getContentDescription();
-
-        if (contentDesc != null) {
-            contentDescriptionCache.put(ELEMENT, contentDesc.toString());
+    public Element(View view) {
+        String id = cache.getViewId(view);
+        if (id == null) {
+            ELEMENT = UUID.randomUUID().toString();
+            cache.put(ELEMENT, view);
+        } else {
+            ELEMENT = id;
         }
     }
 
@@ -69,46 +66,34 @@ public class Element {
 
     /**
      * Retrieve cached view and return the ViewInteraction
+     *
      * @param elementId
      * @return
      * @throws NoSuchElementException
      * @throws StaleElementException
      */
     public static ViewInteraction getViewInteractionById(String elementId) throws AppiumException {
-        if (!exists(elementId)) {
-            throw new NoSuchElementException(String.format("Invalid element ID %s", elementId));
-        }
         View view = Element.getViewById(elementId);
         return onView(withView(view));
     }
 
-    /**
-     * Return the cached element
-     * @param elementId
-     * @return
-     */
-    public static View getViewById(String elementId) throws AppiumException {
-        View view = getCachedView(elementId);
-
-        if (!view.isShown()) {
-            throw new StaleElementException(elementId);
-        }
-        return view;
-    }
-
-    public static boolean exists(String elementId) {
-        return cache.containsKey(elementId);
-    }
-
-    public static View getCachedView(String elementId) throws NoSuchElementException, StaleElementException {
-        if (!exists(elementId)) {
+    public static View getViewById(String elementId) throws NoSuchElementException, StaleElementException {
+        if (!cache.has(elementId)) {
             throw new NoSuchElementException(String.format("No such element with ID %s", elementId));
         }
 
-        View view = cache.get(elementId);
+        ViewState viewState = cache.get(elementId);
 
-        if (!view.isShown()) {
+        if (viewState instanceof ViewState.DETACHED) {
             throw new StaleElementException(elementId);
+        }
+
+        //noinspection ConstantConditions
+        View resultView = ((ViewState.ATTACHED) viewState).getView();
+        String initialContentDescription = null;
+        if (((ViewState.ATTACHED) viewState).getInitialContentDescription() != null) {
+            //noinspection ConstantConditions
+            initialContentDescription = ((ViewState.ATTACHED) viewState).getInitialContentDescription().toString();
         }
 
         // This is a special case:
@@ -118,39 +103,36 @@ public class Element {
         //
         // If we encounter this, try to scroll the element with the expected contentDescription into
         // view and return that element
-        if (contentDescriptionCache.containsKey(elementId)) {
-            String expectedContentDesc = contentDescriptionCache.get(elementId);
+        if (!Objects.equals(resultView.getContentDescription(), initialContentDescription)) {
 
-            if (!Objects.equals(view.getContentDescription(), expectedContentDesc)) {
-
-                // Look up the view hierarchy to find the closest ancestor AdapterView
-                ViewParent ancestorAdapter = view.getParent();
-                while (ancestorAdapter != null && !(ancestorAdapter instanceof AdapterView)) {
-                    ancestorAdapter = ancestorAdapter.getParent();
-                }
-
-                try {
-                    // Try scrolling the view with the expected content description into the viewport
-                    DataInteraction dataInteraction = onData(
-                            hasEntry(Matchers.equalTo("contentDescription"), is(expectedContentDesc))
-                    );
-                    if (ancestorAdapter != null) {
-                        dataInteraction.inAdapterView(withView((AdapterView) ancestorAdapter));
-                    }
-                    dataInteraction.check(matches(isDisplayed()));
-
-                    // If successful, use that view instead of the cached view
-                    view = (new ViewGetter()).getView(onView(withContentDescription(expectedContentDesc)));
-                    cache.put(elementId, view);
-                } catch (Exception e) {
-                    if (e instanceof EspressoException) {
-                        throw new StaleElementException(elementId);
-                    }
-                    throw e;
-                }
+            // Look up the view hierarchy to find the closest ancestor AdapterView
+            ViewParent ancestorAdapter = resultView.getParent();
+            while (ancestorAdapter != null && !(ancestorAdapter instanceof AdapterView)) {
+                ancestorAdapter = ancestorAdapter.getParent();
             }
-        }
 
-        return view;
+            try {
+                // Try scrolling the view with the expected content description into the viewport
+                DataInteraction dataInteraction = onData(
+                        hasEntry(Matchers.equalTo("contentDescription"), is(resultView.getContentDescription()))
+                );
+                if (ancestorAdapter != null) {
+                    dataInteraction.inAdapterView(withView((AdapterView) ancestorAdapter));
+                }
+                dataInteraction.check(matches(isDisplayed()));
+
+                // If successful, use that view instead of the cached view
+                resultView = (new ViewGetter()).getView(onView(withContentDescription(resultView.getContentDescription().toString())));
+                cache.put(elementId, resultView);
+            } catch (Exception e) {
+                if (e instanceof EspressoException) {
+                    throw new StaleElementException(elementId);
+                }
+                throw e;
+            }
+
+        }
+        //noinspection ConstantConditions
+        return resultView;
     }
 }
