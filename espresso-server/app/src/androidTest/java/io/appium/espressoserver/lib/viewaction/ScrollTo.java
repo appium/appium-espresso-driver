@@ -16,14 +16,15 @@
 
 package io.appium.espressoserver.lib.viewaction;
 
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
 import android.view.View;
 import android.widget.AbsListView;
 
 import org.hamcrest.Matcher;
 
 import javax.annotation.Nullable;
+
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;

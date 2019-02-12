@@ -16,18 +16,18 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import androidx.test.espresso.ViewInteraction;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-import static androidx.test.espresso.Espresso.onView;
-
 import java.util.Arrays;
 
 import javax.annotation.Nullable;
 
+import androidx.test.espresso.ViewInteraction;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.OrientationParams;
 import io.appium.espressoserver.lib.viewaction.OrientationChange;
+
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 
 public class SetOrientation implements RequestHandler<OrientationParams, Void> {
 

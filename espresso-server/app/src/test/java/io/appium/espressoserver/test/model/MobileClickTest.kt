@@ -2,7 +2,8 @@ package io.appium.espressoserver.test.model
 
 import androidx.test.espresso.action.GeneralLocation.TOP_RIGHT
 import androidx.test.espresso.action.GeneralLocation.VISIBLE_CENTER
-import androidx.test.espresso.action.Press.*
+import androidx.test.espresso.action.Press.FINGER
+import androidx.test.espresso.action.Press.PINPOINT
 import androidx.test.espresso.action.Tap.DOUBLE
 import androidx.test.espresso.action.Tap.SINGLE
 import com.google.gson.JsonObject

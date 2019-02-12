@@ -5,6 +5,7 @@ import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import io.appium.espressoserver.lib.model.web.WebAtomsParams.WebAtomsMethod
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class WebAtomsTest {
     val g = Gson()
@@ -22,7 +23,7 @@ class WebAtomsTest {
         }""".trimIndent(), WebAtomsMethod::class.java)
         assertEquals(webAtomsMethod.name, "withElement");
         assertEquals(webAtomsMethod.atom.name, "findElement");
-        assertEquals(webAtomsMethod.atom.args, arrayListOf("id", "text_input"));
+        assertTrue(webAtomsMethod.atom.args contentEquals  arrayOf("id", "text_input"));
     }
 
     @Test
@@ -61,19 +62,19 @@ class WebAtomsTest {
         webAtoms.methodChain.get(0).let {
             assertEquals(it.name, "withElement")
             assertEquals(it.atom.name, "findElement")
-            assertEquals(it.atom.args, arrayListOf("id", "text_input"))
+            assertTrue(it.atom.args contentEquals arrayOf("id", "text_input"))
         }
 
         webAtoms.methodChain.get(1).let {
             assertEquals(it.name, "perform")
             assertEquals(it.atom.name, "clearElement")
-            assertEquals(it.atom.args, emptyList())
+            assertTrue(it.atom.args contentEquals  emptyArray())
         }
 
         webAtoms.methodChain.get(2).let {
             assertEquals(it.name, "perform")
             assertEquals(it.atom.name, "webKeys")
-            assertEquals(it.atom.args, arrayListOf("Foo"))
+            assertTrue(it.atom.args contentEquals  arrayOf("Foo"))
         }
 
     }

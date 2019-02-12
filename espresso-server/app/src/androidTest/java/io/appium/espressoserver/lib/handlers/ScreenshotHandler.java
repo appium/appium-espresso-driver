@@ -16,13 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers;
 
-import android.graphics.Bitmap;
-import android.util.Base64;
-
-import java.io.ByteArrayOutputStream;
-
-import androidx.test.runner.screenshot.ScreenCapture;
-import androidx.test.runner.screenshot.Screenshot;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
 import io.appium.espressoserver.lib.model.AppiumParams;

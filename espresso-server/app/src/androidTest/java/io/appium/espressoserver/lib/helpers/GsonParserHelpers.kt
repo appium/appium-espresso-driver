@@ -16,11 +16,12 @@
 
 package io.appium.espressoserver.lib.helpers
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
-import java.lang.IllegalArgumentException
+import com.google.gson.JsonPrimitive
 
-class GsonParserHelpers {
+object GsonParserHelpers {
 
     inline fun <reified T : Enum<T>> parseEnum(jsonObj: JsonObject, propName: String,
                                                helperMessage: String = "", defaultValue: T? = null): T? {
@@ -36,5 +37,27 @@ class GsonParserHelpers {
             }
         }
         return defaultValue
+    }
+
+    fun parsePrimitive(jsonPrimitive: JsonPrimitive): Any = when {
+        jsonPrimitive.isNumber -> {
+            val hasDecimal = jsonPrimitive.asString.contains(".") // this returns true or false
+            if (hasDecimal) jsonPrimitive.asDouble else jsonPrimitive.asLong
+        }
+        jsonPrimitive.isBoolean -> jsonPrimitive.asBoolean
+        jsonPrimitive.isString -> jsonPrimitive.asString
+        else -> throw JsonParseException("Could not parse primitive '${jsonPrimitive}'");
+    }
+
+    fun asArray (jsonObj: JsonObject, key: String): JsonArray {
+        jsonObj.get(key)?.let {
+            if (it.isJsonArray) {
+                return it.asJsonArray
+            }
+            val jsonArr = JsonArray()
+            jsonArr.add(it)
+            return jsonArr
+        }
+        return JsonArray();
     }
 }

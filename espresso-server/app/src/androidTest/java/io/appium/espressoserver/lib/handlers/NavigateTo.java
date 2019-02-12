@@ -19,13 +19,9 @@ package io.appium.espressoserver.lib.handlers;
 import androidx.test.espresso.EspressoException;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.contrib.PickerActions;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.model.Element;
 import io.appium.espressoserver.lib.model.NavigateToParams;
-import io.appium.espressoserver.lib.model.ScrollToPageParams;
-import io.appium.espressoserver.lib.model.SetTimeParams;
 
 public class NavigateTo implements RequestHandler<NavigateToParams, Void> {
 

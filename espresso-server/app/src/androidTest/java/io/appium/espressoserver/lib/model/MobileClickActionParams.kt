@@ -50,10 +50,8 @@ class MobileClickActionParams : AppiumParams() {
                 clickActionParams.buttonState = jsonObject.get("buttonState").asInt
             }
 
-            val gsonParserHelpers = GsonParserHelpers();
-
             // Deserialize TAPPER as a tap enum
-            clickActionParams.tapper = gsonParserHelpers.parseEnum<Tap>(
+            clickActionParams.tapper = GsonParserHelpers.parseEnum<Tap>(
                     jsonObject,
                     "tapper",
                     "See https://developer.android.com/reference/android/support/test/espresso/action/Tap for list of valid tapper types",
@@ -61,7 +59,7 @@ class MobileClickActionParams : AppiumParams() {
             )
 
             // Deserialize COORDINATES_PROVIDER as a general location enum
-            clickActionParams.coordinatesProvider = gsonParserHelpers.parseEnum<GeneralLocation>(
+            clickActionParams.coordinatesProvider = GsonParserHelpers.parseEnum<GeneralLocation>(
                     jsonObject,
                     "coordinatesProvider",
                     "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinatesProvider types",
@@ -69,7 +67,7 @@ class MobileClickActionParams : AppiumParams() {
             )
 
             // Deserialize PRECISION_DESCRIBER as a 'Press' enum
-            clickActionParams.precisionDescriber = gsonParserHelpers.parseEnum<Press>(
+            clickActionParams.precisionDescriber = GsonParserHelpers.parseEnum<Press>(
                     jsonObject,
                     "precisionDescriber",
                     "See https://developer.android.com/reference/android/support/test/espresso/action/Press for list of valid precisionDescriber types",

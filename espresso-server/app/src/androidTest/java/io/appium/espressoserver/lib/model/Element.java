@@ -16,9 +16,6 @@
 
 package io.appium.espressoserver.lib.model;
 
-import androidx.test.espresso.DataInteraction;
-import androidx.test.espresso.EspressoException;
-import androidx.test.espresso.ViewInteraction;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.AdapterView;
@@ -31,6 +28,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import androidx.test.espresso.DataInteraction;
+import androidx.test.espresso.EspressoException;
+import androidx.test.espresso.ViewInteraction;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
@@ -41,8 +41,8 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static io.appium.espressoserver.lib.viewmatcher.WithView.withView;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.is;
 
 
 @SuppressWarnings("unused")

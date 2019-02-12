@@ -23,7 +23,6 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.GsonParserHelpers
 import java.lang.reflect.Type
 
@@ -55,17 +54,16 @@ class MobileSwipeParams : AppiumParams() {
             val swipeActionParams = MobileSwipeParams()
             val jsonObject = json.asJsonObject
 
-            val gsonParserHelpers = GsonParserHelpers();
 
             // Deserialize 'direction'
-            swipeActionParams.direction = gsonParserHelpers.parseEnum<Direction>(
+            swipeActionParams.direction = GsonParserHelpers.parseEnum<Direction>(
                     jsonObject,
                     "direction",
                     "See https://developer.android.com/reference/android/support/test/espresso/action/Swipe for list of valid tapper types"
             );
 
             // Deserialize 'swiper'
-            swipeActionParams.swiper = gsonParserHelpers.parseEnum<Swipe>(
+            swipeActionParams.swiper = GsonParserHelpers.parseEnum<Swipe>(
                     jsonObject,
                     "swiper",
                     "See https://developer.android.com/reference/android/support/test/espresso/action/Swipe for list of valid tapper types"
@@ -79,7 +77,7 @@ class MobileSwipeParams : AppiumParams() {
             }
 
             // Deserialize 'startCoordinates'
-            swipeActionParams.startCoordinates = gsonParserHelpers.parseEnum<GeneralLocation>(
+            swipeActionParams.startCoordinates = GsonParserHelpers.parseEnum<GeneralLocation>(
                     jsonObject,
                     "startCoordinates",
                     "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinate types",
@@ -87,7 +85,7 @@ class MobileSwipeParams : AppiumParams() {
             )
 
             // Deserialize 'endCoordinates'
-            swipeActionParams.endCoordinates = gsonParserHelpers.parseEnum<GeneralLocation>(
+            swipeActionParams.endCoordinates = GsonParserHelpers.parseEnum<GeneralLocation>(
                     jsonObject,
                     "endCoordinates",
                     "See https://developer.android.com/reference/android/support/test/espresso/action/GeneralLocation for list of valid coordinate types",
@@ -95,7 +93,7 @@ class MobileSwipeParams : AppiumParams() {
             )
 
             // Deserialize 'precisionDescriber'
-            swipeActionParams.precisionDescriber = gsonParserHelpers.parseEnum<Press>(
+            swipeActionParams.precisionDescriber = GsonParserHelpers.parseEnum<Press>(
                     jsonObject,
                     "precisionDescriber",
                     "See https://developer.android.com/reference/android/support/test/espresso/action/Press for list of valid precision types",

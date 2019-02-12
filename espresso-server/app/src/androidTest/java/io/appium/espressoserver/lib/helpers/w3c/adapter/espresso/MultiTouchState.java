@@ -1,7 +1,6 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.os.SystemClock;
-import androidx.test.espresso.UiController;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import androidx.test.espresso.UiController;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
 

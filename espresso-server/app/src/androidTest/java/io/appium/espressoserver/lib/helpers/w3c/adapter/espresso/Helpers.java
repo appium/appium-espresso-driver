@@ -2,9 +2,9 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
 import android.graphics.Point;
 import android.os.Build;
-import androidx.annotation.Nullable;
 import android.view.MotionEvent;
 
+import androidx.annotation.Nullable;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.AndroidLogger;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;

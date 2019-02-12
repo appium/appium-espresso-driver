@@ -6,6 +6,7 @@ import com.google.gson.JsonPrimitive
 import io.appium.espressoserver.lib.model.web.WebAtom
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class WebAtomTest {
 
@@ -47,7 +48,7 @@ class WebAtomTest {
         jsonObject.add("args", argsArr)
         val webAtom = WebAtom.WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "someFakeAtom")
-        assertEquals(webAtom.args, arrayListOf("hello", true, 100, 1.1))
+        assertTrue(webAtom.args contentEquals arrayOf("hello", true, 100L, 1.1))
         assertEquals(webAtom.args.size, 4);
     }
 
@@ -61,8 +62,6 @@ class WebAtomTest {
         jsonObject.add("locator", locatorObject);
         val webAtom = WebAtom.WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "findElement")
-        assertEquals(webAtom.args.get(0), "id")
-        assertEquals(webAtom.args.get(1), "some_html_id")
-        assertEquals(webAtom.args.size, 2)
+        assertTrue(webAtom.args contentEquals arrayOf("id", "some_html_id"))
     }
 }

@@ -17,17 +17,12 @@
 package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.action.GeneralSwipeAction
-
+import androidx.test.espresso.action.ViewActions.*
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
+import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.MobileSwipeParams
-
-import androidx.test.espresso.action.ViewActions.swipeDown
-import androidx.test.espresso.action.ViewActions.swipeLeft
-import androidx.test.espresso.action.ViewActions.swipeRight
-import androidx.test.espresso.action.ViewActions.swipeUp
-import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
 import io.appium.espressoserver.lib.model.MobileSwipeParams.Direction.*
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable

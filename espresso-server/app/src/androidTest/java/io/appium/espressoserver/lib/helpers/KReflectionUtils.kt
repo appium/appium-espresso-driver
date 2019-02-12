@@ -1,19 +1,17 @@
 package io.appium.espressoserver.lib.helpers
 
+import com.google.gson.internal.LazilyParsedNumber
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import java.lang.ClassCastException
-import java.lang.IllegalArgumentException
-import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-import kotlin.reflect.full.createType
 import kotlin.reflect.full.functions
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaType
 
 object KReflectionUtils {
 
-    fun invokeMethod(functions: Collection<KFunction<*>>, methodName: String, vararg providedParams: Any): Any? {
+    fun invokeMethod(functions: Collection<KFunction<*>>, methodName: String, vararg providedParams: Any?): Any? {
         val treatedParams = providedParams.clone().toMutableList()
         for (func in functions) {
             // Look for function names that match provided methodName
@@ -29,10 +27,11 @@ object KReflectionUtils {
                 funcParams.forEachIndexed { index, funcParam ->
                     val providedParam = providedParams.get(index)
 
-                    // Hack Enum Case
+                    // Handle the Enum Case
                     // If function param is Enum and provided param is String, try `enumValueOf` on that String value
+                    val type = funcParam.type;
                     try {
-                        val jFuncType = funcParam.type.javaType as Class<*>
+                        val jFuncType = type.javaType as Class<*>
                         if (jFuncType.isEnum && providedParam is String) {
                             val enumValueOf = jFuncType.getDeclaredMethod("valueOf", String::class.java)
                             treatedParams.set(index, enumValueOf(null, providedParam.toUpperCase()))
@@ -41,6 +40,30 @@ object KReflectionUtils {
                         // Ignore reflection exceptions and don't try matching String to Enum
                     } catch (e:ClassCastException) {
                         // Ignore class cast exceptions and don't try matching String to Enum
+                    }
+
+                    // Handle the Class case
+                    val classifier = type.classifier;
+                    if (classifier is KClass<*> && classifier.isSubclassOf(Class::class)) {
+                        var className: String = providedParam.toString()
+                        val classExtension = ".class";
+                        if (className.endsWith(classExtension)) {
+                            className = className.take(className.length - classExtension.length)
+                        }
+
+                        try {
+                            val clazz = Class.forName(className)
+                            treatedParams.set(index, clazz)
+                        } catch (e: ClassNotFoundException) { }
+
+                        try {
+                            val clazz = Class.forName("java.lang.${className}")
+                            treatedParams.set(index, clazz)
+                        } catch (e: ClassNotFoundException) { }
+                    }
+
+                    if (providedParam is LazilyParsedNumber) {
+                        treatedParams.set(index, providedParam.toDouble())
                     }
                 }
 
@@ -53,15 +76,24 @@ object KReflectionUtils {
             }
         }
 
-        throw AppiumException("Could not invoke method: " +
+        throw AppiumException("Could not find method that matches " +
                 "methodName=[${methodName}] args=[${providedParams.joinToString(", ")}]")
     }
 
-    fun invokeMethod(kclass: KClass<*>, methodName: String, vararg providedParams: Any): Any? {
-        return invokeMethod(kclass.functions, methodName, *providedParams)
+    fun invokeMethod(kclass: KClass<*>, methodName: String, vararg providedParams: Any?): Any? {
+        try {
+            return invokeMethod(kclass.functions, methodName, *providedParams)
+        } catch (e:AppiumException) {
+            throw AppiumException("Cannot execute method on '${kclass.qualifiedName}'. Reason: ${e.message}'");
+        }
     }
 
-    fun invokeInstanceMethod (instance: Any, methodName: String, vararg providedParams: Any): Any? {
-        return invokeMethod(instance::class.memberFunctions, methodName, instance, *providedParams)
+    fun invokeInstanceMethod (instance: Any, methodName: String, vararg providedParams: Any?): Any? {
+        try {
+            return invokeMethod(instance::class.memberFunctions, methodName, instance, *providedParams)
+        } catch (e:AppiumException) {
+            throw AppiumException("Cannot execute method for instance of " +
+                    "'${instance::class.qualifiedName}'. Reason: ${e.message}'");
+        }
     }
 }

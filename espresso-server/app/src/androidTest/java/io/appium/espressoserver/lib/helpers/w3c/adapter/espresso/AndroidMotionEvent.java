@@ -1,7 +1,5 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso;
 
-import androidx.annotation.Nullable;
-import androidx.test.espresso.UiController;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -9,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import androidx.annotation.Nullable;
+import androidx.test.espresso.UiController;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;

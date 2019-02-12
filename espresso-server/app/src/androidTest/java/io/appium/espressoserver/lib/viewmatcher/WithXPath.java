@@ -16,8 +16,6 @@
 
 package io.appium.espressoserver.lib.viewmatcher;
 
-import androidx.annotation.Nullable;
-
 import android.view.View;
 
 import org.hamcrest.Description;
@@ -26,6 +24,7 @@ import org.hamcrest.TypeSafeMatcher;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.model.SourceDocument;
 

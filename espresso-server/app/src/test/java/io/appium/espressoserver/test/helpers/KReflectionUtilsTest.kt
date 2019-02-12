@@ -4,11 +4,14 @@ import androidx.test.espresso.web.model.Atom
 import androidx.test.espresso.web.webdriver.DriverAtoms
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.KReflectionUtils
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import kotlin.reflect.full.memberFunctions
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
@@ -49,6 +52,17 @@ class `KReflectionUtils Test` {
     fun `should parse Driver Atoms "findElement"`() {
         val findElementAtom = KReflectionUtils.invokeMethod(DriverAtoms::class, "findElement", "ID", "some Identifier")
         assertTrue(findElementAtom is Atom<*>);
+    }
+
+    @Test
+    fun `should parse Hamcrest 'instanceOf' matcher with className`() {
+        arrayOf("java.lang.String", "java.lang.String.class", "String", "String.class")
+            .forEach {className ->
+                val hamcrestMatcher = KReflectionUtils.invokeMethod(Matchers::class, "instanceOf", className)
+                assertTrue(hamcrestMatcher is Matcher<*>)
+                assertTrue(hamcrestMatcher.matches("Hello World"))
+                assertFalse(hamcrestMatcher.matches(123))
+            }
     }
 
     class TestClass {

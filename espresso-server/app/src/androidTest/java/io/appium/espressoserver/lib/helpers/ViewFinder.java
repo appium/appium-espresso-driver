@@ -20,8 +20,10 @@ import android.content.Context;
 
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.EspressoException;
+import androidx.test.espresso.PerformException;
 import androidx.test.espresso.ViewInteraction;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.AdapterView;
 
 import org.hamcrest.Description;
@@ -38,6 +40,7 @@ import javax.annotation.Nullable;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException;
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
+import io.appium.espressoserver.lib.model.DataMatcherJson;
 import io.appium.espressoserver.lib.model.Strategy;
 import io.appium.espressoserver.lib.viewaction.ViewGetter;
 
@@ -189,6 +192,10 @@ public class ViewFinder {
             case VIEW_TAG:
                 views = getViews(root, withTagValue(allOf(instanceOf(String.class), equalTo((Object) selector))), findOne);
                 break;
+            case DATAMATCHER:
+                DataMatcherJson matcher = DataMatcherJson.Companion.fromJson(selector);
+                views = getViewsFromDataInteraction(root, matcher.invoke());
+                break;
             default:
                 throw new InvalidStrategyException(String.format("Strategy is not implemented: %s", strategy.getStrategyName()));
         }
@@ -220,6 +227,30 @@ public class ViewFinder {
         }
 
         return true;
+    }
+
+    private static List<View> getViewsFromDataInteraction(
+            @Nullable View root, DataInteraction dataInteraction
+    ) {
+        // Defensive copy
+        DataInteraction dataInteractionCopy = dataInteraction;
+
+        // Look up the view hierarchy to find the closest ancestor AdapterView
+        View ancestorAdapterView = root;
+        while (ancestorAdapterView != null && !(ancestorAdapterView instanceof AdapterView)) {
+            ViewParent parent = ancestorAdapterView.getParent();
+            ancestorAdapterView = parent == null ? null : (View) parent;
+        }
+        if (ancestorAdapterView != null) {
+            dataInteractionCopy = dataInteractionCopy.inAdapterView(withView(ancestorAdapterView));
+        }
+
+        try {
+            return Collections.singletonList(new ViewGetter().getView(dataInteractionCopy));
+        } catch (PerformException e) {
+            // Perform Exception means nothing was found. Return empty list
+            return Collections.emptyList();
+        }
     }
 
     private static List<View> getViews(

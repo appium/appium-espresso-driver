@@ -20,11 +20,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings.Secure;
-import androidx.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
+
+import androidx.annotation.Nullable;
 
 public class DeviceInfoHelper {
     private final Context context;

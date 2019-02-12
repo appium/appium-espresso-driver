@@ -16,13 +16,17 @@
 
 package io.appium.espressoserver.lib.model.web
 
-import com.google.gson.*
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonParseException
 import com.google.gson.annotations.JsonAdapter
+import io.appium.espressoserver.lib.helpers.GsonParserHelpers
 import io.appium.espressoserver.lib.model.AppiumParams
 import java.lang.reflect.Type
 
 @JsonAdapter(WebAtom.WebAtomDeserializer::class)
-data class WebAtom(val name: String, val args: List<Any> = emptyList()) : AppiumParams() {
+data class WebAtom(val name: String, val args: Array<Any> = emptyArray()) : AppiumParams() {
     class WebAtomDeserializer : JsonDeserializer<WebAtom> {
         @Throws(JsonParseException::class)
         override fun deserialize(json: JsonElement, paramType: Type?,
@@ -58,7 +62,7 @@ data class WebAtom(val name: String, val args: List<Any> = emptyList()) : Appium
                     }
 
                     // Set the args as locator
-                    return WebAtom(webAtomName, arrayListOf(
+                    return WebAtom(webAtomName, arrayOf(
                             locator.get("using").asString,
                             locator.get("value").asString
                     ))
@@ -67,20 +71,17 @@ data class WebAtom(val name: String, val args: List<Any> = emptyList()) : Appium
                 // Parse the args
                 jsonObj.get("args")?.let {
                     if (it.isJsonPrimitive) {
-                        return WebAtom(webAtomName, arrayListOf(it.asString))
+                        return WebAtom(webAtomName, arrayOf(it.asString))
                     } else if (it.isJsonArray){
                         val argsAsList = ArrayList<Any>()
                         for (arg in it.asJsonArray) {
                             if (arg.isJsonPrimitive) {
-                                val argPrimitive = arg.asJsonPrimitive
-                                if (argPrimitive.isBoolean) argsAsList.add(argPrimitive.asBoolean)
-                                if (argPrimitive.isNumber) argsAsList.add(argPrimitive.asNumber)
-                                if (argPrimitive.isString) argsAsList.add(argPrimitive.asString)
+                                argsAsList.add(GsonParserHelpers.parsePrimitive(arg.asJsonPrimitive))
                             } else {
                                 throw JsonParseException("'${arg}' is not a valid 'arg' type");
                             }
                         }
-                        return WebAtom(webAtomName, argsAsList)
+                        return WebAtom(webAtomName, argsAsList.toArray())
                     } else {
                         throw JsonParseException("'args' must be an array or a singleton primitive JSON type. Found '${it}' ")
                     }
@@ -88,12 +89,12 @@ data class WebAtom(val name: String, val args: List<Any> = emptyList()) : Appium
 
                 // If no args provided, treat it as a function call with no parameters
                 if (!jsonObj.has("args")) {
-                    return WebAtom(webAtomName, emptyList());
+                    return WebAtom(webAtomName, emptyArray());
                 }
 
             } else if (json.isJsonPrimitive) {
                 // If JSON was provided as a String, treat it as a function call with no parameters
-                return WebAtom(json.asString, emptyList())
+                return WebAtom(json.asString, emptyArray())
             }
 
             // This block is unreachable
