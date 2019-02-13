@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import javax.annotation.Nullable;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.AlertHelpers
+import io.appium.espressoserver.lib.model.AlertParams
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
+class AcceptAlert : RequestHandler<AlertParams, Void> {
 
-import static androidx.test.espresso.Espresso.pressBack;
-
-public class Back implements RequestHandler<AppiumParams, Void> {
-
-    @Override
-    @Nullable
-    public Void handle(AppiumParams params) throws AppiumException {
-        pressBack();
-        return null;
+    @Throws(AppiumException::class)
+    override fun handle(params: AlertParams): Void? {
+        // We use UIA2 here, since Espresso is limited to application sandbox
+        // and cannot handle security alerts
+        AlertHelpers.handle(AlertHelpers.AlertAction.ACCEPT, params.buttonLabel)
+        return null
     }
 }

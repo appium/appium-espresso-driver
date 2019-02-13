@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import android.view.View;
+import android.view.View
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
-import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.model.Element;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException
+import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.Element
 
-public class ElementScreenshot implements RequestHandler<AppiumParams, String> {
+import io.appium.espressoserver.lib.helpers.ViewFinder.findActive
 
-    @Override
-    public String handle(AppiumParams params) throws AppiumException {
-        final View view = Element.getViewById(params.getElementId());
-        return new ScreenshotsHelper(view).getScreenshot();
+class FindActive : RequestHandler<AppiumParams, Element> {
+    @Throws(AppiumException::class)
+    override fun handle(params: AppiumParams): Element {
+        val view = findActive() ?: throw NoSuchElementException("No elements are currently focused")
+        return Element(view)
     }
 }
