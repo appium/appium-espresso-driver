@@ -27,12 +27,14 @@ import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
 import io.appium.espressoserver.lib.helpers.ViewsCache
 
 import androidx.test.espresso.Espresso.onView
+import com.google.gson.annotations.SerializedName
 import io.appium.espressoserver.lib.helpers.ViewSupplier
 import io.appium.espressoserver.lib.viewmatcher.WithView.withView
 
 
 class Element(viewSupplier: ViewSupplier) {
-    val elementId: String = UUID.randomUUID().toString()
+    @SerializedName("ELEMENT")
+    private val elementId: String = UUID.randomUUID().toString()
 
     init {
         cache.put(elementId, viewSupplier)
