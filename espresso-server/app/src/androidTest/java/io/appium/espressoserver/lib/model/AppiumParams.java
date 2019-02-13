@@ -32,7 +32,6 @@ public class AppiumParams {
         return getUriParameterValue(SESSION_ID_PARAM_NAME);
     }
 
-    @Nullable
     public String getElementId() {
         return getUriParameterValue(ELEMENT_ID_PARAM_NAME);
     }

@@ -17,76 +17,22 @@
 package io.appium.espressoserver.lib.helpers
 
 import android.view.View
+import java.util.concurrent.ConcurrentHashMap
 
-sealed class ViewState {
-    class ATTACHED(val view: View, val initialContentDescription: CharSequence?) : ViewState()
-    class DETACHED(val view: View, val initialContentDescription: CharSequence?) : ViewState()
-}
+typealias ViewSupplier = () -> View
 
-object ViewsCache : View.OnAttachStateChangeListener {
-    private val cache = HashMap<String, ViewState>()
+object ViewsCache {
+    private val cache = ConcurrentHashMap<String, ViewSupplier>()
 
-    // TODO: Decide if we want to run cleanup of detached views after some time interval
-
-    override fun onViewAttachedToWindow(v: View?) {
-        synchronized(cache) {
-            val entriesToAdd = cache.entries
-                    .filter { entry -> entry.value is ViewState.DETACHED && (entry.value as ViewState.DETACHED).view == v }
-            if (entriesToAdd.isEmpty()) {
-                v?.removeOnAttachStateChangeListener(this)
-            } else {
-                entriesToAdd.forEach {
-                    cache[it.key] = ViewState.ATTACHED((it.value as ViewState.DETACHED).view,
-                            (it.value as ViewState.DETACHED).initialContentDescription)
-                }
-            }
-        }
+    fun put(id: String, supplier: ViewSupplier) {
+        cache[id] = supplier
     }
 
-    override fun onViewDetachedFromWindow(v: View?) {
-        synchronized(cache) {
-            val entriesToRemove = cache.entries
-                    .filter { entry -> entry.value is ViewState.ATTACHED && (entry.value as ViewState.ATTACHED).view == v }
-            if (entriesToRemove.isEmpty()) {
-                v?.removeOnAttachStateChangeListener(this)
-            } else {
-                entriesToRemove.forEach {
-                    cache[it.key] = ViewState.DETACHED((it.value as ViewState.ATTACHED).view,
-                            (it.value as ViewState.ATTACHED).initialContentDescription)
-                }
-            }
-        }
-    }
-
-    fun put(id: String, view: View) {
-        synchronized(cache) {
-            // Make sure we never add the listener twice to the same view
-            view.removeOnAttachStateChangeListener(this)
-            view.addOnAttachStateChangeListener(this)
-            cache.put(id, ViewState.ATTACHED(view, view.contentDescription))
-        }
-    }
-
-    fun get(id: String): ViewState? {
-        synchronized(cache) {
-            return cache[id]
-        }
+    fun get(id: String): ViewSupplier? {
+        return cache[id]
     }
 
     fun has(id: String): Boolean {
-        synchronized(cache) {
-            return cache.containsKey(id)
-        }
-    }
-
-    fun getViewId(view: View): String? {
-        synchronized(cache) {
-            return cache.entries
-                    .filter {
-                        (it.value is ViewState.ATTACHED && (it.value as ViewState.ATTACHED).view == view) ||
-                                (it.value is ViewState.DETACHED && (it.value as ViewState.DETACHED).view == view)
-                    }.map { it.key }
-                    .firstOrNull()
-        }
+        return cache.containsKey(id)
     }
 }
