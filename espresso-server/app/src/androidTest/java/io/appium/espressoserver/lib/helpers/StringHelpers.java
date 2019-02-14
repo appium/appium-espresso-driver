@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.helpers;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class StringHelpers {
@@ -26,6 +27,21 @@ public class StringHelpers {
 
     public static boolean isBlank(@Nullable String str) {
         return str == null || str.trim().equals("");
+    }
+
+    @Nullable
+    public static String charSequenceToString(@Nullable CharSequence input, boolean replaceNull) {
+        return input == null ? (replaceNull ? "" : null) : input.toString();
+    }
+
+    @Nullable
+    public static String charSequenceToNullableString(@Nullable CharSequence input) {
+        return charSequenceToString(input, false);
+    }
+
+    @NonNull
+    public static String charSequenceToNonNullString(@Nullable CharSequence input) {
+        return charSequenceToString(input, true);
     }
 
 }
