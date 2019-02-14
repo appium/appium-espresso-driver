@@ -33,8 +33,8 @@ class FindElement : RequestHandler<Locator, Element> {
     @Throws(AppiumException::class)
     override fun handle(locator: Locator): Element {
         var parentView: View? = null
-        if (locator.elementId != null) {
-            parentView = ViewGetter().getView(Element.getViewInteractionById(locator.elementId))
+        locator.elementId?.let {
+            parentView = ViewGetter().getView(Element.getViewInteractionById(it))
         }
         if (locator.using == null) {
             throw InvalidStrategyException("Locator strategy cannot be empty")

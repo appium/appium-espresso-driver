@@ -28,20 +28,11 @@ class DrawerActionHandler(private val isOpenAction: Boolean) : RequestHandler<Dr
     @Throws(AppiumException::class)
     override fun handle(params: DrawerActionParams): Void? {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
-        val gravity = params.gravity
         try {
-            if (isOpenAction) {
-                if (gravity == null) {
-                    viewInteraction.perform(DrawerActions.open())
-                } else {
-                    viewInteraction.perform(DrawerActions.open(gravity))
-                }
-            } else {
-                if (gravity == null) {
-                    viewInteraction.perform(DrawerActions.close())
-                } else {
-                    viewInteraction.perform(DrawerActions.close(gravity))
-                }
+            params.gravity?.let {
+                viewInteraction.perform(if (isOpenAction) DrawerActions.open(it) else DrawerActions.close(it))
+            } ?: run {
+                viewInteraction.perform(if (isOpenAction) DrawerActions.open() else DrawerActions.close())
             }
         } catch (e: Exception) {
             if (e is EspressoException) {

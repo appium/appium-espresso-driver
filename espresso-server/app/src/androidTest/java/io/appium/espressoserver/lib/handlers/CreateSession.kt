@@ -33,8 +33,8 @@ class CreateSession : RequestHandler<SessionParams, Session> {
         val waitActivityName = params.desiredCapabilities.appWaitActivity
         val appWaitDuration = params.desiredCapabilities.appWaitDuration
         try {
-            if (activityName != null) {
-                startActivity(activityName, waitActivityName, appWaitDuration)
+            activityName?.let {
+                startActivity(it, waitActivityName, appWaitDuration)
             }
         } catch (e: Exception) {
             throw SessionNotCreatedException(e)

@@ -34,26 +34,14 @@ class FindElements : RequestHandler<Locator, List<Element>> {
     @Throws(AppiumException::class)
     override fun handle(locator: Locator): List<Element> {
         var parentView: View? = null
-        if (locator.elementId != null) {
-            parentView = ViewGetter().getView(Element.getViewInteractionById(locator.elementId))
+        locator.elementId?.let {
+            parentView = ViewGetter().getView(Element.getViewInteractionById(it))
         }
-        if (locator.using == null) {
-            throw InvalidStrategyException("Locator strategy cannot be empty")
-        } else if (locator.value == null) {
-            throw MissingCommandsException("No locator provided")
-        }
+        locator.using ?: throw InvalidStrategyException("Locator strategy cannot be empty")
+        locator.value ?: throw MissingCommandsException("No locator provided")
 
-        // Get the viewInteractions
-        val views = findAllBy(parentView,
-                locator.using, locator.value)
-
-        // Turn it into a list of elements
-        val elements = ArrayList<Element>()
-        for (view in views) {
-            elements.add(Element(view))
-        }
-
-        // If we have a match, return success
-        return elements
+        // Return as list of Elements
+        return findAllBy(parentView, locator.using, locator.value)
+                .map { Element(it) }
     }
 }
