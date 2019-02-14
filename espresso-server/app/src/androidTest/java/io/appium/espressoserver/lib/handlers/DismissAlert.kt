@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.AlertHelpers;
-import io.appium.espressoserver.lib.model.AlertParams;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.AlertHelpers
+import io.appium.espressoserver.lib.model.AlertParams
 
-public class DismissAlert implements RequestHandler<AlertParams, Void> {
+class DismissAlert : RequestHandler<AlertParams, Void> {
 
-    @Override
-    public Void handle(AlertParams params) throws AppiumException {
+    @Throws(AppiumException::class)
+    override fun handle(params: AlertParams): Void? {
         // We use UIA2 here, since Espresso is limited to application sandbox
         // and cannot handle security alerts
-        AlertHelpers.handle(AlertHelpers.AlertAction.DISMISS, params.getButtonLabel());
-        return null;
+        AlertHelpers.handle(AlertHelpers.AlertAction.DISMISS, params.buttonLabel)
+        return null
     }
 }
