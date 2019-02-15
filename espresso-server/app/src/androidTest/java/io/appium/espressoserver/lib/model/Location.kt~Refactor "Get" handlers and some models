@@ -14,20 +14,6 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers
+package io.appium.espressoserver.lib.model
 
-import android.view.View
-
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.model.ViewElement
-
-class GetName : RequestHandler<AppiumParams, String?> {
-
-    @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): String? {
-        val view = Element.getViewById(params.elementId)
-        return ViewElement(view).contentDescription?.let { return it.toString() } ?: return null
-    }
-}
+data class Location(var x: Int? = null, var y: Int? = null) : AppiumParams()

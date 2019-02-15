@@ -16,18 +16,16 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.view.View
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.AlertHelpers
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.model.ViewElement
 
-class GetName : RequestHandler<AppiumParams, String?> {
+class GetAlertText : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): String? {
-        val view = Element.getViewById(params.elementId)
-        return ViewElement(view).contentDescription?.let { return it.toString() } ?: return null
+    override fun handle(params: AppiumParams): String {
+        // We use UIA2 here, since Espresso is limited to application sandbox
+        // and cannot handle security alerts
+        return AlertHelpers.getText()
     }
 }

@@ -21,13 +21,15 @@ import android.view.View
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.Location
 import io.appium.espressoserver.lib.model.ViewElement
 
-class GetName : RequestHandler<AppiumParams, String?> {
+class GetLocationInView : RequestHandler<AppiumParams, Location> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): String? {
+    override fun handle(params: AppiumParams): Location {
         val view = Element.getViewById(params.elementId)
-        return ViewElement(view).contentDescription?.let { return it.toString() } ?: return null
+        val viewElement = ViewElement(view)
+        return Location(viewElement.relativeLeft, viewElement.relativeTop)
     }
 }
