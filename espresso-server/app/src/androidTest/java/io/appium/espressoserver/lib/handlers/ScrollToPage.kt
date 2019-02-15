@@ -17,8 +17,6 @@
 package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.EspressoException
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.contrib.ViewPagerActions
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException

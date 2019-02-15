@@ -16,9 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.app.Activity
 import android.content.pm.ActivityInfo
-import android.view.View
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams

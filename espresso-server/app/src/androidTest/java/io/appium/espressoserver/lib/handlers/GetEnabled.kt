@@ -19,7 +19,6 @@ package io.appium.espressoserver.lib.handlers
 import junit.framework.AssertionFailedError
 
 import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewInteraction
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Element

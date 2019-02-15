@@ -19,7 +19,6 @@ package io.appium.espressoserver.lib.handlers
 import java.util.regex.Pattern
 
 import androidx.test.espresso.EspressoException
-import androidx.test.espresso.ViewInteraction
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.ToastLookupParams
 import io.appium.espressoserver.lib.viewmatcher.ToastMatcher

@@ -16,15 +16,9 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import java.util.ArrayList
-import java.util.Collections
-
-import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter
-import io.appium.espressoserver.lib.helpers.w3c.models.Actions
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions.ActionsBuilder
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionBuilder
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceBuilder

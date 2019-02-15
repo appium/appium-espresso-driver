@@ -1,14 +1,10 @@
 package io.appium.espressoserver.lib.handlers
 
-import android.app.Activity
-
-import java.util.ArrayList
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.ActivityHelper
 import io.appium.espressoserver.lib.helpers.InvocationOperation
 import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.model.MobileBackdoorMethod
 import io.appium.espressoserver.lib.model.MobileBackdoorParams
 
 import io.appium.espressoserver.lib.helpers.AndroidLogger.logger

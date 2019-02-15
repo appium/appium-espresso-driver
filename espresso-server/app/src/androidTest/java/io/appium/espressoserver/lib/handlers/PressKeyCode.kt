@@ -22,7 +22,6 @@ import android.view.KeyEvent
 import android.view.ViewConfiguration
 
 import androidx.test.espresso.InjectEventSecurityException
-import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.model.KeyEventParams

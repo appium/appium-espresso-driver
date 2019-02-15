@@ -2,13 +2,10 @@ package io.appium.espressoserver.lib.handlers
 
 import android.content.res.Resources
 import android.os.SystemClock
-import android.util.DisplayMetrics
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewConfiguration
 
 import java.util.HashMap
-import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger

@@ -1,6 +1,5 @@
 package io.appium.espressoserver.lib.handlers
 
-import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 
