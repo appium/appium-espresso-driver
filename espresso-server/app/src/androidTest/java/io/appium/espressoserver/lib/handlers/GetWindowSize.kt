@@ -37,6 +37,6 @@ class GetWindowSize : RequestHandler<AppiumParams, WindowSize> {
         val winManager = context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         winManager.defaultDisplay.getMetrics(displayMetrics)
-        return WindowSize(displayMetrics.heightPixels, displayMetrics.widthPixels)
+        return WindowSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
 }
