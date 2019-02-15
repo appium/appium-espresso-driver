@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.model
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.AlertHelpers;
-import io.appium.espressoserver.lib.model.AppiumParams;
-
-public class GetAlertText implements RequestHandler<AppiumParams, String> {
-
-    @Override
-    public String handle(AppiumParams params) throws AppiumException {
-        // We use UIA2 here, since Espresso is limited to application sandbox
-        // and cannot handle security alerts
-        return AlertHelpers.getText();
-    }
-}
+data class Size(var width: Int? = null, var height: Int? = null) : AppiumParams()

@@ -14,31 +14,23 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.handlers
 
-import javax.annotation.Nullable;
+import android.view.View
 
-@SuppressWarnings("unused")
-public class Location extends AppiumParams {
-    private Integer x = null;
-    private Integer y = null;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.ViewElement
 
-    @Nullable
-    public Integer getX() {
-        return x;
+class GetName : RequestHandler<AppiumParams, String> {
+
+    @Throws(AppiumException::class)
+    override fun handle(params: AppiumParams): String? {
+        val view = Element.getViewById(params.elementId)
+        ViewElement(view).contentDescription?.let {
+            return it.toString()
+        }
+        return null
     }
-
-    public void setX(Integer x) {
-        this.x = x;
-    }
-
-    @Nullable
-    public Integer getY() {
-        return y;
-    }
-
-    public void setY(Integer y) {
-        this.y = y;
-    }
-
 }

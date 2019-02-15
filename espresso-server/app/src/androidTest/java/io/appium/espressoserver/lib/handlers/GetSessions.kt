@@ -14,30 +14,22 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.handlers
 
-import javax.annotation.Nullable;
+import java.util.Collections
 
-@SuppressWarnings("unused")
-public class Size extends AppiumParams {
-    private Integer width = null;
-    private Integer height = null;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.AppiumParams
 
-    @Nullable
-    public Integer getHeight() {
-        return height;
+import io.appium.espressoserver.lib.model.Session.getGlobalSession
+import java.util.Collections.singletonList
+import java.util.Collections.unmodifiableList
+
+class GetSessions : RequestHandler<AppiumParams, Collection<String>> {
+
+    @Throws(AppiumException::class)
+    override fun handle(params: AppiumParams): Collection<String>? {
+        return if (getGlobalSession() == null) unmodifiableList(emptyList()) else unmodifiableList(listOf(getGlobalSession().id))
     }
 
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
-    @Nullable
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
 }

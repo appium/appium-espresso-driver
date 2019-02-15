@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import javax.annotation.Nullable;
+import android.view.View
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.model.Session;
-import io.appium.espressoserver.lib.model.SessionParams;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.Location
+import io.appium.espressoserver.lib.model.ViewElement
 
-public class GetSession implements RequestHandler<AppiumParams, SessionParams.DesiredCapabilities> {
+class GetLocation : RequestHandler<AppiumParams, Location> {
 
-    @Override
-    @Nullable
-    public SessionParams.DesiredCapabilities handle(AppiumParams params) throws AppiumException {
-        return Session.getGlobalSession().getDesiredCapabilities();
+    @Throws(AppiumException::class)
+    override fun handle(params: AppiumParams): Location {
+        val viewElement = ViewElement(Element.getViewById(params.elementId))
+        return Location(viewElement.bounds.left, viewElement.bounds.top)
     }
-
 }

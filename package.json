@@ -58,7 +58,7 @@
     "test": "npm run test:server && npm run test:node",
     "test:node": "gulp once",
     "test:server": "cd espresso-server && ./gradlew test && cd ..",
-    "e2e-test": "gulp transpile && mocha --timeout 600000 build/test/functional/",
+    "e2e-test": "gulp transpile && mocha --timeout 600000 --recursive build/test/functional/",
     "watch": "gulp watch",
     "coverage": "gulp coveralls",
     "prepare": "gulp prepublish && npm run build:server",
