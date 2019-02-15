@@ -16,28 +16,28 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import androidx.test.espresso.action.GeneralClickAction
+import androidx.test.espresso.EspressoException
+import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.contrib.NavigationViewActions
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.model.MobileClickActionParams
-import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
-import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
+import io.appium.espressoserver.lib.model.NavigateToParams
 
-class MobileClickAction : RequestHandler<MobileClickActionParams, Void?> {
+class NavigateTo : RequestHandler<NavigateToParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: MobileClickActionParams): Void? {
-        val runnable = UiControllerRunnable { uiController ->
-            val clickAction = GeneralClickAction(
-                    params.tapper,
-                    params.coordinatesProvider,
-                    params.precisionDescriber,
-                    params.inputDevice,
-                    params.buttonState
-            );
-            clickAction.perform(uiController, Element.getViewById(params.elementId))
+    override fun handle(params: NavigateToParams): Void? {
+        val viewInteraction = Element.getViewInteractionById(params.elementId)
+        val menuItemId = params.menuItemId
+        try {
+            viewInteraction.perform(NavigationViewActions.navigateTo(menuItemId!!))
+        } catch (e: Exception) {
+            if (e is EspressoException) {
+                throw AppiumException(String.format("Could not navigate to menu item %s. Reason: %s", menuItemId, e))
+            }
+            throw e
         }
-        UiControllerPerformer(runnable).run()
+
         return null
     }
 }

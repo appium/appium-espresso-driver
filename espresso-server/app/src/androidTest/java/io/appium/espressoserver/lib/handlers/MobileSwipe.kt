@@ -27,7 +27,7 @@ import io.appium.espressoserver.lib.model.MobileSwipeParams.Direction.*
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 
-class MobileSwipe : RequestHandler<MobileSwipeParams, Void> {
+class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: MobileSwipeParams): Void? {

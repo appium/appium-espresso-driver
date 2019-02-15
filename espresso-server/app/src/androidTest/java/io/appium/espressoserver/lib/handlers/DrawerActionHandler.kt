@@ -23,7 +23,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.DrawerActionParams
 import io.appium.espressoserver.lib.model.Element
 
-class DrawerActionHandler(private val isOpenAction: Boolean) : RequestHandler<DrawerActionParams, Void> {
+class DrawerActionHandler(private val isOpenAction: Boolean) : RequestHandler<DrawerActionParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: DrawerActionParams): Void? {

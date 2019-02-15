@@ -20,7 +20,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.AlertHelpers
 import io.appium.espressoserver.lib.model.AlertParams
 
-class DismissAlert : RequestHandler<AlertParams, Void> {
+class DismissAlert : RequestHandler<AlertParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: AlertParams): Void? {

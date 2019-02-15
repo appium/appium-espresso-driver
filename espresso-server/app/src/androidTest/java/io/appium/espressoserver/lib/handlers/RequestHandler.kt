@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.AppiumParams
 
-public interface RequestHandler<T extends AppiumParams, R>{
-    R handle(T params) throws AppiumException;
+interface RequestHandler<T : AppiumParams, R> {
+    @Throws(AppiumException::class)
+    fun handle(params: T): R
 }

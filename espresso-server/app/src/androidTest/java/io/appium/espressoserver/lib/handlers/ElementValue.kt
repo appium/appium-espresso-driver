@@ -13,7 +13,7 @@ import io.appium.espressoserver.lib.model.ElementValueParams
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.typeText
 
-class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementValueParams, Void> {
+class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementValueParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: ElementValueParams): Void? {

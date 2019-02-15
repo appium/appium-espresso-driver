@@ -30,7 +30,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isSelected
 class GetSelected : RequestHandler<AppiumParams, Boolean> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Boolean? {
+    override fun handle(params: AppiumParams): Boolean {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         try {
             viewInteraction.check(matches(isSelected()))

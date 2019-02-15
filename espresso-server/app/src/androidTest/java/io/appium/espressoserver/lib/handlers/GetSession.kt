@@ -24,7 +24,7 @@ import io.appium.espressoserver.lib.model.SessionParams
 class GetSession : RequestHandler<AppiumParams, SessionParams.DesiredCapabilities> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): SessionParams.DesiredCapabilities? {
+    override fun handle(params: AppiumParams): SessionParams.DesiredCapabilities {
         return Session.getGlobalSession().desiredCapabilities
     }
 

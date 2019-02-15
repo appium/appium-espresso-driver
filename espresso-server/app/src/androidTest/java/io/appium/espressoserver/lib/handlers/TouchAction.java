@@ -9,6 +9,7 @@ import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActi
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions.ActionsBuilder;
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource;
+import io.appium.espressoserver.lib.model.TouchActionsParams;
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer;
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable;
 

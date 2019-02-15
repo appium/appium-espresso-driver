@@ -16,30 +16,15 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import junit.framework.AssertionFailedError
-
-import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewInteraction
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.helpers.IMEHelpers
+import io.appium.espressoserver.lib.model.EditorActionParams
 
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isEnabled
-
-class GetEnabled : RequestHandler<AppiumParams, Boolean> {
+class PerformEditorAction : RequestHandler<EditorActionParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Boolean {
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
-        try {
-            viewInteraction.check(matches(isEnabled()))
-            return true
-        } catch (e: NoMatchingViewException) {
-            return false
-        } catch (e: AssertionFailedError) {
-            return false
-        }
-
+    override fun handle(params: EditorActionParams): Void? {
+        IMEHelpers.performEditorAction(params.action)
+        return null
     }
 }

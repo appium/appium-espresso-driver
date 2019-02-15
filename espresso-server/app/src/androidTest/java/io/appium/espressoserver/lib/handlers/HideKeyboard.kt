@@ -16,29 +16,14 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.app.Activity
-import android.content.pm.ActivityInfo
-import android.view.View
-
+import androidx.test.espresso.Espresso
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.model.ViewElement
 
-class GetOrientation : RequestHandler<AppiumParams, Int> {
-
+class HideKeyboard : RequestHandler<AppiumParams, Void?> {
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Int {
-        val view = Element.getViewById(params.elementId)
-        try {
-            when (ViewElement(view).extractActivity().requestedOrientation) {
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE -> return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                else -> return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            }
-        } catch (e: Exception) {
-            throw AppiumException("Cannot get screen orientation", e)
-        }
-
+    override fun handle(params: AppiumParams): Void? {
+        Espresso.closeSoftKeyboard()
+        return null
     }
 }

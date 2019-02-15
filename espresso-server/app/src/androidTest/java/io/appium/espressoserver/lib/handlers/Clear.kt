@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.model.Element
 
 import androidx.test.espresso.action.ViewActions.clearText
 
-class Clear : RequestHandler<AppiumParams, Void> {
+class Clear : RequestHandler<AppiumParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: AppiumParams): Void? {
