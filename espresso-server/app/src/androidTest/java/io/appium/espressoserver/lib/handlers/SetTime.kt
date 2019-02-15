@@ -17,25 +17,22 @@
 package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.EspressoException
-import androidx.test.espresso.contrib.DrawerActions
+import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.contrib.PickerActions
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.DrawerActionParams
 import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.SetTimeParams
 
-class DrawerActionHandler(private val isOpenAction: Boolean) : RequestHandler<DrawerActionParams, Void?> {
+class SetTime : RequestHandler<SetTimeParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: DrawerActionParams): Void? {
+    override fun handle(params: SetTimeParams): Void? {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         try {
-            params.gravity?.let {gravity ->
-                viewInteraction.perform(if (isOpenAction) DrawerActions.open(gravity) else DrawerActions.close(gravity))
-            } ?: run {
-                viewInteraction.perform(if (isOpenAction) DrawerActions.open() else DrawerActions.close())
-            }
+            viewInteraction.perform(PickerActions.setTime(params.hours!!, params.minutes!!))
         } catch (e: Exception) {
             if (e is EspressoException) {
-                throw AppiumException(String.format("Could not %s drawer. Reason: %s", if (isOpenAction) "open" else "close", e))
+                throw AppiumException(String.format("Could not set time on element. Reason: %s", e))
             }
             throw e
         }

@@ -32,9 +32,9 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(webAtomsParams: WebAtomsParams): Void? {
-        var webViewInteraction:WebInteraction<*> = onWebView()
+        var webViewInteraction:WebInteraction<*>
 
-        // TODO: Add a 'waitForDocument' feature
+        // TODO: Add a 'waitForDocument' feature to wait for HTML DOCUMENT to be ready
 
         // Initialize onWebView with web view matcher (if webviewEl provided)
         webAtomsParams.webviewElement.let{
@@ -49,15 +49,15 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
         }
 
         // Iterate through methodsChain and call the atoms
-        for (method in webAtomsParams.methodChain) {
-            val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args);
+        webAtomsParams.methodChain.forEach {
+            val atom = invokeMethod(DriverAtoms::class, it.atom.name, *it.atom.args);
 
-            logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
+            logger.info("Calling interaction '${it.name}' with the atom '${it.atom}'")
             val args: Array<Any?> = if (atom == null) emptyArray() else arrayOf(atom)
-            val res = invokeInstanceMethod(webViewInteraction, method.name, *args)
+            val res = invokeInstanceMethod(webViewInteraction, it.name, *args)
 
             if (!(res is WebInteraction<*>)) {
-                throw InvalidArgumentException("'${method.name}' does not return a 'WebViewInteraction' object");
+                throw InvalidArgumentException("'${it.name}' does not return a 'WebViewInteraction' object");
             }
 
             webViewInteraction = res;

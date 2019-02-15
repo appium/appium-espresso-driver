@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import javax.annotation.Nullable;
+import androidx.test.espresso.ViewInteraction
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.model.SourceDocument;
+class Text : RequestHandler<AppiumParams, String?> {
 
-public class Source implements RequestHandler<AppiumParams, String> {
-
-    @Override
-    @Nullable
-    public String handle(AppiumParams params) throws AppiumException {
-        return new SourceDocument().toXMLString();
+    @Throws(AppiumException::class)
+    override fun handle(params: AppiumParams): String? {
+        val viewInteraction = Element.getViewInteractionById(params.elementId)
+        return ViewTextGetter().get(viewInteraction).rawText
     }
 }

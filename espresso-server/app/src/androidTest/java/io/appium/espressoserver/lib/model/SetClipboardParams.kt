@@ -14,29 +14,10 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-@SuppressWarnings("unused")
-public class SetClipboardParams extends AppiumParams {
-    private ClipboardDataType contentType;
-    private String content;
-    private String label;
-
-    @NonNull
-    public ClipboardDataType getContentType() {
-        return this.contentType == null ? ClipboardDataType.PLAINTEXT : this.contentType;
-    }
-
-    @Nullable
-    public String getContent() {
-        return this.content;
-    }
-
-    @Nullable
-    public String getLabel() {
-        return this.label;
-    }
-}
+data class SetClipboardParams(
+    val contentType: ClipboardDataType = ClipboardDataType.PLAINTEXT,
+    val content: String? = null,
+    val label: String? = null
+) : AppiumParams()

@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import javax.annotation.Nullable;
+import io.appium.espressoserver.lib.model.AppiumParams
 
-import io.appium.espressoserver.lib.model.AppiumParams;
+class Status : RequestHandler<AppiumParams, Void?> {
 
-public class Status implements RequestHandler<AppiumParams, Void> {
-
-    @Override
-    @Nullable
-    public Void handle(AppiumParams params) {
-        return null;
+    override fun handle(params: AppiumParams): Void? {
+        return null
     }
 }

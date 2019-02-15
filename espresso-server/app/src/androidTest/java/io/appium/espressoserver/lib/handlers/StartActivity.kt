@@ -14,35 +14,18 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.handlers
 
-@SuppressWarnings("unused")
-public class SetDateParams extends AppiumParams {
-    private Integer year;
-    private Integer monthOfYear;
-    private Integer dayOfMonth;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.StartActivityParams
 
-    public Integer getYear() {
-        return year;
-    }
+import io.appium.espressoserver.lib.helpers.ActivityHelper.startActivity
 
-    public void setYear(Integer year) {
-        this.year = year;
-    }
+class StartActivity : RequestHandler<StartActivityParams, Void?> {
 
-    public Integer getMonthOfYear() {
-        return monthOfYear;
-    }
-
-    public void setMonthOfYear(Integer monthOfYear) {
-        this.monthOfYear = monthOfYear;
-    }
-
-    public Integer getDayOfMonth() {
-        return dayOfMonth;
-    }
-
-    public void setDayOfMonth(Integer dayOfMonth) {
-        this.dayOfMonth = dayOfMonth;
+    @Throws(AppiumException::class)
+    override fun handle(params: StartActivityParams): Void? {
+        startActivity(params.appActivity, params.appWaitActivity)
+        return null
     }
 }
