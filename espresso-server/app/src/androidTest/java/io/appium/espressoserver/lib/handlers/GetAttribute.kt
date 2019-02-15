@@ -1,7 +1,5 @@
 package io.appium.espressoserver.lib.handlers
 
-import java.util.ArrayList
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.model.AppiumParams
@@ -25,42 +23,42 @@ class GetAttribute : RequestHandler<AppiumParams, String> {
         }
 
         dstAttribute?.let {
-            val supportedAttributeNames = ViewAttributesEnum.values().map { it.toString() }
-            throw AppiumException(
-                    String.format("Attribute name should be one of %s. '%s' is given instead",
-                            supportedAttributeNames, attributeName))
+            // If it's a TEXT attribute, return the view's raw text
+            if (it == ViewAttributesEnum.TEXT) {
+                val viewInteraction = Element.getViewInteractionById(params.elementId)
+                return ViewTextGetter().get(viewInteraction).rawText
+            }
+
+            val viewElement = ViewElement(Element.getViewById(params.elementId))
+            when (it) {
+                ViewAttributesEnum.CONTENT_DESC -> return if (viewElement.contentDescription == null)
+                    null
+                else
+                    viewElement.contentDescription!!.toString()
+                ViewAttributesEnum.CLASS -> return viewElement.className
+                ViewAttributesEnum.CHECKABLE -> return java.lang.Boolean.toString(viewElement.isCheckable)
+                ViewAttributesEnum.CHECKED -> return java.lang.Boolean.toString(viewElement.isChecked)
+                ViewAttributesEnum.CLICKABLE -> return java.lang.Boolean.toString(viewElement.isClickable)
+                ViewAttributesEnum.ENABLED -> return java.lang.Boolean.toString(viewElement.isEnabled)
+                ViewAttributesEnum.FOCUSABLE -> return java.lang.Boolean.toString(viewElement.isFocusable)
+                ViewAttributesEnum.FOCUSED -> return java.lang.Boolean.toString(viewElement.isFocused)
+                ViewAttributesEnum.SCROLLABLE -> return java.lang.Boolean.toString(viewElement.isScrollable)
+                ViewAttributesEnum.LONG_CLICKABLE -> return java.lang.Boolean.toString(viewElement.isLongClickable)
+                ViewAttributesEnum.PASSWORD -> return java.lang.Boolean.toString(viewElement.isPassword)
+                ViewAttributesEnum.SELECTED -> return java.lang.Boolean.toString(viewElement.isSelected)
+                ViewAttributesEnum.VISIBLE -> return java.lang.Boolean.toString(viewElement.isVisible)
+                ViewAttributesEnum.BOUNDS -> return viewElement.bounds.toShortString()
+                ViewAttributesEnum.RESOURCE_ID -> return viewElement.resourceId
+                ViewAttributesEnum.INDEX -> return Integer.toString(viewElement.index)
+                ViewAttributesEnum.PACKAGE -> return viewElement.packageName
+                ViewAttributesEnum.VIEW_TAG -> return viewElement.viewTag
+                else -> throw NotYetImplementedException()
+            }
         }
 
-        // If it's a TEXT attribute, return the view's raw text
-        if (dstAttribute == ViewAttributesEnum.TEXT) {
-            val viewInteraction = Element.getViewInteractionById(params.elementId)
-            return ViewTextGetter().get(viewInteraction).rawText
-        }
-
-        val viewElement = ViewElement(Element.getViewById(params.elementId))
-        when (dstAttribute) {
-            ViewAttributesEnum.CONTENT_DESC -> return if (viewElement.contentDescription == null)
-                null
-            else
-                viewElement.contentDescription!!.toString()
-            ViewAttributesEnum.CLASS -> return viewElement.className
-            ViewAttributesEnum.CHECKABLE -> return java.lang.Boolean.toString(viewElement.isCheckable)
-            ViewAttributesEnum.CHECKED -> return java.lang.Boolean.toString(viewElement.isChecked)
-            ViewAttributesEnum.CLICKABLE -> return java.lang.Boolean.toString(viewElement.isClickable)
-            ViewAttributesEnum.ENABLED -> return java.lang.Boolean.toString(viewElement.isEnabled)
-            ViewAttributesEnum.FOCUSABLE -> return java.lang.Boolean.toString(viewElement.isFocusable)
-            ViewAttributesEnum.FOCUSED -> return java.lang.Boolean.toString(viewElement.isFocused)
-            ViewAttributesEnum.SCROLLABLE -> return java.lang.Boolean.toString(viewElement.isScrollable)
-            ViewAttributesEnum.LONG_CLICKABLE -> return java.lang.Boolean.toString(viewElement.isLongClickable)
-            ViewAttributesEnum.PASSWORD -> return java.lang.Boolean.toString(viewElement.isPassword)
-            ViewAttributesEnum.SELECTED -> return java.lang.Boolean.toString(viewElement.isSelected)
-            ViewAttributesEnum.VISIBLE -> return java.lang.Boolean.toString(viewElement.isVisible)
-            ViewAttributesEnum.BOUNDS -> return viewElement.bounds.toShortString()
-            ViewAttributesEnum.RESOURCE_ID -> return viewElement.resourceId
-            ViewAttributesEnum.INDEX -> return Integer.toString(viewElement.index)
-            ViewAttributesEnum.PACKAGE -> return viewElement.packageName
-            ViewAttributesEnum.VIEW_TAG -> return viewElement.viewTag
-            else -> throw NotYetImplementedException()
-        }
+        val supportedAttributeNames = ViewAttributesEnum.values().map { it.toString() }
+        throw AppiumException(
+                String.format("Attribute name should be one of %s. '%s' is given instead",
+                        supportedAttributeNames, attributeName))
     }
 }
