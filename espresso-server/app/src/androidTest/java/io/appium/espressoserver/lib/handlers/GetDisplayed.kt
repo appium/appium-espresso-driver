@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException;
-import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.model.Element;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
+import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.Element
 
-public class GetDisplayed implements RequestHandler<AppiumParams, Boolean> {
+class GetDisplayed : RequestHandler<AppiumParams, Boolean> {
 
-    @Override
-    public Boolean handle(AppiumParams params) throws AppiumException {
+    @Throws(AppiumException::class)
+    override fun handle(params: AppiumParams): Boolean? {
         try {
             // either finish, throw StaleElementException, or throw NoSuchElementException
-            Element.getViewInteractionById(params.getElementId());
-            return true;
-        } catch (StaleElementException e) {
+            Element.getViewInteractionById(params.elementId)
+            return true
+        } catch (e: StaleElementException) {
             // element exists but is not displayed
-            return false;
+            return false
         }
+
     }
 }

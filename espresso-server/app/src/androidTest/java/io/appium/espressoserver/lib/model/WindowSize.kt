@@ -14,31 +14,9 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import javax.annotation.Nullable;
-
-@SuppressWarnings("unused")
-public class Location extends AppiumParams {
-    private Integer x = null;
-    private Integer y = null;
-
-    @Nullable
-    public Integer getX() {
-        return x;
-    }
-
-    public void setX(Integer x) {
-        this.x = x;
-    }
-
-    @Nullable
-    public Integer getY() {
-        return y;
-    }
-
-    public void setY(Integer y) {
-        this.y = y;
-    }
-
-}
+data class WindowSize(
+    var width: Int? = null,
+    var height: Int? = null
+) : AppiumParams()

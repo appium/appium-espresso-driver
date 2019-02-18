@@ -14,31 +14,20 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.handlers
 
-import javax.annotation.Nullable;
+import android.view.View
 
-@SuppressWarnings("unused")
-public class WindowSize extends AppiumParams {
-    private Integer width = null;
-    private Integer height = null;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.ViewElement
 
-    @Nullable
-    public Integer getHeight() {
-        return height;
+class GetName : RequestHandler<AppiumParams, String> {
+
+    @Throws(AppiumException::class)
+    override fun handle(params: AppiumParams): String? {
+        val view = Element.getViewById(params.elementId)
+        return ViewElement(view).contentDescription?.let { return it.toString() } ?: return null
     }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
-    @Nullable
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
 }
