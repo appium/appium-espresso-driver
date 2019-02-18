@@ -33,8 +33,9 @@ class GetWindowRect : RequestHandler<AppiumParams, WindowRect> {
     override fun handle(params: AppiumParams): WindowRect {
         val displayMetrics = DisplayMetrics()
         val context = getApplicationContext<Context>()
-        val winManager = context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-                ?: throw AppiumException("Couldn't get default display: context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE) is null")
+        val winManager = context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+            ?: throw AppiumException("Couldn't get default display: " +
+                "context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE) is null")
 
         winManager.defaultDisplay.getMetrics(displayMetrics)
 

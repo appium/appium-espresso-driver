@@ -38,7 +38,6 @@ class GetClipboard : RequestHandler<GetClipboardParams, String> {
         } catch (e: IllegalArgumentException) {
             throw InvalidArgumentException(e)
         }
-
     }
 
     // Clip feature should run with main thread

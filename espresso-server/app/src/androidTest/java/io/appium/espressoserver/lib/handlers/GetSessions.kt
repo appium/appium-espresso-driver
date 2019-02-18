@@ -29,7 +29,10 @@ class GetSessions : RequestHandler<AppiumParams, Collection<String>> {
 
     @Throws(AppiumException::class)
     override fun handle(params: AppiumParams): Collection<String>? {
-        return if (getGlobalSession() == null) unmodifiableList(emptyList()) else unmodifiableList(listOf(getGlobalSession().id))
+        getGlobalSession()?.let {
+            return unmodifiableList(listOf(getGlobalSession().id))
+        }
+        return unmodifiableList(emptyList())
     }
 
 }

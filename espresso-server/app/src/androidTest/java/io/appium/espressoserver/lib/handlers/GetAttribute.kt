@@ -18,11 +18,9 @@ class GetAttribute : RequestHandler<AppiumParams, String> {
         }
 
         // Map attributeName to ENUM attribute
-        val dstAttribute: ViewAttributesEnum? = ViewAttributesEnum.values().find {
+        ViewAttributesEnum.values().find {
             attributeName.equals(it.toString(), ignoreCase = true)
-        }
-
-        dstAttribute?.let {
+        }?.let {
             // If it's a TEXT attribute, return the view's raw text
             if (it == ViewAttributesEnum.TEXT) {
                 val viewInteraction = Element.getViewInteractionById(params.elementId)
@@ -31,10 +29,11 @@ class GetAttribute : RequestHandler<AppiumParams, String> {
 
             val viewElement = ViewElement(Element.getViewById(params.elementId))
             when (it) {
-                ViewAttributesEnum.CONTENT_DESC -> return if (viewElement.contentDescription == null)
+                /*ViewAttributesEnum.CONTENT_DESC -> return if (viewElement.contentDescription == null)
                     null
                 else
-                    viewElement.contentDescription!!.toString()
+                    viewElement.contentDescription!!.toString()*/
+                ViewAttributesEnum.CONTENT_DESC -> viewElement.contentDescription?.let { return it.toString() } ?: return null
                 ViewAttributesEnum.CLASS -> return viewElement.className
                 ViewAttributesEnum.CHECKABLE -> return java.lang.Boolean.toString(viewElement.isCheckable)
                 ViewAttributesEnum.CHECKED -> return java.lang.Boolean.toString(viewElement.isChecked)
@@ -56,6 +55,7 @@ class GetAttribute : RequestHandler<AppiumParams, String> {
             }
         }
 
+        // If we made it this far, we found no matching attribute. Throw an exception
         val supportedAttributeNames = ViewAttributesEnum.values().map { it.toString() }
         throw AppiumException(
                 String.format("Attribute name should be one of %s. '%s' is given instead",
