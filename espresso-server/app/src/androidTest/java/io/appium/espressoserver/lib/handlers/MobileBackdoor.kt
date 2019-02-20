@@ -14,19 +14,19 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
     @Throws(AppiumException::class)
     override fun handle(params: MobileBackdoorParams): Any? {
         logger.info("Invoking Backdoor")
-        if (params.target == null) {
-            throw InvalidArgumentException("Target must not be empty and must be of type: 'activity', 'application'")
+        params.target?.let {
+            val activity = ActivityHelper.getCurrentActivity()
+            val ops = getBackdoorOperations(params)
+
+            when (it) {
+                MobileBackdoorParams.InvocationTarget.ACTIVITY -> return invokeBackdoorMethods(activity, ops)
+                MobileBackdoorParams.InvocationTarget.APPLICATION -> return invokeBackdoorMethods(activity.application, ops)
+                MobileBackdoorParams.InvocationTarget.ELEMENT -> return invokeBackdoorMethods(Element.getViewById(params.elementId), ops)
+                else -> throw InvalidArgumentException("target cannot be ${it}")
+            }
         }
 
-        val activity = ActivityHelper.getCurrentActivity()
-        val ops = getBackdoorOperations(params)
-
-        when (params.target) {
-            MobileBackdoorParams.InvocationTarget.ACTIVITY -> return invokeBackdoorMethods(activity, ops)
-            MobileBackdoorParams.InvocationTarget.APPLICATION -> return invokeBackdoorMethods(activity.application, ops)
-            MobileBackdoorParams.InvocationTarget.ELEMENT -> return invokeBackdoorMethods(Element.getViewById(params.elementId), ops)
-            else -> throw InvalidArgumentException("target cannot be ${params.target}")
-        }
+        throw InvalidArgumentException("Target must not be empty and must be of type: 'activity', 'application'")
 
     }
 

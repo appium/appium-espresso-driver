@@ -39,7 +39,9 @@ class ScrollToPage : RequestHandler<ScrollToPageParams, Void?> {
                 }
                 viewInteraction.perform(scrollAction)
                 return null
-            } ?: params.scrollToPage?.let {
+            }
+
+            params.scrollToPage?.let {
                 viewInteraction.perform(ViewPagerActions.scrollToPage(it, smoothScroll))
                 return null
             }
