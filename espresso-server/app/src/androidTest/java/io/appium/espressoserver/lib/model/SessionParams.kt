@@ -16,4 +16,13 @@
 
 package io.appium.espressoserver.lib.model
 
-data class Location(var x: Int? = null, var y: Int? = null) : AppiumParams()
+data class SessionParams(
+    val desiredCapabilities: DesiredCapabilities? = null
+) : AppiumParams() {
+
+    inner class DesiredCapabilities {
+        val appActivity: String? = null
+        val appWaitActivity: String? = null
+        val appWaitDuration: Long? = null
+    }
+}

@@ -29,9 +29,9 @@ class CreateSession : RequestHandler<SessionParams, Session> {
     @Throws(AppiumException::class)
     override fun handle(params: SessionParams): Session {
         val appiumSession = Session.createGlobalSession(params.desiredCapabilities)
-        val activityName = params.desiredCapabilities.appActivity
-        val waitActivityName = params.desiredCapabilities.appWaitActivity
-        val appWaitDuration = params.desiredCapabilities.appWaitDuration
+        val activityName = params.desiredCapabilities?.appActivity
+        val waitActivityName = params.desiredCapabilities?.appWaitActivity
+        val appWaitDuration = params.desiredCapabilities?.appWaitDuration
         try {
             activityName?.let {
                 startActivity(it, waitActivityName, appWaitDuration)

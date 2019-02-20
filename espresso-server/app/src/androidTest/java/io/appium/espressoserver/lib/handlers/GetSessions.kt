@@ -22,7 +22,7 @@ import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Session.getGlobalSession
 import java.util.Collections.unmodifiableList
 
-class GetSessions : RequestHandler<AppiumParams, Collection<String>> {
+class GetSessions : RequestHandler<AppiumParams, Collection<String>?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: AppiumParams): Collection<String>? {
