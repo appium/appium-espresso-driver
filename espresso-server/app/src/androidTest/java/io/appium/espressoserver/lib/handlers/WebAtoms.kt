@@ -37,9 +37,9 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
         // TODO: Add a 'waitForDocument' feature to wait for HTML DOCUMENT to be ready
 
         // Initialize onWebView with web view matcher (if webviewEl provided)
-        webAtomsParams.webviewElement.let{
-            logger.info("Initializing webView interaction on webview with el: '${it}'")
-            val matcher = withView(Element.getViewById(it))
+        webAtomsParams.webviewElement.let{ webviewElement ->
+            logger.info("Initializing webView interaction on webview with el: '${webviewElement}'")
+            val matcher = withView(Element.getViewById(webviewElement))
             webViewInteraction = onWebView(matcher)
         }
 
@@ -49,15 +49,17 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
         }
 
         // Iterate through methodsChain and call the atoms
-        webAtomsParams.methodChain.forEach {
-            val atom = invokeMethod(DriverAtoms::class, it.atom.name, *it.atom.args);
+        webAtomsParams.methodChain.forEach { method ->
+            val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args);
 
-            logger.info("Calling interaction '${it.name}' with the atom '${it.atom}'")
-            val args: Array<Any?> = if (atom == null) emptyArray() else arrayOf(atom)
-            val res = invokeInstanceMethod(webViewInteraction, it.name, *args)
+            logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
+
+            var args: Array<Any?> = emptyArray()
+            atom?.let { args = arrayOf(it) }
+            val res = invokeInstanceMethod(webViewInteraction, method.name, *args)
 
             if (!(res is WebInteraction<*>)) {
-                throw InvalidArgumentException("'${it.name}' does not return a 'WebViewInteraction' object");
+                throw InvalidArgumentException("'${method.name}' does not return a 'WebViewInteraction' object");
             }
 
             webViewInteraction = res;

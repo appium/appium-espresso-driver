@@ -31,24 +31,28 @@ class SetOrientation : RequestHandler<OrientationParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: OrientationParams): Void? {
-        val elementId = params.elementId
-        val viewInteraction = if (elementId == null)
-            onView(isRoot())
-        else
-            Element.getViewInteractionById(elementId)
-        params.orientation?.let {
-            if (!listOf("LANDSCAPE", "PORTRAIT").contains(it.toUpperCase())) {
-                throw AppiumException("Screen orientation must be one of LANDSCAPE or PORTRAIT. Found '${it}'");
+        params.orientation?.let {orientation ->
+            // Validate the orientaiton
+            if (!listOf("LANDSCAPE", "PORTRAIT").contains(orientation.toUpperCase())) {
+                throw AppiumException("Screen orientation must be one of LANDSCAPE or PORTRAIT. Found '${orientation}'");
             }
+
+            // Get the view interaction for the element or for the root, if no element provided
+            val viewInteraction = params.elementId?.let {elementId ->
+                Element.getViewInteractionById(elementId)
+            } ?: run {
+                onView(isRoot())
+            }
+
             try {
-                if (it.equals("LANDSCAPE", ignoreCase = true)) {
+                if (orientation.equals("LANDSCAPE", ignoreCase = true)) {
                     viewInteraction.perform(OrientationChange.orientationLandscape())
                 } else {
                     viewInteraction.perform(OrientationChange.orientationPortrait())
                 }
                 return null;
             } catch (e: Exception) {
-                throw AppiumException("Cannot change screen orientation to '${it}'", e)
+                throw AppiumException("Cannot change screen orientation to '${orientation}'", e)
             }
         }
 
