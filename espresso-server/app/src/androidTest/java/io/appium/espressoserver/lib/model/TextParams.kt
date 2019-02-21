@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
-
-import androidx.annotation.Nullable;
+package io.appium.espressoserver.lib.model
 
 @SuppressWarnings("unused")
-public class TextParams extends AppiumParams {
-    private String[] value;
-    private String text;
-
-    public String[] getValue() {
-        return value;
-    }
-
-    @Nullable
-    public String getText() {
-        return text;
-    }
-}
+data class TextParams(
+    val value: Array<String> = emptyArray(),
+    val text: String? = null
+) : AppiumParams()

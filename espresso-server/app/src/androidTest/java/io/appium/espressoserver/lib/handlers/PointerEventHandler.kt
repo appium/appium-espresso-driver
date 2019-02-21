@@ -110,7 +110,7 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
         var startY = displayMetrics.heightPixels / 2 - params.y / 2
 
         params.elementId?.let {
-            val view = Element.getViewById(params.elementId)
+            val view = Element.getViewById(it)
             val viewElement = ViewElement(view)
             startX = viewElement.bounds.left.toLong()
             startY = viewElement.bounds.top.toLong()

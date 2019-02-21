@@ -32,15 +32,7 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
 
     @Throws(AppiumException::class)
     private fun invokeBackdoorMethods(invokeOn: Any, ops: List<InvocationOperation>): Any? {
-        var invocationResult: Any? = null
-        var invocationTarget: Any? = invokeOn
-        ops.forEach {
-            invocationResult = it.apply(invocationTarget)
-            invocationTarget = invocationResult
-        }
-
-        return invocationResult
-
+        return ops.fold(invokeOn) { invocationTarget, operation -> operation.apply(invocationTarget) }
     }
 
     @Throws(InvalidArgumentException::class)
@@ -50,5 +42,4 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
             InvocationOperation(methodName, it.arguments, it.argumentTypes)
         }
     }
-
 }

@@ -39,13 +39,7 @@ class SendKeys : RequestHandler<TextParams, Void?> {
         val view = Element.getViewById(id)
 
         // Convert the array of text to a String
-        val textArray = params.value
-        val stringBuilder = StringBuilder()
-        for (text in textArray) {
-            stringBuilder.append(text)
-        }
-
-        var value: String? = stringBuilder.toString()
+        var value: String? = params.value.joinToString(separator="")
 
         try {
             if (view is ProgressBar) {
@@ -57,8 +51,7 @@ class SendKeys : RequestHandler<TextParams, Void?> {
                 return null
             }
         } catch (e: NumberFormatException) {
-            throw InvalidArgumentException(String.format("Cannot convert '%s' to an integer",
-                    value))
+            throw InvalidArgumentException("Cannot convert '${value}' to an integer")
         }
 
         val viewInteraction = Element.getViewInteractionById(id)
@@ -73,12 +66,12 @@ class SendKeys : RequestHandler<TextParams, Void?> {
             params.text?.let {
                 value = it
             }
-            logger.debug(String.format("Trying replaceText action as a workaround " + "to type the '%s' text into the input field", value))
+            logger.debug("Trying replaceText action as a workaround to type the '${value}' text into the input field")
             val currentText = ViewTextGetter().get(viewInteraction)
             if (currentText.text.isEmpty() || currentText.isHint) {
                 viewInteraction.perform(replaceText(value))
             } else {
-                logger.debug(String.format("Current input field's text: '%s'", currentText))
+                logger.debug("Current input field's text: '${currentText}'")
                 viewInteraction.perform(replaceText(currentText.toString() + value))
             }
         }

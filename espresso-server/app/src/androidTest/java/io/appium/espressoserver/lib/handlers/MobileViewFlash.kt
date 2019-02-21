@@ -11,6 +11,9 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.ViewFlashParams
 
+val DURATION_MILLIS = 30
+val REPEAT_COUNT = 15
+
 class MobileViewFlash : RequestHandler<ViewFlashParams, Void?> {
 
     @Throws(AppiumException::class)
@@ -25,7 +28,7 @@ class MobileViewFlash : RequestHandler<ViewFlashParams, Void?> {
             val animation = AlphaAnimation(1f, 0f)
             animation.repeatMode = Animation.REVERSE
             animation.duration = duration.toLong()
-            animation.setRepeatCount(repeatCount)
+            animation.repeatCount = repeatCount
             animation.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation) {
                     // Unused
@@ -48,11 +51,5 @@ class MobileViewFlash : RequestHandler<ViewFlashParams, Void?> {
         }
 
         return null
-    }
-
-    companion object {
-
-        private val DURATION_MILLIS = 30
-        private val REPEAT_COUNT = 15
     }
 }
