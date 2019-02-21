@@ -27,7 +27,6 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
         }
 
         throw InvalidArgumentException("Target must not be empty and must be of type: 'activity', 'application'")
-
     }
 
     @Throws(AppiumException::class)
