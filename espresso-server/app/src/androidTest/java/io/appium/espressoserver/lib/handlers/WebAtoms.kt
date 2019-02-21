@@ -28,7 +28,7 @@ import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import io.appium.espressoserver.lib.viewmatcher.WithView.withView
 
-class WebAtoms : RequestHandler<WebAtomsParams, Void> {
+class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(webAtomsParams: WebAtomsParams): Void? {

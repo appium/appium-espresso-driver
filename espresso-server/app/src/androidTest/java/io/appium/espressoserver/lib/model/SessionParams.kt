@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import javax.annotation.Nullable;
+data class SessionParams(
+    val desiredCapabilities: DesiredCapabilities? = null
+) : AppiumParams() {
 
-@SuppressWarnings("unused")
-public class KeyEventParams extends AppiumParams {
-    private int keycode;
-    private Integer metastate;
-    private Integer flags;
-
-    public int getKeycode() {
-        return keycode;
+    inner class DesiredCapabilities {
+        val appActivity: String? = null
+        val appWaitActivity: String? = null
+        val appWaitDuration: Long? = null
     }
-
-    @Nullable
-    public Integer getMetastate() {
-        return metastate;
-    }
-
-    @Nullable
-    public Integer getFlags() { return flags; }
 }

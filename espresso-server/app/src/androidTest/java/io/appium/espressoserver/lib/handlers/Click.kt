@@ -17,7 +17,6 @@
 package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.PerformException
-import androidx.test.espresso.ViewInteraction
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.model.AppiumParams
@@ -25,7 +24,7 @@ import io.appium.espressoserver.lib.model.Element
 
 import androidx.test.espresso.action.ViewActions.click
 
-class Click : RequestHandler<AppiumParams, Void> {
+class Click : RequestHandler<AppiumParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: AppiumParams): Void? {

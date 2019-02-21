@@ -16,9 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.app.Activity
 import android.content.pm.ActivityInfo
-import android.view.View
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
@@ -28,7 +26,7 @@ import io.appium.espressoserver.lib.model.ViewElement
 class GetOrientation : RequestHandler<AppiumParams, Int> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Int? {
+    override fun handle(params: AppiumParams): Int {
         val view = Element.getViewById(params.elementId)
         try {
             when (ViewElement(view).extractActivity().requestedOrientation) {

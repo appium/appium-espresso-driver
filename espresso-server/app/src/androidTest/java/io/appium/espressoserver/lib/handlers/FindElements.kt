@@ -18,8 +18,6 @@ package io.appium.espressoserver.lib.handlers
 
 import android.view.View
 
-import java.util.ArrayList
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
 import io.appium.espressoserver.lib.handlers.exceptions.MissingCommandsException

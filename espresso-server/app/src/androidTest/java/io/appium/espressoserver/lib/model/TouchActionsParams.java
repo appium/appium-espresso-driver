@@ -1,4 +1,4 @@
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.model;
 
 import java.util.List;
 

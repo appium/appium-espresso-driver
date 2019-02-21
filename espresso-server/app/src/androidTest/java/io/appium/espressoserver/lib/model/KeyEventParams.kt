@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.model
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.helpers.ScreenshotsHelper;
-import io.appium.espressoserver.lib.model.AppiumParams;
-
-public class ScreenshotHandler implements RequestHandler<AppiumParams, String> {
-
-    @Override
-    public String handle(AppiumParams params) throws AppiumException {
-        return (new ScreenshotsHelper()).getScreenshot();
-    }
-}
+data class KeyEventParams(
+    val keycode: Int = 0,
+    val metastate: Int = 0,
+    val flags: Int = 0
+) : AppiumParams()

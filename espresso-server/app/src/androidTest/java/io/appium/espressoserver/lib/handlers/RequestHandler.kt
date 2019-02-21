@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.handlers
 
-import androidx.annotation.Nullable;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.AppiumParams
 
-@SuppressWarnings("unused")
-public class TextParams extends AppiumParams {
-    private String[] value;
-    private String text;
-
-    public String[] getValue() {
-        return value;
-    }
-
-    @Nullable
-    public String getText() {
-        return text;
-    }
+interface RequestHandler<T : AppiumParams, R> {
+    @Throws(AppiumException::class)
+    fun handle(params: T): R
 }

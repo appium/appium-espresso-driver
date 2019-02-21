@@ -16,8 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.view.View
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.ScreenshotsHelper
 import io.appium.espressoserver.lib.model.AppiumParams

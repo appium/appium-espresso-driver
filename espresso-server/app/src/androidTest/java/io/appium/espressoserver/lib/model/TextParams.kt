@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.model
 
-import androidx.test.espresso.Espresso;
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
-
-public class HideKeyboard implements RequestHandler<AppiumParams, Void> {
-    @Override
-    public Void handle(AppiumParams params) throws AppiumException {
-        Espresso.closeSoftKeyboard();
-        return null;
-    }
-}
+@SuppressWarnings("unused")
+data class TextParams(
+    val value: Array<String> = emptyArray(),
+    val text: String? = null
+) : AppiumParams()

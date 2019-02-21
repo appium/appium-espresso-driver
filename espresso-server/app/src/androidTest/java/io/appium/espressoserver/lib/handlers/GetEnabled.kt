@@ -19,7 +19,6 @@ package io.appium.espressoserver.lib.handlers
 import junit.framework.AssertionFailedError
 
 import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewInteraction
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Element
@@ -30,7 +29,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 class GetEnabled : RequestHandler<AppiumParams, Boolean> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Boolean? {
+    override fun handle(params: AppiumParams): Boolean {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         try {
             viewInteraction.check(matches(isEnabled()))

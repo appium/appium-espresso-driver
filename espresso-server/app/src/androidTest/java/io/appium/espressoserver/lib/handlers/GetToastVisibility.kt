@@ -19,7 +19,6 @@ package io.appium.espressoserver.lib.handlers
 import java.util.regex.Pattern
 
 import androidx.test.espresso.EspressoException
-import androidx.test.espresso.ViewInteraction
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.ToastLookupParams
 import io.appium.espressoserver.lib.viewmatcher.ToastMatcher
@@ -32,7 +31,7 @@ import io.appium.espressoserver.lib.viewmatcher.RegexpTextMatcher.withRegexp
 
 class GetToastVisibility : RequestHandler<ToastLookupParams, Boolean> {
     @Throws(AppiumException::class)
-    override fun handle(params: ToastLookupParams): Boolean? {
+    override fun handle(params: ToastLookupParams): Boolean {
         try {
             val viewInteraction = if (params.isRegexp)
                 onView(withRegexp(Pattern.compile(params.text))).inRoot(ToastMatcher())

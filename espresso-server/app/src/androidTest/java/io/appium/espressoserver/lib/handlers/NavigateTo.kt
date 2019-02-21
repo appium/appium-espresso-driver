@@ -16,18 +16,27 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import androidx.test.espresso.EspressoException
+import androidx.test.espresso.contrib.NavigationViewActions
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.model.Location
-import io.appium.espressoserver.lib.model.ViewElement
+import io.appium.espressoserver.lib.model.NavigateToParams
 
-class GetLocationInView : RequestHandler<AppiumParams, Location> {
+class NavigateTo : RequestHandler<NavigateToParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Location {
-        val view = Element.getViewById(params.elementId)
-        val viewElement = ViewElement(view)
-        return Location(viewElement.relativeLeft, viewElement.relativeTop)
+    override fun handle(params: NavigateToParams): Void? {
+        val viewInteraction = Element.getViewInteractionById(params.elementId)
+        val menuItemId = params.menuItemId
+        try {
+            viewInteraction.perform(NavigationViewActions.navigateTo(menuItemId!!))
+        } catch (e: Exception) {
+            if (e is EspressoException) {
+                throw AppiumException(String.format("Could not navigate to menu item %s. Reason: %s", menuItemId, e))
+            }
+            throw e
+        }
+
+        return null
     }
 }

@@ -8,7 +8,7 @@ import io.appium.espressoserver.lib.model.ViewAttributesEnum
 import io.appium.espressoserver.lib.model.ViewElement
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
-class GetAttribute : RequestHandler<AppiumParams, String> {
+class GetAttribute : RequestHandler<AppiumParams, String?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: AppiumParams): String? {

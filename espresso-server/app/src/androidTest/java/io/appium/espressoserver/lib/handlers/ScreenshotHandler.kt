@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import javax.annotation.Nullable;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.ScreenshotsHelper
+import io.appium.espressoserver.lib.model.AppiumParams
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException;
-import io.appium.espressoserver.lib.model.AppiumParams;
+class ScreenshotHandler : RequestHandler<AppiumParams, String> {
 
-public class NotYetImplemented implements RequestHandler<AppiumParams, Void> {
-    @Override
-    @Nullable
-    public Void handle(AppiumParams params) throws AppiumException {
-        throw new NotYetImplementedException();
+    @Throws(AppiumException::class)
+    override fun handle(params: AppiumParams): String {
+        return ScreenshotsHelper().screenshot
     }
 }

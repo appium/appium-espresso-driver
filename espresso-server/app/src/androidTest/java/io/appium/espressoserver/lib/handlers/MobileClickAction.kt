@@ -23,7 +23,7 @@ import io.appium.espressoserver.lib.model.MobileClickActionParams
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 
-class MobileClickAction : RequestHandler<MobileClickActionParams, Void> {
+class MobileClickAction : RequestHandler<MobileClickActionParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: MobileClickActionParams): Void? {

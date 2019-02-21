@@ -28,7 +28,7 @@ import io.appium.espressoserver.lib.model.GetClipboardParams
 
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 
-class GetClipboard : RequestHandler<GetClipboardParams, String> {
+class GetClipboard : RequestHandler<GetClipboardParams, String?> {
     private val mInstrumentation = getInstrumentation()
 
     @Throws(AppiumException::class)

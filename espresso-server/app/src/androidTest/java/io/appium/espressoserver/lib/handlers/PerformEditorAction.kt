@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.IMEHelpers
+import io.appium.espressoserver.lib.model.EditorActionParams
 
-public interface RequestHandler<T extends AppiumParams, R>{
-    R handle(T params) throws AppiumException;
+class PerformEditorAction : RequestHandler<EditorActionParams, Void?> {
+
+    @Throws(AppiumException::class)
+    override fun handle(params: EditorActionParams): Void? {
+        IMEHelpers.performEditorAction(params.action)
+        return null
+    }
 }

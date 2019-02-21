@@ -16,16 +16,13 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import java.util.Collections
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 
 import io.appium.espressoserver.lib.model.Session.getGlobalSession
-import java.util.Collections.singletonList
 import java.util.Collections.unmodifiableList
 
-class GetSessions : RequestHandler<AppiumParams, Collection<String>> {
+class GetSessions : RequestHandler<AppiumParams, Collection<String>?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: AppiumParams): Collection<String>? {

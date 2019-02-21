@@ -16,14 +16,12 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.view.View
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.ViewElement
 
-class GetName : RequestHandler<AppiumParams, String> {
+class GetName : RequestHandler<AppiumParams, String?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: AppiumParams): String? {
