@@ -20,10 +20,10 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.SourceDocument
 
-class Source : RequestHandler<AppiumParams, String?> {
+class Source : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): String? {
+    override fun handle(params: AppiumParams): String {
         return SourceDocument().toXMLString()
     }
 }

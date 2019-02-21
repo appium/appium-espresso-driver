@@ -31,31 +31,30 @@ class SetOrientation : RequestHandler<OrientationParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: OrientationParams): Void? {
-        params.orientation?.let {orientation ->
-            // Validate the orientaiton
-            if (!listOf("LANDSCAPE", "PORTRAIT").contains(orientation.toUpperCase())) {
-                throw AppiumException("Screen orientation must be one of LANDSCAPE or PORTRAIT. Found '${orientation}'");
-            }
+        val orientation = params.orientation
+        orientation ?: throw AppiumException("Screen orientation value must not be null")
 
-            // Get the view interaction for the element or for the root, if no element provided
-            val viewInteraction = params.elementId?.let {elementId ->
-                Element.getViewInteractionById(elementId)
-            } ?: run {
-                onView(isRoot())
-            }
-
-            try {
-                if (orientation.equals("LANDSCAPE", ignoreCase = true)) {
-                    viewInteraction.perform(OrientationChange.orientationLandscape())
-                } else {
-                    viewInteraction.perform(OrientationChange.orientationPortrait())
-                }
-                return null;
-            } catch (e: Exception) {
-                throw AppiumException("Cannot change screen orientation to '${orientation}'", e)
-            }
+        // Validate the orientaiton
+        if (!listOf("LANDSCAPE", "PORTRAIT").contains(orientation.toUpperCase())) {
+            throw AppiumException("Screen orientation must be one of LANDSCAPE or PORTRAIT. Found '${orientation}'");
         }
 
-        throw AppiumException("Screen orientation value must not be null")
+        // Get the view interaction for the element or for the root, if no element provided
+        val viewInteraction = params.elementId?.let {elementId ->
+            Element.getViewInteractionById(elementId)
+        } ?: run {
+            onView(isRoot())
+        }
+
+        try {
+            if (orientation.equals("LANDSCAPE", ignoreCase = true)) {
+                viewInteraction.perform(OrientationChange.orientationLandscape())
+            } else {
+                viewInteraction.perform(OrientationChange.orientationPortrait())
+            }
+            return null;
+        } catch (e: Exception) {
+            throw AppiumException("Cannot change screen orientation to '${orientation}'", e)
+        }
     }
 }

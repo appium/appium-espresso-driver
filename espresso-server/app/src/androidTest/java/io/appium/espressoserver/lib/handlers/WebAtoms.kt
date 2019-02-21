@@ -50,12 +50,11 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
         // Iterate through methodsChain and call the atoms
         webAtomsParams.methodChain.forEach { method ->
-            val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args);
+            val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args)
 
             logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
 
-            var args: Array<Any?> = emptyArray()
-            atom?.let { args = arrayOf(it) }
+            val args: Array<Any?> = if (atom != null) arrayOf(atom) else emptyArray()
             val res = invokeInstanceMethod(webViewInteraction, method.name, *args)
 
             if (!(res is WebInteraction<*>)) {

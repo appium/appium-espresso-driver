@@ -59,8 +59,7 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any>> {
             }
 
             if (index >= uiObjects.size) {
-                throw AppiumException(
-                        String.format("Index %d is out of bounds for %d elements", index, uiObjects.size))
+                throw AppiumException("Index ${index} is out of bounds for ${uiObjects.size} elements")
             }
 
             return listOf(uiObjectMethod.invoke(uiObjects[index]))

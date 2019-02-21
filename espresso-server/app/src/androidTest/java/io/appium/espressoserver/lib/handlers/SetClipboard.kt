@@ -50,7 +50,11 @@ class SetClipboard : RequestHandler<SetClipboardParams, Void?> {
     }
 
     // Clip feature should run with main thread
-    private inner class SetClipboardRunnable internal constructor(private val contentType: ClipboardDataType, private val label: String?, private val content: String) : Runnable {
+    private inner class SetClipboardRunnable internal constructor(
+            private val contentType: ClipboardDataType,
+            private val label: String?,
+            private val content: String
+    ) : Runnable {
 
         override fun run() {
             when (contentType) {
