@@ -17,7 +17,6 @@
 package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.EspressoException
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.contrib.PickerActions
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.Element
@@ -32,7 +31,7 @@ class SetDate : RequestHandler<SetDateParams, Void?> {
             viewInteraction.perform(PickerActions.setDate(params.year!!, params.monthOfYear!!, params.dayOfMonth!!))
         } catch (e: Exception) {
             if (e is EspressoException) {
-                throw AppiumException(String.format("Could not set date on element. Reason: %s", e))
+                throw AppiumException("Could not set date on element. Reason: ${e}")
             }
             throw e
         }

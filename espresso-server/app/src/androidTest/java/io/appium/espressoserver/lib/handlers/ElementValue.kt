@@ -15,7 +15,7 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementVal
 
     @Throws(AppiumException::class)
     override fun handle(params: ElementValueParams): Void? {
-        val value = params.value ?: throw InvalidArgumentException("Must provided 'value' property");
+        val value = params.value ?: throw InvalidArgumentException("Must provide 'value' property");
         val elementId = params.elementId
         val view = Element.getViewById(elementId)
 

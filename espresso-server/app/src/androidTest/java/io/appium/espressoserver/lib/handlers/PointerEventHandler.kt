@@ -127,7 +127,7 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
         val scrollDuration = (ViewConfiguration.getTapTimeout() * 1.5).toLong()
 
         eventTime += scrollDuration
-        val moveParams = MotionEventParams(params.x, params.y)
+        val moveParams = MotionEventParams(params.x + startX, params.y + startY)
         handlePointerEvent(moveParams, ACTION_MOVE, TOUCH, downTime, eventTime)
 
         // Release finger after another 'scroll' duration
@@ -156,7 +156,6 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
 
     @Throws(AppiumException::class)
     private fun handleMouseMove(params: MotionEventParams) {
-        params.copy()
         params.button = globalButtonState
         handlePointerEvent(params, ACTION_MOVE, MOUSE)
         globalMouseLocationX = params.x
