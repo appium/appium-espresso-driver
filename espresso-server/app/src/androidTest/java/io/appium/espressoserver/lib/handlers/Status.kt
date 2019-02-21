@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.StartActivityParams;
+import io.appium.espressoserver.lib.model.AppiumParams
 
-import static io.appium.espressoserver.lib.helpers.ActivityHelper.startActivity;
+class Status : RequestHandler<AppiumParams, Void?> {
 
-public class StartActivity implements RequestHandler<StartActivityParams, Void> {
-
-    @Override
-    public Void handle(StartActivityParams params) throws AppiumException {
-        startActivity(params.getAppActivity(), params.getAppWaitActivity());
-        return null;
+    override fun handle(params: AppiumParams): Void? {
+        return null
     }
 }

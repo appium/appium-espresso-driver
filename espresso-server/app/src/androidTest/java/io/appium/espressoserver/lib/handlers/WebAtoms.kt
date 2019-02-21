@@ -32,14 +32,14 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(webAtomsParams: WebAtomsParams): Void? {
-        var webViewInteraction:WebInteraction<*> = onWebView()
+        var webViewInteraction:WebInteraction<*>
 
-        // TODO: Add a 'waitForDocument' feature
+        // TODO: Add a 'waitForDocument' feature to wait for HTML DOCUMENT to be ready
 
         // Initialize onWebView with web view matcher (if webviewEl provided)
-        webAtomsParams.webviewElement.let{
-            logger.info("Initializing webView interaction on webview with el: '${it}'")
-            val matcher = withView(Element.getViewById(it))
+        webAtomsParams.webviewElement.let{ webviewElement ->
+            logger.info("Initializing webView interaction on webview with el: '${webviewElement}'")
+            val matcher = withView(Element.getViewById(webviewElement))
             webViewInteraction = onWebView(matcher)
         }
 
@@ -49,11 +49,12 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
         }
 
         // Iterate through methodsChain and call the atoms
-        for (method in webAtomsParams.methodChain) {
-            val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args);
+        webAtomsParams.methodChain.forEach { method ->
+            val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args)
 
             logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
-            val args: Array<Any?> = if (atom == null) emptyArray() else arrayOf(atom)
+
+            val args: Array<Any?> = if (atom != null) arrayOf(atom) else emptyArray()
             val res = invokeInstanceMethod(webViewInteraction, method.name, *args)
 
             if (!(res is WebInteraction<*>)) {

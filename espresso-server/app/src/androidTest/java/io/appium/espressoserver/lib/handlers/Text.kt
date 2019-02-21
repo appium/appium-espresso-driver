@@ -14,29 +14,19 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.handlers
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.test.espresso.ViewInteraction
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
-@SuppressWarnings("unused")
-public class SetClipboardParams extends AppiumParams {
-    private ClipboardDataType contentType;
-    private String content;
-    private String label;
+class Text : RequestHandler<AppiumParams, String?> {
 
-    @NonNull
-    public ClipboardDataType getContentType() {
-        return this.contentType == null ? ClipboardDataType.PLAINTEXT : this.contentType;
-    }
-
-    @Nullable
-    public String getContent() {
-        return this.content;
-    }
-
-    @Nullable
-    public String getLabel() {
-        return this.label;
+    @Throws(AppiumException::class)
+    override fun handle(params: AppiumParams): String? {
+        val viewInteraction = Element.getViewInteractionById(params.elementId)
+        return ViewTextGetter().get(viewInteraction).rawText
     }
 }

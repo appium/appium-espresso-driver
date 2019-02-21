@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.model
 
-import javax.annotation.Nullable;
-
-import io.appium.espressoserver.lib.model.AppiumParams;
-
-public class Status implements RequestHandler<AppiumParams, Void> {
-
-    @Override
-    @Nullable
-    public Void handle(AppiumParams params) {
-        return null;
-    }
-}
+data class SetClipboardParams(
+    val contentType: ClipboardDataType = ClipboardDataType.PLAINTEXT,
+    val content: String? = null,
+    val label: String? = null
+) : AppiumParams()

@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers;
+package io.appium.espressoserver.lib.handlers
 
-import javax.annotation.Nullable;
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.StartActivityParams
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
-import io.appium.espressoserver.lib.model.AppiumParams;
-import io.appium.espressoserver.lib.model.SourceDocument;
+import io.appium.espressoserver.lib.helpers.ActivityHelper.startActivity
 
-public class Source implements RequestHandler<AppiumParams, String> {
+class StartActivity : RequestHandler<StartActivityParams, Void?> {
 
-    @Override
-    @Nullable
-    public String handle(AppiumParams params) throws AppiumException {
-        return new SourceDocument().toXMLString();
+    @Throws(AppiumException::class)
+    override fun handle(params: StartActivityParams): Void? {
+        startActivity(params.appActivity, params.appWaitActivity)
+        return null
     }
 }
