@@ -12,6 +12,7 @@ class ReleaseActions : RequestHandler<AppiumParams, Void?> {
     @Throws(AppiumException::class)
     override fun handle(params: AppiumParams): Void? {
 
+        // TODO: Try replacing this with lambda
         val runnable = UiControllerRunnable<Void> {
             Actions().release(params.sessionId)
             null
