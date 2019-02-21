@@ -109,7 +109,7 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
         var startX = displayMetrics.widthPixels / 2 - params.x / 2
         var startY = displayMetrics.heightPixels / 2 - params.y / 2
 
-        params.elementId?.let {
+        params.targetElement?.let {
             val view = Element.getViewById(it)
             val viewElement = ViewElement(view)
             startX = viewElement.bounds.left.toLong()
@@ -117,9 +117,7 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
         }
 
         // Do down event
-        val downParams = MotionEventParams()
-        downParams.x = startX
-        downParams.y = startY
+        val downParams = MotionEventParams(startX, startY)
         val downEvent = handlePointerEvent(downParams, ACTION_DOWN, TOUCH)
 
         val downTime = downEvent.downTime
@@ -129,16 +127,12 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
         val scrollDuration = (ViewConfiguration.getTapTimeout() * 1.5).toLong()
 
         eventTime += scrollDuration
-        val moveParams = MotionEventParams()
-        moveParams.x = startX + params.x
-        moveParams.y = startY + params.y
+        val moveParams = MotionEventParams(params.x, params.y)
         handlePointerEvent(moveParams, ACTION_MOVE, TOUCH, downTime, eventTime)
 
         // Release finger after another 'scroll' duration
         eventTime += scrollDuration
-        val upParams = MotionEventParams()
-        upParams.x = startX + params.x
-        upParams.y = startY + params.y
+        val upParams = MotionEventParams(startX + params.x, startY + params.y)
         handlePointerEvent(upParams, ACTION_UP, TOUCH, downTime, eventTime)
     }
 
@@ -162,6 +156,7 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
 
     @Throws(AppiumException::class)
     private fun handleMouseMove(params: MotionEventParams) {
+        params.copy()
         params.button = globalButtonState
         handlePointerEvent(params, ACTION_MOVE, MOUSE)
         globalMouseLocationX = params.x
@@ -170,20 +165,20 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
 
     @Throws(AppiumException::class)
     private fun handleClick(params: MotionEventParams) {
-        params.elementId ?: throw InvalidArgumentException("Element ID must not be blank for click event")
-        Element.getViewInteractionById(params.elementId).perform(click())
+        params.targetElement ?: throw InvalidArgumentException("Element ID must not be blank for click event")
+        Element.getViewInteractionById(params.targetElement).perform(click())
     }
 
     @Throws(AppiumException::class)
     private fun handleDoubleClick(params: MotionEventParams) {
-        params.elementId ?: throw InvalidArgumentException("Element ID must not be blank for double click event")
-        Element.getViewInteractionById(params.elementId).perform(doubleClick())
+        params.targetElement ?: throw InvalidArgumentException("Element ID must not be blank for double click event")
+        Element.getViewInteractionById(params.targetElement).perform(doubleClick())
     }
 
     @Throws(AppiumException::class)
     private fun handleLongClick(params: MotionEventParams) {
-        params.elementId ?: throw InvalidArgumentException("Element ID must not be blank for long click event")
-        Element.getViewInteractionById(params.elementId).perform(longClick())
+        params.targetElement ?: throw InvalidArgumentException("Element ID must not be blank for long click event")
+        Element.getViewInteractionById(params.targetElement).perform(longClick())
     }
 
     @Throws(AppiumException::class)

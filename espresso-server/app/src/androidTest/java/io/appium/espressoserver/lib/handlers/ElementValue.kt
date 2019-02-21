@@ -15,16 +15,17 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementVal
 
     @Throws(AppiumException::class)
     override fun handle(params: ElementValueParams): Void? {
+        val value = params.value ?: throw InvalidArgumentException("Must provided 'value' property");
         val elementId = params.elementId
         val view = Element.getViewById(elementId)
 
         try {
             if (view is ProgressBar) {
-                view.progress = Integer.parseInt(params.value)
+                view.progress = Integer.parseInt(value)
                 return null
             }
             if (view is NumberPicker) {
-                view.value = Integer.parseInt(params.value)
+                view.value = Integer.parseInt(value)
                 return null
             }
         } catch (e: NumberFormatException) {

@@ -62,7 +62,9 @@ import io.appium.espressoserver.lib.handlers.MobileBackdoor;
 import io.appium.espressoserver.lib.handlers.MobileClickAction;
 import io.appium.espressoserver.lib.handlers.MobileSwipe;
 import io.appium.espressoserver.lib.handlers.MobileViewFlash;
+import io.appium.espressoserver.lib.handlers.MoveTo;
 import io.appium.espressoserver.lib.handlers.MultiTouchAction;
+import io.appium.espressoserver.lib.model.MoveToParams;
 import io.appium.espressoserver.lib.model.MultiTouchActionsParams;
 import io.appium.espressoserver.lib.handlers.NavigateTo;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
@@ -168,25 +170,25 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element", new FindElement(), Locator.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/active", new FindActive(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/active", new FindActive(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/attribute/:name", new GetAttribute(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/clear", new Clear(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/click", new Click(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/displayed", new GetDisplayed(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/element", new FindElement(), Locator.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/elements", new FindElements(), Locator.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/enabled", new GetEnabled(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/location", new GetLocation(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/location_in_view", new GetLocationInView(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/name", new GetName(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/rect", new GetRect(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/attribute/:name", new GetAttribute(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:targetElement/clear", new Clear(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:targetElement/click", new Click(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/displayed", new GetDisplayed(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:targetElement/element", new FindElement(), Locator.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:targetElement/elements", new FindElements(), Locator.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/enabled", new GetEnabled(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/location", new GetLocation(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/location_in_view", new GetLocationInView(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/name", new GetName(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/rect", new GetRect(), AppiumParams.class));
         // W3C endpoint
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/screenshot", new ElementScreenshot(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/screenshot", new ElementScreenshot(), AppiumParams.class));
         // JSONWP endpoint
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/screenshot/:elementId", new ElementScreenshot(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/selected", new GetSelected(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/size", new GetSize(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/text", new Text(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/value", new SendKeys(), TextParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/screenshot/:targetElement", new ElementScreenshot(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/selected", new GetSelected(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/size", new GetSize(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/text", new Text(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:targetElement/value", new SendKeys(), TextParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/keys", new Keys(), TextParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/window/:windowHandle/size", new GetWindowSize(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/window/rect", new GetWindowRect(), AppiumParams.class));
@@ -198,9 +200,9 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/press_keycode", new PressKeyCode(false), KeyEventParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/long_press_keycode", new PressKeyCode(true), KeyEventParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/perform_editor_action", new PerformEditorAction(), EditorActionParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/equals/:otherId", new ElementEquals(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/element/:elementId/value", new ElementValue(false), ElementValueParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/element/:elementId/replace_value", new ElementValue(true), ElementValueParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/equals/:otherId", new ElementEquals(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/element/:targetElement/value", new ElementValue(false), ElementValueParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/element/:targetElement/replace_value", new ElementValue(true), ElementValueParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/get_clipboard", new GetClipboard(), GetClipboardParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/device/set_clipboard", new SetClipboard(), SetClipboardParams.class));
 
@@ -216,25 +218,25 @@ class Router {
         // mouse events
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/buttondown", new PointerEventHandler(MOUSE_DOWN), MotionEventParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/buttonup", new PointerEventHandler(MOUSE_UP), MotionEventParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/moveto", new PointerEventHandler(MOUSE_MOVE), MotionEventParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/moveto", new MoveTo(), MoveToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/click", new PointerEventHandler(MOUSE_CLICK), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/doubleclick", new PointerEventHandler(MOUSE_DOUBLECLICK), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/perform", new TouchAction(), TouchActionsParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/multi/perform", new MultiTouchAction(), MultiTouchActionsParams.class));
 
         // 'execute mobile' commands
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/swipe", new MobileSwipe(), MobileSwipeParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:targetElement/swipe", new MobileSwipe(), MobileSwipeParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/is_toast_displayed", new GetToastVisibility(), ToastLookupParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/open_drawer", new DrawerActionHandler(true), DrawerActionParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/close_drawer", new DrawerActionHandler(false), DrawerActionParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/set_date", new SetDate(), SetDateParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/set_time", new SetTime(), SetTimeParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/scroll_to_page", new ScrollToPage(), ScrollToPageParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/navigate_to", new NavigateTo(), NavigateToParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:targetElement/open_drawer", new DrawerActionHandler(true), DrawerActionParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:targetElement/close_drawer", new DrawerActionHandler(false), DrawerActionParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:targetElement/set_date", new SetDate(), SetDateParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:targetElement/set_time", new SetTime(), SetTimeParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:targetElement/scroll_to_page", new ScrollToPage(), ScrollToPageParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:targetElement/navigate_to", new NavigateTo(), NavigateToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/backdoor", new MobileBackdoor(), MobileBackdoorParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/flash", new MobileViewFlash(), ViewFlashParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:targetElement/flash", new MobileViewFlash(), ViewFlashParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/uiautomator", new Uiautomator(), UiautomatorParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/click_action", new MobileClickAction(), MobileClickActionParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:targetElement/click_action", new MobileClickAction(), MobileClickActionParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/web_atoms", new WebAtoms(), WebAtomsParams.class));
 
         // Not implemented
@@ -269,8 +271,8 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId/cookie", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId/cookie/:name", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/title", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:elementId/submit", new NotYetImplemented(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:elementId/css/:propertyName", new NotYetImplemented(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/element/:targetElement/submit", new NotYetImplemented(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/element/:targetElement/css/:propertyName", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/location", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/location", new NotYetImplemented(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/log", new NotYetImplemented(), AppiumParams.class));

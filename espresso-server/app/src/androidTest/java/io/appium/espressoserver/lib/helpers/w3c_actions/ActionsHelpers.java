@@ -171,7 +171,7 @@ public class ActionsHelpers {
         final PointerCoords result = new PointerCoords();
         final Rect bounds;
         try {
-            final View view = Element.getViewById(elementId);
+            final View view = Element.Companion.getViewById(elementId);
             final ViewElement viewElement = new ViewElement(view);
             bounds = viewElement.getBounds();
         } catch (Exception e) {

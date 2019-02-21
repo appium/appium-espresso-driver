@@ -13,7 +13,7 @@ import io.appium.espressoserver.lib.model.MobileBackdoorMethod;
 import io.appium.espressoserver.lib.model.MobileBackdoorParams;
 import io.appium.espressoserver.test.assets.Helpers;
 
-import static io.appium.espressoserver.lib.model.MobileBackdoorParams.InvocationTarget.ACTIVITY;
+import static io.appium.espressoserver.lib.model.MobileBackdoorParams.Companion.InvocationTarget.*;
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

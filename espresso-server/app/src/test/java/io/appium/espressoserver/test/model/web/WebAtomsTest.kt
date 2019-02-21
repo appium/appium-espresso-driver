@@ -2,7 +2,7 @@ package io.appium.espressoserver.test.model.web
 
 import com.google.gson.Gson
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
-import io.appium.espressoserver.lib.model.web.WebAtomsParams.WebAtomsMethod
+import io.appium.espressoserver.lib.model.web.WebAtomsMethod
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

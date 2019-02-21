@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
 /**
  * Enumerate Appium Statuses
  */
-@SuppressWarnings("unused")
-public enum AppiumStatus {
+enum class AppiumStatus constructor(val code: Int, val message: String) {
     SUCCESS(0, "The command executed successfully"),
     NO_SUCH_DRIVER(6, "A session is either terminated or not started"),
     NO_SUCH_ELEMENT(7, "An element could not be located on the page using the given search parameters"),
@@ -49,22 +48,5 @@ public enum AppiumStatus {
     JSON_DECODER_ERROR(35, "Could not decode action/params of command, please check format!"),
     INVALID_CONTEXT_ERROR(36, "The operation could not be performed in the current context"),
     INVALID_ARGUMENT(61, "The arguments passed to the command are either invalid or malformed"),
-    UNABLE_TO_CAPTURE_SCREEN_ERROR(63, "Screen capture is not possible");
-
-    private final int code;
-    private final String message;
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-
-    AppiumStatus(final int code, final String message) {
-        this.code = code;
-        this.message = message;
-    }
+    UNABLE_TO_CAPTURE_SCREEN_ERROR(63, "Screen capture is not possible")
 }

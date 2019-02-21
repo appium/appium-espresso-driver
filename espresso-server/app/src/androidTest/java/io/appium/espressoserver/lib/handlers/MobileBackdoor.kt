@@ -8,21 +8,22 @@ import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.MobileBackdoorParams
 
 import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
+import io.appium.espressoserver.lib.model.MobileBackdoorParams.Companion.InvocationTarget.*
 
 class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: MobileBackdoorParams): Any? {
         logger.info("Invoking Backdoor")
-        params.target?.let {
+        params.target?.let {target ->
             val activity = ActivityHelper.getCurrentActivity()
             val ops = getBackdoorOperations(params)
 
-            when (it) {
-                MobileBackdoorParams.InvocationTarget.ACTIVITY -> return invokeBackdoorMethods(activity, ops)
-                MobileBackdoorParams.InvocationTarget.APPLICATION -> return invokeBackdoorMethods(activity.application, ops)
-                MobileBackdoorParams.InvocationTarget.ELEMENT -> return invokeBackdoorMethods(Element.getViewById(params.elementId), ops)
-                else -> throw InvalidArgumentException("target cannot be ${it}")
+            when (target) {
+                ACTIVITY -> return invokeBackdoorMethods(activity, ops)
+                APPLICATION -> return invokeBackdoorMethods(activity.application, ops)
+                ELEMENT -> return invokeBackdoorMethods(Element.getViewById(params.targetElement), ops)
+                else -> throw InvalidArgumentException("target cannot be '${target}'")
             }
         }
 
@@ -36,9 +37,9 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
 
     @Throws(InvalidArgumentException::class)
     private fun getBackdoorOperations(params: MobileBackdoorParams): List<InvocationOperation> {
-        return params.methods.map {
-            val methodName = it.name ?: throw InvalidArgumentException("'name' is a required parameter for backdoor method to be invoked.")
-            InvocationOperation(methodName, it.arguments, it.argumentTypes)
+        return params.methods.map {method ->
+            val methodName = method.name ?: throw InvalidArgumentException("'name' is a required parameter for backdoor method to be invoked.")
+            InvocationOperation(methodName, method.arguments, method.argumentTypes)
         }
     }
 }
