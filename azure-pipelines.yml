@@ -11,4 +11,7 @@ steps:
     testResultsFiles: '**/TEST-*.xml'
 - script: |
     bash azure-pipelines/start-emulator.sh
+    brew install node
+    npm install
+    npm run build
 
