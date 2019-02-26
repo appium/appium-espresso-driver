@@ -15,5 +15,6 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'assembleDebug'
-  script: |
-    bash ./azure-pipelines/start-emulator.sh
+  steps:
+    script: |
+      bash ./azure-pipelines/start-emulator.sh
