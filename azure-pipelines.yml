@@ -16,5 +16,5 @@ steps:
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'assembleDebug'
     steps:
-      script: |
+      - script: |
         bash ./azure-pipelines/start-emulator.sh
