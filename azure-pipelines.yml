@@ -17,4 +17,4 @@ steps:
     tasks: 'assembleDebug'
     steps:
     - script: |
-      bash azure-pipelines/start-emulator.sh
+        bash azure-pipelines/start-emulator.sh
