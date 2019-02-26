@@ -22,6 +22,6 @@ steps:
   #displayName: Run tests
 - script: npm run build
   displayName: Build
-- script: E2E Test
+- script: npx mocha --timeout 6000000 --recursive build/test/functional/commands
 
 
