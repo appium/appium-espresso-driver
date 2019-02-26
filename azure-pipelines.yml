@@ -9,6 +9,7 @@ steps:
     gradleOptions: '-Xmx3072m'
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
-- script: |
-    bash azure-pipelines/start-emulator.sh
+- task: Bash@3
+  inputs:
+    script: azure-pipelines/start-emulator.sh
 
