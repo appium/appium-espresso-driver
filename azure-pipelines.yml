@@ -12,6 +12,8 @@ steps:
 - script: |
     bash azure-pipelines/start-emulator.sh
 - task: NodeTool@0 
+  inputs:
+    versionSpec: 11.x
 - script: npm install
 
 
