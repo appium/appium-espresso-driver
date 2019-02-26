@@ -11,9 +11,15 @@ steps:
     testResultsFiles: '**/TEST-*.xml'
 - script: |
     bash azure-pipelines/start-emulator.sh
+  displayName: Create and Build Emulator
 - task: NodeTool@0 
   inputs:
     versionSpec: 11.x
 - script: npm install
+  displayName: Install dependencies
+- script: npm test
+  displayName: Run tests
+- script: npm run build
+  displayName: Build
 
 
