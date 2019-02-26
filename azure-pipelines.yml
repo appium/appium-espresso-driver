@@ -3,7 +3,7 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 pool:
-  vmImage: 'Hosted MacOS'
+  vmImage: 'macOS-10.13'
 
 steps:
 - task: Gradle@2
