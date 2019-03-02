@@ -20,14 +20,26 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 
 import io.appium.espressoserver.lib.model.Session.getGlobalSession
+import io.appium.espressoserver.lib.model.SessionParams
 import java.util.Collections.unmodifiableList
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.jvm.isAccessible
 
-class GetSessions : RequestHandler<AppiumParams, Collection<String>?> {
+class GetSessions : RequestHandler<AppiumParams, Collection<Map<String, Any?>>> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Collection<String>? {
+    override fun handle(params: AppiumParams): Collection<Map<String, Any?>> {
         getGlobalSession()?.let {
-            return unmodifiableList(listOf(getGlobalSession().id))
+            val caps = mutableMapOf<String, Any?>()
+            for (prop in SessionParams.DesiredCapabilities::class.declaredMemberProperties) {
+                if (prop.isAccessible) {
+                    caps[prop.name] = prop.get(it.desiredCapabilities)
+                }
+            }
+            return listOf<Map<String, Any?>>(mapOf(
+                    "id" to it.id,
+                    "capabilities" to caps.toMap()
+            ))
         }
         return unmodifiableList(emptyList())
     }
