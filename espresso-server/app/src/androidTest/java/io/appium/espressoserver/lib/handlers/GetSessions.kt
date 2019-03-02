@@ -29,16 +29,16 @@ class GetSessions : RequestHandler<AppiumParams, Collection<Map<String, Any?>>> 
 
     @Throws(AppiumException::class)
     override fun handle(params: AppiumParams): Collection<Map<String, Any?>> {
-        getGlobalSession()?.let {
-            val caps = mutableMapOf<String, Any?>()
-            for (prop in SessionParams.DesiredCapabilities::class.declaredMemberProperties) {
-                if (prop.isAccessible) {
-                    caps[prop.name] = prop.get(it.desiredCapabilities)
-                }
-            }
+        getGlobalSession()?.let { session ->
+            val caps = SessionParams.DesiredCapabilities::class.declaredMemberProperties
+                    .filter { prop -> prop.isAccessible }
+                    .fold(mutableMapOf<String, Any?>()) { acc, prop ->
+                        acc[prop.name] = prop.get(session.desiredCapabilities)
+                        acc
+                    }
             return listOf<Map<String, Any?>>(mapOf(
-                    "id" to it.id,
-                    "capabilities" to caps.toMap()
+                    "id" to session.id,
+                    "capabilities" to caps
             ))
         }
         return unmodifiableList(emptyList())
