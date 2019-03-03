@@ -19,10 +19,7 @@ package io.appium.espressoserver.lib.model
 data class SessionParams(
     val desiredCapabilities: DesiredCapabilities? = null
 ) : AppiumParams() {
-
-    inner class DesiredCapabilities {
-        val appActivity: String? = null
-        val appWaitActivity: String? = null
-        val appWaitDuration: Long? = null
-    }
+    inner class DesiredCapabilities(var appActivity : String?,
+                                    var appWaitActivity : String?,
+                                    var appWaitDuration: Long?)
 }
