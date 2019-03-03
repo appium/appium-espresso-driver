@@ -35,7 +35,7 @@ class GetSessions : RequestHandler<AppiumParams, Collection<Map<String, Any?>>> 
                     .fold(mutableMapOf<String, Any?>()) { acc, prop ->
                         acc[prop.name] = prop.get(session.desiredCapabilities)
                         acc
-                    }
+                    }.toMap()
             return listOf<Map<String, Any?>>(mapOf(
                     "id" to session.id,
                     "capabilities" to caps
