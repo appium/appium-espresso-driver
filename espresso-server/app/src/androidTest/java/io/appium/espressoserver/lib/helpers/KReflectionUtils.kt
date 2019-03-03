@@ -4,6 +4,8 @@ import com.google.gson.internal.LazilyParsedNumber
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.memberFunctions
@@ -95,5 +97,14 @@ object KReflectionUtils {
             throw AppiumException("Cannot execute method for instance of " +
                     "'${instance::class.qualifiedName}'. Reason: ${e.message}'");
         }
+    }
+
+    fun extractDeclaredProperties (instance: Any): Map<String, Any?> {
+        return instance::class.declaredMemberProperties
+                .fold(mutableMapOf<String, Any?>()) { acc, prop ->
+                    @Suppress("UNCHECKED_CAST")
+                    acc[prop.name] = (prop as KProperty1<Any, Any?>).get(instance)
+                    acc
+                }.toMap()
     }
 }
