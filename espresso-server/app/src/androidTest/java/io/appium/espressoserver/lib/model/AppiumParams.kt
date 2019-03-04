@@ -21,31 +21,36 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 
 
 val SESSION_ID_PARAM_NAME = "sessionId"
-val ELEMENT_ID_PARAM_NAME = "targetElement"
+val ELEMENT_ID_PARAM_NAME = "elementId"
 
 open class AppiumParams {
-    private var uriParams: MutableMap<String, String> = mutableMapOf()
+    var uriParams:MutableMap<String, String>? = null
 
     val sessionId: String?
         get() = getUriParameterValue(SESSION_ID_PARAM_NAME)
 
     var elementId: String?
-        get() = getUriParameterValue(ELEMENT_ID_PARAM_NAME) ?:
-            throw InvalidArgumentException("No element found in query string")
+        get() = getUriParameterValue(ELEMENT_ID_PARAM_NAME)
         set(elementId) = setUriParameterValue(ELEMENT_ID_PARAM_NAME, elementId ?:
-            throw AppiumException("Cannot set elementId to null"))
+            throw AppiumException("Cannot set 'elementId' to null"))
 
-    fun initUriMapping(params: Map<String, String>) {
-        uriParams.clear()
-        uriParams.putAll(params)
+    fun initUriMapping(params: MutableMap<String, String>) {
+        uriParams = params
     }
 
     fun getUriParameterValue(name: String): String? {
-        return uriParams[name]
+        uriParams?.let {
+            return it.get(name);
+        }
+        return null;
     }
 
     private fun setUriParameterValue(name: String, value: String) {
-        uriParams[name] = value
-        return
+        uriParams?.let {
+            it[name] = value
+        } ?: run {
+            uriParams = mutableMapOf(Pair(name, value))
+        }
+
     }
 }

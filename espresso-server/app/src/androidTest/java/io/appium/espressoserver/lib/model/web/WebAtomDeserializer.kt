@@ -55,10 +55,8 @@ class WebAtomDeserializer : JsonDeserializer<WebAtom> {
             jsonObj.get("args")?.let { args ->
                 if (args.isJsonPrimitive) {
                     return WebAtom(webAtomName, arrayOf(args.asString))
-                }
-
-                if (args.isJsonArray) {
-                    val argsAsList = args.asJsonArray.map {arg ->
+                } else if (args.isJsonArray) {
+                    val argsAsList = args.asJsonArray.map { arg ->
                         if (arg.isJsonPrimitive)
                             GsonParserHelpers.parsePrimitive(arg.asJsonPrimitive)
                         else
@@ -66,9 +64,11 @@ class WebAtomDeserializer : JsonDeserializer<WebAtom> {
                     }
 
                     return WebAtom(webAtomName, argsAsList.toTypedArray());
+                } else {
+                    throw JsonParseException(
+                        "'args' must be an array or a single, primitive JSON type. Found '${args}'"
+                    )
                 }
-
-                throw JsonParseException("'args' must be an array or a single, primitive JSON type. Found '${args}' ")
             }
 
             // If no args provided, treat it as a function call with no parameters

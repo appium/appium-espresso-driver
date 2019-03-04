@@ -46,11 +46,11 @@ import org.hamcrest.Matchers.hasEntry
 import org.hamcrest.Matchers.`is`
 
 class Element(view: View) {
-    val elementId: String
+    val ELEMENT: String
 
     init {
-        elementId = UUID.randomUUID().toString()
-        cache.put(elementId, view)
+        ELEMENT = UUID.randomUUID().toString()
+        cache.put(ELEMENT, view)
     }
 
     companion object {

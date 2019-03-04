@@ -30,16 +30,16 @@ import io.appium.espressoserver.lib.helpers.ViewFinder.findAllBy
 class FindElements : RequestHandler<Locator, List<Element>> {
 
     @Throws(AppiumException::class)
-    override fun handle(locator: Locator): List<Element> {
+    override fun handle(params: Locator): List<Element> {
         var parentView: View? = null
-        locator.elementId?.let {
+        params.elementId?.let {
             parentView = ViewGetter().getView(Element.getViewInteractionById(it))
         }
-        locator.using ?: throw InvalidStrategyException("Locator strategy cannot be empty")
-        locator.value ?: throw MissingCommandsException("No locator provided")
+        params.using ?: throw InvalidStrategyException("Locator strategy cannot be empty")
+        params.value ?: throw MissingCommandsException("No params provided")
 
         // Return as list of Elements
-        return findAllBy(parentView, locator.using, locator.value)
+        return findAllBy(parentView, params.using, params.value)
                 .map { Element(it) }
     }
 }
