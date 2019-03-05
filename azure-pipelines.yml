@@ -4,18 +4,12 @@ pool:
 variables:
   TERM: dumb
 steps:
-- task: Gradle@2
-  inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'espresso-server/gradlew'
-    gradleOptions: '-Xmx3072m'
-    publishJUnitResults: false
-    testResultsFiles: '**/TEST-*.xml'
 - script: bash azure-pipelines/start-emulator.sh
-  displayName: Create and Build Emulator
+  displayName: Create and run Emulator
 - task: NodeTool@0 
   inputs:
     versionSpec: 11.x
+  displayName: Set Node to v11
 - script: npm install appium-chromedriver --chromedriver_version="2.44"
   displayName: Install Updated Chromedriver
 - script: npm install
@@ -26,5 +20,3 @@ steps:
   displayName: Build
 - script: npx mocha --timeout 6000000 --recursive build/test/functional/ --exit
   displayName: E2E Tests
-
-
