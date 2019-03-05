@@ -13,11 +13,11 @@ steps:
     testResultsFiles: '**/TEST-*.xml'
 - script: bash azure-pipelines/start-emulator.sh
   displayName: Create and Build Emulator
-- script: npm install appium-chromedriver --chromedriver_version="2.44"
-  displayName: Install Updated Chromedriver
 - task: NodeTool@0 
   inputs:
     versionSpec: 11.x
+- script: npm install appium-chromedriver --chromedriver_version="2.44"
+  displayName: Install Updated Chromedriver
 - script: npm install
   displayName: Install dependencies
 #- script: npm test
