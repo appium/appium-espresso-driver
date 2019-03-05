@@ -20,8 +20,8 @@ steps:
   displayName: Install Updated Chromedriver
 - script: npm install
   displayName: Install dependencies
-#- script: npm test
-  #displayName: Run tests
+- script: npm test
+  displayName: Run tests
 - script: npm run build
   displayName: Build
 - script: npx mocha --timeout 6000000 --recursive build/test/functional/ --exit
