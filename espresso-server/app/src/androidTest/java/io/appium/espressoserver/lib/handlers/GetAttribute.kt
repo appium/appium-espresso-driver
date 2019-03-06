@@ -29,10 +29,6 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
 
             val viewElement = ViewElement(Element.getViewById(params.elementId))
             when (it) {
-                /*ViewAttributesEnum.CONTENT_DESC -> return if (viewElement.contentDescription == null)
-                    null
-                else
-                    viewElement.contentDescription!!.toString()*/
                 ViewAttributesEnum.CONTENT_DESC -> viewElement.contentDescription?.let { return it.toString() } ?: return null
                 ViewAttributesEnum.CLASS -> return viewElement.className
                 ViewAttributesEnum.CHECKABLE -> return java.lang.Boolean.toString(viewElement.isCheckable)

@@ -28,7 +28,7 @@ class SetDate : RequestHandler<SetDateParams, Void?> {
     override fun handle(params: SetDateParams): Void? {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         try {
-            viewInteraction.perform(PickerActions.setDate(params.year!!, params.monthOfYear!!, params.dayOfMonth!!))
+            viewInteraction.perform(PickerActions.setDate(params.year, params.monthOfYear, params.dayOfMonth))
         } catch (e: Exception) {
             if (e is EspressoException) {
                 throw AppiumException("Could not set date on element. Reason: ${e}")

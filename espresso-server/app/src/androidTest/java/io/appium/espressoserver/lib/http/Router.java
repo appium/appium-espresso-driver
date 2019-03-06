@@ -64,8 +64,6 @@ import io.appium.espressoserver.lib.handlers.MobileSwipe;
 import io.appium.espressoserver.lib.handlers.MobileViewFlash;
 import io.appium.espressoserver.lib.handlers.MoveTo;
 import io.appium.espressoserver.lib.handlers.MultiTouchAction;
-import io.appium.espressoserver.lib.model.MoveToParams;
-import io.appium.espressoserver.lib.model.MultiTouchActionsParams;
 import io.appium.espressoserver.lib.handlers.NavigateTo;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
 import io.appium.espressoserver.lib.handlers.PerformAction;
@@ -86,7 +84,6 @@ import io.appium.espressoserver.lib.handlers.StartActivity;
 import io.appium.espressoserver.lib.handlers.Status;
 import io.appium.espressoserver.lib.handlers.Text;
 import io.appium.espressoserver.lib.handlers.TouchAction;
-import io.appium.espressoserver.lib.model.TouchActionsParams;
 import io.appium.espressoserver.lib.handlers.Uiautomator;
 import io.appium.espressoserver.lib.handlers.WebAtoms;
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException;
@@ -116,6 +113,8 @@ import io.appium.espressoserver.lib.model.MobileBackdoorParams;
 import io.appium.espressoserver.lib.model.MobileClickActionParams;
 import io.appium.espressoserver.lib.model.MobileSwipeParams;
 import io.appium.espressoserver.lib.model.MotionEventParams;
+import io.appium.espressoserver.lib.model.MoveToParams;
+import io.appium.espressoserver.lib.model.MultiTouchActionsParams;
 import io.appium.espressoserver.lib.model.NavigateToParams;
 import io.appium.espressoserver.lib.model.OrientationParams;
 import io.appium.espressoserver.lib.model.ScrollToPageParams;
@@ -127,6 +126,7 @@ import io.appium.espressoserver.lib.model.SetTimeParams;
 import io.appium.espressoserver.lib.model.StartActivityParams;
 import io.appium.espressoserver.lib.model.TextParams;
 import io.appium.espressoserver.lib.model.ToastLookupParams;
+import io.appium.espressoserver.lib.model.TouchActionsParams;
 import io.appium.espressoserver.lib.model.UiautomatorParams;
 import io.appium.espressoserver.lib.model.ViewFlashParams;
 import io.appium.espressoserver.lib.model.web.WebAtomsParams;
@@ -137,7 +137,6 @@ import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchTyp
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_CLICK;
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_DOUBLECLICK;
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_DOWN;
-import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_MOVE;
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.MOUSE_UP;
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_DOWN;
 import static io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.TOUCH_MOVE;
@@ -280,7 +279,7 @@ class Router {
     }
 
     @SuppressWarnings("unchecked")
-    public BaseResponse route(String uri, Method method, Map<String, String> files) {
+    BaseResponse route(String uri, Method method, Map<String, String> files) {
         logger.debug(String.format("Started processing %s request for '%s'", method, uri));
 
         // Look for a route that matches this URL
@@ -311,6 +310,9 @@ class Router {
                 logger.debug(String.format("Got raw post data: %s", abbreviate(postJson, 300)));
                 try {
                     appiumParams = paramClass.cast((new Gson()).fromJson(postJson, paramClass));
+                    if (appiumParams == null) {
+                        return new AppiumResponse<>(AppiumStatus.INVALID_ARGUMENT, String.format("Could not parse JSON: %s", postJson));
+                    }
                 } catch (JsonParseException e) {
                     // If failed to parse params, throw an invalid argument exception
                     return new AppiumResponse<>(AppiumStatus.INVALID_ARGUMENT, Log.getStackTraceString(e));
@@ -319,7 +321,7 @@ class Router {
             appiumParams.initUriMapping(uriParams);
 
             // Validate the sessionId
-            if (appiumParams.getSessionId() != null && !appiumParams.getSessionId().equals(Session.getGlobalSession().getId())) {
+            if (appiumParams.getSessionId() != null && Session.Companion.getGlobalSession() != null && !appiumParams.getSessionId().equals(Session.Companion.getGlobalSession().getId())) {
                 return new AppiumResponse<>(AppiumStatus.UNKNOWN_ERROR, "Invalid session ID " + appiumParams.getSessionId());
             }
 

@@ -18,10 +18,9 @@ package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException
+import io.appium.espressoserver.lib.helpers.ActivityHelper.startActivity
 import io.appium.espressoserver.lib.model.Session
 import io.appium.espressoserver.lib.model.SessionParams
-
-import io.appium.espressoserver.lib.helpers.ActivityHelper.startActivity
 
 
 class CreateSession : RequestHandler<SessionParams, Session> {
@@ -29,9 +28,9 @@ class CreateSession : RequestHandler<SessionParams, Session> {
     @Throws(AppiumException::class)
     override fun handle(params: SessionParams): Session {
         val appiumSession = Session.createGlobalSession(params.desiredCapabilities)
-        val activityName = params.desiredCapabilities?.appActivity
-        val waitActivityName = params.desiredCapabilities?.appWaitActivity
-        val appWaitDuration = params.desiredCapabilities?.appWaitDuration
+        val activityName = params.desiredCapabilities.appActivity
+        val waitActivityName = params.desiredCapabilities.appWaitActivity
+        val appWaitDuration = params.desiredCapabilities.appWaitDuration
         try {
             activityName?.let {
                 startActivity(it, waitActivityName, appWaitDuration)

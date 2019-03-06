@@ -29,8 +29,8 @@ public class SourceDocumentTest {
         }
 
         // Set the max traverse depth low. JVM runs out of heap space quicker than Android.
-        SourceDocument.$setMaxTraverseDepth(3);
-        SourceDocument sourceDoc = new SourceDocument(listView, null);
+        SourceDocument.Companion.$setMaxTraverseDepth(3);
+        SourceDocument sourceDoc = new SourceDocument(listView);
         String xml = sourceDoc.toXMLString();
         assertTrue(xml.startsWith("<?xml"));
     }

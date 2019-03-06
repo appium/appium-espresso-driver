@@ -14,17 +14,35 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-@SuppressWarnings("unused")
-public class NavigateToParams extends AppiumParams {
-    private Integer menuItemId;
+enum class ViewAttributesEnum {
 
-    public Integer getMenuItemId() {
-        return this.menuItemId;
-    }
+    CONTENT_DESC,
+    CLASS,
+    TEXT,
+    PACKAGE,
+    CHECKABLE,
+    CHECKED,
+    CLICKABLE,
+    ENABLED,
+    FOCUSABLE,
+    FOCUSED,
+    SCROLLABLE,
+    LONG_CLICKABLE,
+    PASSWORD,
+    SELECTED,
+    VISIBLE,
+    BOUNDS,
+    RESOURCE_ID,
+    INSTANCE,
+    INDEX,
+    ADAPTERS,
+    ADAPTER_TYPE,
+    HINT,
+    VIEW_TAG;
 
-    public void setMenuItemId(Integer menuItemId) {
-        this.menuItemId = menuItemId;
+    override fun toString(): String {
+        return this.name.replace("_", "-").toLowerCase()
     }
 }

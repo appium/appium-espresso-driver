@@ -14,29 +14,8 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import javax.annotation.Nullable;
-
-@SuppressWarnings("unused")
-public class ToastLookupParams extends AppiumParams {
-    private String text;
-    private Boolean isRegexp;
-
-    @Nullable
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public boolean isRegexp() {
-        return isRegexp == null ? false : isRegexp;
-    }
-
-    public void setIsRegexp(Boolean isRegexp) {
-        this.isRegexp = isRegexp;
-    }
-}
+data class GetClipboardParams(
+    val contentType: ClipboardDataType = ClipboardDataType.PLAINTEXT
+) : AppiumParams()

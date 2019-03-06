@@ -19,14 +19,13 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.KReflectionUtils.extractDeclaredProperties
 import io.appium.espressoserver.lib.model.AppiumParams
-
-import io.appium.espressoserver.lib.model.Session.getGlobalSession
+import io.appium.espressoserver.lib.model.Session
 
 class GetSessions : RequestHandler<AppiumParams, Collection<Map<String, Any?>>> {
 
     @Throws(AppiumException::class)
     override fun handle(params: AppiumParams): Collection<Map<String, Any?>> {
-        getGlobalSession()?.let { session ->
+        Session.globalSession?.let { session ->
             return listOf<Map<String, Any?>>(mapOf(
                     "id" to session.id,
                     "capabilities" to extractDeclaredProperties(session.desiredCapabilities)
