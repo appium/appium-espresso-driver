@@ -10,11 +10,11 @@ import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 class PerformAction : RequestHandler<Actions, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(actions: Actions): Void? {
+    override fun handle(params: Actions): Void? {
 
         val runnable = UiControllerRunnable<Void> { uiController ->
-            actions.adapter = EspressoW3CActionAdapter(uiController)
-            actions.perform(actions.sessionId)
+            params.adapter = EspressoW3CActionAdapter(uiController)
+            params.perform(params.sessionId)
             null
         }
 

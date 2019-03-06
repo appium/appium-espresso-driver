@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import javax.annotation.Nullable;
-
-@SuppressWarnings("unused")
-public class AlertParams extends AppiumParams {
-    private String buttonLabel = null;
-
-    @Nullable
-    public String getButtonLabel() {
-        return buttonLabel;
-    }
-
-    public void setButtonLabel(String buttonLabel) {
-        this.buttonLabel = buttonLabel;
-    }
-}
+data class EditorActionParams(
+    val action: Any? = null
+) : AppiumParams()

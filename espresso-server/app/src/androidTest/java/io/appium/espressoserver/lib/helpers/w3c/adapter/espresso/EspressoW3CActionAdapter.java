@@ -131,7 +131,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
     public Point getElementCenterPoint(String elementId)
             throws AppiumException {
-        View view = Element.getViewById(elementId);
+        View view = Element.Companion.getViewById(elementId);
         float[] coords = GeneralLocation.CENTER.calculateCoordinates(view);
         Point point = new Point();
         point.x = Math.round(coords[0]);

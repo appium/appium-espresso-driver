@@ -31,20 +31,20 @@ import io.appium.espressoserver.lib.helpers.ViewFinder.findBy
 class FindElement : RequestHandler<Locator, Element> {
 
     @Throws(AppiumException::class)
-    override fun handle(locator: Locator): Element {
+    override fun handle(params: Locator): Element {
         var parentView: View? = null
-        locator.elementId?.let {
+        params.elementId?.let {
             parentView = ViewGetter().getView(Element.getViewInteractionById(it))
         }
-        if (locator.using == null) {
+        if (params.using == null) {
             throw InvalidStrategyException("Locator strategy cannot be empty")
-        } else if (locator.value == null) {
-            throw MissingCommandsException("No locator provided")
+        } else if (params.value == null) {
+            throw MissingCommandsException("No params provided")
         }
         // Test the selector
-        val view = findBy(parentView, locator.using, locator.value) ?: throw NoSuchElementException(
+        val view = findBy(parentView, params.using, params.value) ?: throw NoSuchElementException(
                 String.format("Could not find element with strategy %s and selector %s",
-                        locator.using, locator.value))
+                        params.using, params.value))
 
         // If we have a match, return success
         return Element(view)

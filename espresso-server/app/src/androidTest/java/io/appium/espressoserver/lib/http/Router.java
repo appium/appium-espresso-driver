@@ -62,7 +62,9 @@ import io.appium.espressoserver.lib.handlers.MobileBackdoor;
 import io.appium.espressoserver.lib.handlers.MobileClickAction;
 import io.appium.espressoserver.lib.handlers.MobileSwipe;
 import io.appium.espressoserver.lib.handlers.MobileViewFlash;
+import io.appium.espressoserver.lib.handlers.MoveTo;
 import io.appium.espressoserver.lib.handlers.MultiTouchAction;
+import io.appium.espressoserver.lib.model.MoveToParams;
 import io.appium.espressoserver.lib.model.MultiTouchActionsParams;
 import io.appium.espressoserver.lib.handlers.NavigateTo;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
@@ -216,7 +218,7 @@ class Router {
         // mouse events
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/buttondown", new PointerEventHandler(MOUSE_DOWN), MotionEventParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/buttonup", new PointerEventHandler(MOUSE_UP), MotionEventParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/moveto", new PointerEventHandler(MOUSE_MOVE), MotionEventParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/moveto", new MoveTo(), MoveToParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/click", new PointerEventHandler(MOUSE_CLICK), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/doubleclick", new PointerEventHandler(MOUSE_DOUBLECLICK), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/perform", new TouchAction(), TouchActionsParams.class));

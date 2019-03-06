@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import androidx.annotation.Nullable;
-import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
-
-@SuppressWarnings("unused")
-public class ActionsParams extends AppiumParams {
-    private Actions actions;
-
-    @Nullable
-    public Actions getActions() {
-        return actions;
-    }
-
-    public void setActions(Actions actions) {
-        this.actions = actions;
-    }
-}
+data class OrientationParams(
+    val orientation: String?
+) : AppiumParams()

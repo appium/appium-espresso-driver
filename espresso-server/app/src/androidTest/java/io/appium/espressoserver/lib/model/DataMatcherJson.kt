@@ -9,27 +9,13 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
 import org.hamcrest.Matcher
 import java.lang.reflect.Type
 
-@JsonAdapter(DataMatcherJson.DataMatcherJsonDeserializer::class)
-data class DataMatcherJson(val matcher:Matcher<*>) : AppiumParams() {
+@JsonAdapter(DataMatcherJsonDeserializer::class)
+data class DataMatcherJson(
+    val matcher:Matcher<*>
+) : AppiumParams() {
 
     fun invoke(): DataInteraction {
         return onData(matcher);
-    }
-
-    class DataMatcherJsonDeserializer : JsonDeserializer<DataMatcherJson> {
-        @Throws(JsonParseException::class)
-        override fun deserialize(json: JsonElement, paramType: Type?,
-                                 paramJsonDeserializationContext: JsonDeserializationContext?): DataMatcherJson {
-            if (!json.isJsonObject) {
-                throw JsonParseException("Data matcher must be an object. Found '${json}'")
-            }
-
-            val matcher = HamcrestMatcher.HamcrestMatcherDeserializer()
-                    .deserialize(json, null, null)
-                    .invoke();
-
-            return DataMatcherJson(matcher)
-        }
     }
 
     companion object {
@@ -42,5 +28,21 @@ data class DataMatcherJson(val matcher:Matcher<*>) : AppiumParams() {
                 throw InvalidStrategyException(String.format("Could not parse selector '%s'. Reason: '%s'", selector, e.cause))
             }
         }
+    }
+}
+
+class DataMatcherJsonDeserializer : JsonDeserializer<DataMatcherJson> {
+    @Throws(JsonParseException::class)
+    override fun deserialize(json: JsonElement, paramType: Type?,
+                             paramJsonDeserializationContext: JsonDeserializationContext?): DataMatcherJson {
+        if (!json.isJsonObject) {
+            throw JsonParseException("Data matcher must be an object. Found '${json}'")
+        }
+
+        val matcher = HamcrestMatcher.HamcrestMatcherDeserializer()
+                .deserialize(json, null, null)
+                .invoke();
+
+        return DataMatcherJson(matcher)
     }
 }

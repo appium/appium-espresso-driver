@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import io.appium.espressoserver.lib.model.web.WebAtom
+import io.appium.espressoserver.lib.model.web.WebAtomDeserializer
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -14,14 +15,14 @@ class WebAtomTest {
     fun `should parse web atom with no args`() {
         val jsonObject = JsonObject()
         jsonObject.addProperty("name", "clearElement")
-        val webAtom = WebAtom.WebAtomDeserializer().deserialize(jsonObject, null, null)
+        val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "clearElement")
     }
 
     @Test
     fun `should parse JSON primtive as web atom with name and no args`() {
         val jsonObject = JsonPrimitive("clearElement")
-        val webAtom = WebAtom.WebAtomDeserializer().deserialize(jsonObject, null, null)
+        val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "clearElement")
     }
 
@@ -30,7 +31,7 @@ class WebAtomTest {
         val jsonObject = JsonObject()
         jsonObject.addProperty("name", "webKeys")
         jsonObject.addProperty("args", "Hello World!")
-        val webAtom = WebAtom.WebAtomDeserializer().deserialize(jsonObject, null, null)
+        val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "webKeys")
         assertEquals(webAtom.args.first(), "Hello World!")
         assertEquals(webAtom.args.size, 1);
@@ -46,7 +47,7 @@ class WebAtomTest {
         argsArr.add(JsonPrimitive(100))
         argsArr.add(JsonPrimitive(1.1))
         jsonObject.add("args", argsArr)
-        val webAtom = WebAtom.WebAtomDeserializer().deserialize(jsonObject, null, null)
+        val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "someFakeAtom")
         assertTrue(webAtom.args contentEquals arrayOf("hello", true, 100L, 1.1))
         assertEquals(webAtom.args.size, 4);
@@ -60,7 +61,7 @@ class WebAtomTest {
         locatorObject.addProperty("using", "id")
         locatorObject.addProperty("value", "some_html_id")
         jsonObject.add("locator", locatorObject);
-        val webAtom = WebAtom.WebAtomDeserializer().deserialize(jsonObject, null, null)
+        val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "findElement")
         assertTrue(webAtom.args contentEquals arrayOf("id", "some_html_id"))
     }

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model.gsonadapters
 
-import javax.annotation.Nullable;
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
 
-@SuppressWarnings("unused")
-public class DrawerActionParams extends AppiumParams {
-    private Integer gravity;
+import java.lang.reflect.Type
 
-    @Nullable
-    public Integer getGravity() {
-        return gravity;
-    }
+import io.appium.espressoserver.lib.model.AppiumStatus
 
-    public void setGravity(Integer gravity) {
-        this.gravity = gravity;
+class AppiumStatusAdapter : JsonSerializer<AppiumStatus> {
+
+    override fun serialize(status: AppiumStatus, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
+        return JsonPrimitive(status.code)
     }
 
 }

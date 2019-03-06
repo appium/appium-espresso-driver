@@ -10,23 +10,17 @@ import android.view.MotionEvent.BUTTON_TERTIARY
 
 data class MotionEventParams(
     @SerializedName("element")
-    private var elementId: String? = null,
+    val targetElement: String?,
     var x: Long = 0,
     var y: Long = 0,
     var button: Int = MOUSE_LEFT
 ) : AppiumParams() {
 
+    constructor(x: Long, y: Long) : this(null, x, y)
+
     val androidButtonState: Int
         @Throws(InvalidArgumentException::class)
         get() = getAndroidButtonState(this.button)
-
-    override fun getElementId(): String? {
-        return elementId
-    }
-
-    override fun setElementId(elementId: String) {
-        this.elementId = elementId
-    }
 
     companion object {
 

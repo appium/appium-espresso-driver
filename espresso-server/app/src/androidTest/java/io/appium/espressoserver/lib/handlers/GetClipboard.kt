@@ -59,9 +59,6 @@ class GetClipboard : RequestHandler<GetClipboardParams, String?> {
         override fun run() {
             when (contentType) {
                 ClipboardDataType.PLAINTEXT -> content = toBase64String(ClipboardHelper(mInstrumentation.targetContext).textData)
-                else -> throw IllegalArgumentException(
-                        String.format("Only '%s' content types are supported. '%s' is given instead",
-                                ClipboardDataType.supportedDataTypes(), contentType))
             }
         }
     }

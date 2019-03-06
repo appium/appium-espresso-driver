@@ -14,29 +14,13 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-public class MoveToParams extends AppiumParams {
+data class MoveToParams(
     @SerializedName("element")
-    private String elementId;
-    private int xoffset;
-    private int yoffset;
-
-    public String getElementId() {
-        return elementId;
-    }
-
-    public void setElementId(String elementId) {
-        this.elementId = elementId;
-    }
-
-    public int getXOffset() {
-        return xoffset;
-    }
-
-    public int getYOffset() {
-        return yoffset;
-    }
-}
+    val elementToMoveTo: String? = null,
+    val xOffset: Int = 0,
+    val yOffset: Int = 0
+) : AppiumParams()
