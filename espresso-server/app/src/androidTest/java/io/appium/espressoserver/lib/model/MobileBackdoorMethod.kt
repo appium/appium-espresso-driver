@@ -8,22 +8,15 @@ data class MobileBackdoorMethod (
 ) {
     val argumentTypes: Array<Class<*>?>
         get() {
-            val rawArgs = args
-            val types = arrayOfNulls<Class<*>>(rawArgs.size)
-            for (i in rawArgs.indices) {
-                types[i] = BackdoorUtils.parseType(rawArgs[i].type!!)
-            }
-            return types
+            return args.indices.map {
+                BackdoorUtils.parseType(args[it].type)
+            }.toTypedArray()
         }
 
     val arguments: Array<Any?>
         get() {
-            val rawArgs = args
-            val parsedArgs = arrayOfNulls<Any>(rawArgs.size)
-            for (i in rawArgs.indices) {
-                parsedArgs[i] = BackdoorUtils.parseValue(rawArgs[i].value,
-                        BackdoorUtils.parseType(rawArgs[i].type))
-            }
-            return parsedArgs
+            return args.indices.map {
+                BackdoorUtils.parseValue(args[it].value, BackdoorUtils.parseType(args[it].type))
+            }.toTypedArray()
         }
 }

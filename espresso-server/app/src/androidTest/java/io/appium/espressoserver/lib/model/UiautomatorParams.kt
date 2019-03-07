@@ -64,11 +64,9 @@ class UiautomatorParams : AppiumParams() {
 
             val validStrategyNames: List<String>
                 get() {
-                    val validStrategies = ArrayList<String>()
-                    for (strategy in Strategy.values()) {
-                        validStrategies.add(strategy.name)
+                    return Strategy.values().map {
+                        it.name
                     }
-                    return validStrategies
                 }
         }
     }

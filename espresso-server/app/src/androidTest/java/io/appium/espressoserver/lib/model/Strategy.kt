@@ -46,21 +46,4 @@ enum class Strategy(val strategyName: String) {
     VIEW_TAG("-android viewtag"),
     @SerializedName(value = "-android datamatcher")
     DATAMATCHER("-android datamatcher");
-
-
-    companion object {
-
-        @Throws(InvalidStrategyException::class)
-        fun fromString(text: String?): Strategy {
-            if (text != null) {
-                for (s in Strategy.values()) {
-                    if (text.equals(s.strategyName, ignoreCase = true)) {
-                        return s
-                    }
-                }
-            }
-            throw InvalidStrategyException(String.format(
-                    "Locator strategy '%s' is not supported in NATIVE context", text))
-        }
-    }
 }

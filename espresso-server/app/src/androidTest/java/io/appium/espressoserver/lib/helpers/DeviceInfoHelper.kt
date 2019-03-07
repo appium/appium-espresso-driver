@@ -30,7 +30,7 @@ class DeviceInfoHelper(private val context: Context) {
     private val defaultDisplay: Display?
         get() {
             val windowManager = context.getSystemService(Context.WINDOW_SERVICE)
-            return if (windowManager == null) null else (windowManager as WindowManager).defaultDisplay
+            return (windowManager as? WindowManager)?.defaultDisplay;
         }
 
     /**
@@ -98,9 +98,9 @@ class DeviceInfoHelper(private val context: Context) {
     val carrierName: String?
         get() {
             val telephonyManager = context
-                    .getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                    .getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
             try {
-                return telephonyManager.networkOperatorName
+                return telephonyManager?.networkOperatorName
             } catch (e: Exception) {
                 e.printStackTrace()
                 return null
@@ -118,6 +118,6 @@ class DeviceInfoHelper(private val context: Context) {
             val display = defaultDisplay ?: return null
             val p = android.graphics.Point()
             display.getRealSize(p)
-            return String.format("%sx%s", p.x, p.y)
+            return "${p.x}x${p.y}"
         }
 }

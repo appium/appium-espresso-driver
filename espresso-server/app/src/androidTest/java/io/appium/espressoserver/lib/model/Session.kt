@@ -21,10 +21,11 @@ import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
 import io.appium.espressoserver.lib.model.SessionParams.DesiredCapabilities
 import java.util.*
 
-class Session private constructor(val id: String, val desiredCapabilities: DesiredCapabilities)// Instances of Session are private and only returned by 'createGlobalSession'
+class Session private constructor(val id: String, val desiredCapabilities: DesiredCapabilities)
 {
     companion object {
         // Only one session can run at a time so globally cache the current Session ID
+        // Instances of Session are private and only returned by 'createGlobalSession'
         @Volatile
         var globalSession: Session? = null
             private set
@@ -39,8 +40,8 @@ class Session private constructor(val id: String, val desiredCapabilities: Desir
         @Synchronized
         fun createGlobalSession(desiredCapabilities: DesiredCapabilities): Session {
             globalSession?.let {
-                logger.info(String.format("Got request for new session creation while the one " + "is still in progress. Overriding the old session having id %s",
-                        it.id))
+                logger.info("Got request for new session creation while the one " +
+                        "is still in progress. Overriding the old session having id %{it.id}");
             }
             val globalSession = Session(UUID.randomUUID().toString(), desiredCapabilities)
             Session.globalSession = globalSession

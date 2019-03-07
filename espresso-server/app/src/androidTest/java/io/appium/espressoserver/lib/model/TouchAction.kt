@@ -29,10 +29,10 @@ class TouchAction {
     private val origin: Origin
         get() {
             val origin = Origin()
-            if (options!!.elementId != null) {
+            options?.elementId?.let {
                 origin.type = InputSource.ELEMENT
-                origin.elementId = options!!.elementId
-            } else {
+                origin.elementId = it
+            } ?: run {
                 origin.type = InputSource.VIEWPORT
             }
             return origin

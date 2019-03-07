@@ -65,7 +65,6 @@ class SourceDocument @JvmOverloads constructor(
         }
     }
 
-    @Throws(IOException::class)
     private fun recordAdapterViewInfo(adapterView: AdapterView<*>) {
         val adapter = adapterView.adapter ?: return
         val adapterCount = adapter.count
@@ -120,14 +119,14 @@ class SourceDocument @JvmOverloads constructor(
         setAttribute(ViewAttributesEnum.VISIBLE, viewElement.isVisible)
         setAttribute(ViewAttributesEnum.BOUNDS, viewElement.bounds.toShortString())
         val viewText = viewElement.text
-        if (viewText != null) {
-            setAttribute(ViewAttributesEnum.TEXT, viewText.rawText)
-            setAttribute(ViewAttributesEnum.HINT, viewText.isHint)
+        viewText?.let {
+            setAttribute(ViewAttributesEnum.TEXT, it.rawText)
+            setAttribute(ViewAttributesEnum.HINT, it.isHint)
         }
         setAttribute(ViewAttributesEnum.RESOURCE_ID, viewElement.resourceId)
         setAttribute(ViewAttributesEnum.VIEW_TAG, viewElement.viewTag)
         if (view is AdapterView<*>) {
-            recordAdapterViewInfo((view as AdapterView<*>?)!!)
+            recordAdapterViewInfo(view)
         }
 
         serializer?.attribute(NAMESPACE, VIEW_INDEX, Integer.toString(viewMap.size()))
@@ -141,7 +140,8 @@ class SourceDocument @JvmOverloads constructor(
                 }
             }
         } else {
-            logger.warn(String.format("Skipping traversal of %s's children, since the current depth " + "has reached its maximum allowed value of %s", view.javaClass.name, depth))
+            logger.warn("Skipping traversal of ${view.javaClass.name}'s children, since " +
+                    "the current depth has reached its maximum allowed value of ${depth}");
         }
 
         serializer?.endTag(NAMESPACE, tagName)
@@ -160,7 +160,7 @@ class SourceDocument @JvmOverloads constructor(
             try {
                 val outputStream: OutputStream
                 if (streamType == FileOutputStream::class.java) {
-                    tmpXmlName = String.format("%s.xml", UUID.randomUUID().toString())
+                    tmpXmlName = "${UUID.randomUUID()}.xml"
                     outputStream = getApplicationContext<Context>().openFileOutput(tmpXmlName, Context.MODE_PRIVATE)
                 } else {
                     outputStream = ByteArrayOutputStream()
@@ -173,8 +173,9 @@ class SourceDocument @JvmOverloads constructor(
                         val startTime = SystemClock.uptimeMillis()
                         serializeView(rootView, 0)
                         it.endDocument()
-                        logger.info(String.format("The source XML tree has been fetched in %sms using %s",
-                                SystemClock.uptimeMillis() - startTime, streamType.simpleName))
+                        logger.info("The source XML tree has been fetched in " +
+                                "${SystemClock.uptimeMillis() - startTime}ms " +
+                                "using ${streamType.simpleName}");
                     }
                 } catch (e: OutOfMemoryError) {
                     lastError = e
@@ -198,8 +199,8 @@ class SourceDocument @JvmOverloads constructor(
     }
 
     private fun performCleanup() {
-        if (tmpXmlName != null) {
-            getApplicationContext<Context>().deleteFile(tmpXmlName)
+        tmpXmlName?.let {
+            getApplicationContext<Context>().deleteFile(it)
             tmpXmlName = null
         }
     }
@@ -246,14 +247,9 @@ class SourceDocument @JvmOverloads constructor(
             try {
                 toStream().use {
                     xmlStream -> list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
-                    val views = mutableListOf<View>()
-
-                    // Get a list of elements that are associated with that node
-                    for (i in 0 until list.length) {
-                        val element = list.item(i) as Element
-                        views.add(viewMap.get(Integer.parseInt(element.getAttribute(VIEW_INDEX))))
+                    return 0.rangeTo(list.length).map {index ->
+                        viewMap.get(Integer.parseInt((list.item(index) as Element).getAttribute(VIEW_INDEX)))
                     }
-                    return views
                 }
             } catch (e: IOException) {
                 throw AppiumException(e)
@@ -291,7 +287,7 @@ class SourceDocument @JvmOverloads constructor(
                 fixedName = DEFAULT_VIEW_CLASS_NAME
             }
             if (fixedName != className) {
-                logger.info(String.format("Rewrote class name '%s' to XML node name '%s'", className, fixedName))
+                logger.info("Rewrote class name '${className}' to XML node name '${fixedName}'")
             }
             return fixedName
         }
