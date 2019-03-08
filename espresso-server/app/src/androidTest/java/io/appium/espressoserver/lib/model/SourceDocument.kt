@@ -247,7 +247,7 @@ class SourceDocument @JvmOverloads constructor(
             try {
                 toStream().use {
                     xmlStream -> list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
-                    return 0.rangeTo(list.length).map {index ->
+                    return 0.rangeTo(list.length - 1).map {index ->
                         viewMap.get(Integer.parseInt((list.item(index) as Element).getAttribute(VIEW_INDEX)))
                     }
                 }
