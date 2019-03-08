@@ -29,7 +29,7 @@ jobs:
       displayName: Create and run Emulator
     - script: npm run build
       displayName: Build
-    - script: npx mocha --timeout 6000000 --recursive build/test/functional/
+    - script: npx mocha --timeout 6000000 --reporter mocha-junit-reporter --recursive build/test/functional/
       displayName: Run tests
     - task: PublishTestResults@2
       condition: always()
