@@ -29,7 +29,7 @@ class GetOrientation : RequestHandler<AppiumParams, Int> {
     override fun handle(params: AppiumParams): Int {
         val view = Element.getViewById(params.elementId)
         try {
-            when (ViewElement(view).extractActivity().requestedOrientation) {
+            when (ViewElement(view).extractActivity()?.requestedOrientation) {
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
                 ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE -> return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 else -> return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT

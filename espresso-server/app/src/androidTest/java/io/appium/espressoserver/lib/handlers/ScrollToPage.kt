@@ -22,6 +22,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.ScrollToPageParams
+import io.appium.espressoserver.lib.model.ScrollToPageParams.ScrollTo.*
 
 class ScrollToPage : RequestHandler<ScrollToPageParams, Void?> {
 
@@ -32,10 +33,10 @@ class ScrollToPage : RequestHandler<ScrollToPageParams, Void?> {
             val smoothScroll = params.smoothScroll
             params.scrollTo?.let {
                 val scrollAction = when (it) {
-                    ScrollToPageParams.ScrollTo.FIRST -> ViewPagerActions.scrollToFirst(smoothScroll)
-                    ScrollToPageParams.ScrollTo.LAST -> ViewPagerActions.scrollToLast(smoothScroll)
-                    ScrollToPageParams.ScrollTo.LEFT -> ViewPagerActions.scrollLeft(smoothScroll)
-                    ScrollToPageParams.ScrollTo.RIGHT -> ViewPagerActions.scrollRight(smoothScroll)
+                    FIRST -> ViewPagerActions.scrollToFirst(smoothScroll)
+                    LAST -> ViewPagerActions.scrollToLast(smoothScroll)
+                    LEFT -> ViewPagerActions.scrollLeft(smoothScroll)
+                    RIGHT -> ViewPagerActions.scrollRight(smoothScroll)
                 }
                 viewInteraction.perform(scrollAction)
                 return null
@@ -48,7 +49,7 @@ class ScrollToPage : RequestHandler<ScrollToPageParams, Void?> {
 
             throw InvalidArgumentException("Could not complete scrollToPage action. Must provide either 'scrollTo' or 'scrollToPage'")
         } catch (e: ClassCastException) {
-            throw AppiumException("Could not perform scroll to on element ${params.elementId}. Reason: ${e}");
+            throw AppiumException("Could not perform scroll to on element ${params.elementId}. Reason: ${e}")
         } catch (e: Exception) {
             if (e is EspressoException) {
                 throw AppiumException("Could not scroll to page. Reason: ${e}", e)

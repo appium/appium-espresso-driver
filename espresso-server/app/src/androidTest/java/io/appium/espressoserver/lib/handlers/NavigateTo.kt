@@ -29,7 +29,7 @@ class NavigateTo : RequestHandler<NavigateToParams, Void?> {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         val menuItemId = params.menuItemId
         try {
-            viewInteraction.perform(NavigationViewActions.navigateTo(menuItemId!!))
+            viewInteraction.perform(NavigationViewActions.navigateTo(menuItemId))
         } catch (e: Exception) {
             if (e is EspressoException) {
                 throw AppiumException(String.format("Could not navigate to menu item %s. Reason: %s", menuItemId, e))

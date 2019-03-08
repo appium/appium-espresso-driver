@@ -16,45 +16,42 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.Method
-import java.util.ArrayList
-
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.BySelector
-import androidx.test.uiautomator.UiObject2
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.helpers.ReflectionUtils
-import io.appium.espressoserver.lib.model.UiautomatorParams
-
 import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
 import io.appium.espressoserver.lib.helpers.InteractionHelper.getUiDevice
+import io.appium.espressoserver.lib.helpers.KReflectionUtils
+import io.appium.espressoserver.lib.model.UiautomatorParams
+import java.lang.reflect.InvocationTargetException
 
-class Uiautomator : RequestHandler<UiautomatorParams, List<Any>> {
+class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: UiautomatorParams): List<Any> {
+    override fun handle(params: UiautomatorParams): List<Any?> {
         logger.info("Invoking Uiautomator2 Methods")
 
-        val validStrategyNames = UiautomatorParams.Strategy.getValidStrategyNames();
+        val validStrategyNames = UiautomatorParams.Strategy.validStrategyNames
         params.strategy ?: throw AppiumException("strategy should be one of '${validStrategyNames}'")
 
-        val validActionNames = UiautomatorParams.Action.getValidActionNames()
+        val validActionNames = UiautomatorParams.Action.validActionNames
         params.action ?: throw AppiumException("strategy should be one of '${validActionNames}'")
 
         val locator = params.locator
         val index = params.index
 
         try {
-            val byMethod = ReflectionUtils.method(By::class.java, params.strategy!!.getName(), String::class.java)
+            /*val byMethod = ReflectionUtils.method(By::class.java, params.strategy.name, String::class.java)
             val bySelector = ReflectionUtils.invoke(byMethod, By::class.java, locator) as BySelector
-            val uiObjectMethod = ReflectionUtils.method(UiObject2::class.java, params.action!!.getName())
+            val uiObjectMethod = ReflectionUtils.method(UiObject2::class.java, params.action.name)*/
+
+            val bySelector = KReflectionUtils.invokeMethod(By::class, params.strategy.methodName, locator) as BySelector
             val uiObjects = getUiDevice().findObjects(bySelector)
             logger.info("Found ${uiObjects.size} UiObjects", uiObjects.size)
 
             index ?: run {
                 return uiObjects.map {
-                    uiObjectMethod.invoke(it)
+                    KReflectionUtils.invokeInstanceMethod(it, params.action.actionName)
                 }
             }
 
@@ -62,7 +59,7 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any>> {
                 throw AppiumException("Index ${index} is out of bounds for ${uiObjects.size} elements")
             }
 
-            return listOf(uiObjectMethod.invoke(uiObjects[index]))
+            return listOf(KReflectionUtils.invokeInstanceMethod(uiObjects[index], params.action.actionName))
         } catch (e: IllegalAccessException) {
             throw AppiumException(e)
         } catch (e: InvocationTargetException) {

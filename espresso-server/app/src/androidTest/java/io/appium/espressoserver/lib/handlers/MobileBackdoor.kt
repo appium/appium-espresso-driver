@@ -3,11 +3,10 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.ActivityHelper
+import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
 import io.appium.espressoserver.lib.helpers.InvocationOperation
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.MobileBackdoorParams
-
-import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
 import io.appium.espressoserver.lib.model.MobileBackdoorParams.Companion.InvocationTarget.*
 
 class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
@@ -38,10 +37,7 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
     @Throws(InvalidArgumentException::class)
     private fun getBackdoorOperations(params: MobileBackdoorParams): List<InvocationOperation> {
         return params.methods.map {method ->
-            val methodName = method.name ?: throw InvalidArgumentException(
-                    "'name' is a required parameter for backdoor method to be invoked."
-            )
-            InvocationOperation(methodName, method.arguments, method.argumentTypes)
+            InvocationOperation(method.name, method.arguments, method.argumentTypes)
         }
     }
 }

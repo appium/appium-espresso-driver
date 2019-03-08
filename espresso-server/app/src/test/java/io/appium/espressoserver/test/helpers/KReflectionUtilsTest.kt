@@ -52,7 +52,7 @@ class `KReflectionUtils Test` {
     @Test
     fun `should parse Driver Atoms "findElement"`() {
         val findElementAtom = KReflectionUtils.invokeMethod(DriverAtoms::class, "findElement", "ID", "some Identifier")
-        assertTrue(findElementAtom is Atom<*>);
+        assertTrue(findElementAtom is Atom<*>)
     }
 
     @Test
@@ -68,7 +68,7 @@ class `KReflectionUtils Test` {
 
     @Test
     fun `should extract declared properties from an instance`() {
-        val sessionParams = SessionParams().DesiredCapabilities(
+        val sessionParams = SessionParams.DesiredCapabilities(
                 "appActivity", "appWaitActivity", 1)
         val extractedProps = KReflectionUtils.extractDeclaredProperties(sessionParams)
         assertEquals(extractedProps["appActivity"], "appActivity")
@@ -78,7 +78,7 @@ class `KReflectionUtils Test` {
 
     class TestClass {
         fun plus (numOne: Int, numTwo: Int):Number {
-            return numOne + numTwo;
+            return numOne + numTwo
         }
 
         fun plus (num: Int):Number {

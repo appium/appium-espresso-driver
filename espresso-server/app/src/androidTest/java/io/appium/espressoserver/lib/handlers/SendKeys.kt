@@ -18,18 +18,16 @@ package io.appium.espressoserver.lib.handlers
 
 import android.widget.NumberPicker
 import android.widget.ProgressBar
-
 import androidx.test.espresso.PerformException
+import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.action.ViewActions.typeText
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
+import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.TextParams
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
-
-import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.action.ViewActions.typeText
-import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
 
 class SendKeys : RequestHandler<TextParams, Void?> {
 
@@ -68,7 +66,7 @@ class SendKeys : RequestHandler<TextParams, Void?> {
             }
             logger.debug("Trying replaceText action as a workaround to type the '${value}' text into the input field")
             val currentText = ViewTextGetter().get(viewInteraction)
-            if (currentText.text.isEmpty() || currentText.isHint) {
+            if (currentText.rawText.isEmpty() || currentText.isHint) {
                 viewInteraction.perform(replaceText(value))
             } else {
                 logger.debug("Current input field's text: '${currentText}'")

@@ -14,36 +14,23 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-public enum ViewAttributesEnum {
+import com.google.gson.annotations.SerializedName
 
-    CONTENT_DESC,
-    CLASS,
-    TEXT,
-    PACKAGE,
-    CHECKABLE,
-    CHECKED,
-    CLICKABLE,
-    ENABLED,
-    FOCUSABLE,
-    FOCUSED,
-    SCROLLABLE,
-    LONG_CLICKABLE,
-    PASSWORD,
-    SELECTED,
-    VISIBLE,
-    BOUNDS,
-    RESOURCE_ID,
-    INSTANCE,
-    INDEX,
-    ADAPTERS,
-    ADAPTER_TYPE,
-    HINT,
-    VIEW_TAG;
-
-    @Override
-    public String toString() {
-        return this.name().replace("_", "-").toLowerCase();
+data class ScrollToPageParams(
+    var scrollTo: ScrollTo? = null,
+    var scrollToPage: Int? = null,
+    val smoothScroll: Boolean = false
+) : AppiumParams() {
+    enum class ScrollTo {
+        @SerializedName("first")
+        FIRST,
+        @SerializedName("last")
+        LAST,
+        @SerializedName("left")
+        LEFT,
+        @SerializedName("right")
+        RIGHT
     }
 }

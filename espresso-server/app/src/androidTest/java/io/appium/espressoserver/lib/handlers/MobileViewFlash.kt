@@ -2,25 +2,20 @@ package io.appium.espressoserver.lib.handlers
 
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-
 import androidx.test.platform.app.InstrumentationRegistry
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.ViewFlashParams
-
-val DURATION_MILLIS = 30
-val REPEAT_COUNT = 15
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 class MobileViewFlash : RequestHandler<ViewFlashParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: ViewFlashParams): Void? {
 
-        val duration = params.durationMillis ?: DURATION_MILLIS
-        val repeatCount = params.repeatCount ?: REPEAT_COUNT
+        val duration = params.durationMillis
+        val repeatCount = params.repeatCount
 
         val view = Element.getViewById(params.elementId)
         val latch = CountDownLatch(1)

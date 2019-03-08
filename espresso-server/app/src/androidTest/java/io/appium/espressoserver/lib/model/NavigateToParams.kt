@@ -14,27 +14,8 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model;
+package io.appium.espressoserver.lib.model
 
-@SuppressWarnings("unused")
-public class SetTimeParams extends AppiumParams {
-    private Integer hours;
-    private Integer minutes;
-
-    public Integer getHours() {
-        return hours;
-    }
-
-    public void setHour(Integer hours) {
-        this.hours = hours;
-    }
-
-    public Integer getMinutes() {
-        return minutes;
-    }
-
-    public void setMinutes(Integer minutes) {
-        this.minutes = minutes;
-    }
-
-}
+data class NavigateToParams(
+    val menuItemId: Int
+) : AppiumParams()
