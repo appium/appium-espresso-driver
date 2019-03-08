@@ -1,22 +1,38 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
-pool:
-  vmImage: 'macOS-10.13'
-variables:
-  TERM: dumb
-steps:
-- script: bash azure-pipelines/start-emulator.sh
-  displayName: Create and run Emulator
-- task: NodeTool@0 
-  inputs:
-    versionSpec: 11.x
-  displayName: Set Node to v11
-- script: npm install appium-chromedriver --chromedriver_version="2.44"
-  displayName: Install Updated Chromedriver
-- script: npm install
-  displayName: Install dependencies
-- script: npm test
-  displayName: Run tests
-- script: npm run build
-  displayName: Build
-- script: npx mocha --timeout 6000000 --recursive build/test/functional/ --exit
-  displayName: E2E Tests
+jobs:
+  - job: gradle_junit_tests
+    steps:
+      - task: Gradle@2
+        inputs:
+          workingDirectory: packages/appium-espresso-driver/espresso-server
+          gradleWrapperFile: packages/appium-espresso-driver/espresso-server/gradlew
+          gradleOptions: '-Xmx3072m'
+          publishJUnitResults: true
+          testResultsFiles: '**/TEST-*.xml'
+          tasks: test
+  - job: sdk28_e2e_tests
+    pool:
+      vmImage: 'macOS-10.13'
+    variables:
+      CI: true
+      TERM: dumb
+      MOCHA_FILE: 'junit-test-results.xml'
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: 11.x
+    - script: npm install --chromedriver_version="2.44"
+      displayName: Install Node dependencies
+    - script: npm install -g mjpeg-consumer
+      displayName: Install MJPEG Consumer
+    - script: bash ci/start-emulator.sh
+      displayName: Create and run Emulator
+    - script: npm run build
+      displayName: Build
+    - script: npx mocha --timeout 6000000 --recursive build/test/functional/
+      displayName: Run tests
+    - task: PublishTestResults@2
+      condition: always()
+      inputs:
+        testResultsFiles: junit-test-results.xml
+ 
