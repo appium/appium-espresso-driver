@@ -16,7 +16,7 @@ jobs:
     variables:
       CI: true
       TERM: dumb
-      MOCHA_FILE: 'junit-test-results.xml'
+      MOCHA_FILE: 'mocha-test-results.xml'
     steps:
     - task: NodeTool@0
       inputs:
@@ -34,5 +34,5 @@ jobs:
     - task: PublishTestResults@2
       condition: always()
       inputs:
-        testResultsFiles: junit-test-results.xml
+        testResultsFiles: mocha-test-results.xml
  
