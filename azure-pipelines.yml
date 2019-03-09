@@ -23,6 +23,8 @@ jobs:
         versionSpec: 11.x
     - script: npm install --chromedriver_version="2.44"
       displayName: Install Node dependencies
+    - script: npm test
+      displayName: NPM Test
     - script: npm install -g mjpeg-consumer
       displayName: Install MJPEG Consumer
     - script: bash azure-pipelines/start-emulator.sh

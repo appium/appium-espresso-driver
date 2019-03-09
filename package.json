@@ -55,7 +55,7 @@
     "build:node": "gulp transpile",
     "build": "npm run build:node && npm run build:server",
     "mocha": "mocha",
-    "test": "npm run test:server && npm run test:node",
+    "test": "npm run lint && npm run test:node",
     "test:node": "gulp once",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace && cd ..",
     "e2e-test": "gulp transpile && mocha --timeout 600000 --recursive build/test/functional/",
