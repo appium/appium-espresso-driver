@@ -17,7 +17,7 @@ echo "Starting emulator"
 
 # Start emulator in background
 nohup $ANDROID_HOME/emulator/emulator -avd testemulator -no-snapshot > /dev/null 2>&1 &
-while [[ $? -ne 0 ]]; do sleep 1; $ANDROID_HOME/platform-tools/adb shell pm list packages; done;
+$ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
 
 $ANDROID_HOME/platform-tools/adb devices
 
