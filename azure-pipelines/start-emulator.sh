@@ -4,7 +4,6 @@
 # with some changes
 
 # Install AVD files
-# TODO: Do not hardcode Android SDK versions
 declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;google_apis;x86"
 echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install emulator
 
