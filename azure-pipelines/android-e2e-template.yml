@@ -2,7 +2,7 @@
 parameters:
   script: echo "NO TEST SCRIPT WAS PROVIDED" && exit 1
   name: 'android_e2e_tests'
-  vmImage: 'macOS-10.13''
+  vmImage: 'macOS-10.13'
   MOCHA_FILE: 'mocha-test-results.xml'
   CHROMEDRIVER_VERSION: 2.44
   NODE_VERSION: 11.x
