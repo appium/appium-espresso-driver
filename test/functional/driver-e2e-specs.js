@@ -50,6 +50,7 @@ describe('EspressoDriver', function () {
         let activity = await driver.getCurrentDeviceActivity();
         activity.should.equal('.accessibility.AccessibilityNodeProviderActivity');
       });
+      // TODO: Replace GPS app with something that doesn't pop up a warning modal
       it.skip('should start subsequent sessions with different apps', async function () {
         let status = await driver.init(GPS_CAPS);
 

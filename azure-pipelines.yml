@@ -10,31 +10,10 @@ jobs:
           publishJUnitResults: true
           testResultsFiles: '**/TEST-*.xml'
           tasks: test
-  - job: sdk28_e2e_tests
-    pool:
-      vmImage: 'macOS-10.13'
-    variables:
-      CI: true
-      TERM: dumb
-      MOCHA_FILE: 'mocha-test-results.xml'
-    steps:
-    - task: NodeTool@0
-      inputs:
-        versionSpec: 11.x
-    - script: npm install --chromedriver_version="2.44"
-      displayName: Install Node dependencies
-    - script: npm test
-      displayName: NPM Test
-    - script: npm install -g mjpeg-consumer
-      displayName: Install MJPEG Consumer
-    - script: bash azure-pipelines/start-emulator.sh
-      displayName: Create and run Emulator
-    - script: npm run build
-      displayName: Build
-    - script: npx mocha --timeout 6000000 --reporter mocha-junit-reporter --recursive build/test/functional/ -g @skip-ci -i --exit
-      displayName: Run tests
-    - task: PublishTestResults@2
-      condition: always()
-      inputs:
-        testResultsFiles: mocha-test-results.xml
+  - template: azure-pipelines/android-e2e-template.yml
+    parameters:
+      script: npx mocha --timeout 6000000 --reporter mocha-junit-reporter --recursive build/test/functional/ -g @skip-ci -i --exit
+      name: sdk28_e2e_tests
+      CHROMEDRIVER_VERSION: 2.44
+      ANDROID_SDK_VERSION: 28
  
