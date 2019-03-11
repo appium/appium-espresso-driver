@@ -11,7 +11,7 @@ parameters:
 jobs:
   - job: ${{ parameters.name }}
     pool:
-      vmImage: ${{ paramters.vmImage }}
+      vmImage: ${{ parameters.vmImage }}
     variables:
       CI: true
       TERM: dumb
