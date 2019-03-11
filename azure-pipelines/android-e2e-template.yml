@@ -19,7 +19,7 @@ jobs:
     steps:
     - task: NodeTool@0
       inputs:
-        versionSpec: ${{ paramters.NODE_VERSION }}
+        versionSpec: ${{ parameters.NODE_VERSION }}
     - script: npm install --chromedriver_version="${{ parameters.CHROMEDRIVER_VERSION }}"
       displayName: Install Node dependencies
     - script: npm test
