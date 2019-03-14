@@ -10,7 +10,7 @@ jobs:
           publishJUnitResults: true
           testResultsFiles: '**/TEST-*.xml'
           tasks: test
-  - template: azure-pipelines/android-e2e-template.yml
+  - template: templates/android-e2e-template.yml
     parameters:
       script: npx mocha --timeout 6000000 --reporter mocha-junit-reporter --recursive build/test/functional/ -g @skip-ci -i --exit
       name: sdk28_e2e_tests
