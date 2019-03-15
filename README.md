@@ -1,5 +1,6 @@
 # appium-espresso-driver
 
+[![Build Status](https://dev.azure.com/AppiumCI/Appium%20CI/_apis/build/status/appium.appium-espresso-driver?branchName=master)](https://dev.azure.com/AppiumCI/Appium%20CI/_build/latest?definitionId=3&branchName=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a877b7395f2d475aa79c08daf665dc3c)](https://www.codacy.com/app/dpgraham/appium-espresso-driver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=appium/appium-espresso-driver&amp;utm_campaign=Badge_Grade)
 [![Greenkeeper badge](https://badges.greenkeeper.io/appium/appium-espresso-driver.svg)](https://greenkeeper.io/)
 

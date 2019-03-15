@@ -200,7 +200,7 @@ public class ActionSequenceTest {
         assertTrue(elapsedTime >= 2000);
 
         // Check that it's under 2.5s though to verify that it's not TOO long
-        assertTrue(elapsedTime < 2100);
+        assertTrue(elapsedTime < 2500);
 
         PointerInputState finger1State = (PointerInputState) inputStateTable.getInputState("finger1");
         PointerInputState finger2State = (PointerInputState) inputStateTable.getInputState("finger2");
