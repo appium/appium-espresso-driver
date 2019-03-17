@@ -160,8 +160,14 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId", new DeleteSession(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/back", new Back(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/accept_alert", new AcceptAlert(), AppiumParams.class));
+        // alias
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/alert/accept", new AcceptAlert(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/dismiss_alert", new DismissAlert(), AppiumParams.class));
+        // alias
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/alert/dismiss", new DismissAlert(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/alert_text", new GetAlertText(), AppiumParams.class));
+        // alias
+        routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/alert/text", new GetAlertText(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/orientation", new SetOrientation(), OrientationParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/orientation", new GetOrientation(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/source", new Source(), AppiumParams.class));
