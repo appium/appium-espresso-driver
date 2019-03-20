@@ -34,7 +34,7 @@
     "espresso-server/AndroidManifest-test.xml"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
+    "@babel/runtime": "^7.4.0",
     "appium-adb": "^7.0.0",
     "appium-android-driver": "^4.10.2",
     "appium-base-driver": "^3.5.0",
