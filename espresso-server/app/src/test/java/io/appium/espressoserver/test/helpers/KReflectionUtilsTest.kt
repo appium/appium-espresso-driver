@@ -68,12 +68,9 @@ class `KReflectionUtils Test` {
 
     @Test
     fun `should extract declared properties from an instance`() {
-        val sessionParams = SessionParams.DesiredCapabilities(
-                "appActivity", "appWaitActivity", 1)
+        val sessionParams = SessionParams.DesiredCapabilities("appActivity")
         val extractedProps = KReflectionUtils.extractDeclaredProperties(sessionParams)
         assertEquals(extractedProps["appActivity"], "appActivity")
-        assertEquals(extractedProps["appWaitActivity"], "appWaitActivity")
-        assertEquals(extractedProps["appWaitDuration"], 1L)
     }
 
     class TestClass {
@@ -86,10 +83,10 @@ class `KReflectionUtils Test` {
         }
 
         fun plus (dumbEnum: DumbEnum, num: Int): String {
-            when (dumbEnum) {
-                DumbEnum.A -> return "A" + num
-                DumbEnum.B -> return "B" + num
-                DumbEnum.C -> return "C" + num
+            return when (dumbEnum) {
+                DumbEnum.A -> "A$num"
+                DumbEnum.B -> "B$num"
+                DumbEnum.C -> "C$num"
             }
         }
     }
