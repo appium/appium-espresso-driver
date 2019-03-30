@@ -110,7 +110,8 @@ describe('EspressoDriver', function () {
     before(async function () {
       await driver.init({
         ...APIDEMO_CAPS,
-        appActivity: 'io.appium.android.apis.view.AutoComplete1'
+        appActivity: 'io.appium.android.apis.view.AutoComplete1',
+        autoGrantPermissions: true,
       });
     });
     after(async function () {
