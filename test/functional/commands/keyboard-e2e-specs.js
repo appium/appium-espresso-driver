@@ -38,7 +38,8 @@ describe('keyboard', function () {
   let driver;
   before(async function () {
     let caps = Object.assign({
-      appActivity: 'io.appium.android.apis.view.AutoComplete4'
+      appActivity: 'io.appium.android.apis.view.AutoComplete4',
+      autoGrantPermissions: true,
     }, APIDEMO_CAPS);
     driver = await initSession(caps);
   });
