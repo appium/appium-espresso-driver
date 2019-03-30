@@ -97,12 +97,12 @@ describe('EspressoDriver', function () {
     });
     it('should start activity by name', async function () {
       await driver.init(APIDEMO_CAPS);
-      await driver.startActivity({appActivity: '.accessibility.AccessibilityNodeProviderActivity'});
+      await driver.startActivity('io.appium.android.apis', '.accessibility.AccessibilityNodeProviderActivity');
       await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
     });
     it('should start activity by fully-qualified name', async function () {
       await driver.init(APIDEMO_CAPS);
-      await driver.startActivity({appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity'});
+      await driver.startActivity('io.appium.android.apis', 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity');
       await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
     });
   });
