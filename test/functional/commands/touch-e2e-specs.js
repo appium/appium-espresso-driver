@@ -33,24 +33,28 @@ describe('touch actions -', function () {
 
   async function startFingerPaintActivity () {
     await driver.startActivity({
+      appPackage: 'io.appium.android.apis',
       appActivity: '.graphics.FingerPaint',
     });
   }
 
   async function startSplitTouchActivity () {
     await driver.startActivity({
+      appPackage: 'io.appium.android.apis',
       appActivity: '.view.SplitTouchView',
     });
   }
 
   async function startDragAndDropActivity () {
     await driver.startActivity({
+      appPackage: 'io.appium.android.apis',
       appActivity: '.view.DragAndDropDemo',
     });
   }
 
   async function startTextSwitcherActivity () {
     await driver.startActivity({
+      appPackage: 'io.appium.android.apis',
       appActivity: '.view.TextSwitcher1',
     });
   }

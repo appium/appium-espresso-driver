@@ -105,6 +105,7 @@ describe('mobile', function () {
   describe('mobile: setDate, mobile: setTime', function () {
     it('should set the date on a DatePicker', async function () {
       await driver.startActivity({
+        appPackage: 'io.appium.android.apis',
         appActivity: 'io.appium.android.apis.view.DateWidgets1',
       });
       let dateEl = await driver.elementByAccessibilityId('change the date');
@@ -119,6 +120,7 @@ describe('mobile', function () {
     });
     it('should set the time on a timepicker', async function () {
       await driver.startActivity({
+        appPackage: 'io.appium.android.apis',
         appActivity: 'io.appium.android.apis.view.DateWidgets2',
       });
       let timeEl = await driver.elementByXPath('//android.widget.TimePicker');

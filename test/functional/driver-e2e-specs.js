@@ -98,6 +98,7 @@ describe('EspressoDriver', function () {
     it('should start activity by name', async function () {
       await driver.init(APIDEMO_CAPS);
       await driver.startActivity({
+        appPackage: 'io.appium.android.apis',
         appActivity: '.accessibility.AccessibilityNodeProviderActivity',
       });
       await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
@@ -105,6 +106,7 @@ describe('EspressoDriver', function () {
     it('should start activity by fully-qualified name', async function () {
       await driver.init(APIDEMO_CAPS);
       await driver.startActivity({
+        appPackage: 'io.appium.android.apis',
         appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
       });
       await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
