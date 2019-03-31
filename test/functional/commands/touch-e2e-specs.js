@@ -4,8 +4,9 @@ import wd from 'wd';
 import request from 'request-promise';
 import B from 'bluebird';
 import _ from 'lodash';
-import { initSession, deleteSession, HOST, PORT,
-         MOCHA_TIMEOUT } from '../helpers/session';
+import {
+  initSession, deleteSession, HOST, PORT,
+  MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
 
@@ -27,6 +28,7 @@ describe('touch actions -', function () {
 
   async function startListActivity () {
     await driver.startActivity({
+      appPackage: 'io.appium.android.apis',
       appActivity: '.view.List5',
     });
   }
