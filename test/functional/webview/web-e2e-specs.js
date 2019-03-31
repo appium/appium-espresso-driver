@@ -59,7 +59,9 @@ describe('web', function () {
 
       // Switch to native and go to different activity
       await driver.context(contexts[0]);
-      await driver.startActivity('io.appium.android.apis', 'io.appium.android.apis.view.WebView3');
+      await driver.startActivity({
+        appActivity: 'io.appium.android.apis.view.WebView3',
+      });
       contexts = await driver.contexts();
       await driver.elementById('android:id/content').should.eventually.exist;
 

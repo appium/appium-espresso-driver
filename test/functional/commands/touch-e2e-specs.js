@@ -26,23 +26,33 @@ describe('touch actions -', function () {
   });
 
   async function startListActivity () {
-    await driver.startActivity('io.appium.android.apis', '.view.List5');
+    await driver.startActivity({
+      appActivity: '.view.List5',
+    });
   }
 
   async function startFingerPaintActivity () {
-    await driver.startActivity('io.appium.android.apis', '.graphics.FingerPaint');
+    await driver.startActivity({
+      appActivity: '.graphics.FingerPaint',
+    });
   }
 
   async function startSplitTouchActivity () {
-    await driver.startActivity('io.appium.android.apis', '.view.SplitTouchView');
+    await driver.startActivity({
+      appActivity: '.view.SplitTouchView',
+    });
   }
 
   async function startDragAndDropActivity () {
-    await driver.startActivity('io.appium.android.apis', '.view.DragAndDropDemo');
+    await driver.startActivity({
+      appActivity: '.view.DragAndDropDemo',
+    });
   }
 
   async function startTextSwitcherActivity () {
-    await driver.startActivity('io.appium.android.apis', '.view.TextSwitcher1');
+    await driver.startActivity({
+      appActivity: '.view.TextSwitcher1',
+    });
   }
 
   async function getScrollData () {
