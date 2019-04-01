@@ -74,7 +74,7 @@ describe('EspressoDriver', function () {
         // for now the activity needs to be fully qualified
         await driver.init(Object.assign({
           appActivity: 'io.appium.android.apis.some.fake.Activity'
-        }, APIDEMO_CAPS)).should.eventually.be.rejectedWith(/unable to resolve/i);
+        }, APIDEMO_CAPS)).should.eventually.be.rejected;
       });
       it('should reject opening of appPackage with incorrect signature', async function () {
         await driver.init(Object.assign({
@@ -97,12 +97,18 @@ describe('EspressoDriver', function () {
     });
     it('should start activity by name', async function () {
       await driver.init(APIDEMO_CAPS);
-      await driver.startActivity({appActivity: '.accessibility.AccessibilityNodeProviderActivity'});
+      await driver.startActivity({
+        appPackage: 'io.appium.android.apis',
+        appActivity: '.accessibility.AccessibilityNodeProviderActivity',
+      });
       await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
     });
     it('should start activity by fully-qualified name', async function () {
       await driver.init(APIDEMO_CAPS);
-      await driver.startActivity({appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity'});
+      await driver.startActivity({
+        appPackage: 'io.appium.android.apis',
+        appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
+      });
       await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
     });
   });

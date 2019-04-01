@@ -15,7 +15,12 @@ describe('driver', function () {
     let driver;
     beforeEach(function () {
       driver = new EspressoDriver({}, false);
-      driver.caps = { appPackage: 'io.appium.package', appActivity: '.MainActivity'};
+      driver.caps = {
+        appPackage: 'io.appium.package',
+        appActivity: '.MainActivity',
+        appWaitPackage: 'io.appium.package',
+        appWaitActivity: '.MainActivity',
+      };
       driver.opts = { autoLaunch: false, skipUnlock: true };
       sandbox.stub(driver, 'initEspressoServer');
       sandbox.stub(driver, 'addDeviceInfoToCaps');
@@ -50,6 +55,7 @@ describe('driver', function () {
           forwardPort: () => {},
           isAnimationOn: () => false,
           installOrUpgrade: () => {},
+          waitForActivity: () => {},
         };
       });
       await driver.startEspressoSession();
@@ -74,6 +80,7 @@ describe('driver', function () {
           startLogcat: () => {},
           forwardPort: () => {},
           isAnimationOn: () => false,
+          waitForActivity: () => {},
         };
       });
       await driver.startEspressoSession();

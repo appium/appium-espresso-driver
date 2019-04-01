@@ -4,8 +4,9 @@ import wd from 'wd';
 import request from 'request-promise';
 import B from 'bluebird';
 import _ from 'lodash';
-import { initSession, deleteSession, HOST, PORT,
-         MOCHA_TIMEOUT } from '../helpers/session';
+import {
+  initSession, deleteSession, HOST, PORT,
+  MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
 
@@ -27,36 +28,36 @@ describe('touch actions -', function () {
 
   async function startListActivity () {
     await driver.startActivity({
-      appActivity: '.view.List5',
       appPackage: 'io.appium.android.apis',
+      appActivity: '.view.List5',
     });
   }
 
   async function startFingerPaintActivity () {
     await driver.startActivity({
-      appActivity: '.graphics.FingerPaint',
       appPackage: 'io.appium.android.apis',
+      appActivity: '.graphics.FingerPaint',
     });
   }
 
   async function startSplitTouchActivity () {
     await driver.startActivity({
-      appActivity: '.view.SplitTouchView',
       appPackage: 'io.appium.android.apis',
+      appActivity: '.view.SplitTouchView',
     });
   }
 
   async function startDragAndDropActivity () {
     await driver.startActivity({
-      appActivity: '.view.DragAndDropDemo',
       appPackage: 'io.appium.android.apis',
+      appActivity: '.view.DragAndDropDemo',
     });
   }
 
   async function startTextSwitcherActivity () {
     await driver.startActivity({
-      appActivity: '.view.TextSwitcher1',
       appPackage: 'io.appium.android.apis',
+      appActivity: '.view.TextSwitcher1',
     });
   }
 
