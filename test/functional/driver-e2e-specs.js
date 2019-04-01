@@ -74,7 +74,7 @@ describe('EspressoDriver', function () {
         // for now the activity needs to be fully qualified
         await driver.init(Object.assign({
           appActivity: 'io.appium.android.apis.some.fake.Activity'
-        }, APIDEMO_CAPS)).should.eventually.be.rejectedWith(/unable to resolve/i);
+        }, APIDEMO_CAPS)).should.eventually.be.rejected;
       });
       it('should reject opening of appPackage with incorrect signature', async function () {
         await driver.init(Object.assign({
