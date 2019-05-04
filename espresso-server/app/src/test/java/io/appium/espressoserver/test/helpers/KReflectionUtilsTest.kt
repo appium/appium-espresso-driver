@@ -68,8 +68,9 @@ class `KReflectionUtils Test` {
 
     @Test
     fun `should extract declared properties from an instance`() {
-        val sessionParams = SessionParams.DesiredCapabilities("appActivity")
+        val sessionParams = SessionParams.DesiredCapabilities("appPackage", "appActivity")
         val extractedProps = KReflectionUtils.extractDeclaredProperties(sessionParams)
+        assertEquals(extractedProps["appPackage"], "appPackage")
         assertEquals(extractedProps["appActivity"], "appActivity")
     }
 
