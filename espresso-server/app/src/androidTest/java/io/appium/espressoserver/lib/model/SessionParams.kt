@@ -19,5 +19,5 @@ package io.appium.espressoserver.lib.model
 data class SessionParams(
     val desiredCapabilities: DesiredCapabilities
 ) : AppiumParams() {
-    data class DesiredCapabilities(var appActivity : String?)
+    data class DesiredCapabilities(var appPackage: String?, var appActivity : String?)
 }
