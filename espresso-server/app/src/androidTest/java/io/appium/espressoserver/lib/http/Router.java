@@ -101,6 +101,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException;
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions;
 import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
+import io.appium.espressoserver.lib.model.AlertParams;
 import io.appium.espressoserver.lib.model.AppiumParams;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.DrawerActionParams;
@@ -159,12 +160,12 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId/actions", new ReleaseActions(), Actions.class));
         routeMap.addRoute(new RouteDefinition(Method.DELETE, "/session/:sessionId", new DeleteSession(), AppiumParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/back", new Back(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/accept_alert", new AcceptAlert(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/accept_alert", new AcceptAlert(), AlertParams.class));
         // alias
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/alert/accept", new AcceptAlert(), AppiumParams.class));
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/dismiss_alert", new DismissAlert(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/alert/accept", new AcceptAlert(), AlertParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/dismiss_alert", new DismissAlert(), AlertParams.class));
         // alias
-        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/alert/dismiss", new DismissAlert(), AppiumParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/alert/dismiss", new DismissAlert(), AlertParams.class));
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/alert_text", new GetAlertText(), AppiumParams.class));
         // alias
         routeMap.addRoute(new RouteDefinition(Method.GET, "/session/:sessionId/alert/text", new GetAlertText(), AppiumParams.class));
