@@ -31,7 +31,7 @@ class CreateSession : RequestHandler<SessionParams, Session> {
         val activityName = params.desiredCapabilities.appActivity
         try {
             activityName?.let {
-                startActivity(it)
+                startActivity(params.desiredCapabilities.appPackage, it)
             }
         } catch (e: Exception) {
             throw SessionNotCreatedException(e)

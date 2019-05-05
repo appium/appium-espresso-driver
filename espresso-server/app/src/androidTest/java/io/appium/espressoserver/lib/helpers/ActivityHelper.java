@@ -24,6 +24,9 @@ import android.util.ArrayMap;
 import java.lang.reflect.Field;
 
 import androidx.test.platform.app.InstrumentationRegistry;
+
+import javax.annotation.Nullable;
+
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 
 import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
@@ -55,15 +58,19 @@ public class ActivityHelper {
         throw new AppiumException("Failed to get current Activity");
     }
 
-    private static String getFullyQualifiedActivityName(Instrumentation instrumentation, String activity) {
-        final String pkg = instrumentation.getTargetContext().getPackageName();
-        return activity.startsWith(".") ? pkg + activity : activity;
+    private static String getFullyQualifiedActivityName(Instrumentation instrumentation,
+                                                        @Nullable String pkg, String activity) {
+        String appPackage = pkg;
+        if (appPackage == null) {
+            appPackage = instrumentation.getTargetContext().getPackageName();
+        }
+        return activity.startsWith(".") ? appPackage + activity : activity;
     }
 
-    public static void startActivity(String activity) {
-        logger.info(String.format("Starting activity '%s'", activity));
+    public static void startActivity(@Nullable String pkg, String activity) {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        String fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, activity);
+        String fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, pkg, activity);
+        logger.info(String.format("Starting activity '%s'", fullyQualifiedAppActivity));
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClassName(instrumentation.getTargetContext(), fullyQualifiedAppActivity);
