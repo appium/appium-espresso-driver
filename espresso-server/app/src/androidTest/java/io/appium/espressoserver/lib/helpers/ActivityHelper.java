@@ -58,13 +58,25 @@ public class ActivityHelper {
         throw new AppiumException("Failed to get current Activity");
     }
 
+    /**
+     * https://android.googlesource.com/platform/frameworks/base/+/master/tools/aapt/Resource.cpp#755
+     *
+     * @param instrumentation instrumentation instance
+     * @param pkg app package name
+     * @param activity activity name shortcut to be qualified
+     * @return The qualified activity name
+     */
     private static String getFullyQualifiedActivityName(Instrumentation instrumentation,
                                                         @Nullable String pkg, String activity) {
         String appPackage = pkg;
         if (appPackage == null) {
             appPackage = instrumentation.getTargetContext().getPackageName();
         }
-        return activity.startsWith(".") ? appPackage + activity : activity;
+        int dotPos = activity.indexOf(".");
+        if (dotPos > 0) {
+            return activity;
+        }
+        return appPackage + (dotPos == 0 ? "" : ".") + activity;
     }
 
     public static void startActivity(@Nullable String pkg, String activity) {
