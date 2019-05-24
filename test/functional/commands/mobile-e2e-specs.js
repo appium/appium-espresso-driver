@@ -219,7 +219,7 @@ describe('mobile', function () {
       // Below returns like: {"mStyle"=>0, "mSupportedAxes"=>nil, "mWeight"=>400, "native_instance"=>131438067610240}
       await driver.execute('mobile: backdoor', {
         target: 'element', elementId: element.value, methods: [{ name: 'getTypeface' }]}
-      ).should.eventually.contain({ mWeight: 400 });
+      ).should.eventually.contain({ mStyle: 0 });
     });
   });
 });
