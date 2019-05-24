@@ -2,6 +2,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
+import { util } from 'appium-support';
 
 chai.should();
 chai.use(chaiAsPromised);
@@ -211,5 +212,15 @@ describe('mobile', function () {
         }).should.eventually.be.rejectedWith(error);
       });
     }
+  });
+
+  describe('mobile: backdoor', function () {
+    it('should get element type face', async function () {
+      let element = await driver.elementByAccessibilityId('Views');
+      // Below returns like: {"mStyle"=>0, "mSupportedAxes"=>nil, "mWeight"=>400, "native_instance"=>131438067610240}
+      await driver.execute('mobile: backdoor', {
+        target: 'element', elementId: util.unwrapElement(element), methods: [{ name: 'getTypeface' }]}
+      ).should.eventually.contain({ mWeight: 400 })
+    });
   });
 });
