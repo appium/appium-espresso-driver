@@ -216,7 +216,7 @@ describe('mobile', function () {
 
   describe('mobile: backdoor', function () {
     it('should get element type face', async function () {
-      let element = await driver.elementByAccessibilityId('Views');
+      const element = await driver.elementByAccessibilityId('Views');
       // Below returns like: {"mStyle"=>0, "mSupportedAxes"=>nil, "mWeight"=>400, "native_instance"=>131438067610240}
       await driver.execute('mobile: backdoor', {
         target: 'element', elementId: util.unwrapElement(element), methods: [{ name: 'getTypeface' }]}
