@@ -17,7 +17,6 @@
 package io.appium.espressoserver.lib.model
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 
 
 val SESSION_ID_PARAM_NAME = "sessionId"
