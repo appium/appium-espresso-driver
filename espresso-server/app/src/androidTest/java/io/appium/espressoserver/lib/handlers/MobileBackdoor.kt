@@ -3,7 +3,7 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.ActivityHelper
-import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.InvocationOperation
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.MobileBackdoorParams
@@ -13,16 +13,16 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
 
     @Throws(AppiumException::class)
     override fun handle(params: MobileBackdoorParams): Any? {
-        logger.info("Invoking Backdoor")
+        AndroidLogger.logger.info("Invoking Backdoor")
         params.target?.let {target ->
-            val activity = ActivityHelper.getCurrentActivity()
+            val activity = ActivityHelper.currentActivity
             val ops = getBackdoorOperations(params)
 
             when (target) {
                 ACTIVITY -> return invokeBackdoorMethods(activity, ops)
                 APPLICATION -> return invokeBackdoorMethods(activity.application, ops)
                 ELEMENT -> return invokeBackdoorMethods(Element.getViewById(params.targetElement), ops)
-                else -> throw InvalidArgumentException("target cannot be '${target}'")
+                else -> throw InvalidArgumentException("target cannot be '$target'")
             }
         }
 

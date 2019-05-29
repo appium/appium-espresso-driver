@@ -6,8 +6,6 @@ import java.util.Arrays;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 
-import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
-
 public class ReflectionUtils {
     public static Object getField(final Class clazz, final String fieldName, final Object object)
             throws AppiumException {
@@ -19,7 +17,7 @@ public class ReflectionUtils {
         } catch (final Exception e) {
             final String msg = String.format("error while getting field %s from object %s",
                     fieldName, object);
-            logger.error(msg + " " + e.getMessage());
+            AndroidLogger.getLogger().error(msg + " " + e.getMessage());
             throw new AppiumException(msg, e);
         }
     }
@@ -32,7 +30,7 @@ public class ReflectionUtils {
             final String msg = String.format(
                     "error while invoking method %s on object %s with parameters %s",
                     method, object, Arrays.toString(parameters));
-            logger.error(msg + " " + e.getMessage());
+            AndroidLogger.getLogger().error(msg + " " + e.getMessage());
             throw new AppiumException(msg, e);
         }
     }
@@ -49,7 +47,7 @@ public class ReflectionUtils {
             final String msg = String.format(
                     "error while getting method %s from class %s with parameter types %s",
                     methodName, clazz, Arrays.toString(parameterTypes));
-            logger.error(msg + " " + e.getMessage());
+            AndroidLogger.getLogger().error(msg + " " + e.getMessage());
             throw new AppiumException(msg, e);
         }
     }

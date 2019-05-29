@@ -28,13 +28,12 @@ import java.util.Map;
 import javax.ws.rs.core.MediaType;
 
 import fi.iki.elonen.NanoHTTPD;
+import io.appium.espressoserver.lib.helpers.AndroidLogger;
+import io.appium.espressoserver.lib.helpers.StringHelpers;
 import io.appium.espressoserver.lib.http.response.AppiumResponse;
 import io.appium.espressoserver.lib.http.response.BaseResponse;
 import io.appium.espressoserver.lib.model.AppiumStatus;
 import io.appium.espressoserver.lib.model.gsonadapters.AppiumStatusAdapter;
-
-import static io.appium.espressoserver.lib.helpers.AndroidLogger.logger;
-import static io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate;
 
 public class Server extends NanoHTTPD {
 
@@ -74,10 +73,10 @@ public class Server extends NanoHTTPD {
         if (response instanceof AppiumResponse) {
             AppiumResponse appiumResponse = (AppiumResponse) response;
             if (appiumResponse.getStatus() == AppiumStatus.SUCCESS) {
-                logger.info(String.format("Responding to server with value: %s",
-                        abbreviate(String.valueOf(appiumResponse.getValue()), 300)));
+                AndroidLogger.getLogger().info(String.format("Responding to server with value: %s",
+                        StringHelpers.abbreviate(String.valueOf(appiumResponse.getValue()), 300)));
             } else {
-                logger.info(String.format("Responding to server with error: %s",
+                AndroidLogger.getLogger().info(String.format("Responding to server with error: %s",
                         appiumResponse.getValue()));
             }
         }
@@ -105,13 +104,13 @@ public class Server extends NanoHTTPD {
             throw new IllegalStateException("The application under test must require android.permission.INTERNET " +
                     "permission in its manifest", e);
         }
-        logger.info(String.format("\nRunning Appium Espresso Server at port %d \n", DEFAULT_PORT));
+        AndroidLogger.getLogger().info(String.format("\nRunning Appium Espresso Server at port %d \n", DEFAULT_PORT));
         router = new Router();
     }
 
     public void stop() {
         super.stop();
-        logger.info(String.format("\nStopping Appium Espresso stop at port %d \n", DEFAULT_PORT));
+        AndroidLogger.getLogger().info(String.format("\nStopping Appium Espresso stop at port %d \n", DEFAULT_PORT));
     }
 
     public void makeRequestForServerToStop() {

@@ -27,7 +27,7 @@ import android.widget.AdapterView
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
-import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate
 import io.appium.espressoserver.lib.helpers.XMLHelpers.toNodeName
 import io.appium.espressoserver.lib.helpers.XMLHelpers.toSafeString
@@ -44,8 +44,8 @@ import javax.xml.xpath.XPathExpressionException
 import javax.xml.xpath.XPathFactory
 
 class SourceDocument @JvmOverloads constructor(
-    val root: View?,
-    val viewMap: SparseArray<View> = SparseArray()
+        private val root: View?,
+        private val viewMap: SparseArray<View> = SparseArray()
 ) {
     private val RESOURCES_GUARD = Semaphore(1)
 
@@ -80,7 +80,7 @@ class SourceDocument @JvmOverloads constructor(
                 isAdapterTypeSet = true
             }
         }
-        if (!adapterData.isEmpty()) {
+        if (adapterData.isNotEmpty()) {
             setAttribute(ViewAttributesEnum.ADAPTERS, TextUtils.join(",", adapterData))
         }
     }
@@ -140,8 +140,8 @@ class SourceDocument @JvmOverloads constructor(
                 }
             }
         } else {
-            logger.warn("Skipping traversal of ${view.javaClass.name}'s children, since " +
-                    "the current depth has reached its maximum allowed value of ${depth}");
+            AndroidLogger.logger.warn("Skipping traversal of ${view.javaClass.name}'s children, since " +
+                    "the current depth has reached its maximum allowed value of $depth")
         }
 
         serializer?.endTag(NAMESPACE, tagName)
@@ -173,9 +173,9 @@ class SourceDocument @JvmOverloads constructor(
                         val startTime = SystemClock.uptimeMillis()
                         serializeView(rootView, 0)
                         it.endDocument()
-                        logger.info("The source XML tree has been fetched in " +
+                        AndroidLogger.logger.info("The source XML tree has been fetched in " +
                                 "${SystemClock.uptimeMillis() - startTime}ms " +
-                                "using ${streamType.simpleName}");
+                                "using ${streamType.simpleName}")
                     }
                 } catch (e: OutOfMemoryError) {
                     lastError = e
@@ -247,7 +247,7 @@ class SourceDocument @JvmOverloads constructor(
             try {
                 toStream().use {
                     xmlStream -> list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
-                    return 0.rangeTo(list.length - 1).map {index ->
+                    return (0 until list.length).map { index ->
                         viewMap.get(Integer.parseInt((list.item(index) as Element).getAttribute(VIEW_INDEX)))
                     }
                 }
@@ -265,13 +265,13 @@ class SourceDocument @JvmOverloads constructor(
 
     companion object {
         private val xpath = XPathFactory.newInstance().newXPath()
-        private val NON_XML_CHAR_REPLACEMENT = "?"
-        private val VIEW_INDEX = "viewIndex"
-        private val NAMESPACE = ""
-        private val DEFAULT_VIEW_CLASS_NAME = "android.view.View"
+        private const val NON_XML_CHAR_REPLACEMENT = "?"
+        private const val VIEW_INDEX = "viewIndex"
+        private const val NAMESPACE = ""
+        private const val DEFAULT_VIEW_CLASS_NAME = "android.view.View"
         private var MAX_TRAVERSAL_DEPTH = 70
-        private val MAX_XML_VALUE_LENGTH = 64 * 1024
-        private val XML_ENCODING = "UTF-8"
+        private const val MAX_XML_VALUE_LENGTH = 64 * 1024
+        private const val XML_ENCODING = "UTF-8"
 
         private fun toXmlNodeName(className: String?): String {
             if (className == null || className.trim { it <= ' ' }.isEmpty()) {
@@ -287,13 +287,13 @@ class SourceDocument @JvmOverloads constructor(
                 fixedName = DEFAULT_VIEW_CLASS_NAME
             }
             if (fixedName != className) {
-                logger.info("Rewrote class name '${className}' to XML node name '${fixedName}'")
+                AndroidLogger.logger.info("Rewrote class name '$className' to XML node name '$fixedName'")
             }
             return fixedName
         }
 
         fun `$setMaxTraverseDepth`(maxTraverseDepth: Int) {
-            SourceDocument.MAX_TRAVERSAL_DEPTH = maxTraverseDepth
+            MAX_TRAVERSAL_DEPTH = maxTraverseDepth
         }
     }
 }

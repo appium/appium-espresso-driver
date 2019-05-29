@@ -17,15 +17,13 @@
 package io.appium.espressoserver.lib.handlers
 
 import android.view.View
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
 import io.appium.espressoserver.lib.handlers.exceptions.MissingCommandsException
+import io.appium.espressoserver.lib.helpers.ViewFinder.findAllBy
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.Locator
 import io.appium.espressoserver.lib.viewaction.ViewGetter
-
-import io.appium.espressoserver.lib.helpers.ViewFinder.findAllBy
 
 class FindElements : RequestHandler<Locator, List<Element>> {
 
@@ -35,11 +33,11 @@ class FindElements : RequestHandler<Locator, List<Element>> {
         params.elementId?.let {
             parentView = ViewGetter().getView(Element.getViewInteractionById(it))
         }
-        params.using ?: throw InvalidStrategyException("Locator strategy cannot be empty")
-        params.value ?: throw MissingCommandsException("No params provided")
 
         // Return as list of Elements
-        return findAllBy(parentView, params.using, params.value)
+        return findAllBy(parentView,
+                params.using ?: throw InvalidStrategyException("Locator strategy cannot be empty"),
+                params.value ?: throw MissingCommandsException("No params provided"))
                 .map { Element(it) }
     }
 }

@@ -26,6 +26,6 @@ class GetAlertText : RequestHandler<AppiumParams, String> {
     override fun handle(params: AppiumParams): String {
         // We use UIA2 here, since Espresso is limited to application sandbox
         // and cannot handle security alerts
-        return AlertHelpers.getText()
+        return AlertHelpers.text
     }
 }

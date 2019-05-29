@@ -24,7 +24,7 @@ import androidx.test.espresso.action.ViewActions.typeText
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
-import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.TextParams
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
@@ -49,7 +49,7 @@ class SendKeys : RequestHandler<TextParams, Void?> {
                 return null
             }
         } catch (e: NumberFormatException) {
-            throw InvalidArgumentException("Cannot convert '${value}' to an integer")
+            throw InvalidArgumentException("Cannot convert '$value' to an integer")
         }
 
         val viewInteraction = Element.getViewInteractionById(id)
@@ -64,12 +64,12 @@ class SendKeys : RequestHandler<TextParams, Void?> {
             params.text?.let {
                 value = it
             }
-            logger.debug("Trying replaceText action as a workaround to type the '${value}' text into the input field")
+            AndroidLogger.logger.debug("Trying replaceText action as a workaround to type the '$value' text into the input field")
             val currentText = ViewTextGetter().get(viewInteraction)
             if (currentText.rawText.isEmpty() || currentText.isHint) {
                 viewInteraction.perform(replaceText(value))
             } else {
-                logger.debug("Current input field's text: '${currentText}'")
+                AndroidLogger.logger.debug("Current input field's text: '$currentText'")
                 viewInteraction.perform(replaceText(currentText.toString() + value))
             }
         }

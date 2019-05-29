@@ -398,7 +398,7 @@ public class AndroidKeyEvent {
 
         // Inject all of the key events, in order
         for (final KeyEvent androidKeyEvent : keyEvents){
-            AndroidLogger.logger.info(String.format("Calling key event: %s", androidKeyEvent));
+            AndroidLogger.getLogger().info(String.format("Calling key event: %s", androidKeyEvent));
             boolean isSuccess;
             try {
                 isSuccess = uiController.injectKeyEvent(androidKeyEvent);

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.helpers;
+package io.appium.espressoserver.lib.helpers
 
-public interface Logger {
-    void error(Object... messages);
-    void error(String message, Throwable throwable);
-    void info(Object... messages);
-    void debug(Object... messages);
-    void warn(Object... messages);
+interface Logger {
+    fun error(vararg messages: Any)
+    fun error(message: String, throwable: Throwable)
+    fun info(vararg messages: Any)
+    fun debug(vararg messages: Any)
+    fun warn(vararg messages: Any)
 }
