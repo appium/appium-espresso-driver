@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -167,10 +166,11 @@ public class PointerDispatchTest {
                 new KeyInputState()
         );
 
-        Executor executor = Executors.newCachedThreadPool();
+        ExecutorService executor = Executors.newCachedThreadPool();
         CompletionService<BaseDispatchResult> completionService = new ExecutorCompletionService<>(executor);
         completionService.submit(pointerMoveOne);
         completionService.submit(pointerMoveTwo);
+        executor.shutdown();
         do {
             Future<BaseDispatchResult> resultFuture = completionService.poll(1, TimeUnit.SECONDS);
             if (resultFuture == null) {
