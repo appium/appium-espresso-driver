@@ -16,8 +16,6 @@
 
 package io.appium.espressoserver.lib.helpers
 
-import android.util.Log
-
 import java.util.ArrayList
 import java.util.Collections
 import java.util.HashMap
@@ -30,8 +28,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.NoAlertOpenException
 import io.appium.espressoserver.lib.helpers.InteractionHelper.getUiDevice
 
 object AlertHelpers {
-    private val TAG = AlertHelpers::class.java.simpleName
-
     private const val regularAlertButtonResIdPrefix = "android:id/button"
     private val regularAlertButtonResIdPattern = Pattern.compile("^$regularAlertButtonResIdPrefix\\d+$")
     private const val alertContentResId = "android:id/content"
@@ -50,7 +46,7 @@ object AlertHelpers {
                 return AlertType.REGULAR
             }
             if (getUiDevice().findObjects(By.res(permissionAlertTitleResIdPattern)).isNotEmpty()) {
-                AndroidLogger.logger.debug(TAG, "Permission alert has been detected")
+                AndroidLogger.logger.debug("Permission alert has been detected")
                 return AlertType.PERMISSION
             }
 
@@ -69,7 +65,7 @@ object AlertHelpers {
 
             val alertRoots = getUiDevice().findObjects(By.res(alertContentResId))
             if (alertRoots.isEmpty()) {
-                Log.w(TAG, "Alert content container is missing")
+                AndroidLogger.logger.warn("Alert content container is missing")
                 throw NoAlertOpenException()
             }
 
