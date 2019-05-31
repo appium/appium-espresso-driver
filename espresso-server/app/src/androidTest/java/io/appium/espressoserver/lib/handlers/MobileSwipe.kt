@@ -20,7 +20,7 @@ import androidx.test.espresso.action.GeneralSwipeAction
 import androidx.test.espresso.action.ViewActions.*
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.MobileSwipeParams
 import io.appium.espressoserver.lib.model.MobileSwipeParams.Direction.*
@@ -35,13 +35,13 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
 
         if (params.direction != null) {
-            logger.info("Performing swipe action with direction '${params.direction}'")
+            AndroidLogger.logger.info("Performing swipe action with direction '${params.direction}'")
             when (params.direction) {
                 UP -> viewInteraction.perform(swipeUp())
                 DOWN -> viewInteraction.perform(swipeDown())
                 LEFT -> viewInteraction.perform(swipeLeft())
                 RIGHT -> viewInteraction.perform(swipeRight())
-                else -> throw InvalidArgumentException("Direction cannot be ${params.direction}");
+                else -> throw InvalidArgumentException("Direction cannot be ${params.direction}")
             }
         } else if (params.swiper != null) {
 
@@ -52,7 +52,7 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
                         params.endCoordinates,
                         params.precisionDescriber
                 )
-                logger.info("""
+                AndroidLogger.logger.info("""
                     Performing general swipe action with parameters
                     swiper=[${params.swiper}] startCoordinates=[${params.startCoordinates}]
                     endCoordinates=[${params.endCoordinates}] precisionDescriber=[${params.precisionDescriber}]

@@ -96,7 +96,7 @@ public class Helpers {
         int roundedX = Math.round(x);
         int roundedY = Math.round(y);
         if (x != roundedX || y != roundedY) {
-            AndroidLogger.logger.warn(String.format("Coordinates provided [%s, %s] will be rounded to integers [%s %s]", x, y, roundedX, roundedY));
+            AndroidLogger.getLogger().warn(String.format("Coordinates provided [%s, %s] will be rounded to integers [%s %s]", x, y, roundedX, roundedY));
         }
 
         return new Point(roundedX, roundedY);

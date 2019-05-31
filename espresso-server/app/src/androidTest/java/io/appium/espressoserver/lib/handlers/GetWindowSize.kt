@@ -25,13 +25,13 @@ import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.WindowSize
 
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 
 class GetWindowSize : RequestHandler<AppiumParams, WindowSize> {
 
     @Throws(AppiumException::class)
     override fun handle(params: AppiumParams): WindowSize {
-        logger.info("Get window size of the device")
+        AndroidLogger.logger.info("Get window size of the device")
         val displayMetrics = DisplayMetrics()
         val context = getApplicationContext<Context>()
         val winManager = context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager

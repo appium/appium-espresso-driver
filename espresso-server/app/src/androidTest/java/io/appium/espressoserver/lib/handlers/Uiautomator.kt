@@ -19,7 +19,7 @@ package io.appium.espressoserver.lib.handlers
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.BySelector
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.InteractionHelper.getUiDevice
 import io.appium.espressoserver.lib.helpers.KReflectionUtils
 import io.appium.espressoserver.lib.model.UiautomatorParams
@@ -29,7 +29,7 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
 
     @Throws(AppiumException::class)
     override fun handle(params: UiautomatorParams): List<Any?> {
-        logger.info("Invoking Uiautomator2 Methods")
+        AndroidLogger.logger.info("Invoking Uiautomator2 Methods")
 
         val validStrategyNames = UiautomatorParams.Strategy.validStrategyNames
         params.strategy ?: throw AppiumException("strategy should be one of '${validStrategyNames}'")
@@ -47,7 +47,7 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
 
             val bySelector = KReflectionUtils.invokeMethod(By::class, params.strategy.methodName, locator) as BySelector
             val uiObjects = getUiDevice().findObjects(bySelector)
-            logger.info("Found ${uiObjects.size} UiObjects", uiObjects.size)
+            AndroidLogger.logger.info("Found ${uiObjects.size} UiObjects", uiObjects.size)
 
             index ?: run {
                 return uiObjects.map {
@@ -56,7 +56,7 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
             }
 
             if (index >= uiObjects.size) {
-                throw AppiumException("Index ${index} is out of bounds for ${uiObjects.size} elements")
+                throw AppiumException("Index $index is out of bounds for ${uiObjects.size} elements")
             }
 
             return listOf(KReflectionUtils.invokeInstanceMethod(uiObjects[index], params.action.actionName))

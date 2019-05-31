@@ -56,7 +56,7 @@ public class UiControllerPerformer<T> implements ViewAction {
         // Get the root view because it doesn't matter what we perform this interaction on
         View rootView = (new ViewGetter()).getRootView();
         ViewInteraction viewInteraction = onView(withView(rootView));
-        AndroidLogger.logger.info("Performing W3C actions sequence");
+        AndroidLogger.getLogger().info("Performing W3C actions sequence");
 
         try {
             viewInteraction.perform(this, closeSoftKeyboard());

@@ -21,7 +21,7 @@ import androidx.test.espresso.web.sugar.Web.onWebView
 import androidx.test.espresso.web.webdriver.DriverAtoms
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.helpers.AndroidLogger.logger
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeInstanceMethod
 import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeMethod
 import io.appium.espressoserver.lib.model.Element
@@ -38,7 +38,7 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
         // Initialize onWebView with web view matcher (if webviewEl provided)
         params.webviewElement.let{ webviewElement ->
-            logger.info("Initializing webView interaction on webview with el: '${webviewElement}'")
+            AndroidLogger.logger.info("Initializing webView interaction on webview with el: '$webviewElement'")
             val matcher = withView(Element.getViewById(webviewElement))
             webViewInteraction = onWebView(matcher)
         }
@@ -52,14 +52,11 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
         params.methodChain.forEach { method ->
             val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args)
 
-            logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
+            AndroidLogger.logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
 
             val args: Array<Any?> = if (atom != null) arrayOf(atom) else emptyArray()
-            val res = invokeInstanceMethod(webViewInteraction, method.name, *args)
-
-            if (!(res is WebInteraction<*>)) {
-                throw InvalidArgumentException("'${method.name}' does not return a 'WebViewInteraction' object");
-            }
+            val res = invokeInstanceMethod(webViewInteraction, method.name, *args) as? WebInteraction<*>
+                    ?: throw InvalidArgumentException("'${method.name}' does not return a 'WebViewInteraction' object")
 
             webViewInteraction = res;
         }

@@ -177,7 +177,7 @@ public class MotionEventBuilder {
 
             long eventTime = motionEventParams.eventTime > 0 ? motionEventParams.eventTime : SystemClock.uptimeMillis();
 
-            AndroidLogger.logger.info(String.format(
+            AndroidLogger.getLogger().info(String.format(
                     "Running Android MotionEvent.obtain with parameters: " +
                     "downTime=[%s], eventTime=[%s], action=[%s], pointerCount=[%s], " + "" +
                     "pointerProperties=[%s], pointerCoords=[%s], metaState=[%s], buttonState=[%s], " +

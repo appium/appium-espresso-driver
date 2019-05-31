@@ -114,7 +114,7 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
 
     public void sychronousTickActionsComplete() throws AppiumException {
         multiTouchState.perform(uiController);
-        AndroidLogger.logger.info("Pointer event: Tick complete");
+        AndroidLogger.getLogger().info("Pointer event: Tick complete");
     }
 
     public int getKeyCode(String keyValue, int location) {
@@ -152,6 +152,6 @@ public class EspressoW3CActionAdapter extends BaseW3CActionAdapter {
     }
     
     public Logger getLogger() {
-        return AndroidLogger.logger;
+        return AndroidLogger.getLogger();
     }
 }
