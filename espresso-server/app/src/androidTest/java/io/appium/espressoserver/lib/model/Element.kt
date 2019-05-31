@@ -61,7 +61,7 @@ class Element(view: View) {
          */
         @Throws(AppiumException::class)
         fun getViewInteractionById(elementId: String?): ViewInteraction {
-            val view = Element.getViewById(elementId)
+            val view = getViewById(elementId)
             return onView(withView(view))
         }
 
@@ -88,7 +88,7 @@ class Element(view: View) {
                 ancestorAdapter = ancestorAdapter.parent
                 if (ancestorAdapter is AdapterView<*>) {
                     dataInteraction.inAdapterView(withView(ancestorAdapter))
-                    break;
+                    break
                 }
             }
 
@@ -99,9 +99,9 @@ class Element(view: View) {
 
         @Throws(NoSuchElementException::class, StaleElementException::class)
         fun getViewById(elementId: String?): View {
-            elementId ?: throw InvalidArgumentException("Cannot find 'null' element");
+            elementId ?: throw InvalidArgumentException("Cannot find 'null' element")
             if (!cache.has(elementId)) {
-                throw NoSuchElementException("No such element with ID '${elementId}'")
+                throw NoSuchElementException("No such element with ID '$elementId'")
             }
 
             val (resultView, initialContentDescription1) = Objects.requireNonNull<ViewState>(cache.get(elementId))

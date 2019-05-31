@@ -17,22 +17,15 @@
 package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
+import io.appium.espressoserver.lib.helpers.DisableAutofillAction
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Element
 
-class GetDisplayed : RequestHandler<AppiumParams, Boolean> {
+class PerformAutofillDismissal : RequestHandler<AppiumParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Boolean {
-        return try {
-            // either finish, throw StaleElementException, or throw NoSuchElementException
-            Element.getViewInteractionById(params.elementId)
-            true
-        } catch (e: StaleElementException) {
-            // element exists but is not displayed
-            false
-        }
-
+    override fun handle(params: AppiumParams): Void? {
+        Element.getViewInteractionById(params.elementId).perform(DisableAutofillAction())
+        return null
     }
 }

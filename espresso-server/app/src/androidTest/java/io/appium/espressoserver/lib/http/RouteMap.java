@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.http;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nullable;
@@ -29,11 +30,11 @@ public class RouteMap {
     private final Map<Method, Map<String, RouteDefinition>> routeMap = new ConcurrentHashMap<>();
 
     public void addRoute(RouteDefinition route) {
-        if (!routeMap.containsKey(route.getMethod())) {
+        Map<String, RouteDefinition> methodMap = routeMap.get(route.getMethod());
+        if (methodMap == null) {
             routeMap.put(route.getMethod(), new ConcurrentHashMap<String, RouteDefinition>());
         }
-        Map<String, RouteDefinition> methodMap = routeMap.get(route.getMethod());
-        if (methodMap.containsKey(route.getRouteUri())) {
+        if (Objects.requireNonNull(methodMap).containsKey(route.getRouteUri())) {
             throw new DuplicateRouteException();
         }
         methodMap.put(route.getRouteUri(), route);
@@ -41,10 +42,10 @@ public class RouteMap {
 
     @Nullable
     public RouteDefinition findMatchingRoute(Method method, String uri) {
-        if (!routeMap.containsKey(method)) {
+        Map<String, RouteDefinition> methodMap = routeMap.get(method);
+        if (methodMap == null) {
             return null;
         }
-        Map<String, RouteDefinition> methodMap = routeMap.get(method);
         for (Map.Entry<String, RouteDefinition> route: methodMap.entrySet()) {
            RouteDefinition routeDefinition = route.getValue();
            if (routeDefinition.isMatch(uri)) {
