@@ -67,6 +67,7 @@ import io.appium.espressoserver.lib.handlers.MultiTouchAction;
 import io.appium.espressoserver.lib.handlers.NavigateTo;
 import io.appium.espressoserver.lib.handlers.NotYetImplemented;
 import io.appium.espressoserver.lib.handlers.PerformAction;
+import io.appium.espressoserver.lib.handlers.PerformAutofillDismissal;
 import io.appium.espressoserver.lib.handlers.PerformEditorAction;
 import io.appium.espressoserver.lib.handlers.PointerEventHandler;
 import io.appium.espressoserver.lib.handlers.PressKeyCode;
@@ -244,6 +245,7 @@ class Router {
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/uiautomator", new Uiautomator(), UiautomatorParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/click_action", new MobileClickAction(), MobileClickActionParams.class));
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/web_atoms", new WebAtoms(), WebAtomsParams.class));
+        routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/dismiss_autofill", new PerformAutofillDismissal(), AppiumParams.class));
 
         // Not implemented
         routeMap.addRoute(new RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", new NotYetImplemented(), AppiumParams.class));
