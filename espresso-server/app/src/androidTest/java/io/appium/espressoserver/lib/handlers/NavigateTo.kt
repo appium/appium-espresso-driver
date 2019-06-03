@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.model.NavigateToParams
 class NavigateTo : RequestHandler<NavigateToParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: NavigateToParams): Void? {
+    override fun handleInternal(params: NavigateToParams): Void? {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         val menuItemId = params.menuItemId
         try {

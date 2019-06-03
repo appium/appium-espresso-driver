@@ -26,7 +26,7 @@ import io.appium.espressoserver.lib.model.SessionParams
 class CreateSession : RequestHandler<SessionParams, Session> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: SessionParams): Session {
+    override fun handleInternal(params: SessionParams): Session {
         val appiumSession = Session.createGlobalSession(params.desiredCapabilities)
         val activityName = params.desiredCapabilities.appActivity
         try {

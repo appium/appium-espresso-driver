@@ -12,7 +12,7 @@ import io.appium.espressoserver.lib.model.MobileBackdoorParams.Companion.Invocat
 class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: MobileBackdoorParams): Any? {
+    override fun handleInternal(params: MobileBackdoorParams): Any? {
         AndroidLogger.logger.info("Invoking Backdoor")
         params.target?.let {target ->
             val activity = ActivityHelper.currentActivity

@@ -33,7 +33,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceTy
 class Keys : RequestHandler<TextParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: TextParams): Void? {
+    override fun handleInternal(params: TextParams): Void? {
         val runnable = UiControllerRunnable<Void> { uiController ->
             // Add a list of keyDown + keyUp actions for each key
             val keyActions = arrayListOf<Action>()

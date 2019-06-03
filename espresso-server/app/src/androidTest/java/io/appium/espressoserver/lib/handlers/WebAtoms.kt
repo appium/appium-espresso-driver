@@ -31,7 +31,7 @@ import io.appium.espressoserver.lib.viewmatcher.WithView.withView
 class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: WebAtomsParams): Void? {
+    override fun handleInternal(params: WebAtomsParams): Void? {
         var webViewInteraction:WebInteraction<*>
 
         // TODO: Add a 'waitForDocument' feature to wait for HTML DOCUMENT to be ready

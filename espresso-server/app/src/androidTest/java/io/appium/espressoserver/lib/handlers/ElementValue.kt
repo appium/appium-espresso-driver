@@ -14,7 +14,7 @@ import androidx.test.espresso.action.ViewActions.typeText
 class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementValueParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: ElementValueParams): Void? {
+    override fun handleInternal(params: ElementValueParams): Void? {
         val value = params.value ?: throw InvalidArgumentException("Must provide 'value' property");
         val elementId = params.elementId
         val view = Element.getViewById(elementId)

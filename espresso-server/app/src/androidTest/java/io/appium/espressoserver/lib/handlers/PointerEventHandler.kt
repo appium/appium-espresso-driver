@@ -59,7 +59,7 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
     }
 
     @Throws(AppiumException::class)
-    override fun handle(params: MotionEventParams): Void? {
+    override fun handleInternal(params: MotionEventParams): Void? {
         when (touchType) {
             PointerEventHandler.TouchType.CLICK -> handleClick(params)
             PointerEventHandler.TouchType.DOUBLE_CLICK -> handleDoubleClick(params)

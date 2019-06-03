@@ -30,7 +30,7 @@ import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: MobileSwipeParams): Void? {
+    override fun handleInternal(params: MobileSwipeParams): Void? {
         // Get a reference to the view and call onData. This will automatically scroll to the view.
         val viewInteraction = Element.getViewInteractionById(params.elementId)
 

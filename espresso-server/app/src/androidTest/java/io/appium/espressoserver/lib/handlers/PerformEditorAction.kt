@@ -23,7 +23,7 @@ import io.appium.espressoserver.lib.model.EditorActionParams
 class PerformEditorAction : RequestHandler<EditorActionParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: EditorActionParams): Void? {
+    override fun handleInternal(params: EditorActionParams): Void? {
         IMEHelpers.performEditorAction(params.action)
         return null
     }

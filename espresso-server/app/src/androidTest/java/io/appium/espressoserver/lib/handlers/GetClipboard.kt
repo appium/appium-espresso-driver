@@ -32,7 +32,7 @@ class GetClipboard : RequestHandler<GetClipboardParams, String?> {
     private val mInstrumentation = getInstrumentation()
 
     @Throws(AppiumException::class)
-    override fun handle(params: GetClipboardParams): String? {
+    override fun handleInternal(params: GetClipboardParams): String? {
         try {
             return getClipboardResponse(params.contentType)
         } catch (e: IllegalArgumentException) {

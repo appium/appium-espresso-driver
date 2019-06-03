@@ -26,7 +26,7 @@ import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 class MobileClickAction : RequestHandler<MobileClickActionParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: MobileClickActionParams): Void? {
+    override fun handleInternal(params: MobileClickActionParams): Void? {
         val runnable = UiControllerRunnable { uiController ->
             val clickAction = GeneralClickAction(
                     params.tapper,

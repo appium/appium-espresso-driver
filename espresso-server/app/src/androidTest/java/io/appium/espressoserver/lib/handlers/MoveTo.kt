@@ -28,7 +28,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 class MoveTo : RequestHandler<MoveToParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: MoveToParams): Void? {
+    override fun handleInternal(params: MoveToParams): Void? {
         // Get a reference to the view and call onData. This will automatically scroll to the view.
         params.elementToMoveTo ?: throw InvalidArgumentException("Must provide element to move to")
         val viewInteraction = Element.getViewInteractionById(params.elementToMoveTo)

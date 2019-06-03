@@ -11,7 +11,7 @@ import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 class TouchAction : RequestHandler<TouchActionsParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: TouchActionsParams): Void? {
+    override fun handleInternal(params: TouchActionsParams): Void? {
         val runnable = UiControllerRunnable<Void> { uiController ->
             val inputSources = toW3CInputSources(listOf(params.actions))
             val actions = ActionsBuilder()
