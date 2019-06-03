@@ -62,7 +62,7 @@ import org.hamcrest.Matchers.instanceOf
  * Helper methods to find elements based on locator strategies and selectors
  */
 object ViewFinder {
-    private val ID_PATTERN = "[\\S]+:id/[\\S]+"
+    private const val ID_PATTERN = "[\\S]+:id/[\\S]+"
 
     @Throws(AppiumException::class)
     fun findBy(strategy: Strategy, selector: String): View? {
@@ -178,10 +178,16 @@ object ViewFinder {
                 } else {
                     getViews(root, withXPath(root, selector), false)
                 }
-            Strategy.VIEW_TAG -> views = getViews(root, withTagValue(allOf(instanceOf(String::class.java), equalTo(selector as Any))), findOne)
+            Strategy.VIEW_TAG -> views = getViews(root, withTagValue(allOf(instanceOf(String::class.java),
+                    equalTo(selector as Any))), findOne)
             Strategy.DATAMATCHER -> {
                 val matcher = DataMatcherJson.fromJson(selector)
-                views = getViewsFromDataInteraction(root, matcher.invoke())
+                views = try {
+                    getViewsFromDataInteraction(root, matcher.invoke())
+                } catch (e: PerformException) {
+                    // Perform Exception means nothing was found. Return empty list
+                    emptyList()
+                }
             }
             else -> throw InvalidStrategyException("Strategy is not implemented: ${strategy.strategyName}")
         }
@@ -231,12 +237,7 @@ object ViewFinder {
             dataInteractionCopy = dataInteractionCopy.inAdapterView(withView(it))
         }
 
-        return try {
-            listOf(ViewGetter().getView(dataInteractionCopy))
-        } catch (e: PerformException) {
-            // Perform Exception means nothing was found. Return empty list
-            emptyList()
-        }
+        return listOf(ViewGetter().getView(dataInteractionCopy))
     }
 
     private fun getViews(
