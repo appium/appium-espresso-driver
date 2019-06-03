@@ -106,7 +106,7 @@ class Server private constructor() : NanoHTTPD(DEFAULT_PORT) {
 
     override fun stop() {
         super.stop()
-        AndroidLogger.logger.info("\nStopping Appium Espresso stop at port $DEFAULT_PORT\n")
+        AndroidLogger.logger.info("\nStopping Appium Espresso at port $DEFAULT_PORT\n")
     }
 
     fun makeRequestForServerToStop() {
