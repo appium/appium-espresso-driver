@@ -20,7 +20,7 @@ import io.appium.espressoserver.lib.model.AppiumParams
 
 class Status : RequestHandler<AppiumParams, Void?> {
 
-    override fun handle(params: AppiumParams): Void? {
+    override fun handleInternal(params: AppiumParams): Void? {
         return null
     }
 }

@@ -1,5 +1,6 @@
 package io.appium.espressoserver.test.http;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +17,12 @@ import static org.junit.Assert.assertTrue;
 public class RouteDefinitionTest {
     private final RequestHandler<AppiumParams, Void> dummyHandler = new RequestHandler<AppiumParams, Void>() {
         @Override
-        public Void handle(AppiumParams params) {
+        public Void handle(@NotNull AppiumParams params) {
+            return null;
+        }
+
+        @Override
+        public Void handleInternal(@NotNull AppiumParams params) {
             return null;
         }
     };

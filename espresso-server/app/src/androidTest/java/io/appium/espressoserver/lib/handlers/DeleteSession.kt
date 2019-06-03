@@ -24,9 +24,9 @@ import io.appium.espressoserver.lib.model.Session
 
 class DeleteSession : RequestHandler<AppiumParams, AppiumResponse<*>> {
 
-    override fun handle(params: AppiumParams): AppiumResponse<*> {
+    override fun handleInternal(params: AppiumParams): AppiumResponse<*> {
         Session.deleteGlobalSession()
-        Server.getInstance().makeRequestForServerToStop()
+        Server.instance.makeRequestForServerToStop()
         return AppiumResponse(AppiumStatus.SUCCESS, null)
     }
 }

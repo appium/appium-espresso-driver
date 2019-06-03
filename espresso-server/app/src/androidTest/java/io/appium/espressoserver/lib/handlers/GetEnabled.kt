@@ -29,15 +29,15 @@ import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 class GetEnabled : RequestHandler<AppiumParams, Boolean> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Boolean {
+    override fun handleInternal(params: AppiumParams): Boolean {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
-        try {
+        return try {
             viewInteraction.check(matches(isEnabled()))
-            return true
+            true
         } catch (e: NoMatchingViewException) {
-            return false
+            false
         } catch (e: AssertionFailedError) {
-            return false
+            false
         }
 
     }

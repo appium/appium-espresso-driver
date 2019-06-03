@@ -23,7 +23,7 @@ import io.appium.espressoserver.lib.model.AppiumParams
 class ScreenshotHandler : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): String {
+    override fun handleInternal(params: AppiumParams): String {
         return ScreenshotsHelper().screenshot
     }
 }

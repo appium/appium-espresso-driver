@@ -25,7 +25,7 @@ import java.util.*
 
 class GetDeviceInfo : RequestHandler<AppiumParams, Map<String, Any?>> {
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Map<String, Any?> {
+    override fun handleInternal(params: AppiumParams): Map<String, Any?> {
         val deviceInfoHelper = DeviceInfoHelper(getApplicationContext<Context>())
         val result = HashMap<String, Any?>()
         result["androidId"] = deviceInfoHelper.androidId

@@ -8,7 +8,7 @@ import io.appium.espressoserver.lib.model.Element
 class ElementEquals : RequestHandler<AppiumParams, Boolean> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Boolean {
+    override fun handleInternal(params: AppiumParams): Boolean {
         val elementId = params.elementId
         val otherElementId = params.getUriParameterValue("otherId")
                 ?: throw InvalidArgumentException("'otherElementId' query parameter not found")

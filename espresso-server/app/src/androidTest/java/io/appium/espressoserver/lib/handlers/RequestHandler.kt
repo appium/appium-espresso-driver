@@ -19,7 +19,12 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 
-interface RequestHandler<T : AppiumParams, R> {
+interface RequestHandler<in T : AppiumParams, out R> {
     @Throws(AppiumException::class)
-    fun handle(params: T): R
+    fun handleInternal(params: T): R
+
+    @Suppress("UNCHECKED_CAST")
+    @Throws(AppiumException::class)
+    fun handle(params: AppiumParams): R = handleInternal(params as? T
+            ?: throw IllegalArgumentException("Invalid type ${params.javaClass.name} passed to this parser"))
 }

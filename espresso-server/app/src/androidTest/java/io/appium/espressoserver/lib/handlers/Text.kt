@@ -16,7 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import androidx.test.espresso.ViewInteraction
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Element
@@ -25,7 +24,7 @@ import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 class Text : RequestHandler<AppiumParams, String?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): String? {
+    override fun handleInternal(params: AppiumParams): String? {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         return ViewTextGetter().get(viewInteraction).rawText
     }

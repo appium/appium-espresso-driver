@@ -29,7 +29,7 @@ import androidx.test.core.app.ApplicationProvider.getApplicationContext
 class GetWindowRect : RequestHandler<AppiumParams, WindowRect> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): WindowRect {
+    override fun handleInternal(params: AppiumParams): WindowRect {
         val displayMetrics = DisplayMetrics()
         val context = getApplicationContext<Context>()
         val winManager = context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager

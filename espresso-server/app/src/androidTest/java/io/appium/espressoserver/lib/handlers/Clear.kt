@@ -27,7 +27,7 @@ import androidx.test.espresso.action.ViewActions.clearText
 class Clear : RequestHandler<AppiumParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Void? {
+    override fun handleInternal(params: AppiumParams): Void? {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         try {
             viewInteraction.perform(clearText())

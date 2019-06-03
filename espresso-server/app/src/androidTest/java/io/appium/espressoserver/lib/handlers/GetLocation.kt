@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.model.ViewElement
 class GetLocation : RequestHandler<AppiumParams, Location> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Location {
+    override fun handleInternal(params: AppiumParams): Location {
         val viewElement = ViewElement(Element.getViewById(params.elementId))
         return Location(viewElement.bounds.left, viewElement.bounds.top)
     }
