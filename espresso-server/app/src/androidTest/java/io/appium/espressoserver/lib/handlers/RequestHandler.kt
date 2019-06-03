@@ -26,5 +26,5 @@ interface RequestHandler<in T : AppiumParams, out R> {
     @Suppress("UNCHECKED_CAST")
     @Throws(AppiumException::class)
     fun handle(params: AppiumParams): R = handleInternal(params as? T
-            ?: throw IllegalArgumentException("Invalid type ${params.javaClass.name} passed to this parser"))
+            ?: throw IllegalArgumentException("Invalid type ${params.javaClass.name} passed to ${this.javaClass.name} handler"))
 }
