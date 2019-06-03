@@ -67,7 +67,7 @@ class Server private constructor() : NanoHTTPD(DEFAULT_PORT) {
         if (response is AppiumResponse<*>) {
             if (response.status === AppiumStatus.SUCCESS) {
                 AndroidLogger.logger.info("Responding to server with value: " +
-                        StringHelpers.abbreviate(response.value.toString(), 300))
+                        StringHelpers.abbreviate(response.value as String?, 300))
             } else {
                 AndroidLogger.logger.info("Responding to server with error: " +
                         response.value)
