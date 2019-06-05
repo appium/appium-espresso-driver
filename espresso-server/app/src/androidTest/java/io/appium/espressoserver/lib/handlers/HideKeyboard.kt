@@ -22,7 +22,7 @@ import io.appium.espressoserver.lib.model.AppiumParams
 
 class HideKeyboard : RequestHandler<AppiumParams, Void?> {
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Void? {
+    override fun handleInternal(params: AppiumParams): Void? {
         Espresso.closeSoftKeyboard()
         return null
     }

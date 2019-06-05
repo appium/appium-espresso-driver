@@ -24,7 +24,7 @@ import io.appium.espressoserver.lib.model.Session
 class GetSessions : RequestHandler<AppiumParams, Collection<Map<String, Any?>>> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Collection<Map<String, Any?>> {
+    override fun handleInternal(params: AppiumParams): Collection<Map<String, Any?>> {
         Session.globalSession?.let { session ->
             return listOf<Map<String, Any?>>(mapOf(
                     "id" to session.id,

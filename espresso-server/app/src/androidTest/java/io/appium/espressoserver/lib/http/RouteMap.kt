@@ -1,0 +1,51 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.appium.espressoserver.lib.http
+
+import java.util.concurrent.ConcurrentHashMap
+
+import fi.iki.elonen.NanoHTTPD.Method
+import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException
+
+class RouteMap {
+
+    private val routeMap = ConcurrentHashMap<Method, MutableMap<String, RouteDefinition>>()
+
+    fun addRoute(route: RouteDefinition) {
+        var methodMap: MutableMap<String, RouteDefinition>? = routeMap[route.method]
+        if (methodMap == null) {
+            methodMap = ConcurrentHashMap()
+            routeMap[route.method] = methodMap
+        }
+        if (methodMap.containsKey(route.routeUri)) {
+            throw DuplicateRouteException()
+        }
+        methodMap[route.routeUri] = route
+    }
+
+    fun findMatchingRoute(method: Method, uri: String): RouteDefinition? {
+        val methodMap = routeMap[method] ?: return null
+        for ((_, routeDefinition) in methodMap) {
+            if (routeDefinition.isMatch(uri)) {
+                return routeDefinition
+            }
+        }
+
+        return null
+    }
+
+}

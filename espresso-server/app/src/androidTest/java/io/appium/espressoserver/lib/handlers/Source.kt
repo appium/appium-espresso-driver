@@ -23,7 +23,7 @@ import io.appium.espressoserver.lib.model.SourceDocument
 class Source : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): String {
+    override fun handleInternal(params: AppiumParams): String {
         return SourceDocument().toXMLString()
     }
 }

@@ -19,8 +19,8 @@ package io.appium.espressoserver.lib.model
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 
 
-val SESSION_ID_PARAM_NAME = "sessionId"
-val ELEMENT_ID_PARAM_NAME = "elementId"
+const val SESSION_ID_PARAM_NAME = "sessionId"
+const val ELEMENT_ID_PARAM_NAME = "elementId"
 
 open class AppiumParams {
     var uriParams:MutableMap<String, String>? = null
@@ -33,15 +33,15 @@ open class AppiumParams {
         set(elementId) = setUriParameterValue(ELEMENT_ID_PARAM_NAME, elementId ?:
             throw AppiumException("Cannot set 'elementId' to null"))
 
-    fun initUriMapping(params: MutableMap<String, String>) {
-        uriParams = params
+    fun initUriMapping(params: Map<String, String>) {
+        uriParams = params.toMutableMap()
     }
 
     fun getUriParameterValue(name: String): String? {
         uriParams?.let {
-            return it.get(name);
+            return it[name]
         }
-        return null;
+        return null
     }
 
     private fun setUriParameterValue(name: String, value: String) {

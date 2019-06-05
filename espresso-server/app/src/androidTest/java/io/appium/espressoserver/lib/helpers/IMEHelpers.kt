@@ -17,35 +17,29 @@
 package io.appium.espressoserver.lib.helpers
 
 import android.view.inputmethod.EditorInfo
-
-import java.util.HashMap
-
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
+import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.viewaction.ViewGetter
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.pressImeActionButton
-import androidx.test.espresso.matcher.ViewMatchers.hasFocus
-
 object IMEHelpers {
-    private val ACTION_CODES_MAP = HashMap<String, Int>()
-
-    init {
-        ACTION_CODES_MAP["normal"] = 0
-        ACTION_CODES_MAP["unspecified"] = 0
-        ACTION_CODES_MAP["none"] = 1
-        ACTION_CODES_MAP["go"] = 2
-        ACTION_CODES_MAP["search"] = 3
-        ACTION_CODES_MAP["send"] = 4
-        ACTION_CODES_MAP["next"] = 5
-        ACTION_CODES_MAP["done"] = 6
-        ACTION_CODES_MAP["previous"] = 7
-    }
+    private val ACTION_CODES_MAP = mapOf(
+            "normal" to 0,
+            "unspecified" to 0,
+            "none" to 1,
+            "go" to 2,
+            "search" to 3,
+            "send" to 4,
+            "next" to 5,
+            "done" to 6,
+            "previous" to 7
+    )
 
     @Throws(AppiumException::class)
     private fun toActionCode(action: Any): Int {
@@ -58,7 +52,8 @@ object IMEHelpers {
                             "The action value can be one of ${ACTION_CODES_MAP.keys}. '$action' is given instead")
         }
         throw InvalidArgumentException(
-                "The action value can be either an integer action code or one of ${ACTION_CODES_MAP.keys}. '$action' is given instead")
+                "The action value can be either an integer action code or one of ${ACTION_CODES_MAP.keys}. " +
+                        "'$action' is given instead")
     }
 
     @Throws(AppiumException::class)
@@ -68,7 +63,8 @@ object IMEHelpers {
             viewInteraction = onView(hasFocus())
         } catch (e: NoMatchingViewException) {
             throw InvalidElementStateException(
-                    "Currently there is no focused element to perform ${action ?: "the default"} editor action on", e)
+                    "Currently there is no focused element to perform ${action
+                            ?: "the default"} editor action on", e)
         }
 
         if (action == null) {
@@ -79,7 +75,6 @@ object IMEHelpers {
             } catch (e: PerformException) {
                 throw InvalidElementStateException("Cannot perform the default action on the focused element")
             }
-
         }
 
         val actionCode = toActionCode(action)

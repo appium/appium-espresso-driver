@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.helpers.ViewFinder.findActive
 
 class FindActive : RequestHandler<AppiumParams, Element> {
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Element {
+    override fun handleInternal(params: AppiumParams): Element {
         val view = findActive() ?: throw NoSuchElementException("No elements are currently focused")
         return Element(view)
     }

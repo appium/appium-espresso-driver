@@ -26,13 +26,13 @@ import io.appium.espressoserver.lib.model.ViewElement
 class GetOrientation : RequestHandler<AppiumParams, Int> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Int {
+    override fun handleInternal(params: AppiumParams): Int {
         val view = Element.getViewById(params.elementId)
-        try {
+        return try {
             when (ViewElement(view).extractActivity()?.requestedOrientation) {
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE -> return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                else -> return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                else -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
         } catch (e: Exception) {
             throw AppiumException("Cannot get screen orientation", e)

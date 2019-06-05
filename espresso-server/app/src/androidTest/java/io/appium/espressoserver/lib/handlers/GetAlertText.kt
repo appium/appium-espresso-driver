@@ -23,7 +23,7 @@ import io.appium.espressoserver.lib.model.AppiumParams
 class GetAlertText : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): String {
+    override fun handleInternal(params: AppiumParams): String {
         // We use UIA2 here, since Espresso is limited to application sandbox
         // and cannot handle security alerts
         return AlertHelpers.text

@@ -32,7 +32,7 @@ import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 class SendKeys : RequestHandler<TextParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: TextParams): Void? {
+    override fun handleInternal(params: TextParams): Void? {
         val id = params.elementId
         val view = Element.getViewById(id)
 

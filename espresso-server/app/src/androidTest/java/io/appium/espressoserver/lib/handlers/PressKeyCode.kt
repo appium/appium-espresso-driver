@@ -33,7 +33,7 @@ class PressKeyCode(private val isLongPress: Boolean) : RequestHandler<KeyEventPa
     private val LONG_PRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout()
 
     @Throws(AppiumException::class)
-    override fun handle(params: KeyEventParams): Void? {
+    override fun handleInternal(params: KeyEventParams): Void? {
         val runnable = UiControllerRunnable<Void> { uiController ->
             val keyCode = params.keycode
             val metaState = params.metastate

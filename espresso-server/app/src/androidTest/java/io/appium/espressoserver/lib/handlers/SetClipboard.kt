@@ -33,7 +33,7 @@ class SetClipboard : RequestHandler<SetClipboardParams, Void?> {
     private val mInstrumentation = getInstrumentation()
 
     @Throws(AppiumException::class)
-    override fun handle(params: SetClipboardParams): Void? {
+    override fun handleInternal(params: SetClipboardParams): Void? {
         params.content ?: throw InvalidArgumentException("The 'content' argument is mandatory")
         try {
             mInstrumentation.runOnMainSync(SetClipboardRunnable(

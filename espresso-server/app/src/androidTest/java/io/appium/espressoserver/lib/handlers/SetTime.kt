@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.model.SetTimeParams
 class SetTime : RequestHandler<SetTimeParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: SetTimeParams): Void? {
+    override fun handleInternal(params: SetTimeParams): Void? {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         try {
             viewInteraction.perform(PickerActions.setTime(params.hours, params.minutes))

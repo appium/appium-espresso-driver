@@ -29,7 +29,7 @@ import io.appium.espressoserver.lib.viewaction.ViewGetter
 class FindElement : RequestHandler<Locator, Element> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: Locator): Element {
+    override fun handleInternal(params: Locator): Element {
         var parentView: View? = null
         params.elementId?.let {
             parentView = ViewGetter().getView(Element.getViewInteractionById(it))

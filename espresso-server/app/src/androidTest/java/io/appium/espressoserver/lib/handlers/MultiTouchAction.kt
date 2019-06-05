@@ -11,7 +11,7 @@ import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 class MultiTouchAction : RequestHandler<MultiTouchActionsParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: MultiTouchActionsParams): Void? {
+    override fun handleInternal(params: MultiTouchActionsParams): Void? {
         val runnable = UiControllerRunnable<Void> { uiController ->
             val inputSources = toW3CInputSources(params.actions)
             val actions = Actions.ActionsBuilder()

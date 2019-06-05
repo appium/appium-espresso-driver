@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 class MobileViewFlash : RequestHandler<ViewFlashParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: ViewFlashParams): Void? {
+    override fun handleInternal(params: ViewFlashParams): Void? {
 
         val duration = params.durationMillis
         val repeatCount = params.repeatCount

@@ -24,7 +24,7 @@ import androidx.test.espresso.Espresso.pressBack
 class Back : RequestHandler<AppiumParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Void? {
+    override fun handleInternal(params: AppiumParams): Void? {
         pressBack()
         return null
     }

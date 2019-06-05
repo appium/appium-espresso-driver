@@ -27,7 +27,7 @@ import io.appium.espressoserver.lib.model.ScrollToPageParams.ScrollTo.*
 class ScrollToPage : RequestHandler<ScrollToPageParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: ScrollToPageParams): Void? {
+    override fun handleInternal(params: ScrollToPageParams): Void? {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         try {
             val smoothScroll = params.smoothScroll

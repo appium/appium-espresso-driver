@@ -23,7 +23,7 @@ import io.appium.espressoserver.lib.model.AlertParams
 class AcceptAlert : RequestHandler<AlertParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AlertParams): Void? {
+    override fun handleInternal(params: AlertParams): Void? {
         // We use UIA2 here, since Espresso is limited to application sandbox
         // and cannot handle security alerts
         AlertHelpers.handle(AlertHelpers.AlertAction.ACCEPT, params.buttonLabel)

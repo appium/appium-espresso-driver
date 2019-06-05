@@ -28,7 +28,7 @@ import java.lang.reflect.InvocationTargetException
 class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: UiautomatorParams): List<Any?> {
+    override fun handleInternal(params: UiautomatorParams): List<Any?> {
         AndroidLogger.logger.info("Invoking Uiautomator2 Methods")
 
         val validStrategyNames = UiautomatorParams.Strategy.validStrategyNames

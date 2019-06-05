@@ -11,7 +11,7 @@ import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 class GetAttribute : RequestHandler<AppiumParams, String?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): String? {
+    override fun handleInternal(params: AppiumParams): String? {
         val attributeName = params.getUriParameterValue("name")
         if (attributeName == null || attributeName.trim { it <= ' ' }.isEmpty()) {
             throw AppiumException("Attribute name cannot be null or empty")

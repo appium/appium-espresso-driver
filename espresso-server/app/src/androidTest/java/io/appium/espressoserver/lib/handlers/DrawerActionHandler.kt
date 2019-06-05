@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.model.Element
 class DrawerActionHandler(private val isOpenAction: Boolean) : RequestHandler<DrawerActionParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: DrawerActionParams): Void? {
+    override fun handleInternal(params: DrawerActionParams): Void? {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         try {
             params.gravity?.let {gravity ->

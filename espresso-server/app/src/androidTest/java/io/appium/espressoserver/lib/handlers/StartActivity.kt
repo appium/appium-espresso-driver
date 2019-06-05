@@ -24,7 +24,7 @@ import io.appium.espressoserver.lib.helpers.ActivityHelper.startActivity
 class StartActivity : RequestHandler<StartActivityParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: StartActivityParams): Void? {
+    override fun handleInternal(params: StartActivityParams): Void? {
         startActivity(params.appPackage, params.appActivity)
         return null
     }

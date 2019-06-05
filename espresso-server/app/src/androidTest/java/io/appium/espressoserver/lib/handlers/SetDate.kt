@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.model.SetDateParams
 class SetDate : RequestHandler<SetDateParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: SetDateParams): Void? {
+    override fun handleInternal(params: SetDateParams): Void? {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         try {
             viewInteraction.perform(PickerActions.setDate(params.year, params.monthOfYear, params.dayOfMonth))

@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.http.response;
+package io.appium.espressoserver.lib.http.response
 
-import fi.iki.elonen.NanoHTTPD.Response.Status;
+import fi.iki.elonen.NanoHTTPD.Response.Status
 
-public abstract class BaseResponse {
-    protected transient Status httpStatus;
-
-    public Status getHttpStatus() {
-        return httpStatus;
-    }
+abstract class BaseResponse {
+    @Transient
+    var httpStatus: Status? = null
+        protected set
 }

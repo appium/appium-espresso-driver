@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.model.ViewElement
 class GetRect : RequestHandler<AppiumParams, Rect> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Rect {
+    override fun handleInternal(params: AppiumParams): Rect {
         val viewElement = ViewElement(Element.getViewById(params.elementId))
         val elementBounds = viewElement.bounds
         return Rect(

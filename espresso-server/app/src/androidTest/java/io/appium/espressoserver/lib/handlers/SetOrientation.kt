@@ -27,7 +27,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 class SetOrientation : RequestHandler<OrientationParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: OrientationParams): Void? {
+    override fun handleInternal(params: OrientationParams): Void? {
         val orientation = params.orientation
 
         // Validate the orientaiton

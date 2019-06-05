@@ -24,7 +24,7 @@ import io.appium.espressoserver.lib.model.Element
 class ElementScreenshot : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): String {
+    override fun handleInternal(params: AppiumParams): String {
         val view = Element.getViewById(params.elementId)
         return ScreenshotsHelper(view).screenshot
     }

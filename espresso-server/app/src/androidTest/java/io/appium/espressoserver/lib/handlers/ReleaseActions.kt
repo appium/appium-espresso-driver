@@ -10,7 +10,7 @@ import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 class ReleaseActions : RequestHandler<AppiumParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handle(params: AppiumParams): Void? {
+    override fun handleInternal(params: AppiumParams): Void? {
 
         // TODO: Try replacing this with lambda
         val runnable = UiControllerRunnable<Void> {
