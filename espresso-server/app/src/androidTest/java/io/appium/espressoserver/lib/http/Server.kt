@@ -17,15 +17,7 @@
 package io.appium.espressoserver.lib.http
 
 import android.util.Log
-
 import com.google.gson.GsonBuilder
-
-import java.io.IOException
-import java.net.SocketException
-import java.util.LinkedHashMap
-
-import javax.ws.rs.core.MediaType
-
 import fi.iki.elonen.NanoHTTPD
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.StringHelpers
@@ -33,6 +25,10 @@ import io.appium.espressoserver.lib.http.response.AppiumResponse
 import io.appium.espressoserver.lib.http.response.BaseResponse
 import io.appium.espressoserver.lib.model.AppiumStatus
 import io.appium.espressoserver.lib.model.gsonadapters.AppiumStatusAdapter
+import java.io.IOException
+import java.net.SocketException
+import java.util.*
+import javax.ws.rs.core.MediaType
 
 class Server private constructor() : NanoHTTPD(DEFAULT_PORT) {
 
@@ -51,17 +47,16 @@ class Server private constructor() : NanoHTTPD(DEFAULT_PORT) {
     }
 
     override fun serve(session: IHTTPSession): Response {
-        var response: BaseResponse
         val files = LinkedHashMap<String, String>()
-        try {
+        val response = try {
             session.parseBody(files)
-            response = router!!.route(session.uri, session.method, files)
-        } catch (e: RuntimeException) {
-            response = AppiumResponse(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e))
-        } catch (e: IOException) {
-            response = AppiumResponse(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e))
-        } catch (e: ResponseException) {
-            response = AppiumResponse(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e))
+            router!!.route(session.uri, session.method, files)
+        } catch (e: Exception) {
+            when (e) {
+                is RuntimeException, is IOException, is ResponseException ->
+                    AppiumResponse(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e))
+                else -> throw e
+            }
         }
 
         if (response is AppiumResponse<*>) {
