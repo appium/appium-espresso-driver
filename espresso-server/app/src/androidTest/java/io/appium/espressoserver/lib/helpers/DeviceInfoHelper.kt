@@ -130,7 +130,15 @@ class DeviceInfoHelper(private val context: Context) {
 
     /**
      * Get current system timezone
+     * e.g. "Asia/Tokyo", "America/Caracas"
+     *
      */
     val timeZone: String
-        get() = TimeZone.getDefault().toZoneId().id
+        get() {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                TimeZone.getDefault().toZoneId().id
+            } else {
+                TimeZone.getDefault().id
+            }
+        }
 }
