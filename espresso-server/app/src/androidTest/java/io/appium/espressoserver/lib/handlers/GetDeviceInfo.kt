@@ -37,6 +37,8 @@ class GetDeviceInfo : RequestHandler<AppiumParams, Map<String, Any?>> {
         result["carrierName"] = deviceInfoHelper.carrierName
         result["realDisplaySize"] = deviceInfoHelper.realDisplaySize
         result["displayDensity"] = deviceInfoHelper.displayDensity
+        result["locale"] = deviceInfoHelper.locale
+        result["timeZone"] = deviceInfoHelper.timeZone
         return result
     }
 }
