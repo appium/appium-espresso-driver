@@ -24,6 +24,8 @@ import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 import android.view.Display
 import android.view.WindowManager
+import java.util.TimeZone
+import java.util.Locale
 
 class DeviceInfoHelper(private val context: Context) {
 
@@ -119,5 +121,28 @@ class DeviceInfoHelper(private val context: Context) {
             val p = android.graphics.Point()
             display.getRealSize(p)
             return "${p.x}x${p.y}"
+        }
+
+    /**
+     * Get current system locale
+     *
+     * @return The locale as string
+     */
+    val locale: String
+        get() = Locale.getDefault().toString()
+
+    /**
+     * Get current system timezone
+     * e.g. "Asia/Tokyo", "America/Caracas"
+     *
+     * @return The timezone as string
+     */
+    val timeZone: String
+        get() {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                TimeZone.getDefault().toZoneId().id
+            } else {
+                TimeZone.getDefault().id
+            }
         }
 }
