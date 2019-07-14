@@ -1,0 +1,158 @@
+package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso
+
+import android.content.Context
+import android.graphics.Point
+import android.util.DisplayMetrics
+import android.view.View
+
+import java.util.Collections
+
+import androidx.test.espresso.UiController
+import androidx.test.espresso.action.GeneralLocation
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.AndroidLogger
+import io.appium.espressoserver.lib.helpers.Logger
+import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType
+import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState
+import io.appium.espressoserver.lib.model.Element
+
+import android.view.KeyEvent.ACTION_DOWN
+import android.view.KeyEvent.ACTION_UP
+import android.view.MotionEvent.ACTION_MOVE
+import android.view.MotionEvent.ACTION_POINTER_DOWN
+import android.view.MotionEvent.ACTION_POINTER_UP
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.Helpers.isTouch
+import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.Helpers.toCoordinates
+
+class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3CActionAdapter() {
+
+    private val androidKeyEvent: AndroidKeyEvent
+    private val multiTouchState = MultiTouchState()
+    private val displayMetrics = getApplicationContext<Context>().getResources().getDisplayMetrics()
+
+    override val viewportHeight: Long
+        get() = displayMetrics.heightPixels.toLong()
+
+    override val viewportWidth: Long
+        get() = displayMetrics.widthPixels.toLong()
+
+    override val logger: Logger
+        get() = AndroidLogger.logger
+
+    init {
+        this.androidKeyEvent = AndroidKeyEvent(uiController)
+    }
+
+    @Throws(AppiumException::class)
+    override fun keyDown(keyEvent: W3CKeyEvent) {
+        androidKeyEvent.keyDown(keyEvent)
+    }
+
+    @Throws(AppiumException::class)
+    override fun keyUp(keyEvent: W3CKeyEvent) {
+        androidKeyEvent.keyUp(keyEvent)
+    }
+
+    @Throws(AppiumException::class)
+    override fun pointerDown(button: Int?, sourceId: String?, pointerType: PointerType?,
+                    x: Float?, y: Float?, depressedButtons: Set<Int>,
+                    globalKeyInputState: KeyInputState?) {
+        this.logger.info(String.format("Running pointer down at coordinates: %s %s %s", x, y, pointerType))
+        val roundedCoords = toCoordinates(x, y)
+
+        if (isTouch(pointerType)) {
+            // touch down actions need to be grouped together
+            multiTouchState.updateTouchState(ACTION_DOWN, sourceId, roundedCoords.x.toLong(), roundedCoords.y.toLong(), globalKeyInputState, button)
+        } else {
+            val androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController)
+            val xList = listOf(roundedCoords.x.toLong())
+            val yList = listOf(roundedCoords.y.toLong())
+            androidMotionEvent.pointerEvent(
+                    xList, yList,
+                    ACTION_DOWN, button, pointerType, globalKeyInputState, null, 0)
+
+            androidMotionEvent.pointerEvent(
+                    xList, yList,
+                    ACTION_POINTER_DOWN, button, pointerType, globalKeyInputState, null, 0)
+        }
+    }
+
+    @Throws(AppiumException::class)
+    override fun pointerUp(button: Int?, sourceId: String?, pointerType: PointerType?,
+                  x: Float?, y: Float?, depressedButtons: Set<Int>,
+                  globalKeyInputState: KeyInputState?) {
+        this.logger.info(String.format("Running pointer up at coordinates: %s %s %s", x, y, pointerType))
+        val roundedCoords = toCoordinates(x, y)
+        if (isTouch(pointerType)) {
+            // touch up actions need to be grouped together
+            multiTouchState.updateTouchState(ACTION_UP, sourceId, roundedCoords.x.toLong(), roundedCoords.y.toLong(), globalKeyInputState, button)
+        } else {
+            val xList = listOf(roundedCoords.x.toLong())
+            val yList = listOf(roundedCoords.y.toLong())
+            val androidMotionEvent = AndroidMotionEvent.getMotionEvent(sourceId, uiController)
+            androidMotionEvent.pointerEvent(xList, yList,
+                    ACTION_POINTER_UP, button, pointerType, globalKeyInputState, null, 0)
+            androidMotionEvent.pointerEvent(xList, yList,
+                    ACTION_UP, button, pointerType, globalKeyInputState, null, 0)
+        }
+    }
+
+    @Throws(AppiumException::class)
+    override fun pointerMove(sourceId: String?, pointerType: PointerType?,
+                             currentX: Float?, currentY: Float?, x: Float?, y: Float?,
+                             buttons: Set<Int>?, globalKeyInputState: KeyInputState?) {
+        this.logger.info(String.format("Running pointer move at coordinates: %s %s %s", x, y, pointerType))
+        val roundedCoords = toCoordinates(x, y)
+        if (isTouch(pointerType)) {
+            multiTouchState.updateTouchState(ACTION_MOVE, sourceId, roundedCoords.x.toLong(), roundedCoords.y.toLong(), globalKeyInputState, null)
+            multiTouchState.pointerMove(uiController)
+        } else {
+            AndroidMotionEvent.getMotionEvent(sourceId, uiController)
+                    .pointerMove(listOf(roundedCoords.x.toLong()), listOf(roundedCoords.y.toLong()), pointerType, globalKeyInputState, null)
+        }
+    }
+
+    @Throws(AppiumException::class)
+    override fun pointerCancel(sourceId: String, pointerType: PointerType) {
+        if (isTouch(pointerType)) {
+            multiTouchState.pointerCancel(uiController)
+        } else {
+            AndroidMotionEvent.getMotionEvent(sourceId, uiController).pointerCancel()
+        }
+    }
+
+    @Throws(AppiumException::class)
+    override fun sychronousTickActionsComplete() {
+        multiTouchState.perform(uiController)
+        AndroidLogger.logger.info("Pointer event: Tick complete")
+    }
+
+    override fun getKeyCode(keyValue: String?, location: Int): Int {
+        return AndroidKeyEvent.getKeyCode(keyValue, location)
+    }
+
+    @Throws(AppiumException::class)
+    override fun getElementCenterPoint(elementId: String?): Point {
+        val view = Element.getViewById(elementId)
+        val coords = GeneralLocation.CENTER.calculateCoordinates(view)
+        val point = Point()
+        point.x = Math.round(coords[0])
+        point.y = Math.round(coords[1])
+        return point
+    }
+
+    override fun waitForUiThread() {
+        uiController.loopMainThreadUntilIdle()
+    }
+
+    override fun sleep(duration: Float) {
+        val roundedDuration = Math.round(duration).toFloat()
+        if (duration != roundedDuration) {
+            this.logger.warn(String.format("Rounding provided duration %sms to %sms", duration, roundedDuration))
+        }
+        uiController.loopMainThreadForAtLeast(roundedDuration.toLong())
+    }
+}
