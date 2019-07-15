@@ -60,7 +60,6 @@ abstract class BaseW3CActionAdapter : W3CActionAdapter {
         } catch (ie: InterruptedException) {
             throw AppiumException("Could not run 'sleep' method: ${ie.cause}")
         }
-
     }
 
     /**
