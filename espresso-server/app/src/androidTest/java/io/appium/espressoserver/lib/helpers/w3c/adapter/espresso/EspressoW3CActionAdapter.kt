@@ -57,9 +57,9 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     }
 
     @Throws(AppiumException::class)
-    override fun pointerDown(button: Int?, sourceId: String?, pointerType: PointerType?,
-                    x: Float?, y: Float?, depressedButtons: Set<Int>,
-                    globalKeyInputState: KeyInputState?) {
+    override fun pointerDown(button: Int, sourceId: String, pointerType: PointerType?,
+                    x: Float, y: Float, depressedButtons: Set<Int>,
+                    globalKeyInputState: KeyInputState) {
         this.logger.info("Running pointer down at coordinates: ${x}, ${y}, ${pointerType}")
         val roundedCoords = toCoordinates(x, y)
 
@@ -81,9 +81,9 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     }
 
     @Throws(AppiumException::class)
-    override fun pointerUp(button: Int?, sourceId: String?, pointerType: PointerType?,
-                  x: Float?, y: Float?, depressedButtons: Set<Int>,
-                  globalKeyInputState: KeyInputState?) {
+    override fun pointerUp(button: Int, sourceId: String, pointerType: PointerType?,
+                  x: Float, y: Float, depressedButtons: Set<Int>,
+                  globalKeyInputState: KeyInputState) {
         this.logger.info("Running pointer up at coordinates: ${x} ${y} ${pointerType}")
         val roundedCoords = toCoordinates(x, y)
         if (isTouch(pointerType)) {
@@ -101,9 +101,9 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     }
 
     @Throws(AppiumException::class)
-    override fun pointerMove(sourceId: String?, pointerType: PointerType?,
-                             currentX: Float?, currentY: Float?, x: Float?, y: Float?,
-                             buttons: Set<Int>?, globalKeyInputState: KeyInputState?) {
+    override fun pointerMove(sourceId: String, pointerType: PointerType?,
+                             currentX: Float, currentY: Float, x: Float, y: Float,
+                             buttons: Set<Int>?, globalKeyInputState: KeyInputState) {
         this.logger.info("Running pointer move at coordinates: ${x} ${y} ${pointerType}")
         val roundedCoords = toCoordinates(x, y)
         if (isTouch(pointerType)) {

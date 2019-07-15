@@ -24,19 +24,19 @@ interface W3CActionAdapter {
     fun keyUp(keyUpEvent: W3CKeyEvent)
 
     @Throws(AppiumException::class)
-    fun pointerDown(button: Int?, sourceId: String?, pointerType: PointerType?,
-                    x: Float?, y: Float?, depressedButtons: Set<Int>,
-                    globalKeyInputState: KeyInputState?)
+    fun pointerDown(button: Int, sourceId: String, pointerType: PointerType?,
+                    x: Float, y: Float, depressedButtons: Set<Int>,
+                    globalKeyInputState: KeyInputState)
 
     @Throws(AppiumException::class)
-    fun pointerUp(button: Int?, sourceId: String?, pointerType: PointerType?,
-                  x: Float?, y: Float?, depressedButtons: Set<Int>,
-                  globalKeyInputState: KeyInputState?)
+    fun pointerUp(button: Int, sourceId: String, pointerType: PointerType?,
+                  x: Float, y: Float, depressedButtons: Set<Int>,
+                  globalKeyInputState: KeyInputState)
 
     @Throws(AppiumException::class)
-    fun pointerMove(sourceId: String?, pointerType: PointerType?,
-                    currentX: Float?, currentY: Float?, x: Float?, y: Float?,
-                    buttons: Set<Int>?, globalKeyInputState: KeyInputState?)
+    fun pointerMove(sourceId: String, pointerType: PointerType?,
+                    currentX: Float, currentY: Float, x: Float, y: Float,
+                    buttons: Set<Int>?, globalKeyInputState: KeyInputState)
 
     @Throws(AppiumException::class)
     fun pointerCancel(sourceId: String, pointerType: PointerType)

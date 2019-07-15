@@ -308,8 +308,8 @@ class PointerDispatchTest {
     fun `should call dispatch down immediately if button already pressed`() {
         class TempDummyAdapter : DummyW3CActionAdapter() {
             @Throws(AppiumException::class)
-            fun pointerDown(button: Int, sourceId: String, pointerType: PointerType,
-                            x: Float?, y: Float?, depressedButtons: Set<Int>,
+            override fun pointerDown(button: Int, sourceId: String, pointerType: PointerType?,
+                            x: Float, y: Float, depressedButtons: Set<Int>,
                             globalKeyInputState: KeyInputState) {
                 throw AppiumException("Should not reach this point. Button already pressed.")
             }

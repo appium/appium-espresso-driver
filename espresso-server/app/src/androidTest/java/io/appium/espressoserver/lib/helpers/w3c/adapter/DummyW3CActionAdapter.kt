@@ -67,16 +67,16 @@ open class DummyW3CActionAdapter : BaseW3CActionAdapter() {
     }
 
     @Throws(AppiumException::class)
-    override fun pointerUp(button: Int?, sourceId: String?, pointerType: PointerType?,
-                       x: Float?, y: Float?, depressedButtons: Set<Int>,
-                       globalKeyInputState: KeyInputState?) {
+    override fun pointerUp(button: Int, sourceId: String, pointerType: PointerType?,
+                       x: Float, y: Float, depressedButtons: Set<Int>,
+                       globalKeyInputState: KeyInputState) {
         // No-op
     }
 
     @Throws(AppiumException::class)
-    override fun pointerDown(button: Int?, sourceId: String?, pointerType: PointerType?,
-                         x: Float?, y: Float?, depressedButtons: Set<Int>,
-                         globalKeyInputState: KeyInputState?) {
+    override fun pointerDown(button: Int, sourceId: String, pointerType: PointerType?,
+                         x: Float, y: Float, depressedButtons: Set<Int>,
+                         globalKeyInputState: KeyInputState) {
         // No-op
     }
 
@@ -96,17 +96,17 @@ open class DummyW3CActionAdapter : BaseW3CActionAdapter() {
         // Give a margin of error of 1%
     }
 
-    override fun pointerMove(sourceId: String?, pointerType: PointerType?,
-                             currentX: Float?, currentY: Float?, x: Float?, y: Float?,
-                             buttons: Set<Int>?, globalKeyInputState: KeyInputState?) {
+    override fun pointerMove(sourceId: String, pointerType: PointerType?,
+                             currentX: Float, currentY: Float, x: Float, y: Float,
+                             buttons: Set<Int>?, globalKeyInputState: KeyInputState) {
         // Add the pointer move event to the logs
         val pointerMoveEvent = PointerMoveEvent()
         pointerMoveEvent.sourceId = sourceId
         pointerMoveEvent.pointerType = pointerType
-        pointerMoveEvent.currentX = currentX!!
-        pointerMoveEvent.currentY = currentY!!
-        pointerMoveEvent.x = x!!
-        pointerMoveEvent.y = y!!
+        pointerMoveEvent.currentX = currentX
+        pointerMoveEvent.currentY = currentY
+        pointerMoveEvent.x = x
+        pointerMoveEvent.y = y
         pointerMoveEvent.buttons = buttons
         pointerMoveEvent.globalKeyInputState = globalKeyInputState
         pointerMoveEvents.add(pointerMoveEvent)
