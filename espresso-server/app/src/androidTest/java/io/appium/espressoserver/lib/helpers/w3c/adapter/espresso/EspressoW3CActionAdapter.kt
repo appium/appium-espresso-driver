@@ -60,7 +60,7 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     override fun pointerDown(button: Int?, sourceId: String?, pointerType: PointerType?,
                     x: Float?, y: Float?, depressedButtons: Set<Int>,
                     globalKeyInputState: KeyInputState?) {
-        this.logger.info(String.format("Running pointer down at coordinates: %s %s %s", x, y, pointerType))
+        this.logger.info("Running pointer down at coordinates: ${x}, ${y}, ${pointerType}")
         val roundedCoords = toCoordinates(x, y)
 
         if (isTouch(pointerType)) {
@@ -84,7 +84,7 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     override fun pointerUp(button: Int?, sourceId: String?, pointerType: PointerType?,
                   x: Float?, y: Float?, depressedButtons: Set<Int>,
                   globalKeyInputState: KeyInputState?) {
-        this.logger.info(String.format("Running pointer up at coordinates: %s %s %s", x, y, pointerType))
+        this.logger.info("Running pointer up at coordinates: ${x} ${y} ${pointerType}")
         val roundedCoords = toCoordinates(x, y)
         if (isTouch(pointerType)) {
             // touch up actions need to be grouped together
@@ -104,7 +104,7 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     override fun pointerMove(sourceId: String?, pointerType: PointerType?,
                              currentX: Float?, currentY: Float?, x: Float?, y: Float?,
                              buttons: Set<Int>?, globalKeyInputState: KeyInputState?) {
-        this.logger.info(String.format("Running pointer move at coordinates: %s %s %s", x, y, pointerType))
+        this.logger.info("Running pointer move at coordinates: ${x} ${y} ${pointerType}")
         val roundedCoords = toCoordinates(x, y)
         if (isTouch(pointerType)) {
             multiTouchState.updateTouchState(ACTION_MOVE, sourceId, roundedCoords.x.toLong(), roundedCoords.y.toLong(), globalKeyInputState, null)
@@ -149,9 +149,9 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     }
 
     override fun sleep(duration: Float) {
-        val roundedDuration = Math.round(duration).toFloat()
-        if (duration != roundedDuration) {
-            this.logger.warn(String.format("Rounding provided duration %sms to %sms", duration, roundedDuration))
+        val roundedDuration = Math.round(duration)
+        if (duration.toInt() != roundedDuration) {
+            this.logger.warn("Rounding provided duration ${duration} to ${roundedDuration}")
         }
         uiController.loopMainThreadForAtLeast(roundedDuration.toLong())
     }

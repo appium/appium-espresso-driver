@@ -58,7 +58,7 @@ abstract class BaseW3CActionAdapter : W3CActionAdapter {
         try {
             Thread.sleep(Math.round(duration).toLong())
         } catch (ie: InterruptedException) {
-            throw AppiumException(String.format("Could not run 'sleep' method: %s", ie.cause))
+            throw AppiumException("Could not run 'sleep' method: ${ie.cause}")
         }
 
     }

@@ -119,9 +119,9 @@ open class DummyW3CActionAdapter : BaseW3CActionAdapter() {
     @Throws(AppiumException::class)
     override fun getElementCenterPoint(elementId: String?): Point {
         if ("none" == elementId) {
-            throw NoSuchElementException(String.format("Could not find element with id: %s", elementId))
+            throw NoSuchElementException("Could not find element with id: ${elementId}")
         } else if ("stale" == elementId) {
-            throw StaleElementException(String.format("Element with id %s no longer exists", elementId))
+            throw StaleElementException("Element with id ${elementId} no longer exists")
         }
 
         val point = Point()
