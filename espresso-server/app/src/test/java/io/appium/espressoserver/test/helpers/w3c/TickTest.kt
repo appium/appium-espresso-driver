@@ -60,12 +60,12 @@ class TickTest {
             val actionObjectOne = ActionObject()
             actionObjectOne.type = NONE
             actionObjectOne.subType = PAUSE
-            actionObjectOne.duration = valueOne[i] as Float
+            actionObjectOne.duration = valueOne[i]
 
             val actionObjectTwo = ActionObject()
             actionObjectTwo.type = POINTER
             actionObjectTwo.subType = POINTER_MOVE
-            actionObjectTwo.duration = valueTwo[i] as Float
+            actionObjectTwo.duration = valueTwo[i]
 
             val actionObjectThree = ActionObject()
             actionObjectTwo.type = POINTER
@@ -75,7 +75,7 @@ class TickTest {
             tick.addAction(actionObjectTwo)
             tick.addAction(actionObjectThree)
 
-            assertFloatEquals(tick.calculateTickDuration(), expectedMax[i].toFloat())
+            assertFloatEquals(tick.calculateTickDuration(), expectedMax[i])
         }
     }
 
