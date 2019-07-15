@@ -9,6 +9,7 @@ import java.util.HashMap
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
+import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.MotionEventBuilder
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.MotionEventParams

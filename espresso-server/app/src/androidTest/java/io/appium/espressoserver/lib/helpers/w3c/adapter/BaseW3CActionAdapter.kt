@@ -14,13 +14,9 @@ abstract class BaseW3CActionAdapter : W3CActionAdapter {
         return -1
     }
 
-    override fun getCharCode(keyValue: String?, location: Int): Int {
-        return -1
-    }
+    override fun getCharCode(keyValue: String?, location: Int): Int = -1
 
-    override fun getWhich(keyValue: String?, location: Int): Int {
-        return -1
-    }
+    override fun getWhich(keyValue: String?, location: Int): Int = -1
 
     override fun lockAdapter() {
         reentrantLock.lock()
@@ -38,9 +34,7 @@ abstract class BaseW3CActionAdapter : W3CActionAdapter {
      * @param pointerInputState What the state of the pointer is currently
      * @return How close the coordinates need to be to just go to the final coordinate.
      */
-    override fun getPointerMoveDurationMargin(pointerInputState: PointerInputState): Double {
-        return 0.01
-    }
+    override fun getPointerMoveDurationMargin(pointerInputState: PointerInputState): Double = 0.01
 
     /**
      * How long (in ms) does the adapter need to perform a pointer move event
@@ -48,10 +42,7 @@ abstract class BaseW3CActionAdapter : W3CActionAdapter {
      * (see 17.4.3)
      * @return Time in MS to perform operations
      */
-    override fun pointerMoveIntervalDuration(): Int {
-        // Default to 5 ms (120 moves per second)
-        return 5
-    }
+    override fun pointerMoveIntervalDuration(): Int = 5 // Default to 5 ms (120 moves per second)
 
     @Throws(AppiumException::class)
     override fun sleep(duration: Float) {
