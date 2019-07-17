@@ -295,7 +295,7 @@ class PointerDispatchTest {
         assertFalse(pointerInputState.isPressed(1))
         assertTrue(inputStateTable.cancelList.isEmpty())
         dispatchPointerDown(dummyW3CActionAdapter, actionObject, pointerInputState,
-                inputStateTable, null)
+                inputStateTable, KeyInputState())
         assertEquals(inputStateTable.cancelList.size.toLong(), 1)
         val cancelObject = inputStateTable.cancelList[0]
         assertEquals(cancelObject.button.toLong(), 1)
@@ -345,7 +345,7 @@ class PointerDispatchTest {
 
         assertTrue(pointerInputState.isPressed(1))
         dispatchPointerUp(dummyW3CActionAdapter, actionObject, pointerInputState,
-                InputStateTable(), null)
+                InputStateTable(), KeyInputState())
 
         assertFalse(pointerInputState.isPressed(1))
     }

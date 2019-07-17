@@ -101,14 +101,16 @@ open class DummyW3CActionAdapter : BaseW3CActionAdapter() {
                              buttons: Set<Int>?, globalKeyInputState: KeyInputState) {
         // Add the pointer move event to the logs
         val pointerMoveEvent = PointerMoveEvent()
-        pointerMoveEvent.sourceId = sourceId
-        pointerMoveEvent.pointerType = pointerType
-        pointerMoveEvent.currentX = currentX
-        pointerMoveEvent.currentY = currentY
-        pointerMoveEvent.x = x
-        pointerMoveEvent.y = y
-        pointerMoveEvent.buttons = buttons
-        pointerMoveEvent.globalKeyInputState = globalKeyInputState
+        pointerMoveEvent.apply {
+            this.sourceId = sourceId
+            this.pointerType = pointerType
+            this.currentX = currentX
+            this.currentY = currentY
+            this.x = x
+            this.y = y
+            this.buttons = buttons
+            this.globalKeyInputState = globalKeyInputState
+        }
         pointerMoveEvents.add(pointerMoveEvent)
     }
 
@@ -118,10 +120,9 @@ open class DummyW3CActionAdapter : BaseW3CActionAdapter() {
 
     @Throws(AppiumException::class)
     override fun getElementCenterPoint(elementId: String?): Point {
-        if ("none" == elementId) {
-            throw NoSuchElementException("Could not find element with id: ${elementId}")
-        } else if ("stale" == elementId) {
-            throw StaleElementException("Element with id ${elementId} no longer exists")
+        when(elementId) {
+            "none" -> throw NoSuchElementException("Could not find element with id: ${elementId}")
+            "stale" -> throw StaleElementException("Element with id ${elementId} no longer exists")
         }
 
         val point = Point()
