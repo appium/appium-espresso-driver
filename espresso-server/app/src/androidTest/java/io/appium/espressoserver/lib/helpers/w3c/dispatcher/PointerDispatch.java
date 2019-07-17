@@ -154,7 +154,7 @@ public class PointerDispatch {
         float startX = pointerInputState.getX();
         float startY = pointerInputState.getY();
         Origin origin = actionObject.getOrigin();
-        
+
         dispatcherAdapter.getLogger().info(String.format(
             "Dispatching pointer move '%s' on input source with id '%s' with origin '%s' and coordinates [%s, %s]",
             pointerInputState.getType(), sourceId, origin, xOffset, yOffset
