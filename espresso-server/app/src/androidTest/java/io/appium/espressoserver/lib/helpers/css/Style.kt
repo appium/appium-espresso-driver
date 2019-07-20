@@ -16,7 +16,11 @@
 
 package io.appium.espressoserver.lib.helpers.css
 
+import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.view.View
+import android.widget.TextView
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import kotlin.math.roundToInt
 
 class Style(private val properties: Array<Property>) {
@@ -36,6 +40,18 @@ fun extractStyle(view: View):Style {
     cssProps.add(Opacity(view.alpha))
 
     cssProps.add(ZIndex(view.z.roundToInt()))
+
+    val context = getApplicationContext<Context>()
+    cssProps.add(Color(context.getColor(view.id)))
+
+    val background = view.background
+    if (background is ColorDrawable) {
+        cssProps.add(BackgroundColor(background.color))
+    }
+
+    if (view is TextView) {
+        cssProps.add(Font(view.typeface))
+    }
 
     return Style(cssProps.toTypedArray())
 }
