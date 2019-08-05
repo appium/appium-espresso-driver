@@ -28,7 +28,7 @@ class Style(private val properties: Array<Property>) {
 }
 
 fun extractStyle(view: View):Style {
-    val cssProps = mutableListOf<Property>();
+    val cssProps = mutableListOf<Property>()
 
     cssProps.add(Left(view.left))
     cssProps.add(Top(view.top))
@@ -51,7 +51,8 @@ fun extractStyle(view: View):Style {
 
     if (view is TextView) {
         cssProps.add(Font(view.typeface))
+        cssProps.add(Text(view.gravity))
     }
 
-    return Style(cssProps.toTypedArray())
+    return Style(cssProps.filter { it.toString().trim().isNotEmpty() }.toTypedArray())
 }
