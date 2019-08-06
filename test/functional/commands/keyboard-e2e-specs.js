@@ -54,6 +54,13 @@ describe('keyboard', function () {
     await el.clear();
   });
 
+  it('should send keys to the correct element as replace text', async function () {
+    let el = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
+    await el.click();
+    await el.sendKeys('ハロー');
+    await el.clear();
+  });
+
   it('should send keys to the correct element', async function () {
     let el = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
     await el.setImmediateValue('hello world');
