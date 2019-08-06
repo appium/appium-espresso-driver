@@ -58,8 +58,9 @@ class SendKeys : RequestHandler<TextParams, Void?> {
         } catch (e: PerformException) {
             throw InvalidElementStateException("sendKeys", params.elementId, e)
         } catch (e: RuntimeException) {
+
             e.message?.let {
-                if (it.contains("IME does not understand how to translate")) throw e
+                if (!it.contains("IME does not understand how to translate")) throw e
             }
             params.text?.let {
                 value = it
