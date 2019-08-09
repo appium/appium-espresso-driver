@@ -29,19 +29,23 @@ android {
 }
 
 dependencies {
+    ext.espresso_version = '3.2.0'
+    ext.testlib_version = '1.2.0'
+    ext.mocklib_version = '1.7.4'
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    testImplementation "org.powermock:powermock-api-mockito2:1.7.4"
-    testImplementation "org.powermock:powermock-classloading-xstream:1.7.4"
-    testImplementation "org.powermock:powermock-module-junit4-rule:1.7.4"
-    testImplementation "org.powermock:powermock-module-junit4:1.7.4"
-    testImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
-    testImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    testImplementation "org.powermock:powermock-api-mockito2:$mocklib_version"
+    testImplementation "org.powermock:powermock-classloading-xstream:$mocklib_version"
+    testImplementation "org.powermock:powermock-module-junit4-rule:$mocklib_version"
+    testImplementation "org.powermock:powermock-module-junit4:$mocklib_version"
+    testImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+    testImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    testImplementation "androidx.test.espresso:espresso-web:$espresso_version"
     testImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    testImplementation 'androidx.test:core:1.1.0'
-    testImplementation 'androidx.test:runner:1.1.1'
-    testImplementation 'androidx.test:rules:1.1.1'
-    testImplementation 'androidx.test.espresso:espresso-web:3.1.1'
+    testImplementation "androidx.test:core:$testlib_version"
+    testImplementation "androidx.test:runner:$testlib_version"
+    testImplementation "androidx.test:rules:$testlib_version"
     testImplementation 'com.google.code.gson:gson:2.8.5'
     testImplementation 'javax.ws.rs:jsr311-api:1.1.1'
     testImplementation 'junit:junit:4.12'
@@ -52,13 +56,13 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-web:$espresso_version"
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    androidTestImplementation 'androidx.test:core:1.1.0'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-web:3.1.1'
-    androidTestImplementation 'androidx.test:rules:1.1.1'
+    androidTestImplementation "androidx.test:core:$testlib_version"
+    androidTestImplementation "androidx.test:runner:$testlib_version"
+    androidTestImplementation "androidx.test:rules:$testlib_version"
     androidTestImplementation 'com.google.code.gson:gson:2.8.5'
     androidTestImplementation 'javax.ws.rs:jsr311-api:1.1.1'
     androidTestImplementation 'org.nanohttpd:nanohttpd-webserver:2.3.1'
