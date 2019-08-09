@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.helpers
+package io.appium.espressoserver.lib.helpers.w3c.caps
 
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 
 
 val STANDARD_CAPS = listOf(
-        'browserName',
-        'browserVersion',
-        'platformName',
-        'acceptInsecureCerts',
-        'pageLoadStrategy',
-        'proxy',
-        'setWindowRect',
-        'timeouts',
-        'unhandledPromptBehavior',
-        )
-val APPIUM_PREFIX = 'appium'
+        "browserName",
+        "browserVersion",
+        "platformName",
+        "acceptInsecureCerts",
+        "pageLoadStrategy",
+        "proxy",
+        "setWindowRect",
+        "timeouts",
+        "unhandledPromptBehavior"
+)
+const val APPIUM_PREFIX = "appium"
 
 
-fun isStandardCap(capName: String): Boolean = STANDARD_CAPS.find { it.toLowerCase() == capName.toLowerCase() }
+fun isStandardCap(capName: String): Boolean = STANDARD_CAPS.any { it.toLowerCase() == capName.toLowerCase() }
 
 
 fun mergeCaps(primary: Map<String, Any?>, secondary: Map<String, Any?>): Map<String, Any?> {
@@ -42,29 +42,30 @@ fun mergeCaps(primary: Map<String, Any?>, secondary: Map<String, Any?>): Map<Str
     secondary.mapValues {
         primary[it.key] ?: throw InvalidArgumentException(
                 "Property '${it.key}' should not exist on both primary ($primary) and secondary ($secondary) objects")
-        result [it.key] = it.value
+        result[it.key] = it.value
     }
     return result
 }
 
 
-fun stripPrefixes(caps: MutableMap<String, Any?>): Map<String, Any?> {
+fun stripPrefixes(caps: Map<String, Any?>): Map<String, Any?> {
     val prefix = "$APPIUM_PREFIX:"
     val prefixedCaps = caps.keys.filter { it.startsWith(prefix) }
+    val result = caps.toMutableMap()
 
     val badPrefixedCaps = prefixedCaps.fold(mutableListOf<String>(), { acc, capName ->
         val strippedName = capName.substring(prefix.length)
         if (isStandardCap(strippedName)) {
             acc.add(strippedName)
         }
-        caps[strippedName] = caps[capName]
-        caps.delete(capName)
+        result[strippedName] = caps[capName]
+        result.remove(capName)
         acc
     })
 
-    if (!badPrefixedCaps.isEmpty()) {
+    if (badPrefixedCaps.isNotEmpty()) {
         throw InvalidArgumentException(
-                "The capabilities ${badPrefixedCaps} are standard capabilities and should not have the '$prefix' prefix")
+                "The capabilities $badPrefixedCaps are standard capabilities and should not have the '$prefix' prefix")
     }
 
     return caps
@@ -72,28 +73,34 @@ fun stripPrefixes(caps: MutableMap<String, Any?>): Map<String, Any?> {
 
 
 fun parseCapabilities(caps: Map<String, Any?>): Map<String, Any?> {
-    val requiredCaps = caps['alwaysMatch'] ?: mutableMapOf<String, Any?>()
-    val allFirstMatchCaps = caps['firstMatch'] ?: mutableListOf<Map<String, Any?>>()
+    val alwaysMatch = caps["alwaysMatch"] ?: mapOf<String, Any?>()
+    val firstMatch = caps["firstMatch"] ?: listOf<Map<String, Any?>>()
 
-    if (allFirstMatchCaps !is List<String, Any?>) {
+    if (alwaysMatch !is Map<*, *>) {
         throw InvalidArgumentException(
-                'The capabilities.firstMatch argument was not valid for the following reason: '
-                '"capabilities.firstMatch" must be a JSON array or unset. '
-                "Got '$allFirstMatchCaps' instead"
+                "The capabilities.alwaysMatch argument was not valid for the following reason: " +
+                        "\"capabilities.alwaysMatch\" must be a JSON object or unset. " +
+                        "Got '$alwaysMatch' instead"
+        )
+    }
+    if (firstMatch !is List<*>) {
+        throw InvalidArgumentException(
+                "The capabilities.firstMatch argument was not valid for the following reason: " +
+                        "\"capabilities.firstMatch\" must be a JSON array or unset. " +
+                        "Got '$firstMatch' instead"
         )
     }
 
-    if (allFirstMatchCaps.isEmpty()) {
-        allFirstMatchCaps.add(mapOf<String, Any?>())
-    }
-
-    stripPrefixes(requiredCaps)
-    allFirstMatchCaps
+    val allFirstMatchCaps = if (firstMatch.isNotEmpty()) firstMatch else listOf<Map<*, *>>(mapOf<String, Any?>())
+    @Suppress("UNCHECKED_CAST")
+    val requiredCaps = stripPrefixes(alwaysMatch as Map<String, Any?>)
+    @Suppress("UNCHECKED_CAST")
+    (allFirstMatchCaps as List<Map<String, Any?>>)
             .map { stripPrefixes(it) }
             .forEach {
                 try {
                     return mergeCaps(requiredCaps, it)
-                } catch (Exception: e) {
+                } catch (e: Exception) {
                     AndroidLogger.logger.warn(e)
                 }
             }
