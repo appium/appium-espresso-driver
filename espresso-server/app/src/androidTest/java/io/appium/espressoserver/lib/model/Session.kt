@@ -18,7 +18,6 @@ package io.appium.espressoserver.lib.model
 
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.model.SessionParams.W3CCapabilities
 import java.util.*
 
 class Session private constructor(val id: String, val capabilities: W3CCapabilities)

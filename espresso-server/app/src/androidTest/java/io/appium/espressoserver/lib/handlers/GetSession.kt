@@ -19,7 +19,7 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Session
-import io.appium.espressoserver.lib.model.SessionParams.W3CCapabilities
+import io.appium.espressoserver.lib.model.W3CCapabilities
 
 class GetSession : RequestHandler<AppiumParams, W3CCapabilities?> {
 

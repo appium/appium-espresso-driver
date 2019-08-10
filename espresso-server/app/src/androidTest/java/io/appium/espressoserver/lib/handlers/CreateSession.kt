@@ -22,15 +22,15 @@ import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedExcepti
 import io.appium.espressoserver.lib.helpers.ActivityHelper.startActivity
 import io.appium.espressoserver.lib.helpers.w3c.caps.parseCapabilities
 import io.appium.espressoserver.lib.model.Session
-import io.appium.espressoserver.lib.model.SessionParams
+import io.appium.espressoserver.lib.model.W3CCapabilities
 
 
-class CreateSession : RequestHandler<SessionParams, Session> {
+class CreateSession : RequestHandler<W3CCapabilities, Session> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: SessionParams): Session {
-        val appiumSession = Session.createGlobalSession(params.w3CCapabilities)
-        val parsedCaps = parseCapabilities(params.w3CCapabilities.firstMatch, params.w3CCapabilities.alwaysMatch)
+    override fun handleInternal(params: W3CCapabilities): Session {
+        val appiumSession = Session.createGlobalSession(params)
+        val parsedCaps = parseCapabilities(params.firstMatch, params.alwaysMatch)
         val activityName = parsedCaps["appActivity"] as? String
                 ?: throw SessionNotCreatedException(InvalidArgumentException("appActivity capability is mandatory"))
         try {

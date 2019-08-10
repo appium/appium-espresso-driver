@@ -39,7 +39,7 @@ internal class Router {
         routeMap = RouteMap()
 
         routeMap.addRoute(RouteDefinition(Method.GET, "/status", Status(), AppiumParams::class.java))
-        routeMap.addRoute(RouteDefinition(Method.POST, "/session", CreateSession(), SessionParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.POST, "/session", CreateSession(), W3CCapabilities::class.java))
         routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId", GetSession(), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/actions", PerformAction(), Actions::class.java))
         routeMap.addRoute(RouteDefinition(Method.DELETE, "/session/:sessionId/actions", ReleaseActions(), Actions::class.java))

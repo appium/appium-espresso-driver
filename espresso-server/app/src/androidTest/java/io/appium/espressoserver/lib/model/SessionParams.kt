@@ -16,8 +16,5 @@
 
 package io.appium.espressoserver.lib.model
 
-data class SessionParams(
-    val w3CCapabilities: W3CCapabilities
-) : AppiumParams() {
-    data class W3CCapabilities(val firstMatch: List<Map<String, Any?>>?, val alwaysMatch: Map<String, Any?>?)
-}
+data class W3CCapabilities(val firstMatch: List<Map<String, Any?>>?, val alwaysMatch: Map<String, Any?>?)
+    : AppiumParams()
