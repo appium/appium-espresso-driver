@@ -535,7 +535,7 @@ describe('touch actions -', function () {
           const action = new wd.TouchAction(driver);
           action.press({x, y});
           action.release();
-          await action.perform().should.eventually.be.rejectedWith(/MoveTargetOutOfBoundsException/);
+          await action.perform().should.eventually.be.rejected;
         }
       });
       it('should not throw out-of-bounds exception if tapping a coordinate within viewport/', async function () {
