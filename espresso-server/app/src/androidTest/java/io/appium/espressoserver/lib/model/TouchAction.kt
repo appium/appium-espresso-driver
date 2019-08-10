@@ -30,10 +30,10 @@ class TouchAction {
         get() {
             val origin = Origin()
             options?.elementId?.let {
-                origin.type = InputSource.ELEMENT
+                origin.type = ELEMENT
                 origin.elementId = it
             } ?: run {
-                origin.type = InputSource.VIEWPORT
+                origin.type = VIEWPORT
             }
             return origin
         }
@@ -54,15 +54,14 @@ class TouchAction {
 
     @Throws(InvalidArgumentException::class)
     fun toW3CAction(): List<Action> {
-        val w3cActions: List<Action>
-        when (action) {
-            TouchAction.ActionType.MOVE_TO -> w3cActions = listOf(convertMoveTo())
-            TouchAction.ActionType.PRESS -> w3cActions = convertPress(PRESS_DURATION)
-            TouchAction.ActionType.LONG_PRESS -> w3cActions = convertPress(LONG_PRESS_TIMEOUT + TIMEOUT_BUFFER)
-            TouchAction.ActionType.TAP -> w3cActions = convertPress(TAP_TIMEOUT - TIMEOUT_BUFFER)
-            TouchAction.ActionType.RELEASE -> w3cActions = listOf(convertRelease())
-            TouchAction.ActionType.WAIT -> w3cActions = listOf(convertWait())
-            TouchAction.ActionType.CANCEL -> w3cActions = listOf(convertCancel())
+        val w3cActions: List<Action> = when (action) {
+            ActionType.MOVE_TO -> listOf(convertMoveTo())
+            ActionType.PRESS -> convertPress(PRESS_DURATION)
+            ActionType.LONG_PRESS -> convertPress(LONG_PRESS_TIMEOUT + TIMEOUT_BUFFER)
+            ActionType.TAP -> convertPress(TAP_TIMEOUT - TIMEOUT_BUFFER)
+            ActionType.RELEASE -> listOf(convertRelease())
+            ActionType.WAIT -> listOf(convertWait())
+            ActionType.CANCEL -> listOf(convertCancel())
             else -> throw InvalidArgumentException(String.format("Unsupported action type %s", action))
         }
 
@@ -112,7 +111,7 @@ class TouchAction {
                 .withDuration(pressDuration)
                 .build()
 
-        return Arrays.asList(moveAction, downAction, waitAction)
+        return listOf(moveAction, downAction, waitAction)
     }
 
     // If an action list has fewer than three actions, pad them with 'pauses' of 0 duration
@@ -149,7 +148,7 @@ class TouchAction {
     }
 
     class TouchActionOptions {
-        @SerializedName("element")
+        @SerializedName("element", alternate = [W3C_ELEMENT_KEY])
         var elementId: String? = null
         var x: Long? = null
         var y: Long? = null

@@ -19,7 +19,7 @@ package io.appium.espressoserver.lib.model
 import com.google.gson.annotations.SerializedName
 
 data class MoveToParams(
-    @SerializedName("element")
+    @SerializedName("element", alternate = [W3C_ELEMENT_KEY])
     val elementToMoveTo: String? = null,
     val xOffset: Int = 0,
     val yOffset: Int = 0

@@ -39,18 +39,24 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import com.google.gson.annotations.SerializedName
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.StringHelpers.charSequenceToNullableString
 import io.appium.espressoserver.lib.viewmatcher.WithView.withView
 import org.hamcrest.Matchers.hasEntry
 import org.hamcrest.Matchers.`is`
 
+const val W3C_ELEMENT_KEY = "element-6066-11e4-a52e-4f735466cecf"
+const val JSONWP_ELEMENT_KEY = "ELEMENT"
+
 class Element(view: View) {
-    val ELEMENT: String
+    @Suppress("JoinDeclarationAndAssignment")
+    @SerializedName(JSONWP_ELEMENT_KEY, alternate = [W3C_ELEMENT_KEY])
+    val element: String
 
     init {
-        ELEMENT = UUID.randomUUID().toString()
-        cache.put(ELEMENT, view)
+        element = UUID.randomUUID().toString()
+        cache.put(element, view)
     }
 
     companion object {
