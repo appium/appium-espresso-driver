@@ -26,6 +26,10 @@ android {
             java.srcDirs += 'src/androidTest/java'
         }
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {

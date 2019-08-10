@@ -38,10 +38,12 @@ fun isStandardCap(capName: String): Boolean = STANDARD_CAPS.any { it.toLowerCase
 
 
 fun mergeCaps(primary: Map<String, Any?>, secondary: Map<String, Any?>): Map<String, Any?> {
-    val result = secondary.toMutableMap()
+    val result = primary.toMutableMap()
     secondary.mapValues {
-        primary[it.key] ?: throw InvalidArgumentException(
-                "Property '${it.key}' should not exist on both primary ($primary) and secondary ($secondary) objects")
+        if (result[it.key] != null) {
+            throw InvalidArgumentException(
+                    "Property '${it.key}' should not exist on both primary ($primary) and secondary ($secondary) objects")
+        }
         result[it.key] = it.value
     }
     return result
@@ -68,7 +70,12 @@ fun stripPrefixes(caps: Map<String, Any?>): Map<String, Any?> {
                 "The capabilities $badPrefixedCaps are standard capabilities and should not have the '$prefix' prefix")
     }
 
-    return caps
+    return caps.map {
+        if (it.key.startsWith(prefix) && it.key.length > prefix.length)
+            it.key.substring(prefix.length) to it.value
+        else
+            it.key to it.value
+    }.toMap()
 }
 
 
