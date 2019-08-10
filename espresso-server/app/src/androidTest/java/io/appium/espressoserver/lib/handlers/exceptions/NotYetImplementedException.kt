@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.handlers.exceptions
 
-public class InvalidArgumentException extends AppiumException {
+import fi.iki.elonen.NanoHTTPD
 
-    public InvalidArgumentException(String reason) {
-        super(reason);
+class NotYetImplementedException : AppiumException {
+    constructor() : super("The operation requested is not yet implemented by Espresso driver") {}
+
+    constructor(message: String) : super(message) {}
+
+    override fun error(): String {
+        return "unknown method"
     }
 
-    public InvalidArgumentException(Throwable cause) {
-        super(cause);
+    override fun status(): NanoHTTPD.Response.Status {
+        return NanoHTTPD.Response.Status.NOT_FOUND
     }
-
 }

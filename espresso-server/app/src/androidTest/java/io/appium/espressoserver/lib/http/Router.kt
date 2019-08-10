@@ -16,7 +16,6 @@
 
 package io.appium.espressoserver.lib.http
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import fi.iki.elonen.NanoHTTPD.Method
@@ -177,7 +176,7 @@ internal class Router {
 
         // Look for a route that matches this URL
         val matchingRoute = routeMap.findMatchingRoute(method, uri)
-                ?: return AppiumResponse(AppiumStatus.UNKNOWN_ERROR, "No such route: $uri")
+                ?: return AppiumResponse(AppiumException("No such route: $uri"))
 
         // If no route found, return a 404 Error Response
         AndroidLogger.logger.debug("Matched route definition: ${matchingRoute.javaClass}")
@@ -191,16 +190,17 @@ internal class Router {
         // Get the appium params
         val postJson = files["postData"]
 
+        var sessionId: String? = null
         try {
             // Parse the parameters
             val appiumParams: AppiumParams = postJson?.let {
                 AndroidLogger.logger.debug("Got raw post data: ${abbreviate(it, 300)}")
                 try {
                     paramClass.cast(Gson().fromJson<AppiumParams>(it, paramClass))
-                            ?: return AppiumResponse(AppiumStatus.INVALID_ARGUMENT, "Could not parse JSON: $it")
+                            ?: return AppiumResponse(InvalidArgumentException("Could not parse JSON: $it"))
                 } catch (e: JsonParseException) {
                     // If failed to parse params, throw an invalid argument exception
-                    return AppiumResponse(AppiumStatus.INVALID_ARGUMENT, Log.getStackTraceString(e))
+                    return AppiumResponse(InvalidArgumentException(e))
                 }
             } ?: AppiumParams()
             appiumParams.initUriMapping(uriParams)
@@ -209,48 +209,24 @@ internal class Router {
             if (appiumParams.sessionId != null
                     && Session.globalSession != null
                     && appiumParams.sessionId != Session.globalSession!!.id) {
-                return AppiumResponse(AppiumStatus.UNKNOWN_ERROR, "Invalid session ID ${appiumParams.sessionId!!}")
+                return AppiumResponse(NoSuchDriverException("Invalid session ID ${appiumParams.sessionId!!}"))
             }
 
             // Execute the matching handler
+            sessionId = appiumParams.sessionId
             val handlerResult = handler.handle(appiumParams)
-            var sessionId = appiumParams.sessionId
 
             // If it's a new session, pull out the newly created Session ID
-            if (handlerResult != null && handlerResult.javaClass == Session::class.java) {
-                sessionId = (handlerResult as Session).id
+            if (handlerResult is Session) {
+                sessionId = handlerResult.id
             }
 
             // Construct the response and serve it
-            val appiumResponse = AppiumResponse(AppiumStatus.SUCCESS, handlerResult, sessionId)
+            val appiumResponse = AppiumResponse(handlerResult, sessionId)
             AndroidLogger.logger.debug("Finished processing $method request for '$uri'")
             return appiumResponse
-        } catch (e: NoSuchElementException) {
-            return AppiumResponse(AppiumStatus.NO_SUCH_ELEMENT, Log.getStackTraceString(e))
-        } catch (e: SessionNotCreatedException) {
-            return AppiumResponse(AppiumStatus.SESSION_NOT_CREATED_EXCEPTION, Log.getStackTraceString(e))
-        } catch (e: InvalidStrategyException) {
-            return AppiumResponse(AppiumStatus.INVALID_SELECTOR, Log.getStackTraceString(e))
-        } catch (e: NotYetImplementedException) {
-            return AppiumResponse(AppiumStatus.UNKNOWN_COMMAND, Log.getStackTraceString(e))
-        } catch (e: MissingCommandsException) {
-            return AppiumResponse(AppiumStatus.UNKNOWN_COMMAND, Log.getStackTraceString(e))
-        } catch (e: StaleElementException) {
-            return AppiumResponse(AppiumStatus.STALE_ELEMENT_REFERENCE, Log.getStackTraceString(e))
-        } catch (e: XPathLookupException) {
-            return AppiumResponse(AppiumStatus.XPATH_LOOKUP_ERROR, Log.getStackTraceString(e))
-        } catch (e: NoAlertOpenException) {
-            return AppiumResponse(AppiumStatus.NO_ALERT_OPEN_ERROR, Log.getStackTraceString(e))
-        } catch (e: ScreenCaptureException) {
-            return AppiumResponse(AppiumStatus.UNABLE_TO_CAPTURE_SCREEN_ERROR, Log.getStackTraceString(e))
-        } catch (e: InvalidElementStateException) {
-            return AppiumResponse(AppiumStatus.INVALID_ELEMENT_STATE, Log.getStackTraceString(e))
-        } catch (e: InvalidArgumentException) {
-            return AppiumResponse(AppiumStatus.INVALID_ARGUMENT, Log.getStackTraceString(e))
-        } catch (e: MoveTargetOutOfBoundsException) {
-            return AppiumResponse(AppiumStatus.MOVE_TARGET_OUT_OF_BOUNDS, Log.getStackTraceString(e))
-        } catch (e: Exception) {
-            return AppiumResponse(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e))
+        } catch (e: Throwable) {
+            return AppiumResponse(e, sessionId)
         }
     }
 }

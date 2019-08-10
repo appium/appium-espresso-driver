@@ -19,14 +19,13 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.http.Server
 import io.appium.espressoserver.lib.http.response.AppiumResponse
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.AppiumStatus
 import io.appium.espressoserver.lib.model.Session
 
-class DeleteSession : RequestHandler<AppiumParams, AppiumResponse<*>> {
+class DeleteSession : RequestHandler<AppiumParams, AppiumResponse> {
 
-    override fun handleInternal(params: AppiumParams): AppiumResponse<*> {
+    override fun handleInternal(params: AppiumParams): AppiumResponse {
         Session.deleteGlobalSession()
         Server.instance.makeRequestForServerToStop()
-        return AppiumResponse(AppiumStatus.SUCCESS, null)
+        return AppiumResponse(null, null)
     }
 }

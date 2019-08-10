@@ -5,7 +5,7 @@ import androidx.test.espresso.Espresso.onData
 import com.google.gson.*
 import com.google.gson.annotations.JsonAdapter
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import org.hamcrest.Matcher
 import java.lang.reflect.Type
 
@@ -23,9 +23,9 @@ data class DataMatcherJson(
             try {
                 return Gson().fromJson(selector, DataMatcherJson::class.java)
             } catch (e: AppiumException) {
-                throw InvalidStrategyException(String.format("Not a valid selector '%s'. Reason: '%s'", selector, e.cause))
+                throw InvalidSelectorException(String.format("Not a valid selector '%s'. Reason: '%s'", selector, e.cause))
             } catch (e: JsonParseException) {
-                throw InvalidStrategyException(String.format("Could not parse selector '%s'. Reason: '%s'", selector, e.cause))
+                throw InvalidSelectorException(String.format("Could not parse selector '%s'. Reason: '%s'", selector, e.cause))
             }
         }
     }

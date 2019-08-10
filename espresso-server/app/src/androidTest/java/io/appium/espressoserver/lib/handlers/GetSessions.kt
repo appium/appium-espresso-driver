@@ -28,7 +28,7 @@ class GetSessions : RequestHandler<AppiumParams, Collection<Map<String, Any?>>> 
         Session.globalSession?.let { session ->
             return listOf<Map<String, Any?>>(mapOf(
                     "id" to session.id,
-                    "capabilities" to extractDeclaredProperties(session.desiredCapabilities)
+                    "capabilities" to extractDeclaredProperties(session.capabilities)
             ))
         }
         return emptyList()

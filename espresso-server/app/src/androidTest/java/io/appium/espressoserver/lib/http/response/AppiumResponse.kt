@@ -16,39 +16,47 @@
 
 package io.appium.espressoserver.lib.http.response
 
+import android.util.Log
 import java.util.UUID
 import fi.iki.elonen.NanoHTTPD.Response.Status
-import io.appium.espressoserver.lib.model.AppiumStatus
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.handlers.exceptions.MESSAGE_UNKNOWN_ERROR
 
-class AppiumResponse<T> : BaseResponse {
-    internal var value: T? = null
-    var status: AppiumStatus? = null
-        private set
+class AppiumResponse : BaseResponse {
+    internal var value: Any? = null
     var sessionId: String? = null
         private set
     // Unique Appium transaction ID
     var id: String? = null
         private set
 
-    constructor(status: AppiumStatus, value: T?) {
-        init(status, value, null)
+    constructor(value: Any?) {
+        init(value, null)
     }
 
-    constructor(status: AppiumStatus, value: T?, sessionId: String?) {
-        init(status, value, sessionId)
+    constructor(value: Any?, sessionId: String?) {
+        init(value, sessionId)
     }
 
-    private fun init(status: AppiumStatus, value: T?, sessionId: String?) {
-        this.value = value
-        this.status = status
-        this.sessionId = sessionId
-        id = UUID.randomUUID().toString()
+    private fun formatError(e: AppiumException): Map<String, String> {
+        val result = mutableMapOf<String, String>()
+        result["error"] = e.error()
+        result["message"] = e.message ?: MESSAGE_UNKNOWN_ERROR
+        result["stacktrace"] = Log.getStackTraceString(e)
+        return result
+    }
 
-        httpStatus = when (status) {
-            AppiumStatus.SUCCESS -> Status.OK
-            AppiumStatus.UNKNOWN_COMMAND -> Status.NOT_FOUND
-            else -> Status.INTERNAL_ERROR
+    private fun init(value: Any?, sessionId: String?) {
+        if (value is Throwable) {
+            val e = if (value is AppiumException) value else AppiumException(value)
+            this.value = formatError(e)
+            this.httpStatus = e.status()
+        } else {
+            this.value = value
+            this.httpStatus = Status.OK
         }
+        this.sessionId = sessionId
+        this.id = UUID.randomUUID().toString()
     }
 }
 

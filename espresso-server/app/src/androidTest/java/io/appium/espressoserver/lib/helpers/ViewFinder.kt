@@ -32,7 +32,7 @@ import org.hamcrest.TypeSafeMatcher
 import java.util.ArrayList
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
 import io.appium.espressoserver.lib.model.DataMatcherJson
 import io.appium.espressoserver.lib.model.Strategy
@@ -77,7 +77,7 @@ object ViewFinder {
      * @param strategy Locator strategy (xpath, class name, etc...)
      * @param selector Selector string
      * @return
-     * @throws InvalidStrategyException
+     * @throws InvalidSelectorException
      * @throws XPathLookupException
      */
     @Throws(AppiumException::class)
@@ -102,7 +102,7 @@ object ViewFinder {
      * @param strategy Locator strategy (xpath, class name, etc...)
      * @param selector Selector string
      * @return
-     * @throws InvalidStrategyException
+     * @throws InvalidSelectorException
      * @throws XPathLookupException
      */
     @Throws(AppiumException::class)
@@ -189,7 +189,7 @@ object ViewFinder {
                     emptyList()
                 }
             }
-            else -> throw InvalidStrategyException("Strategy is not implemented: ${strategy.strategyName}")
+            else -> throw InvalidSelectorException("Strategy is not implemented: ${strategy.strategyName}")
         }
 
         return views

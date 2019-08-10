@@ -56,7 +56,9 @@ class SendKeys : RequestHandler<TextParams, Void?> {
         try {
             viewInteraction.perform(typeText(value!!))
         } catch (e: PerformException) {
-            throw InvalidElementStateException("sendKeys", params.elementId, e)
+            params.elementId?.let {
+                throw InvalidElementStateException("sendKeys", it, e)
+            } ?: throw InvalidElementStateException("sendKeys", e)
         } catch (e: RuntimeException) {
             e.message?.let {
                 if (!it.contains("IME does not understand how to translate")) throw e

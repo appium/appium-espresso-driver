@@ -72,28 +72,13 @@ fun stripPrefixes(caps: Map<String, Any?>): Map<String, Any?> {
 }
 
 
-fun parseCapabilities(caps: Map<String, Any?>): Map<String, Any?> {
-    val alwaysMatch = caps["alwaysMatch"] ?: mapOf<String, Any?>()
-    val firstMatch = caps["firstMatch"] ?: listOf<Map<String, Any?>>()
-
-    if (alwaysMatch !is Map<*, *>) {
-        throw InvalidArgumentException(
-                "The capabilities.alwaysMatch argument was not valid for the following reason: " +
-                        "\"capabilities.alwaysMatch\" must be a JSON object or unset. " +
-                        "Got '$alwaysMatch' instead"
-        )
-    }
-    if (firstMatch !is List<*>) {
-        throw InvalidArgumentException(
-                "The capabilities.firstMatch argument was not valid for the following reason: " +
-                        "\"capabilities.firstMatch\" must be a JSON array or unset. " +
-                        "Got '$firstMatch' instead"
-        )
-    }
+fun parseCapabilities(firstMatchValue: List<Map<String, Any?>>?,
+                      alwaysMatchValue: Map<String, Any?>?): Map<String, Any?> {
+    val alwaysMatch = alwaysMatchValue ?: mapOf()
+    val firstMatch = firstMatchValue ?: listOf()
 
     val allFirstMatchCaps = if (firstMatch.isNotEmpty()) firstMatch else listOf<Map<*, *>>(mapOf<String, Any?>())
-    @Suppress("UNCHECKED_CAST")
-    val requiredCaps = stripPrefixes(alwaysMatch as Map<String, Any?>)
+    val requiredCaps = stripPrefixes(alwaysMatch)
     @Suppress("UNCHECKED_CAST")
     (allFirstMatchCaps as List<Map<String, Any?>>)
             .map { stripPrefixes(it) }
@@ -104,5 +89,5 @@ fun parseCapabilities(caps: Map<String, Any?>): Map<String, Any?> {
                     AndroidLogger.logger.warn(e)
                 }
             }
-    throw InvalidArgumentException("Could not find matching capabilities from $caps")
+    throw InvalidArgumentException("Could not find matching capabilities from {$firstMatch, $alwaysMatch}")
 }

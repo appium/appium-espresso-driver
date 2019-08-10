@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.handlers.exceptions
 
-public class InvalidElementStateException extends AppiumException {
-    public InvalidElementStateException(String reason) {
-        super(reason);
+import fi.iki.elonen.NanoHTTPD
+
+class NoSuchDriverException : AppiumException {
+    constructor(message: String) : super(message)
+
+    override fun error(): String {
+        return "invalid session id"
     }
 
-    public InvalidElementStateException(String reason, Throwable cause) {
-        super(reason, cause);
-    }
-
-    public InvalidElementStateException(String action, String elementId, Throwable cause) {
-        super(String.format("Could not perform %s action on the element %s", action, elementId),
-                cause);
+    override fun status(): NanoHTTPD.Response.Status {
+        return NanoHTTPD.Response.Status.NOT_FOUND
     }
 }
