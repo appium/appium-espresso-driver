@@ -52,19 +52,15 @@ fun mergeCaps(primary: Map<String, Any?>, secondary: Map<String, Any?>): Map<Str
 
 fun stripPrefixes(caps: Map<String, Any?>): Map<String, Any?> {
     val prefix = "$APPIUM_PREFIX:"
-    val prefixedCaps = caps.keys.filter { it.startsWith(prefix) }
-    val result = caps.toMutableMap()
-
-    val badPrefixedCaps = prefixedCaps.fold(mutableListOf<String>(), { acc, capName ->
-        val strippedName = capName.substring(prefix.length)
-        if (isStandardCap(strippedName)) {
-            acc.add(strippedName)
-        }
-        result[strippedName] = caps[capName]
-        result.remove(capName)
-        acc
-    })
-
+    val badPrefixedCaps = caps.keys
+            .filter { it.startsWith(prefix) }
+            .fold(mutableListOf<String>(), { acc, capName ->
+                val strippedName = capName.substring(prefix.length)
+                if (isStandardCap(strippedName)) {
+                    acc.add(strippedName)
+                }
+                acc
+            })
     if (badPrefixedCaps.isNotEmpty()) {
         throw InvalidArgumentException(
                 "The capabilities $badPrefixedCaps are standard capabilities and should not have the '$prefix' prefix")

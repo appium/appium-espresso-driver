@@ -38,13 +38,11 @@ class AppiumResponse : BaseResponse {
         init(value, sessionId)
     }
 
-    private fun formatError(e: AppiumException): Map<String, String> {
-        val result = mutableMapOf<String, String>()
-        result["error"] = e.error()
-        result["message"] = e.message ?: MESSAGE_UNKNOWN_ERROR
-        result["stacktrace"] = Log.getStackTraceString(e)
-        return result
-    }
+    private fun formatError(e: AppiumException): Map<String, String> = mapOf(
+        "error" to e.error(),
+        "message" to (e.message ?: MESSAGE_UNKNOWN_ERROR),
+        "stacktrace" to Log.getStackTraceString(e)
+    )
 
     private fun init(value: Any?, sessionId: String?) {
         if (value is Throwable) {
