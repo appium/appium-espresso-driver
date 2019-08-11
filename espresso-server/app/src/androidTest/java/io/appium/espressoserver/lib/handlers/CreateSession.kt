@@ -33,7 +33,7 @@ class CreateSession : RequestHandler<W3CCapabilities, Session> {
         try {
             val parsedCaps = parseCapabilities(params.firstMatch, params.alwaysMatch)
             val activityName = parsedCaps["appActivity"] as? String
-                    ?: throw SessionNotCreatedException(InvalidArgumentException("appActivity capability is mandatory"))
+                    ?: throw InvalidArgumentException("appActivity capability is mandatory")
             startActivity(parsedCaps["appPackage"] as? String, activityName)
         } catch (e: Exception) {
             throw SessionNotCreatedException(e)
