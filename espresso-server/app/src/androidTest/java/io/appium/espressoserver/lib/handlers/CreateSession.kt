@@ -30,15 +30,14 @@ class CreateSession : RequestHandler<W3CCapabilities, Session> {
     @Throws(AppiumException::class)
     override fun handleInternal(params: W3CCapabilities): Session {
         val appiumSession = Session.createGlobalSession(params)
-        val parsedCaps = parseCapabilities(params.firstMatch, params.alwaysMatch)
-        val activityName = parsedCaps["appActivity"] as? String
-                ?: throw SessionNotCreatedException(InvalidArgumentException("appActivity capability is mandatory"))
         try {
+            val parsedCaps = parseCapabilities(params.firstMatch, params.alwaysMatch)
+            val activityName = parsedCaps["appActivity"] as? String
+                    ?: throw SessionNotCreatedException(InvalidArgumentException("appActivity capability is mandatory"))
             startActivity(parsedCaps["appPackage"] as? String, activityName)
         } catch (e: Exception) {
             throw SessionNotCreatedException(e)
         }
-
         return appiumSession
     }
 }

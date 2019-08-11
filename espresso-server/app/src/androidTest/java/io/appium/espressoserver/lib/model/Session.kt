@@ -40,7 +40,7 @@ class Session private constructor(val id: String, val capabilities: W3CCapabilit
         fun createGlobalSession(capabilities: W3CCapabilities): Session {
             globalSession?.let {
                 AndroidLogger.logger.info("Got request for new session creation while the one " +
-                        "is still in progress. Overriding the old session having id %{it.id}");
+                        "is still in progress. Overriding the old session having the id ${it.id}");
             }
             val globalSession = Session(UUID.randomUUID().toString(), capabilities)
             Session.globalSession = globalSession
