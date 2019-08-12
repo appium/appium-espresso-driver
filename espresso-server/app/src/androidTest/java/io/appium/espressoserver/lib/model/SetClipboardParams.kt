@@ -17,7 +17,7 @@
 package io.appium.espressoserver.lib.model
 
 data class SetClipboardParams(
-    val contentType: ClipboardDataType = ClipboardDataType.PLAINTEXT,
+    val contentType: ClipboardDataType? = ClipboardDataType.PLAINTEXT,
     val content: String? = null,
     val label: String? = null
 ) : AppiumParams()

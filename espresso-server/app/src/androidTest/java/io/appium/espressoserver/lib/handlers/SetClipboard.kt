@@ -16,7 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.app.Instrumentation
 import android.util.Base64
 
 import java.nio.charset.StandardCharsets
@@ -35,6 +34,14 @@ class SetClipboard : RequestHandler<SetClipboardParams, Void?> {
     @Throws(AppiumException::class)
     override fun handleInternal(params: SetClipboardParams): Void? {
         params.content ?: throw InvalidArgumentException("The 'content' argument is mandatory")
+
+        // Can be null if contentType was no plaintext
+        if (params.contentType == null
+            || !ClipboardDataType.supportedDataTypes().contains(params.contentType.toString().toLowerCase())) {
+
+            throw ClipboardDataType.invalidClipboardDataType(params.contentType)
+        }
+
         try {
             mInstrumentation.runOnMainSync(SetClipboardRunnable(
                     params.contentType, params.label, fromBase64String(params.content)))
