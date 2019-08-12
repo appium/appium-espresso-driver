@@ -17,12 +17,12 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState;
 import io.appium.espressoserver.test.assets.Helpers;
 
 import static io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class ActionsTest {
 
-    class AlteredDummyAdapter extends DummyW3CActionAdapter {
+    static class AlteredDummyAdapter extends DummyW3CActionAdapter {
         @Override
         public long getViewportWidth() {
             // Bump up viewport width so we don't get out of bounds issues
@@ -39,7 +39,7 @@ public class ActionsTest {
     @Test
     public void shouldThrowIfAdapterNotSet() throws IOException {
         String multiTouchJson = Helpers.readAssetFile("multi-touch-actions.json");
-        Actions actions = Actions.class.cast((new Gson()).fromJson(multiTouchJson, Actions.class));
+        Actions actions = (new Gson()).fromJson(multiTouchJson, Actions.class);
 
         try {
             actions.perform("123");
@@ -52,7 +52,7 @@ public class ActionsTest {
     @Test
     public void shouldPerformPointerActionsOnASetOfInputSources() throws IOException, AppiumException {
         String multiTouchJson = Helpers.readAssetFile("multi-touch-actions.json");
-        Actions actions = Actions.class.cast((new Gson()).fromJson(multiTouchJson, Actions.class));
+        Actions actions = (new Gson()).fromJson(multiTouchJson, Actions.class);
         actions.setAdapter(new AlteredDummyAdapter());
 
         String sessionId = "123";
@@ -75,7 +75,7 @@ public class ActionsTest {
     @Test
     public void shouldPerformKeyActionsOnASetOfInputSources() throws IOException, AppiumException {
         String keyJson = Helpers.readAssetFile("key-actions.json");
-        Actions actions = Actions.class.cast((new Gson()).fromJson(keyJson, Actions.class));
+        Actions actions = (new Gson()).fromJson(keyJson, Actions.class);
         actions.setAdapter(new AlteredDummyAdapter());
 
         String sessionId = "123";

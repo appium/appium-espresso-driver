@@ -32,7 +32,7 @@ class Clear : RequestHandler<AppiumParams, Void?> {
         try {
             viewInteraction.perform(clearText())
         } catch (e: PerformException) {
-            throw InvalidElementStateException("clear", params.elementId, e)
+            throw InvalidElementStateException("clear", params.elementId!!, e)
         }
 
         return null

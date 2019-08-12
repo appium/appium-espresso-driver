@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.handlers.exceptions
+
+import fi.iki.elonen.NanoHTTPD
 
 
-public class XPathLookupException extends AppiumException {
-    public XPathLookupException(String xpath, String reason) {
-        super(String.format("Could not parse XPath %s: %s", xpath, reason));
+class ElementNotVisibleException(reason: String) : AppiumException(reason) {
+    override fun error(): String {
+        return "element not visible"
+    }
+
+    override fun status(): NanoHTTPD.Response.Status {
+        return NanoHTTPD.Response.Status.BAD_REQUEST
     }
 }

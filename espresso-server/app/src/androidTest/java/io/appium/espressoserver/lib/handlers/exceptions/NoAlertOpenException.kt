@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.handlers.exceptions
 
-public class AppiumException extends Exception {
+import fi.iki.elonen.NanoHTTPD
 
-    public AppiumException() {
-        super();
+class NoAlertOpenException : AppiumException {
+    constructor(reason: String) : super(reason) {}
+
+    constructor() : super("No alerts can be detected on the screen") {}
+
+    override fun error(): String {
+        return "no such alert"
     }
 
-    public AppiumException(String reason) {
-        super(reason);
-    }
-
-    public AppiumException(Throwable e) {
-        super(e);
-    }
-
-    public AppiumException(String reason, Throwable e) {
-        super(reason, e);
+    override fun status(): NanoHTTPD.Response.Status {
+        return NanoHTTPD.Response.Status.NOT_FOUND
     }
 }

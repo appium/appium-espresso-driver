@@ -29,14 +29,14 @@ public class InputSourceTest {
     @Test
     public void shouldDeserializeInputSource() {
         String postJson = "{\"id\":\"something1\"}";
-        InputSource inputSource = InputSource.class.cast((new Gson()).fromJson(postJson, InputSource.class));
+        InputSource inputSource = (new Gson()).fromJson(postJson, InputSource.class);
         assertEquals(inputSource.getId(), "something1");
     }
 
     @Test
     public void shouldDeserializePointerInputSource() {
         String postJson = "{\"type\":\"pointer\",\"id\":\"something2\", \"parameters\": {\"pointerType\": \"touch\"}}";
-        InputSource inputSource = InputSource.class.cast((new Gson()).fromJson(postJson, InputSource.class));
+        InputSource inputSource = (new Gson()).fromJson(postJson, InputSource.class);
         assertEquals(inputSource.getId(), "something2");
         assertEquals(inputSource.getPointerType(), InputSource.PointerType.TOUCH);
     }
@@ -45,7 +45,7 @@ public class InputSourceTest {
     public void shouldDeserializeElementOriginPointer() {
         String postJson = "{\"type\":\"pointer\",\"id\":\"something2\", \"parameters\": {\"pointerType\": \"touch\"}, " +
                 "\"actions\": [{\"type\":\"pointerMove\",\"duration\":1000,\"origin\":{\"element-6066-11e4-a52e-4f735466cecf\":\"some-element-id\"},\"x\":50,\"y\":0}]}";
-        InputSource inputSource = InputSource.class.cast((new Gson()).fromJson(postJson, InputSource.class));
+        InputSource inputSource = (new Gson()).fromJson(postJson, InputSource.class);
         assertEquals(inputSource.getId(), "something2");
         assertEquals(inputSource.getPointerType(), InputSource.PointerType.TOUCH);
         Action action = inputSource.getActions().get(0);
@@ -56,7 +56,7 @@ public class InputSourceTest {
     @Test
     public void shouldDeserializeComplexPointerObject() {
         String postJson = "{\"type\":\"pointer\",\"id\":\"finger1\",\"parameters\":{\"pointerType\":\"touch\"},\"actions\":[{\"type\":\"pointerMove\",\"duration\":0,\"x\":100,\"y\":200},{\"type\":\"pointerDown\",\"button\":0},{\"type\":\"pause\",\"duration\":500},{\"type\":\"pointerMove\",\"duration\":1000,\"origin\":\"pointer\",\"x\":50,\"y\":10},{\"type\":\"pointerUp\",\"button\":0}]}";
-        InputSource inputSource = InputSource.class.cast((new Gson()).fromJson(postJson, InputSource.class));
+        InputSource inputSource = (new Gson()).fromJson(postJson, InputSource.class);
         assertEquals(inputSource.getType(), InputSourceType.POINTER);
         assertEquals(inputSource.getId(), "finger1");
         assertEquals(inputSource.getPointerType(), PointerType.TOUCH);
@@ -92,7 +92,7 @@ public class InputSourceTest {
     @Test
     public void shouldDeserializeComplexKeyObject() {
         String postJson = "{\"type\":\"key\",\"id\":\"keyboard\",\"actions\":[{\"type\":\"keyDown\",\"value\":\"key1\"},{\"type\":\"keyDown\",\"value\":\"key2\"},{\"type\":\"keyUp\",\"value\":\"key1\"},{\"type\":\"keyUp\",\"value\":\"key2\"}]}";
-        InputSource inputSource = InputSource.class.cast((new Gson()).fromJson(postJson, InputSource.class));
+        InputSource inputSource = (new Gson()).fromJson(postJson, InputSource.class);
         assertEquals(inputSource.getType(), InputSourceType.KEY);
         assertEquals(inputSource.getId(), "keyboard");
         assertNull(inputSource.getPointerType());
@@ -132,17 +132,17 @@ public class InputSourceTest {
 
         // Check the initial state
         KeyInputState inputState = (KeyInputState) inputSource.getDefaultState();
-        assertTrue(!inputState.isAlt());
-        assertTrue(!inputState.isCtrl());
-        assertTrue(!inputState.isMeta());
-        assertTrue(!inputState.isShift());
+        assertFalse(inputState.isAlt());
+        assertFalse(inputState.isCtrl());
+        assertFalse(inputState.isMeta());
+        assertFalse(inputState.isShift());
 
         // Add and remove a key and check the state along the way
-        assertTrue(!inputState.isPressed("a"));
+        assertFalse(inputState.isPressed("a"));
         inputState.addPressed("a");
         assertTrue(inputState.isPressed("a"));
         inputState.removePressed("a");
-        assertTrue(!inputState.isPressed("a"));
+        assertFalse(inputState.isPressed("a"));
     }
 
     @Test

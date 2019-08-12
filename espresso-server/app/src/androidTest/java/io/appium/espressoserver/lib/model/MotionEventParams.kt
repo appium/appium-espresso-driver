@@ -9,7 +9,7 @@ import android.view.MotionEvent.BUTTON_SECONDARY
 import android.view.MotionEvent.BUTTON_TERTIARY
 
 data class MotionEventParams(
-    @SerializedName("element")
+    @SerializedName("element", alternate = [W3C_ELEMENT_KEY])
     val targetElement: String?,
     var x: Long = 0,
     var y: Long = 0,

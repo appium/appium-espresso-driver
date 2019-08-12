@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.handlers.exceptions
 
-public class NoSuchElementException extends AppiumException {
+import fi.iki.elonen.NanoHTTPD
 
-    public NoSuchElementException(String reason) {
-        super(reason);
+
+class ScreenCaptureException(reason: String) : AppiumException(reason) {
+    override fun error(): String {
+        return "unable to capture screen"
     }
 
+    override fun status(): NanoHTTPD.Response.Status {
+        return NanoHTTPD.Response.Status.INTERNAL_ERROR
+    }
 }

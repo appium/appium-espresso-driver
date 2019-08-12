@@ -18,10 +18,9 @@ package io.appium.espressoserver.lib.model
 
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.model.SessionParams.DesiredCapabilities
 import java.util.*
 
-class Session private constructor(val id: String, val desiredCapabilities: DesiredCapabilities)
+class Session private constructor(val id: String, val capabilities: W3CCapabilities)
 {
     companion object {
         // Only one session can run at a time so globally cache the current Session ID
@@ -38,12 +37,12 @@ class Session private constructor(val id: String, val desiredCapabilities: Desir
          * @throws SessionNotCreatedException Thrown if a Session is already running
          */
         @Synchronized
-        fun createGlobalSession(desiredCapabilities: DesiredCapabilities): Session {
+        fun createGlobalSession(capabilities: W3CCapabilities): Session {
             globalSession?.let {
                 AndroidLogger.logger.info("Got request for new session creation while the one " +
-                        "is still in progress. Overriding the old session having id %{it.id}");
+                        "is still in progress. Overriding the old session having the id ${it.id}");
             }
-            val globalSession = Session(UUID.randomUUID().toString(), desiredCapabilities)
+            val globalSession = Session(UUID.randomUUID().toString(), capabilities)
             Session.globalSession = globalSession
             return globalSession
         }

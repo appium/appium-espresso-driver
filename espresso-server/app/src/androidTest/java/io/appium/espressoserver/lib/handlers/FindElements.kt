@@ -18,8 +18,8 @@ package io.appium.espressoserver.lib.handlers
 
 import android.view.View
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
-import io.appium.espressoserver.lib.handlers.exceptions.MissingCommandsException
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.helpers.ViewFinder.findAllBy
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.Locator
@@ -36,8 +36,8 @@ class FindElements : RequestHandler<Locator, List<Element>> {
 
         // Return as list of Elements
         return findAllBy(parentView,
-                params.using ?: throw InvalidStrategyException("Locator strategy cannot be empty"),
-                params.value ?: throw MissingCommandsException("No params provided"))
+                params.using ?: throw InvalidSelectorException("Locator strategy cannot be empty"),
+                params.value ?: throw InvalidArgumentException())
                 .map { Element(it) }
     }
 }

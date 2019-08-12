@@ -19,14 +19,14 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Session
-import io.appium.espressoserver.lib.model.SessionParams.DesiredCapabilities
+import io.appium.espressoserver.lib.model.W3CCapabilities
 
-class GetSession : RequestHandler<AppiumParams, DesiredCapabilities?> {
+class GetSession : RequestHandler<AppiumParams, W3CCapabilities?> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): DesiredCapabilities? {
+    override fun handleInternal(params: AppiumParams): W3CCapabilities? {
         Session.globalSession?.let {
-            return it.desiredCapabilities
+            return it.capabilities
         }
         return null
     }

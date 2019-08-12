@@ -14,11 +14,27 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.handlers.exceptions
 
+import fi.iki.elonen.NanoHTTPD
 
-public class ElementNotVisibleException extends AppiumException {
-    public ElementNotVisibleException(String reason) {
-        super(reason);
+const val MESSAGE_UNKNOWN_ERROR = "unknown error"
+val STATUS_UNKNOWN_ERROR = NanoHTTPD.Response.Status.INTERNAL_ERROR
+
+open class AppiumException : Exception {
+    constructor() : super("An unknown server-side error occurred while processing the command") {}
+
+    constructor(reason: String) : super(reason) {}
+
+    constructor(e: Throwable) : super(e) {}
+
+    constructor(reason: String, e: Throwable) : super(reason, e) {}
+
+    open fun error(): String {
+        return MESSAGE_UNKNOWN_ERROR
+    }
+
+    open fun status(): NanoHTTPD.Response.Status {
+        return STATUS_UNKNOWN_ERROR
     }
 }

@@ -32,7 +32,7 @@ class Click : RequestHandler<AppiumParams, Void?> {
         try {
             viewInteraction.perform(click())
         } catch (e: PerformException) {
-            throw InvalidElementStateException("click", params.elementId, e)
+            throw InvalidElementStateException("click", params.elementId!!, e)
         }
 
         return null

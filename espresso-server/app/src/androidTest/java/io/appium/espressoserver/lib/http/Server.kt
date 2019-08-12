@@ -16,15 +16,12 @@
 
 package io.appium.espressoserver.lib.http
 
-import android.util.Log
 import com.google.gson.GsonBuilder
 import fi.iki.elonen.NanoHTTPD
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.StringHelpers
 import io.appium.espressoserver.lib.http.response.AppiumResponse
 import io.appium.espressoserver.lib.http.response.BaseResponse
-import io.appium.espressoserver.lib.model.AppiumStatus
-import io.appium.espressoserver.lib.model.gsonadapters.AppiumStatusAdapter
 import java.io.IOException
 import java.net.SocketException
 import java.util.*
@@ -41,7 +38,6 @@ class Server private constructor() : NanoHTTPD(DEFAULT_PORT) {
     private fun buildFixedLengthResponse(response: BaseResponse): Response {
         val gsonBuilder = GsonBuilder()
                 .serializeNulls()
-                .registerTypeAdapter(AppiumStatus::class.java, AppiumStatusAdapter())
         return newFixedLengthResponse(response.httpStatus,
                 MediaType.APPLICATION_JSON, gsonBuilder.create().toJson(response))
     }
@@ -54,26 +50,24 @@ class Server private constructor() : NanoHTTPD(DEFAULT_PORT) {
         } catch (e: Exception) {
             when (e) {
                 is RuntimeException, is IOException, is ResponseException ->
-                    AppiumResponse(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e))
+                    AppiumResponse(e)
                 else -> throw e
             }
         }
 
-        if (response is AppiumResponse<*>) {
-            if (response.status === AppiumStatus.SUCCESS) {
+        if (response is AppiumResponse) {
+            if (response.httpStatus === Response.Status.OK) {
                 AndroidLogger.logger.info("Responding to server with value: " +
                         StringHelpers.abbreviate(response.value?.toString(), 300))
             } else {
-                AndroidLogger.logger.info("Responding to server with error: " +
-                        response.value)
+                AndroidLogger.logger.info("Responding to server with error: ${response.value}")
             }
         }
 
         return try {
             buildFixedLengthResponse(response)
         } catch (e: RuntimeException) {
-            buildFixedLengthResponse(
-                    AppiumResponse(AppiumStatus.UNKNOWN_ERROR, Log.getStackTraceString(e)))
+            buildFixedLengthResponse(AppiumResponse(e))
         }
 
     }

@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.handlers.exceptions
 
-public class InvalidStrategyException extends AppiumException {
-    public InvalidStrategyException(String reason) {
-        super(reason);
+import fi.iki.elonen.NanoHTTPD
+
+class StaleElementException(elementId: String) :
+        AppiumException(String.format("The cached element %s no longer exists in the Android View hierarchy. Try to find it using a locator.", elementId)) {
+    override fun error(): String {
+        return "stale element reference"
+    }
+
+    override fun status(): NanoHTTPD.Response.Status {
+        return NanoHTTPD.Response.Status.NOT_FOUND
     }
 }

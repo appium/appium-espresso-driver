@@ -102,8 +102,10 @@ object KReflectionUtils {
     fun extractDeclaredProperties (instance: Any): Map<String, Any?> {
         return instance::class.declaredMemberProperties
                 .fold(mutableMapOf<String, Any?>()) { acc, prop ->
-                    @Suppress("UNCHECKED_CAST")
-                    acc[prop.name] = (prop as KProperty1<Any, Any?>).get(instance)
+                    try {
+                        @Suppress("UNCHECKED_CAST")
+                        acc[prop.name] = (prop as KProperty1<Any, Any?>).get(instance)
+                    } catch (ign:Exception) {}
                     acc
                 }.toMap()
     }

@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model.gsonadapters
+package io.appium.espressoserver.lib.handlers.exceptions
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonPrimitive
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonSerializer
+import fi.iki.elonen.NanoHTTPD
 
-import java.lang.reflect.Type
-
-import io.appium.espressoserver.lib.model.AppiumStatus
-
-class AppiumStatusAdapter : JsonSerializer<AppiumStatus> {
-
-    override fun serialize(status: AppiumStatus, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
-        return JsonPrimitive(status.code)
+class NoSuchElementException(reason: String) : AppiumException(reason) {
+    override fun error(): String {
+        return "no such element"
     }
 
+    override fun status(): NanoHTTPD.Response.Status {
+        return NanoHTTPD.Response.Status.NOT_FOUND
+    }
 }

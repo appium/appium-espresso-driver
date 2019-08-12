@@ -17,7 +17,6 @@
 package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.helpers.KReflectionUtils.extractDeclaredProperties
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Session
 
@@ -28,7 +27,10 @@ class GetSessions : RequestHandler<AppiumParams, Collection<Map<String, Any?>>> 
         Session.globalSession?.let { session ->
             return listOf<Map<String, Any?>>(mapOf(
                     "id" to session.id,
-                    "capabilities" to extractDeclaredProperties(session.desiredCapabilities)
+                    "capabilities" to mapOf(
+                            "firstMatch" to session.capabilities.firstMatch,
+                            "alwaysMatch" to session.capabilities.alwaysMatch
+                    )
             ))
         }
         return emptyList()

@@ -4,7 +4,6 @@ import androidx.test.espresso.web.model.Atom
 import androidx.test.espresso.web.webdriver.DriverAtoms
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.KReflectionUtils
-import io.appium.espressoserver.lib.model.SessionParams
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.junit.Test
@@ -68,7 +67,8 @@ class `KReflectionUtils Test` {
 
     @Test
     fun `should extract declared properties from an instance`() {
-        val sessionParams = SessionParams.DesiredCapabilities("appPackage", "appActivity")
+        data class TestData(val appPackage:String, val appActivity:String)
+        val sessionParams = TestData("appPackage", "appActivity")
         val extractedProps = KReflectionUtils.extractDeclaredProperties(sessionParams)
         assertEquals(extractedProps["appPackage"], "appPackage")
         assertEquals(extractedProps["appActivity"], "appActivity")

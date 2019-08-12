@@ -195,7 +195,7 @@ class SourceDocument @JvmOverloads constructor(
         if (lastError is OutOfMemoryError) {
             throw lastError
         }
-        throw AppiumException(lastError)
+        throw AppiumException(lastError!!)
     }
 
     private fun performCleanup() {
@@ -258,7 +258,7 @@ class SourceDocument @JvmOverloads constructor(
                 RESOURCES_GUARD.release()
             }
         } catch (xe: XPathExpressionException) {
-            throw XPathLookupException(xpathSelector, xe.message)
+            throw XPathLookupException(xpathSelector, xe.message!!)
         }
 
     }

@@ -37,7 +37,7 @@ object ActionsProcessor {
     fun processSourceActionSequence(inputSource: InputSource, activeInputSources: ActiveInputSources, inputStateTable: InputStateTable): List<ActionObject> {
         // 1: Get the type
         // 2: If type is not "key", "pointer", or "none", return an error
-        val type = inputSource.type
+        inputSource.type
                 ?: throw InvalidArgumentException("'type' is required in input source and must be one of: pointer, key, none")
 
 

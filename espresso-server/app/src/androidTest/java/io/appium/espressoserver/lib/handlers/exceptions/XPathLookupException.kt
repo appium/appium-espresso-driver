@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.handlers.exceptions
 
-public class MissingCommandsException extends AppiumException {
-    public MissingCommandsException(String reason) {
-        super(reason);
+import fi.iki.elonen.NanoHTTPD
+
+
+class XPathLookupException(xpath: String, reason: String) :
+        AppiumException(String.format("Could not parse XPath %s: %s", xpath, reason)) {
+    override fun error(): String {
+        return "invalid selector"
+    }
+
+    override fun status(): NanoHTTPD.Response.Status {
+        return NanoHTTPD.Response.Status.BAD_REQUEST
     }
 }

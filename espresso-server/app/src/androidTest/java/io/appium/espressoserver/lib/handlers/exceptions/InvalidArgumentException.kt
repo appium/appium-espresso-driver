@@ -14,11 +14,22 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.handlers.exceptions
 
-/**
- * Exception is thrown when trying to register the same route
- */
-public class DuplicateRouteException extends RuntimeException {
+import fi.iki.elonen.NanoHTTPD
 
+class InvalidArgumentException : AppiumException {
+    constructor() : super("The arguments passed to the command are either invalid or malformed")
+
+    constructor(reason: String) : super(reason) {}
+
+    constructor(cause: Throwable) : super(cause) {}
+
+    override fun error(): String {
+        return "invalid argument"
+    }
+
+    override fun status(): NanoHTTPD.Response.Status {
+        return NanoHTTPD.Response.Status.BAD_REQUEST
+    }
 }

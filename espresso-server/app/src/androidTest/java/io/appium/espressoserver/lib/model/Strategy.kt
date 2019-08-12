@@ -18,8 +18,6 @@ package io.appium.espressoserver.lib.model
 
 import com.google.gson.annotations.SerializedName
 
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidStrategyException
-
 /**
  * Enumerate all possible locator strategies
  */

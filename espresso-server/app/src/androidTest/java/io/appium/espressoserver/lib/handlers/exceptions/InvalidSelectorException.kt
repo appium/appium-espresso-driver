@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.handlers.exceptions
 
-public class SessionNotCreatedException extends AppiumException {
+import fi.iki.elonen.NanoHTTPD
 
-    public SessionNotCreatedException(Throwable cause) {
-        super(cause);
+class InvalidSelectorException : AppiumException {
+    constructor() : super("Argument was an invalid selector")
+
+    constructor(reason: String): super(reason)
+
+    override fun error(): String {
+        return "invalid selector"
+    }
+
+    override fun status(): NanoHTTPD.Response.Status {
+        return NanoHTTPD.Response.Status.BAD_REQUEST
     }
 }

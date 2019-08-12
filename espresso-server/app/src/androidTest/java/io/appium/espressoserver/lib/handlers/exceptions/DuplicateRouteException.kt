@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers.exceptions;
+package io.appium.espressoserver.lib.handlers.exceptions
 
-
-public class ScreenCaptureException extends AppiumException {
-    public ScreenCaptureException(String reason) {
-        super(reason);
-    }
-}
+/**
+ * Exception is thrown when trying to register the same route
+ */
+class DuplicateRouteException : RuntimeException()
