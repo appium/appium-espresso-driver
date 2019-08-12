@@ -1,0 +1,26 @@
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
+import { APIDEMO_CAPS } from '../desired';
+
+
+chai.should();
+chai.use(chaiAsPromised);
+
+
+describe('clipboard', function () {
+  this.timeout(MOCHA_TIMEOUT);
+
+  let driver;
+  before(async function () {
+    driver = await initSession(APIDEMO_CAPS);
+  });
+  after(async function () {
+    await deleteSession();
+  });
+
+  it('should send keys to the correct element', async function () {
+    await driver.setClipboard(new Buffer.from('Hello').toString('base64'), 'plaintext');
+    await driver.getClipboard.should.eventually.eql('Hello');
+  });
+});
