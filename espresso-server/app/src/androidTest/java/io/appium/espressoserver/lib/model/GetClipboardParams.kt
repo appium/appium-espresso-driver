@@ -17,5 +17,5 @@
 package io.appium.espressoserver.lib.model
 
 data class GetClipboardParams(
-    val contentType: ClipboardDataType? = ClipboardDataType.PLAINTEXT
+    val contentType: ClipboardDataType = ClipboardDataType.PLAINTEXT
 ) : AppiumParams()
