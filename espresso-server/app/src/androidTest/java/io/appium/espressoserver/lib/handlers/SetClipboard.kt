@@ -35,12 +35,6 @@ class SetClipboard : RequestHandler<SetClipboardParams, Void?> {
     override fun handleInternal(params: SetClipboardParams): Void? {
         params.content ?: throw InvalidArgumentException("The 'content' argument is mandatory")
 
-        // FIXME: Can be null while contentType should be ClipboardDataType.PLAINTEXT by default
-        if (params.contentType == null
-            || !ClipboardDataType.supportedDataTypes().contains(params.contentType.toString().toLowerCase())) {
-            throw ClipboardDataType.invalidClipboardDataType(params.contentType)
-        }
-
         try {
             mInstrumentation.runOnMainSync(SetClipboardRunnable(
                     params.contentType, params.label, fromBase64String(params.content)))

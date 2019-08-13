@@ -16,6 +16,19 @@
 
 package io.appium.espressoserver.lib.model
 
+import com.google.gson.annotations.SerializedName
+
 data class GetClipboardParams(
-    val contentType: ClipboardDataType = ClipboardDataType.PLAINTEXT
-) : AppiumParams()
+    @SerializedName("contentType")
+    private val _contentType: String?
+) : AppiumParams() {
+    val contentType : ClipboardDataType
+        get() {
+            return when (_contentType) {
+                null, ClipboardDataType.PLAINTEXT.name, ClipboardDataType.PLAINTEXT.name.toLowerCase()  ->
+                    ClipboardDataType.PLAINTEXT
+                else ->
+                    throw ClipboardDataType.invalidClipboardDataType(_contentType)
+            }
+        }
+}

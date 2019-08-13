@@ -33,12 +33,6 @@ class GetClipboard : RequestHandler<GetClipboardParams, String?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: GetClipboardParams): String? {
-        // FIXME: Can be null while contentType should be ClipboardDataType.PLAINTEXT by default
-        if (params.contentType == null
-            || !ClipboardDataType.supportedDataTypes().contains(params.contentType.toString().toLowerCase())) {
-            throw ClipboardDataType.invalidClipboardDataType(params.contentType)
-        }
-
         try {
             return getClipboardResponse(params.contentType)
         } catch (e: IllegalArgumentException) {

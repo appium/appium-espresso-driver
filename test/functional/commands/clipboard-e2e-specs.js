@@ -21,6 +21,7 @@ describe('clipboard', function () {
 
   it('should set and get clipboard', async function () {
     await driver.setClipboard(new Buffer.from('Hello').toString('base64'), 'plaintext');
-    await driver.getClipboard().should.eventually.eql('Hello');
+    // 'SGVsbG8=' is 'Hello' in base 64 encoding
+    await driver.getClipboard('PLAINTEXT').should.eventually.eql('SGVsbG8=');
   });
 });
