@@ -34,7 +34,6 @@ class SetClipboard : RequestHandler<SetClipboardParams, Void?> {
     @Throws(AppiumException::class)
     override fun handleInternal(params: SetClipboardParams): Void? {
         params.content ?: throw InvalidArgumentException("The 'content' argument is mandatory")
-
         try {
             mInstrumentation.runOnMainSync(SetClipboardRunnable(
                     params.contentType, params.label, fromBase64String(params.content)))
