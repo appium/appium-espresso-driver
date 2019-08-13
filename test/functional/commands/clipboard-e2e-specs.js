@@ -19,8 +19,8 @@ describe('clipboard', function () {
     await deleteSession();
   });
 
-  it('should send keys to the correct element', async function () {
+  it('should set and get clipboard', async function () {
     await driver.setClipboard(new Buffer.from('Hello').toString('base64'), 'plaintext');
-    await driver.getClipboard.should.eventually.eql('Hello');
+    await driver.getClipboard().should.eventually.eql('Hello');
   });
 });
