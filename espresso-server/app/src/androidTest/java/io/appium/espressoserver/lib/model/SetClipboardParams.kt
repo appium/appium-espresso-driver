@@ -26,8 +26,10 @@ data class SetClipboardParams(
 ) : AppiumParams() {
     val contentType : ClipboardDataType
         get() {
-            return when (_contentType) {
-                null, ClipboardDataType.PLAINTEXT.name, ClipboardDataType.PLAINTEXT.name.toLowerCase()  ->
+            if (_contentType == null) return ClipboardDataType.PLAINTEXT
+
+            return when (_contentType.toUpperCase()) {
+                ClipboardDataType.PLAINTEXT.name ->
                     ClipboardDataType.PLAINTEXT
                 else ->
                     throw ClipboardDataType.invalidClipboardDataType(_contentType)

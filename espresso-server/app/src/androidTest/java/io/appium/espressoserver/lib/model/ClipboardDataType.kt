@@ -8,7 +8,7 @@ enum class ClipboardDataType {
     companion object {
         fun invalidClipboardDataType(contentType: String?) : InvalidArgumentException {
             return InvalidArgumentException(
-                "Only ${values().map { it.toString().toLowerCase() }} content types are supported. " +
+                "Only case insensitive ${values().map { it.toString().toUpperCase() }} content types are supported. " +
                         "'$contentType' is given instead"
             )
         }
