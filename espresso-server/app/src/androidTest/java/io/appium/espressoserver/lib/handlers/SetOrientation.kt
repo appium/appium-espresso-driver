@@ -23,6 +23,7 @@ import io.appium.espressoserver.lib.viewaction.OrientationChange
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import io.appium.espressoserver.lib.model.OrientationType
 
 class SetOrientation : RequestHandler<OrientationParams, Void?> {
 
@@ -33,8 +34,8 @@ class SetOrientation : RequestHandler<OrientationParams, Void?> {
         // Validate the orientaiton
         orientation ?: throw AppiumException("Screen orientation value must not be null")
 
-        if (!listOf("LANDSCAPE", "PORTRAIT").contains(orientation.toUpperCase())) {
-            throw AppiumException("Screen orientation must be one of LANDSCAPE or PORTRAIT. Found '${orientation}'");
+        if (!OrientationType.supportedOrientationTypes().contains(orientation.toUpperCase())) {
+            throw AppiumException("Screen orientation must be one of LANDSCAPE or PORTRAIT. Found '$orientation'");
         }
 
         // Get the view interaction for the element or for the root, if no element provided
@@ -45,14 +46,14 @@ class SetOrientation : RequestHandler<OrientationParams, Void?> {
         }
 
         try {
-            if (orientation.equals("LANDSCAPE", ignoreCase = true)) {
+            if (orientation.equals(OrientationType.LANDSCAPE.name, ignoreCase = true)) {
                 viewInteraction.perform(OrientationChange.orientationLandscape())
             } else {
                 viewInteraction.perform(OrientationChange.orientationPortrait())
             }
-            return null;
+            return null
         } catch (e: Exception) {
-            throw AppiumException("Cannot change screen orientation to '${orientation}'", e)
+            throw AppiumException("Cannot change screen orientation to '$orientation'", e)
         }
     }
 }

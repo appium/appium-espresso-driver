@@ -20,19 +20,21 @@ import android.content.pm.ActivityInfo
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.OrientationType
 import io.appium.espressoserver.lib.model.ViewElement
+import io.appium.espressoserver.lib.viewaction.ViewGetter
 
-class GetOrientation : RequestHandler<AppiumParams, Int> {
+class GetOrientation : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): Int {
-        val view = Element.getViewById(params.elementId)
-        return try {
-            when (ViewElement(view).extractActivity()?.requestedOrientation) {
+    override fun handleInternal(params: AppiumParams): String {
+        val rootView = ViewGetter().rootView
+
+        try {
+            return when (ViewElement(rootView).extractActivity()?.requestedOrientation) {
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                else -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE -> OrientationType.LANDSCAPE.name
+                else -> OrientationType.PORTRAIT.name
             }
         } catch (e: Exception) {
             throw AppiumException("Cannot get screen orientation", e)
