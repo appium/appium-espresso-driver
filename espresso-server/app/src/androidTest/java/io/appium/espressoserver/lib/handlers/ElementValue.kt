@@ -15,12 +15,12 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementVal
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: ElementValueParams): Void? {
-        val value = if (params.value != null) {
-            params.value!!.joinToString()
-        } else {
-            throw InvalidArgumentException("Must provide 'value' property")
+        val value: String = when (Pair(params.value == null, params.text == null)) {
+            Pair(first=true, second=true) -> throw InvalidArgumentException("Must provide 'value' or 'text' property")
+            Pair(first=false, second=true) -> params.value!!.joinToString(separator="")
+            Pair(first=true, second=false) -> params.text!!
+            else -> params.value!!.joinToString() // for backward-compatibility
         }
-
 
         val elementId = params.elementId
         val view = Element.getViewById(elementId)

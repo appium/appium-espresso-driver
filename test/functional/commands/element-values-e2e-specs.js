@@ -24,7 +24,7 @@ describe('ElementValue', function () {
 
   it('should set value and replace them', async function () {
     let el = await driver.elementById('io.appium.android.apis:id/left_text_edit');
-    await el.setImmediateValue('hello');
+    await el.setImmediateValue(['hello']);
 
     let elValue = await driver.elementById('io.appium.android.apis:id/left_text_edit');
     await elValue.text().should.eventually.equal('Left is besthello');
