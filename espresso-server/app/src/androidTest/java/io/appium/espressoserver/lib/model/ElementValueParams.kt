@@ -1,5 +1,5 @@
 package io.appium.espressoserver.lib.model
 
 data class ElementValueParams(
-    var value: String? = null
+    var value: List<String>? = null
 ) : AppiumParams()

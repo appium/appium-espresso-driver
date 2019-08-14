@@ -15,7 +15,13 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementVal
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: ElementValueParams): Void? {
-        val value = params.value ?: throw InvalidArgumentException("Must provide 'value' property");
+        val value = if (params.value != null) {
+            params.value!!.joinToString()
+        } else {
+            throw InvalidArgumentException("Must provide 'value' property")
+        }
+
+
         val elementId = params.elementId
         val view = Element.getViewById(elementId)
 
@@ -35,9 +41,9 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementVal
 
         val viewInteraction = Element.getViewInteractionById(elementId)
         if (isReplacing) {
-            viewInteraction.perform(replaceText(params.value))
+            viewInteraction.perform(replaceText(value))
         } else {
-            viewInteraction.perform(typeText(params.value))
+            viewInteraction.perform(typeText(value))
         }
         return null
     }
