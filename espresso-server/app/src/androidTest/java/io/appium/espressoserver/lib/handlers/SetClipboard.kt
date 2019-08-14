@@ -16,7 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.app.Instrumentation
 import android.util.Base64
 
 import java.nio.charset.StandardCharsets

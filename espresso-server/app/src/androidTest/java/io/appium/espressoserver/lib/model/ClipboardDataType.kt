@@ -1,18 +1,23 @@
 package io.appium.espressoserver.lib.model
 
-import com.google.gson.annotations.SerializedName
-
-import java.util.Arrays
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 
 enum class ClipboardDataType {
-    @SerializedName("PLAINTEXT")
     PLAINTEXT;
 
-
     companion object {
+        fun getContentType(contentType: String?): ClipboardDataType {
+            if (contentType == null) return PLAINTEXT
 
-        fun supportedDataTypes(): String {
-            return Arrays.toString(values())
+            return when (contentType.toUpperCase()) {
+                PLAINTEXT.name ->
+                    PLAINTEXT
+                else ->
+                    throw InvalidArgumentException(
+                        "Only case insensitive ${values().map { it.toString() }} content types are supported. " +
+                                "'$contentType' is given instead")
+            }
+
         }
     }
 }
