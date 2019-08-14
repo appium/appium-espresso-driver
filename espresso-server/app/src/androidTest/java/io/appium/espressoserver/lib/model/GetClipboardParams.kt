@@ -23,14 +23,5 @@ data class GetClipboardParams(
     private val _contentType: String?
 ) : AppiumParams() {
     val contentType : ClipboardDataType
-        get() {
-            if (_contentType == null) return ClipboardDataType.PLAINTEXT
-
-            return when (_contentType.toUpperCase()) {
-                ClipboardDataType.PLAINTEXT.name ->
-                    ClipboardDataType.PLAINTEXT
-                else ->
-                    throw ClipboardDataType.invalidClipboardDataType(_contentType)
-            }
-        }
+        get() = ClipboardDataType.getContentType(_contentType)
 }
