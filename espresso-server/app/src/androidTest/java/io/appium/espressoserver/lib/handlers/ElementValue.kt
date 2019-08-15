@@ -7,7 +7,7 @@ import androidx.test.espresso.PerformException
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.model.ElementValueParams
+import io.appium.espressoserver.lib.model.TextValueParams
 
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.typeText
@@ -15,10 +15,10 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateExcep
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
-class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementValueParams, Void?> {
+class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: ElementValueParams): Void? {
+    override fun handleInternal(params: TextValueParams): Void? {
         val value: String = when (Pair(params.value == null, params.text == null)) {
             Pair(first=true, second=true) -> throw InvalidArgumentException("Must provide 'value' or 'text' property")
             Pair(first=false, second=true) -> params.value!!.joinToString(separator="") // for MJSONWP
@@ -48,7 +48,7 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementVal
             try {
                 viewInteraction.perform(typeText(value))
             } catch (e: PerformException) {
-                throw InvalidElementStateException("setValueImmediate", params.elementId!!, e)
+                throw InvalidElementStateException("sendKeys/setValueImmediate", params.elementId!!, e)
             } catch (e: RuntimeException) {
                 e.message?.let {
                     if (!it.contains("IME does not understand how to translate")) throw e
