@@ -2,6 +2,7 @@ package io.appium.espressoserver.lib.handlers
 
 import android.widget.NumberPicker
 import android.widget.ProgressBar
+import androidx.test.espresso.PerformException
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
@@ -10,6 +11,9 @@ import io.appium.espressoserver.lib.model.ElementValueParams
 
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.typeText
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
+import io.appium.espressoserver.lib.helpers.AndroidLogger
+import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
 class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementValueParams, Void?> {
 
@@ -17,9 +21,8 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementVal
     override fun handleInternal(params: ElementValueParams): Void? {
         val value: String = when (Pair(params.value == null, params.text == null)) {
             Pair(first=true, second=true) -> throw InvalidArgumentException("Must provide 'value' or 'text' property")
-            Pair(first=false, second=true) -> params.value!!.joinToString(separator="")
-            Pair(first=true, second=false) -> params.text!!
-            else -> params.value!!.joinToString() // for backward-compatibility
+            Pair(first=false, second=true) -> params.value!!.joinToString(separator="") // for MJSONWP
+            else -> params.text!! // Prior W3C
         }
 
         val elementId = params.elementId
@@ -35,16 +38,32 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<ElementVal
                 return null
             }
         } catch (e: NumberFormatException) {
-            throw InvalidArgumentException(String.format("Cannot convert '%s' to an integer",
-                    params.value))
+            throw InvalidArgumentException(String.format("Cannot convert '$value' to an integer"))
         }
 
         val viewInteraction = Element.getViewInteractionById(elementId)
         if (isReplacing) {
             viewInteraction.perform(replaceText(value))
         } else {
-            viewInteraction.perform(typeText(value))
+            try {
+                viewInteraction.perform(typeText(value))
+            } catch (e: PerformException) {
+                throw InvalidElementStateException("setValueImmediate", params.elementId!!, e)
+            } catch (e: RuntimeException) {
+                e.message?.let {
+                    if (!it.contains("IME does not understand how to translate")) throw e
+                }
+                AndroidLogger.logger.debug("Trying replaceText action as a workaround to type the '$value' text into the input field")
+                val currentText = ViewTextGetter().get(viewInteraction)
+                if (currentText.rawText.isEmpty() || currentText.isHint) {
+                    viewInteraction.perform(replaceText(value))
+                } else {
+                    AndroidLogger.logger.debug("Current input field's text: '$currentText'")
+                    viewInteraction.perform(replaceText(currentText.toString() + value))
+                }
+            }
         }
+
         return null
     }
 }
