@@ -58,11 +58,11 @@ open class DummyW3CActionAdapter : BaseW3CActionAdapter() {
         }
     }
 
-    override fun keyDown(keyEvent: W3CKeyEvent) {
+    override fun keyDown(keyDownEvent: W3CKeyEvent) {
         // No-op
     }
 
-    override fun keyUp(keyEvent: W3CKeyEvent) {
+    override fun keyUp(keyUpEvent: W3CKeyEvent) {
         // No-op
     }
 

@@ -2,10 +2,6 @@ package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso
 
 import android.content.Context
 import android.graphics.Point
-import android.util.DisplayMetrics
-import android.view.View
-
-import java.util.Collections
 
 import androidx.test.espresso.UiController
 import androidx.test.espresso.action.GeneralLocation
@@ -47,13 +43,13 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     }
 
     @Throws(AppiumException::class)
-    override fun keyDown(keyEvent: W3CKeyEvent) {
-        androidKeyEvent.keyDown(keyEvent)
+    override fun keyDown(keyDownEvent: W3CKeyEvent) {
+        androidKeyEvent.keyDown(keyDownEvent)
     }
 
     @Throws(AppiumException::class)
-    override fun keyUp(keyEvent: W3CKeyEvent) {
-        androidKeyEvent.keyUp(keyEvent)
+    override fun keyUp(keyUpEvent: W3CKeyEvent) {
+        androidKeyEvent.keyUp(keyUpEvent)
     }
 
     @Throws(AppiumException::class)

@@ -2,18 +2,13 @@ package io.appium.espressoserver.test.helpers.w3c
 
 
 import org.junit.Test
-import java.util.concurrent.Callable
-import java.util.concurrent.CompletionService
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorCompletionService
 import java.util.concurrent.Executors
-import java.util.concurrent.Future
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter
-import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.BaseDispatchResult
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType
@@ -206,6 +201,7 @@ class TickTest {
         tick.addAction(actionObjectTwo)
 
         class ExtendedDummyW3CActionAdapter : DummyW3CActionAdapter() {
+            @Suppress("UNUSED_PARAMETER", "unused")
             fun pointerMove(sourceId: String,
                             pointerType: PointerType,
                             currentX: Float?, currentY: Float?,

@@ -8,7 +8,6 @@ import java.util.ArrayList
 
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
-import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType
@@ -25,11 +24,7 @@ import io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.proce
 import io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerMoveAction
 import io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerUpOrDownAction
 import io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertNull
-import junit.framework.Assert.fail
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 
 class ProcessorTest {
 

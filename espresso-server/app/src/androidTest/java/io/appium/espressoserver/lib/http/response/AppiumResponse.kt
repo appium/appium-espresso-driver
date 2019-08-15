@@ -38,16 +38,17 @@ class AppiumResponse : BaseResponse {
         init(value, sessionId)
     }
 
-    private fun formatError(e: AppiumException): Map<String, String> = mapOf(
+    private fun formatError(e: AppiumException,
+                            originalStacktrace: String): Map<String, String> = mapOf(
         "error" to e.error(),
         "message" to (e.message ?: MESSAGE_UNKNOWN_ERROR),
-        "stacktrace" to Log.getStackTraceString(e)
+        "stacktrace" to originalStacktrace
     )
 
     private fun init(value: Any?, sessionId: String?) {
         if (value is Throwable) {
             val e = if (value is AppiumException) value else AppiumException(value)
-            this.value = formatError(e)
+            this.value = formatError(e, Log.getStackTraceString(value))
             this.httpStatus = e.status()
         } else {
             this.value = value
