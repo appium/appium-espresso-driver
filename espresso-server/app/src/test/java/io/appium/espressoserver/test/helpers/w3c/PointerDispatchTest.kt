@@ -3,19 +3,13 @@ package io.appium.espressoserver.test.helpers.w3c
 
 import org.junit.Test
 import java.util.concurrent.Callable
-import java.util.concurrent.CompletionService
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorCompletionService
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.Future
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter
-import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter.PointerMoveEvent
-import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.BaseDispatchResult
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType
@@ -39,6 +33,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
+import kotlin.math.abs
 
 class PointerDispatchTest {
 
@@ -49,7 +44,7 @@ class PointerDispatchTest {
     fun `should no-op pointer move if no buttons`() {
         val dummyW3CActionAdapter = DummyW3CActionAdapter()
         pointerInputSource = PointerInputState(TOUCH)
-        pointerInputSource!!.type = PointerType.TOUCH
+        pointerInputSource!!.type = TOUCH
 
         val executorService = Executors.newSingleThreadExecutor()
         val callable = performPointerMove(
@@ -68,7 +63,7 @@ class PointerDispatchTest {
     fun `should do one move if duration zero`() {
         val dummyW3CActionAdapter = DummyW3CActionAdapter()
         pointerInputSource = PointerInputState(TOUCH)
-        pointerInputSource!!.type = PointerType.TOUCH
+        pointerInputSource!!.type = TOUCH
         pointerInputSource!!.x = 10f
         pointerInputSource!!.y = 20f
         pointerInputSource!!.addPressed(0)
@@ -94,7 +89,7 @@ class PointerDispatchTest {
     fun `should move pointer in intervals`() {
         val dummyW3CActionAdapter = DummyW3CActionAdapter()
         pointerInputSource = PointerInputState(TOUCH)
-        pointerInputSource!!.type = PointerType.TOUCH
+        pointerInputSource!!.type = TOUCH
         pointerInputSource!!.x = 10f
         pointerInputSource!!.y = 20f
         pointerInputSource!!.addPressed(0)
@@ -115,7 +110,7 @@ class PointerDispatchTest {
         } while (dispatchResult.hasNext())
 
         val pointerMoveEvents = dummyW3CActionAdapter.getPointerMoveEvents()
-        assertTrue(Math.abs(pointerMoveEvents.size - 20) <= 2) // Should be 20 moves per the 1 second (give or take 1)
+        assertTrue(abs(pointerMoveEvents.size - 20) <= 2) // Should be 20 moves per the 1 second (give or take 1)
         assertFloatEquals(pointerMoveEvents[0].currentX, 10f)
         assertFloatEquals(pointerMoveEvents[0].currentY, 20f)
         assertFloatEquals(pointerMoveEvents[pointerMoveEvents.size - 1].x, 30f)
@@ -143,13 +138,13 @@ class PointerDispatchTest {
     fun `should run multiple pointer moves`() {
         val dummyW3CActionAdapter = DummyW3CActionAdapter()
         pointerInputSource = PointerInputState(TOUCH)
-        pointerInputSource!!.type = PointerType.TOUCH
+        pointerInputSource!!.type = TOUCH
         pointerInputSource!!.x = 10f
         pointerInputSource!!.y = 20f
         pointerInputSource!!.addPressed(0)
 
         val pointerInputSourceTwo = PointerInputState(TOUCH)
-        pointerInputSourceTwo.type = PointerType.TOUCH
+        pointerInputSourceTwo.type = TOUCH
         pointerInputSourceTwo.x = 10f
         pointerInputSourceTwo.y = 20f
         pointerInputSourceTwo.addPressed(0)
@@ -190,12 +185,12 @@ class PointerDispatchTest {
         for (pointerMoveEvent in pointerMoveEvents) {
             if ("any" == pointerMoveEvent.sourceId) {
                 hasAny = true
-                assertTrue(pointerMoveEvent.x >= 10 && pointerMoveEvent.x <= 30)
-                assertTrue(pointerMoveEvent.y >= 20 && pointerMoveEvent.y <= 40)
+                assertTrue(pointerMoveEvent.x in 10.0..30.0)
+                assertTrue(pointerMoveEvent.y in 20.0..40.0)
             } else if ("any2" == pointerMoveEvent.sourceId) {
                 hasAny2 = true
-                assertTrue(pointerMoveEvent.x >= 20 && pointerMoveEvent.x <= 40)
-                assertTrue(pointerMoveEvent.y >= 30 && pointerMoveEvent.y <= 50)
+                assertTrue(pointerMoveEvent.x in 20.0..40.0)
+                assertTrue(pointerMoveEvent.y in 30.0..50.0)
 
             }
         }
@@ -225,9 +220,9 @@ class PointerDispatchTest {
             val actionObject = ActionObject(
                     "id", InputSourceType.POINTER, POINTER_MOVE, 0
             )
-            actionObject.setX(badX[i].toFloat())
-            actionObject.setY(badY[i].toFloat())
-            actionObject.setOrigin(Origin(badOrigin[i]))
+            actionObject.x = badX[i].toFloat()
+            actionObject.y = badY[i].toFloat()
+            actionObject.origin = Origin(badOrigin[i])
 
             try {
                 dispatchPointerMove(dummyW3CActionAdapter, "any", actionObject,
@@ -355,6 +350,7 @@ class PointerDispatchTest {
     fun `should return dispatch up immediately if button is not pressed`() {
         class TempDummyAdapter : DummyW3CActionAdapter() {
             @Throws(AppiumException::class)
+            @Suppress("UNUSED_PARAMETER", "unused")
             fun pointerUp(button: Int, sourceId: String, pointerType: PointerType,
                           x: Float?, y: Float?, depressedButtons: Set<Int>,
                           globalKeyInputState: KeyInputState) {

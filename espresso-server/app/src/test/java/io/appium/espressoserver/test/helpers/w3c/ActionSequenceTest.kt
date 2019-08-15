@@ -31,9 +31,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.PO
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER
 import io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals
-import junit.framework.Assert.assertTrue
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
+import org.junit.Assert.*
 
 class ActionSequenceTest {
 
