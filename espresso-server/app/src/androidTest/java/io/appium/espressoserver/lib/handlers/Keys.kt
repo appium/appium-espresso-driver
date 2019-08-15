@@ -22,22 +22,25 @@ import io.appium.espressoserver.lib.helpers.w3c.models.Actions.ActionsBuilder
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionBuilder
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceBuilder
-import io.appium.espressoserver.lib.model.TextParams
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_DOWN
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_UP
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY
+import io.appium.espressoserver.lib.model.TextValueParams
 
-class Keys : RequestHandler<TextParams, Void?> {
+class Keys : RequestHandler<TextValueParams, Void?> {
 
+    // Send keys to an active element which is only supported by MJSONWP
     @Throws(AppiumException::class)
-    override fun handleInternal(params: TextParams): Void? {
+    override fun handleInternal(params: TextValueParams): Void? {
+        val keys = params.value ?: emptyList()
+
         val runnable = UiControllerRunnable<Void> { uiController ->
             // Add a list of keyDown + keyUp actions for each key
             val keyActions = arrayListOf<Action>()
-            params.value.forEach {
+            keys.forEach {
                 // Key down event
                 keyActions.add(ActionBuilder()
                         .withType(KEY_DOWN)
