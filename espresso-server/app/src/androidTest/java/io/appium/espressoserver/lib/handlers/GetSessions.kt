@@ -26,7 +26,7 @@ class GetSessions : RequestHandler<AppiumParams, Collection<Map<String, Any?>>> 
     override fun handleInternal(params: AppiumParams): Collection<Map<String, Any?>> {
         Session.globalSession?.let { session ->
             return listOf<Map<String, Any?>>(mapOf(
-                    "id" to session.id,
+                    "id" to session.sessionId,
                     "capabilities" to mapOf(
                             "firstMatch" to session.capabilities.firstMatch,
                             "alwaysMatch" to session.capabilities.alwaysMatch
