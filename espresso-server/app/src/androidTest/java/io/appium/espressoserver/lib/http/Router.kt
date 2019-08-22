@@ -39,7 +39,7 @@ internal class Router {
         routeMap = RouteMap()
 
         routeMap.addRoute(RouteDefinition(Method.GET, "/status", Status(), AppiumParams::class.java))
-        routeMap.addRoute(RouteDefinition(Method.POST, "/session", CreateSession(), W3CCapabilities::class.java))
+        routeMap.addRoute(RouteDefinition(Method.POST, "/session", CreateSession(), SessionParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId", GetSession(), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/actions", PerformAction(), Actions::class.java))
         routeMap.addRoute(RouteDefinition(Method.DELETE, "/session/:sessionId/actions", ReleaseActions(), Actions::class.java))
@@ -208,7 +208,7 @@ internal class Router {
             // Validate the sessionId
             if (appiumParams.sessionId != null
                     && Session.globalSession != null
-                    && appiumParams.sessionId != Session.globalSession!!.id) {
+                    && appiumParams.sessionId != Session.globalSession!!.sessionId) {
                 return AppiumResponse(NoSuchDriverException("Invalid session ID ${appiumParams.sessionId!!}"))
             }
 
@@ -218,7 +218,7 @@ internal class Router {
 
             // If it's a new session, pull out the newly created Session ID
             if (handlerResult is Session) {
-                sessionId = handlerResult.id
+                sessionId = handlerResult.sessionId
             }
 
             // Construct the response and serve it

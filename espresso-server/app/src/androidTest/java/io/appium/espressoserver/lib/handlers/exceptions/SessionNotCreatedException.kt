@@ -18,7 +18,12 @@ package io.appium.espressoserver.lib.handlers.exceptions
 
 import fi.iki.elonen.NanoHTTPD
 
-class SessionNotCreatedException(cause: Throwable) : AppiumException(cause) {
+class SessionNotCreatedException: AppiumException {
+
+    constructor(reason: String) : super(reason) {}
+
+    constructor(cause: Throwable) : super(cause) {}
+
     override fun error(): String {
         return "session not created"
     }
