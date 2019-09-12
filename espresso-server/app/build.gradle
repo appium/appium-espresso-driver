@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion getIntegerProperty('compile_sdk_version', 28)
+    buildToolsVersion getStringProperty('build_tools_version', '28.0.3')
     defaultConfig {
         applicationId "io.appium.espressoserver"
-        minSdkVersion 18
-        targetSdkVersion 28
+        minSdkVersion getIntegerProperty('min_sdk_version', 18)
+        targetSdkVersion getIntegerProperty('target_sdk_version', 28)
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
