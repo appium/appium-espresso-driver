@@ -10,6 +10,7 @@ const GENERIC_CAPS = {
   adbExecTimeout: process.env.CI ? 120000 : 20000,
   espressoServerLaunchTimeout: process.env.CI ? 120000 : 30000,
   printPageSourceOnFindFailure: true,
+  autoGrantPermissions: true, // This is required for Android Q and up to get past the permissions screen
 };
 
 const APIDEMO_CAPS = Object.assign({}, GENERIC_CAPS, {
