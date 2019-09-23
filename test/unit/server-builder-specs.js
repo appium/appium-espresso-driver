@@ -16,8 +16,8 @@ describe('server-builder', function () {
     });
 
     it('should pass only specified versions as properties', function () {
-      const expected = {cmd: expected_cmd, args: ['-Pagp_version=1.2.3', 'assembleAndroidTest']};
-      let serverBuilder = new ServerBuilder({versions: {agp_version: '1.2.3'}});
+      const expected = {cmd: expected_cmd, args: ['-Pandroid_gradle_plugin_version=1.2.3', 'assembleAndroidTest']};
+      let serverBuilder = new ServerBuilder({versions: {android_gradle_plugin_version: '1.2.3'}});
       serverBuilder.getCommand().should.deep.eql(expected);
     });
 
