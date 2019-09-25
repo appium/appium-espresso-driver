@@ -39,10 +39,8 @@ describe('server-builder', function () {
 
   describe('setGradleWrapperVersion', function () {
     let serverPath = 'server';
-    let readFileResult = '';
-
     it('should set correct URL in gradle.properties', function () {
-      readFileResult = 'foo=1\ndistributionUrl=abc\nbar=2';
+      const readFileResult = 'foo=1\ndistributionUrl=abc\nbar=2';
       let serverBuilder = new ServerBuilder({serverPath});
       let actualFileContent = serverBuilder.updateGradleDistUrl(readFileResult, '1.2.3');
 
@@ -53,7 +51,7 @@ describe('server-builder', function () {
     });
 
     it('should keep other lines not affected', function () {
-      readFileResult = 'foo=1\ndistributionUrl=abc\nbar=2';
+      const readFileResult = 'foo=1\ndistributionUrl=abc\nbar=2';
       let serverBuilder = new ServerBuilder({serverPath});
       let actualFileContent = serverBuilder.updateGradleDistUrl(readFileResult, '1.2.3');
 

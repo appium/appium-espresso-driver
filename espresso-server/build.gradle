@@ -3,23 +3,15 @@
 buildscript {
     ext.getIntegerProperty = {String propertyName, int defaultValue ->
         Object propertyValue = project.getProperties().get(propertyName)
-        if (propertyValue == null) {
-            return defaultValue
-        } else {
-            Integer.parseInt(propertyValue.toString(), 10)
-        }
+        (propertyValue) ? Integer.parseInt(propertyValue.toString(), 10) : defaultValue
     }
     ext.getStringProperty = { String propertyName, String defaultValue ->
         Object propertyValue = project.getProperties().get(propertyName)
-        if (propertyValue == null) {
-            return defaultValue
-        } else {
-            propertyValue.toString()
-        }
+        (propertyValue) ? propertyValue.toString() : defaultValue
     }
 
     ext.kotlin_version = getStringProperty('kotlin_version', '1.3.31')
-    ext.agp_version = getStringProperty('agp_version', '3.4.2')
+    ext.android_gradle_plugin_version = getStringProperty('android_gradle_plugin_version', '3.4.2')
 
     repositories {
         maven {
@@ -30,7 +22,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.android.tools.build:gradle:$agp_version"
+        classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
