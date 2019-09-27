@@ -28,7 +28,7 @@ describe('driver', function () {
         return {udid: 1, emPort: 8888};
       });
       driver.espresso = new EspressoRunner({
-        adb: ADB.createADB(), tmpDir: 'tmp', systemPort: 4724, host: 'localhost', devicePort: 6790, appPackage: driver.caps.appPackage, forceEspressoRebuild: false, espressoBuildConfig: {}
+        adb: ADB.createADB(), tmpDir: 'tmp', systemPort: 4724, host: 'localhost', devicePort: 6790, appPackage: driver.caps.appPackage, forceEspressoRebuild: false
       });
       sandbox.stub(driver.espresso, 'startSession');
     });

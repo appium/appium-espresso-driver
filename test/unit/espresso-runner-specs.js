@@ -72,7 +72,7 @@ describe('espresso-runner', function () {
       const espresso = new EspressoRunner({
         adb, tmpDir: 'tmp', host: 'localhost',
         systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
-        forceEspressoRebuild: false, espressoBuildConfig: {}
+        forceEspressoRebuild: false
       });
 
       await espresso.installServer();
@@ -96,7 +96,7 @@ describe('espresso-runner', function () {
       const espresso = new EspressoRunner({
         adb, tmpDir: 'tmp', host: 'localhost',
         systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
-        forceEspressoRebuild: false, espressoBuildConfig: {}
+        forceEspressoRebuild: false
       });
 
       await espresso.installServer();
@@ -120,7 +120,7 @@ describe('espresso-runner', function () {
       const espresso = new EspressoRunner({
         adb, tmpDir: 'tmp', host: 'localhost',
         systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
-        forceEspressoRebuild: false, espressoBuildConfig: {}
+        forceEspressoRebuild: false
       });
 
       await espresso.installServer();
@@ -147,7 +147,7 @@ describe('espresso-runner', function () {
       const espresso = new EspressoRunner({
         adb, tmpDir: 'tmp', host: 'localhost',
         systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
-        forceEspressoRebuild: false, espressoBuildConfig: {}
+        forceEspressoRebuild: false
       });
 
       await espresso.installServer().should.eventually.to.be.rejectedWith(/error happened/i);
