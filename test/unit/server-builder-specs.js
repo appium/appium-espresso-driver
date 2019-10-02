@@ -1,39 +1,39 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import { system } from 'appium-support';
 import { VERSION_KEYS, GRADLE_URL_TEMPLATE, ServerBuilder } from '../../lib/server-builder';
-import path from 'path';
 
 chai.should();
 chai.use(chaiAsPromised);
 
 describe('server-builder', function () {
   describe('getCommand', function () {
-    const expected_cmd = `.${path.sep}gradlew`;
+    const expectedCmd = system.isWindows() ? 'gradlew.bat' : './gradlew';
 
     it('should not pass properties when no versions are specified', function () {
-      const expected = {cmd: expected_cmd, args: ['assembleAndroidTest']};
-      new ServerBuilder().getCommand().should.deep.eql(expected);
+      const expected = {cmd: expectedCmd, args: ['assembleAndroidTest']};
+      new ServerBuilder().getCommand().should.eql(expected);
     });
 
     it('should pass only specified versions as properties', function () {
-      const expected = {cmd: expected_cmd, args: ['-Pandroid_gradle_plugin_version=1.2.3', 'assembleAndroidTest']};
+      const expected = {cmd: expectedCmd, args: ['-Pandroid_gradle_plugin_version=1.2.3', 'assembleAndroidTest']};
       let serverBuilder = new ServerBuilder({versions: {android_gradle_plugin_version: '1.2.3'}});
-      serverBuilder.getCommand().should.deep.eql(expected);
+      serverBuilder.getCommand().should.eql(expected);
     });
 
     it('should skip unknown version keys', function () {
       let unknownKey = 'unknown_key';
       VERSION_KEYS.should.not.contain(unknownKey);
 
-      const expected = {cmd: expected_cmd, args: ['assembleAndroidTest']};
+      const expected = {cmd: expectedCmd, args: ['assembleAndroidTest']};
       let serverBuilder = new ServerBuilder({versions: {[unknownKey]: '1.2.3'}});
-      serverBuilder.getCommand().should.deep.eql(expected);
+      serverBuilder.getCommand().should.eql(expected);
     });
 
     it('should not pass gradle_version as property', function () {
-      const expected = {cmd: expected_cmd, args: ['assembleAndroidTest']};
+      const expected = {cmd: expectedCmd, args: ['assembleAndroidTest']};
       let serverBuilder = new ServerBuilder({versions: {gradle_version: '1.2.3'}});
-      serverBuilder.getCommand().should.deep.eql(expected);
+      serverBuilder.getCommand().should.eql(expected);
     });
   });
 
