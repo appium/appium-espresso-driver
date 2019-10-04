@@ -14,7 +14,7 @@ The key difference between [UiAutomator2 Driver](https://github.com/appium/appiu
 
 * If there are ever problems starting a session, try setting the capability `forceEspressoRebuild=true` and retrying. This will rebuild a fresh Espresso Server APK. If the session is succcesful, set it back to false so that it doesn't re-install on every single test.
 * Espresso requires the debug APK and app-under-test APK (AUT) to have the same signature. It automatically signs the AUT with the `io.appium.espressoserver.test` signature. This may have problems if you're using an outdated Android SDK tools and/or an outdated Java version.
-* If you failed to establish Espresso session in `proguard` environment because of `Resources$NotFoundException`, for example, please try to add below rule. Please read [#449](https://github.com/appium/appium-espresso-driver/issues/449#issuecomment-537833139) for more various cases.
+* If you experience session startup failures due to exceptions similar to `Resources$NotFoundException` then try to adjust your ProGuard rules:
   ```
   -dontwarn com.google.android.material.**
   -keep class com.google.android.material.** { *; }
@@ -29,6 +29,7 @@ The key difference between [UiAutomator2 Driver](https://github.com/appium/appiu
   -dontwarn android.support.v7.**
   -keep class android.support.v7.** { *; }
   ```
+  Please read [#449](https://github.com/appium/appium-espresso-driver/issues/449#issuecomment-537833139) for more details on this topic.
 
 ## Contributing
 
