@@ -30,8 +30,7 @@
     "lib",
     "build/index.js",
     "build/lib",
-    "espresso-server/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
-    "espresso-server/AndroidManifest-test.xml"
+    "espresso-server"
   ],
   "dependencies": {
     "@babel/runtime": "^7.4.3",
