@@ -1,36 +1,31 @@
-import { fs, mkdirp } from 'appium-support';
-import nodefs from 'fs';
+import { fs, mkdirp, tempDir } from 'appium-support';
 import { copyGradleProjectRecursively } from '../../lib/utils';
-import os from 'os';
 import path from 'path';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
 chai.should();
 chai.use(chaiAsPromised);
-const expect = chai.expect;
 
 describe('copyGradleProjectRecursively', function () {
   let baseSrcDir;
   let baseDestDir;
 
-  function expectNotExist (dir) {
-    expect(function () {
-      fs.accessSync(dir, fs.constants.F_OK);
-    }).to.throw();
+  function expectNotExist (file) {
+    fs.access(file, fs.constants.F_OK).should.eventually.be.rejectedWith(/no such file/);
   }
 
-  async function expectCorrectFileContentIn (filepath) {
-    await fs.readFile(filepath, 'utf8').should.eventually.eql('foobar');
+  function expectCorrectFileContentIn (filepath) {
+    fs.readFile(filepath, 'utf8').should.eventually.eql('foobar');
   }
 
   async function createTestFile (filepath) {
     await fs.writeFile(filepath, 'foobar', 'utf8');
   }
 
-  beforeEach(function () {
-    baseSrcDir = nodefs.mkdtempSync(path.join(os.tmpdir(), 'appium-src-'));
-    baseDestDir = nodefs.mkdtempSync(path.join(os.tmpdir(), 'appium-dst-'));
+  beforeEach(async function () {
+    baseSrcDir = await tempDir.openDir();
+    baseDestDir = await tempDir.openDir();
   });
 
   afterEach(async function () {
@@ -38,7 +33,7 @@ describe('copyGradleProjectRecursively', function () {
     await fs.rimraf(baseDestDir);
   });
 
-  it('copies all files not having "build" in their paths', async function () {
+  it('doesn\'t copy any build directory', async function () {
     await mkdirp(path.join(baseSrcDir, 'build'));
     await mkdirp(path.join(baseSrcDir, 'dir', 'build'));
 
@@ -47,11 +42,11 @@ describe('copyGradleProjectRecursively', function () {
 
     await copyGradleProjectRecursively(baseSrcDir, baseDestDir);
 
-    await expectNotExist(path.join(baseSrcDir, 'build', 'file'));
-    await expectNotExist(path.join(baseSrcDir, 'dir', 'build', 'file'));
+    await expectNotExist(path.join(baseDestDir, 'build', 'file'));
+    await expectNotExist(path.join(baseDestDir, 'dir', 'build', 'file'));
   });
 
-  it('doesn\'t copy any build directory', async function () {
+  it('copies all files not having "build" in their paths', async function () {
     await mkdirp(path.join(baseSrcDir, 'foo'));
     await mkdirp(path.join(baseSrcDir, 'dir', 'foo'));
 
