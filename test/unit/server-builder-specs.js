@@ -22,7 +22,7 @@ describe('server-builder', function () {
     });
 
     it('should skip unknown version keys', function () {
-      let unknownKey = 'unknown_key';
+      const unknownKey = 'unknown_key';
       VERSION_KEYS.should.not.contain(unknownKey);
 
       const expected = {cmd: expectedCmd, args: ['assembleAndroidTest']};
@@ -38,7 +38,7 @@ describe('server-builder', function () {
   });
 
   describe('setGradleWrapperVersion', function () {
-    let serverPath = 'server';
+    const serverPath = 'server';
     it('should set correct URL in gradle.properties', function () {
       const readFileResult = 'foo=1\ndistributionUrl=abc\nbar=2';
       let serverBuilder = new ServerBuilder({serverPath});
