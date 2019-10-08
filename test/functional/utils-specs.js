@@ -11,12 +11,12 @@ describe('copyGradleProjectRecursively', function () {
   let baseSrcDir;
   let baseDestDir;
 
-  function expectNotExist (file) {
-    fs.access(file, fs.constants.F_OK).should.eventually.be.rejectedWith(/no such file/);
+  async function expectNotExist (file) {
+    await fs.access(file, fs.constants.F_OK).should.eventually.be.rejectedWith(/no such file/);
   }
 
-  function expectCorrectFileContentIn (filepath) {
-    fs.readFile(filepath, 'utf8').should.eventually.eql('foobar');
+  async function expectCorrectFileContentIn (filepath) {
+    await fs.readFile(filepath, 'utf8').should.eventually.eql('foobar');
   }
 
   async function createTestFile (filepath) {

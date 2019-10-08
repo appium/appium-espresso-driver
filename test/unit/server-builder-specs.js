@@ -108,7 +108,7 @@ describe('server-builder', function () {
 
       expect(function () {
         serverBuilder.updateDependencyLines(readFileResult, ['foo.\':1.2.3']);
-      }).to.throw(/Disallowed characters in an additional dependency/);
+      }).to.throw(/Single quotes and space characters are disallowed in additional dependencies/);
     });
 
     it('should throw on new lines in additional dependencies', function () {
@@ -116,15 +116,7 @@ describe('server-builder', function () {
 
       expect(function () {
         serverBuilder.updateDependencyLines(readFileResult, ['foo.\n:1.2.3']);
-      }).to.throw(/Disallowed characters in an additional dependency/);
-    });
-
-    it('should throw when additional dependencies is not an array', function () {
-      let serverBuilder = new ServerBuilder({serverPath});
-
-      expect(function () {
-        serverBuilder.updateDependencyLines(readFileResult, 'string');
-      }).to.throw('additionalAppDependencies must be an array');
+      }).to.throw(/Single quotes and space characters are disallowed in additional dependencies/);
     });
 
     it('should keep other lines not affected', function () {
