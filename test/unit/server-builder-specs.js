@@ -86,20 +86,20 @@ describe('server-builder', function () {
 
   describe('updateDependencyLines', function () {
     const serverPath = 'server';
-    const readFileResult = 'foo=1\n' + GRADLE_DEPENDENCIES_PLACEHOLDER + '\nbar=2';
+    const readFileResult = ' foo=1\n ' + GRADLE_DEPENDENCIES_PLACEHOLDER + '\n bar=2';
     const goodDependencies = [
       'a.b.c:1.2.3',
       'foo.bar.foobar:4.5.6'
     ];
-    it('should generate correct lines in build.gradle', function () {
+    it('should generate correct content and keep current indent in build.gradle', function () {
       let serverBuilder = new ServerBuilder({serverPath});
       let actualFileContent = serverBuilder.updateDependencyLines(readFileResult, goodDependencies);
 
       actualFileContent.should.eql(
-        'foo=1\n' +
-        'implementation \'a.b.c:1.2.3\'\n' +
-        'implementation \'foo.bar.foobar:4.5.6\'\n' +
-        'bar=2'
+        ' foo=1\n' +
+        ' implementation \'a.b.c:1.2.3\'\n' +
+        ' implementation \'foo.bar.foobar:4.5.6\'\n' +
+        ' bar=2'
       );
     });
 
@@ -108,7 +108,15 @@ describe('server-builder', function () {
 
       expect(function () {
         serverBuilder.updateDependencyLines(readFileResult, ['foo.\':1.2.3']);
-      }).to.throw(/Single quotes and space characters are disallowed in additional dependencies/);
+      }).to.throw(/Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
+    });
+
+    it('should throw on dollar characters in additional dependencies', function () {
+      let serverBuilder = new ServerBuilder({serverPath});
+
+      expect(function () {
+        serverBuilder.updateDependencyLines(readFileResult, ['foo$:1.2.3']);
+      }).to.throw(/Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
     });
 
     it('should throw on new lines in additional dependencies', function () {
@@ -116,15 +124,15 @@ describe('server-builder', function () {
 
       expect(function () {
         serverBuilder.updateDependencyLines(readFileResult, ['foo.\n:1.2.3']);
-      }).to.throw(/Single quotes and space characters are disallowed in additional dependencies/);
+      }).to.throw(/Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
     });
 
     it('should keep other lines not affected', function () {
       let serverBuilder = new ServerBuilder({serverPath});
       let actualFileContent = serverBuilder.updateDependencyLines(readFileResult, goodDependencies);
 
-      actualFileContent.should.match(/^foo=1$/m);
-      actualFileContent.should.match(/^bar=2$/m);
+      actualFileContent.should.match(/^ foo=1$/m);
+      actualFileContent.should.match(/^ bar=2$/m);
     });
   });
 });
