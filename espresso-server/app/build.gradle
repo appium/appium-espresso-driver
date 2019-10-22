@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion getIntegerProperty('appiumCompileSdk', 28)
+    buildToolsVersion getStringProperty('appiumBuildTools', '28.0.3')
     defaultConfig {
         applicationId "io.appium.espressoserver"
-        minSdkVersion 18
-        targetSdkVersion 28
+        minSdkVersion getIntegerProperty('appiumMinSdk', 18)
+        targetSdkVersion getIntegerProperty('appiumTargetSdk', 28)
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -73,6 +73,8 @@ dependencies {
     androidTestImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     androidTestImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     androidTestImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    // additionalAppDependencies placeholder (don't change or delete this line)
 }
 
 tasks.withType(Test) {
