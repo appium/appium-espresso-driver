@@ -36,8 +36,10 @@ dependencies {
     ext.espresso_version = '3.2.0'
     ext.testlib_version = '1.2.0'
     ext.mocklib_version = '1.7.4'
+    ext.lifecycle_version = "2.1.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
 
     testImplementation "org.powermock:powermock-api-mockito2:$mocklib_version"
     testImplementation "org.powermock:powermock-classloading-xstream:$mocklib_version"
@@ -45,7 +47,9 @@ dependencies {
     testImplementation "org.powermock:powermock-module-junit4:$mocklib_version"
     testImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
     testImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-    testImplementation "androidx.test.espresso:espresso-web:$espresso_version"
+    testImplementation ("androidx.test.espresso:espresso-web:$espresso_version") {
+         exclude group: 'androidx.test.espresso'
+    }
     testImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     testImplementation "androidx.test:core:$testlib_version"
     testImplementation "androidx.test:runner:$testlib_version"
@@ -60,7 +64,9 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:$espresso_version") {
+        transitive = false
+    }
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
     androidTestImplementation "androidx.test.espresso:espresso-web:$espresso_version"
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
