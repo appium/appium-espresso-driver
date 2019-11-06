@@ -10,7 +10,7 @@ android {
         targetSdkVersion getIntegerProperty('appiumTargetSdk', 28)
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "io.appium.espressoserver.test.helpers.AppiumAndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
