@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.Configurator
 import androidx.test.uiautomator.UiDevice
+import kotlin.coroutines.Continuation
 
 object InteractionHelper {
     private var uiDevice: UiDevice? = null
@@ -16,6 +17,8 @@ object InteractionHelper {
                 // The flag is necessary not to stop running accessibility service
                 // https://github.com/appium/appium/issues/4910
                 // https://developer.android.com/reference/android/app/UiAutomation.html#FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES
+//                if Configurator.getInstance().uiAutomationFlags
+
                 Configurator.getInstance().uiAutomationFlags = UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES
             }
             uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
