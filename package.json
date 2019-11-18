@@ -30,7 +30,16 @@
     "lib",
     "build/index.js",
     "build/lib",
-    "espresso-server"
+    "espresso-server/app/src",
+    "espresso-server/app/build/outputs/apk",
+    "espresso-server/app/build.gradle",
+    "espresso-server/app/proguard-rules.pro",
+    "espresso-server/gradle*",
+    "espresso-server/build.gradle",
+    "espresso-server/settings.gradle",
+    "espresso-server/lint.xml",
+    "espresso-server/AndroidManifest-test.xml",
+    "!.DS_Store"
   ],
   "dependencies": {
     "@babel/runtime": "^7.4.3",
