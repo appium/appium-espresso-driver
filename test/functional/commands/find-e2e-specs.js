@@ -141,4 +141,85 @@ describe('find elements', function () {
       })).should.eventually.exist;
     });
   });
+
+  describe('by view matcher', function () {
+    it('should find an element using view matcher', async function () {
+      await driver.elementByXPath("//*[@text='Content']").click();
+      await driver.elementByXPath("//*[@text='Storage']").click();
+      await driver.elementByXPath("//*[@text='External Storage']").click();
+      await driver.element('-android viewmatcher', JSON.stringify({
+        name: 'withText',
+        args: 'Picture getExternalFilesDir',
+        class: 'androidx.test.espresso.matcher.ViewMatchers'
+      })).should.eventually.exist;
+      await driver.back();
+      await driver.back();
+      await driver.back();
+
+    });
+
+    it('should fail to find elements with helpful error messages', async function () {
+      await driver.element('-android viewmatcher', JSON.stringify({
+        name: 'hasEntry', args: ['title', 'A Fake Item']
+      })).should.eventually.be.rejectedWith(/NoMatchingView/);
+    });
+
+    it('should fail with invalid selector with helpful error messages', async function () {
+      await driver.element('-android viewmatcher', JSON.stringify({
+        name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item']
+      })).should.eventually.be.rejectedWith(/InvalidSelector/);
+    });
+
+    it('should allow "class" property with fully qualified className', async function () {
+      await driver.element('-android viewmatcher', JSON.stringify({
+        name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item'], class: 'org.hamcrest.Matchers',
+      })).should.eventually.be.rejectedWith(/InvalidSelector/);
+    });
+
+    it('should allow multiple view matchers to be passed as args', async function () {
+      await driver.elementByXPath("//*[@text='Content']").click();
+      await driver.elementByXPath("//*[@text='Storage']").click();
+      await driver.elementByXPath("//*[@text='External Storage']").click();
+
+      await driver.element('-android viewmatcher', JSON.stringify({
+        name: 'withText',
+        args: [
+          {
+            name: 'containsString',
+            args: ' getExternalStoragePublicDirectory',
+            class: 'org.hamcrest.Matchers'
+          }
+        ],
+        class: 'androidx.test.espresso.matcher.ViewMatchers'
+      })).should.eventually.exist;
+      await driver.back();
+      await driver.back();
+      await driver.back();
+    });
+    it('should be able to set a specific View as a root element when activity has multiple Views', async function () {
+      await driver.elementByXPath("//*[@text='Content']").click();
+      await driver.elementByXPath("//*[@text='Clipboard']").click();
+      await driver.elementByXPath("//*[@text='Data Types']").click();
+
+      // Finding by withText equalTo 'COPY TEXT' should be ambiguous, because there are threee
+      // items with the same matcher
+
+      await driver.element('-android viewmatcher', JSON.stringify({
+        name: 'withText', args: 'COPY TEXT', class: 'androidx.test.espresso.matcher.ViewMatchers'
+      })).should.eventually.be.rejectedWith(/AmbiguousViewMatcherException/);
+
+      const listTwoEl = await driver.elementByXPath("//android.widget.LinearLayout[@index='2']");
+      await listTwoEl.element('-android viewmatcher', JSON.stringify({
+        name: 'withText', args: 'COPY TEXT', class: 'androidx.test.espresso.matcher.ViewMatchers'
+      })).should.eventually.exist;
+
+      const listOneEl = await driver.elementByXPath("//android.widget.LinearLayout[@index='1']");
+      await listOneEl.element('-android viewmatcher', JSON.stringify({
+        name: 'withText', args: 'COPY TEXT', class: 'androidx.test.espresso.matcher.ViewMatchers'
+      })).should.eventually.exist;
+      await driver.back();
+      await driver.back();
+      await driver.back();
+    });
+  });
 });

@@ -41,6 +41,7 @@ import io.appium.espressoserver.lib.viewaction.ViewGetter
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -49,6 +50,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import io.appium.espressoserver.lib.model.ViewMatcherJson
 import io.appium.espressoserver.lib.viewmatcher.WithView.withView
 import io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath
 import org.hamcrest.CoreMatchers.allOf
@@ -189,6 +191,14 @@ object ViewFinder {
                     emptyList()
                 }
             }
+            Strategy.VIEWMATCHER -> {
+                val matcherJson = ViewMatcherJson.fromJson(selector)
+                views = try{
+                    getViewsFromViewMatcher(root,matcherJson.matcher)
+                }catch (e : PerformException){
+                    emptyList()
+                }
+            }
             else -> throw InvalidSelectorException("Strategy is not implemented: ${strategy.strategyName}")
         }
 
@@ -238,6 +248,14 @@ object ViewFinder {
         }
 
         return listOf(ViewGetter().getView(dataInteractionCopy))
+    }
+
+    private fun getViewsFromViewMatcher(root: View?, matcher: Matcher<View>):List<View>{
+        val viewInteraction = if(root == null)
+            onView(matcher)
+        else
+            onView(allOf(isDescendantOfA(`is`(root)),matcher))
+        return listOf(ViewGetter().getView(viewInteraction))
     }
 
     private fun getViews(
