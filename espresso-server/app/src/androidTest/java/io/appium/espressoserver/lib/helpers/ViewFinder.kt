@@ -34,14 +34,12 @@ import java.util.ArrayList
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
-import io.appium.espressoserver.lib.model.DataMatcherJson
 import io.appium.espressoserver.lib.model.Strategy
 import io.appium.espressoserver.lib.viewaction.ViewGetter
 
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -50,7 +48,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import io.appium.espressoserver.lib.model.ViewMatcherJson
+import io.appium.espressoserver.lib.model.MatcherJson
 import io.appium.espressoserver.lib.viewmatcher.WithView.withView
 import io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath
 import org.hamcrest.CoreMatchers.allOf
@@ -183,19 +181,21 @@ object ViewFinder {
             Strategy.VIEW_TAG -> views = getViews(root, withTagValue(allOf(instanceOf(String::class.java),
                     equalTo(selector as Any))), findOne)
             Strategy.DATAMATCHER -> {
-                val matcher = DataMatcherJson.fromJson(selector)
+                val matcher = MatcherJson.fromJson(selector)
                 views = try {
-                    getViewsFromDataInteraction(root, matcher.invoke())
+                    getViewsFromDataInteraction(root, onData(matcher.matcher))
                 } catch (e: PerformException) {
                     // Perform Exception means nothing was found. Return empty list
                     emptyList()
                 }
             }
             Strategy.VIEWMATCHER -> {
-                val matcherJson = ViewMatcherJson.fromJson(selector)
-                views = try{
-                    getViewsFromViewMatcher(root,matcherJson.matcher)
-                }catch (e : PerformException){
+                val matcherJson = MatcherJson.fromJson(selector)
+                views = try {
+                    @Suppress("UNCHECKED_CAST")
+                    getViewsFromViewMatcher(root, matcherJson.matcher as Matcher<View>)
+                } catch (e: PerformException) {
+                    // Perform Exception means nothing was found. Return empty list
                     emptyList()
                 }
             }
@@ -250,11 +250,11 @@ object ViewFinder {
         return listOf(ViewGetter().getView(dataInteractionCopy))
     }
 
-    private fun getViewsFromViewMatcher(root: View?, matcher: Matcher<View>):List<View>{
-        val viewInteraction = if(root == null)
+    private fun getViewsFromViewMatcher(root: View?, matcher: Matcher<View>): List<View> {
+        val viewInteraction = if (root == null)
             onView(matcher)
         else
-            onView(allOf(isDescendantOfA(`is`(root)),matcher))
+            onView(allOf(isDescendantOfA(`is`(root)), matcher))
         return listOf(ViewGetter().getView(viewInteraction))
     }
 

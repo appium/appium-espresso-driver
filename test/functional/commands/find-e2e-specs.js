@@ -81,7 +81,6 @@ describe('find elements', function () {
       await driver.back();
     });
   });
-
   describe('by data matcher', function () {
     it('should find an element using a data matcher', async function () {
       let el = await driver.element('-android datamatcher', JSON.stringify({
@@ -139,6 +138,8 @@ describe('find elements', function () {
       await listTwoEl.element('-android datamatcher', JSON.stringify({
         name: 'equalTo', args: 'Zamorano'
       })).should.eventually.exist;
+      await driver.back();
+      await driver.back();
     });
   });
 
@@ -155,7 +156,6 @@ describe('find elements', function () {
       await driver.back();
       await driver.back();
       await driver.back();
-
     });
 
     it('should fail to find elements with helpful error messages', async function () {

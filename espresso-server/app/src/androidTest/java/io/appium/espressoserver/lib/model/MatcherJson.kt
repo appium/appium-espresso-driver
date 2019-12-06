@@ -1,29 +1,21 @@
 package io.appium.espressoserver.lib.model
 
-import android.view.View
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewInteraction
 import com.google.gson.*
 import com.google.gson.annotations.JsonAdapter
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import java.lang.reflect.Type
+import org.hamcrest.Matcher
 
-@JsonAdapter(ViewMatcherJsonDeserializer::class)
-data class ViewMatcherJson(
-        val matcher: Matcher<View>
+@JsonAdapter(MatcherJsonDeserializer::class)
+data class MatcherJson(
+        val matcher: Matcher<*>
 ) : AppiumParams() {
 
-    fun invoke(): ViewInteraction {
-        return onView(matcher)
-    }
-
     companion object {
-        fun fromJson(selector: String): ViewMatcherJson {
+        fun fromJson(selector: String): MatcherJson {
             try {
-                return Gson().fromJson(selector, ViewMatcherJson::class.java)
+                return Gson().fromJson(selector, MatcherJson::class.java)
             } catch (e: AppiumException) {
                 throw InvalidSelectorException(String.format("Not a valid selector '%s'. Reason: '%s'", selector, e.cause))
             } catch (e: JsonParseException) {
@@ -33,19 +25,18 @@ data class ViewMatcherJson(
     }
 }
 
-@Suppress("UNCHECKED_CAST")
-class ViewMatcherJsonDeserializer : JsonDeserializer<ViewMatcherJson> {
+class MatcherJsonDeserializer : JsonDeserializer<MatcherJson> {
     @Throws(JsonParseException::class)
     override fun deserialize(json: JsonElement, paramType: Type?,
-                             paramJsonDeserializationContext: JsonDeserializationContext?): ViewMatcherJson {
+                             paramJsonDeserializationContext: JsonDeserializationContext?): MatcherJson {
         if (!json.isJsonObject) {
-            throw JsonParseException("View matcher must be an object. Found '${json}'")
+            throw JsonParseException("Matcher must be an object. Found '${json}'")
         }
 
         val matcher = HamcrestMatcher.HamcrestMatcherDeserializer()
-                .deserialize(json, null, null).invoke()
+                .deserialize(json, null, null)
+                .invoke()
 
-        return ViewMatcherJson(matcher as Matcher<View>)
-
+        return MatcherJson(matcher)
     }
 }
