@@ -147,7 +147,7 @@ describe('find elements', function () {
     describe('Data Matcher - dependent tests - Set 2', function () {
       before(async function () {
         driver = await initSession(APIDEMO_CAPS);
-        driver.startActivity({
+        await driver.startActivity({
           'appPackage': 'io.appium.android.apis',
           'appActivity': '.view.SplitTouchView'
         });
@@ -212,7 +212,7 @@ describe('find elements', function () {
 
       before(async function () {
         driver = await initSession(APIDEMO_CAPS);
-        driver.startActivity({
+        await driver.startActivity({
           appPackage: 'io.appium.android.apis',
           appActivity: '.content.ExternalStorage'
         });
@@ -250,7 +250,7 @@ describe('find elements', function () {
 
       before(async function () {
         driver = await initSession(APIDEMO_CAPS);
-        driver.startActivity({
+        await driver.startActivity({
           'appPackage': 'io.appium.android.apis',
           'appActivity': '.content.ClipboardSample'
         });
