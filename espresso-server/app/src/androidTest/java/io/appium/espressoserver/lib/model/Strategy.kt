@@ -43,5 +43,7 @@ enum class Strategy(val strategyName: String) {
     @SerializedName(value = "-android viewtag", alternate = ["tag name"])
     VIEW_TAG("-android viewtag"),
     @SerializedName(value = "-android datamatcher")
-    DATAMATCHER("-android datamatcher");
+    DATAMATCHER("-android datamatcher"),
+    @SerializedName(value = "-android viewmatcher")
+    VIEWMATCHER("-android viewmatcher");
 }
