@@ -44,7 +44,7 @@
   "dependencies": {
     "@babel/runtime": "^7.4.3",
     "appium-adb": "^7.15.1",
-    "appium-android-driver": "^4.22.1",
+    "appium-android-driver": "^4.24.0",
     "appium-base-driver": "^5.0.0",
     "appium-support": "^2.20.0",
     "asyncbox": "^2.3.1",
