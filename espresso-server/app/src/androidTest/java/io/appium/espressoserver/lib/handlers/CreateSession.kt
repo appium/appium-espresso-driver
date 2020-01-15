@@ -34,9 +34,12 @@ class CreateSession : RequestHandler<SessionParams, Session> {
         try {
             val parsedCaps = parseCapabilities(params.capabilities.firstMatch,
                     params.capabilities.alwaysMatch)
-            val activityName = parsedCaps["appActivity"] as? String
-                    ?: throw InvalidArgumentException("appActivity capability is mandatory")
-            startActivity(parsedCaps["appPackage"] as? String, activityName)
+            val shouldLaunchApp = (parsedCaps["autoLaunch"] ?: true) as Boolean
+            if (shouldLaunchApp) {
+                val activityName = parsedCaps["appActivity"] as? String
+                        ?: throw InvalidArgumentException("appActivity capability is mandatory")
+                startActivity(parsedCaps["appPackage"] as? String, activityName)
+            }
         } catch (e: Exception) {
             throw SessionNotCreatedException(e)
         }
