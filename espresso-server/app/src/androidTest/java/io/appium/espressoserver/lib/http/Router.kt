@@ -96,6 +96,7 @@ internal class Router {
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/element/:elementId/replace_value", ElementValue(true), TextValueParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/device/get_clipboard", GetClipboard(), GetClipboardParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/device/set_clipboard", SetClipboard(), SetClipboardParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/device/open_notifications", OpenNotifications(), AppiumParams::class.java))
 
         // touch events
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/click", PointerEventHandler(CLICK), MotionEventParams::class.java))
