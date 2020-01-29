@@ -20,15 +20,14 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
-import java.lang.NumberFormatException
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 
 
 private fun addFlags(intent: Intent, flags: String) {
-    for (flagStr in flags.split("\\s*,\\s*")) {
+    for (flagStr in flags.split(",")) {
         @Suppress("DEPRECATION")
-        when (flagStr.toUpperCase()) {
+        when (flagStr.trim().toUpperCase()) {
             "FLAG_GRANT_READ_URI_PERMISSION", "GRANT_READ_URI_PERMISSION" ->
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             "FLAG_GRANT_WRITE_URI_PERMISSION", "GRANT_WRITE_URI_PERMISSION" ->
@@ -89,8 +88,14 @@ private fun <T : Any> requirePair(expectedType: KClass<T>, key: String, value: A
         "The value of '$key' must be a list with at least two items. " +
                 "The first item must be a key of type string. '$value' is given instead"
     }
-    // It might be that GSON serializer converts all ints to long by default
-    val v = if (expectedType == Int::class && value[1] is Long) (value[1] as Long).toInt() else value[1]
+    // It might be that GSON serializer converts all ints to long/floats to double by default
+    var v = value[1]
+    if (expectedType == Int::class && v is Long) {
+        v = v.toInt()
+    }
+    if (expectedType == Float::class && v is Double) {
+        v = v.toFloat()
+    }
     require(expectedType.isInstance(v)) {
         "The second item of '$key' must be of type ${expectedType.simpleName}. " +
                 "'$value' is given instead"
@@ -219,7 +224,7 @@ fun makeIntent(options: Map<String, Any?>): Intent {
                 intent.putExtra(k, v)
             },
             "ef" to fun(key, value) {
-                val (k, v) = requirePair(Double::class, key, value)
+                val (k, v) = requirePair(Float::class, key, value)
                 intent.putExtra(k, v)
             },
             "ez" to fun(key, value) {
@@ -228,10 +233,10 @@ fun makeIntent(options: Map<String, Any?>): Intent {
             },
             "eia" to fun(key, value) {
                 val (k, v) = requirePair(String::class, key, value)
-                val numbers = v.split("\\s*,\\s*".toRegex())
+                val numbers = v.split(",")
                         .map {
                             try {
-                                it.toInt()
+                                it.trim().toInt()
                             } catch (e: NumberFormatException) {
                                 throw IllegalArgumentException(
                                         "The value is expected to be a comma-separated list of integers. " +
@@ -243,10 +248,10 @@ fun makeIntent(options: Map<String, Any?>): Intent {
             },
             "ela" to fun(key, value) {
                 val (k, v) = requirePair(String::class, key, value)
-                val numbers = v.split("\\s*,\\s*".toRegex())
+                val numbers = v.split(",")
                         .map {
                             try {
-                                it.toLong()
+                                it.trim().toLong()
                             } catch (e: NumberFormatException) {
                                 throw IllegalArgumentException(
                                         "The value is expected to be a comma-separated list of long integers. " +
@@ -258,17 +263,17 @@ fun makeIntent(options: Map<String, Any?>): Intent {
             },
             "efa" to fun(key, value) {
                 val (k, v) = requirePair(String::class, key, value)
-                val numbers = v.split("\\s*,\\s*".toRegex())
+                val numbers = v.split(",")
                         .map {
                             try {
-                                it.toDouble()
+                                it.trim().toFloat()
                             } catch (e: NumberFormatException) {
                                 throw IllegalArgumentException(
                                         "The value is expected to be a comma-separated list of float numbers. " +
                                                 "'$v' is given instead", e)
                             }
                         }
-                        .toDoubleArray()
+                        .toFloatArray()
                 intent.putExtra(k, numbers)
             },
             "ecn" to fun(key, value) {
