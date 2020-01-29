@@ -64,6 +64,8 @@ private fun addFlags(intent: Intent, flags: String) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
             "FLAG_ACTIVITY_SINGLE_TOP", "ACTIVITY_SINGLE_TOP" ->
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            "FLAG_ACTIVITY_NEW_TASK", "ACTIVITY_NEW_TASK" ->
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             "FLAG_ACTIVITY_CLEAR_TASK", "ACTIVITY_CLEAR_TASK" ->
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             "FLAG_ACTIVITY_TASK_ON_HOME", "ACTIVITY_TASK_ON_HOME" ->
