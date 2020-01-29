@@ -25,7 +25,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 
-object ActivityHelper {
+object ActivityHelpers {
     //    https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
     val currentActivity: Activity
         @Throws(AppiumException::class)
@@ -68,13 +68,20 @@ object ActivityHelper {
         return (if (dotPos > 0) activity else "$appPackage${(if (dotPos == 0) "" else ".")}$activity")
     }
 
-    fun startActivity(pkg: String?, activity: String) {
+    fun startActivity(pkg: String?, activity: String, intentOptions: Map<String, Any?>?) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, pkg, activity)
         AndroidLogger.logger.info("Starting activity '$fullyQualifiedAppActivity'")
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.setClassName(instrumentation.targetContext, fullyQualifiedAppActivity)
+        val intent: Intent
+        if (intentOptions == null) {
+            AndroidLogger.logger.info("With default options")
+            intent = Intent(Intent.ACTION_MAIN)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.setClassName(instrumentation.targetContext, fullyQualifiedAppActivity)
+        } else {
+            AndroidLogger.logger.info("With options: $intentOptions")
+            intent = makeIntent(intentOptions)
+        }
         instrumentation.startActivitySync(intent)
     }
 }
