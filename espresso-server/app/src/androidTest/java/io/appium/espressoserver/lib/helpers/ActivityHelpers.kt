@@ -68,18 +68,20 @@ object ActivityHelpers {
         return (if (dotPos > 0) activity else "$appPackage${(if (dotPos == 0) "" else ".")}$activity")
     }
 
-    fun startActivity(pkg: String?, activity: String, intentOptions: Map<String, Any?>?) {
+    fun startActivity(pkg: String?, activity: String?, intentOptions: Map<String, Any?>?) {
+        if (activity == null && intentOptions == null) {
+            throw IllegalArgumentException("Either activity name or intent options must be set")
+        }
         val instrumentation = InstrumentationRegistry.getInstrumentation()
-        val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, pkg, activity)
-        AndroidLogger.logger.info("Starting activity '$fullyQualifiedAppActivity'")
         val intent: Intent
         if (intentOptions == null) {
-            AndroidLogger.logger.info("With default options")
+            val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, pkg, activity!!)
+            AndroidLogger.logger.info("Starting activity '$fullyQualifiedAppActivity' with default options")
             intent = Intent(Intent.ACTION_MAIN)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             intent.setClassName(instrumentation.targetContext, fullyQualifiedAppActivity)
         } else {
-            AndroidLogger.logger.info("With options: $intentOptions")
+            AndroidLogger.logger.info("Staring intent with custom options: $intentOptions")
             intent = makeIntent(intentOptions)
         }
         instrumentation.startActivitySync(intent)
