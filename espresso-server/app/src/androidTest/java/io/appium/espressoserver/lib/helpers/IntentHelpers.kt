@@ -112,8 +112,8 @@ private fun requireString(key: String, value: Any?): String {
 }
 
 
-private fun toComponentName(cn: String): ComponentName = ComponentName.unflattenFromString(cn)
-        ?: throw IllegalArgumentException("Bad component name: $cn")
+private fun String.toComponentName(): ComponentName = ComponentName.unflattenFromString(this)
+        ?: throw IllegalArgumentException("Bad component name: $this")
 
 
 /**
@@ -190,7 +190,7 @@ fun makeIntent(options: Map<String, Any?>): Intent {
                         requireString(key, value))
             },
             "component" to fun(key, value) {
-                intent.component = toComponentName(requireString(key, value))
+                intent.component = requireString(key, value).toComponentName()
                 hasIntentInfo = true
             },
             "intFlags" to fun(key, value) {
@@ -278,7 +278,7 @@ fun makeIntent(options: Map<String, Any?>): Intent {
             },
             "ecn" to fun(key, value) {
                 val (k, name) = requirePair(String::class, key, value)
-                intent.putExtra(k, toComponentName(name))
+                intent.putExtra(k, name.toComponentName())
             }
     )
 
