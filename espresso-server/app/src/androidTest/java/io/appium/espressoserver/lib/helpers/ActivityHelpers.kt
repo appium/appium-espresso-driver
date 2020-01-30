@@ -18,7 +18,6 @@ package io.appium.espressoserver.lib.helpers
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
 import android.util.ArrayMap
 
 import androidx.test.platform.app.InstrumentationRegistry
@@ -72,17 +71,21 @@ object ActivityHelpers {
         if (activity == null && intentOptions == null) {
             throw IllegalArgumentException("Either activity name or intent options must be set")
         }
+
         val instrumentation = InstrumentationRegistry.getInstrumentation()
-        val intent: Intent
-        if (intentOptions == null) {
+        val intent = if (intentOptions == null) {
             val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, pkg, activity!!)
-            AndroidLogger.logger.info("Starting activity '$fullyQualifiedAppActivity' with default options")
-            intent = Intent(Intent.ACTION_MAIN)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            intent.setClassName(instrumentation.targetContext, fullyQualifiedAppActivity)
+            val defaultOptions = mapOf<String, Any>(
+                    "action" to "ACTION_MAIN",
+                    "flags" to "ACTIVITY_NEW_TASK",
+                    "className" to fullyQualifiedAppActivity
+            )
+            AndroidLogger.logger.info("Starting activity '$fullyQualifiedAppActivity' " +
+                    "with default options: $defaultOptions")
+            makeIntent(defaultOptions)
         } else {
-            AndroidLogger.logger.info("Staring intent with custom options: $intentOptions")
-            intent = makeIntent(intentOptions)
+            AndroidLogger.logger.info("Staring activity with custom options: $intentOptions")
+            makeIntent(intentOptions)
         }
         instrumentation.startActivitySync(intent)
     }
