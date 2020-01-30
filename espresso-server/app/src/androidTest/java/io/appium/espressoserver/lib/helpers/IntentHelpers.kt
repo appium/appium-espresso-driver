@@ -20,7 +20,6 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
-import java.lang.Exception
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 
