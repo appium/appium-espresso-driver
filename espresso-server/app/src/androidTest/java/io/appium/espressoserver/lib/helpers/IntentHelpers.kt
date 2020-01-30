@@ -20,6 +20,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
+import java.lang.Exception
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 
@@ -126,7 +127,8 @@ private fun String.toComponentName(): ComponentName = ComponentName.unflattenFro
  *             actions should be prefixed with the vendor's package name.
  * - `data`: Intent data URI, such as content://contacts/people/1
  * - `type`: Intent MIME type, such as image/png
- * - `category`: Intent category, such as android.intent.category.APP_CONTACTS
+ * - `categories`: One or more comma-separated Intent categories,
+ * such as android.intent.category.APP_CONTACTS
  * - `component`: Component name with package name prefix to create an explicit intent,
  * such as com.example.app/.ExampleActivity
  * - `intFlags`: Single string value, which represents intent flags set encoded
@@ -183,8 +185,8 @@ fun makeIntent(options: Map<String, Any?>): Intent {
                 type = requireString(key, value)
                 hasIntentInfo = true
             },
-            "category" to fun(key, value) {
-                intent.addCategory(requireString(key, value))
+            "categories" to fun(key, value) {
+                requireString(key, value).split(",").forEach { intent.addCategory(it.trim()) }
                 hasIntentInfo = true
             },
             "className" to fun(key, value) {
@@ -293,6 +295,6 @@ fun makeIntent(options: Map<String, Any?>): Intent {
 
     intent.setDataAndType(data, type)
 
-    require(hasIntentInfo) { "Either intent action, data, type or category must be supplied" }
+    require(hasIntentInfo) { "Either intent action, data, type or categories must be supplied" }
     return intent
 }

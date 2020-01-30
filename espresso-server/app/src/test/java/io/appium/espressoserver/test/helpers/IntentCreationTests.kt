@@ -54,9 +54,9 @@ class `Intent Creation Tests` {
                 "type" to "image/png"
         )).type!!.toString(), "image/png")
 
-        assertTrue(makeIntent(mapOf(
-                "category" to "android.intent.category.APP_CONTACTS"
-        )).categories.contains("android.intent.category.APP_CONTACTS"))
+        assertEquals(makeIntent(mapOf(
+                "categories" to "android.intent.category.APP_CONTACTS, android.intent.category.DEFAULT"
+        )).categories.size, 2)
     }
 
     @Test
