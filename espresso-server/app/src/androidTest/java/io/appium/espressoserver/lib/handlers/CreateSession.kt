@@ -17,9 +17,8 @@
 package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException
-import io.appium.espressoserver.lib.helpers.ActivityHelper.startActivity
+import io.appium.espressoserver.lib.helpers.ActivityHelpers.startActivity
 import io.appium.espressoserver.lib.helpers.w3c.caps.parseCapabilities
 import io.appium.espressoserver.lib.model.Session
 import io.appium.espressoserver.lib.model.SessionParams
@@ -32,13 +31,18 @@ class CreateSession : RequestHandler<SessionParams, Session> {
         val appiumSession = Session.createGlobalSession(params.capabilities
                 ?: throw SessionNotCreatedException("'capabilities' field is mandatory"))
         try {
-            val parsedCaps = parseCapabilities(params.capabilities.firstMatch,
-                    params.capabilities.alwaysMatch)
+            val parsedCaps = parseCapabilities(
+                    params.capabilities.firstMatch,
+                    params.capabilities.alwaysMatch
+            )
             val shouldLaunchApp = (parsedCaps["autoLaunch"] ?: true) as Boolean
             if (shouldLaunchApp) {
-                val activityName = parsedCaps["appActivity"] as? String
-                        ?: throw InvalidArgumentException("appActivity capability is mandatory")
-                startActivity(parsedCaps["appPackage"] as? String, activityName)
+                @Suppress("UNCHECKED_CAST")
+                startActivity(
+                        parsedCaps["appPackage"] as? String,
+                        parsedCaps["appActivity"] as? String,
+                        parsedCaps["intentOptions"] as? Map<String, Any?>
+                )
             }
         } catch (e: Exception) {
             throw SessionNotCreatedException(e)

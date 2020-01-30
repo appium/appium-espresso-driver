@@ -2,7 +2,7 @@ package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.helpers.ActivityHelper
+import io.appium.espressoserver.lib.helpers.ActivityHelpers
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.InvocationOperation
 import io.appium.espressoserver.lib.model.Element
@@ -15,7 +15,7 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
     override fun handleInternal(params: MobileBackdoorParams): Any? {
         AndroidLogger.logger.info("Invoking Backdoor")
         params.target?.let {target ->
-            val activity = ActivityHelper.currentActivity
+            val activity = ActivityHelpers.currentActivity
             val ops = getBackdoorOperations(params)
 
             when (target) {

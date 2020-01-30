@@ -18,14 +18,13 @@ package io.appium.espressoserver.lib.helpers
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
 import android.util.ArrayMap
 
 import androidx.test.platform.app.InstrumentationRegistry
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 
-object ActivityHelper {
+object ActivityHelpers {
     //    https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
     val currentActivity: Activity
         @Throws(AppiumException::class)
@@ -68,13 +67,26 @@ object ActivityHelper {
         return (if (dotPos > 0) activity else "$appPackage${(if (dotPos == 0) "" else ".")}$activity")
     }
 
-    fun startActivity(pkg: String?, activity: String) {
+    fun startActivity(pkg: String?, activity: String?, intentOptions: Map<String, Any?>?) {
+        if (activity == null && intentOptions == null) {
+            throw IllegalArgumentException("Either activity name or intent options must be set")
+        }
+
         val instrumentation = InstrumentationRegistry.getInstrumentation()
-        val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, pkg, activity)
-        AndroidLogger.logger.info("Starting activity '$fullyQualifiedAppActivity'")
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.setClassName(instrumentation.targetContext, fullyQualifiedAppActivity)
+        val intent = if (intentOptions == null) {
+            val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, pkg, activity!!)
+            val defaultOptions = mapOf<String, Any>(
+                    "action" to "ACTION_MAIN",
+                    "flags" to "ACTIVITY_NEW_TASK",
+                    "className" to fullyQualifiedAppActivity
+            )
+            AndroidLogger.logger.info("Starting activity '$fullyQualifiedAppActivity' " +
+                    "with default options: $defaultOptions")
+            makeIntent(defaultOptions)
+        } else {
+            AndroidLogger.logger.info("Staring activity with custom options: $intentOptions")
+            makeIntent(intentOptions)
+        }
         instrumentation.startActivitySync(intent)
     }
 }
