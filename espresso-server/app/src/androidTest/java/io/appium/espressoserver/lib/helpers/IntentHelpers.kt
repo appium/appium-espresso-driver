@@ -75,7 +75,7 @@ private fun addFlags(intent: Intent, flags: String) {
             "FLAG_RECEIVER_REPLACE_PENDING", "RECEIVER_REPLACE_PENDING" ->
                 intent.addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING)
             else -> {
-                throw IllegalArgumentException("The flag '$flagStr' is not known")
+                throw IllegalArgumentException("The flag '${flagStr.trim()}' is not known")
             }
         }
     }
