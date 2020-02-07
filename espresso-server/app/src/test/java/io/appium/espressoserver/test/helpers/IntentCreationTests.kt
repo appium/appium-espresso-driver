@@ -79,15 +79,19 @@ class `Intent Creation Tests` {
     fun `should create intent with valid single extra args`(){
         val intent = makeIntent(mapOf<String, Any>(
                 "action" to "io.appium.espresso",
-                "e" to listOf<Any>("bar", "baz"),
-                "es" to listOf<Any>("bar2", "baz2"),
-                "ei" to listOf("int1", 2L),
-                "ez" to listOf("bool1", true),
-                "el" to listOf("long1", 1L),
-                "ef" to listOf("float1", 1.1)
+                "e" to mapOf(
+                        "bar" to "baz",
+                        "bar5" to "baz5"
+                ),
+                "es" to mapOf("bar2" to "baz2"),
+                "ei" to mapOf("int1" to 2L),
+                "ez" to mapOf("bool1" to true),
+                "el" to mapOf("long1" to 1L),
+                "ef" to mapOf("float1" to 1.1)
         ))
         val extras = intent.extras!!
         assertEquals(extras.get("bar"), "baz")
+        assertEquals(extras.get("bar5"), "baz5")
         assertEquals(extras.get("bar2"), "baz2")
         assertEquals(extras.getInt("int1"), 2)
         assertEquals(extras.getBoolean("bool1"), true)
@@ -99,9 +103,9 @@ class `Intent Creation Tests` {
     fun `should create intent with valid array extra args`(){
         val intent = makeIntent(mapOf<String, Any>(
                 "action" to "io.appium.espresso",
-                "eia" to listOf("intarr", "1,2, 3"),
-                "ela" to listOf("longarr", "4, 5, 6"),
-                "efa" to listOf("floatarr", "1.1, 2.2")
+                "eia" to mapOf("intarr" to "1,2, 3"),
+                "ela" to mapOf("longarr" to "4, 5, 6"),
+                "efa" to mapOf("floatarr" to "1.1, 2.2")
         ))
         val extras = intent.extras!!
         assertTrue(extras.getIntArray("intarr")!!.size == 3)
