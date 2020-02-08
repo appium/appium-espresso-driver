@@ -248,7 +248,7 @@ fun makeIntent(options: Map<String, Any?>): Intent {
                 requireMap(key, value)
                         .filter { it.key is String }
                         .forEach { entry ->
-                            val numbers = requireString(entry.key as String, entry.value)
+                            requireString(entry.key as String, entry.value)
                                     .split(",")
                                     .map {
                                         try {
@@ -261,14 +261,14 @@ fun makeIntent(options: Map<String, Any?>): Intent {
                                         }
                                     }
                                     .toIntArray()
-                            intent.putExtra(entry.key as String, numbers)
+                                    .let { intent.putExtra(entry.key as String, it) }
                         }
             },
             "ela" to fun(key, value) {
                 requireMap(key, value)
                         .filter { it.key is String }
                         .forEach { entry ->
-                            val numbers = requireString(entry.key as String, entry.value)
+                            requireString(entry.key as String, entry.value)
                                     .split(",")
                                     .map {
                                         try {
@@ -281,14 +281,14 @@ fun makeIntent(options: Map<String, Any?>): Intent {
                                         }
                                     }
                                     .toLongArray()
-                            intent.putExtra(entry.key as String, numbers)
+                                    .let { intent.putExtra(entry.key as String, it) }
                         }
             },
             "efa" to fun(key, value) {
                 requireMap(key, value)
                         .filter { it.key is String }
                         .forEach { entry ->
-                            val numbers = requireString(entry.key as String, entry.value)
+                            requireString(entry.key as String, entry.value)
                                     .split(",")
                                     .map {
                                         try {
@@ -301,7 +301,7 @@ fun makeIntent(options: Map<String, Any?>): Intent {
                                         }
                                     }
                                     .toFloatArray()
-                            intent.putExtra(entry.key as String, numbers)
+                                    .let { intent.putExtra(entry.key as String, it) }
                         }
             },
             "ecn" to fun(key, value) {
