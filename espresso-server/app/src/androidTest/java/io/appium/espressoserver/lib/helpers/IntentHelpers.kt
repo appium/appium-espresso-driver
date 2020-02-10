@@ -24,74 +24,64 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 
 
-private fun addFlags(intent: Intent, flags: String) {
+private fun Intent.addFlags(flags: String) {
     for (flagStr in flags.split(",")) {
         @Suppress("DEPRECATION")
         when (flagStr.trim().toUpperCase()) {
             "FLAG_GRANT_READ_URI_PERMISSION", "GRANT_READ_URI_PERMISSION" ->
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                this.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             "FLAG_GRANT_WRITE_URI_PERMISSION", "GRANT_WRITE_URI_PERMISSION" ->
-                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                this.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             "FLAG_EXCLUDE_STOPPED_PACKAGES", "EXCLUDE_STOPPED_PACKAGES" ->
-                intent.addFlags(Intent.FLAG_EXCLUDE_STOPPED_PACKAGES)
+                this.addFlags(Intent.FLAG_EXCLUDE_STOPPED_PACKAGES)
             "FLAG_INCLUDE_STOPPED_PACKAGES", "INCLUDE_STOPPED_PACKAGES" ->
-                intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+                this.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
             "FLAG_DEBUG_LOG_RESOLUTION", "DEBUG_LOG_RESOLUTION" ->
-                intent.addFlags(Intent.FLAG_DEBUG_LOG_RESOLUTION)
+                this.addFlags(Intent.FLAG_DEBUG_LOG_RESOLUTION)
             "FLAG_ACTIVITY_BROUGHT_TO_FRONT", "ACTIVITY_BROUGHT_TO_FRONT" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                this.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
             "FLAG_ACTIVITY_CLEAR_TOP", "ACTIVITY_CLEAR_TOP" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                this.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             "FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET", "ACTIVITY_CLEAR_WHEN_TASK_RESET" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+                this.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
             "FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS", "ACTIVITY_EXCLUDE_FROM_RECENTS" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                this.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
             "FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY", "ACTIVITY_LAUNCHED_FROM_HISTORY" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
+                this.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
             "FLAG_ACTIVITY_MULTIPLE_TASK", "ACTIVITY_MULTIPLE_TASK" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+                this.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
             "FLAG_ACTIVITY_NO_ANIMATION", "ACTIVITY_NO_ANIMATION" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                this.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             "FLAG_ACTIVITY_NO_HISTORY", "ACTIVITY_NO_HISTORY" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                this.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
             "FLAG_ACTIVITY_NO_USER_ACTION", "ACTIVITY_NO_USER_ACTION" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+                this.addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION)
             "FLAG_ACTIVITY_PREVIOUS_IS_TOP", "ACTIVITY_PREVIOUS_IS_TOP" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP)
+                this.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP)
             "FLAG_ACTIVITY_REORDER_TO_FRONT", "ACTIVITY_REORDER_TO_FRONT" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                this.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             "FLAG_ACTIVITY_RESET_TASK_IF_NEEDED", "ACTIVITY_RESET_TASK_IF_NEEDED" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                this.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
             "FLAG_ACTIVITY_SINGLE_TOP", "ACTIVITY_SINGLE_TOP" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                this.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             "FLAG_ACTIVITY_NEW_TASK", "ACTIVITY_NEW_TASK" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             "FLAG_ACTIVITY_CLEAR_TASK", "ACTIVITY_CLEAR_TASK" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                this.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             "FLAG_ACTIVITY_TASK_ON_HOME", "ACTIVITY_TASK_ON_HOME" ->
-                intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME)
+                this.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME)
             "FLAG_RECEIVER_REGISTERED_ONLY", "RECEIVER_REGISTERED_ONLY" ->
-                intent.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
+                this.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
             "FLAG_RECEIVER_REPLACE_PENDING", "RECEIVER_REPLACE_PENDING" ->
-                intent.addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING)
-            else -> {
-                throw IllegalArgumentException("The flag '${flagStr.trim()}' is not known")
-            }
+                this.addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING)
+            else -> throw IllegalArgumentException("The flag '${flagStr.trim()}' is not known")
         }
     }
 }
 
-
-private data class Pair<T>(val k: String, val v: T)
-
-
-private fun <T : Any> requirePair(expectedType: KClass<T>, key: String, value: Any?): Pair<T> {
-    require(value is List<*> && value.size > 1 && value[0] is String) {
-        "The value of '$key' must be a list with at least two items. " +
-                "The first item must be a key of type string. '$value' is given instead"
-    }
+private fun <T : Any> requireType(expectedType: KClass<T>, key: String, value: Any?): T {
+    var v = value
     // It might be that GSON serializer converts all ints to long/floats to double by default
-    var v = value[1]
     if (expectedType == Int::class && v is Long) {
         v = v.toInt()
     }
@@ -99,20 +89,18 @@ private fun <T : Any> requirePair(expectedType: KClass<T>, key: String, value: A
         v = v.toFloat()
     }
     require(expectedType.isInstance(v)) {
-        "The second item of '$key' must be of type ${expectedType.simpleName}. " +
-                "'$value' is given instead"
+        "The value of '$key' must be of type '${expectedType.simpleName}'. '$value' is given instead"
     }
-    return Pair(value[0] as String, expectedType.cast(v))
+    return expectedType.cast(v)
 }
 
-
-private fun requireString(key: String, value: Any?): String {
-    require(value is String) {
-        "The value of '$key' must be of type string. '$value' is given instead"
-    }
-    return value
-}
-
+private fun requireString(key: String, value: Any?): String = requireType(String::class, key, value)
+private fun requireInt(key: String, value: Any?): Int = requireType(Int::class, key, value)
+private fun requireLong(key: String, value: Any?): Long = requireType(Long::class, key, value)
+private fun requireFloat(key: String, value: Any?): Float = requireType(Float::class, key, value)
+private fun requireBool(key: String, value: Any?): Boolean = requireType(Boolean::class, key, value)
+private fun requireMap(key: String, value: Any?): Map<*, *> = requireType(Map::class, key, value)
+private fun requireList(key: String, value: Any?): List<*> = requireType(List::class, key, value)
 
 private fun String.toComponentName(): ComponentName = ComponentName.unflattenFromString(this)
         ?: throw IllegalArgumentException("Bad component name: $this")
@@ -139,31 +127,30 @@ private fun String.toComponentName(): ComponentName = ComponentName.unflattenFro
  * could be omitted).
  * - `className`: The name of a class inside of the application package
  * that will be used as the component for this Intent.
- * - `e`, `es`: String data as a key-value pair stored in a list of two
- * elements of type string, such as ['foo', 'bar']
- * - `esn`: null-data, where the key name is only needed, such as 'foo'
- * - `ez`: Boolean data as a key-value pair stored in a list of two
- * elements of type string/boolean, such as ['foo', true]
- * - `ei`: Integer data as a key-value pair stored in a list of two
- * elements of type string/integer, such as ['foo', 1]
- * - `el`: Long integer data as a key-value pair stored in a list of two
- * elements of type string/longint, such as ['foo', 1L]
- * - `ef`: Float data as a key-value pair stored in a list of two
- * elements of type string/float, such as ['foo', 1.1]
- * - `eu`: URI data as a key-value pair stored in a list of two
- * elements of type string, such as ['foo', 'content://contacts/people/1']
- * - `ecn`: Component name data as a key-value pair stored in a list of two
- * elements of type string, such as ['foo', 'com.example.app/.ExampleActivity']
- * - `eia`: Array of integers data as a key-value pair stored in a list of two
- * elements of type string, such as ['foo', '1,2,3,4']
- * - `ela`: Array of long integers data as a key-value pair stored in a list of two
- * elements of type string, such as ['foo', '1L,2L,3L,4L']
- * - `efa`: Array of float data as a key-value pair stored in a list of two
- * elements of type string, such as ['foo', '1.1,2.2,3.2,4.4']
+ * - `e`, `es`: String data as key-value pairs stored in a map with
+ * keys and values of type string->string, such as {'foo': 'bar'}
+ * - `esn`: null-data, where the key name is only needed, such as ['foo', 'bar']
+ * - `ez`: Boolean data as key-value pairs stored in a map with
+ * keys and values of type string->boolean, such as {'foo': true, 'bar': false}
+ * - `ei`: Integer data as key-value pairs stored in a map with
+ * keys and values of type string->integer, such as {'foo': 1, 'bar': 2}
+ * - `el`: Long integer data as key-value pairs stored in a map with
+ * keys and values of type string->long, such as {'foo': 1L, 'bar': 2L}
+ * - `ef`: Float data as key-value pairs stored in a map with
+ * keys and values of type string->float, such as {'foo': 1.ff, 'bar': 2.2f}
+ * - `eu`: URI data as key-value pairs stored in a map with
+ * keys and values of type string->string, such as {'foo': 'content://contacts/people/1'}
+ * - `ecn`: Component name data as key-value pairs stored in a map with
+ * keys and values of type string->string, such as {'foo': 'com.example.app/.ExampleActivity'}
+ * - `eia`: Array of integers data as key-value pairs stored in a map with
+ * keys and values of type string->string, such as {'foo': '1,2,3,4'}
+ * - `ela`: Array of long data as key-value pairs stored in a map with
+ * keys and values of type string->string, such as {'foo': '1L,2L,3L,4L'}
+ * - `efa`: Array of float data as key-value pairs stored in a map with
+ * keys and values of type string->string, such as {'foo': '1.1,2.2,3.2,4.4'}
  * @return The created intent
  * @throws IllegalArgumentException if required options are missing or
  * there is an issue with mapping value format
- *
  */
 fun makeIntent(options: Map<String, Any?>): Intent {
     val intent = Intent()
@@ -185,7 +172,8 @@ fun makeIntent(options: Map<String, Any?>): Intent {
                 hasIntentInfo = true
             },
             "categories" to fun(key, value) {
-                requireString(key, value).split(",").forEach { intent.addCategory(it.trim()) }
+                requireString(key, value).split(",")
+                        .forEach { intent.addCategory(it.trim()) }
                 hasIntentInfo = true
             },
             "className" to fun(key, value) {
@@ -200,88 +188,129 @@ fun makeIntent(options: Map<String, Any?>): Intent {
                 intent.flags = Integer.decode(requireString(key, value)).toInt()
             },
             "flags" to fun(key, value) {
-                addFlags(intent, requireString(key, value))
+                intent.addFlags(requireString(key, value))
             },
             "e" to fun(key, value) {
-                val (k, v) = requirePair(String::class, key, value)
-                intent.putExtra(k, v)
+                requireMap(key, value)
+                        .filter { it.key is String }
+                        .forEach {
+                            intent.putExtra(it.key as String, requireString(it.key as String, it.value))
+                        }
             },
             "es" to fun(key, value) {
-                val (k, v) = requirePair(String::class, key, value)
-                intent.putExtra(k, v)
+                requireMap(key, value)
+                        .filter { it.key is String }
+                        .forEach {
+                            intent.putExtra(it.key as String, requireString(it.key as String, it.value))
+                        }
             },
             "esn" to fun(key, value) {
-                val k = requireString(key, value)
-                intent.putExtra(k, null as String?)
+                requireList(key, value)
+                        .filterIsInstance<String>()
+                        .forEach { intent.putExtra(it, null as String?) }
             },
             "ei" to fun(key, value) {
-                val (k, v) = requirePair(Int::class, key, value)
-                intent.putExtra(k, v)
+                requireMap(key, value)
+                        .filter { it.key is String }
+                        .forEach {
+                            intent.putExtra(it.key as String, requireInt(it.key as String, it.value))
+                        }
             },
             "eu" to fun(key, value) {
-                val (k, v) = requirePair(String::class, key, value)
-                intent.putExtra(k, Uri.parse(v))
+                requireMap(key, value)
+                        .filter { it.key is String }
+                        .forEach {
+                            intent.putExtra(it.key as String, Uri.parse(requireString(it.key as String, it.value)))
+                        }
             },
             "el" to fun(key, value) {
-                val (k, v) = requirePair(Long::class, key, value)
-                intent.putExtra(k, v)
+                requireMap(key, value)
+                        .filter { it.key is String }
+                        .forEach {
+                            intent.putExtra(it.key as String, requireLong(it.key as String, it.value))
+                        }
             },
             "ef" to fun(key, value) {
-                val (k, v) = requirePair(Float::class, key, value)
-                intent.putExtra(k, v)
+                requireMap(key, value)
+                        .filter { it.key is String }
+                        .forEach {
+                            intent.putExtra(it.key as String, requireFloat(it.key as String, it.value))
+                        }
             },
             "ez" to fun(key, value) {
-                val (k, v) = requirePair(Boolean::class, key, value)
-                intent.putExtra(k, v)
+                requireMap(key, value)
+                        .filter { it.key is String }
+                        .forEach {
+                            intent.putExtra(it.key as String, requireBool(it.key as String, it.value))
+                        }
             },
             "eia" to fun(key, value) {
-                val (k, v) = requirePair(String::class, key, value)
-                val numbers = v.split(",")
-                        .map {
-                            try {
-                                it.trim().toInt()
-                            } catch (e: NumberFormatException) {
-                                throw IllegalArgumentException(
-                                        "The value is expected to be a comma-separated list of integers. " +
-                                                "'$v' is given instead", e)
-                            }
+                requireMap(key, value)
+                        .filter { it.key is String }
+                        .forEach { entry ->
+                            requireString(entry.key as String, entry.value)
+                                    .split(",")
+                                    .map {
+                                        try {
+                                            it.trim().toInt()
+                                        } catch (e: NumberFormatException) {
+                                            throw IllegalArgumentException(
+                                                    "The value of '${entry.key}' is expected " +
+                                                            "to be a comma-separated list of integers. " +
+                                                            "'${entry.value}' is given instead", e)
+                                        }
+                                    }
+                                    .toIntArray()
+                                    .let { intent.putExtra(entry.key as String, it) }
                         }
-                        .toIntArray()
-                intent.putExtra(k, numbers)
             },
             "ela" to fun(key, value) {
-                val (k, v) = requirePair(String::class, key, value)
-                val numbers = v.split(",")
-                        .map {
-                            try {
-                                it.trim().toLong()
-                            } catch (e: NumberFormatException) {
-                                throw IllegalArgumentException(
-                                        "The value is expected to be a comma-separated list of long integers. " +
-                                                "'$v' is given instead", e)
-                            }
+                requireMap(key, value)
+                        .filter { it.key is String }
+                        .forEach { entry ->
+                            requireString(entry.key as String, entry.value)
+                                    .split(",")
+                                    .map {
+                                        try {
+                                            it.trim().toLong()
+                                        } catch (e: NumberFormatException) {
+                                            throw IllegalArgumentException(
+                                                    "The value of '${entry.key}' is expected " +
+                                                            "to be a comma-separated list of long integers. " +
+                                                            "'${entry.value}' is given instead", e)
+                                        }
+                                    }
+                                    .toLongArray()
+                                    .let { intent.putExtra(entry.key as String, it) }
                         }
-                        .toLongArray()
-                intent.putExtra(k, numbers)
             },
             "efa" to fun(key, value) {
-                val (k, v) = requirePair(String::class, key, value)
-                val numbers = v.split(",")
-                        .map {
-                            try {
-                                it.trim().toFloat()
-                            } catch (e: NumberFormatException) {
-                                throw IllegalArgumentException(
-                                        "The value is expected to be a comma-separated list of float numbers. " +
-                                                "'$v' is given instead", e)
-                            }
+                requireMap(key, value)
+                        .filter { it.key is String }
+                        .forEach { entry ->
+                            requireString(entry.key as String, entry.value)
+                                    .split(",")
+                                    .map {
+                                        try {
+                                            it.trim().toFloat()
+                                        } catch (e: NumberFormatException) {
+                                            throw IllegalArgumentException(
+                                                    "The value of '${entry.key}' is expected " +
+                                                            "to be a comma-separated list of float numbers. " +
+                                                            "'${entry.value}' is given instead", e)
+                                        }
+                                    }
+                                    .toFloatArray()
+                                    .let { intent.putExtra(entry.key as String, it) }
                         }
-                        .toFloatArray()
-                intent.putExtra(k, numbers)
             },
             "ecn" to fun(key, value) {
-                val (k, name) = requirePair(String::class, key, value)
-                intent.putExtra(k, name.toComponentName())
+                requireMap(key, value)
+                        .filter { it.key is String }
+                        .forEach {
+                            intent.putExtra(it.key as String,
+                                    requireString(it.key as String, it.value).toComponentName())
+                        }
             }
     )
 

@@ -10,8 +10,8 @@ buildscript {
         (propertyValue) ? propertyValue.toString() : defaultValue
     }
 
-    ext.kotlin_version = getStringProperty('appiumKotlin', '1.3.31')
-    ext.android_gradle_plugin_version = getStringProperty('appiumAndroidGradlePlugin', '3.4.2')
+    ext.kotlin_version = getStringProperty('appiumKotlin', '1.3.61')
+    ext.android_gradle_plugin_version = getStringProperty('appiumAndroidGradlePlugin', '3.5.0')
 
     repositories {
         maven {
