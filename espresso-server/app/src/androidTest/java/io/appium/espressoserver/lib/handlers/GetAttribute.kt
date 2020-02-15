@@ -1,7 +1,9 @@
 package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.assertion.LayoutAssertions.*
+import androidx.test.espresso.assertion.LayoutAssertions.noEllipsizedText
+import androidx.test.espresso.assertion.LayoutAssertions.noMultilineButtons
+import androidx.test.espresso.assertion.LayoutAssertions.noOverlaps
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
