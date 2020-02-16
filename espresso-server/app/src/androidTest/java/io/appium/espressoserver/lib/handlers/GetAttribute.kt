@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import androidx.test.espresso.EspressoException
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.LayoutAssertions.noEllipsizedText
 import androidx.test.espresso.assertion.LayoutAssertions.noMultilineButtons
@@ -49,8 +50,12 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
                     it()
                     "true"
                 } catch (e: Exception) {
-                    e.message?.let { msg -> AndroidLogger.logger.info(msg) }
-                    "false"
+                    if (e is EspressoException) {
+                        e.message?.let { msg -> AndroidLogger.logger.info(msg) }
+                        "false"
+                    } else {
+                        throw e
+                    }
                 }
             }
             when (it) {
