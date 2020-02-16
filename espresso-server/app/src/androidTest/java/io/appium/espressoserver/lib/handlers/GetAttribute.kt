@@ -1,7 +1,29 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.espressoserver.lib.handlers
 
+import androidx.test.espresso.EspressoException
+import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.assertion.LayoutAssertions.noEllipsizedText
+import androidx.test.espresso.assertion.LayoutAssertions.noMultilineButtons
+import androidx.test.espresso.assertion.LayoutAssertions.noOverlaps
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.ViewAttributesEnum
@@ -21,40 +43,58 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
         ViewAttributesEnum.values().find {
             attributeName.equals(it.toString(), ignoreCase = true)
         }?.let {
-            // If it's a TEXT attribute, return the view's raw text
-            if (it == ViewAttributesEnum.TEXT) {
-                val viewInteraction = Element.getViewInteractionById(params.elementId)
-                return ViewTextGetter().get(viewInteraction).rawText
+            val viewElementGetter: () -> ViewElement = { ViewElement(Element.getViewById(params.elementId)) }
+            val viewInteractionGetter: () -> ViewInteraction = { Element.getViewInteractionById(params.elementId) }
+            val checkToAttributeValue: (() -> Unit) -> String = {
+                try {
+                    it()
+                    "true"
+                } catch (e: Exception) {
+                    if (e is EspressoException) {
+                        e.message?.let { msg -> AndroidLogger.logger.info(msg) }
+                        "false"
+                    } else {
+                        throw e
+                    }
+                }
             }
-
-            val viewElement = ViewElement(Element.getViewById(params.elementId))
             when (it) {
-                ViewAttributesEnum.CONTENT_DESC -> viewElement.contentDescription?.let { return it.toString() } ?: return null
-                ViewAttributesEnum.CLASS -> return viewElement.className
-                ViewAttributesEnum.CHECKABLE -> return java.lang.Boolean.toString(viewElement.isCheckable)
-                ViewAttributesEnum.CHECKED -> return java.lang.Boolean.toString(viewElement.isChecked)
-                ViewAttributesEnum.CLICKABLE -> return java.lang.Boolean.toString(viewElement.isClickable)
-                ViewAttributesEnum.ENABLED -> return java.lang.Boolean.toString(viewElement.isEnabled)
-                ViewAttributesEnum.FOCUSABLE -> return java.lang.Boolean.toString(viewElement.isFocusable)
-                ViewAttributesEnum.FOCUSED -> return java.lang.Boolean.toString(viewElement.isFocused)
-                ViewAttributesEnum.SCROLLABLE -> return java.lang.Boolean.toString(viewElement.isScrollable)
-                ViewAttributesEnum.LONG_CLICKABLE -> return java.lang.Boolean.toString(viewElement.isLongClickable)
-                ViewAttributesEnum.PASSWORD -> return java.lang.Boolean.toString(viewElement.isPassword)
-                ViewAttributesEnum.SELECTED -> return java.lang.Boolean.toString(viewElement.isSelected)
-                ViewAttributesEnum.VISIBLE -> return java.lang.Boolean.toString(viewElement.isVisible)
-                ViewAttributesEnum.BOUNDS -> return viewElement.bounds.toShortString()
-                ViewAttributesEnum.RESOURCE_ID -> return viewElement.resourceId
-                ViewAttributesEnum.INDEX -> return Integer.toString(viewElement.index)
-                ViewAttributesEnum.PACKAGE -> return viewElement.packageName
-                ViewAttributesEnum.VIEW_TAG -> return viewElement.viewTag
+                ViewAttributesEnum.CONTENT_DESC -> return viewElementGetter().contentDescription?.toString()
+                ViewAttributesEnum.CLASS -> return viewElementGetter().className
+                ViewAttributesEnum.CHECKABLE -> return viewElementGetter().isCheckable.toString()
+                ViewAttributesEnum.CHECKED -> return viewElementGetter().isChecked.toString()
+                ViewAttributesEnum.CLICKABLE -> return viewElementGetter().isClickable.toString()
+                ViewAttributesEnum.ENABLED -> return viewElementGetter().isEnabled.toString()
+                ViewAttributesEnum.FOCUSABLE -> return viewElementGetter().isFocusable.toString()
+                ViewAttributesEnum.FOCUSED -> return viewElementGetter().isFocused.toString()
+                ViewAttributesEnum.SCROLLABLE -> return viewElementGetter().isScrollable.toString()
+                ViewAttributesEnum.LONG_CLICKABLE -> return viewElementGetter().isLongClickable.toString()
+                ViewAttributesEnum.PASSWORD -> return viewElementGetter().isPassword.toString()
+                ViewAttributesEnum.SELECTED -> return viewElementGetter().isSelected.toString()
+                ViewAttributesEnum.VISIBLE -> return viewElementGetter().isVisible.toString()
+                ViewAttributesEnum.BOUNDS -> return viewElementGetter().bounds.toShortString()
+                ViewAttributesEnum.RESOURCE_ID -> return viewElementGetter().resourceId
+                ViewAttributesEnum.INDEX -> return viewElementGetter().index.toString()
+                ViewAttributesEnum.PACKAGE -> return viewElementGetter().packageName
+                ViewAttributesEnum.VIEW_TAG -> return viewElementGetter().viewTag
+                ViewAttributesEnum.NO_ELLIPSIZED_TEXT -> return checkToAttributeValue {
+                    viewInteractionGetter().check(noEllipsizedText())
+                }
+                ViewAttributesEnum.NO_MULTILINE_BUTTONS -> return checkToAttributeValue {
+                    viewInteractionGetter().check(noMultilineButtons())
+                }
+                ViewAttributesEnum.NO_OVERLAPS -> return checkToAttributeValue {
+                    viewInteractionGetter().check(noOverlaps())
+                }
+                // If it's a TEXT attribute, return the view's raw text
+                ViewAttributesEnum.TEXT -> return ViewTextGetter().get(viewInteractionGetter()).rawText
                 else -> throw NotYetImplementedException()
             }
         }
 
         // If we made it this far, we found no matching attribute. Throw an exception
         val supportedAttributeNames = ViewAttributesEnum.values().map { it.toString() }
-        throw AppiumException(
-                String.format("Attribute name should be one of %s. '%s' is given instead",
-                        supportedAttributeNames, attributeName))
+        throw AppiumException("Attribute name should be one of $supportedAttributeNames. " +
+                "'$attributeName' is given instead")
     }
 }
