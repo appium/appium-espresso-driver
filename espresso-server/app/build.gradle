@@ -2,10 +2,16 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+    def props = getProperties()
     compileSdkVersion getIntegerProperty('appiumCompileSdk', 28)
     buildToolsVersion getStringProperty('appiumBuildTools', '28.0.3')
     defaultConfig {
-        applicationId "io.appium.espressoserver"
+        // <instrumentation android:targetPackage=""/>
+        applicationId getStringProperty('appiumTargetPackage', 'io.appium.espressoserver')
+        // <manifest package=""/>
+        testApplicationId "io.appium.espressoserver.test"
+        testHandleProfiling false
+        testFunctionalTest false
         minSdkVersion getIntegerProperty('appiumMinSdk', 18)
         targetSdkVersion getIntegerProperty('appiumTargetSdk', 28)
         versionCode 1
@@ -14,10 +20,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            zipAlignEnabled getBooleanProperty("appiumZipAlign", true)
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
         }
     }
 
@@ -29,6 +37,22 @@ android {
 
     testOptions {
         unitTests.returnDefaultValues = true
+    }
+
+    signingConfigs {
+        debug {
+            def appiumKeystoreFile = props.get("appiumKeystoreFile")
+            if (appiumKeystoreFile != null) storeFile file(appiumKeystoreFile)
+
+            def appiumKeystorePassword = props.get("appiumKeystorePassword")
+            if (appiumKeystorePassword != null) storePassword appiumKeystorePassword
+
+            def appiumKeyAlias = props.get("appiumKeyAlias")
+            if (appiumKeyAlias != null) keyAlias appiumKeyAlias
+
+            def appiumKeyPassword = props.get("appiumKeyPassword")
+            if (appiumKeyPassword != null) keyPassword appiumKeyPassword
+        }
     }
 }
 
