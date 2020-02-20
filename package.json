@@ -93,7 +93,7 @@
     "mocha-junit-reporter": "^1.18.0",
     "mocha-multi-reporters": "^1.1.7",
     "pre-commit": "^1.2.2",
-    "sinon": "^8.0.0",
+    "sinon": "^9.0.0",
     "wd": "^1.10.3",
     "xmldom": "^0.2.0",
     "xpath": "0.0.27"
