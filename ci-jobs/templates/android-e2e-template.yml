@@ -21,13 +21,6 @@ jobs:
     - task: NodeTool@0
       inputs:
         versionSpec: ${{ parameters.NODE_VERSION }}
-    - task: JavaToolInstaller@0
-      inputs:
-        versionSpec: '9'
-        jdkArchitectureOption: 'x64'
-        jdkSourceOption: AzureStorage
-        jdkDestinationDirectory: '$(Agent.ToolsDirectory)/jdk11'
-        cleanDestinationDirectory: false
     - script: npm install --chromedriver_version="${{ parameters.CHROMEDRIVER_VERSION }}"
       displayName: Install Node dependencies
     - script: npm test
