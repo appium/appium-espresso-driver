@@ -5,7 +5,7 @@
 
 # Use Java 8 for these tasks, or it will error with
 # Exception in thread "main" java.lang.NoClassDefFoundError: javax/xml/bind/annotation/XmlSchema
-export JAVA_HOME="$(/usr/libexec/java_home -v 1.8`)"
+export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 
 # Install AVD files
 declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;google_apis;x86"
