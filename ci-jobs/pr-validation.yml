@@ -1,10 +1,9 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
-variables:
-  - name: JAVA_HOME
-    value: /Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home
 jobs:
   - job: gradle_junit_tests
     steps:
+      - script: /usr/libexec/java_home -V
+        displayName: Java versions
       - task: Gradle@2
         inputs:
           workingDirectory: espresso-server
