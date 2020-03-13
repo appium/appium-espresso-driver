@@ -1,9 +1,9 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
 jobs:
   - job: gradle_junit_tests
+    pool:
+      vmImage: macOS-10.14
     steps:
-      - script: /usr/libexec/java_home -V
-        displayName: Java versions
       - task: Gradle@2
         inputs:
           workingDirectory: espresso-server
