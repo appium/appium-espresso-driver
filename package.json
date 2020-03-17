@@ -12,7 +12,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/appium/appium-espresso-driver.git"
+    "url": "https://github.com/chaooe/appium-espresso-driver.git"
   },
   "bugs": {
     "url": "https://github.com/appium/appium-espresso-driver/issues"
@@ -42,7 +42,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.4.3",
-    "appium-adb": "^7.27.0",
+    "appium-adb": "https://github.com/chaooe/appium-adb.git",
     "appium-android-driver": "^4.27.0",
     "appium-base-driver": "^5.0.0",
     "appium-support": "^2.20.0",
