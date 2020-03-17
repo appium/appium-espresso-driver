@@ -122,6 +122,8 @@ class SourceDocument @JvmOverloads constructor(
         viewText?.let {
             setAttribute(ViewAttributesEnum.TEXT, it.rawText)
             setAttribute(ViewAttributesEnum.HINT, it.isHint)
+            setAttribute(ViewAttributesEnum.TEXTCOLOR, it.textColor)
+            setAttribute(ViewAttributesEnum.ELEVATION, it.elevation)
         }
         setAttribute(ViewAttributesEnum.RESOURCE_ID, viewElement.resourceId)
         setAttribute(ViewAttributesEnum.VIEW_TAG, viewElement.viewTag)

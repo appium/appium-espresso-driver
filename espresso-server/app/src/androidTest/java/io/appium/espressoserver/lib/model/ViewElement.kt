@@ -127,10 +127,12 @@ class ViewElement(private val view: View) {
             if (view is TextView) {
                 val textValue = view.text
                 val hintValue = view.hint
+                val textColor = view.currentTextColor
+                val elevation = view.elevation
                 return if ((textValue == null || textValue.toString().isEmpty())
                         && hintValue != null && !hintValue.toString().isEmpty()) {
-                    ViewText(hintValue.toString(), true)
-                } else ViewText(textValue.toString(), false)
+                    ViewText(hintValue.toString(), true, textColor, elevation)
+                } else ViewText(textValue.toString(), false, textColor, elevation)
             }
 
             return null

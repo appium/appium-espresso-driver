@@ -43,6 +43,8 @@ enum class ViewAttributesEnum {
     ADAPTERS,
     ADAPTER_TYPE,
     HINT,
+    TEXTCOLOR,
+    ELEVATION,
     VIEW_TAG;
 
     override fun toString(): String {

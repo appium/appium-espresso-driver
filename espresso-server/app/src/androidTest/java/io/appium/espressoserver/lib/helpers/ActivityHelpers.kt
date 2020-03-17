@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.helpers
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.app.Instrumentation
 import android.util.ArrayMap
 
@@ -87,6 +88,10 @@ object ActivityHelpers {
             AndroidLogger.logger.info("Staring activity with custom options: $intentOptions")
             makeIntent(intentOptions)
         }
-        instrumentation.startActivitySync(intent)
+        val options = ActivityOptions.makeBasic()
+        options.launchDisplayId = 1
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        context.startActivity(intent, options.toBundle())
+//        instrumentation.startActivitySync(intent)
     }
 }
