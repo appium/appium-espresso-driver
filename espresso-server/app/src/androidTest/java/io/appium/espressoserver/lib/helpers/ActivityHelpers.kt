@@ -68,7 +68,7 @@ object ActivityHelpers {
         return (if (dotPos > 0) activity else "$appPackage${(if (dotPos == 0) "" else ".")}$activity")
     }
 
-    fun startActivity(pkg: String?, activity: String?, intentOptions: Map<String, Any?>?, displayId: Int?) {
+    fun startActivity(pkg: String?, activity: String?, intentOptions: Map<String, Any?>?, displayId: Number?) {
         if (activity == null && intentOptions == null) {
             throw IllegalArgumentException("Either activity name or intent options must be set")
         }
@@ -88,11 +88,8 @@ object ActivityHelpers {
             AndroidLogger.logger.info("Staring activity with custom options: $intentOptions")
             makeIntent(intentOptions)
         }
-        val options = if (displayId == null) {
-            ActivityOptions.makeBasic().setLaunchDisplayId(0)
-        } else {
-            ActivityOptions.makeBasic().setLaunchDisplayId(displayId)
-        }
+        val options = ActivityOptions.makeBasic()
+        if (displayId != null) options.launchDisplayId = displayId.toInt()
         context.startActivity(intent, options.toBundle())
     }
 }

@@ -4,5 +4,5 @@ data class StartActivityParams(
     val appPackage: String? = null,
     val appActivity: String? = null,
     val optionalIntentArguments: Map<String, Any?>? = null,
-    val displayId: Int? = null
+    val displayId: Number? = null
 ) : AppiumParams()

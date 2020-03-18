@@ -42,7 +42,7 @@ class CreateSession : RequestHandler<SessionParams, Session> {
                         parsedCaps["appPackage"] as? String,
                         parsedCaps["appActivity"] as? String,
                         parsedCaps["intentOptions"] as? Map<String, Any?>,
-                        parsedCaps["displayId"] as? Int
+                        parsedCaps["displayId"] as? Number
                 )
             }
         } catch (e: Exception) {
