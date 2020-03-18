@@ -20,6 +20,7 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.util.ArrayMap
+import android.os.Build
 
 import androidx.test.platform.app.InstrumentationRegistry
 
@@ -88,8 +89,14 @@ object ActivityHelpers {
             AndroidLogger.logger.info("Staring activity with custom options: $intentOptions")
             makeIntent(intentOptions)
         }
-        val options = ActivityOptions.makeBasic()
-        if (displayId != null) options.launchDisplayId = displayId.toInt()
-        context.startActivity(intent, options.toBundle())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val options = ActivityOptions.makeBasic()
+            displayId?.let {
+                options.launchDisplayId = it.toInt()
+            }
+            context.startActivity(intent, options.toBundle())
+        } else {
+            context.startActivity(intent)
+        }
     }
 }

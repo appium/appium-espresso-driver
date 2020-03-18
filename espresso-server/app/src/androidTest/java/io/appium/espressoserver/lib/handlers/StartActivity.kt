@@ -25,7 +25,7 @@ class StartActivity : RequestHandler<StartActivityParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: StartActivityParams): Void? {
-        startActivity(params.appPackage, params.appActivity, params.optionalIntentArguments, params.displayId)
+        startActivity(params.appPackage, params.appActivity, params.optionalIntentArguments, params.launchDisplayId)
         return null
     }
 }
