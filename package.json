@@ -45,7 +45,7 @@
     "appium-adb": "^7.27.0",
     "appium-android-driver": "^4.27.0",
     "appium-base-driver": "^5.0.0",
-    "appium-support": "^2.20.0",
+    "appium-support": "^2.42.0",
     "asyncbox": "^2.3.1",
     "bluebird": "^3.5.0",
     "lodash": "^4.17.11",
