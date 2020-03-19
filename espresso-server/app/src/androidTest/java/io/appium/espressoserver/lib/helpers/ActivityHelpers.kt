@@ -95,7 +95,7 @@ object ActivityHelpers {
                 options.launchDisplayId = it.toInt()
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                instrumentation.startActivitySync(intent, options.toBundle())
+                instrumentation.startActivitySync(intent)
             } else {
                 instrumentation.targetContext.startActivity(intent, options.toBundle())
             }
