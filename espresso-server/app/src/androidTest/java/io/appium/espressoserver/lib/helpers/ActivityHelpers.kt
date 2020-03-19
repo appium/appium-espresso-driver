@@ -18,7 +18,7 @@ package io.appium.espressoserver.lib.helpers
 
 import android.app.Activity
 import android.app.ActivityOptions
-import android.content.Context
+import android.app.Instrumentation
 import android.util.ArrayMap
 import android.os.Build
 
@@ -57,14 +57,14 @@ object ActivityHelpers {
     /**
      * https://android.googlesource.com/platform/frameworks/base/+/master/tools/aapt/Resource.cpp#755
      *
-     * @param context Context instance
+     * @param instrumentation Instrumentation instance
      * @param pkg app package name
      * @param activity activity name shortcut to be qualified
      * @return The qualified activity name
      */
-    private fun getFullyQualifiedActivityName(context: Context,
+    private fun getFullyQualifiedActivityName(instrumentation: Instrumentation,
                                               pkg: String?, activity: String): String {
-        val appPackage = pkg ?: context.packageName
+        val appPackage = pkg ?: instrumentation.targetContext.packageName
         val dotPos = activity.indexOf(".")
         return (if (dotPos > 0) activity else "$appPackage${(if (dotPos == 0) "" else ".")}$activity")
     }
@@ -74,9 +74,9 @@ object ActivityHelpers {
             throw IllegalArgumentException("Either activity name or intent options must be set")
         }
 
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
         val intent = if (intentOptions == null) {
-            val fullyQualifiedAppActivity = getFullyQualifiedActivityName(context, pkg, activity!!)
+            val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, pkg, activity!!)
             val defaultOptions = mapOf<String, Any>(
                     "action" to "ACTION_MAIN",
                     "flags" to "ACTIVITY_NEW_TASK",
@@ -94,9 +94,9 @@ object ActivityHelpers {
             displayId?.let {
                 options.launchDisplayId = it.toInt()
             }
-            context.startActivity(intent, options.toBundle())
+            instrumentation.targetContext.startActivity(intent, options.toBundle())
         } else {
-            context.startActivity(intent)
+            instrumentation.startActivitySync(intent)
         }
     }
 }
