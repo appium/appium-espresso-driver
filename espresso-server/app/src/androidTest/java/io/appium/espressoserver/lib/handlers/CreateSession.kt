@@ -22,6 +22,7 @@ import io.appium.espressoserver.lib.helpers.ActivityHelpers.startActivity
 import io.appium.espressoserver.lib.helpers.w3c.caps.parseCapabilities
 import io.appium.espressoserver.lib.model.Session
 import io.appium.espressoserver.lib.model.SessionParams
+import io.appium.espressoserver.lib.model.StartActivityParams
 
 
 class CreateSession : RequestHandler<SessionParams, Session> {
@@ -38,11 +39,13 @@ class CreateSession : RequestHandler<SessionParams, Session> {
             val shouldLaunchApp = (parsedCaps["autoLaunch"] ?: true) as Boolean
             if (shouldLaunchApp) {
                 @Suppress("UNCHECKED_CAST")
-                startActivity(
+                val startParamss = StartActivityParams(
                         parsedCaps["appPackage"] as? String,
                         parsedCaps["appActivity"] as? String,
                         parsedCaps["intentOptions"] as? Map<String, Any?>,
-                        parsedCaps["launchDisplayId"] as? Number
+                        parsedCaps["activityOptions"] as? Map<String, Any?>)
+                startActivity(
+                        startParamss
                 )
             }
         } catch (e: Exception) {

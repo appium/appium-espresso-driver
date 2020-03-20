@@ -18,14 +18,13 @@ package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.StartActivityParams
-
 import io.appium.espressoserver.lib.helpers.ActivityHelpers.startActivity
 
 class StartActivity : RequestHandler<StartActivityParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: StartActivityParams): Void? {
-        startActivity(params.appPackage, params.appActivity, params.optionalIntentArguments, params.launchDisplayId)
+        startActivity(params)
         return null
     }
 }

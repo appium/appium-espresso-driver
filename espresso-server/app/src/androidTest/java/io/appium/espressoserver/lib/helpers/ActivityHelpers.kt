@@ -17,7 +17,6 @@
 package io.appium.espressoserver.lib.helpers
 
 import android.app.Activity
-import android.app.ActivityOptions
 import android.app.Instrumentation
 import android.util.ArrayMap
 import android.os.Build
@@ -25,6 +24,7 @@ import android.os.Build
 import androidx.test.platform.app.InstrumentationRegistry
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.StartActivityParams
 
 object ActivityHelpers {
     //    https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
@@ -69,7 +69,9 @@ object ActivityHelpers {
         return (if (dotPos > 0) activity else "$appPackage${(if (dotPos == 0) "" else ".")}$activity")
     }
 
-    fun startActivity(pkg: String?, activity: String?, intentOptions: Map<String, Any?>?, displayId: Number?) {
+
+
+    private fun startActivity(pkg: String?, activity: String?, intentOptions: Map<String, Any?>?, activityOptions: Map<String, Any?>?) {
         if (activity == null && intentOptions == null) {
             throw IllegalArgumentException("Either activity name or intent options must be set")
         }
@@ -89,13 +91,11 @@ object ActivityHelpers {
             AndroidLogger.logger.info("Staring activity with custom options: $intentOptions")
             makeIntent(intentOptions)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val options = ActivityOptions.makeBasic()
-            displayId?.let {
-                options.launchDisplayId = it.toInt()
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activityOptions !=null) {
+            var options = makeActivityOptions(activityOptions)
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                instrumentation.startActivitySync(intent)
+                instrumentation.startActivitySync(intent, options.toBundle())
             } else {
                 instrumentation.targetContext.startActivity(intent, options.toBundle())
             }
@@ -104,4 +104,10 @@ object ActivityHelpers {
             instrumentation.startActivitySync(intent)
         }
     }
+    fun startActivity(params: StartActivityParams) {
+        startActivity(params.appPackage, params.appActivity, params.optionalIntentArguments, params.optionalActivityArguments)
+    }
+
+
+
 }
