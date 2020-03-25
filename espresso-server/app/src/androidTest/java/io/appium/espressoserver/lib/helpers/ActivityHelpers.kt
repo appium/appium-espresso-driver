@@ -71,14 +71,14 @@ object ActivityHelpers {
 
 
 
-    private fun startActivity(pkg: String?, activity: String?, intentOptions: Map<String, Any?>?, activityOptions: Map<String, Any?>?) {
-        if (activity == null && intentOptions == null) {
+    fun startActivity(params: StartActivityParams) {
+        if (params.appActivity == null && params.optionalIntentArguments == null) {
             throw IllegalArgumentException("Either activity name or intent options must be set")
         }
 
         val instrumentation = InstrumentationRegistry.getInstrumentation()
-        val intent = if (intentOptions == null) {
-            val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, pkg, activity!!)
+        val intent = if (params.optionalIntentArguments == null) {
+            val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, params.appPackage, params.appActivity!!)
             val defaultOptions = mapOf<String, Any>(
                     "action" to "ACTION_MAIN",
                     "flags" to "ACTIVITY_NEW_TASK",
@@ -88,26 +88,18 @@ object ActivityHelpers {
                     "with default options: $defaultOptions")
             makeIntent(defaultOptions)
         } else {
-            AndroidLogger.logger.info("Staring activity with custom options: $intentOptions")
-            makeIntent(intentOptions)
+            AndroidLogger.logger.info("Staring activity with custom options: ${params.optionalIntentArguments}")
+            makeIntent(params.optionalIntentArguments)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activityOptions !=null) {
-            var options = makeActivityOptions(activityOptions)
 
+        makeActivityOptions(params.optionalActivityArguments).let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                instrumentation.startActivitySync(intent, options.toBundle())
+                instrumentation.startActivitySync(intent, it.toBundle())
             } else {
-                instrumentation.targetContext.startActivity(intent, options.toBundle())
+                instrumentation.targetContext.startActivity(intent, it.toBundle())
             }
-
-        } else {
-            instrumentation.startActivitySync(intent)
         }
     }
-    fun startActivity(params: StartActivityParams) {
-        startActivity(params.appPackage, params.appActivity, params.optionalIntentArguments, params.optionalActivityArguments)
-    }
-
 
 
 }
