@@ -28,21 +28,20 @@ import android.app.ActivityOptions
  * there is an issue with mapping value format
  */
 
-fun makeActivityOptions(activityOptions: Map<String, Any?>?): ActivityOptions {
+fun makeActivityOptions(activityOptions: Map<String, String>?): ActivityOptions {
     val options = ActivityOptions.makeBasic()
-    val handlersMapping = mapOf<String, (key: String, value: Any?) -> Unit>(
+    val handlersMapping = mapOf<String, (key: String, value: String) -> Unit>(
             "launchDisplayId" to fun(_, value) {
-                options.launchDisplayId = value.toString().toInt()
+                options.launchDisplayId = value.toInt()
             }
     )
-    if (activityOptions !=null) {
-        for ((optName, optValue) in activityOptions) {
+    activityOptions?.let {
+        for ((optName: String, optValue: String) in it.entries) {
             val handler = handlersMapping[optName]
                     ?: throw IllegalArgumentException("The option named '$optName' is not known. " +
                             "Only the following options are supported: ${handlersMapping.keys}")
             handler(optName, optValue)
         }
     }
-
     return options
 }
