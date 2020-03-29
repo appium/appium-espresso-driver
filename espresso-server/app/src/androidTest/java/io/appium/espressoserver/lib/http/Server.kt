@@ -20,6 +20,7 @@ import com.google.gson.GsonBuilder
 import fi.iki.elonen.NanoHTTPD
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.StringHelpers
+import io.appium.espressoserver.lib.helpers.setAccessibilityServiceState
 import io.appium.espressoserver.lib.http.response.AppiumResponse
 import io.appium.espressoserver.lib.http.response.BaseResponse
 import java.io.IOException
@@ -82,6 +83,9 @@ class Server private constructor() : NanoHTTPD(DEFAULT_PORT) {
                 //ignore the exception
             }
         }
+
+        setAccessibilityServiceState()
+
         try {
             super.start(SOCKET_READ_TIMEOUT, false)
         } catch (e: SocketException) {
