@@ -92,11 +92,15 @@ object ActivityHelpers {
             makeIntent(params.optionalIntentArguments)
         }
 
-        makeActivityOptions(params.optionalActivityArguments).let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                instrumentation.startActivitySync(intent, it.toBundle())
-            } else {
-                instrumentation.targetContext.startActivity(intent, it.toBundle())
+        if (params.optionalActivityArguments ==null) {
+           instrumentation.startActivitySync(intent)
+        } else {
+            makeActivityOptions(params.optionalActivityArguments).let {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    instrumentation.startActivitySync(intent, it.toBundle())
+                } else {
+                    instrumentation.targetContext.startActivity(intent, it.toBundle())
+                }
             }
         }
     }

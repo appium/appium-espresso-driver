@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.helpers
 
 import android.app.ActivityOptions
+import kotlin.reflect.full.cast
 
 /**
  * Creates an options using the given activityOptions
@@ -28,15 +29,18 @@ import android.app.ActivityOptions
  * there is an issue with mapping value format
  */
 
-fun makeActivityOptions(activityOptions: Map<String, String>?): ActivityOptions {
+fun makeActivityOptions(activityOptions: Map<String, Any?>?): ActivityOptions {
     val options = ActivityOptions.makeBasic()
-    val handlersMapping = mapOf<String, (key: String, value: String) -> Unit>(
+    val handlersMapping = mapOf<String, (key: String, value: Any?) -> Unit>(
             "launchDisplayId" to fun(_, value) {
-                options.launchDisplayId = value.toInt()
+                require(String::class.isInstance(value)) {
+                    "The value of 'launchDisplayId' must be of type 'String'. '$value' is given instead"
+                }
+                options.launchDisplayId = String::class.cast(value).toInt()
             }
     )
     activityOptions?.let {
-        for ((optName: String, optValue: String) in it.entries) {
+        for ((optName: String, optValue: Any?) in it.entries) {
             val handler = handlersMapping[optName]
                     ?: throw IllegalArgumentException("The option named '$optName' is not known. " +
                             "Only the following options are supported: ${handlersMapping.keys}")
