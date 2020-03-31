@@ -8,12 +8,8 @@ import androidx.test.uiautomator.Configurator
 fun setAccessibilityServiceState() {
     InstrumentationRegistry.getArguments().getString("DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES")?.let { flag ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            when (flag.toBoolean()) {
-                true ->
-                    Configurator.getInstance().uiAutomationFlags = UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES
-                false ->
-                    Configurator.getInstance().uiAutomationFlags = 0
-            }
+            Configurator.getInstance().uiAutomationFlags =
+                    if (flag.toBoolean()) UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES else 0
         }
     }
 }
