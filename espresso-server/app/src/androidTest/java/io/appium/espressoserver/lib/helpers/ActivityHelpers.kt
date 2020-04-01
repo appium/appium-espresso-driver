@@ -92,7 +92,7 @@ object ActivityHelpers {
             makeIntent(params.optionalIntentArguments)
         }
 
-        if (params.optionalActivityArguments ==null) {
+        if (params.optionalActivityArguments == null) {
            instrumentation.startActivitySync(intent)
         } else {
             makeActivityOptions(params.optionalActivityArguments).let {

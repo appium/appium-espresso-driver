@@ -33,10 +33,19 @@ fun makeActivityOptions(activityOptions: Map<String, Any?>?): ActivityOptions {
     val options = ActivityOptions.makeBasic()
     val handlersMapping = mapOf<String, (key: String, value: Any?) -> Unit>(
             "launchDisplayId" to fun(_, value) {
-                require(String::class.isInstance(value)) {
-                    "The value of 'launchDisplayId' must be of type 'String'. '$value' is given instead"
+                try {
+                    if (String::class.isInstance(value)) {
+                        options.launchDisplayId = String::class.cast(value).toInt()
+                    } else if (Number::class.isInstance(value)) {
+                        options.launchDisplayId = Number::class.cast(value).toInt()
+                    } else {
+                        throw IllegalArgumentException(
+                                "The value of 'launchDisplayId' must be of type 'String' or 'Number'. '$value' is given instead")
+                    }
+                } catch (e: NumberFormatException) {
+                    throw IllegalArgumentException(
+                            "Can't covert '$value' to Int", e)
                 }
-                options.launchDisplayId = String::class.cast(value).toInt()
             }
     )
     activityOptions?.let {
