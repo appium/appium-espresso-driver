@@ -19,10 +19,12 @@ package io.appium.espressoserver.lib.helpers
 import android.app.Activity
 import android.app.Instrumentation
 import android.util.ArrayMap
+import android.os.Build
 
 import androidx.test.platform.app.InstrumentationRegistry
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.model.StartActivityParams
 
 object ActivityHelpers {
     //    https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
@@ -55,7 +57,7 @@ object ActivityHelpers {
     /**
      * https://android.googlesource.com/platform/frameworks/base/+/master/tools/aapt/Resource.cpp#755
      *
-     * @param instrumentation instrumentation instance
+     * @param instrumentation Instrumentation instance
      * @param pkg app package name
      * @param activity activity name shortcut to be qualified
      * @return The qualified activity name
@@ -67,14 +69,16 @@ object ActivityHelpers {
         return (if (dotPos > 0) activity else "$appPackage${(if (dotPos == 0) "" else ".")}$activity")
     }
 
-    fun startActivity(pkg: String?, activity: String?, intentOptions: Map<String, Any?>?) {
-        if (activity == null && intentOptions == null) {
+
+
+    fun startActivity(params: StartActivityParams) {
+        if (params.appActivity == null && params.optionalIntentArguments == null) {
             throw IllegalArgumentException("Either activity name or intent options must be set")
         }
 
         val instrumentation = InstrumentationRegistry.getInstrumentation()
-        val intent = if (intentOptions == null) {
-            val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, pkg, activity!!)
+        val intent = if (params.optionalIntentArguments == null) {
+            val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, params.appPackage, params.appActivity!!)
             val defaultOptions = mapOf<String, Any>(
                     "action" to "ACTION_MAIN",
                     "flags" to "ACTIVITY_NEW_TASK",
@@ -84,9 +88,22 @@ object ActivityHelpers {
                     "with default options: $defaultOptions")
             makeIntent(defaultOptions)
         } else {
-            AndroidLogger.logger.info("Staring activity with custom options: $intentOptions")
-            makeIntent(intentOptions)
+            AndroidLogger.logger.info("Staring activity with custom options: ${params.optionalIntentArguments}")
+            makeIntent(params.optionalIntentArguments)
         }
-        instrumentation.startActivitySync(intent)
+
+        if (params.optionalActivityArguments == null) {
+           instrumentation.startActivitySync(intent)
+        } else {
+            makeActivityOptions(params.optionalActivityArguments).let {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    instrumentation.startActivitySync(intent, it.toBundle())
+                } else {
+                    instrumentation.targetContext.startActivity(intent, it.toBundle())
+                }
+            }
+        }
     }
+
+
 }

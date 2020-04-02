@@ -22,6 +22,7 @@ import io.appium.espressoserver.lib.helpers.ActivityHelpers.startActivity
 import io.appium.espressoserver.lib.helpers.w3c.caps.parseCapabilities
 import io.appium.espressoserver.lib.model.Session
 import io.appium.espressoserver.lib.model.SessionParams
+import io.appium.espressoserver.lib.model.StartActivityParams
 
 
 class CreateSession : RequestHandler<SessionParams, Session> {
@@ -39,10 +40,12 @@ class CreateSession : RequestHandler<SessionParams, Session> {
             if (shouldLaunchApp) {
                 @Suppress("UNCHECKED_CAST")
                 startActivity(
-                        parsedCaps["appPackage"] as? String,
-                        parsedCaps["appActivity"] as? String,
-                        parsedCaps["intentOptions"] as? Map<String, Any?>
-                )
+                    StartActivityParams(
+                            parsedCaps["appPackage"] as? String,
+                            parsedCaps["appActivity"] as? String,
+                            parsedCaps["intentOptions"] as? Map<String, Any?>,
+                            parsedCaps["activityOptions"] as? Map<String, Any?>)
+            )
             }
         } catch (e: Exception) {
             throw SessionNotCreatedException(e)
