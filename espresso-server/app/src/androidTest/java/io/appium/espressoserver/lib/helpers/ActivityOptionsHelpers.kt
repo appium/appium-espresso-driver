@@ -24,7 +24,7 @@ import kotlin.reflect.full.cast
  *
  * @param activityOptions mapping. The mapping can have the following keys:
  * - `launchDisplayId`: display id which you want to launch, such as {"launchDisplayId":"1"}
- * @return The created intent
+ * @return The created options
  * @throws IllegalArgumentException if required options are missing or
  * there is an issue with mapping value format
  */
