@@ -74,7 +74,7 @@ public class InvocationOperationTest {
     }
 
 
-    public class DummyBackdoorSubject {
+    public static class DummyBackdoorSubject {
         public static final String RETURN_VALUE = "LOL";
 
         private int testValue;

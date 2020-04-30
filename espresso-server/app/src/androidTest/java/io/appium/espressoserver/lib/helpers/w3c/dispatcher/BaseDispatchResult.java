@@ -2,7 +2,7 @@ package io.appium.espressoserver.lib.helpers.w3c.dispatcher;
 
 import java.util.concurrent.Callable;
 
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 

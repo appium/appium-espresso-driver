@@ -129,6 +129,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.Norm
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.WHITESPACE;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ZENKAKU_HANKAKU;
 import static io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ZERO;
+import static java.util.Objects.requireNonNull;
 
 public class AndroidKeyEvent {
 
@@ -297,7 +298,7 @@ public class AndroidKeyEvent {
 
             long downTime = isDown ?
                     SystemClock.uptimeMillis() :
-                    keyDownTimes.get(key).get(keyEventIndex).getDownTime();
+                    requireNonNull(keyDownTimes.get(key)).get(keyEventIndex).getDownTime();
 
             keyEvents.add(new KeyEvent(
                     downTime,
@@ -340,7 +341,7 @@ public class AndroidKeyEvent {
             // If the keyCode is known, send it now
             long downTime = isDown ?
                     SystemClock.uptimeMillis() :
-                    keyDownTimes.get(key).get(0).getDownTime();
+                    requireNonNull(keyDownTimes.get(key)).get(0).getDownTime();
             keyEvents = Collections.singletonList(new KeyEvent(
                     downTime,
                     isDown ? downTime : SystemClock.uptimeMillis(),

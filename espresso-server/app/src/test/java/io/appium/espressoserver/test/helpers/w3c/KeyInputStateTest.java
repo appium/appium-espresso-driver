@@ -79,6 +79,6 @@ public class KeyInputStateTest {
         assertTrue(aggregateKeyInputState.isPressed("d"));
         assertTrue(aggregateKeyInputState.isPressed("e"));
         assertTrue(aggregateKeyInputState.isPressed("f"));
-        assertTrue(!aggregateKeyInputState.isPressed("g"));
+        assertFalse(aggregateKeyInputState.isPressed("g"));
     }
 }

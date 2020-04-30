@@ -23,9 +23,11 @@ import org.hamcrest.Matcher;
 
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
+
 import io.appium.espressoserver.lib.model.ViewElement;
 
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static java.util.Objects.requireNonNull;
 
 public class OrientationChange implements ViewAction {
     private final int orientation;
@@ -55,6 +57,6 @@ public class OrientationChange implements ViewAction {
     @Override
     public void perform(UiController uiController, View view) {
         uiController.loopMainThreadUntilIdle();
-        new ViewElement(view).extractActivity().setRequestedOrientation(orientation);
+        requireNonNull(new ViewElement(view).extractActivity()).setRequestedOrientation(orientation);
     }
 }

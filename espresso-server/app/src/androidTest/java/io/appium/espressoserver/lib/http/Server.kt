@@ -26,7 +26,6 @@ import io.appium.espressoserver.lib.http.response.BaseResponse
 import java.io.IOException
 import java.net.SocketException
 import java.util.*
-import javax.ws.rs.core.MediaType
 
 class Server private constructor() : NanoHTTPD(DEFAULT_PORT) {
 
@@ -40,7 +39,7 @@ class Server private constructor() : NanoHTTPD(DEFAULT_PORT) {
         val gsonBuilder = GsonBuilder()
                 .serializeNulls()
         return newFixedLengthResponse(response.httpStatus,
-                MediaType.APPLICATION_JSON, gsonBuilder.create().toJson(response))
+                "application/json", gsonBuilder.create().toJson(response))
     }
 
     override fun serve(session: IHTTPSession): Response {
