@@ -27,16 +27,16 @@ object KReflectionUtils {
 
                 // Look through function parameters and do an enum hack to translate strings to enums
                 funcParams.forEachIndexed { index, funcParam ->
-                    val providedParam = providedParams.get(index)
+                    val providedParam = providedParams[index]
 
                     // Handle the Enum Case
                     // If function param is Enum and provided param is String, try `enumValueOf` on that String value
-                    val type = funcParam.type;
+                    val type = funcParam.type
                     try {
                         val jFuncType = type.javaType as Class<*>
                         if (jFuncType.isEnum && providedParam is String) {
                             val enumValueOf = jFuncType.getDeclaredMethod("valueOf", String::class.java)
-                            treatedParams.set(index, enumValueOf(null, providedParam.toUpperCase()))
+                            treatedParams[index] = enumValueOf(null, providedParam.toUpperCase())
                         }
                     } catch (e:ReflectiveOperationException) {
                         // Ignore reflection exceptions and don't try matching String to Enum
@@ -45,27 +45,27 @@ object KReflectionUtils {
                     }
 
                     // Handle the Class case
-                    val classifier = type.classifier;
+                    val classifier = type.classifier
                     if (classifier is KClass<*> && classifier.isSubclassOf(Class::class)) {
                         var className: String = providedParam.toString()
-                        val classExtension = ".class";
+                        val classExtension = ".class"
                         if (className.endsWith(classExtension)) {
                             className = className.take(className.length - classExtension.length)
                         }
 
                         try {
                             val clazz = Class.forName(className)
-                            treatedParams.set(index, clazz)
+                            treatedParams[index] = clazz
                         } catch (e: ClassNotFoundException) { }
 
                         try {
                             val clazz = Class.forName("java.lang.${className}")
-                            treatedParams.set(index, clazz)
+                            treatedParams[index] = clazz
                         } catch (e: ClassNotFoundException) { }
                     }
 
                     if (providedParam is LazilyParsedNumber) {
-                        treatedParams.set(index, providedParam.toDouble())
+                        treatedParams[index] = providedParam.toDouble()
                     }
                 }
 
@@ -86,7 +86,7 @@ object KReflectionUtils {
         try {
             return invokeMethod(kclass.functions, methodName, *providedParams)
         } catch (e:AppiumException) {
-            throw AppiumException("Cannot execute method on '${kclass.qualifiedName}'. Reason: ${e.message}'");
+            throw AppiumException("Cannot execute method on '${kclass.qualifiedName}'. Reason: ${e.message}'")
         }
     }
 
@@ -95,7 +95,7 @@ object KReflectionUtils {
             return invokeMethod(instance::class.memberFunctions, methodName, instance, *providedParams)
         } catch (e:AppiumException) {
             throw AppiumException("Cannot execute method for instance of " +
-                    "'${instance::class.qualifiedName}'. Reason: ${e.message}'");
+                    "'${instance::class.qualifiedName}'. Reason: ${e.message}'")
         }
     }
 
