@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import android.view.Surface
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.InteractionHelper.getUiDevice
 import io.appium.espressoserver.lib.model.AppiumParams
@@ -25,6 +26,8 @@ class GetRotation : RequestHandler<AppiumParams, RotationParams> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): RotationParams {
-        return RotationParams(0, 0, getUiDevice().displayRotation * 90)
+        val rotation = getUiDevice().displayRotation
+        val degrees = if (rotation in Surface.ROTATION_0..Surface.ROTATION_270) rotation * 90 else 0
+        return RotationParams(0, 0, degrees)
     }
 }
