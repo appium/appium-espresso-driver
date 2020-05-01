@@ -38,7 +38,7 @@ class AndroidMotionEvent private constructor(private val uiController: UiControl
     @Throws(AppiumException::class)
     fun pointerMove(x: List<Long>?, y: List<Long>?,
                     pointerType: InputSource.PointerType?,
-                    globalKeyInputState: KeyInputState,
+                    globalKeyInputState: KeyInputState?,
                     downEvent: MotionEvent?) {
         val metaState = getMetaState(globalKeyInputState)
         MotionEventBuilder()

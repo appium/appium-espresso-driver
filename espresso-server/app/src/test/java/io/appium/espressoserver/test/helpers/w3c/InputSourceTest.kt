@@ -3,6 +3,7 @@ package io.appium.espressoserver.test.helpers.w3c
 import com.google.gson.Gson
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType
+import io.appium.espressoserver.lib.helpers.w3c.models.Origin
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState
 import org.junit.Assert
@@ -34,7 +35,7 @@ class InputSourceTest {
         Assert.assertEquals(inputSource.id, "something2")
         Assert.assertEquals(inputSource.pointerType, InputSource.PointerType.TOUCH)
         val action = inputSource.actions!![0]
-        Assert.assertEquals(action.origin.type, InputSource.Action.ELEMENT_CODE)
+        Assert.assertEquals(action.origin.type, Origin.ELEMENT)
         Assert.assertEquals(action.origin.elementId, "some-element-id")
     }
 

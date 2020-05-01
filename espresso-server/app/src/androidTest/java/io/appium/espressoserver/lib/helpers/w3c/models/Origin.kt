@@ -11,4 +11,14 @@ class Origin {
     constructor(type: String) {
         this.type = type
     }
+    constructor(type: String, elementId: String) {
+        this.type = type
+        this.elementId = elementId
+    }
+
+    companion object {
+        val VIEWPORT = "viewport"
+        val POINTER = "pointer"
+        val ELEMENT = "element-6066-11e4-a52e-4f735466cecf"
+    }
 }

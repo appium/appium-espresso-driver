@@ -26,7 +26,6 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceTy
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.NONE
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH
-import io.appium.espressoserver.lib.helpers.w3c.models.VIEWPORT
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -184,7 +183,7 @@ class TickTest {
         actionObjectOne.pointer = TOUCH
         actionObjectOne.x = 10.0f
         actionObjectOne.y = 20.0f
-        actionObjectOne.origin = Origin(VIEWPORT)
+        actionObjectOne.origin = Origin(Origin.VIEWPORT)
 
         // Construct another pointer move event
         val actionObjectTwo = ActionObject(sourceId2, POINTER, null, 0)
@@ -192,7 +191,7 @@ class TickTest {
         actionObjectTwo.pointer = TOUCH
         actionObjectTwo.x = 10.0f
         actionObjectTwo.y = 20.0f
-        actionObjectTwo.origin = Origin(VIEWPORT)
+        actionObjectTwo.origin = Origin(Origin.VIEWPORT)
 
         // Add two pointer move actions to verify that they can run on multiple threads separately
         tick.addAction(actionObjectOne)

@@ -11,12 +11,9 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter
-import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject
-import io.appium.espressoserver.lib.helpers.w3c.models.ActionSequence
-import io.appium.espressoserver.lib.helpers.w3c.models.Actions
+import io.appium.espressoserver.lib.helpers.w3c.models.*
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType
-import io.appium.espressoserver.lib.helpers.w3c.models.Tick
 import io.appium.espressoserver.lib.helpers.w3c.state.ActiveInputSources
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState
@@ -106,7 +103,7 @@ class ActionSequenceTest {
         assertEquals(action.type, POINTER)
         assertEquals(action.subType, POINTER_MOVE)
         assertEquals(action.duration, 1000f)
-        assertEquals(action.origin.type, POINTER)
+        assertEquals(action.origin.type, Origin.POINTER)
         assertFloatEquals(action.x!!, 50f)
         assertFloatEquals(action.y!!, 0f)
 

@@ -95,7 +95,7 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     @Throws(AppiumException::class)
     override fun pointerMove(sourceId: String, pointerType: PointerType?,
                              currentX: Float, currentY: Float, x: Float, y: Float,
-                             buttons: Set<Int>?, globalKeyInputState: KeyInputState) {
+                             buttons: Set<Int>?, globalKeyInputState: KeyInputState?) {
         this.logger.info("Running pointer move at coordinates: $x $y $pointerType")
         val roundedCoords = toCoordinates(x, y)
         if (isTouch(pointerType)) {

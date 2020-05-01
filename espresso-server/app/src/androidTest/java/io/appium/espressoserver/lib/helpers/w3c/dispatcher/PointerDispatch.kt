@@ -154,15 +154,16 @@ object PointerDispatch {
         // 6. Run the substeps of the first matching value of origin
         var originType = origin.type
         if (originType == null) {
-            originType = VIEWPORT
+            originType = Origin.VIEWPORT
         }
         dispatcherAdapter.logger.info("Origin type is: ", originType)
         when (origin.type) {
-            POINTER -> {
+            Origin.POINTER -> {
                 x = startX + xOffset
                 y = startY + yOffset
             }
-            ELEMENT -> {
+            Origin.ELEMENT -> {
+                requireNotNull(origin.elementId, { "Element identifier must be present for origin type 'ELEMENT'" })
                 dispatcherAdapter.logger.info("Getting element center point: ", origin.elementId!!)
                 val elementCoordinates = dispatcherAdapter.getElementCenterPoint(origin.elementId)
                 dispatcherAdapter.logger.info(String.format(
@@ -172,7 +173,7 @@ object PointerDispatch {
                 x = elementCoordinates.x + xOffset
                 y = elementCoordinates.y + yOffset
             }
-            VIEWPORT -> {
+            Origin.VIEWPORT -> {
                 x = xOffset
                 y = yOffset
             }
@@ -259,7 +260,7 @@ object PointerDispatch {
                     currentX, currentY,
                     x, y,
                     pointerInputState.buttons,
-                    globalKeyInputState!!
+                    globalKeyInputState
             )
             if (currentX != x || currentY != y) {
 

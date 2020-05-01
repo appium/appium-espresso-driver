@@ -98,7 +98,7 @@ open class DummyW3CActionAdapter : BaseW3CActionAdapter() {
 
     override fun pointerMove(sourceId: String, pointerType: PointerType?,
                              currentX: Float, currentY: Float, x: Float, y: Float,
-                             buttons: Set<Int>?, globalKeyInputState: KeyInputState) {
+                             buttons: Set<Int>?, globalKeyInputState: KeyInputState?) {
         // Add the pointer move event to the logs
         val pointerMoveEvent = PointerMoveEvent()
         pointerMoveEvent.apply {

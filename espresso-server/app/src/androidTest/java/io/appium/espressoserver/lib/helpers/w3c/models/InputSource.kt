@@ -1,12 +1,9 @@
 package io.appium.espressoserver.lib.helpers.w3c.models
 
+import com.google.gson.annotations.SerializedName
 import io.appium.espressoserver.lib.helpers.w3c.state.InputState
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState
-
-const val VIEWPORT = "viewport"
-const val POINTER = "pointer"
-const val ELEMENT = "element-6066-11e4-a52e-4f735466cecf"
 
 /**
  * InputSource
@@ -57,7 +54,12 @@ class InputSource {
         }
 
     enum class InputSourceType {
-        POINTER, KEY, NONE
+        @SerializedName("pointer")
+        POINTER,
+        @SerializedName("key")
+        KEY,
+        @SerializedName("none")
+        NONE
     }
 
     class Action {
@@ -77,23 +79,30 @@ class InputSource {
         var origin = Origin() // origin; could be viewport, pointer or <{element-6066-11e4-a52e-4f735466cecf: <element-uuid>}>
 
         val isOriginViewport: Boolean
-            get() = origin.type != null && origin.type.equals(VIEWPORT, ignoreCase = true)
+            get() = origin.type != null && origin.type.equals(Origin.VIEWPORT, ignoreCase = true)
 
         val isOriginPointer: Boolean
-            get() = origin.type != null && origin.type.equals(POINTER, ignoreCase = true)
+            get() = origin.type != null && origin.type.equals(Origin.POINTER, ignoreCase = true)
 
         val isOriginElement: Boolean
-            get() = origin.type != null && origin.type.equals(ELEMENT_CODE, ignoreCase = true)
-
-        companion object {
-            // Web element identifier: https://www.w3.org/TR/webdriver/#elements
-            // (note: in the Appium case it's not actually a "web" element, it's a native element)
-            const val ELEMENT_CODE = "element-6066-11e4-a52e-4f735466cecf"
-        }
+            get() = origin.type != null && origin.type.equals(Origin.ELEMENT, ignoreCase = true)
     }
 
     enum class ActionType {
-        PAUSE, POINTER_DOWN, POINTER_UP, POINTER_MOVE, POINTER_CANCEL, KEY_UP, KEY_DOWN
+        @SerializedName("pause")
+        PAUSE,
+        @SerializedName("pointerDown")
+        POINTER_DOWN,
+        @SerializedName("pointerUp")
+        POINTER_UP,
+        @SerializedName("pointerMove")
+        POINTER_MOVE,
+        @SerializedName("pointerCancel")
+        POINTER_CANCEL,
+        @SerializedName("keyUp")
+        KEY_UP,
+        @SerializedName("keyDown")
+        KEY_DOWN
     }
 
     class Parameters {
@@ -101,7 +110,12 @@ class InputSource {
     }
 
     enum class PointerType {
-        MOUSE, PEN, TOUCH
+        @SerializedName("mouse")
+        MOUSE,
+        @SerializedName("pen")
+        PEN,
+        @SerializedName("touch")
+        TOUCH
     }
 
     class InputSourceBuilder {
@@ -188,7 +202,7 @@ class InputSource {
         }
 
         fun withElementId(elementId: String?): ActionBuilder {
-            origin.type = ELEMENT
+            origin.type = Origin.ELEMENT
             origin.elementId = elementId
             return this
         }

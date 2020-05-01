@@ -36,7 +36,7 @@ interface W3CActionAdapter {
     @Throws(AppiumException::class)
     fun pointerMove(sourceId: String, pointerType: PointerType?,
                     currentX: Float, currentY: Float, x: Float, y: Float,
-                    buttons: Set<Int>?, globalKeyInputState: KeyInputState)
+                    buttons: Set<Int>?, globalKeyInputState: KeyInputState?)
 
     @Throws(AppiumException::class)
     fun pointerCancel(sourceId: String, pointerType: PointerType)

@@ -4,14 +4,12 @@ import android.view.ViewConfiguration
 import com.google.gson.annotations.SerializedName
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.helpers.w3c.models.ELEMENT
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.*
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH
 import io.appium.espressoserver.lib.helpers.w3c.models.Origin
-import io.appium.espressoserver.lib.helpers.w3c.models.VIEWPORT
 import java.util.*
 
 class TouchAction {
@@ -32,10 +30,10 @@ class TouchAction {
         get() {
             val origin = Origin()
             options?.elementId?.let {
-                origin.type = ELEMENT
+                origin.type = Origin.ELEMENT
                 origin.elementId = it
             } ?: run {
-                origin.type = VIEWPORT
+                origin.type = Origin.VIEWPORT
             }
             return origin
         }

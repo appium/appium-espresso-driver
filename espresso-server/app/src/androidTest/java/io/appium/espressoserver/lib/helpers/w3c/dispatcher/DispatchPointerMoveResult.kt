@@ -11,7 +11,7 @@ class DispatchPointerMoveResult(private val dispatcherAdapter: W3CActionAdapter,
                                 private val currentX: Float, private val currentY: Float,
                                 private val x: Float, private val y: Float,
                                 private val buttons: Set<Int>,
-                                private val globalKeyInputState: KeyInputState) : BaseDispatchResult() {
+                                private val globalKeyInputState: KeyInputState?) : BaseDispatchResult() {
     @Throws(AppiumException::class)
     override fun perform() {
         if (currentX != x || currentY != y) {

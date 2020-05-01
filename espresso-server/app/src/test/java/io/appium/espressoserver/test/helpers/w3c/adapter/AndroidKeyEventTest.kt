@@ -79,7 +79,7 @@ class AndroidKeyEventTest {
         keyEvent.keyCode
         Assert.assertEquals(keyEvent.keyCode.toLong(), KeyEvent.KEYCODE_B.toLong())
         Assert.assertEquals(keyEvent.action.toLong(), KeyEvent.ACTION_DOWN.toLong())
-        Assert.assertEquals(keyEvent.metaState.toLong(), KeyEvent.META_SHIFT_MASK or KeyEvent.META_ALT_MASK.toLong().toInt())
+        Assert.assertEquals(keyEvent.metaState, KeyEvent.META_SHIFT_MASK or KeyEvent.META_ALT_MASK)
     }
 
     @Test
