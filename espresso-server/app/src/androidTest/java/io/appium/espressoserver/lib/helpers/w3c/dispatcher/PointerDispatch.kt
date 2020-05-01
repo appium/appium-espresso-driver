@@ -5,8 +5,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException
 import io.appium.espressoserver.lib.helpers.Rect
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter
-import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
+import io.appium.espressoserver.lib.helpers.w3c.models.*
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState
@@ -19,7 +18,7 @@ object PointerDispatch {
                                      actionObject: ActionObject,
                                      pointerInputState: PointerInputState,
                                      inputStateTable: InputStateTable,
-                                     globalKeyInputState: KeyInputState,
+                                     globalKeyInputState: KeyInputState?,
                                      down: Boolean) {
         val pointerType = actionObject.pointer
         val button = actionObject.button
@@ -84,7 +83,7 @@ object PointerDispatch {
                             actionObject: ActionObject,
                             pointerInputState: PointerInputState,
                             inputStateTable: InputStateTable,
-                            globalKeyInputState: KeyInputState) {
+                            globalKeyInputState: KeyInputState?) {
         dispatchPointerEvent(dispatcherAdapter, actionObject, pointerInputState,
                 inputStateTable, globalKeyInputState, true)
     }
@@ -102,7 +101,7 @@ object PointerDispatch {
                           actionObject: ActionObject,
                           pointerInputState: PointerInputState,
                           inputStateTable: InputStateTable,
-                          globalKeyInputState: KeyInputState) {
+                          globalKeyInputState: KeyInputState?) {
         dispatchPointerEvent(dispatcherAdapter, actionObject, pointerInputState,
                 inputStateTable, globalKeyInputState, false)
     }
@@ -155,15 +154,15 @@ object PointerDispatch {
         // 6. Run the substeps of the first matching value of origin
         var originType = origin.type
         if (originType == null) {
-            originType = InputSource.VIEWPORT
+            originType = VIEWPORT
         }
         dispatcherAdapter.logger.info("Origin type is: ", originType)
         when (origin.type) {
-            InputSource.POINTER -> {
+            POINTER -> {
                 x = startX + xOffset
                 y = startY + yOffset
             }
-            InputSource.ELEMENT -> {
+            ELEMENT -> {
                 dispatcherAdapter.logger.info("Getting element center point: ", origin.elementId!!)
                 val elementCoordinates = dispatcherAdapter.getElementCenterPoint(origin.elementId)
                 dispatcherAdapter.logger.info(String.format(
@@ -173,7 +172,7 @@ object PointerDispatch {
                 x = elementCoordinates.x + xOffset
                 y = elementCoordinates.y + yOffset
             }
-            InputSource.VIEWPORT -> {
+            VIEWPORT -> {
                 x = xOffset
                 y = yOffset
             }

@@ -1,6 +1,7 @@
 package io.appium.espressoserver.test.helpers.w3c
 
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState
+import io.appium.espressoserver.lib.helpers.w3c.state.getGlobalKeyState
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -20,7 +21,7 @@ class KeyInputStateTest {
         keyInputStateOne!!.isAlt = true
         keyInputStateTwo!!.isAlt = false
         val keyInputStates = arrayOf(keyInputStateOne, keyInputStateTwo)
-        val aggregateKeyInputState = KeyInputState.getGlobalKeyState(listOf(*keyInputStates))
+        val aggregateKeyInputState = getGlobalKeyState(listOfNotNull(*keyInputStates))
         Assert.assertTrue(aggregateKeyInputState.isAlt)
     }
 
@@ -29,7 +30,7 @@ class KeyInputStateTest {
         keyInputStateOne!!.isAlt = false
         keyInputStateTwo!!.isAlt = false
         val keyInputStates = arrayOf(keyInputStateOne, keyInputStateTwo)
-        val aggregateKeyInputState = KeyInputState.getGlobalKeyState(listOf(*keyInputStates))
+        val aggregateKeyInputState = getGlobalKeyState(listOfNotNull(*keyInputStates))
         Assert.assertFalse(aggregateKeyInputState.isAlt)
     }
 
@@ -44,7 +45,7 @@ class KeyInputStateTest {
         keyInputStateTwo!!.isShift = false
         keyInputStateTwo!!.isMeta = true
         val keyInputStates = arrayOf(keyInputStateOne, keyInputStateTwo)
-        val aggregateKeyInputState = KeyInputState.getGlobalKeyState(listOf(*keyInputStates))
+        val aggregateKeyInputState = getGlobalKeyState(listOfNotNull(*keyInputStates))
         Assert.assertTrue(aggregateKeyInputState.isAlt)
         Assert.assertTrue(aggregateKeyInputState.isCtrl)
         Assert.assertFalse(aggregateKeyInputState.isShift)
@@ -61,7 +62,7 @@ class KeyInputStateTest {
         keyInputStateTwo!!.addPressed("e")
         keyInputStateTwo!!.addPressed("f")
         val keyInputStates = arrayOf(keyInputStateOne, keyInputStateTwo)
-        val aggregateKeyInputState = KeyInputState.getGlobalKeyState(listOf(*keyInputStates))
+        val aggregateKeyInputState = getGlobalKeyState(listOfNotNull(*keyInputStates))
         Assert.assertTrue(aggregateKeyInputState.isPressed("a"))
         Assert.assertTrue(aggregateKeyInputState.isPressed("b"))
         Assert.assertTrue(aggregateKeyInputState.isPressed("c"))

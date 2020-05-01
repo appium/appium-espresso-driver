@@ -13,7 +13,7 @@ import java.util.*
  */
 class InputStateTable {
     private val stateTable: MutableMap<String, InputState> = HashMap()
-    private val cancelList: MutableList<ActionObject?> = ArrayList()
+    val cancelList: MutableList<ActionObject> = ArrayList()
     fun addInputState(id: String, inputState: InputState) {
         stateTable[id] = inputState
     }
@@ -24,17 +24,13 @@ class InputStateTable {
 
     fun getOrCreateInputState(sourceId: String, actionObject: ActionObject): InputState? {
         if (!hasInputState(sourceId)) {
-            var newInputState: InputState? = null
-            when (actionObject.type) {
-                InputSourceType.KEY -> newInputState = KeyInputState()
-                InputSourceType.POINTER -> newInputState = PointerInputState(actionObject.pointer)
-                InputSourceType.NONE -> {
-                }
-                else -> {
-                }
+            val newInputState: InputState? = when (actionObject.type) {
+                InputSourceType.KEY -> KeyInputState()
+                InputSourceType.POINTER -> PointerInputState(actionObject.pointer)
+                else -> null
             }
-            if (newInputState != null) {
-                addInputState(sourceId, newInputState)
+            newInputState?.let {
+                addInputState(sourceId, it)
             }
         }
         return stateTable[sourceId]
@@ -44,23 +40,19 @@ class InputStateTable {
         return stateTable.containsKey(id)
     }
 
-    fun addActionToCancel(actionObject: ActionObject?) {
+    fun addActionToCancel(actionObject: ActionObject) {
         cancelList.add(actionObject)
-    }
-
-    fun getCancelList(): List<ActionObject> {
-        return cancelList.filterNotNull()
     }
 
     val globalKeyInputState: KeyInputState
         get() {
             val keyInputStates: MutableList<KeyInputState> = ArrayList()
             for ((_, inputState) in stateTable) {
-                if (inputState.javaClass == KeyInputState::class.java) {
-                    keyInputStates.add(inputState as KeyInputState)
+                if (inputState is KeyInputState) {
+                    keyInputStates.add(inputState)
                 }
             }
-            return KeyInputState.getGlobalKeyState(keyInputStates)
+            return getGlobalKeyState(keyInputStates)
         }
 
     /**
@@ -72,9 +64,9 @@ class InputStateTable {
     @Throws(AppiumException::class)
     fun undoAll(adapter: W3CActionAdapter, timeAtBeginningOfTick: Long) {
         // 2-3: Dispatch tick actions with arguments undo actions and duration 0 in reverse order
-        Collections.reverse(cancelList)
+        cancelList.reverse()
         for (actionObject in cancelList) {
-            actionObject!!.dispatch(adapter, this, 0f, timeAtBeginningOfTick)
+            actionObject.dispatch(adapter, this, 0f, timeAtBeginningOfTick)
         }
         adapter.sychronousTickActionsComplete()
 
@@ -91,13 +83,13 @@ class InputStateTable {
          * @return
          */
         @Synchronized
-        fun getInputStateTableOfSession(sessionId: String): InputStateTable? {
+        fun getInputStateTableOfSession(sessionId: String): InputStateTable {
             var globalInputStateTable = inputStateTables[sessionId]
             if (globalInputStateTable == null) {
                 inputStateTables[sessionId] = InputStateTable()
                 globalInputStateTable = inputStateTables[sessionId]
             }
-            return globalInputStateTable
+            return globalInputStateTable!!
         }
     }
 }

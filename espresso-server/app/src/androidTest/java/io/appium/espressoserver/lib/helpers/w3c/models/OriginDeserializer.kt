@@ -12,14 +12,14 @@ class OriginDeserializer : JsonDeserializer<Origin> {
                              paramJsonDeserializationContext: JsonDeserializationContext): Origin {
         val origin = Origin()
         if (json.isJsonPrimitive) {
-            origin.setType(json.asString)
+            origin.type = json.asString
         } else if (json.isJsonObject &&
                 json.asJsonObject[InputSource.Action.ELEMENT_CODE].isJsonPrimitive) {
             val elementId = json.asJsonObject[InputSource.Action.ELEMENT_CODE].asString
             origin.elementId = elementId
-            origin.setType(InputSource.Action.ELEMENT_CODE)
+            origin.type = InputSource.Action.ELEMENT_CODE
         } else if (json.isJsonNull) {
-            origin.setType(InputSource.VIEWPORT)
+            origin.type = VIEWPORT
         }
         return origin
     }

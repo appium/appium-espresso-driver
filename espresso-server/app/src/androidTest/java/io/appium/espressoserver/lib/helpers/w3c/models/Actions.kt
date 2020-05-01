@@ -32,7 +32,7 @@ class Actions : AppiumParams() {
      * @throws AppiumException
      */
     @Throws(AppiumException::class)
-    fun perform(sessionId: String?) {
+    fun perform(sessionId: String) {
         if (adapter == null) {
             throw AppiumException("An internal server error has occurred: Failed to initialize /actions adapter")
         }
@@ -59,7 +59,7 @@ class Actions : AppiumParams() {
      * @param sessionId ID of the session to release actions on
      */
     @Throws(AppiumException::class)
-    fun release(sessionId: String?) {
+    fun release(sessionId: String) {
         if (adapter == null) {
             throw AppiumException("An internal server error has occurred: Failed to initialize /actions adapter")
         }
@@ -69,7 +69,7 @@ class Actions : AppiumParams() {
 
         // Undo all actions
         adapter!!.logger.info(String.format("Releasing actions performed during session %s", sessionId))
-        inputStateTable.undoAll(adapter, System.currentTimeMillis())
+        inputStateTable.undoAll(adapter!!, System.currentTimeMillis())
     }
 
     class ActionsBuilder {

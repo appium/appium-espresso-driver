@@ -53,7 +53,7 @@ object ActionsProcessor {
         // 7:  source is undefined:
         if (activeSource == null) {
             activeInputSources.addInputSource(inputSource)
-            inputStateTable.addInputState(inputSource.id, inputSource.defaultState)
+            inputStateTable.addInputState(inputSource.id!!, inputSource.defaultState!!)
         } else {
 
             // 8: If source's type does not match type return an error
@@ -64,7 +64,7 @@ object ActionsProcessor {
             // 9: If it's a pointer type, check that they match parameter types
             if (activeSource.type == InputSourceType.POINTER && activeSource.pointerType != inputSource.pointerType) {
                 throw InvalidArgumentException("Pointer type ${inputSource.pointerType} does not match pre-existing pointer type '${activeSource.pointerType}' in actions input " +
-                        "source with id '${id}'");
+                        "source with id '${id}'")
             }
         }
 
@@ -79,9 +79,6 @@ object ActionsProcessor {
         // 13: For each item in action items
         var index = 0
         for (action in actionItems) {
-            if (action == null) {
-                throw InvalidArgumentException("'actions[${index}]' did not provide a valid JSON object for actions input source with id '${id}'")
-            }
             index++
             when (inputSource.type) {
                 InputSourceType.NONE -> actionObjects.add(processNullAction(action, inputSource.type, id, index))

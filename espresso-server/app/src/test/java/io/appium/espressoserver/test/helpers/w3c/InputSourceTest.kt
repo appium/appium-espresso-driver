@@ -5,7 +5,6 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState
-import io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals
 import org.junit.Assert
 import org.junit.Test
 import java.util.*

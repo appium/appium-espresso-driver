@@ -25,7 +25,7 @@ private fun dispatchKeyEvent(dispatcherAdapter: W3CActionAdapter,
     val key = keyEvent.key
 
     // 3. If the input state's pressed property contains key, let repeat be true, otherwise let repeat be false.
-    if (inputState.isPressed(key)) {
+    if (inputState.isPressed(key!!)) {
         keyEvent.isRepeat = true
     }
 

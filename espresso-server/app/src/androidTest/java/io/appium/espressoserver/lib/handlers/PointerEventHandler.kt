@@ -253,7 +253,7 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
                             .withButtonState(params.androidButtonState)
                             .withAction(action)
                             .build()
-                            .run(uiController)
+                            .run(uiController)!!
                 }
             }
 

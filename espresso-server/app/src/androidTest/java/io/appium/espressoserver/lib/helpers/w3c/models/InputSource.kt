@@ -4,6 +4,10 @@ import io.appium.espressoserver.lib.helpers.w3c.state.InputState
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState
 
+const val VIEWPORT = "viewport"
+const val POINTER = "pointer"
+const val ELEMENT = "element-6066-11e4-a52e-4f735466cecf"
+
 /**
  * InputSource
  *
@@ -15,7 +19,7 @@ import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState
 class InputSource {
     var type: InputSourceType? = null
     var id: String? = null
-    private var parameters: Parameters? = null
+    var parameters: Parameters? = null
     var actions: List<Action>? = null
     private val state: InputState? = null
 
@@ -32,9 +36,7 @@ class InputSource {
      * @return Get the initial input state (see 17.3 for info on Input State)
      */
     val defaultState: InputState?
-        get() = if (type == null) {
-            null
-        } else when (type) {
+        get() = when (type) {
             InputSourceType.POINTER -> PointerInputState(pointerType)
             InputSourceType.KEY -> KeyInputState()
             else -> null
@@ -54,10 +56,6 @@ class InputSource {
             return null
         }
 
-    fun setParameters(parameters: Parameters?) {
-        this.parameters = parameters
-    }
-
     enum class InputSourceType {
         POINTER, KEY, NONE
     }
@@ -67,12 +65,9 @@ class InputSource {
                 : ActionType? = null
         var duration // time in milliseconds
                 : Float? = null
-            private set
         var button // Button that is being pressed. Defaults to 0.
                 : Int? = null
-            get() = if (field == null) {
-                0
-            } else field
+            get() { return field ?: 0 }
         var x // x coordinate of pointer
                 : Float? = null
         var y // y coordinate of pointer
@@ -80,10 +75,6 @@ class InputSource {
         var value // a string containing a single Unicode code point or a number
                 : String? = null
         var origin = Origin() // origin; could be viewport, pointer or <{element-6066-11e4-a52e-4f735466cecf: <element-uuid>}>
-
-        fun setDuration(duration: Float) {
-            this.duration = duration
-        }
 
         val isOriginViewport: Boolean
             get() = origin.type != null && origin.type.equals(VIEWPORT, ignoreCase = true)
@@ -93,14 +84,6 @@ class InputSource {
 
         val isOriginElement: Boolean
             get() = origin.type != null && origin.type.equals(ELEMENT_CODE, ignoreCase = true)
-
-        fun setX(x: Float) {
-            this.x = x
-        }
-
-        fun setY(y: Float) {
-            this.y = y
-        }
 
         companion object {
             // Web element identifier: https://www.w3.org/TR/webdriver/#elements
@@ -151,7 +134,7 @@ class InputSource {
             inputSource.actions = actions
             inputSource.type = type
             inputSource.id = id
-            inputSource.setParameters(parameters)
+            inputSource.parameters = parameters
             return inputSource
         }
     }
@@ -212,28 +195,22 @@ class InputSource {
 
         fun build(): Action {
             val action = Action()
-            if (duration != null) {
-                action.setDuration(duration!!.toFloat())
+            duration?.let {
+                action.duration = it.toFloat()
             }
             action.type = type
-            if (button != null) {
-                action.button = button
+            button?.let {
+                action.button = it
             }
             action.value = value
-            if (x != null) {
-                action.setX(x!!.toFloat())
+            x?.let {
+                action.x = it.toFloat()
             }
-            if (y != null) {
-                action.setY(y!!.toFloat())
+            y?.let {
+                action.y = it.toFloat()
             }
             action.origin = origin
             return action
         }
-    }
-
-    companion object {
-        const val VIEWPORT = "viewport"
-        const val POINTER = "pointer"
-        const val ELEMENT = "element-6066-11e4-a52e-4f735466cecf"
     }
 }

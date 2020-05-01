@@ -7,8 +7,8 @@ import java.util.*
 @Throws(IOException::class)
 fun readAssetFile(filename: String?): String {
     val projectDir = System.getProperty("user.dir")
-    val assetPath = String.format("%s/src/test/java/io/appium/espressoserver/test/assets/", projectDir)
-    val file = File(String.format("%s/%s", assetPath, filename))
+    val assetPath = "$projectDir/src/test/java/io/appium/espressoserver/test/assets/"
+    val file = File("$assetPath/$filename")
     val fileContents = StringBuilder(file.length().toInt())
     Scanner(file).use { scanner ->
         val lineSeparator = System.getProperty("line.separator")

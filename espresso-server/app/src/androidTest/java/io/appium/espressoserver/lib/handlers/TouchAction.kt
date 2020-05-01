@@ -36,8 +36,8 @@ class TouchAction : RequestHandler<TouchActionsParams, Void?> {
                         .withAdapter(EspressoW3CActionAdapter(uiController))
                         .withActions(inputSources)
                         .build()
-                actions.perform(params.sessionId)
-                actions.release(params.sessionId)
+                actions.perform(params.sessionId!!)
+                actions.release(params.sessionId!!)
 
                 return null
             }

@@ -62,7 +62,7 @@ class ProcessorTest {
     @Test
     fun shouldRejectPauseIfNegativeDuration() {
         val action = Action()
-        action.setDuration(-1f)
+        action.duration = -1f
         try {
             processPauseAction(action, InputSourceType.NONE, "any3", 0)
             fail("expected exception was not occured.")
@@ -85,7 +85,7 @@ class ProcessorTest {
     @Throws(InvalidArgumentException::class)
     fun shouldPassPauseWithDurationSet() {
         val action = Action()
-        action.setDuration(10f)
+        action.duration = 10f
         val actionObject = processPauseAction(action, InputSourceType.NONE, "any", 0)
         assertEquals(actionObject.duration, 10f)
     }
@@ -105,7 +105,7 @@ class ProcessorTest {
     @Throws(InvalidArgumentException::class)
     fun shouldProcessNullAsPauseAction() {
         val action = Action()
-        action.setDuration(100f)
+        action.duration = 100f
         action.type = ActionType.PAUSE
         processPauseAction(action, InputSourceType.NONE, "any", 0)
         assertEquals(action.duration, 100f)
@@ -114,7 +114,7 @@ class ProcessorTest {
     @Test
     fun shouldRejectPointerMoveIfNegativeDuration() {
         val action = Action()
-        action.setDuration(-1f)
+        action.duration = -1f
         try {
             processPointerMoveAction(action, InputSourceType.POINTER, "any", 0)
             fail("expected exception was not occured.")
@@ -130,7 +130,7 @@ class ProcessorTest {
         val action = Action()
         action.x = 100f
         action.y = 200f
-        action.setDuration(300f)
+        action.duration = 300f
         val actionObject = processPointerMoveAction(action, InputSourceType.POINTER, "any", 0)
         assertFloatEquals(actionObject.x!!, 100f)
         assertFloatEquals(actionObject.y!!, 200f)
@@ -168,7 +168,7 @@ class ProcessorTest {
     fun shouldProcessKeyAsPauseIfPause() {
         val action = Action()
         action.type = ActionType.PAUSE
-        action.setDuration(300f)
+        action.duration = 300f
         val actionObject = processKeyAction(action, InputSourceType.KEY, "any", 0)
         assertEquals(actionObject.duration, 300f)
         assertEquals(actionObject.subType, ActionType.PAUSE)
@@ -220,7 +220,7 @@ class ProcessorTest {
     fun shouldProcessPointerAsPauseIfPause() {
         val action = Action()
         action.type = ActionType.PAUSE
-        action.setDuration(300f)
+        action.duration = 300f
         val actionObject = processPointerAction(action, pointerInputSource!!, "any", 0)
         assertEquals(actionObject.duration, 300f)
         assertEquals(actionObject.subType, ActionType.PAUSE)

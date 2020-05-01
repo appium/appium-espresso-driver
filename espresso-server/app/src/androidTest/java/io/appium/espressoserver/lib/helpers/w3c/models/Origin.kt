@@ -4,7 +4,7 @@ import com.google.gson.annotations.JsonAdapter
 
 @JsonAdapter(OriginDeserializer::class)
 class Origin {
-    var type: String? = InputSource.VIEWPORT
+    var type: String? = VIEWPORT
     var elementId: String? = null
 
     constructor() {}

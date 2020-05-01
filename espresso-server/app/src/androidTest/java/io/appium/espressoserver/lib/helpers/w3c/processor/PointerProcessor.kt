@@ -70,7 +70,7 @@ object PointerProcessor {
     fun processPointerUpOrDownAction(action: InputSource.Action, inputSourceType: InputSourceType?, id: String?, index: Int): ActionObject {
         val actionObject = ActionObject(id, inputSourceType, action.type, index)
         val button = action.button
-        if (button < 0) {
+        if (button!! < 0) {
             throwArgException(index, id, String.format("property 'button' must be greater than or equal to 0. Found %s", button))
         }
         actionObject.button = button

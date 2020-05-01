@@ -47,7 +47,7 @@ object KeyProcessor {
 
         // 5-7 get the Unicode value of the keystroke (verify that it's a single character)
         val key = action.value
-        if (key!!.length != 1) {
+        if (key?.length != 1) {
             throwArgException(index, id, String.format("has invalid 'value' %s. Must be a unicode point", key))
         }
         val actionObject = ActionObject(id, inputSourceType, subType, index)

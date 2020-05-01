@@ -14,7 +14,6 @@ import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionSequence
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType
 import io.appium.espressoserver.lib.helpers.w3c.models.Tick
@@ -107,7 +106,7 @@ class ActionSequenceTest {
         assertEquals(action.type, POINTER)
         assertEquals(action.subType, POINTER_MOVE)
         assertEquals(action.duration, 1000f)
-        assertEquals(action.origin.type, InputSource.POINTER)
+        assertEquals(action.origin.type, POINTER)
         assertFloatEquals(action.x!!, 50f)
         assertFloatEquals(action.y!!, 0f)
 

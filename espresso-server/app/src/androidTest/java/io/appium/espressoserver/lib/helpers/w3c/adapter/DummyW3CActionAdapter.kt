@@ -69,14 +69,14 @@ open class DummyW3CActionAdapter : BaseW3CActionAdapter() {
     @Throws(AppiumException::class)
     override fun pointerUp(button: Int, sourceId: String, pointerType: PointerType?,
                        x: Float, y: Float, depressedButtons: Set<Int>,
-                       globalKeyInputState: KeyInputState) {
+                       globalKeyInputState: KeyInputState?) {
         // No-op
     }
 
     @Throws(AppiumException::class)
     override fun pointerDown(button: Int, sourceId: String, pointerType: PointerType?,
                          x: Float, y: Float, depressedButtons: Set<Int>,
-                         globalKeyInputState: KeyInputState) {
+                         globalKeyInputState: KeyInputState?) {
         // No-op
     }
 

@@ -50,13 +50,13 @@ class ActiveInputSources {
          * @return Global instance of ActiveInputSources
          */
         @Synchronized
-        fun getActiveInputSourcesForSession(sessionId: String): ActiveInputSources? {
+        fun getActiveInputSourcesForSession(sessionId: String): ActiveInputSources {
             var globalInputStateTable = activeInputSources[sessionId]
             if (globalInputStateTable == null) {
                 activeInputSources[sessionId] = ActiveInputSources()
                 globalInputStateTable = activeInputSources[sessionId]
             }
-            return globalInputStateTable
+            return globalInputStateTable!!
         }
     }
 }

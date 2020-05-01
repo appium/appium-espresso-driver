@@ -12,11 +12,11 @@ class AndroidMotionEvent private constructor(private val uiController: UiControl
     private var downTime: Long = 0
 
     @Throws(AppiumException::class)
-    fun pointerEvent(x: List<Long?>?, y: List<Long?>?,
+    fun pointerEvent(x: List<Long>?, y: List<Long>?,
                      action: Int,
                      button: Int?,
                      pointerType: InputSource.PointerType?,
-                     globalKeyInputState: KeyInputState,
+                     globalKeyInputState: KeyInputState?,
                      downEvent: MotionEvent?,
                      eventTime: Long): MotionEvent {
         val metaState = getMetaState(globalKeyInputState)
@@ -32,11 +32,11 @@ class AndroidMotionEvent private constructor(private val uiController: UiControl
                 .withMetaState(metaState)
                 .withSource(downEvent?.source ?: 0)
                 .build()
-                .run(uiController)
+                .run(uiController)!!
     }
 
     @Throws(AppiumException::class)
-    fun pointerMove(x: List<Long?>?, y: List<Long?>?,
+    fun pointerMove(x: List<Long>?, y: List<Long>?,
                     pointerType: InputSource.PointerType?,
                     globalKeyInputState: KeyInputState,
                     downEvent: MotionEvent?) {
@@ -55,7 +55,7 @@ class AndroidMotionEvent private constructor(private val uiController: UiControl
 
     @JvmOverloads
     @Throws(AppiumException::class)
-    fun pointerCancel(x: List<Long?>? = null, y: List<Long?>? = null) {
+    fun pointerCancel(x: List<Long>? = null, y: List<Long>? = null) {
         MotionEventBuilder()
                 .withAction(MotionEvent.ACTION_CANCEL)
                 .withDownTime(downTime)
@@ -88,7 +88,11 @@ class AndroidMotionEvent private constructor(private val uiController: UiControl
             return touchMotionEvent
         }
 
-        fun getMetaState(keyInputState: KeyInputState): Int {
+        fun getMetaState(keyInputState: KeyInputState?): Int {
+            if (keyInputState == null) {
+                return 0
+            }
+
             var metaState = 0
             if (keyInputState.isAlt) {
                 metaState = metaState or KeyEvent.META_ALT_MASK

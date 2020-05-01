@@ -1,6 +1,5 @@
 package io.appium.espressoserver.test.helpers.w3c
 
-
 import org.junit.Test
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorCompletionService
@@ -23,11 +22,11 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KE
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.PAUSE
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_DOWN
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Companion.VIEWPORT
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.NONE
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH
+import io.appium.espressoserver.lib.helpers.w3c.models.VIEWPORT
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -85,7 +84,7 @@ class TickTest {
         tick.addAction(actionObject)
         assertFalse(inputStateTable.hasInputState(sourceId))
         tick.dispatchAll(DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration())
-        assertTrue(inputStateTable.getInputState(sourceId).javaClass == KeyInputState::class.java)
+        assertTrue(inputStateTable.getInputState(sourceId) is KeyInputState)
     }
 
     @Test
@@ -100,7 +99,7 @@ class TickTest {
         tick.addAction(actionObject)
         assertFalse(inputStateTable.hasInputState(sourceId))
         tick.dispatchAll(DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration())
-        assertTrue(inputStateTable.getInputState(sourceId).javaClass == PointerInputState::class.java)
+        assertTrue(inputStateTable.getInputState(sourceId) is PointerInputState)
     }
 
     @Test

@@ -12,14 +12,12 @@ class PointerInputState : InputState {
     private val pressed: MutableSet<Int> = HashSet()
     var x = 0f
     var y = 0f
-    private var _type: InputSource.PointerType? = null
-    @Suppress("SuspiciousVarProperty")
     var type: InputSource.PointerType? = null
-        get() { return _type ?: InputSource.PointerType.TOUCH }
+        get() { return field ?: InputSource.PointerType.TOUCH }
 
     @Suppress("ConvertSecondaryConstructorToPrimary")
     constructor(type: InputSource.PointerType?) {
-        this._type = type
+        this.type = type
     }
 
     fun isPressed(num: Int): Boolean {
@@ -42,10 +40,6 @@ class PointerInputState : InputState {
     }
 
     fun logMessage(): String {
-        return String.format(
-                "pointer-type=[%s] x=[%s] y=[%s] pressed=[%s]",
-                type, x, y, pressed
-        )
+        return "pointer-type=[$type] x=[$x] y=[$y] pressed=[$pressed]"
     }
-
 }

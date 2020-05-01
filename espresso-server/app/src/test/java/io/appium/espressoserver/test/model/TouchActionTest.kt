@@ -20,7 +20,7 @@ import kotlin.test.assertEquals
 @PowerMockIgnore("org.mockito.*", "org.robolectric.*", "android.*")
 @PrepareForTest(ViewConfiguration::class)
 class TouchActionTest {
-    @Rule
+    @get:Rule
     var rule = PowerMockRule()
 
     @Before

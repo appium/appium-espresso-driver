@@ -19,14 +19,10 @@ class ActionObject {
     var subType: InputSource.ActionType? = null
     var id: String? = null
     var duration: Float? = null
-    private var _x: Float? = null
-    var x: Float?
-        get() { return _x ?: 0f }
-        set(value) { _x = value }
-    private var _y: Float? = null
-    var y: Float?
-        get() { return _y ?: 0f }
-        set(value) { _y = value }
+    var x: Float? = null
+        get() { return field ?: 0f }
+    var y: Float? = null
+        get() { return field ?: 0f }
     var button = 0
     var value: String? = null
     var pointer: InputSource.PointerType? = null
@@ -85,10 +81,7 @@ class ActionObject {
                 when (actionType) {
                     InputSource.ActionType.KEY_DOWN -> dispatchKeyDown(adapter, this, (deviceState as KeyInputState), inputStateTable, tickDuration)
                     InputSource.ActionType.KEY_UP -> dispatchKeyUp(adapter, this, (deviceState as KeyInputState), inputStateTable, tickDuration)
-                    InputSource.ActionType.PAUSE -> {
-                    }
-                    else -> {
-                    }
+                    else -> {}
                 }
             } else if (inputSourceType == InputSourceType.POINTER) {
                 when (actionType) {

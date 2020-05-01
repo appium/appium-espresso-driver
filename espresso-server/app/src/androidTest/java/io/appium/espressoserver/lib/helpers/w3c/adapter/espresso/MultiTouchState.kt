@@ -50,9 +50,9 @@ class MultiTouchState {
      * Get the x coordinates for all inputs in the same order they were entered
      * @return X coordinates as a list
      */
-    private val xCoords: List<Long?>
+    private val xCoords: List<Long>
         get() {
-            val xCoords: MutableList<Long?> = ArrayList()
+            val xCoords: MutableList<Long> = ArrayList()
             for ((_, value) in touchStateSet) {
                 xCoords.add(value.x)
             }
@@ -63,9 +63,9 @@ class MultiTouchState {
      * Get the y coordinates for all inputs in the same order they were entered
      * @return Y coordinates as a list
      */
-    private val yCoords: List<Long?>
+    private val yCoords: List<Long>
         get() {
-            val yCoords: MutableList<Long?> = ArrayList(touchStateSet.size)
+            val yCoords: MutableList<Long> = ArrayList(touchStateSet.size)
             for ((_, value) in touchStateSet) {
                 yCoords.add(value.y)
             }

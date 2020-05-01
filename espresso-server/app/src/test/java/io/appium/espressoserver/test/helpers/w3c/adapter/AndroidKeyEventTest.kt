@@ -106,10 +106,9 @@ class AndroidKeyEventTest {
         Assert.assertEquals(keyEvent.action.toLong(), KeyEvent.ACTION_UP.toLong())
     }
 
-    @get:Test
-    val keyCode: Unit
-        get() {
-            Assert.assertEquals(getKeyCode(BACKSPACE, 0).toLong(), KeyEvent.KEYCODE_DEL.toLong())
-            Assert.assertEquals(getKeyCode("A", 0).toLong(), -1)
-        }
+    @Test
+    fun keyCode() {
+        Assert.assertEquals(getKeyCode(BACKSPACE, 0).toLong(), KeyEvent.KEYCODE_DEL.toLong())
+        Assert.assertEquals(getKeyCode("A", 0).toLong(), -1)
+    }
 }
