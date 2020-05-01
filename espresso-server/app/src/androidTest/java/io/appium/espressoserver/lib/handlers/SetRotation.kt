@@ -30,9 +30,7 @@ class SetRotation : RequestHandler<RotationParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: RotationParams): Void? {
-        params.validate()
-
-        val desiredRotation = params.z!! / 90
+        val desiredRotation = params.validate().z!! / 90
         if (getUiAutomation().setRotation(desiredRotation)) {
             val start = SystemClock.currentThreadTimeMillis()
             do {

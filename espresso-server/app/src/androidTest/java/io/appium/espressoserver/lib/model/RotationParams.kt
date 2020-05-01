@@ -25,7 +25,7 @@ data class RotationParams(
     val y: Int?,
     val z: Int?
 ) : AppiumParams() {
-    fun validate() {
+    fun validate(): RotationParams {
         if (z == null) {
             throw IllegalArgumentException("z argument must be provided")
         }
@@ -33,5 +33,6 @@ data class RotationParams(
         if (!SUPPORTED_Z_VALUES.contains(z)) {
             throw IllegalArgumentException("z argument value must be one of $SUPPORTED_Z_VALUES")
         }
+        return this
     }
 }
