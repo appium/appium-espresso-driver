@@ -36,8 +36,9 @@ object PointerProcessor {
 
         // 1 -2 get and validate the type
         val subType = action.type
-        val validKeyTypes = arrayOf(InputSource.ActionType.POINTER_MOVE, InputSource.ActionType.POINTER_DOWN, InputSource.ActionType.POINTER_UP, InputSource.ActionType.POINTER_CANCEL, InputSource.ActionType.PAUSE)
-        if (!listOf(*validKeyTypes).contains(subType)) {
+        val validKeyTypes = listOf(InputSource.ActionType.POINTER_MOVE, InputSource.ActionType.POINTER_DOWN,
+                InputSource.ActionType.POINTER_UP, InputSource.ActionType.POINTER_CANCEL, InputSource.ActionType.PAUSE)
+        if (!validKeyTypes.contains(subType)) {
             throwArgException(index, id, "has an invalid type. 'type' for 'key' actions must be one of:" +
                     "pointerMove, pointerDown, pointerUp, pointerCancel, pause")
         }

@@ -17,8 +17,8 @@ class Origin {
     }
 
     companion object {
-        val VIEWPORT = "viewport"
-        val POINTER = "pointer"
-        val ELEMENT = "element-6066-11e4-a52e-4f735466cecf"
+        const val VIEWPORT = "viewport"
+        const val POINTER = "pointer"
+        const val ELEMENT = "element-6066-11e4-a52e-4f735466cecf"
     }
 }

@@ -152,10 +152,7 @@ object PointerDispatch {
         val y: Float
 
         // 6. Run the substeps of the first matching value of origin
-        var originType = origin.type
-        if (originType == null) {
-            originType = Origin.VIEWPORT
-        }
+        val originType = origin.type ?: Origin.VIEWPORT
         dispatcherAdapter.logger.info("Origin type is: ", originType)
         when (origin.type) {
             Origin.POINTER -> {
@@ -187,10 +184,7 @@ object PointerDispatch {
         }
 
         // 9. Let duration be equal to action object's duration property if it is not undefined, or tick duration otherwise
-        var duration = actionObject.duration
-        if (duration == null) {
-            duration = tickDuration
-        }
+        val duration = actionObject.duration ?: tickDuration
         val callable = performPointerMove(
                 dispatcherAdapter,
                 sourceId,

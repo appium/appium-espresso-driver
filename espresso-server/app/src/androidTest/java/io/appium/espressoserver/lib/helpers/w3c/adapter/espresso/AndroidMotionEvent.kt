@@ -79,13 +79,12 @@ class AndroidMotionEvent private constructor(private val uiController: UiControl
             return motionEvents[sourceId]!!
         }
 
-        @JvmStatic
         @Synchronized
-        fun getTouchMotionEvent(uiController: UiController): AndroidMotionEvent? {
+        fun getTouchMotionEvent(uiController: UiController): AndroidMotionEvent {
             if (touchMotionEvent == null) {
                 touchMotionEvent = AndroidMotionEvent(uiController)
             }
-            return touchMotionEvent
+            return touchMotionEvent!!
         }
 
         fun getMetaState(keyInputState: KeyInputState?): Int {

@@ -35,8 +35,8 @@ object KeyProcessor {
 
         // 1-3 get and validate the action type
         val subType = action.type
-        val validKeyTypes = arrayOf(InputSource.ActionType.KEY_UP, InputSource.ActionType.KEY_DOWN, InputSource.ActionType.PAUSE)
-        if (!listOf(*validKeyTypes).contains(subType)) {
+        val validKeyTypes = listOf(InputSource.ActionType.KEY_UP, InputSource.ActionType.KEY_DOWN, InputSource.ActionType.PAUSE)
+        if (!validKeyTypes.contains(subType)) {
             throwArgException(index, id, "has an invalid type. 'type' for 'key' actions must be one of: keyUp, keyDown or pause")
         }
 

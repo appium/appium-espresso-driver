@@ -13,11 +13,9 @@ class W3CKeyEvent {
     var isMetaKey = false
     var isRepeat = false
     var isComposing = false
+
     fun logMessage(): String {
-        return String.format(
-                "key=[%s] code=[%s] altKey=[%s] shiftKey=[%s] ctrlKey=[%s] metaKey=[%s]",
-                key, code, isAltKey, isShiftKey, isCtrlKey, isMetaKey
-        )
+        return "key=[$key] code=[$code] altKey=[$isAltKey] shiftKey=[$isShiftKey] ctrlKey=[$isCtrlKey] metaKey=[$isMetaKey]"
     }
 
 }

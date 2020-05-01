@@ -28,9 +28,9 @@ class MultiTouchState {
         }
 
         // Update x and y coordinates
-        val touchState = touchStateSet[sourceId]
-        Objects.requireNonNull(touchState)!!.x = x!!
-        touchState!!.y = y!!
+        val touchState = touchStateSet[sourceId]!!
+        touchState.x = x!!
+        touchState.y = y!!
 
         // Update to global key input state
         this.globalKeyInputState = globalKeyInputState
@@ -51,34 +51,22 @@ class MultiTouchState {
      * @return X coordinates as a list
      */
     private val xCoords: List<Long>
-        get() {
-            val xCoords: MutableList<Long> = ArrayList()
-            for ((_, value) in touchStateSet) {
-                xCoords.add(value.x)
-            }
-            return xCoords
-        }
+        get() { return touchStateSet.values.map { it.x } }
 
     /**
      * Get the y coordinates for all inputs in the same order they were entered
      * @return Y coordinates as a list
      */
     private val yCoords: List<Long>
-        get() {
-            val yCoords: MutableList<Long> = ArrayList(touchStateSet.size)
-            for ((_, value) in touchStateSet) {
-                yCoords.add(value.y)
-            }
-            return yCoords
-        }
+        get() { return touchStateSet.values.map { it.y } }
 
     @Throws(AppiumException::class)
-    fun pointerDown(uiController: UiController?) {
-        val androidMotionEvent = getTouchMotionEvent(uiController!!)
+    fun pointerDown(uiController: UiController) {
+        val androidMotionEvent = getTouchMotionEvent(uiController)
         val eventTime = SystemClock.uptimeMillis()
         val xCoords = xCoords
         val yCoords = yCoords
-        downEvent = androidMotionEvent!!.pointerEvent(
+        downEvent = androidMotionEvent.pointerEvent(
                 xCoords, yCoords,
                 MotionEvent.ACTION_DOWN, button, InputSource.PointerType.TOUCH, globalKeyInputState!!, null, eventTime)
         if (xCoords.size > 1) {
@@ -88,27 +76,27 @@ class MultiTouchState {
     }
 
     @Throws(AppiumException::class)
-    fun pointerUp(uiController: UiController?) {
-        val androidMotionEvent = getTouchMotionEvent(uiController!!)
+    fun pointerUp(uiController: UiController) {
+        val androidMotionEvent = getTouchMotionEvent(uiController)
         val eventTime = SystemClock.uptimeMillis()
         val xCoords = xCoords
         val yCoords = yCoords
         if (xCoords.size > 1) {
-            androidMotionEvent!!.pointerEvent(
+            androidMotionEvent.pointerEvent(
                     xCoords, yCoords,
                     MotionEvent.ACTION_POINTER_UP, button, InputSource.PointerType.TOUCH, globalKeyInputState!!, downEvent, eventTime)
         }
-        androidMotionEvent!!.pointerEvent(
+        androidMotionEvent.pointerEvent(
                 xCoords, yCoords,
                 MotionEvent.ACTION_UP, button, InputSource.PointerType.TOUCH, globalKeyInputState!!, downEvent, eventTime)
         downEvent = null
     }
 
     @Throws(AppiumException::class)
-    fun pointerCancel(uiController: UiController?) {
+    fun pointerCancel(uiController: UiController) {
         val xCoords = xCoords
         val yCoords = yCoords
-        getTouchMotionEvent(uiController!!)!!.pointerEvent(
+        getTouchMotionEvent(uiController).pointerEvent(
                 xCoords, yCoords,
                 MotionEvent.ACTION_CANCEL, button, InputSource.PointerType.TOUCH, globalKeyInputState!!, downEvent, SystemClock.uptimeMillis()
         )
@@ -117,10 +105,10 @@ class MultiTouchState {
     }
 
     @Throws(AppiumException::class)
-    fun pointerMove(uiController: UiController?) {
+    fun pointerMove(uiController: UiController) {
         if (isDown) {
-            val androidMotionEvent = getTouchMotionEvent(uiController!!)
-            androidMotionEvent!!.pointerMove(
+            val androidMotionEvent = getTouchMotionEvent(uiController)
+            androidMotionEvent.pointerMove(
                     xCoords, yCoords, InputSource.PointerType.TOUCH, globalKeyInputState!!, downEvent)
         }
     }
@@ -129,7 +117,7 @@ class MultiTouchState {
         get() = downEvent != null
 
     @Throws(AppiumException::class)
-    fun perform(uiController: UiController?) {
+    fun perform(uiController: UiController) {
         if (touchPhase == TouchPhase.DOWN) {
             pointerDown(uiController)
         } else if (touchPhase == TouchPhase.UP) {

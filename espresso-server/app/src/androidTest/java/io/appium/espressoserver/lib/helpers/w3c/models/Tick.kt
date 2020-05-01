@@ -34,10 +34,9 @@ class Tick : Iterator<ActionObject> {
             val type = actionObject.type
             val duration = actionObject.duration
             val subType = actionObject.subType
-            if (duration != null) {
-                if (subType === InputSource.ActionType.PAUSE || type === InputSourceType.POINTER && subType === InputSource.ActionType.POINTER_MOVE) {
-                    currDuration = duration
-                }
+            if (duration != null && (subType === InputSource.ActionType.PAUSE
+                            || type === InputSourceType.POINTER && subType === InputSource.ActionType.POINTER_MOVE)) {
+                currDuration = duration
             }
             if (currDuration > maxDuration) {
                 maxDuration = currDuration
@@ -47,13 +46,13 @@ class Tick : Iterator<ActionObject> {
     }
 
     @Throws(AppiumException::class)
-    fun dispatchAll(adapter: W3CActionAdapter?, inputStateTable: InputStateTable?, tickDuration: Float): List<Callable<BaseDispatchResult>> {
+    fun dispatchAll(adapter: W3CActionAdapter, inputStateTable: InputStateTable, tickDuration: Float): List<Callable<BaseDispatchResult>> {
         val timeAtBeginningOfTick = System.currentTimeMillis()
         val asyncOperations: MutableList<Callable<BaseDispatchResult>> = ArrayList()
         for (actionObject in tickActions) {
             // 2. Run algorithm with arguments source id, action object, device state and tick duration
-            val dispatchResult = actionObject.dispatch(adapter!!,
-                    inputStateTable!!, tickDuration, timeAtBeginningOfTick)
+            val dispatchResult = actionObject.dispatch(adapter,
+                    inputStateTable, tickDuration, timeAtBeginningOfTick)
 
             // If it's an async operation, add it to the list
             dispatchResult?.let { asyncOperations.add(it) }

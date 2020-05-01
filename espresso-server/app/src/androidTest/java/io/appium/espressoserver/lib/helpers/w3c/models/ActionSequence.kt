@@ -30,18 +30,15 @@ constructor(actions: Actions, activeInputSources: ActiveInputSources,
 
     init {
         // Check if null to keep Codacy happy. It will never make it this far if it's null though.
-        val actionList = actions.actions
-        if (actionList != null) {
-            for (inputSource in actionList) {
-                var tickIndex = 0
+        actions.actions?.let {
+            for (inputSource in it) {
                 val actionObjects = processSourceActionSequence(inputSource, activeInputSources, inputStateTable)
-                for (action in actionObjects) {
+                for ((tickIndex, action) in actionObjects.withIndex()) {
                     if (ticks.size == tickIndex) {
                         ticks.add(Tick())
                     }
                     val tick = ticks[tickIndex]
                     tick.addAction(action)
-                    tickIndex++
                 }
             }
         }
@@ -65,13 +62,12 @@ constructor(actions: Actions, activeInputSources: ActiveInputSources,
      */
     @Throws(AppiumException::class, InterruptedException::class, ExecutionException::class)
     fun dispatch(adapter: W3CActionAdapter, inputStateTable: InputStateTable) {
-        var tickIndex = 0
-        for (tick in ticks) {
+        for ((tickIndex, tick) in ticks.withIndex()) {
             val timeAtBeginningOfTick = System.currentTimeMillis()
             val tickDuration = tick.calculateTickDuration()
 
             // 1. Dispatch all of the events
-            adapter.logger.info("Dispatching tick #${tickIndex + 1} of ${ticks.size}");
+            adapter.logger.info("Dispatching tick #${tickIndex + 1} of ${ticks.size}")
             val callables = tick.dispatchAll(adapter, inputStateTable, tickDuration)
             var callableCount = callables.size
 
@@ -80,7 +76,7 @@ constructor(actions: Actions, activeInputSources: ActiveInputSources,
             // 2. Wait until the following conditions are all met:
 
             //  2.1 Wait for any pending async operations
-            if (!callables.isEmpty()) {
+            if (callables.isNotEmpty()) {
                 val executor = Executors.newCachedThreadPool()
                 val completionService = ExecutorCompletionService<BaseDispatchResult>(executor)
                 for (callable in callables) {
@@ -104,14 +100,13 @@ constructor(actions: Actions, activeInputSources: ActiveInputSources,
             val timeSinceBeginningOfTick = (System.currentTimeMillis() - timeAtBeginningOfTick).toFloat()
             if (timeSinceBeginningOfTick < tickDuration) {
                 val timeToSleep = tickDuration - timeSinceBeginningOfTick
-                adapter.logger.info("Wait for tick to finish for ${timeToSleep} ms")
+                adapter.logger.info("Wait for tick to finish for $timeToSleep ms")
                 adapter.sleep(timeToSleep)
             }
 
             // 2.3 The UI thread is complete
             adapter.waitForUiThread()
 
-            tickIndex++
         }
     }
 }

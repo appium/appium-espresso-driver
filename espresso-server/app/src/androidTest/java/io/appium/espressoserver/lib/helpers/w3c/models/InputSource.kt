@@ -209,20 +209,12 @@ class InputSource {
 
         fun build(): Action {
             val action = Action()
-            duration?.let {
-                action.duration = it.toFloat()
-            }
+            duration?.let { action.duration = it.toFloat() }
             action.type = type
-            button?.let {
-                action.button = it
-            }
+            button?.let { action.button = it }
             action.value = value
-            x?.let {
-                action.x = it.toFloat()
-            }
-            y?.let {
-                action.y = it.toFloat()
-            }
+            x?.let { action.x = it.toFloat() }
+            y?.let { action.y = it.toFloat() }
             action.origin = origin
             return action
         }
