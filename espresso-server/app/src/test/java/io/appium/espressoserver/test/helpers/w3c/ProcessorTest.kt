@@ -23,7 +23,6 @@ import io.appium.espressoserver.lib.helpers.w3c.processor.PauseProcessor.process
 import io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerAction
 import io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerMoveAction
 import io.appium.espressoserver.lib.helpers.w3c.processor.PointerProcessor.processPointerUpOrDownAction
-import io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals
 import org.junit.Assert.*
 
 class ProcessorTest {
@@ -40,7 +39,7 @@ class ProcessorTest {
     @Test
     fun shouldRejectNullIfNotPause() {
         val action = Action()
-        action.setType(ActionType.POINTER_DOWN)
+        action.type = ActionType.POINTER_DOWN
         try {
             processNullAction(action, InputSourceType.NONE, "any1", 0)
             fail("expected exception was not occured.")
@@ -133,8 +132,8 @@ class ProcessorTest {
         action.y = 200f
         action.setDuration(300f)
         val actionObject = processPointerMoveAction(action, InputSourceType.POINTER, "any", 0)
-        assertFloatEquals(actionObject.x, 100f)
-        assertFloatEquals(actionObject.y, 200f)
+        assertFloatEquals(actionObject.x!!, 100f)
+        assertFloatEquals(actionObject.y!!, 200f)
         assertEquals(actionObject.duration, 300f)
     }
 
@@ -154,7 +153,7 @@ class ProcessorTest {
     @Test
     fun shouldRejectKeyIfNotValidType() {
         val action = Action()
-        action.setType(ActionType.POINTER_DOWN)
+        action.type = ActionType.POINTER_DOWN
         try {
             processKeyAction(action, InputSourceType.KEY, "any", 0)
             fail("expected exception was not occured.")
@@ -179,8 +178,8 @@ class ProcessorTest {
     @Test
     fun shouldRejectKeyIfNotUnicode() {
         val action = Action()
-        action.setType(ActionType.KEY_DOWN)
-        action.setValue("asdfafsd")
+        action.type = ActionType.KEY_DOWN
+        action.value = "asdfafsd"
         try {
             processKeyAction(action, InputSourceType.KEY, "any", 0)
             fail("expected exception was not occured.")
@@ -195,7 +194,7 @@ class ProcessorTest {
     fun shouldPassKeyIfUnicode() {
         val action = Action()
         action.type = ActionType.KEY_DOWN
-        val value = Character.toString('\uE9F0')
+        val value = '\uE9F0'.toString()
         action.value = value
         val actionObject = processKeyAction(action, InputSourceType.POINTER, "any", 0)
         assertEquals(actionObject.value, value)
@@ -206,9 +205,9 @@ class ProcessorTest {
     @Throws(NotYetImplementedException::class)
     fun shouldRejectInvalidPointerType() {
         val action = Action()
-        action.setType(ActionType.KEY_DOWN)
+        action.type = ActionType.KEY_DOWN
         try {
-            processPointerAction(action, pointerInputSource, "any", 0)
+            processPointerAction(action, pointerInputSource!!, "any", 0)
             fail("expected exception was not occured.")
         } catch (ie: InvalidArgumentException) {
             assertTrue(ie.message!!.contains("has an invalid type"))
@@ -222,7 +221,7 @@ class ProcessorTest {
         val action = Action()
         action.type = ActionType.PAUSE
         action.setDuration(300f)
-        val actionObject = processPointerAction(action, pointerInputSource, "any", 0)
+        val actionObject = processPointerAction(action, pointerInputSource!!, "any", 0)
         assertEquals(actionObject.duration, 300f)
         assertEquals(actionObject.subType, ActionType.PAUSE)
         assertEquals(actionObject.type, InputSourceType.POINTER)
@@ -233,7 +232,7 @@ class ProcessorTest {
     fun shouldProcessPointerAsPointerMove() {
         val action = Action()
         action.type = ActionType.POINTER_MOVE
-        val actionObject = processPointerAction(action, pointerInputSource, "any", 0)
+        val actionObject = processPointerAction(action, pointerInputSource!!, "any", 0)
         assertEquals(actionObject.subType, ActionType.POINTER_MOVE)
         assertEquals(actionObject.type, InputSourceType.POINTER)
     }
@@ -243,7 +242,7 @@ class ProcessorTest {
     fun shouldProcessPointerAsPointerUp() {
         val action = Action()
         action.type = ActionType.POINTER_UP
-        val actionObject = processPointerAction(action, pointerInputSource, "any", 0)
+        val actionObject = processPointerAction(action, pointerInputSource!!, "any", 0)
         assertEquals(actionObject.subType, ActionType.POINTER_UP)
         assertEquals(actionObject.type, InputSourceType.POINTER)
     }
@@ -253,7 +252,7 @@ class ProcessorTest {
     fun shouldProcessPointerAsPointerDown() {
         val action = Action()
         action.type = ActionType.POINTER_DOWN
-        val actionObject = processPointerAction(action, pointerInputSource, "any", 0)
+        val actionObject = processPointerAction(action, pointerInputSource!!, "any", 0)
         assertEquals(actionObject.subType, ActionType.POINTER_DOWN)
         assertEquals(actionObject.type, InputSourceType.POINTER)
     }
@@ -274,7 +273,7 @@ class ProcessorTest {
     @Throws(NotYetImplementedException::class)
     fun shouldNotPassProcessorIfNoId() {
         val inputSource = InputSource()
-        inputSource.setType(InputSourceType.KEY)
+        inputSource.type = InputSourceType.KEY
         try {
             processSourceActionSequence(inputSource, ActiveInputSources(), InputStateTable())
         } catch (ie: InvalidArgumentException) {

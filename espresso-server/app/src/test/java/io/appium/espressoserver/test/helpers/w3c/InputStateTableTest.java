@@ -28,10 +28,10 @@ public class InputStateTableTest {
 
         // Create a pointer down action
         ActionObject actionObject = new ActionObject();
-        actionObject.setType(POINTER);
-        actionObject.setSubType(POINTER_DOWN);
-        actionObject.setButton(5);
-        actionObject.setId("123");
+        actionObject.type = POINTER;
+        actionObject.subType = POINTER_DOWN;
+        actionObject.button = 5;
+        actionObject.id = "123";
 
         // Call the pointer down action
         actionObject.dispatch(adapter, inputStateTable, 0, 0);
@@ -54,10 +54,10 @@ public class InputStateTableTest {
 
         // Create a pointer down action
         ActionObject actionObject = new ActionObject();
-        actionObject.setType(KEY);
-        actionObject.setSubType(KEY_DOWN);
-        actionObject.setValue(SHIFT);
-        actionObject.setId("456");
+        actionObject.type = KEY;
+        actionObject.subType = KEY_DOWN;
+        actionObject.value = SHIFT;
+        actionObject.id = "456";
 
         // Call the pointer down action
         actionObject.dispatch(adapter, inputStateTable, 0, 0);

@@ -44,9 +44,9 @@ public class Tick implements Iterator<ActionObject> {
         for(ActionObject actionObject: tickActions) {
             float currDuration = 0.0F;
 
-            InputSourceType type = actionObject.getType();
-            Float duration = actionObject.getDuration();
-            ActionType subType = actionObject.getSubType();
+            InputSourceType type = actionObject.type;
+            Float duration = actionObject.duration;
+            ActionType subType = actionObject.subType;
 
             if (duration != null) {
                 if (subType == PAUSE || (type == POINTER && subType == POINTER_MOVE)) {

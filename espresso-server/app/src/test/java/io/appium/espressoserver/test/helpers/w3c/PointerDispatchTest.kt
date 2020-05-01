@@ -1,6 +1,5 @@
 package io.appium.espressoserver.test.helpers.w3c
 
-
 import org.junit.Test
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -25,10 +24,9 @@ import io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispa
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.performPointerMove
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_UP
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTER
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Companion.POINTER
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Companion.VIEWPORT
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT
-import io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

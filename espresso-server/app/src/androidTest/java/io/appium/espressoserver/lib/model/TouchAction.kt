@@ -168,7 +168,7 @@ class TouchAction {
                 }
 
                 val parameters = Parameters()
-                parameters.setPointerType(TOUCH)
+                parameters.pointerType = TOUCH
 
                 // Add a finger pointer
                 inputSources.add(InputSourceBuilder()

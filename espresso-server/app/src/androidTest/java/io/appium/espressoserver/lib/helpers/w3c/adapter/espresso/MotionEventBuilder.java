@@ -22,7 +22,7 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.Helpers.getToolType;
+import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.HelpersKt.getToolType;
 
 public class MotionEventBuilder {
 
