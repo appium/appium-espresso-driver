@@ -42,7 +42,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import com.google.gson.annotations.SerializedName
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.StringHelpers.charSequenceToNullableString
-import io.appium.espressoserver.lib.viewmatcher.WithView.withView
+import io.appium.espressoserver.lib.viewmatcher.withView
 import org.hamcrest.Matchers.hasEntry
 import org.hamcrest.Matchers.`is`
 

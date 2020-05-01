@@ -19,11 +19,12 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.OrientationParams
-import io.appium.espressoserver.lib.viewaction.OrientationChange
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import io.appium.espressoserver.lib.model.OrientationType
+import io.appium.espressoserver.lib.viewaction.orientationLandscape
+import io.appium.espressoserver.lib.viewaction.orientationPortrait
 
 class SetOrientation : RequestHandler<OrientationParams, Void?> {
 
@@ -35,7 +36,7 @@ class SetOrientation : RequestHandler<OrientationParams, Void?> {
         orientation ?: throw AppiumException("Screen orientation value must not be null")
 
         if (!OrientationType.supportedOrientationTypes().contains(orientation.toUpperCase())) {
-            throw AppiumException("Screen orientation must be one of LANDSCAPE or PORTRAIT. Found '$orientation'");
+            throw AppiumException("Screen orientation must be one of LANDSCAPE or PORTRAIT. Found '$orientation'")
         }
 
         // Get the view interaction for the element or for the root, if no element provided
@@ -47,9 +48,9 @@ class SetOrientation : RequestHandler<OrientationParams, Void?> {
 
         try {
             if (orientation.equals(OrientationType.LANDSCAPE.name, ignoreCase = true)) {
-                viewInteraction.perform(OrientationChange.orientationLandscape())
+                viewInteraction.perform(orientationLandscape())
             } else {
-                viewInteraction.perform(OrientationChange.orientationPortrait())
+                viewInteraction.perform(orientationPortrait())
             }
             return null
         } catch (e: Exception) {

@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.appium.espressoserver.lib.viewmatcher
 
-package io.appium.espressoserver.lib.handlers
+import android.view.View
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.viewaction.ViewTextGetter
+fun withView(view: View): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+        override fun matchesSafely(item: View): Boolean {
+            return item == view
+        }
 
-class Text : RequestHandler<AppiumParams, String?> {
-
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): String? {
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
-        return ViewTextGetter()[viewInteraction].rawText
+        override fun describeTo(description: Description) {
+            description.appendText("Looked for element with View $view")
+        }
     }
 }

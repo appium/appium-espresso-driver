@@ -49,8 +49,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import io.appium.espressoserver.lib.model.MatcherJson
-import io.appium.espressoserver.lib.viewmatcher.WithView.withView
-import io.appium.espressoserver.lib.viewmatcher.WithXPath.withXPath
+import io.appium.espressoserver.lib.viewmatcher.withView
+import io.appium.espressoserver.lib.viewmatcher.withXPath
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`

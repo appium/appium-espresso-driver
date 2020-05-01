@@ -87,7 +87,7 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
                     viewInteractionGetter().check(noOverlaps())
                 }
                 // If it's a TEXT attribute, return the view's raw text
-                ViewAttributesEnum.TEXT -> return ViewTextGetter().get(viewInteractionGetter()).rawText
+                ViewAttributesEnum.TEXT -> return ViewTextGetter()[viewInteractionGetter()].rawText
                 else -> throw NotYetImplementedException()
             }
         }

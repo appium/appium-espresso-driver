@@ -14,27 +14,12 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.viewmatcher;
+package io.appium.espressoserver.lib.viewaction
 
-import android.view.View;
+import androidx.test.espresso.UiController
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
-
-public class WithView {
-    public static Matcher<View> withView(final View view) {
-
-        return new TypeSafeMatcher<View>() {
-            @Override
-            protected boolean matchesSafely(View item) {
-                return item.equals(view);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText(String.format("Looked for element with View %s", view.toString()));
-            }
-        };
-    }
+interface UiControllerRunnable<T> {
+    @Throws(AppiumException::class)
+    fun run(uiController: UiController): T
 }

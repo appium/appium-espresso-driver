@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions.ActionsBuilder
@@ -37,40 +38,42 @@ class Keys : RequestHandler<TextValueParams, Void?> {
     override fun handleInternal(params: TextValueParams): Void? {
         val keys = params.value ?: emptyList()
 
-        val runnable = UiControllerRunnable<Void> { uiController ->
-            // Add a list of keyDown + keyUp actions for each key
-            val keyActions = arrayListOf<Action>()
-            keys.forEach {
-                // Key down event
-                keyActions.add(ActionBuilder()
-                        .withType(KEY_DOWN)
-                        .withValue(it)
-                        .build()
-                )
+        val runnable = object : UiControllerRunnable<Void?> {
+            override fun run(uiController: UiController): Void? {
+                // Add a list of keyDown + keyUp actions for each key
+                val keyActions = arrayListOf<Action>()
+                keys.forEach {
+                    // Key down event
+                    keyActions.add(ActionBuilder()
+                            .withType(KEY_DOWN)
+                            .withValue(it)
+                            .build()
+                    )
 
-                // Key up event
-                keyActions.add(ActionBuilder()
-                        .withType(KEY_UP)
-                        .withValue(it)
+                    // Key up event
+                    keyActions.add(ActionBuilder()
+                            .withType(KEY_UP)
+                            .withValue(it)
+                            .build()
+                    )
+                }
+
+                val keyInputSource = InputSourceBuilder()
+                        .withId("keyboard")
+                        .withType(KEY)
+                        .withActions(keyActions)
                         .build()
-                )
+
+                val actions = ActionsBuilder()
+                        .withActions(listOf(keyInputSource))
+                        .withAdapter(EspressoW3CActionAdapter(uiController))
+                        .build()
+
+                actions.perform(params.sessionId)
+                actions.release(params.sessionId)
+
+                return null
             }
-
-            val keyInputSource = InputSourceBuilder()
-                    .withId("keyboard")
-                    .withType(KEY)
-                    .withActions(keyActions)
-                    .build()
-
-            val actions = ActionsBuilder()
-                    .withActions(listOf(keyInputSource))
-                    .withAdapter(EspressoW3CActionAdapter(uiController))
-                    .build()
-
-            actions.perform(params.sessionId)
-            actions.release(params.sessionId)
-
-            null
         }
 
         UiControllerPerformer(runnable).run()

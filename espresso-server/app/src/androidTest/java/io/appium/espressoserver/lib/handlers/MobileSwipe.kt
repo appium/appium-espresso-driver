@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import androidx.test.espresso.UiController
 import androidx.test.espresso.action.GeneralSwipeAction
 import androidx.test.espresso.action.ViewActions.*
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
@@ -45,19 +46,22 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
             }
         } else if (params.swiper != null) {
 
-            val runnable = UiControllerRunnable { uiController ->
-                val swipeAction = GeneralSwipeAction(
-                        params.swiper,
-                        params.startCoordinates,
-                        params.endCoordinates,
-                        params.precisionDescriber
-                )
-                AndroidLogger.logger.info("""
+            val runnable = object : UiControllerRunnable<Void?> {
+                override fun run(uiController: UiController): Void? {
+                    val swipeAction = GeneralSwipeAction(
+                            params.swiper,
+                            params.startCoordinates,
+                            params.endCoordinates,
+                            params.precisionDescriber
+                    )
+                    AndroidLogger.logger.info("""
                     Performing general swipe action with parameters
                     swiper=[${params.swiper}] startCoordinates=[${params.startCoordinates}]
                     endCoordinates=[${params.endCoordinates}] precisionDescriber=[${params.precisionDescriber}]
-                """.trimIndent())
-                swipeAction.perform(uiController, Element.getViewById(params.elementId))
+                    """.trimIndent())
+                    swipeAction.perform(uiController, Element.getViewById(params.elementId))
+                    return null
+                }
             }
             UiControllerPerformer(runnable).run()
         }

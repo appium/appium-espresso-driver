@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import androidx.test.espresso.UiController
 import androidx.test.espresso.action.GeneralClickAction
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.Element
@@ -27,17 +28,22 @@ class MobileClickAction : RequestHandler<MobileClickActionParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: MobileClickActionParams): Void? {
-        val runnable = UiControllerRunnable { uiController ->
-            val clickAction = GeneralClickAction(
-                    params.tapper,
-                    params.coordinatesProvider,
-                    params.precisionDescriber,
-                    params.inputDevice,
-                    params.buttonState
-            );
-            clickAction.perform(uiController, Element.getViewById(params.elementId))
+        val runnable = object : UiControllerRunnable<Void?> {
+            override fun run(uiController: UiController): Void? {
+                val clickAction = GeneralClickAction(
+                        params.tapper,
+                        params.coordinatesProvider,
+                        params.precisionDescriber,
+                        params.inputDevice,
+                        params.buttonState
+                )
+                clickAction.perform(uiController, Element.getViewById(params.elementId))
+
+                return null
+            }
         }
         UiControllerPerformer(runnable).run()
+
         return null
     }
 }

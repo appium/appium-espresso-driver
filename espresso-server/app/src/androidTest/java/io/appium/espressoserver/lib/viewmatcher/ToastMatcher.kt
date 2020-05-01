@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.appium.espressoserver.lib.viewmatcher
 
-package io.appium.espressoserver.lib.viewmatcher;
+import android.view.WindowManager
+import androidx.test.espresso.Root
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
 
-import android.view.WindowManager;
-
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
-
-import androidx.test.espresso.Root;
-
-public class ToastMatcher extends TypeSafeMatcher<Root> {
-    @Override
-    public void describeTo(Description description) {
-        description.appendText("is toast");
+class ToastMatcher : TypeSafeMatcher<Root>() {
+    override fun describeTo(description: Description) {
+        description.appendText("is toast")
     }
 
-    @Override
-    public boolean matchesSafely(Root root) {
-        if (root.getWindowLayoutParams().get().type != WindowManager.LayoutParams.TYPE_TOAST) {
-            return false;
-        }
-        return root.getDecorView().getWindowToken() == root.getDecorView().getApplicationWindowToken();
+    public override fun matchesSafely(root: Root): Boolean {
+        return if (root.windowLayoutParams.get().type != WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY) {
+            false
+        } else root.decorView.windowToken === root.decorView.applicationWindowToken
     }
 }
