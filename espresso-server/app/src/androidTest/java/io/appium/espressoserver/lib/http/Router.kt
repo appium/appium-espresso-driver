@@ -56,6 +56,8 @@ internal class Router {
         routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/alert/text", GetAlertText(), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/orientation", SetOrientation(), OrientationParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/orientation", GetOrientation(), AppiumParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/rotation", SetRotation(), RotationParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/rotation", GetRotation(), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/source", Source(), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/screenshot", ScreenshotHandler(), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/element", FindElement(), Locator::class.java))
