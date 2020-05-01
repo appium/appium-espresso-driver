@@ -26,7 +26,7 @@ import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeInstanceMetho
 import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeMethod
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
-import io.appium.espressoserver.lib.viewmatcher.WithView.withView
+import io.appium.espressoserver.lib.viewmatcher.withView
 
 class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
@@ -58,7 +58,7 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
             val res = invokeInstanceMethod(webViewInteraction, method.name, *args) as? WebInteraction<*>
                     ?: throw InvalidArgumentException("'${method.name}' does not return a 'WebViewInteraction' object")
 
-            webViewInteraction = res;
+            webViewInteraction = res
         }
 
         return null

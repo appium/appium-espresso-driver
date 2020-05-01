@@ -13,28 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.appium.espressoserver.lib.viewmatcher
 
-package io.appium.espressoserver.lib.viewmatcher;
+import android.view.View
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 
-import android.view.View;
+fun withView(view: View): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+        override fun matchesSafely(item: View): Boolean {
+            return item == view
+        }
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
-
-public class WithView {
-    public static Matcher<View> withView(final View view) {
-
-        return new TypeSafeMatcher<View>() {
-            @Override
-            protected boolean matchesSafely(View item) {
-                return item.equals(view);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText(String.format("Looked for element with View %s", view.toString()));
-            }
-        };
+        override fun describeTo(description: Description) {
+            description.appendText("Looked for element with View $view")
+        }
     }
 }

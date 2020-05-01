@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers
+package io.appium.espressoserver.lib.viewaction
 
+import androidx.test.espresso.ViewInteraction
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.viewaction.ViewTextGetter
+import io.appium.espressoserver.lib.model.ViewElement
+import io.appium.espressoserver.lib.model.ViewText
 
-class Text : RequestHandler<AppiumParams, String?> {
-
+class ViewTextGetter {
     @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): String? {
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
-        return ViewTextGetter()[viewInteraction].rawText
+    operator fun get(viewInteraction: ViewInteraction): ViewText {
+        val view = ViewGetter().getView(viewInteraction)
+        return ViewElement(view).text
+                ?: throw AppiumException("Views of class type ${view.javaClass.name} have no 'text' property")
     }
 }

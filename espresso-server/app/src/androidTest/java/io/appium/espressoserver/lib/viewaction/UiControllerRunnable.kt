@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers
+package io.appium.espressoserver.lib.viewaction
 
+import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
-class Text : RequestHandler<AppiumParams, String?> {
-
+interface UiControllerRunnable<T> {
     @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): String? {
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
-        return ViewTextGetter()[viewInteraction].rawText
-    }
+    fun run(uiController: UiController?): T
 }
