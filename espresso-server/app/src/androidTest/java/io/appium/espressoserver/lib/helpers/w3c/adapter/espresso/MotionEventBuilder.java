@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.MotionEvent.PointerProperties;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -188,8 +189,8 @@ public class MotionEventBuilder {
                     eventTime,
                     action,
                     pointerCount,
-                    pointerProperties,
-                    pointerCoords,
+                    Arrays.toString(pointerProperties),
+                    Arrays.toString(pointerCoords),
                     motionEventParams.metaState,
                     motionEventParams.buttonState,
                     motionEventParams.xPrecision,

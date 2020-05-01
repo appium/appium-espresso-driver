@@ -2,7 +2,7 @@ package io.appium.espressoserver.lib.helpers.w3c.models;
 
 import com.google.gson.annotations.JsonAdapter;
 
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT;
 

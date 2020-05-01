@@ -186,8 +186,8 @@ public class ActionsHelpers {
         }
         // https://w3c.github.io/webdriver/webdriver-spec.html#pointer-actions
         // > Let x element and y element be the result of calculating the in-view center point of element.
-        result.x = bounds.left + bounds.width() / 2;
-        result.y = bounds.top + bounds.height() / 2;
+        result.x = bounds.left + bounds.width() / 2f;
+        result.y = bounds.top + bounds.height() / 2f;
         if (actionItem.has(ACTION_ITEM_X_KEY)) {
             result.x += (float) actionItem.getDouble(ACTION_ITEM_X_KEY);
             // TODO: Shall we throw an exception if result.x is outside of bounds rect?

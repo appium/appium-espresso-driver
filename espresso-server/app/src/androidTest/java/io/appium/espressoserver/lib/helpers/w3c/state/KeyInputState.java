@@ -62,7 +62,7 @@ public class KeyInputState implements InputState {
 
     public String logMessage() {
         return String.format(
-                "alt=[%s] shift=[%s] ctrl=[%s] meta=[%s] pressed=[]",
+                "alt=[%s] shift=[%s] ctrl=[%s] meta=[%s] pressed=[%s]",
                 isAlt(), isShift(), isCtrl(), isMeta(), pressed
         );
     }

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import io.appium.espressoserver.lib.helpers.w3c.state.InputState;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;

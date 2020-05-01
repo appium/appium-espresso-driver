@@ -14,6 +14,7 @@ import io.appium.espressoserver.lib.model.MobileBackdoorParams;
 import io.appium.espressoserver.test.assets.Helpers;
 
 import static io.appium.espressoserver.lib.model.MobileBackdoorParams.Companion.InvocationTarget.*;
+import static java.util.Objects.requireNonNull;
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -64,8 +65,7 @@ public class MobileBackdoorMethodTest {
             method.getArgumentTypes();
             fail("expected exception was not occured.");
         } catch (Exception e) {
-            assertTrue(e.getMessage().contains(
-                    String.format("Class not found: java.lang.Lol")));
+            assertTrue(e.getMessage().contains("Class not found: java.lang.Lol"));
         }
 
     }
@@ -91,8 +91,8 @@ public class MobileBackdoorMethodTest {
     @Test
     public void shouldPullMethodsWithArguments() throws IOException {
         String backdoorMethods = Helpers.readAssetFile("backdoor-methods.json");
-        MobileBackdoorParams params = MobileBackdoorParams.class.cast((new Gson()).fromJson(backdoorMethods, MobileBackdoorParams.class));
-        List<MobileBackdoorMethod> mobileBackdoor = params.getMethods();
+        MobileBackdoorParams params = (MobileBackdoorParams) (new Gson()).fromJson(backdoorMethods, MobileBackdoorParams.class);
+        List<MobileBackdoorMethod> mobileBackdoor = requireNonNull(params).getMethods();
 
         assertEquals(ACTIVITY, params.getTarget());
 

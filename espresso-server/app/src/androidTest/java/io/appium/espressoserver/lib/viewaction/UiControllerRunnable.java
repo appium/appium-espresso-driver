@@ -5,6 +5,6 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 
 public interface UiControllerRunnable<T> {
 
-    public T run(UiController uiController) throws AppiumException;
+    T run(UiController uiController) throws AppiumException;
 
 }

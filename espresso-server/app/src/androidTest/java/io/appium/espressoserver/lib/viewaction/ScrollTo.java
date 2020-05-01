@@ -21,7 +21,7 @@ import android.widget.AbsListView;
 
 import org.hamcrest.Matcher;
 
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;

@@ -8,8 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
+import androidx.annotation.Nullable;
 import androidx.test.espresso.UiController;
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState;
@@ -23,6 +22,7 @@ import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.MultiTou
 import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.MultiTouchState.TouchPhase.NONE;
 import static io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.MultiTouchState.TouchPhase.UP;
 import static io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH;
+import static java.util.Objects.requireNonNull;
 
 public class MultiTouchState {
 
@@ -46,7 +46,7 @@ public class MultiTouchState {
 
         // Update x and y coordinates
         TouchState touchState = touchStateSet.get(sourceId);
-        touchState.setX(x);
+        requireNonNull(touchState).setX(x);
         touchState.setY(y);
 
         // Update to global key input state
@@ -93,7 +93,7 @@ public class MultiTouchState {
 
     public void pointerDown(UiController uiController) throws AppiumException {
         AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getTouchMotionEvent(uiController);
-        Long eventTime = SystemClock.uptimeMillis();
+        long eventTime = SystemClock.uptimeMillis();
         List<Long> xCoords = getXCoords();
         List<Long> yCoords = getYCoords();
         this.downEvent = androidMotionEvent.pointerEvent(
@@ -109,7 +109,7 @@ public class MultiTouchState {
 
     public void pointerUp(UiController uiController) throws AppiumException {
         AndroidMotionEvent androidMotionEvent = AndroidMotionEvent.getTouchMotionEvent(uiController);
-        Long eventTime = SystemClock.uptimeMillis();
+        long eventTime = SystemClock.uptimeMillis();
         List<Long> xCoords = getXCoords();
         List<Long> yCoords = getYCoords();
         if (xCoords.size() > 1) {

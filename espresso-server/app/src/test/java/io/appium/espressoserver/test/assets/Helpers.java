@@ -11,16 +11,13 @@ public class Helpers {
         String assetPath = String.format("%s/src/test/java/io/appium/espressoserver/test/assets/", projectDir);
         File file = new File(String.format("%s/%s", assetPath, filename));
         StringBuilder fileContents = new StringBuilder((int)file.length());
-        Scanner scanner = new Scanner(file);
-        String lineSeparator = System.getProperty("line.separator");
 
-        try {
-            while(scanner.hasNextLine()) {
-                fileContents.append(scanner.nextLine() + lineSeparator);
+        try (Scanner scanner = new Scanner(file)) {
+            String lineSeparator = System.getProperty("line.separator");
+            while (scanner.hasNextLine()) {
+                fileContents.append(scanner.nextLine()).append(lineSeparator);
             }
             return fileContents.toString();
-        } finally {
-            scanner.close();
         }
     }
 }
