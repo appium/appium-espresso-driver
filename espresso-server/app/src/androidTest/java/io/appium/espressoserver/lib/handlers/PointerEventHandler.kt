@@ -1,30 +1,41 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.espressoserver.lib.handlers
 
 import android.content.res.Resources
 import android.os.SystemClock
 import android.view.MotionEvent
+import android.view.MotionEvent.*
 import android.view.ViewConfiguration
-
-import java.util.HashMap
+import androidx.test.espresso.UiController
+import androidx.test.espresso.action.ViewActions.*
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.MotionEventBuilder
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.MOUSE
+import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.MotionEventParams
 import io.appium.espressoserver.lib.model.ViewElement
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
-
-import android.view.MotionEvent.ACTION_DOWN
-import android.view.MotionEvent.ACTION_MOVE
-import android.view.MotionEvent.ACTION_UP
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.doubleClick
-import androidx.test.espresso.action.ViewActions.longClick
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.MOUSE
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH
+import java.util.*
 
 class PointerEventHandler(private val touchType: TouchType) : RequestHandler<MotionEventParams, Void?> {
 
@@ -61,19 +72,19 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
     @Throws(AppiumException::class)
     override fun handleInternal(params: MotionEventParams): Void? {
         when (touchType) {
-            PointerEventHandler.TouchType.CLICK -> handleClick(params)
-            PointerEventHandler.TouchType.DOUBLE_CLICK -> handleDoubleClick(params)
-            PointerEventHandler.TouchType.LONG_CLICK -> handleLongClick(params)
-            PointerEventHandler.TouchType.TOUCH_DOWN -> handleTouchDown(params)
-            PointerEventHandler.TouchType.TOUCH_UP -> handleTouchUp(params)
-            PointerEventHandler.TouchType.TOUCH_MOVE -> handleTouchMove(params)
-            PointerEventHandler.TouchType.TOUCH_SCROLL -> handleTouchScroll(params)
-            PointerEventHandler.TouchType.MOUSE_DOWN -> handleMouseButtonDown(params)
-            PointerEventHandler.TouchType.MOUSE_UP -> handleMouseButtonUp(params)
-            PointerEventHandler.TouchType.MOUSE_MOVE -> handleMouseMove(params)
-            PointerEventHandler.TouchType.MOUSE_CLICK -> handleMouseClick(params)
-            PointerEventHandler.TouchType.MOUSE_DOUBLECLICK -> handleMouseDoubleClick(params)
-            PointerEventHandler.TouchType.SCROLL-> handleTouchScroll(params)
+            TouchType.CLICK -> handleClick(params)
+            TouchType.DOUBLE_CLICK -> handleDoubleClick(params)
+            TouchType.LONG_CLICK -> handleLongClick(params)
+            TouchType.TOUCH_DOWN -> handleTouchDown(params)
+            TouchType.TOUCH_UP -> handleTouchUp(params)
+            TouchType.TOUCH_MOVE -> handleTouchMove(params)
+            TouchType.TOUCH_SCROLL -> handleTouchScroll(params)
+            TouchType.MOUSE_DOWN -> handleMouseButtonDown(params)
+            TouchType.MOUSE_UP -> handleMouseButtonUp(params)
+            TouchType.MOUSE_MOVE -> handleMouseMove(params)
+            TouchType.MOUSE_CLICK -> handleMouseClick(params)
+            TouchType.MOUSE_DOUBLECLICK -> handleMouseDoubleClick(params)
+            TouchType.SCROLL -> handleTouchScroll(params)
         }
         return null
     }
@@ -91,14 +102,16 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
     @Throws(AppiumException::class)
     private fun handleTouchUp(params: MotionEventParams) {
         AndroidLogger.logger.info("Calling touch up event on (${params.x} ${params.y})")
-        globalTouchDownEvent ?: throw AppiumException("Touch up event must be preceded by a touch down event")
+        globalTouchDownEvent
+                ?: throw AppiumException("Touch up event must be preceded by a touch down event")
         handlePointerEvent(params, ACTION_UP, TOUCH, globalTouchDownEvent!!.downTime)
         globalTouchDownEvent = null
     }
 
     @Throws(AppiumException::class)
     private fun handleTouchMove(params: MotionEventParams) {
-        globalTouchDownEvent ?: throw AppiumException("Touch move event must have a touch down event")
+        globalTouchDownEvent
+                ?: throw AppiumException("Touch move event must have a touch down event")
         handlePointerEvent(params, ACTION_MOVE, TOUCH, globalTouchDownEvent!!.downTime)
     }
 
@@ -164,19 +177,22 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
 
     @Throws(AppiumException::class)
     private fun handleClick(params: MotionEventParams) {
-        params.targetElement ?: throw InvalidArgumentException("Element ID must not be blank for click event")
+        params.targetElement
+                ?: throw InvalidArgumentException("Element ID must not be blank for click event")
         Element.getViewInteractionById(params.targetElement).perform(click())
     }
 
     @Throws(AppiumException::class)
     private fun handleDoubleClick(params: MotionEventParams) {
-        params.targetElement ?: throw InvalidArgumentException("Element ID must not be blank for double click event")
+        params.targetElement
+                ?: throw InvalidArgumentException("Element ID must not be blank for double click event")
         Element.getViewInteractionById(params.targetElement).perform(doubleClick())
     }
 
     @Throws(AppiumException::class)
     private fun handleLongClick(params: MotionEventParams) {
-        params.targetElement ?: throw InvalidArgumentException("Element ID must not be blank for long click event")
+        params.targetElement
+                ?: throw InvalidArgumentException("Element ID must not be blank for long click event")
         Element.getViewInteractionById(params.targetElement).perform(longClick())
     }
 
@@ -226,20 +242,22 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
                                        downTime: Long?,
                                        eventTime: Long?): MotionEvent {
             checkBounds(params.x, params.y)
-            val runnable = UiControllerRunnable { uiController ->
-                MotionEventBuilder()
-                        .withDownTime(downTime ?: SystemClock.uptimeMillis())
-                        .withEventTime(eventTime ?: SystemClock.uptimeMillis())
-                        .withX(params.x)
-                        .withY(params.y)
-                        .withPointerType(pointerType)
-                        .withButtonState(params.androidButtonState)
-                        .withAction(action)
-                        .build()
-                        .run(uiController)
+            val runnable = object : UiControllerRunnable<MotionEvent> {
+                override fun run(uiController: UiController): MotionEvent {
+                    return MotionEventBuilder()
+                            .withDownTime(downTime ?: SystemClock.uptimeMillis())
+                            .withEventTime(eventTime ?: SystemClock.uptimeMillis())
+                            .withX(params.x)
+                            .withY(params.y)
+                            .withPointerType(pointerType)
+                            .withButtonState(params.androidButtonState)
+                            .withAction(action)
+                            .build()
+                            .run(uiController)
+                }
             }
 
-            return UiControllerPerformer(runnable).run()
+            return UiControllerPerformer(runnable).run()!!
         }
 
         @Synchronized

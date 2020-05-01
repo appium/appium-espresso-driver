@@ -21,5 +21,5 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 
 interface UiControllerRunnable<T> {
     @Throws(AppiumException::class)
-    fun run(uiController: UiController?): T
+    fun run(uiController: UiController): T
 }
