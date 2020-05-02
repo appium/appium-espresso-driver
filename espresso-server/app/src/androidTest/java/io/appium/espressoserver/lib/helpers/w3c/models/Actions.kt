@@ -75,15 +75,9 @@ class Actions : AppiumParams() {
     class ActionsBuilder {
         private var actions: List<InputSource>? = null
         private var adapter: W3CActionAdapter? = null
-        fun withActions(actions: List<InputSource>?): ActionsBuilder {
-            this.actions = actions
-            return this
-        }
+        fun withActions(actions: List<InputSource>?): ActionsBuilder = apply { this.actions = actions }
 
-        fun withAdapter(adapter: W3CActionAdapter?): ActionsBuilder {
-            this.adapter = adapter
-            return this
-        }
+        fun withAdapter(adapter: W3CActionAdapter?): ActionsBuilder = apply { this.adapter = adapter }
 
         fun build(): Actions {
             val actions = Actions()
