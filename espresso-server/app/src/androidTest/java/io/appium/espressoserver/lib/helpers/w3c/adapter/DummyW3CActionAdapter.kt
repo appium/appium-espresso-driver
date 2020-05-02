@@ -69,14 +69,14 @@ open class DummyW3CActionAdapter : BaseW3CActionAdapter() {
     @Throws(AppiumException::class)
     override fun pointerUp(button: Int, sourceId: String, pointerType: PointerType?,
                        x: Float, y: Float, depressedButtons: Set<Int>,
-                       globalKeyInputState: KeyInputState) {
+                       globalKeyInputState: KeyInputState?) {
         // No-op
     }
 
     @Throws(AppiumException::class)
     override fun pointerDown(button: Int, sourceId: String, pointerType: PointerType?,
                          x: Float, y: Float, depressedButtons: Set<Int>,
-                         globalKeyInputState: KeyInputState) {
+                         globalKeyInputState: KeyInputState?) {
         // No-op
     }
 
@@ -98,7 +98,7 @@ open class DummyW3CActionAdapter : BaseW3CActionAdapter() {
 
     override fun pointerMove(sourceId: String, pointerType: PointerType?,
                              currentX: Float, currentY: Float, x: Float, y: Float,
-                             buttons: Set<Int>?, globalKeyInputState: KeyInputState) {
+                             buttons: Set<Int>?, globalKeyInputState: KeyInputState?) {
         // Add the pointer move event to the logs
         val pointerMoveEvent = PointerMoveEvent()
         pointerMoveEvent.apply {

@@ -11,9 +11,9 @@ import java.util.List;
 import io.appium.espressoserver.lib.model.BackdoorMethodArg;
 import io.appium.espressoserver.lib.model.MobileBackdoorMethod;
 import io.appium.espressoserver.lib.model.MobileBackdoorParams;
-import io.appium.espressoserver.test.assets.Helpers;
 
 import static io.appium.espressoserver.lib.model.MobileBackdoorParams.Companion.InvocationTarget.*;
+import static io.appium.espressoserver.test.assets.HelpersKt.readAssetFile;
 import static java.util.Objects.requireNonNull;
 import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertArrayEquals;
@@ -90,7 +90,7 @@ public class MobileBackdoorMethodTest {
 
     @Test
     public void shouldPullMethodsWithArguments() throws IOException {
-        String backdoorMethods = Helpers.readAssetFile("backdoor-methods.json");
+        String backdoorMethods = readAssetFile("backdoor-methods.json");
         MobileBackdoorParams params = (MobileBackdoorParams) (new Gson()).fromJson(backdoorMethods, MobileBackdoorParams.class);
         List<MobileBackdoorMethod> mobileBackdoor = requireNonNull(params).getMethods();
 

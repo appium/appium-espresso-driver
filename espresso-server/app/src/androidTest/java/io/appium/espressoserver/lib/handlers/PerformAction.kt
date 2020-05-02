@@ -31,7 +31,7 @@ class PerformAction : RequestHandler<Actions, Void?> {
         val runnable = object: UiControllerRunnable<Void?> {
             override fun run(uiController: UiController): Void? {
                 params.adapter = EspressoW3CActionAdapter(uiController)
-                params.perform(params.sessionId)
+                params.perform(params.sessionId!!)
                 return null
             }
         }

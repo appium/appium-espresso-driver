@@ -1,6 +1,5 @@
 package io.appium.espressoserver.test.helpers.w3c
 
-
 import org.junit.Test
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -25,10 +24,7 @@ import io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.dispa
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.PointerDispatch.performPointerMove
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_UP
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.POINTER
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT
-import io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -48,7 +44,7 @@ class PointerDispatchTest {
 
         val executorService = Executors.newSingleThreadExecutor()
         val callable = performPointerMove(
-                dummyW3CActionAdapter, "any", pointerInputSource,
+                dummyW3CActionAdapter, "any", pointerInputSource!!,
                 100f, 10f, 20f, 30f, 40f, System.currentTimeMillis(),
                 KeyInputState()
         )
@@ -70,7 +66,7 @@ class PointerDispatchTest {
 
         val executorService = Executors.newSingleThreadExecutor()
         val callable = performPointerMove(
-                dummyW3CActionAdapter, "any", pointerInputSource,
+                dummyW3CActionAdapter, "any", pointerInputSource!!,
                 0f, 10f, 20f, 30f, 40f, System.currentTimeMillis(),
                 KeyInputState()
         )
@@ -95,7 +91,7 @@ class PointerDispatchTest {
         pointerInputSource!!.addPressed(0)
 
         var callable: Callable<BaseDispatchResult>? = performPointerMove(
-                dummyW3CActionAdapter, "any", pointerInputSource,
+                dummyW3CActionAdapter, "any", pointerInputSource!!,
                 1000f, 10f, 20f, 30f, 40f, System.currentTimeMillis(),
                 KeyInputState()
         )
@@ -150,7 +146,7 @@ class PointerDispatchTest {
         pointerInputSourceTwo.addPressed(0)
 
         val pointerMoveOne = performPointerMove(
-                dummyW3CActionAdapter, "any", pointerInputSource,
+                dummyW3CActionAdapter, "any", pointerInputSource!!,
                 500f, 10f, 20f, 30f, 40f, System.currentTimeMillis(),
                 KeyInputState()
         )
@@ -202,9 +198,9 @@ class PointerDispatchTest {
     @Throws(AppiumException::class)
     fun shouldThrowBoundsExceptions() {
 
-        val V = VIEWPORT
-        val P = POINTER
-        val E = "element-6066-11e4-a52e-4f735466cecf"
+        val V = Origin.VIEWPORT
+        val P = Origin.POINTER
+        val E = Origin.ELEMENT
 
         // Make a matrix of pointers that are out-of-bounds
         val badX = longArrayOf(-1, 0, 201, 200, 191, 190, 191, 190)
@@ -222,7 +218,7 @@ class PointerDispatchTest {
             )
             actionObject.x = badX[i].toFloat()
             actionObject.y = badY[i].toFloat()
-            actionObject.origin = Origin(badOrigin[i])
+            actionObject.origin = Origin(badOrigin[i], "fake")
 
             try {
                 dispatchPointerMove(dummyW3CActionAdapter, "any", actionObject,
@@ -240,9 +236,9 @@ class PointerDispatchTest {
     @Throws(AppiumException::class, ExecutionException::class, InterruptedException::class)
     fun `should dispatch pointer moves and update state`() {
 
-        val V = VIEWPORT
-        val P = POINTER
-        val E = "element-6066-11e4-a52e-4f735466cecf"
+        val V = Origin.VIEWPORT
+        val P = Origin.POINTER
+        val E = Origin.ELEMENT
 
         // Make a matrix of pointers and the expected state changes
         val xCoords = longArrayOf(10, -5, 15, -5, 15)
@@ -262,7 +258,7 @@ class PointerDispatchTest {
             )
             actionObject.x = xCoords[i].toFloat()
             actionObject.y = yCoords[i].toFloat()
-            actionObject.origin = Origin(origins[i])
+            actionObject.origin = Origin(origins[i], "fake")
 
             val executorService = Executors.newSingleThreadExecutor()
             val callable = dispatchPointerMove(dummyW3CActionAdapter, "any", actionObject,
@@ -305,7 +301,7 @@ class PointerDispatchTest {
             @Throws(AppiumException::class)
             override fun pointerDown(button: Int, sourceId: String, pointerType: PointerType?,
                             x: Float, y: Float, depressedButtons: Set<Int>,
-                            globalKeyInputState: KeyInputState) {
+                            globalKeyInputState: KeyInputState?) {
                 throw AppiumException("Should not reach this point. Button already pressed.")
             }
 
@@ -353,7 +349,7 @@ class PointerDispatchTest {
             @Suppress("UNUSED_PARAMETER", "unused")
             fun pointerUp(button: Int, sourceId: String, pointerType: PointerType,
                           x: Float?, y: Float?, depressedButtons: Set<Int>,
-                          globalKeyInputState: KeyInputState) {
+                          globalKeyInputState: KeyInputState?) {
                 throw AppiumException("Should not reach this point. Button already pressed.")
             }
 

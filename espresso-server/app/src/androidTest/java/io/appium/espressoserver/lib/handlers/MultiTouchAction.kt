@@ -37,8 +37,8 @@ class MultiTouchAction : RequestHandler<MultiTouchActionsParams, Void?> {
                         .withActions(inputSources)
                         .build()
 
-                actions.perform(params.sessionId)
-                actions.release(params.sessionId)
+                actions.perform(params.sessionId!!)
+                actions.release(params.sessionId!!)
 
                 return null
             }

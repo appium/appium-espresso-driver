@@ -30,7 +30,7 @@ class ReleaseActions : RequestHandler<AppiumParams, Void?> {
 
         val runnable = object : UiControllerRunnable<Void?> {
             override fun run(uiController: UiController): Void? {
-                Actions().release(params.sessionId)
+                Actions().release(params.sessionId!!)
                 return null
             }
         }

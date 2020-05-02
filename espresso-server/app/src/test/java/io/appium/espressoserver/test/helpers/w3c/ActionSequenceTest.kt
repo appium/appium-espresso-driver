@@ -11,17 +11,12 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter
-import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject
-import io.appium.espressoserver.lib.helpers.w3c.models.ActionSequence
-import io.appium.espressoserver.lib.helpers.w3c.models.Actions
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
+import io.appium.espressoserver.lib.helpers.w3c.models.*
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType
-import io.appium.espressoserver.lib.helpers.w3c.models.Tick
 import io.appium.espressoserver.lib.helpers.w3c.state.ActiveInputSources
 import io.appium.espressoserver.lib.helpers.w3c.state.InputStateTable
 import io.appium.espressoserver.lib.helpers.w3c.state.PointerInputState
-import io.appium.espressoserver.test.assets.Helpers
 
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_DOWN
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KEY_UP
@@ -30,7 +25,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.PO
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.POINTER_MOVE
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER
-import io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals
+import io.appium.espressoserver.test.assets.readAssetFile
 import org.junit.Assert.*
 
 class ActionSequenceTest {
@@ -38,7 +33,7 @@ class ActionSequenceTest {
     @Test
     @Throws(IOException::class, InvalidArgumentException::class, NotYetImplementedException::class)
     fun shouldPullOutPointerActionsInW3CActions() {
-        val multiTouchJson = Helpers.readAssetFile("multi-touch-actions.json")
+        val multiTouchJson = readAssetFile("multi-touch-actions.json")
         val actions = Actions::class.java.cast(Gson().fromJson(multiTouchJson, Actions::class.java))
         val actionSequence = ActionSequence(actions!!, ActiveInputSources(), InputStateTable())
 
@@ -49,16 +44,16 @@ class ActionSequenceTest {
         assertEquals(action.type, POINTER)
         assertEquals(action.subType, POINTER_MOVE)
         assertEquals(action.duration, 0f)
-        assertFloatEquals(action.x, 100f)
-        assertFloatEquals(action.y, 100f)
+        assertFloatEquals(action.x!!, 100f)
+        assertFloatEquals(action.y!!, 100f)
 
         action = tick.next()
         assertEquals(action.id, "finger2")
         assertEquals(action.type, POINTER)
         assertEquals(action.subType, POINTER_MOVE)
         assertEquals(action.duration, 10f)
-        assertFloatEquals(action.x, 200f)
-        assertFloatEquals(action.y, 400f)
+        assertFloatEquals(action.x!!, 200f)
+        assertFloatEquals(action.y!!, 400f)
 
         assertFalse(tick.hasNext())
 
@@ -100,17 +95,17 @@ class ActionSequenceTest {
         assertEquals(action.subType, POINTER_MOVE)
         assertEquals(action.duration, 1000f)
         assertTrue(action.pointer == PointerType.TOUCH)
-        assertFloatEquals(action.x, 20f)
-        assertFloatEquals(action.y, 0f)
+        assertFloatEquals(action.x!!, 20f)
+        assertFloatEquals(action.y!!, 0f)
 
         action = tick.next()
         assertEquals(action.id, "finger2")
         assertEquals(action.type, POINTER)
         assertEquals(action.subType, POINTER_MOVE)
         assertEquals(action.duration, 1000f)
-        assertEquals(action.origin!!.type, InputSource.POINTER)
-        assertFloatEquals(action.x, 50f)
-        assertFloatEquals(action.y, 0f)
+        assertEquals(action.origin.type, Origin.POINTER)
+        assertFloatEquals(action.x!!, 50f)
+        assertFloatEquals(action.y!!, 0f)
 
         assertFalse(tick.hasNext())
 
@@ -146,14 +141,14 @@ class ActionSequenceTest {
     @Test
     @Throws(IOException::class, InvalidArgumentException::class, NotYetImplementedException::class)
     fun shouldPullOutKeyActionsInW3CActions() {
-        val keyJson = Helpers.readAssetFile("key-actions.json")
+        val keyJson = readAssetFile("key-actions.json")
         val actions = Actions::class.java.cast(Gson().fromJson(keyJson, Actions::class.java))
         val actionSequence = ActionSequence(actions!!, ActiveInputSources(), InputStateTable())
 
         var action: ActionObject
         var tick: Tick
 
-        val unicodeChar = Character.toString('\uE009')
+        val unicodeChar = '\uE009'.toString()
 
         val expectedSubTypes = arrayOf(KEY_DOWN, PAUSE, KEY_DOWN, KEY_UP, KEY_UP)
         val expectedValue = arrayOf(unicodeChar, null, "s", unicodeChar, "s")
@@ -185,7 +180,7 @@ class ActionSequenceTest {
         }
 
         val inputStateTable = InputStateTable()
-        val multiTouchJson = Helpers.readAssetFile("multi-touch-actions.json")
+        val multiTouchJson = readAssetFile("multi-touch-actions.json")
         val actions = Actions::class.java.cast(Gson().fromJson(multiTouchJson, Actions::class.java))
         val actionSequence = ActionSequence(actions!!, ActiveInputSources(), InputStateTable())
 
@@ -212,7 +207,7 @@ class ActionSequenceTest {
     @Throws(IOException::class, AppiumException::class, InterruptedException::class, ExecutionException::class)
     fun shouldDispatchW3CKeyActions() {
         val inputStateTable = InputStateTable()
-        val multiTouchJson = Helpers.readAssetFile("key-actions.json")
+        val multiTouchJson = readAssetFile("key-actions.json")
         val actions = Actions::class.java.cast(Gson().fromJson(multiTouchJson, Actions::class.java))
         val actionSequence = ActionSequence(actions!!, ActiveInputSources(), InputStateTable())
 

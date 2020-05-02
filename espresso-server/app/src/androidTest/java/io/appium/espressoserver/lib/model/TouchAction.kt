@@ -30,10 +30,10 @@ class TouchAction {
         get() {
             val origin = Origin()
             options?.elementId?.let {
-                origin.type = ELEMENT
+                origin.type = Origin.ELEMENT
                 origin.elementId = it
             } ?: run {
-                origin.type = VIEWPORT
+                origin.type = Origin.VIEWPORT
             }
             return origin
         }
@@ -158,23 +158,22 @@ class TouchAction {
 
         @Throws(AppiumException::class)
         fun toW3CInputSources(touchActionsLists: List<List<TouchAction>>): List<InputSource> {
-            var touchInputIndex = 0
 
             val inputSources = ArrayList<InputSource>()
-            for (touchActions in touchActionsLists) {
+            for ((touchInputIndex, touchActions) in touchActionsLists.withIndex()) {
                 val w3cActions = ArrayList<Action>()
                 for (touchAction in touchActions) {
                     w3cActions.addAll(touchAction.toW3CAction())
                 }
 
                 val parameters = Parameters()
-                parameters.setPointerType(TOUCH)
+                parameters.pointerType = TOUCH
 
                 // Add a finger pointer
                 inputSources.add(InputSourceBuilder()
                         .withType(POINTER)
                         .withParameters(parameters)
-                        .withId(String.format("finger%s", touchInputIndex++))
+                        .withId(String.format("finger%s", touchInputIndex))
                         .withActions(w3cActions)
                         .build())
             }

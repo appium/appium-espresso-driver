@@ -1,6 +1,5 @@
 package io.appium.espressoserver.test.helpers.w3c
 
-
 import org.junit.Test
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorCompletionService
@@ -27,8 +26,6 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceTy
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.NONE
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH
-import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.VIEWPORT
-import io.appium.espressoserver.test.helpers.w3c.Helpers.assertFloatEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -86,7 +83,7 @@ class TickTest {
         tick.addAction(actionObject)
         assertFalse(inputStateTable.hasInputState(sourceId))
         tick.dispatchAll(DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration())
-        assertTrue(inputStateTable.getInputState(sourceId).javaClass == KeyInputState::class.java)
+        assertTrue(inputStateTable.getInputState(sourceId) is KeyInputState)
     }
 
     @Test
@@ -101,7 +98,7 @@ class TickTest {
         tick.addAction(actionObject)
         assertFalse(inputStateTable.hasInputState(sourceId))
         tick.dispatchAll(DummyW3CActionAdapter(), inputStateTable, tick.calculateTickDuration())
-        assertTrue(inputStateTable.getInputState(sourceId).javaClass == PointerInputState::class.java)
+        assertTrue(inputStateTable.getInputState(sourceId) is PointerInputState)
     }
 
     @Test
@@ -186,7 +183,7 @@ class TickTest {
         actionObjectOne.pointer = TOUCH
         actionObjectOne.x = 10.0f
         actionObjectOne.y = 20.0f
-        actionObjectOne.origin = Origin(VIEWPORT)
+        actionObjectOne.origin = Origin(Origin.VIEWPORT)
 
         // Construct another pointer move event
         val actionObjectTwo = ActionObject(sourceId2, POINTER, null, 0)
@@ -194,7 +191,7 @@ class TickTest {
         actionObjectTwo.pointer = TOUCH
         actionObjectTwo.x = 10.0f
         actionObjectTwo.y = 20.0f
-        actionObjectTwo.origin = Origin(VIEWPORT)
+        actionObjectTwo.origin = Origin(Origin.VIEWPORT)
 
         // Add two pointer move actions to verify that they can run on multiple threads separately
         tick.addAction(actionObjectOne)
