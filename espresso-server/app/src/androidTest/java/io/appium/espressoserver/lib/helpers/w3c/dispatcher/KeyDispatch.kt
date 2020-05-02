@@ -21,11 +21,11 @@ private fun dispatchKeyEvent(dispatcherAdapter: W3CActionAdapter,
                              inputStateTable: InputStateTable,
                              tickDuration: Float, down: Boolean): W3CKeyEvent {
     // Get the base Key Event
-    val keyEvent = getKeyEvent(dispatcherAdapter, actionObject.value)
-    val key = keyEvent.key
+    val keyEvent = getKeyEvent(dispatcherAdapter, actionObject.value!!)
+    val key = keyEvent.key!!
 
     // 3. If the input state's pressed property contains key, let repeat be true, otherwise let repeat be false.
-    if (inputState.isPressed(key!!)) {
+    if (inputState.isPressed(key)) {
         keyEvent.isRepeat = true
     }
 
@@ -104,9 +104,8 @@ private fun dispatchKeyEvent(dispatcherAdapter: W3CActionAdapter,
 @Throws(AppiumException::class)
 fun dispatchKeyDown(dispatcherAdapter: W3CActionAdapter,
                     actionObject: ActionObject, inputState: KeyInputState,
-                    inputStateTable: InputStateTable, tickDuration: Float = 0f): W3CKeyEvent? {
-    return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable, tickDuration, true)
-}
+                    inputStateTable: InputStateTable, tickDuration: Float = 0f): W3CKeyEvent? =
+     dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable, tickDuration, true)
 
 /**
  * Dispatch a key up event (in accordance with https://www.w3.org/TR/webdriver/#keyboard-actions)
@@ -121,9 +120,8 @@ fun dispatchKeyDown(dispatcherAdapter: W3CActionAdapter,
 @Throws(AppiumException::class)
 fun dispatchKeyUp(dispatcherAdapter: W3CActionAdapter,
                   actionObject: ActionObject, inputState: KeyInputState,
-                  inputStateTable: InputStateTable, tickDuration: Float = 0f): W3CKeyEvent? {
-    return dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable, tickDuration, false)
-}
+                  inputStateTable: InputStateTable, tickDuration: Float = 0f): W3CKeyEvent? =
+        dispatchKeyEvent(dispatcherAdapter, actionObject, inputState, inputStateTable, tickDuration, false)
 
 /**
  * Helper method to get a Key Event that has common attributes between KeyUp and KeyDispatch
@@ -131,30 +129,22 @@ fun dispatchKeyUp(dispatcherAdapter: W3CActionAdapter,
  * @return W3CKeyEvent Key event info used by adapter
  */
 @Throws(AppiumException::class)
-fun getKeyEvent(dispatcherAdapter: W3CActionAdapter, rawKey: String?): W3CKeyEvent {
+fun getKeyEvent(dispatcherAdapter: W3CActionAdapter, rawKey: String): W3CKeyEvent = W3CKeyEvent().apply {
     // 1. Let raw key be action's value property
 
     // 2. Let key be equal to the normalised key value for raw key
-    val key = instance!!.getNormalizedKey(rawKey!!)
+    this.key = instance!!.getNormalizedKey(rawKey)
 
     // 4. Let code be 'code' for raw keypress
-    val code = getCode(rawKey)
+    this.code = getCode(rawKey)
 
     // 5. Let location be the key location for raw key
-    val location = getLocation(rawKey)
+    this.location = getLocation(rawKey)
 
     // 6. Let charCode, keyCode and which be the implementation-specific values of the charCode,
     // keyCode and which properties appropriate for a key with key key and location location on
     // a 102 key US keyboard
-    val keyCode = dispatcherAdapter.getKeyCode(key, location)
-    val charCode = dispatcherAdapter.getCharCode(code, location)
-    val which = dispatcherAdapter.getWhich(key, location)
-    val keyEvent = W3CKeyEvent()
-    keyEvent.key = key
-    keyEvent.code = code
-    keyEvent.location = location
-    keyEvent.keyCode = keyCode
-    keyEvent.charCode = charCode
-    keyEvent.which = which
-    return keyEvent
+    this.keyCode = dispatcherAdapter.getKeyCode(this.key, this.location)
+    this.charCode = dispatcherAdapter.getCharCode(this.code, this.location)
+    this.which = dispatcherAdapter.getWhich(this.key, this.location)
 }

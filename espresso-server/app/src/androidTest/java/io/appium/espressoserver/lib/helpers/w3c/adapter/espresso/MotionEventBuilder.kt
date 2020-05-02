@@ -12,80 +12,21 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
 
 class MotionEventBuilder {
     private val motionEventParams: MotionEventParams
-    fun withX(x: List<Long>?): MotionEventBuilder {
-        motionEventParams.x = x
-        return this
-    }
-
-    fun withY(y: List<Long>?): MotionEventBuilder {
-        motionEventParams.y = y
-        return this
-    }
-
-    fun withX(x: Long): MotionEventBuilder {
-        motionEventParams.x = listOf(x)
-        return this
-    }
-
-    fun withY(y: Long): MotionEventBuilder {
-        motionEventParams.y = listOf(y)
-        return this
-    }
-
-    fun withDownTime(downTime: Long): MotionEventBuilder {
-        motionEventParams.downTime = downTime
-        return this
-    }
-
-    fun withEventTime(eventTime: Long): MotionEventBuilder {
-        motionEventParams.eventTime = eventTime
-        return this
-    }
-
-    fun withAction(action: Int): MotionEventBuilder {
-        motionEventParams.action = action
-        return this
-    }
-
-    fun withMetaState(metaState: Int): MotionEventBuilder {
-        motionEventParams.metaState = metaState
-        return this
-    }
-
-    fun withButtonState(buttonState: Int): MotionEventBuilder {
-        motionEventParams.buttonState = buttonState
-        return this
-    }
-
-    fun withXPrecision(xPrecision: Float): MotionEventBuilder {
-        motionEventParams.xPrecision = xPrecision
-        return this
-    }
-
-    fun withYPrecision(yPrecision: Float): MotionEventBuilder {
-        motionEventParams.yPrecision = yPrecision
-        return this
-    }
-
-    fun withDeviceId(deviceId: Int): MotionEventBuilder {
-        motionEventParams.deviceId = deviceId
-        return this
-    }
-
-    fun withSource(source: Int): MotionEventBuilder {
-        motionEventParams.source = source
-        return this
-    }
-
-    fun withEdgeFlags(edgeFlags: Int): MotionEventBuilder {
-        motionEventParams.edgeFlags = edgeFlags
-        return this
-    }
-
-    fun withPointerType(pointerType: InputSource.PointerType?): MotionEventBuilder {
-        motionEventParams.pointerType = pointerType
-        return this
-    }
+    fun withX(x: List<Long>?): MotionEventBuilder = apply { motionEventParams.x = x }
+    fun withY(y: List<Long>?): MotionEventBuilder = apply { motionEventParams.y = y }
+    fun withX(x: Long): MotionEventBuilder = apply { motionEventParams.x = listOf(x) }
+    fun withY(y: Long): MotionEventBuilder = apply { motionEventParams.y = listOf(y) }
+    fun withDownTime(downTime: Long): MotionEventBuilder = apply { motionEventParams.downTime = downTime }
+    fun withEventTime(eventTime: Long): MotionEventBuilder = apply { motionEventParams.eventTime = eventTime }
+    fun withAction(action: Int): MotionEventBuilder = apply { motionEventParams.action = action }
+    fun withMetaState(metaState: Int): MotionEventBuilder = apply { motionEventParams.metaState = metaState }
+    fun withButtonState(buttonState: Int): MotionEventBuilder = apply { motionEventParams.buttonState = buttonState }
+    fun withXPrecision(xPrecision: Float): MotionEventBuilder = apply { motionEventParams.xPrecision = xPrecision }
+    fun withYPrecision(yPrecision: Float): MotionEventBuilder = apply { motionEventParams.yPrecision = yPrecision }
+    fun withDeviceId(deviceId: Int): MotionEventBuilder = apply { motionEventParams.deviceId = deviceId }
+    fun withSource(source: Int): MotionEventBuilder = apply { motionEventParams.source = source }
+    fun withEdgeFlags(edgeFlags: Int): MotionEventBuilder = apply { motionEventParams.edgeFlags = edgeFlags }
+    fun withPointerType(pointerType: InputSource.PointerType?): MotionEventBuilder = apply { motionEventParams.pointerType = pointerType }
 
     fun build(): MotionEventRunner {
         return MotionEventRunner(motionEventParams)
@@ -121,16 +62,20 @@ class MotionEventBuilder {
             for (pointerIndex in 0 until pointerCount) {
                 // Set pointer coordinates
                 pointerCoords[pointerIndex] = MotionEvent.PointerCoords()
-                pointerCoords[pointerIndex]!!.clear()
-                pointerCoords[pointerIndex]!!.pressure = 1f
-                pointerCoords[pointerIndex]!!.size = 1f
-                pointerCoords[pointerIndex]!!.x = motionEventParams.x!![pointerIndex].toFloat()
-                pointerCoords[pointerIndex]!!.y = motionEventParams.y!![pointerIndex].toFloat()
+                pointerCoords[pointerIndex]!!.let {
+                    it.clear()
+                    it.pressure = 1f
+                    it.size = 1f
+                    it.x = motionEventParams.x!![pointerIndex].toFloat()
+                    it.y = motionEventParams.y!![pointerIndex].toFloat()
+                }
 
                 // Set pointer properties
                 pointerProperties[pointerIndex] = PointerProperties()
-                pointerProperties[pointerIndex]!!.toolType = getToolType(motionEventParams.pointerType)
-                pointerProperties[pointerIndex]!!.id = pointerIndex
+                pointerProperties[pointerIndex]!!.let {
+                    it.toolType = getToolType(motionEventParams.pointerType)
+                    it.id = pointerIndex
+                }
             }
 
             // ACTION_POINTER_DOWN and ACTION_POINTER_UP need a bit mask
