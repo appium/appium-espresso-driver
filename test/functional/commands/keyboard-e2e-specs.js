@@ -26,7 +26,7 @@ describe('keyboard', function () {
     }
 
     const sessionId = await driver.getSessionId();
-    return await (axios({
+    return (await axios({
       method: 'POST',
       url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/actions`,
       data: {actions: actionsRoot},
