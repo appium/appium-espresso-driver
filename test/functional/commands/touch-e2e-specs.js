@@ -1,7 +1,7 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import wd from 'wd';
-import request from 'request-promise';
+import axios from 'axios';
 import B from 'bluebird';
 import _ from 'lodash';
 import {
@@ -96,11 +96,10 @@ describe('touch actions -', function () {
       });
     }
 
-    await request({
+    await axios({
       method: 'POST',
-      uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/actions`,
-      body: {actions: actionsRoot},
-      json: true,
+      url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/actions`,
+      data: {actions: actionsRoot},
     });
 
   };
@@ -291,13 +290,12 @@ describe('touch actions -', function () {
 
       it('should do touch/click event', async function () {
         const {value: elementId} = nextEl;
-        await request({
+        await axios({
           method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/click`,
-          body: {
+          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/click`,
+          data: {
             element: elementId,
           },
-          json: true,
         });
 
         await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
@@ -305,13 +303,12 @@ describe('touch actions -', function () {
 
       it('should do touch/longclick event', async function () {
         const {value: elementId} = nextEl;
-        await request({
+        await axios({
           method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/longclick`,
-          body: {
+          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/longclick`,
+          data: {
             element: elementId,
           },
-          json: true,
         });
 
         await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
@@ -321,13 +318,12 @@ describe('touch actions -', function () {
         await driver.elementByXPath("//*[@text='2']").should.eventually.be.rejectedWith(/NoSuchElement/);
 
         const {value: elementId} = nextEl;
-        await request({
+        await axios({
           method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/doubleclick`,
-          body: {
+          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/doubleclick`,
+          data: {
             element: elementId,
           },
-          json: true,
         });
 
         await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
@@ -337,25 +333,23 @@ describe('touch actions -', function () {
       it('should touch down at a location and then touch up', async function () {
         const {x, y} = await nextEl.getLocation();
 
-        await request({
+        await axios({
           method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/down`,
-          body: {
+          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/down`,
+          data: {
             x: x + 1,
             y: y + 1,
           },
-          json: true,
         });
         await B.delay(1000);
 
-        await request({
+        await axios({
           method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/up`,
-          body: {
+          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/up`,
+          data: {
             x: x + 1,
             y: y + 1,
           },
-          json: true,
         });
 
         await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
@@ -368,51 +362,47 @@ describe('touch actions -', function () {
       it('should touch down, move, touch up and cause a scroll event', async function () {
         const {startX, startY, endX, endY} = await getScrollData();
 
-        await request({
+        await axios({
           method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/down`,
-          body: {
+          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/down`,
+          data: {
             x: startX + 1,
             y: startY + 1,
           },
-          json: true,
         });
         await B.delay(1000);
 
-        await request({
+        await axios({
           method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/move`,
-          body: {
+          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/move`,
+          data: {
             x: endX + 1,
             y: endY + 1,
           },
-          json: true,
         });
         await B.delay(1000);
 
-        await request({
+        await axios({
           method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/up`,
-          body: {
+          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/up`,
+          data: {
             x: endX + 1,
             y: endY + 1,
           },
-          json: true,
         });
 
         await assertScroll();
       });
 
       it('should scroll on an element', async function () {
-        await request({
+        await axios({
           method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/scroll`,
-          body: {
+          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/scroll`,
+          data: {
             //element: el.value,
             x: 0,
             y: -300,
           },
-          json: true,
         });
         await B.delay(1000);
       });

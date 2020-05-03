@@ -1,6 +1,6 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import request from 'request-promise';
+import axios from 'axios';
 import { initSession, deleteSession, MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
@@ -25,14 +25,12 @@ describe('keyboard', function () {
       });
     }
 
-    let sessionId = await driver.getSessionId();
-    const options = {
+    const sessionId = await driver.getSessionId();
+    return await (axios({
       method: 'POST',
-      uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/actions`,
-      body: {actions: actionsRoot},
-      json: true,
-    };
-    return request(options);
+      url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/actions`,
+      data: {actions: actionsRoot},
+    })).data;
   };
 
   let driver;
