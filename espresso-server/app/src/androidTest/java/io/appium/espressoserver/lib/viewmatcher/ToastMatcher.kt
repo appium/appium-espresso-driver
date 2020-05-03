@@ -26,7 +26,7 @@ class ToastMatcher : TypeSafeMatcher<Root>() {
     }
 
     public override fun matchesSafely(root: Root): Boolean {
-        return if (root.windowLayoutParams.get().type != WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY) {
+        return if (root.windowLayoutParams.get().type != WindowManager.LayoutParams.TYPE_TOAST) {
             false
         } else root.decorView.windowToken === root.decorView.applicationWindowToken
     }
