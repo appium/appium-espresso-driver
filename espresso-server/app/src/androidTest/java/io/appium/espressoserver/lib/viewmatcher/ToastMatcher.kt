@@ -17,6 +17,7 @@ package io.appium.espressoserver.lib.viewmatcher
 
 import android.view.WindowManager
 import androidx.test.espresso.Root
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 
@@ -31,6 +32,9 @@ class ToastMatcher : TypeSafeMatcher<Root>() {
             // 'TYPE_TOAST' is deprecated, so it will be removed in the future
             root.windowLayoutParams.get().type != WindowManager.LayoutParams::class.members.single { it.name == "TYPE_TOAST" }.call()
         } catch (e: NoSuchElementException) {
+            AndroidLogger.logger.info("WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY " +
+                    "was called instead of WindowManager.LayoutParams.TYPE_TOAST in this environment " +
+                    "because of the deprecation. It could affect to find a toast element")
             root.windowLayoutParams.get().type != WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         }
 
