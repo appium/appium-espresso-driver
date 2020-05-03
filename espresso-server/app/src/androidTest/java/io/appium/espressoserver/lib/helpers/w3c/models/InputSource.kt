@@ -123,26 +123,10 @@ class InputSource {
         private var id: String? = null
         private var parameters: Parameters? = null
         private var actions: List<Action>? = null
-        fun withType(type: InputSourceType?): InputSourceBuilder {
-            this.type = type
-            return this
-        }
-
-        fun withId(id: String?): InputSourceBuilder {
-            this.id = id
-            return this
-        }
-
-        fun withParameters(parameters: Parameters?): InputSourceBuilder {
-            this.parameters = parameters
-            return this
-        }
-
-        fun withActions(actions: List<Action>?): InputSourceBuilder {
-            this.actions = actions
-            return this
-        }
-
+        fun withType(type: InputSourceType?): InputSourceBuilder = apply { this.type = type }
+        fun withId(id: String?): InputSourceBuilder = apply { this.id = id }
+        fun withParameters(parameters: Parameters?): InputSourceBuilder = apply { this.parameters = parameters }
+        fun withActions(actions: List<Action>?): InputSourceBuilder = apply { this.actions = actions }
         fun build(): InputSource {
             val inputSource = InputSource()
             inputSource.actions = actions
@@ -161,50 +145,17 @@ class InputSource {
         private var y: Long? = null
         private var value: String? = null
         private var origin = Origin()
-        fun withType(type: ActionType?): ActionBuilder {
-            this.type = type
-            return this
-        }
-
-        fun withDuration(duration: Long?): ActionBuilder {
-            this.duration = duration
-            return this
-        }
-
-        fun withButton(button: Int?): ActionBuilder {
-            this.button = button
-            return this
-        }
-
-        fun withX(x: Long?): ActionBuilder {
-            this.x = x
-            return this
-        }
-
-        fun withY(y: Long?): ActionBuilder {
-            this.y = y
-            return this
-        }
-
-        fun withValue(value: String?): ActionBuilder {
-            this.value = value
-            return this
-        }
-
-        fun withOrigin(origin: Origin): ActionBuilder {
-            this.origin = origin
-            return this
-        }
-
-        fun withOrigin(originType: String?): ActionBuilder {
-            origin.type = originType
-            return this
-        }
-
-        fun withElementId(elementId: String?): ActionBuilder {
-            origin.type = Origin.ELEMENT
-            origin.elementId = elementId
-            return this
+        fun withType(type: ActionType?): ActionBuilder = apply { this.type = type }
+        fun withDuration(duration: Long?): ActionBuilder = apply { this.duration = duration }
+        fun withButton(button: Int?): ActionBuilder = apply { this.button = button }
+        fun withX(x: Long?): ActionBuilder = apply { this.x = x }
+        fun withY(y: Long?): ActionBuilder = apply { this.y = y }
+        fun withValue(value: String?): ActionBuilder = apply { this.value = value }
+        fun withOrigin(origin: Origin): ActionBuilder = apply { this.origin = origin }
+        fun withOriginType(originType: String?): ActionBuilder = apply { this.origin.type = originType }
+        fun withOriginElementId(elementId: String?): ActionBuilder = apply {
+            this.origin.type = Origin.ELEMENT
+            this.origin.elementId = elementId
         }
 
         fun build(): Action {
