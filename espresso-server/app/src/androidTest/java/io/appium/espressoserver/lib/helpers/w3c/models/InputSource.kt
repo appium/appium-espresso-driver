@@ -152,10 +152,10 @@ class InputSource {
         fun withY(y: Long?): ActionBuilder = apply { this.y = y }
         fun withValue(value: String?): ActionBuilder = apply { this.value = value }
         fun withOrigin(origin: Origin): ActionBuilder = apply { this.origin = origin }
-        fun withOrigin(originType: String?): ActionBuilder = apply { origin.type = originType }
-        fun withElementId(elementId: String?): ActionBuilder = apply {
-            origin.type = Origin.ELEMENT
-            origin.elementId = elementId
+        fun withOriginType(originType: String?): ActionBuilder = apply { this.origin.type = originType }
+        fun withOriginElementId(elementId: String?): ActionBuilder = apply {
+            this.origin.type = Origin.ELEMENT
+            this.origin.elementId = elementId
         }
 
         fun build(): Action {
