@@ -2,7 +2,7 @@ import path from 'path';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import wd from 'wd';
-import request from 'request';
+import axios from 'axios';
 import { HOST, PORT } from './helpers/session';
 import { APIDEMO_CAPS, GPS_CAPS } from './desired';
 import { startServer } from '../..';
@@ -137,16 +137,14 @@ describe('EspressoDriver', function () {
 
       const endpoints = ['long_press_keycode', 'press_keycode'];
       for (let endpoint of endpoints) {
-        const options = {
+        await axios({
           method: 'POST',
-          uri: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/appium/device/${endpoint}`,
-          body: {
+          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/appium/device/${endpoint}`,
+          data: {
             keycode: KEYCODE_G,
             metastate: 0 | META_SHIFT_MASK,
           },
-          json: true,
-        };
-        await request(options);
+        });
         const editEl = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
         await editEl.text().should.eventually.equal(endpoint === 'press_keycode' ? 'G' : 'GG');
         await editEl.clear();
