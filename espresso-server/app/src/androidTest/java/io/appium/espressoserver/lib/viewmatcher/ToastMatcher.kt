@@ -34,7 +34,7 @@ class ToastMatcher : TypeSafeMatcher<Root>() {
         } catch (e: NoSuchElementException) {
             AndroidLogger.logger.info("WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY " +
                     "was called instead of WindowManager.LayoutParams.TYPE_TOAST in this environment " +
-                    "because of the deprecation. It could affect to find a toast element")
+                    "because the latter has been deprecated. This could affect toast elements lookup")
             root.windowLayoutParams.get().type != WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         }
 
