@@ -17,6 +17,7 @@ package io.appium.espressoserver.lib.viewmatcher
 
 import android.view.WindowManager
 import androidx.test.espresso.Root
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 
@@ -26,7 +27,18 @@ class ToastMatcher : TypeSafeMatcher<Root>() {
     }
 
     public override fun matchesSafely(root: Root): Boolean {
-        return if (root.windowLayoutParams.get().type != WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY) {
+
+        val notToast = try {
+            // 'TYPE_TOAST' is deprecated, so it will be removed in the future
+            root.windowLayoutParams.get().type != WindowManager.LayoutParams::class.members.single { it.name == "TYPE_TOAST" }.call()
+        } catch (e: NoSuchElementException) {
+            AndroidLogger.logger.info("WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY " +
+                    "was called instead of WindowManager.LayoutParams.TYPE_TOAST in this environment " +
+                    "because the latter has been deprecated. This could affect toast elements lookup")
+            root.windowLayoutParams.get().type != WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        }
+
+        return if (notToast) {
             false
         } else root.decorView.windowToken === root.decorView.applicationWindowToken
     }
