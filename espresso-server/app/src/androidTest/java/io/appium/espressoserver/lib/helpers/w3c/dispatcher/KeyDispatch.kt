@@ -19,7 +19,8 @@ private fun dispatchKeyEvent(dispatcherAdapter: W3CActionAdapter,
                              actionObject: ActionObject,
                              inputState: KeyInputState,
                              inputStateTable: InputStateTable,
-                             tickDuration: Float, down: Boolean): W3CKeyEvent {
+                             @Suppress("UNUSED_PARAMETER") tickDuration: Float,
+                             down: Boolean): W3CKeyEvent {
     // Get the base Key Event
     val keyEvent = getKeyEvent(dispatcherAdapter, actionObject.value!!)
     val key = keyEvent.key!!
