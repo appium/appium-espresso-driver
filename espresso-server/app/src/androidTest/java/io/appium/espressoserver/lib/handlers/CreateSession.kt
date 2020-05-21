@@ -43,6 +43,7 @@ class CreateSession : RequestHandler<SessionParams, Session> {
                     StartActivityParams(
                             parsedCaps["appPackage"] as? String,
                             parsedCaps["appActivity"] as? String,
+                            parsedCaps["locale"] as? Map<String, Any?>,
                             parsedCaps["intentOptions"] as? Map<String, Any?>,
                             parsedCaps["activityOptions"] as? Map<String, Any?>)
             )

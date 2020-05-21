@@ -25,6 +25,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.StartActivityParams
+import io.appium.espressoserver.lib.model.mapToLocaleParams
 
 object ActivityHelpers {
     //    https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
@@ -90,6 +91,10 @@ object ActivityHelpers {
         } else {
             AndroidLogger.logger.info("Staring activity with custom options: ${params.optionalIntentArguments}")
             makeIntent(params.optionalIntentArguments)
+        }
+
+        params.locale?.let {
+            changeLocale(instrumentation.targetContext, mapToLocaleParams(it).toLocale())
         }
 
         if (params.optionalActivityArguments == null) {
