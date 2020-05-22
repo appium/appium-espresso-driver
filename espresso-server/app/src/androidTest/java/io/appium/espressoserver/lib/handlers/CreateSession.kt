@@ -39,14 +39,13 @@ class CreateSession : RequestHandler<SessionParams, Session> {
             val shouldLaunchApp = (parsedCaps["autoLaunch"] ?: true) as Boolean
             if (shouldLaunchApp) {
                 @Suppress("UNCHECKED_CAST")
-                startActivity(
-                    StartActivityParams(
-                            parsedCaps["appPackage"] as? String,
-                            parsedCaps["appActivity"] as? String,
-                            parsedCaps["locale"] as? Map<String, Any?>,
-                            parsedCaps["intentOptions"] as? Map<String, Any?>,
-                            parsedCaps["activityOptions"] as? Map<String, Any?>)
-            )
+                startActivity(StartActivityParams(
+                        parsedCaps["appPackage"] as? String,
+                        parsedCaps["appActivity"] as? String,
+                        parsedCaps["appLocale"] as? Map<String, Any?>,
+                        parsedCaps["intentOptions"] as? Map<String, Any?>,
+                        parsedCaps["activityOptions"] as? Map<String, Any?>
+                ))
             }
         } catch (e: Exception) {
             throw SessionNotCreatedException(e)
