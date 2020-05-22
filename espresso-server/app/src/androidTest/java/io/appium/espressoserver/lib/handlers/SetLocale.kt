@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.handlers
 
 import androidx.test.platform.app.InstrumentationRegistry
+import io.appium.espressoserver.lib.helpers.ActivityHelpers
 import io.appium.espressoserver.lib.helpers.changeLocale
 import io.appium.espressoserver.lib.model.LocaleParams
 
@@ -24,6 +25,7 @@ class SetLocale : RequestHandler<LocaleParams, Void?> {
 
     override fun handleInternal(params: LocaleParams): Void? {
         changeLocale(InstrumentationRegistry.getInstrumentation().targetContext, params.toLocale())
+        InstrumentationRegistry.getInstrumentation().callActivityOnRestart(ActivityHelpers.currentActivity)
         return null
     }
 

@@ -17,60 +17,78 @@
 package io.appium.espressoserver.lib.helpers
 
 import android.app.Activity
-import android.app.Instrumentation
-import android.util.ArrayMap
+import android.content.Context
 import android.os.Build
-
+import android.util.ArrayMap
 import androidx.test.platform.app.InstrumentationRegistry
-
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
 import io.appium.espressoserver.lib.model.StartActivityParams
 import io.appium.espressoserver.lib.model.mapToLocaleParams
 
 object ActivityHelpers {
-    //    https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
     val currentActivity: Activity
-        @Throws(AppiumException::class)
         get() {
-            try {
-                val activityThreadClass = Class.forName("android.app.ActivityThread")
-                val activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null)
-                val activitiesField = activityThreadClass.getDeclaredField("mActivities")
-                activitiesField.isAccessible = true
-                val activities = activitiesField.get(activityThread) as ArrayMap<*, *>
-                for (activityRecord in activities.values) {
-                    val activityRecordClass = activityRecord.javaClass
-                    val pausedField = activityRecordClass.getDeclaredField("paused")
-                    pausedField.isAccessible = true
-                    if (!pausedField.getBoolean(activityRecord)) {
-                        val activityField = activityRecordClass.getDeclaredField("activity")
-                        activityField.isAccessible = true
-                        return activityField.get(activityRecord) as Activity
+            val method1 = fun(): Activity? {
+                // https://stackoverflow.com/questions/38737127/espresso-how-to-get-current-activity-to-test-fragments/58684943#58684943
+                var result: Activity? = null
+                InstrumentationRegistry.getInstrumentation()
+                        .runOnMainSync {
+                            run {
+                                result = ActivityLifecycleMonitorRegistry.getInstance()
+                                        .getActivitiesInStage(Stage.RESUMED)
+                                        .elementAtOrNull(0)
+                            }
+                        }
+                return result
+            }
+            val method2 = fun(): Activity? {
+                //    https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
+                try {
+                    val activityThreadClass = Class.forName("android.app.ActivityThread")
+                    val activityThread = activityThreadClass.getMethod("currentActivityThread")
+                            .invoke(null)
+                    val activitiesField = activityThreadClass.getDeclaredField("mActivities")
+                    activitiesField.isAccessible = true
+                    val activities = activitiesField.get(activityThread) as ArrayMap<*, *>
+                    for (activityRecord in activities.values) {
+                        val activityRecordClass = activityRecord.javaClass
+                        val pausedField = activityRecordClass.getDeclaredField("paused")
+                        pausedField.isAccessible = true
+                        if (!pausedField.getBoolean(activityRecord)) {
+                            val activityField = activityRecordClass.getDeclaredField("activity")
+                            activityField.isAccessible = true
+                            return activityField.get(activityRecord) as Activity
+                        }
                     }
+                } catch (e: Exception) {
+                    // ignore
                 }
-            } catch (e: Exception) {
-                throw AppiumException(e)
+                return null
+            }
+            for (method in listOf(method1, method2)) {
+                val result = method()
+                if (result != null) {
+                    return result
+                }
             }
 
-            throw AppiumException("Failed to get current Activity")
+            throw IllegalStateException("Cannot retrieve the current activity")
         }
 
     /**
      * https://android.googlesource.com/platform/frameworks/base/+/master/tools/aapt/Resource.cpp#755
      *
-     * @param instrumentation Instrumentation instance
+     * @param context Target context instance
      * @param pkg app package name
      * @param activity activity name shortcut to be qualified
      * @return The qualified activity name
      */
-    private fun getFullyQualifiedActivityName(instrumentation: Instrumentation,
-                                              pkg: String?, activity: String): String {
-        val appPackage = pkg ?: instrumentation.targetContext.packageName
+    private fun getFullyQualifiedActivityName(context: Context, pkg: String?, activity: String): String {
+        val appPackage = pkg ?: context.packageName
         val dotPos = activity.indexOf(".")
         return (if (dotPos > 0) activity else "$appPackage${(if (dotPos == 0) "" else ".")}$activity")
     }
-
-
 
     fun startActivity(params: StartActivityParams) {
         if (params.appActivity == null && params.optionalIntentArguments == null) {
@@ -78,8 +96,13 @@ object ActivityHelpers {
         }
 
         val instrumentation = InstrumentationRegistry.getInstrumentation()
+        params.locale?.let {
+            changeLocale(instrumentation.targetContext, mapToLocaleParams(it).toLocale())
+        }
+
         val intent = if (params.optionalIntentArguments == null) {
-            val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation, params.appPackage, params.appActivity!!)
+            val fullyQualifiedAppActivity = getFullyQualifiedActivityName(instrumentation.targetContext,
+                    params.appPackage, params.appActivity!!)
             val defaultOptions = mapOf<String, Any>(
                     "action" to "ACTION_MAIN",
                     "flags" to "ACTIVITY_NEW_TASK",
@@ -87,18 +110,14 @@ object ActivityHelpers {
             )
             AndroidLogger.logger.info("Starting activity '$fullyQualifiedAppActivity' " +
                     "with default options: $defaultOptions")
-            makeIntent(defaultOptions)
+            makeIntent(instrumentation.targetContext, defaultOptions)
         } else {
             AndroidLogger.logger.info("Staring activity with custom options: ${params.optionalIntentArguments}")
-            makeIntent(params.optionalIntentArguments)
-        }
-
-        params.locale?.let {
-            changeLocale(instrumentation.targetContext, mapToLocaleParams(it).toLocale())
+            makeIntent(instrumentation.targetContext, params.optionalIntentArguments)
         }
 
         if (params.optionalActivityArguments == null) {
-           instrumentation.startActivitySync(intent)
+            instrumentation.startActivitySync(intent)
         } else {
             makeActivityOptions(params.optionalActivityArguments).let {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -108,7 +127,10 @@ object ActivityHelpers {
                 }
             }
         }
-    }
 
+        if (params.locale != null) {
+            instrumentation.callActivityOnRestart(currentActivity)
+        }
+    }
 
 }
