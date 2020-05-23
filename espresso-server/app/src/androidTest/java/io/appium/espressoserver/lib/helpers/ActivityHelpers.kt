@@ -97,7 +97,7 @@ object ActivityHelpers {
 
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         params.locale?.let {
-            changeLocale(instrumentation.targetContext, mapToLocaleParams(it).toLocale())
+            changeLocale(instrumentation.targetContext.applicationContext, mapToLocaleParams(it).toLocale())
         }
 
         val intent = if (params.optionalIntentArguments == null) {
@@ -126,10 +126,6 @@ object ActivityHelpers {
                     instrumentation.targetContext.startActivity(intent, it.toBundle())
                 }
             }
-        }
-
-        if (params.locale != null) {
-            instrumentation.callActivityOnRestart(currentActivity)
         }
     }
 

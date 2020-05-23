@@ -24,8 +24,12 @@ import io.appium.espressoserver.lib.model.LocaleParams
 class SetLocale : RequestHandler<LocaleParams, Void?> {
 
     override fun handleInternal(params: LocaleParams): Void? {
-        changeLocale(InstrumentationRegistry.getInstrumentation().targetContext, params.toLocale())
-        InstrumentationRegistry.getInstrumentation().callActivityOnRestart(ActivityHelpers.currentActivity)
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        changeLocale(instrumentation.targetContext.applicationContext, params.toLocale())
+        val activity = ActivityHelpers.currentActivity
+        val intent = activity.intent
+        activity.finish()
+        instrumentation.startActivitySync(intent)
         return null
     }
 

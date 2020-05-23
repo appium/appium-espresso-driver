@@ -18,20 +18,29 @@ package io.appium.espressoserver.lib.helpers
 
 import android.content.Context
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.LocaleList
-
-import io.appium.espressoserver.lib.model.LocaleParams
 import java.util.*
 
+
 fun changeLocale(context: Context, locale: Locale) {
-    if (Build.VERSION.SDK_INT >= 26) {
-        Locale.setDefault(Locale.Category.DISPLAY, locale)
-    } else {
-        Locale.setDefault(locale)
-    }
-    val res = context.resources
+    val res = context.applicationContext.resources
     val config = res.configuration
-    config.locales = LocaleList(locale)
-    @Suppress("DEPRECATION")
-    res.updateConfiguration(config, res.displayMetrics)
+
+    Locale.setDefault(locale)
+    if (SDK_INT >= Build.VERSION_CODES.O) {
+        Locale.setDefault(Locale.Category.DISPLAY, locale)
+    }
+
+    if (SDK_INT >= Build.VERSION_CODES.N) {
+        val localeList = LocaleList(locale)
+        LocaleList.setDefault(localeList)
+        config.locales = localeList
+        context.createConfigurationContext(config)
+    } else {
+        config.setLocale(locale)
+        config.setLayoutDirection(locale)
+        @Suppress("DEPRECATION")
+        res.updateConfiguration(config, res.displayMetrics)
+    }
 }
