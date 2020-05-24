@@ -17,9 +17,9 @@
 package io.appium.espressoserver.lib.helpers
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.test.platform.app.InstrumentationRegistry
 import kotlin.reflect.KClass
 import kotlin.reflect.full.cast
 
@@ -152,7 +152,7 @@ private fun String.toComponentName(): ComponentName = ComponentName.unflattenFro
  * @throws IllegalArgumentException if required options are missing or
  * there is an issue with mapping value format
  */
-fun makeIntent(options: Map<String, Any?>): Intent {
+fun makeIntent(context: Context?, options: Map<String, Any?>): Intent {
     val intent = Intent()
     var hasIntentInfo = false
     var data: Uri? = null
@@ -177,8 +177,7 @@ fun makeIntent(options: Map<String, Any?>): Intent {
                 hasIntentInfo = true
             },
             "className" to fun(key, value) {
-                intent.setClassName(InstrumentationRegistry.getInstrumentation().targetContext,
-                        requireString(key, value))
+                intent.setClassName(context!!, requireString(key, value))
             },
             "component" to fun(key, value) {
                 intent.component = requireString(key, value).toComponentName()
