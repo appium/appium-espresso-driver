@@ -133,6 +133,8 @@ internal class Router {
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/click_action", MobileClickAction(), MobileClickActionParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/web_atoms", WebAtoms(), WebAtomsParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/dismiss_autofill", PerformAutofillDismissal(), AppiumParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/start_service", StartService(), StartServiceParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/stop_service", StopService(), StopServiceParams::class.java))
 
         // Not implemented
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", NotYetImplemented(), AppiumParams::class.java))

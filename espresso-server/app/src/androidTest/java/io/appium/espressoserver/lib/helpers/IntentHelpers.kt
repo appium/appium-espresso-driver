@@ -325,3 +325,12 @@ fun makeIntent(context: Context?, options: Map<String, Any?>): Intent {
     require(hasIntentInfo) { "Either intent action, data, type or categories must be supplied" }
     return intent
 }
+
+fun extractQualifiedClassName(pkg: String, fullName: String): String {
+    var className = fullName
+    val slashPos = className.indexOf("/")
+    if (slashPos >= 0 && className.length > slashPos) {
+        className = className.substring(slashPos + 1)
+    }
+    return if (className.startsWith(".")) "${pkg}${className}" else className
+}
