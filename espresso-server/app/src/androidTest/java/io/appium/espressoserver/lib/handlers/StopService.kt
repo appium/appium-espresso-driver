@@ -18,13 +18,11 @@ package io.appium.espressoserver.lib.handlers
 
 import android.content.Intent
 import androidx.test.platform.app.InstrumentationRegistry
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.extractQualifiedClassName
 import io.appium.espressoserver.lib.model.StopServiceParams
 
 class StopService : RequestHandler<StopServiceParams, String?> {
 
-    @Throws(AppiumException::class)
     override fun handleInternal(params: StopServiceParams): String? {
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext,
