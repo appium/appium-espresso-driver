@@ -10,12 +10,12 @@ jobs:
           publishJUnitResults: true
           testResultsFiles: '**/TEST-*.xml'
           tasks: test
-  #- template: templates/android-e2e-template.yml
-    #parameters:
-      #script: npx mocha --timeout 6000000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/ -g @skip-ci -i --exit
-      #name: sdk30_e2e_tests
-      #CHROMEDRIVER_VERSION: 74.0.3729.6
-      #ANDROID_SDK_VERSION: 30
+  - template: templates/android-e2e-template.yml
+    parameters:
+      script: npx mocha --timeout 6000000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/ -g @skip-ci -i --exit
+      name: sdk30_e2e_tests
+      CHROMEDRIVER_VERSION: 74.0.3729.6
+      ANDROID_SDK_VERSION: 30
   - template: templates/android-e2e-template.yml
     parameters:
       script: npx mocha --timeout 6000000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/ -g @skip-ci -i --exit
