@@ -30,38 +30,38 @@ class `Intent Creation Tests` {
 
     @Test(expected = Exception::class)
     fun `should throw if none of the required options have been provided`(){
-        makeIntent(mapOf())
+        makeIntent(null, mapOf())
     }
 
     @Test(expected = Exception::class)
     fun `should throw if an invalid option name as been provided`(){
-        makeIntent(mapOf(
+        makeIntent(null, mapOf(
                 "foo" to "bar"
         ))
     }
 
     @Test
     fun `should create intent if options were set properly`(){
-        assertEquals(makeIntent(mapOf(
+        assertEquals(makeIntent(null, mapOf(
                 "action" to "io.appium.espresso"
         )).action, "io.appium.espresso")
 
-        assertEquals(makeIntent(mapOf(
+        assertEquals(makeIntent(null, mapOf(
                 "data" to "content://contacts/people/1"
         )).data!!.toString(), "content://contacts/people/1")
 
-        assertEquals(makeIntent(mapOf(
+        assertEquals(makeIntent(null, mapOf(
                 "type" to "image/png"
         )).type!!.toString(), "image/png")
 
-        assertEquals(makeIntent(mapOf(
+        assertEquals(makeIntent(null, mapOf(
                 "categories" to "android.intent.category.APP_CONTACTS, android.intent.category.DEFAULT"
         )).categories.size, 2)
     }
 
     @Test
     fun `should create intent with valid intFlags`(){
-        assertEquals(makeIntent(mapOf(
+        assertEquals(makeIntent(null, mapOf(
                 "action" to "io.appium.espresso",
                 "intFlags" to "0x0F"
         )).flags, 0x0F)
@@ -69,7 +69,7 @@ class `Intent Creation Tests` {
 
     @Test
     fun `should create intent with valid flags`(){
-        assertEquals(makeIntent(mapOf(
+        assertEquals(makeIntent(null, mapOf(
                 "action" to "io.appium.espresso",
                 "flags" to "GRANT_READ_URI_PERMISSION, FLAG_EXCLUDE_STOPPED_PACKAGES"
         )).flags, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_EXCLUDE_STOPPED_PACKAGES)
@@ -77,7 +77,7 @@ class `Intent Creation Tests` {
 
     @Test
     fun `should create intent with valid single extra args`(){
-        val intent = makeIntent(mapOf<String, Any>(
+        val intent = makeIntent(null, mapOf(
                 "action" to "io.appium.espresso",
                 "e" to mapOf(
                         "bar" to "baz",
@@ -101,7 +101,7 @@ class `Intent Creation Tests` {
 
     @Test
     fun `should create intent with valid array extra args`(){
-        val intent = makeIntent(mapOf<String, Any>(
+        val intent = makeIntent(null, mapOf<String, Any>(
                 "action" to "io.appium.espresso",
                 "eia" to mapOf("intarr" to "1,2, 3"),
                 "ela" to mapOf("longarr" to "4, 5, 6"),

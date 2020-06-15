@@ -210,7 +210,7 @@ class AndroidKeyEvent(private val uiController: UiController) {
          * @return
          */
         @JvmStatic
-        fun getKeyCode(keyValue: String?, location: Int): Int {
+        fun getKeyCode(keyValue: String?, @Suppress("UNUSED_PARAMETER") location: Int): Int {
             return when (keyValue) {
                 UNIDENTIFIED -> KeyEvent.KEYCODE_UNKNOWN
                 HELP -> KeyEvent.KEYCODE_HELP
