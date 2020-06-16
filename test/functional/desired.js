@@ -6,7 +6,7 @@ const GENERIC_CAPS = {
   androidInstallTimeout: process.env.CI ? 120000 : 90000,
   deviceName: 'Android',
   platformName: 'Android',
-  forceEspressoRebuild: true,
+  // forceEspressoRebuild: true,
   // TODO: newer build tools require Java9+
   buildToolsVersion: '28.0.3',
   adbExecTimeout: process.env.CI ? 120000 : 20000,
