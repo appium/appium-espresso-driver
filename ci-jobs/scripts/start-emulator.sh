@@ -19,7 +19,7 @@ echo $ANDROID_HOME/emulator/emulator -list-avds
 echo "Starting emulator"
 
 # Start emulator in background
-nohup $ANDROID_HOME/emulator/emulator -avd $ANDROID_AVD -no-snapshot > /dev/null 2>&1 &
+nohup $ANDROID_HOME/emulator/emulator -avd $ANDROID_AVD -accel auto -no-boot-anim -no-snapshot > /dev/null 2>&1 &
 
 $ANDROID_HOME/platform-tools/adb wait-for-device get-serialno
 secondsStarted=$(date +%s)
