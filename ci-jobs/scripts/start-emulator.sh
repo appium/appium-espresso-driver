@@ -45,6 +45,8 @@ if [[ $bootDuration -ge $TIMEOUT ]]; then
   exit 1
 fi
 echo "Emulator booting took ${bootDuration}s"
-adb shell input keyevent 82
 
 $ANDROID_HOME/platform-tools/adb devices
+
+adb shell input keyevent 26
+adb shell input keyevent 82
