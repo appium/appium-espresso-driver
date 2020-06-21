@@ -12,6 +12,7 @@ const GENERIC_CAPS = {
   adbExecTimeout: process.env.CI ? 120000 : 20000,
   espressoServerLaunchTimeout: process.env.CI ? 120000 : 30000,
   printPageSourceOnFindFailure: true,
+  autoGrantPermissions: true,
 };
 
 const APIDEMO_CAPS = Object.assign({}, GENERIC_CAPS, {
