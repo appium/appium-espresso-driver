@@ -23,7 +23,12 @@ describe('clipboard', function () {
     await driver.setClipboard(new Buffer.from('Hello').toString('base64'), 'plaintext');
     // 'SGVsbG8=' is 'Hello' in base 64 encoding with a new line.
     const text = await driver.getClipboard('PLAINTEXT');
-    text.should.eql('SGVsbG8=');
+    try {
+      text.should.eql('SGVsbG8=');
+    } catch (AssertionError) {
+      // API level 23 and 25 have '\n'
+      text.should.eql('SGVsbG8=\n');
+    }
     (Buffer.from(text, 'base64').toString()).should.eql('Hello');
   });
 });
