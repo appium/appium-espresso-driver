@@ -23,7 +23,7 @@ describe('clipboard', function () {
     await driver.setClipboard(new Buffer.from('Hello').toString('base64'), 'plaintext');
     // 'SGVsbG8=' is 'Hello' in base 64 encoding with a new line.
     const text = await driver.getClipboard('PLAINTEXT');
-    text.should.eql('SGVsbG8=\n');
-    (Buffer.from('SGVsbG8=\n', 'base64').toString()).should.eql('Hello');
+    text.should.eql('SGVsbG8=');
+    (Buffer.from(text, 'base64').toString()).should.eql('Hello');
   });
 });
