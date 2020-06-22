@@ -265,17 +265,17 @@ describe('find elements', function () {
         // items with the same matcher
 
         await driver.element('-android viewmatcher', JSON.stringify({
-          name: 'withText', args: 'COPY TEXT', class: 'androidx.test.espresso.matcher.ViewMatchers'
+          name: 'withText', args: 'Copy Text', class: 'androidx.test.espresso.matcher.ViewMatchers'
         })).should.eventually.be.rejectedWith(/AmbiguousViewMatcherException/);
 
         const listTwoEl = await driver.elementByXPath("//android.widget.LinearLayout[@index='2']");
         await listTwoEl.element('-android viewmatcher', JSON.stringify({
-          name: 'withText', args: 'COPY TEXT', class: 'androidx.test.espresso.matcher.ViewMatchers'
+          name: 'withText', args: 'Copy Text', class: 'androidx.test.espresso.matcher.ViewMatchers'
         })).should.eventually.exist;
 
         const listOneEl = await driver.elementByXPath("//android.widget.LinearLayout[@index='1']");
         await listOneEl.element('-android viewmatcher', JSON.stringify({
-          name: 'withText', args: 'COPY TEXT', class: 'androidx.test.espresso.matcher.ViewMatchers'
+          name: 'withText', args: 'Copy Text', class: 'androidx.test.espresso.matcher.ViewMatchers'
         })).should.eventually.exist;
       });
     });
