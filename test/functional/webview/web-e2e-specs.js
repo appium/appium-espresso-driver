@@ -36,7 +36,8 @@ describe('web', function () {
     it('should send text to html text inputs', async function () {
       const html = await driver.source();
       html.should.match(/Selenium/);
-      const textbox = await driver.elementById('i_am_a_textbox');
+      // Chrome 83 must be W3C
+      const textbox = await driver.elementByCss('#i_am_a_textbox');
       await textbox.clear();
       await textbox.type('Text contents');
       await textbox.getAttribute('value').should.eventually.equal('Text contents');
@@ -44,12 +45,12 @@ describe('web', function () {
       await textbox.text().should.eventually.equal('');
     });
     it('should navigate between webview pages', async function () {
-      const anchorLink = await driver.elementById('i am a link');
+      const anchorLink = await driver.elementByCss('[id="i am a link"]');
       await anchorLink.click();
       const bodyEl = await driver.elementByTagName('body');
       bodyEl.getAttribute('value').should.eventually.equal(/I am some other page content/);
       await driver.back();
-      await driver.elementById('i am a link').should.eventually.exist;
+      await driver.elementByCss('[id="i am a link"]').should.eventually.exist;
     });
     it('should be able to switch from webview back to native, navigate to a different webview and then switch back to web context', async function () {
       // Switch to webview
