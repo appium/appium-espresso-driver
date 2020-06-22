@@ -4,12 +4,9 @@
 # with some changes
 
 # Install AVD files
-declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;google_apis;x86"
+declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;default;x86"
 declare -r ANDROID_AVD=test
 echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "$emulator"
-
-$ANDROID_HOME/tools/bin/sdkmanager list
-$ANDROID_HOME/tools/bin/avdmanager list
 
 # Create emulator
 echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -d "Nexus 5X" -n $ANDROID_AVD -k "$emulator" --force
@@ -21,6 +18,7 @@ echo "Starting emulator"
 # Start emulator in background
 nohup $ANDROID_HOME/emulator/emulator -avd $ANDROID_AVD -accel auto -no-boot-anim -no-snapshot > /dev/null 2>&1 &
 
+# Emulator API Level 30 needs below
 ${ANDROID_HOME}/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d "'"\r"'") ]]; do sleep 1; done; input keyevent 82'
 echo "Emulator booting took ${bootDuration}s"
 

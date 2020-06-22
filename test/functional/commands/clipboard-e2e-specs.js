@@ -26,7 +26,7 @@ describe('clipboard', function () {
     try {
       text.should.eql('SGVsbG8=');
     } catch (AssertionError) {
-      // API level 23 and 25 have '\n'
+      // API level 23 and 25 emulator has '\n'
       text.should.eql('SGVsbG8=\n');
     }
     (Buffer.from(text, 'base64').toString()).should.eql('Hello');
