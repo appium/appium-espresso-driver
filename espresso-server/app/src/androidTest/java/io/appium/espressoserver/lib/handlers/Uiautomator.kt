@@ -44,7 +44,7 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
         try {
             val byMethod = ReflectionUtils.method(By::class.java, params.strategy.name, String::class.java)
             val bySelector = ReflectionUtils.invoke(byMethod, By::class.java, locator) as BySelector
-            val actionMethod = ReflectionUtils.method(UiObject2::class.java, params.action.actionName)
+            val actionMethod = ReflectionUtils.method(UiObject2::class.java, params.action.name)
 
             val uiObjects = getUiDevice().findObjects(bySelector)
             AndroidLogger.logger.info("Found ${uiObjects.size} UiObjects", uiObjects.size)
