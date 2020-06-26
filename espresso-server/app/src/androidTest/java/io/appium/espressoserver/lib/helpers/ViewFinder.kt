@@ -40,6 +40,7 @@ import io.appium.espressoserver.lib.viewaction.ViewGetter
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -269,7 +270,7 @@ object ViewFinder {
                     onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, 0)))
                 return listOf(ViewGetter().getView(viewInteraction))
             } catch (e: Exception) {
-                if (e is EspressoException) {
+                if (e is NoMatchingViewException) {
                     return emptyList()
                 }
                 throw e
@@ -290,7 +291,7 @@ object ViewFinder {
                 val view = ViewGetter().getView(viewInteraction)
                 viewInteractions.add(view)
             } catch (e: Exception) {
-                if (e is EspressoException) {
+                if (e is NoMatchingViewException) {
                     return viewInteractions
                 }
                 throw e
