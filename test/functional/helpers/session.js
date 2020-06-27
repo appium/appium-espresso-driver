@@ -12,8 +12,6 @@ async function initDriver () {
   driver = wd.promiseChainRemote(HOST, PORT);
   server = await startServer(PORT, HOST);
 
-  server.allowInsecure.push('chromedriver_autodownload');
-
   return driver;
 }
 
