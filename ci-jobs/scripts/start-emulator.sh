@@ -4,6 +4,7 @@
 # with some changes
 
 if [ $ANDROID_SDK_VERSION -eq 25 ]; then
+  # It seems chrome browser version update in the test session on system image 25...
   declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;default;x86"
 else
   declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;google_apis;x86"
