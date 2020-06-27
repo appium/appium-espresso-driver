@@ -18,10 +18,11 @@ package io.appium.espressoserver.lib.handlers
 
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.BySelector
+import androidx.test.uiautomator.UiObject2
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.InteractionHelper.getUiDevice
-import io.appium.espressoserver.lib.helpers.KReflectionUtils
+import io.appium.espressoserver.lib.helpers.ReflectionUtils
 import io.appium.espressoserver.lib.model.UiautomatorParams
 import java.lang.reflect.InvocationTargetException
 
@@ -41,17 +42,16 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
         val index = params.index
 
         try {
-            /*val byMethod = ReflectionUtils.method(By::class.java, params.strategy.name, String::class.java)
+            val byMethod = ReflectionUtils.method(By::class.java, params.strategy.methodName, String::class.java)
             val bySelector = ReflectionUtils.invoke(byMethod, By::class.java, locator) as BySelector
-            val uiObjectMethod = ReflectionUtils.method(UiObject2::class.java, params.action.name)*/
+            val actionMethod = ReflectionUtils.method(UiObject2::class.java, params.action.actionName)
 
-            val bySelector = KReflectionUtils.invokeMethod(By::class, params.strategy.methodName, locator) as BySelector
             val uiObjects = getUiDevice().findObjects(bySelector)
-            AndroidLogger.logger.info("Found ${uiObjects.size} UiObjects", uiObjects.size)
+            AndroidLogger.logger.info("Found ${uiObjects.size} UiObject(s)")
 
             index ?: run {
                 return uiObjects.map {
-                    KReflectionUtils.invokeInstanceMethod(it, params.action.actionName)
+                    ReflectionUtils.invoke(actionMethod, it)
                 }
             }
 
@@ -59,12 +59,11 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
                 throw AppiumException("Index $index is out of bounds for ${uiObjects.size} elements")
             }
 
-            return listOf(KReflectionUtils.invokeInstanceMethod(uiObjects[index], params.action.actionName))
+            return listOf(ReflectionUtils.invoke(actionMethod, uiObjects[index]))
         } catch (e: IllegalAccessException) {
             throw AppiumException(e)
         } catch (e: InvocationTargetException) {
             throw AppiumException(e)
         }
-
     }
 }
