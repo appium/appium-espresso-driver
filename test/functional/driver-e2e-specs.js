@@ -113,14 +113,14 @@ describe('EspressoDriver', function () {
     });
   });
   describe('keys', function () {
-    before(async function () {
+    beforeEach(async function () {
       await driver.init({
         ...APIDEMO_CAPS,
         appActivity: 'io.appium.android.apis.view.AutoComplete1',
         autoGrantPermissions: true,
       });
     });
-    after(async function () {
+    afterEach(async function () {
       await driver.quit();
     });
     it('should send keys to focused-on element', async function () {
