@@ -4,7 +4,7 @@
 # with some changes
 
 if [ $ANDROID_SDK_VERSION -eq 30 ]; then
-  # It seems chrome browser version update in the test session on system image 25...
+  # API Level 30 does not have 'default' for now
   declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;google_apis;x86"
 else
   declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;default;x86"
