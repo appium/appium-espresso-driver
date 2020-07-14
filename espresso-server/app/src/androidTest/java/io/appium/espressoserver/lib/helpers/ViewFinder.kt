@@ -38,9 +38,9 @@ import io.appium.espressoserver.lib.model.Strategy
 import io.appium.espressoserver.lib.viewaction.ViewGetter
 
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.espresso.AppNotIdleException
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -269,8 +269,10 @@ object ViewFinder {
                 else
                     onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, 0)))
                 return listOf(ViewGetter().getView(viewInteraction))
+            } catch (e: AppNotIdleException){
+                throw AppiumException("android.support.test.espresso.AppNotIdleException: Check thread dump below: ${threadDump()}", e)
             } catch (e: Exception) {
-                if (e is NoMatchingViewException) {
+                if (e is EspressoException) {
                     return emptyList()
                 }
                 throw e
@@ -290,8 +292,10 @@ object ViewFinder {
                     onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, i++)))
                 val view = ViewGetter().getView(viewInteraction)
                 viewInteractions.add(view)
+            } catch (e: AppNotIdleException){
+                throw AppiumException("android.support.test.espresso.AppNotIdleException: Check thread dump below: ${threadDump()}", e)
             } catch (e: Exception) {
-                if (e is NoMatchingViewException) {
+                if (e is EspressoException) {
                     return viewInteractions
                 }
                 throw e
@@ -299,6 +303,20 @@ object ViewFinder {
 
         } while (i < Integer.MAX_VALUE)
         return viewInteractions
+    }
+
+    private fun threadDump(): String {
+        val threadDetils = StringBuilder()
+        val activeCount = Thread.activeCount()
+        val threads = arrayOfNulls<Thread>(activeCount)
+        Thread.enumerate(threads)
+        for (thread in threads) {
+            threadDetils.append("\n\n ThreadName: ${thread!!.name}: State: ${thread.state}")
+            for (stackTraceElement in thread.stackTrace) {
+                threadDetils.append("\n\t\t$stackTraceElement")
+            }
+        }
+        return threadDetils.toString();
     }
 
     private fun withIndex(matcher: Matcher<View>, index: Int): Matcher<View> {
