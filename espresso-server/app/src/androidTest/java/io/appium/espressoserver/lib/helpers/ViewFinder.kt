@@ -65,6 +65,8 @@ import org.hamcrest.Matchers.instanceOf
  */
 object ViewFinder {
     private const val ID_PATTERN = "[\\S]+:id/[\\S]+"
+    private const val APP_NOT_IDLE_MESSAGE = "The application is expected to be in idle state in order for Espresso to interact with it. " +
+            "Review the threads dump below to know more on which entity is hogging the events loop "
 
     @Throws(AppiumException::class)
     fun findBy(strategy: Strategy, selector: String): View? {
@@ -271,8 +273,7 @@ object ViewFinder {
                     onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, 0)))
                 return listOf(ViewGetter().getView(viewInteraction))
             } catch (e: AppNotIdleException){
-                throw InvalidElementStateException("The application is expected to be in idle state in order for Espresso to interact with it." +
-                        " Review the threads dump below to know more on which entity is hogging the events loop ${ThreadHelpers.threadDump}", e)
+                throw InvalidElementStateException(APP_NOT_IDLE_MESSAGE + getThreadDump(), e)
             } catch (e: Exception) {
                 if (e is EspressoException) {
                     return emptyList()
@@ -295,8 +296,7 @@ object ViewFinder {
                 val view = ViewGetter().getView(viewInteraction)
                 viewInteractions.add(view)
             } catch (e: AppNotIdleException){
-                throw InvalidElementStateException("The application is expected to be in idle state in order for Espresso to interact with it." +
-                        " Review the threads dump below to know more on which entity is hogging the events loop ${ThreadHelpers.threadDump}", e)
+                throw InvalidElementStateException(APP_NOT_IDLE_MESSAGE + getThreadDump(), e)
             } catch (e: Exception) {
                 if (e is EspressoException) {
                     return viewInteractions
