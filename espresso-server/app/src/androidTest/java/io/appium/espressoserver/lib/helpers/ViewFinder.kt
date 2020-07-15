@@ -49,6 +49,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.model.MatcherJson
 import io.appium.espressoserver.lib.viewmatcher.withView
 import io.appium.espressoserver.lib.viewmatcher.withXPath
@@ -270,7 +271,8 @@ object ViewFinder {
                     onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, 0)))
                 return listOf(ViewGetter().getView(viewInteraction))
             } catch (e: AppNotIdleException){
-                throw AppiumException("android.support.test.espresso.AppNotIdleException: Check thread dump below: ${threadDump()}", e)
+                throw InvalidElementStateException("The application is expected to be in idle state in order for Espresso to interact with it." +
+                        " Review the threads dump below to know more on which entity is hogging the events loop ${ThreadHelpers.threadDump}", e)
             } catch (e: Exception) {
                 if (e is EspressoException) {
                     return emptyList()
@@ -293,7 +295,8 @@ object ViewFinder {
                 val view = ViewGetter().getView(viewInteraction)
                 viewInteractions.add(view)
             } catch (e: AppNotIdleException){
-                throw AppiumException("android.support.test.espresso.AppNotIdleException: Check thread dump below: ${threadDump()}", e)
+                throw InvalidElementStateException("The application is expected to be in idle state in order for Espresso to interact with it." +
+                        " Review the threads dump below to know more on which entity is hogging the events loop ${ThreadHelpers.threadDump}", e)
             } catch (e: Exception) {
                 if (e is EspressoException) {
                     return viewInteractions
@@ -303,20 +306,6 @@ object ViewFinder {
 
         } while (i < Integer.MAX_VALUE)
         return viewInteractions
-    }
-
-    private fun threadDump(): String {
-        val threadDetils = StringBuilder()
-        val activeCount = Thread.activeCount()
-        val threads = arrayOfNulls<Thread>(activeCount)
-        Thread.enumerate(threads)
-        for (thread in threads) {
-            threadDetils.append("\n\n ThreadName: ${thread!!.name}: State: ${thread.state}")
-            for (stackTraceElement in thread.stackTrace) {
-                threadDetils.append("\n\t\t$stackTraceElement")
-            }
-        }
-        return threadDetils.toString();
     }
 
     private fun withIndex(matcher: Matcher<View>, index: Int): Matcher<View> {
