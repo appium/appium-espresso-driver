@@ -38,6 +38,7 @@ import io.appium.espressoserver.lib.model.Strategy
 import io.appium.espressoserver.lib.viewaction.ViewGetter
 
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.espresso.AppNotIdleException
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -48,6 +49,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.model.MatcherJson
 import io.appium.espressoserver.lib.viewmatcher.withView
 import io.appium.espressoserver.lib.viewmatcher.withXPath
@@ -63,6 +65,8 @@ import org.hamcrest.Matchers.instanceOf
  */
 object ViewFinder {
     private const val ID_PATTERN = "[\\S]+:id/[\\S]+"
+    private const val APP_NOT_IDLE_MESSAGE = "The application is expected to be in idle state in order for Espresso to interact with it. " +
+            "Review the threads dump below to know more on which entity is hogging the events loop "
 
     @Throws(AppiumException::class)
     fun findBy(strategy: Strategy, selector: String): View? {
@@ -268,6 +272,8 @@ object ViewFinder {
                 else
                     onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, 0)))
                 return listOf(ViewGetter().getView(viewInteraction))
+            } catch (e: AppNotIdleException){
+                throw InvalidElementStateException(APP_NOT_IDLE_MESSAGE + getThreadDump(), e)
             } catch (e: Exception) {
                 if (e is EspressoException) {
                     return emptyList()
@@ -289,6 +295,8 @@ object ViewFinder {
                     onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, i++)))
                 val view = ViewGetter().getView(viewInteraction)
                 viewInteractions.add(view)
+            } catch (e: AppNotIdleException){
+                throw InvalidElementStateException(APP_NOT_IDLE_MESSAGE + getThreadDump(), e)
             } catch (e: Exception) {
                 if (e is EspressoException) {
                     return viewInteractions
