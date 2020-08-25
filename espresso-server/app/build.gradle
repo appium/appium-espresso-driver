@@ -89,8 +89,10 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     androidTestImplementation "androidx.annotation:annotation:$annotation_version"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:$espresso_version") {
+        transitive = false
+    }
+    androidTestImplementation "com.google.android.material:material:1.2.0"
     androidTestImplementation "androidx.test.espresso:espresso-web:$espresso_version"
     androidTestImplementation "androidx.test.uiautomator:uiautomator:$uia_version"
     androidTestImplementation "androidx.test:core:$testlib_version"
