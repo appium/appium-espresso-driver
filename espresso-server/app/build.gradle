@@ -90,6 +90,8 @@ dependencies {
 
     androidTestImplementation "androidx.annotation:annotation:$annotation_version"
     androidTestImplementation("androidx.test.espresso:espresso-contrib:$espresso_version") {
+        // Exclude transitive dependencies to limit conflicts with AndroidX libraries from AUT.
+        // Link to PR with fix and discussion https://github.com/appium/appium-espresso-driver/pull/596
         transitive = false
     }
     androidTestImplementation "com.google.android.material:material:1.2.0"
