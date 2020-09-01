@@ -39,13 +39,13 @@ data class IdlingResourcesParams(
                     val getInstanceMethod = try {
                         ReflectionUtils.method(it, "getInstance")
                     } catch (e: Exception) {
-                        AndroidLogger.logger.debug(e.message!!)
+                        AndroidLogger.logger.error(e.message!!)
                         throw IllegalArgumentException("'${it.canonicalName}' class must have getInstance() method")
                     }
                     val instance = try {
                         ReflectionUtils.invoke(getInstanceMethod, it)
                     } catch (e: Exception) {
-                        AndroidLogger.logger.debug(e.message!!)
+                        AndroidLogger.logger.error(e.message!!)
                         throw IllegalArgumentException(
                                 "Got an unexpected exception while calling '${it.canonicalName}.getInstance()': " +
                                         e.message)
