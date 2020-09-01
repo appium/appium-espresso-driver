@@ -18,10 +18,11 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
             val activity = ActivityHelpers.currentActivity
             val ops = getBackdoorOperations(params)
 
-            when (target) {
-                ACTIVITY -> return invokeBackdoorMethods(activity, ops)
-                APPLICATION -> return invokeBackdoorMethods(activity.application, ops)
-                ELEMENT -> return invokeBackdoorMethods(Element.getViewById(params.targetElement), ops)
+            @Suppress("REDUNDANT_ELSE_IN_WHEN")
+            return when (target) {
+                ACTIVITY -> invokeBackdoorMethods(activity, ops)
+                APPLICATION -> invokeBackdoorMethods(activity.application, ops)
+                ELEMENT -> invokeBackdoorMethods(Element.getViewById(params.targetElement), ops)
                 else -> throw InvalidArgumentException("target cannot be '$target'")
             }
         }
