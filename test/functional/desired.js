@@ -7,8 +7,6 @@ const GENERIC_CAPS = {
   deviceName: 'Android',
   platformName: 'Android',
   forceEspressoRebuild: true,
-  // TODO: newer build tools require Java9+
-  buildToolsVersion: '28.0.3',
   adbExecTimeout: process.env.CI ? 120000 : 20000,
   espressoServerLaunchTimeout: process.env.CI ? 120000 : 30000,
   printPageSourceOnFindFailure: true,

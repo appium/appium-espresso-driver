@@ -20,13 +20,17 @@ echo $ANDROID_HOME/emulator/emulator -list-avds
 
 echo "Starting emulator"
 
-# Start emulator in background
-nohup $ANDROID_HOME/emulator/emulator -avd $ANDROID_AVD -accel auto -no-boot-anim -no-snapshot > /dev/null 2>&1 &
+if [ $ANDROID_SDK_VERSION -ge 28 ]; then
+  nohup $ANDROID_HOME/emulator/emulator -avd $ANDROID_AVD -accel auto -no-boot-anim -no-snapshot -delay-adb > /dev/null 2>&1 &
 
-if [ $ANDROID_SDK_VERSION -eq 30 ]; then
-  # Emulator API Level 30 seems work only below on CI
-  ${ANDROID_HOME}/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d "'"\r"'") ]]; do sleep 1; done; input keyevent 82'
+  echo "Waiting until emulator finishes its startup"
+  secondsStarted=$(date +%s)
+  $ANDROID_HOME/platform-tools/adb wait-for-device || exit 1
+  bootDuration=$(( $(date +%s) - secondsStarted ))
+  echo "Emulator booting took ${bootDuration}s"
 else
+  nohup $ANDROID_HOME/emulator/emulator -avd $ANDROID_AVD -accel auto -no-boot-anim -no-snapshot > /dev/null 2>&1 &
+
   $ANDROID_HOME/platform-tools/adb wait-for-device get-serialno
   secondsStarted=$(date +%s)
 
@@ -52,8 +56,8 @@ else
     exit 1
   fi
   echo "Emulator booting took ${bootDuration}s"
-  adb shell input keyevent 82
 fi
 
+adb shell input keyevent 82
 $ANDROID_HOME/platform-tools/adb devices
 echo "Emulator started"
