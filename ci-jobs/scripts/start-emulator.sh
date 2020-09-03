@@ -21,7 +21,7 @@ echo $ANDROID_HOME/emulator/emulator -list-avds
 echo "Starting emulator"
 
 if [ $ANDROID_SDK_VERSION -ge 28 ]; then
-  nohup $ANDROID_HOME/emulator/emulator -avd $ANDROID_AVD -skin 1080x1920 -no-audio -accel auto -gpu auto -qemu -no-boot-anim -no-snapshot -lcd-density 420 -delay-adb > /dev/null 2>&1 &
+  nohup $ANDROID_HOME/emulator/emulator -avd $ANDROID_AVD -no-audio -accel auto -gpu auto -no-boot-anim -no-snapshot -delay-adb > /dev/null 2>&1 &
 
   echo "Waiting until emulator finishes its startup"
   secondsStarted=$(date +%s)
@@ -29,7 +29,7 @@ if [ $ANDROID_SDK_VERSION -ge 28 ]; then
   bootDuration=$(( $(date +%s) - secondsStarted ))
   echo "Emulator booting took ${bootDuration}s"
 else
-  nohup $ANDROID_HOME/emulator/emulator -avd $ANDROID_AVD -skin 1080x1920 -no-audio -accel auto -gpu auto -qemu -no-boot-anim -no-snapshot -lcd-density 420 > /dev/null 2>&1 &
+  nohup $ANDROID_HOME/emulator/emulator -avd $ANDROID_AVD -no-audio -accel auto -gpu auto -no-boot-anim -no-snapshot > /dev/null 2>&1 &
 
   $ANDROID_HOME/platform-tools/adb wait-for-device get-serialno
   secondsStarted=$(date +%s)
