@@ -52,7 +52,7 @@
     "portscanner": "^2.1.1",
     "source-map-support": "^0.5.8",
     "validate.js": "^0.13.0",
-    "yargs": "^15.0.1"
+    "yargs": "^16.0.2"
   },
   "scripts": {
     "clean": "rm -rf node_modules && rm -f package-lock.json && npm install",
