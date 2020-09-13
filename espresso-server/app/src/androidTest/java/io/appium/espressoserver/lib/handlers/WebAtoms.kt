@@ -22,8 +22,7 @@ import androidx.test.espresso.web.webdriver.DriverAtoms
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeInstanceMethod
-import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeMethod
+import io.appium.espressoserver.lib.helpers.ReflectionUtils
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import io.appium.espressoserver.lib.viewmatcher.withView
@@ -50,12 +49,17 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
         // Iterate through methodsChain and call the atoms
         params.methodChain.forEach { method ->
-            val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args)
+            val atomArgsTypes =  method.atom.args.map {
+                it.javaClass
+            }.toTypedArray()
+            val atomMethod = ReflectionUtils.method(DriverAtoms::class.java, method.atom.name, *atomArgsTypes)
+            val atom = ReflectionUtils.invoke(atomMethod, DriverAtoms::class, *method.atom.args)
 
             AndroidLogger.logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
 
             val args: Array<Any?> = if (atom != null) arrayOf(atom) else emptyArray()
-            val res = invokeInstanceMethod(webViewInteraction, method.name, *args) as? WebInteraction<*>
+            val argsTypes =  args.map { it?.javaClass }.toTypedArray()
+            val res = ReflectionUtils.invoke(ReflectionUtils.method(WebInteraction::class.java, method.name, *argsTypes), webViewInteraction, *args) as? WebInteraction<*>
                     ?: throw InvalidArgumentException("'${method.name}' does not return a 'WebViewInteraction' object")
 
             webViewInteraction = res
