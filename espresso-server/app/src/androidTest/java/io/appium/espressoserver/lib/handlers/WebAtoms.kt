@@ -29,6 +29,8 @@ import io.appium.espressoserver.lib.viewmatcher.withView
 
 class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
+    val locatorEnums = Class.forName("androidx.test.espresso.web.webdriver.Locator").enumConstants.map {it.toString()}
+
     @Throws(AppiumException::class)
     override fun handleInternal(params: WebAtomsParams): Void? {
         var webViewInteraction:WebInteraction<*>
@@ -50,16 +52,43 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
         // Iterate through methodsChain and call the atoms
         params.methodChain.forEach { method ->
             val atomArgsTypes =  method.atom.args.map {
-                it.javaClass
+                var clazz: Class<*>? = null
+                if (it in locatorEnums) {
+                    clazz = Class.forName("androidx.test.espresso.web.webdriver.Locator")
+                }
+
+                if (clazz == null) {
+                    try {
+                        clazz = Class.forName(it.javaClass.toString())
+                    } catch (e: ClassNotFoundException) { }
+                }
+
+                if (clazz == null) {
+                    try {
+                        clazz = Class.forName("java.lang.${it}")
+                    } catch (e: ClassNotFoundException) { }
+                }
+
+                if (clazz == null) {
+                    clazz = it.javaClass
+                }
+
+                clazz
+            }.filterNotNull().toTypedArray()
+            val atomArgs =  method.atom.args.map {
+                if (it in locatorEnums) {
+                    Class.forName("androidx.test.espresso.web.webdriver.Locator").getDeclaredMethod("valueOf", String::class.java)(null, it)
+                } else {
+                    it
+                }
             }.toTypedArray()
-            val atomMethod = ReflectionUtils.method(DriverAtoms::class.java, method.atom.name, *atomArgsTypes)
-            val atom = ReflectionUtils.invoke(atomMethod, DriverAtoms::class, *method.atom.args)
+            val atomMethod = DriverAtoms::class.java.getDeclaredMethod(method.atom.name, *atomArgsTypes)
+            val atom = ReflectionUtils.invoke(atomMethod, method.atom, *atomArgs)
 
             AndroidLogger.logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
 
             val args: Array<Any?> = if (atom != null) arrayOf(atom) else emptyArray()
-            val argsTypes =  args.map { it?.javaClass }.toTypedArray()
-            val res = ReflectionUtils.invoke(ReflectionUtils.method(WebInteraction::class.java, method.name, *argsTypes), webViewInteraction, *args) as? WebInteraction<*>
+            val res = ReflectionUtils.invoke(ReflectionUtils.method(WebInteraction::class.java, method.name, Class.forName("androidx.test.espresso.web.model.Atom")), webViewInteraction, *args) as? WebInteraction<*>
                     ?: throw InvalidArgumentException("'${method.name}' does not return a 'WebViewInteraction' object")
 
             webViewInteraction = res
