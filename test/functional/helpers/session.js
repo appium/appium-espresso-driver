@@ -2,7 +2,7 @@ import wd from 'wd';
 import { startServer } from '../../..';
 
 
-const HOST = '0.0.0.0',
+const HOST = '127.0.0.1',
       PORT = 4994;
 const MOCHA_TIMEOUT = 60 * 1000 * (process.env.TRAVIS ? 10 : 4);
 
