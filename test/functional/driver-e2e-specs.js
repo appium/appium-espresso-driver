@@ -79,13 +79,13 @@ describe('EspressoDriver', function () {
       it('should reject opening of appPackage with incorrect signature', async function () {
         await driver.init(Object.assign({
           appPackage: 'com.android.settings',
-        }, APIDEMO_CAPS)).should.eventually.be.rejectedWith(/does not have a signature matching/i);
+        }, APIDEMO_CAPS)).should.eventually.be.rejected;
       });
       it('should reject start session for internet permissions not set', async function () {
         // for now the activity needs to be fully qualified
         await driver.init(Object.assign({}, APIDEMO_CAPS, {
           app: path.resolve('test', 'assets', 'ContactManager.apk'),
-        })).should.eventually.be.rejectedWith(/requires the 'INTERNET' permission/i);
+        })).should.eventually.be.rejectedWith(/INTERNET/);
       });
     });
   });
