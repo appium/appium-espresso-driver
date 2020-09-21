@@ -46,6 +46,6 @@ class ClipboardHelper(private val context: Context) {
             data.substring(0, DEFAULT_LABEL_LEN)
         else
             data
-        cm.primaryClip = ClipData.newPlainText(labelToSet, data)
+        cm.setPrimaryClip(ClipData.newPlainText(labelToSet, data))
     }
 }

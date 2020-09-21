@@ -23,7 +23,7 @@ class ListIdlingResources : RequestHandler<AppiumParams, List<String>> {
 
     override fun handleInternal(params: AppiumParams): List<String> {
         return IdlingRegistry.getInstance().resources.map {
-            it::class.java.canonicalName
+            it::class.java.canonicalName!!
         }
     }
 
