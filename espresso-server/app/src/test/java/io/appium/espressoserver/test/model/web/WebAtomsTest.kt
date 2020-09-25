@@ -1,5 +1,6 @@
 package io.appium.espressoserver.test.model.web
 
+import androidx.test.espresso.web.webdriver.Locator
 import com.google.gson.Gson
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import io.appium.espressoserver.lib.model.web.WebAtomsMethod
@@ -21,9 +22,9 @@ class WebAtomsTest {
             }
           }
         }""".trimIndent(), WebAtomsMethod::class.java)
-        assertEquals(webAtomsMethod.name, "withElement");
-        assertEquals(webAtomsMethod.atom.name, "findElement");
-        assertTrue(webAtomsMethod.atom.args contentEquals  arrayOf("id", "text_input"));
+        assertEquals(webAtomsMethod.name, "withElement")
+        assertEquals(webAtomsMethod.atom.name, "findElement")
+        assertTrue(webAtomsMethod.atom.args contentEquals  arrayOf(Locator.ID, "text_input"))
     }
 
     @Test
@@ -59,19 +60,19 @@ class WebAtomsTest {
         assertEquals(webAtoms.webviewElement, "abc")
         assertEquals(webAtoms.forceJavascriptEnabled, true)
 
-        webAtoms.methodChain.get(0).let {
+        webAtoms.methodChain[0].let {
             assertEquals(it.name, "withElement")
             assertEquals(it.atom.name, "findElement")
-            assertTrue(it.atom.args contentEquals arrayOf("id", "text_input"))
+            assertTrue(it.atom.args contentEquals arrayOf(Locator.ID, "text_input"))
         }
 
-        webAtoms.methodChain.get(1).let {
+        webAtoms.methodChain[1].let {
             assertEquals(it.name, "perform")
             assertEquals(it.atom.name, "clearElement")
             assertTrue(it.atom.args contentEquals  emptyArray())
         }
 
-        webAtoms.methodChain.get(2).let {
+        webAtoms.methodChain[2].let {
             assertEquals(it.name, "perform")
             assertEquals(it.atom.name, "webKeys")
             assertTrue(it.atom.args contentEquals  arrayOf("Foo"))
