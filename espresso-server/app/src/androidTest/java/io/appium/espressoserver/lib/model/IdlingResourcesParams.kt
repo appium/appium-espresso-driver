@@ -18,7 +18,8 @@ package io.appium.espressoserver.lib.model
 
 import androidx.test.espresso.IdlingResource
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.helpers.KReflectionUtils
+import io.appium.espressoserver.lib.helpers.ReflectionUtils.extractMethod
+import io.appium.espressoserver.lib.helpers.ReflectionUtils.invokeMethod
 import java.lang.Exception
 
 const val GET_INSTANCE_METHOD = "getInstance"
@@ -39,14 +40,14 @@ data class IdlingResourcesParams(
                 }
                 .map {
                     val getInstanceMethod = try {
-                        KReflectionUtils.extractMethod(it, GET_INSTANCE_METHOD)
+                        extractMethod(it, GET_INSTANCE_METHOD)
                     } catch (e: Exception) {
                         AndroidLogger.logger.error(e.message!!)
                         throw IllegalArgumentException("'${it.canonicalName}' class must " +
                                 "have a static ${GET_INSTANCE_METHOD}() method")
                     }
                     val instance = try {
-                        KReflectionUtils.invokeMethod(null, getInstanceMethod)
+                        invokeMethod(null, getInstanceMethod)
                     } catch (e: Exception) {
                         AndroidLogger.logger.error(e.message!!)
                         throw IllegalArgumentException(

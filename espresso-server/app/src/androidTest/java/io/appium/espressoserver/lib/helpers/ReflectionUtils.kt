@@ -22,7 +22,7 @@ import java.lang.reflect.Method
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 
-object KReflectionUtils {
+object ReflectionUtils {
 
     fun extractMethod(clazz: Class<*>, methodName: String, vararg parameterTypes: Class<*>): Method {
         try {

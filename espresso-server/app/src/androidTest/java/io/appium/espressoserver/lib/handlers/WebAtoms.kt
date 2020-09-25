@@ -23,8 +23,8 @@ import androidx.test.espresso.web.webdriver.DriverAtoms
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeInstanceMethod
-import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeStaticMethod
+import io.appium.espressoserver.lib.helpers.ReflectionUtils.invokeInstanceMethod
+import io.appium.espressoserver.lib.helpers.ReflectionUtils.invokeStaticMethod
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import io.appium.espressoserver.lib.viewmatcher.withView
