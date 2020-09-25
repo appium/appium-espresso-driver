@@ -35,7 +35,7 @@ fun changeLocale(context: Context, locale: Locale) {
     if (SDK_INT >= Build.VERSION_CODES.N) {
         val localeList = LocaleList(locale)
         LocaleList.setDefault(localeList)
-        config.locales = localeList
+        config.setLocales(localeList)
         context.createConfigurationContext(config)
     } else {
         config.setLocale(locale)
