@@ -6,11 +6,11 @@ import org.junit.Test;
 import java.util.concurrent.Executor;
 
 import androidx.annotation.NonNull;
+
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException;
 import io.appium.espressoserver.lib.helpers.InvocationOperation;
 
-import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class InvocationOperationTest {
 
@@ -44,19 +44,12 @@ public class InvocationOperationTest {
         assertEquals(InvocationOperation.VOID, result);
     }
 
-    @Test
-    public void shouldThrowExceptionIfMethodNotFound() {
+    @Test(expected = AppiumException.class)
+    public void shouldThrowExceptionIfMethodNotFound() throws Exception {
         String nonExistent = "nonExistent";
         InvocationOperation operation = new InvocationOperation(nonExistent,
                 new Object[0], new Class[0], mainThreadExecutor);
-        try {
-            operation.apply(invokeOn);
-            fail("expected exception was not occured.");
-        } catch (Exception e) {
-            assertTrue(e.getMessage().contains(
-                    String.format("No public method %s definded", nonExistent)));
-        }
-
+        operation.apply(invokeOn);
     }
 
     @Test
@@ -70,7 +63,6 @@ public class InvocationOperationTest {
         Object result = operation2.apply(operation1.apply(invokeOn));
 
         assertEquals(45, result);
-
     }
 
 

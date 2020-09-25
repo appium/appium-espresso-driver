@@ -29,11 +29,37 @@ import org.hamcrest.Matchers
 import java.lang.reflect.Type
 import kotlin.reflect.KClass
 
+const val CLASS_SUFFIX = ".class"
+
 @JsonAdapter(HamcrestMatcher.HamcrestMatcherDeserializer::class)
 data class HamcrestMatcher(var name: String, var args: Array<Any?>, var matcherClass: KClass<*> = Matchers::class) {
 
+    private fun argsWithTypes(): List<*> {
+        return this.args
+                .map {
+                    if (it is String) {
+                        var className = it
+                        if (it.endsWith(CLASS_SUFFIX)) {
+                            className = className.take(className.length - CLASS_SUFFIX.length)
+                        }
+
+                        try {
+                            Class.forName(className)
+                        } catch (e: ClassNotFoundException) {
+                            try {
+                                Class.forName("java.lang.${className}")
+                            } catch (e: ClassNotFoundException) {
+                                it
+                            }
+                        }
+                    } else {
+                        it
+                    }
+        }
+    }
+
     fun invoke(): Matcher<*> {
-        val matcher = invokeStaticMethod(this.matcherClass.java, this.name, *this.args)
+        val matcher = invokeStaticMethod(this.matcherClass.java, this.name, *this.argsWithTypes().toTypedArray())
         if (matcher !is Matcher<*>) {
             throw InvalidArgumentException("'${this}' does not return a Matcher when invoked. " +
                     "Found '${matcher?.let { it::class.qualifiedName } ?: "null"}'")
