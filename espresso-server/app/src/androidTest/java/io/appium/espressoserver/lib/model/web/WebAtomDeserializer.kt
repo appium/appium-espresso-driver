@@ -37,11 +37,6 @@ class WebAtomDeserializer : JsonDeserializer<WebAtom> {
                     throw JsonParseException("'locator' must have properties 'using' and 'value'")
                 }
 
-                val locatorsMapping = Locator.values().fold(mutableMapOf<String, Locator>(), { acc, item ->
-                    acc[item.name.replace("_", "")] = item
-                    acc
-                })
-
                 // Validate that "using" and "value" are primitives
                 val using = locator.get("using")
                 val value = locator.get("value")
@@ -51,14 +46,15 @@ class WebAtomDeserializer : JsonDeserializer<WebAtom> {
                             "Found 'using=${locator.get("using")}, value=${locator.get("value")}'")
                 }
 
-                if (using.asString.toUpperCase() !in locatorsMapping) {
+                val supportedLocatorNames = Locator.values().map { v -> v.name }
+                if (using.asString.toUpperCase() !in supportedLocatorNames) {
                     throw InvalidSelectorException("Only the following locator types are supported: " +
-                            "${locatorsMapping.keys} (case-insensitive). '${locator.get("using")}' is given instead")
+                            "$supportedLocatorNames (case-insensitive). '${locator.get("using")}' is given instead")
                 }
 
                 // Set the args as locator
                 return WebAtom(webAtomName, arrayOf(
-                        locatorsMapping[using.asString.toUpperCase()]!!,
+                        Locator.valueOf(using.asString.toUpperCase()),
                         value.asString
                 ))
             }
@@ -67,7 +63,7 @@ class WebAtomDeserializer : JsonDeserializer<WebAtom> {
             jsonObj.get("args")?.let { args ->
                 when {
                     args.isJsonPrimitive -> {
-                        return WebAtom(webAtomName, arrayOf(args.asString))
+                        return WebAtom(webAtomName, arrayOf(GsonParserHelpers.parsePrimitive(args.asJsonPrimitive)))
                     }
                     args.isJsonArray -> {
                         val argsAsList = args.asJsonArray.map { arg ->

@@ -28,6 +28,20 @@ class WebAtomsTest {
     }
 
     @Test
+    fun `should parse selectFrameByIndex for WebAtoms method`() {
+        val webAtomsMethod = g.fromJson("""{
+          "name": "withElement",
+          "atom": {
+            "name": "selectFrameByIndex",
+            "args": 1
+          }
+        }""".trimIndent(), WebAtomsMethod::class.java)
+        assertEquals(webAtomsMethod.name, "withElement")
+        assertEquals(webAtomsMethod.atom.name, "selectFrameByIndex")
+        assertEquals(webAtomsMethod.atom.args[0], 1L)
+    }
+
+    @Test
     fun `should parse web atoms object`() {
         val json = """{
            "webviewElement":"abc",
