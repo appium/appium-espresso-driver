@@ -1,111 +1,56 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.espressoserver.lib.helpers
 
-import com.google.gson.internal.LazilyParsedNumber
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
+import org.apache.commons.lang3.reflect.MethodUtils
+import java.lang.reflect.Method
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.functions
-import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.memberFunctions
-import kotlin.reflect.jvm.javaType
 
 object KReflectionUtils {
 
-    fun invokeMethod(functions: Collection<KFunction<*>>, methodName: String, vararg providedParams: Any?): Any? {
-        val treatedParams = providedParams.clone().toMutableList()
-        for (func in functions) {
-            // Look for function names that match provided methodName
-            if (func.name == methodName) {
-
-                // If the length of func parameters provided isn't same as expected, go to next.
-                val funcParams = func.parameters
-                if (funcParams.size != providedParams.size) {
-                    continue
-                }
-
-                // Look through function parameters and do an enum hack to translate strings to enums
-                funcParams.forEachIndexed { index, funcParam ->
-                    val providedParam = providedParams[index]
-
-                    // Handle the Enum Case
-                    // If function param is Enum and provided param is String, try `enumValueOf` on that String value
-                    val type = funcParam.type
-                    try {
-                        val jFuncType = type.javaType as Class<*>
-                        if (jFuncType.isEnum && providedParam is String) {
-                            val enumValueOf = jFuncType.getDeclaredMethod("valueOf", String::class.java)
-                            treatedParams[index] = enumValueOf(null, providedParam.toUpperCase())
-                        }
-                    } catch (e:ReflectiveOperationException) {
-                        // Ignore reflection exceptions and don't try matching String to Enum
-                    } catch (e:ClassCastException) {
-                        // Ignore class cast exceptions and don't try matching String to Enum
-                    }
-
-                    // Handle the Class case
-                    val classifier = type.classifier
-                    if (classifier is KClass<*> && classifier.isSubclassOf(Class::class)) {
-                        var className: String = providedParam.toString()
-                        val classExtension = ".class"
-                        if (className.endsWith(classExtension)) {
-                            className = className.take(className.length - classExtension.length)
-                        }
-
-                        try {
-                            val clazz = Class.forName(className)
-                            treatedParams[index] = clazz
-                        } catch (e: ClassNotFoundException) { }
-
-                        try {
-                            val clazz = Class.forName("java.lang.${className}")
-                            treatedParams[index] = clazz
-                        } catch (e: ClassNotFoundException) { }
-                    }
-
-                    if (providedParam is LazilyParsedNumber) {
-                        treatedParams[index] = providedParam.toDouble()
-                    }
-                }
-
-                // Attempt to call this function. If it fails, try the next function definition.
-                try {
-                    return func.call(*treatedParams.toTypedArray())
-                } catch (e:IllegalArgumentException) {
-                    // If IllegalArguments that means parameters didn't match, move on to the next
-                }
-            }
-        }
-
-        throw AppiumException("Could not find method that matches " +
-                "methodName=[${methodName}] args=[${providedParams.joinToString(", ")}]")
-    }
-
-    fun invokeMethod(kclass: KClass<*>, methodName: String, vararg providedParams: Any?): Any? {
+    fun extractMethod(clazz: Class<*>, methodName: String, vararg parameterTypes: Class<*>): Method {
         try {
-            return invokeMethod(kclass.functions, methodName, *providedParams)
-        } catch (e:AppiumException) {
-            throw AppiumException("Cannot execute method on '${kclass.qualifiedName}'. Reason: ${e.message}'")
+            val result = clazz.getDeclaredMethod(methodName, *parameterTypes)
+            result.isAccessible = true
+            return result
+        } catch (e: NoSuchMethodException) {
+            throw AppiumException("Method '${methodName}' is not defined for class ${clazz.canonicalName}", e)
         }
     }
 
-    fun invokeInstanceMethod (instance: Any, methodName: String, vararg providedParams: Any?): Any? {
-        try {
-            return invokeMethod(instance::class.memberFunctions, methodName, instance, *providedParams)
-        } catch (e:AppiumException) {
-            throw AppiumException("Cannot execute method for instance of " +
-                    "'${instance::class.qualifiedName}'. Reason: ${e.message}'")
-        }
-    }
+    fun invokeStaticMethod(clazz: Class<*>, methodName: String, vararg providedParams: Any?): Any? =
+            MethodUtils.invokeStaticMethod(clazz, methodName, *providedParams)
 
-    fun extractDeclaredProperties (instance: Any): Map<String, Any?> {
+    fun invokeInstanceMethod(instance: Any, methodName: String, vararg providedParams: Any?): Any? =
+            MethodUtils.invokeMethod(instance, true, methodName, *providedParams)
+
+    fun invokeMethod(instance: Any?, method: Method, vararg providedParams: Any?): Any? =
+            method.invoke(instance, *providedParams)
+
+    fun extractDeclaredProperties(instance: Any): Map<String, Any?> {
         return instance::class.declaredMemberProperties
                 .fold(mutableMapOf<String, Any?>()) { acc, prop ->
                     try {
                         @Suppress("UNCHECKED_CAST")
                         acc[prop.name] = (prop as KProperty1<Any, Any?>).get(instance)
-                    } catch (ign:Exception) {}
+                    } catch (ign: Exception) {
+                    }
                     acc
                 }.toMap()
     }

@@ -18,8 +18,10 @@ package io.appium.espressoserver.lib.model
 
 import androidx.test.espresso.IdlingResource
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.helpers.ReflectionUtils
+import io.appium.espressoserver.lib.helpers.KReflectionUtils
 import java.lang.Exception
+
+const val GET_INSTANCE_METHOD = "getInstance"
 
 data class IdlingResourcesParams(
     val classNames: String
@@ -37,23 +39,24 @@ data class IdlingResourcesParams(
                 }
                 .map {
                     val getInstanceMethod = try {
-                        ReflectionUtils.method(it, "getInstance")
+                        KReflectionUtils.extractMethod(it, GET_INSTANCE_METHOD)
                     } catch (e: Exception) {
                         AndroidLogger.logger.error(e.message!!)
-                        throw IllegalArgumentException("'${it.canonicalName}' class must have getInstance() method")
+                        throw IllegalArgumentException("'${it.canonicalName}' class must " +
+                                "have a static ${GET_INSTANCE_METHOD}() method")
                     }
                     val instance = try {
-                        ReflectionUtils.invoke(getInstanceMethod, it)
+                        KReflectionUtils.invokeMethod(null, getInstanceMethod)
                     } catch (e: Exception) {
                         AndroidLogger.logger.error(e.message!!)
                         throw IllegalArgumentException(
-                                "Got an unexpected exception while calling '${it.canonicalName}.getInstance()': " +
+                                "Got an unexpected exception while calling '${it.canonicalName}.${GET_INSTANCE_METHOD}()': " +
                                         e.message)
                     }
                     if (instance !is IdlingResource) {
                         throw IllegalArgumentException(
-                                "'${it.canonicalName}.getInstance()' must return an object that implements " +
-                                        "androidx.test.espresso.IdlingResource interface")
+                                "${it.canonicalName}.${GET_INSTANCE_METHOD}() must return an object that implements " +
+                                        "${IdlingResource::class.qualifiedName} interface")
                     }
                     @Suppress("USELESS_CAST")
                     instance as IdlingResource

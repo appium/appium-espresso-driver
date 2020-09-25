@@ -14,14 +14,15 @@ import java.lang.reflect.Type
 import kotlin.reflect.KClass
 
 @JsonAdapter(HamcrestMatcher.HamcrestMatcherDeserializer::class)
-data class HamcrestMatcher (var name:String, var args:Array<Any?>, var matcherClass:KClass<*> = Matchers::class) {
+data class HamcrestMatcher(var name: String, var args: Array<Any?>, var matcherClass: KClass<*> = Matchers::class) {
 
-    fun invoke():Matcher<*> {
-        val matcher = KReflectionUtils.invokeMethod(this.matcherClass, this.name, *this.args)
+    fun invoke(): Matcher<*> {
+        val matcher = KReflectionUtils.invokeStaticMethod(this.matcherClass.java, this.name, *this.args)
         if (matcher !is Matcher<*>) {
-            throw InvalidArgumentException("'${this}' does not return a Matcher when invoked. Found '${matcher!!::class.qualifiedName}'");
+            throw InvalidArgumentException("'${this}' does not return a Matcher when invoked. " +
+                    "Found '${matcher?.let { it::class.qualifiedName } ?: "null"}'")
         }
-        return matcher;
+        return matcher
     }
 
     class HamcrestMatcherDeserializer : JsonDeserializer<HamcrestMatcher> {
@@ -63,31 +64,32 @@ data class HamcrestMatcher (var name:String, var args:Array<Any?>, var matcherCl
 
                         // Try fully casting class as fully qualified name
                         try {
-                            val matcherClass = Class.forName(className).kotlin;
+                            val matcherClass = Class.forName(className).kotlin
                             return HamcrestMatcher(name, args.toTypedArray(), matcherClass)
-                        } catch (cnfe: ClassNotFoundException) { }
+                        } catch (cnfe: ClassNotFoundException) {
+                        }
 
                         // If above didn't work, try prepending 'androidx.test.espresso.matcher' package name
                         try {
-                            val qualifiedClassName = "androidx.test.espresso.matcher.${className}";
+                            val qualifiedClassName = "androidx.test.espresso.matcher.${className}"
                             val matcherClass = Class.forName(qualifiedClassName).kotlin
                             return HamcrestMatcher(name, args.toTypedArray(), matcherClass)
                         } catch (cnfe: ClassCastException) {
                             throw JsonParseException("No such class found '${className}'")
                         }
                     }
-                    
+
                     throw JsonParseException("'matcherClass' must be a string. Found '${it}'")
                 }
 
                 return HamcrestMatcher(name, args.toTypedArray())
             } else if (json.isJsonPrimitive) {
                 // If it's just a primitive, return that as the name and no args
-                return HamcrestMatcher(json.asString, emptyArray());
+                return HamcrestMatcher(json.asString, emptyArray())
             }
 
             throw JsonParseException("Matcher must be a JSON object with a 'name' property (required) " +
-                    "and optional 'args' property and 'matcherClass' property");
+                    "and optional 'args' property and 'matcherClass' property")
         }
     }
 }

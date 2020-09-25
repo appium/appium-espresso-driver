@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import androidx.test.espresso.web.model.Atom
 import androidx.test.espresso.web.sugar.Web.WebInteraction
 import androidx.test.espresso.web.sugar.Web.onWebView
 import androidx.test.espresso.web.webdriver.DriverAtoms
@@ -23,7 +24,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeInstanceMethod
-import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeMethod
+import io.appium.espressoserver.lib.helpers.KReflectionUtils.invokeStaticMethod
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import io.appium.espressoserver.lib.viewmatcher.withView
@@ -50,13 +51,15 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
         // Iterate through methodsChain and call the atoms
         params.methodChain.forEach { method ->
-            val atom = invokeMethod(DriverAtoms::class, method.atom.name, *method.atom.args)
+            val atom = invokeStaticMethod(DriverAtoms::class.java, method.atom.name, *method.atom.args) as? Atom<*>
+                    ?: throw InvalidArgumentException("'${method.atom.name}' did not return a valid " +
+                            "'${Atom::class.qualifiedName}' object")
 
             AndroidLogger.logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
 
-            val args: Array<Any?> = if (atom != null) arrayOf(atom) else emptyArray()
-            val res = invokeInstanceMethod(webViewInteraction, method.name, *args) as? WebInteraction<*>
-                    ?: throw InvalidArgumentException("'${method.name}' does not return a 'WebViewInteraction' object")
+            val res = invokeInstanceMethod(webViewInteraction, method.name, atom) as? WebInteraction<*>
+                    ?: throw InvalidArgumentException("'${method.name}' does not return a valid " +
+                            "'${WebInteraction::class.qualifiedName}' object")
 
             webViewInteraction = res
         }
