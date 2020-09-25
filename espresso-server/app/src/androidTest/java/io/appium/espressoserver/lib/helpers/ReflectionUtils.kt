@@ -17,7 +17,7 @@
 package io.appium.espressoserver.lib.helpers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import org.apache.commons.lang3.reflect.MethodUtils
+import io.appium.espressoserver.lib.helpers.reflection.MethodUtils
 import java.lang.reflect.Method
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
@@ -38,7 +38,7 @@ object ReflectionUtils {
             MethodUtils.invokeStaticMethod(clazz, methodName, *providedParams)
 
     fun invokeInstanceMethod(instance: Any, methodName: String, vararg providedParams: Any?): Any? =
-            MethodUtils.invokeMethod(instance, true, methodName, *providedParams)
+            MethodUtils.invokeMethod(instance, methodName, *providedParams)
 
     fun invokeMethod(instance: Any?, method: Method, vararg providedParams: Any?): Any? =
             method.invoke(instance, *providedParams)

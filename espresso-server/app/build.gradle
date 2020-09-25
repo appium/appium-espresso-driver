@@ -64,7 +64,6 @@ dependencies {
     ext.uia_version = '2.2.0'
     ext.nanohttpd_version = '2.3.1'
     ext.annotation_version = '1.1.0'
-    ext.apache_commons_version = "3.11"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -88,7 +87,6 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    testImplementation "org.apache.commons:commons-lang3:$apache_commons_version"
 
     androidTestImplementation "androidx.annotation:annotation:$annotation_version"
     androidTestImplementation("androidx.test.espresso:espresso-contrib:$espresso_version") {
@@ -103,7 +101,6 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$testlib_version"
     androidTestImplementation "androidx.test:rules:$testlib_version"
     androidTestImplementation "com.google.code.gson:gson:$gson_version"
-    androidTestImplementation "org.apache.commons:commons-lang3:$apache_commons_version"
     androidTestImplementation "org.nanohttpd:nanohttpd-webserver:$nanohttpd_version"
     androidTestImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     androidTestImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
