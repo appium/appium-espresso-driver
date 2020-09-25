@@ -27,10 +27,10 @@ import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import io.appium.espressoserver.lib.viewmatcher.withView
 
+const val WEBDRIVER_LOCATOR = "androidx.test.espresso.web.webdriver.Locator"
+val LOCATOR_ENUMS: List<String> = Class.forName(WEBDRIVER_LOCATOR).enumConstants.map {it.toString()}
+
 class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
-
-    val locatorEnums = Class.forName("androidx.test.espresso.web.webdriver.Locator").enumConstants.map {it.toString()}
-
     @Throws(AppiumException::class)
     override fun handleInternal(params: WebAtomsParams): Void? {
         var webViewInteraction:WebInteraction<*>
@@ -51,42 +51,35 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
         // Iterate through methodsChain and call the atoms
         params.methodChain.forEach { method ->
-            val atomArgsTypes =  method.atom.args.map {
-                var clazz: Class<*>? = null
-                if (it in locatorEnums) {
-                    clazz = Class.forName("androidx.test.espresso.web.webdriver.Locator")
-                }
-
-                if (clazz == null) {
-                    try {
-                        clazz = Class.forName(it.javaClass.toString())
-                    } catch (e: ClassNotFoundException) { }
-                }
-
-                if (clazz == null) {
-                    try {
-                        clazz = Class.forName("java.lang.${it}")
-                    } catch (e: ClassNotFoundException) { }
-                }
-
-                if (clazz == null) {
-                    clazz = it.javaClass
-                }
-
-                clazz
-            }.filterNotNull().toTypedArray()
-            val atomArgs =  method.atom.args.map {
-                if (it in locatorEnums) {
-                    Class.forName("androidx.test.espresso.web.webdriver.Locator").getDeclaredMethod("valueOf", String::class.java)(null, it)
-                } else {
-                    it
+            val atomArgs = mutableListOf<Any>()
+            val atomArgsTypes =  method.atom.args.mapIndexed { index, value ->
+                when {
+                    // WEBDRIVER_LOCATOR
+                    value in LOCATOR_ENUMS -> {
+                        // TODO: java.lang.NoSuchMethodException:
+                        val locatorClass = Class.forName(WEBDRIVER_LOCATOR)
+                        atomArgs.add(locatorClass.getDeclaredMethod("valueOf", String::class.java)(null, value))
+                        locatorClass
+                    }
+                    // TODO:  java.lang.RuntimeException: Atom evaluation returned null
+                    method.atom.name == "selectFrameByIndex" &&  index == 0 -> {
+                        // TODO: WindowReference
+                        atomArgs.add((value as String).toInt())
+                        1.javaClass // To get int premitive
+                    }
+                    else -> {
+                        atomArgs.add(value)
+                        Class.forName("java.lang.String")
+                    }
                 }
             }.toTypedArray()
+            // https://developer.android.com/reference/androidx/test/espresso/web/webdriver/DriverAtoms
             val atomMethod = DriverAtoms::class.java.getDeclaredMethod(method.atom.name, *atomArgsTypes)
-            val atom = ReflectionUtils.invoke(atomMethod, method.atom, *atomArgs)
+            val atom = ReflectionUtils.invoke(atomMethod, method.atom, *atomArgs.toTypedArray())
 
             AndroidLogger.logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
 
+            // https://developer.android.com/reference/androidx/test/espresso/web/sugar/Web.WebInteraction
             val args: Array<Any?> = if (atom != null) arrayOf(atom) else emptyArray()
             val res = ReflectionUtils.invoke(ReflectionUtils.method(WebInteraction::class.java, method.name, Class.forName("androidx.test.espresso.web.model.Atom")), webViewInteraction, *args) as? WebInteraction<*>
                     ?: throw InvalidArgumentException("'${method.name}' does not return a 'WebViewInteraction' object")
