@@ -32,8 +32,8 @@ object GsonParserHelpers {
                 return enumValueOf<T>(propValueAsString)
             } catch (e: IllegalArgumentException) {
                 throw JsonParseException(""""
-                    '${propValueAsString}' is not a valid '${propName}' type. ${helperMessage}
-                """.trimIndent());
+                    '${propValueAsString}' is not a valid '${propName}' type. $helperMessage
+                """.trimIndent())
             }
         }
         return defaultValue
@@ -46,7 +46,7 @@ object GsonParserHelpers {
         }
         jsonPrimitive.isBoolean -> jsonPrimitive.asBoolean
         jsonPrimitive.isString -> jsonPrimitive.asString
-        else -> throw JsonParseException("Could not parse primitive '${jsonPrimitive}'");
+        else -> throw JsonParseException("Could not parse primitive '${jsonPrimitive}'")
     }
 
     fun asArray (jsonObj: JsonObject, key: String): JsonArray {
@@ -58,6 +58,6 @@ object GsonParserHelpers {
             jsonArr.add(it)
             return jsonArr
         }
-        return JsonArray();
+        return JsonArray()
     }
 }

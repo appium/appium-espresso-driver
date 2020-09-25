@@ -22,6 +22,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import com.google.gson.annotations.JsonAdapter
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.helpers.GsonParserHelpers
 import io.appium.espressoserver.lib.helpers.ReflectionUtils.invokeStaticMethod
 import org.hamcrest.Matcher
@@ -37,29 +38,35 @@ data class HamcrestMatcher(var name: String, var args: Array<Any?>, var matcherC
     private fun argsWithTypes(): List<*> {
         return this.args
                 .map {
-                    if (it is String) {
-                        var className = it
-                        if (it.endsWith(CLASS_SUFFIX)) {
-                            className = className.take(className.length - CLASS_SUFFIX.length)
-                        }
+                    if (it !is String) {
+                        return@map it
+                    }
 
+                    var className = it
+                    if (it.endsWith(CLASS_SUFFIX)) {
+                        className = className.take(className.length - CLASS_SUFFIX.length)
+                    }
+
+                    try {
+                        Class.forName(className)
+                    } catch (e: ClassNotFoundException) {
                         try {
-                            Class.forName(className)
+                            Class.forName("java.lang.${className}")
                         } catch (e: ClassNotFoundException) {
-                            try {
-                                Class.forName("java.lang.${className}")
-                            } catch (e: ClassNotFoundException) {
-                                it
-                            }
+                            it
                         }
-                    } else {
-                        it
                     }
         }
     }
 
     fun invoke(): Matcher<*> {
-        val matcher = invokeStaticMethod(this.matcherClass.java, this.name, *this.argsWithTypes().toTypedArray())
+        val typedArgs = this.argsWithTypes().toTypedArray()
+        val matcher = try {
+            invokeStaticMethod(this.matcherClass.java, this.name, *typedArgs)
+        } catch (e: NoSuchMethodException) {
+            throw InvalidSelectorException("${matcherClass.qualifiedName} does not implement any $name " +
+                    "methods that accept $typedArgs argument(s)", e)
+        }
         if (matcher !is Matcher<*>) {
             throw InvalidArgumentException("'${this}' does not return a Matcher when invoked. " +
                     "Found '${matcher?.let { it::class.qualifiedName } ?: "null"}'")
