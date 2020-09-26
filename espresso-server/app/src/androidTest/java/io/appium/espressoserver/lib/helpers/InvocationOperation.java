@@ -38,15 +38,15 @@ public class InvocationOperation {
 
 
     public Object apply(final Object applyOn) throws Exception {
-        final AtomicReference<Object> ref = new AtomicReference<Object>();
-        final AtomicReference<Exception> refEx = new AtomicReference<Exception>();
+        final AtomicReference<Object> ref = new AtomicReference<>();
+        final AtomicReference<Exception> refEx = new AtomicReference<>();
         final Method method = findCompatibleMethod(applyOn);
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 Object result;
                 try {
-                    result = ReflectionUtils.invoke(method, applyOn, argumentValues);
+                    result = method.invoke(applyOn, argumentValues);
                     if (method.getReturnType().equals(Void.TYPE)) {
                         result = VOID;
                     }
@@ -66,14 +66,15 @@ public class InvocationOperation {
         return ref.get();
     }
 
-    private Method findCompatibleMethod(Object object) throws AppiumException {
+    private Method findCompatibleMethod(Object target) throws AppiumException {
         try {
-            return object.getClass().getMethod(methodName, argumentTypes);
+            Method result = target.getClass().getDeclaredMethod(methodName, argumentTypes);
+            result.setAccessible(true);
+            return result;
         } catch (NoSuchMethodException e) {
             throw new AppiumException(String.format
-                    ("No public method %s definded on %s or its parents which takes argument %s", methodName,
-                            object.getClass(), Arrays.toString(argumentTypes))
-                    , e);
+                    ("No public method '%s' is defined on %s or its parents which takes %s arguments", methodName,
+                            target.getClass(), Arrays.toString(argumentTypes)), e);
         }
     }
 }
