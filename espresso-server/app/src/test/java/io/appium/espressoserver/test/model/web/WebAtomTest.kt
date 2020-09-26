@@ -49,7 +49,7 @@ class WebAtomTest {
         jsonObject.add("args", argsArr)
         val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "someFakeAtom")
-        assertTrue(webAtom.args contentEquals arrayOf("hello", true, 100L, 1.1))
+        assertTrue(webAtom.args contentEquals arrayOf("hello", true, 100, 1.1))
         assertEquals(webAtom.args.size, 4)
     }
 
