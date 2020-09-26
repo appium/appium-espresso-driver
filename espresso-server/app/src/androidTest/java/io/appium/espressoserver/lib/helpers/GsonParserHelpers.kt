@@ -41,8 +41,17 @@ object GsonParserHelpers {
 
     fun parsePrimitive(jsonPrimitive: JsonPrimitive): Any = when {
         jsonPrimitive.isNumber -> {
-            val hasDecimal = jsonPrimitive.asString.contains(".") // this returns true or false
-            if (hasDecimal) jsonPrimitive.asDouble else jsonPrimitive.asLong
+            val hasDecimal = jsonPrimitive.asString.contains(".")
+            if (hasDecimal) {
+                jsonPrimitive.asDouble
+            } else {
+                val candidate = jsonPrimitive.asLong
+                if (Int.MIN_VALUE <= candidate && candidate <= Int.MAX_VALUE) {
+                    candidate.toInt()
+                } else {
+                    candidate
+                }
+            }
         }
         jsonPrimitive.isBoolean -> jsonPrimitive.asBoolean
         jsonPrimitive.isString -> jsonPrimitive.asString

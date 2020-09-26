@@ -38,7 +38,7 @@ class WebAtomsTest {
         }""".trimIndent(), WebAtomsMethod::class.java)
         assertEquals(webAtomsMethod.name, "withElement")
         assertEquals(webAtomsMethod.atom.name, "selectFrameByIndex")
-        assertEquals(webAtomsMethod.atom.args[0], 1L)
+        assertEquals(webAtomsMethod.atom.args[0], 1)
     }
 
     @Test
