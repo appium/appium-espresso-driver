@@ -5,7 +5,6 @@ import android.os.Build
 import android.view.MotionEvent
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
-import io.appium.espressoserver.lib.helpers.w3c_actions.ActionsConstants
 import kotlin.math.roundToInt
 
 private const val MOUSE_BUTTON_LEFT = 0
@@ -20,7 +19,7 @@ fun extractButton(w3cButton: Int?, pointerType: InputSource.PointerType?): Int {
         // Ignore button code conversion for the unsupported tool type
         return w3cButton ?: 0
     }
-    var androidButton = ActionsConstants.MOUSE_BUTTON_LEFT
+    var androidButton = MOUSE_BUTTON_LEFT
     if (w3cButton != null) {
         androidButton = w3cButton
     }
