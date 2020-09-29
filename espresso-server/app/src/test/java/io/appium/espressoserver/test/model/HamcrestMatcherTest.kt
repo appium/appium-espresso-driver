@@ -11,7 +11,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class HamcrestMatcherTest {
-    val g = Gson();
+    val g = Gson()
 
     @Test
     fun `should parse Hamcrest matcher with single string arg`() {
@@ -28,12 +28,12 @@ class HamcrestMatcherTest {
             {"name": "fakeMatcher", "args": [1, true, "Hello World!", null]}
         """.trimIndent(), HamcrestMatcher::class.java)
         assertEquals(matcher.name, "fakeMatcher")
-        val numberArg = matcher.args.get(0)
+        val numberArg = matcher.args[0]
         assertTrue(numberArg is Number)
         assertEquals(numberArg.toInt(), 1)
-        assertEquals(matcher.args.get(1), true)
-        assertEquals(matcher.args.get(2), "Hello World!")
-        assertEquals(matcher.args.get(3), null)
+        assertEquals(matcher.args[1], true)
+        assertEquals(matcher.args[2], "Hello World!")
+        assertEquals(matcher.args[3], null)
     }
 
     @Test
@@ -58,7 +58,7 @@ class HamcrestMatcherTest {
             {"name": "containsString", "args": "Hello"}
         """.trimIndent(), HamcrestMatcher::class.java)
         assertEquals(matcher.matcherClass, org.hamcrest.Matchers::class)
-        val containsStringMatcher = matcher.invoke();
+        val containsStringMatcher = matcher.invoke()
         assertTrue(containsStringMatcher.matches("Hello World"))
         assertFalse(containsStringMatcher.matches("Goodbye World"))
     }
@@ -96,7 +96,7 @@ class HamcrestMatcherTest {
                 {"name": "containsString", "args": "Hello"},
                 {"name": "instanceOf", "args": "Integer"}
         ]}""".trimIndent(), HamcrestMatcher::class.java)
-        val nestedMatcher = matcher.invoke();
+        val nestedMatcher = matcher.invoke()
         assertTrue(nestedMatcher.matches("Hello"))
         assertTrue(nestedMatcher.matches(100))
         assertFalse(nestedMatcher.matches("World"))

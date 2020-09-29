@@ -22,7 +22,8 @@ import androidx.test.uiautomator.UiObject2
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.InteractionHelper.getUiDevice
-import io.appium.espressoserver.lib.helpers.ReflectionUtils
+import io.appium.espressoserver.lib.helpers.ReflectionUtils.extractMethod
+import io.appium.espressoserver.lib.helpers.ReflectionUtils.invokeMethod
 import io.appium.espressoserver.lib.model.UiautomatorParams
 import java.lang.reflect.InvocationTargetException
 
@@ -42,16 +43,16 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
         val index = params.index
 
         try {
-            val byMethod = ReflectionUtils.method(By::class.java, params.strategy.methodName, String::class.java)
-            val bySelector = ReflectionUtils.invoke(byMethod, By::class.java, locator) as BySelector
-            val actionMethod = ReflectionUtils.method(UiObject2::class.java, params.action.actionName)
+            val byMethod = extractMethod(By::class.java, params.strategy.methodName, String::class.java)
+            val bySelector = invokeMethod(null, byMethod, locator) as BySelector
+            val actionMethod = extractMethod(UiObject2::class.java, params.action.actionName)
 
             val uiObjects = getUiDevice().findObjects(bySelector)
             AndroidLogger.logger.info("Found ${uiObjects.size} UiObject(s)")
 
             index ?: run {
                 return uiObjects.map {
-                    ReflectionUtils.invoke(actionMethod, it)
+                    invokeMethod(it, actionMethod)
                 }
             }
 
@@ -59,7 +60,7 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
                 throw AppiumException("Index $index is out of bounds for ${uiObjects.size} elements")
             }
 
-            return listOf(ReflectionUtils.invoke(actionMethod, uiObjects[index]))
+            return listOf(invokeMethod(uiObjects[index], actionMethod))
         } catch (e: IllegalAccessException) {
             throw AppiumException(e)
         } catch (e: InvocationTargetException) {

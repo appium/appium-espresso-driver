@@ -1,9 +1,9 @@
 package io.appium.espressoserver.test.model.web
 
+import androidx.test.espresso.web.webdriver.Locator
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
-import io.appium.espressoserver.lib.model.web.WebAtom
 import io.appium.espressoserver.lib.model.web.WebAtomDeserializer
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -34,7 +34,7 @@ class WebAtomTest {
         val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "webKeys")
         assertEquals(webAtom.args.first(), "Hello World!")
-        assertEquals(webAtom.args.size, 1);
+        assertEquals(webAtom.args.size, 1)
     }
 
     @Test
@@ -49,20 +49,20 @@ class WebAtomTest {
         jsonObject.add("args", argsArr)
         val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "someFakeAtom")
-        assertTrue(webAtom.args contentEquals arrayOf("hello", true, 100L, 1.1))
-        assertEquals(webAtom.args.size, 4);
+        assertTrue(webAtom.args contentEquals arrayOf("hello", true, 100, 1.1))
+        assertEquals(webAtom.args.size, 4)
     }
 
     @Test
     fun `should accept locator shorthand in place of "args"`() {
-        val jsonObject = JsonObject();
+        val jsonObject = JsonObject()
         jsonObject.addProperty("name", "findElement")
-        val locatorObject = JsonObject();
+        val locatorObject = JsonObject()
         locatorObject.addProperty("using", "id")
         locatorObject.addProperty("value", "some_html_id")
-        jsonObject.add("locator", locatorObject);
+        jsonObject.add("locator", locatorObject)
         val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "findElement")
-        assertTrue(webAtom.args contentEquals arrayOf("id", "some_html_id"))
+        assertTrue(webAtom.args contentEquals arrayOf(Locator.ID, "some_html_id"))
     }
 }

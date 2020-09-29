@@ -23,6 +23,8 @@ class InvalidSelectorException : AppiumException {
 
     constructor(reason: String): super(reason)
 
+    constructor(reason: String, cause: Throwable): super(reason, cause)
+
     override fun error(): String {
         return "invalid selector"
     }

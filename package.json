@@ -7,7 +7,7 @@
     "automated testing",
     "android"
   ],
-  "version": "1.35.0",
+  "version": "1.37.0",
   "author": "appium",
   "license": "Apache-2.0",
   "repository": {
@@ -43,7 +43,7 @@
   "dependencies": {
     "@babel/runtime": "^7.4.3",
     "appium-adb": "^8.0.0",
-    "appium-android-driver": "^4.37.0",
+    "appium-android-driver": "^4.40.0",
     "appium-base-driver": "^7.0.0",
     "appium-support": "^2.46.0",
     "asyncbox": "^2.3.1",
