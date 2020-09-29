@@ -65,10 +65,11 @@ dependencies {
     ext.nanohttpd_version = '2.3.1'
     ext.annotation_version = '1.1.0'
     ext.lifecycle_version = '2.2.0'
+    ext.material_version = '1.2.1'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-    implementation "com.google.android.material:material:1.2.1"
+    implementation "com.google.android.material:material:$material_version"
 
     testImplementation "org.powermock:powermock-api-mockito2:$mocklib_version"
     testImplementation "org.powermock:powermock-classloading-xstream:$mocklib_version"
