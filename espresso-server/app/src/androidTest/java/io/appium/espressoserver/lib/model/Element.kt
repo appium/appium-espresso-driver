@@ -19,32 +19,26 @@ package io.appium.espressoserver.lib.model
 import android.view.View
 import android.view.ViewParent
 import android.widget.AdapterView
-
-import org.hamcrest.Matchers
-
-import java.util.NoSuchElementException
-import java.util.Objects
-import java.util.UUID
-
-import androidx.test.espresso.EspressoException
-import androidx.test.espresso.ViewInteraction
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
-import io.appium.espressoserver.lib.helpers.ViewState
-import io.appium.espressoserver.lib.helpers.ViewsCache
-import io.appium.espressoserver.lib.viewaction.ViewGetter
-
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.EspressoException
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import com.google.gson.annotations.SerializedName
+import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
+import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
 import io.appium.espressoserver.lib.helpers.StringHelpers.charSequenceToNullableString
+import io.appium.espressoserver.lib.helpers.ViewState
+import io.appium.espressoserver.lib.helpers.ViewsCache
+import io.appium.espressoserver.lib.viewaction.ViewGetter
 import io.appium.espressoserver.lib.viewmatcher.withView
-import org.hamcrest.Matchers.hasEntry
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.hasEntry
+import java.util.*
 
 const val W3C_ELEMENT_KEY = "element-6066-11e4-a52e-4f735466cecf"
 const val JSONWP_ELEMENT_KEY = "ELEMENT"
@@ -84,8 +78,8 @@ class Element(view: View) {
         private fun lookupOffscreenView(initialView: View, initialContentDescription: String): View {
             // Try scrolling the view with the expected content description into the viewport
             val dataInteraction = onData(
-                hasEntry(Matchers.equalTo("contentDescription"),
-                `is`(initialContentDescription))
+                    hasEntry(Matchers.equalTo("contentDescription"),
+                            `is`(initialContentDescription))
             )
 
             // Look up the ancestry tree until we find an AdapterView
@@ -104,7 +98,7 @@ class Element(view: View) {
         }
 
         @Throws(NoSuchElementException::class, StaleElementException::class)
-        fun getViewById(elementId: String?): View {
+        fun getViewById(elementId: String?, checkStaleness: Boolean = true): View {
             elementId ?: throw InvalidArgumentException("Cannot find 'null' element")
             if (!cache.has(elementId)) {
                 throw NoSuchElementException("No such element with ID '$elementId'")
@@ -114,7 +108,11 @@ class Element(view: View) {
 
             // If the cached view is gone, throw stale element exception
             if (!resultView.isShown) {
-                throw StaleElementException(elementId)
+                if (checkStaleness) {
+                    throw StaleElementException(elementId)
+                } else {
+                    return resultView
+                }
             }
 
             val initialContentDescription = charSequenceToNullableString(initialContentDescription1)
@@ -128,6 +126,9 @@ class Element(view: View) {
                 cache.put(elementId, lookupOffscreenView(resultView, initialContentDescription))
             } catch (e: Exception) {
                 if (e is EspressoException) {
+                    if (!checkStaleness) {
+                        return resultView
+                    }
                     throw StaleElementException(elementId)
                 }
                 throw e

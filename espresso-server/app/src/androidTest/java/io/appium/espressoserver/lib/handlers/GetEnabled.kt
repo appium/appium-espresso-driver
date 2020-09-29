@@ -16,29 +16,15 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import junit.framework.AssertionFailedError
-
-import androidx.test.espresso.NoMatchingViewException
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Element
 
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import io.appium.espressoserver.lib.model.ViewElement
 
 class GetEnabled : RequestHandler<AppiumParams, Boolean> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): Boolean {
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
-        return try {
-            viewInteraction.check(matches(isEnabled()))
-            true
-        } catch (e: NoMatchingViewException) {
-            false
-        } catch (e: AssertionFailedError) {
-            false
-        }
-
-    }
+    override fun handleInternal(params: AppiumParams): Boolean =
+            ViewElement(Element.getViewById(params.elementId)).isEnabled
 }
