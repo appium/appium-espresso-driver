@@ -234,7 +234,13 @@ internal class Router {
             AndroidLogger.logger.debug("Finished processing $method request for '$uri'")
             return appiumResponse
         } catch (e: Throwable) {
-            return AppiumResponse(e, sessionId)
+            var err = e
+            if (e is NoClassDefFoundError) {
+                err = IllegalStateException("${e.message} " +
+                        "Consider adding the appropriate dependency containing the missing class into " +
+                        "'additionalAppDependencies' property value of 'espressoBuildConfig' capability", e)
+            }
+            return AppiumResponse(err, sessionId)
         }
     }
 }
