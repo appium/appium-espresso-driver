@@ -1,3 +1,19 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.espressoserver.lib.handlers
 
 import android.widget.NumberPicker
@@ -54,7 +70,7 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueP
                     if (!it.contains("IME does not understand how to translate")) throw e
                 }
                 AndroidLogger.logger.debug("Trying replaceText action as a workaround to type the '$value' text into the input field")
-                val currentText = ViewTextGetter().get(viewInteraction)
+                @Suppress("ReplaceGetOrSet") val currentText = ViewTextGetter().get(viewInteraction)
                 if (currentText.rawText.isEmpty() || currentText.isHint) {
                     viewInteraction.perform(replaceText(value))
                 } else {

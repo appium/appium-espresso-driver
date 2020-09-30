@@ -26,6 +26,6 @@ class GetName : RequestHandler<AppiumParams, String?> {
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): String? {
         val view = Element.getViewById(params.elementId)
-        return ViewElement(view).contentDescription?.let { return it.toString() } ?: return null
+        return ViewElement(view).contentDescription?.toString()
     }
 }

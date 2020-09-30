@@ -44,6 +44,7 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
             attributeName.equals(it.toString(), ignoreCase = true)
         }?.let {
             val viewElementGetter: () -> ViewElement = { ViewElement(Element.getViewById(params.elementId)) }
+            val uncheckedViewElementGetter: () -> ViewElement = { ViewElement(Element.getViewById(params.elementId, false)) }
             val viewInteractionGetter: () -> ViewInteraction = { Element.getViewInteractionById(params.elementId) }
             val checkToAttributeValue: (() -> Unit) -> String = {
                 try {
@@ -71,7 +72,7 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
                 ViewAttributesEnum.LONG_CLICKABLE -> return viewElementGetter().isLongClickable.toString()
                 ViewAttributesEnum.PASSWORD -> return viewElementGetter().isPassword.toString()
                 ViewAttributesEnum.SELECTED -> return viewElementGetter().isSelected.toString()
-                ViewAttributesEnum.VISIBLE -> return viewElementGetter().isVisible.toString()
+                ViewAttributesEnum.VISIBLE -> return uncheckedViewElementGetter().isVisible.toString()
                 ViewAttributesEnum.BOUNDS -> return viewElementGetter().bounds.toShortString()
                 ViewAttributesEnum.RESOURCE_ID -> return viewElementGetter().resourceId
                 ViewAttributesEnum.INDEX -> return viewElementGetter().index.toString()
