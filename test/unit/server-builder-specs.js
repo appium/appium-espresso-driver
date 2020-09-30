@@ -99,6 +99,23 @@ describe('server-builder', function () {
         ' foo=1\n' +
         ' implementation \'a.b.c:1.2.3\'\n' +
         ' implementation \'foo.bar.foobar:4.5.6\'\n' +
+        ' implementation \'com.google.android.material:material:1.2.1\'\n' +
+        ' bar=2'
+      );
+    });
+
+    it('should override and generate correct content and keep current indent in build.gradle', function () {
+      const serverBuilder = new ServerBuilder({serverPath});
+      const newDependencies = [
+        'com.google.android.material:material:1.1.1',
+        ...goodDependencies];
+      const actualFileContent = serverBuilder.updateDependencyLines(readFileResult, newDependencies);
+
+      actualFileContent.should.eql(
+        ' foo=1\n' +
+        ' implementation \'com.google.android.material:material:1.1.1\'\n' +
+        ' implementation \'a.b.c:1.2.3\'\n' +
+        ' implementation \'foo.bar.foobar:4.5.6\'\n' +
         ' bar=2'
       );
     });
