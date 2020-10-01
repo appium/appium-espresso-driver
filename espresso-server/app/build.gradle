@@ -94,7 +94,6 @@ dependencies {
         // Link to PR with fix and discussion https://github.com/appium/appium-espresso-driver/pull/596
         transitive = false
     }
-    androidTestImplementation "com.google.android.material:material:1.2.1"
     androidTestImplementation "androidx.test.espresso:espresso-web:$espresso_version"
     androidTestImplementation "androidx.test.uiautomator:uiautomator:$uia_version"
     androidTestImplementation "androidx.test:core:$testlib_version"
@@ -103,7 +102,6 @@ dependencies {
     androidTestImplementation "com.google.code.gson:gson:$gson_version"
     androidTestImplementation "org.nanohttpd:nanohttpd-webserver:$nanohttpd_version"
     androidTestImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    androidTestImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     androidTestImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // additionalAppDependencies placeholder (don't change or delete this line)
