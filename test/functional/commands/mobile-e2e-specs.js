@@ -13,7 +13,7 @@ describe('mobile', function () {
   before(async function () {
     driver = await initSession(Object.assign({}, APIDEMO_CAPS, {
       espressoBuildConfig: JSON.stringify({
-        additionalAppDependencies: ['com.google.android.material:material:1.2.1']
+        additionalAndroidTestDependencies: ['com.google.android.material:material:1.2.1']
       })
     }));
   });
