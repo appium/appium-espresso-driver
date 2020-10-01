@@ -238,7 +238,8 @@ internal class Router {
             if (e is NoClassDefFoundError) {
                 err = IllegalStateException("${e.message} " +
                         "Consider adding the appropriate dependency containing the missing class into " +
-                        "'additionalAppDependencies' property value of 'espressoBuildConfig' capability", e)
+                        "'additionalAndroidTestDependencies' and/or 'additionalAppDependencies' property values of " +
+                        "'espressoBuildConfig' capability", e)
             }
             return AppiumResponse(err, sessionId)
         }
