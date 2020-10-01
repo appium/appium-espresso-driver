@@ -2,15 +2,12 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { system } from 'appium-support';
 import {
-  GRADLE_DEPENDENCIES_PLACEHOLDER,
-  GRADLE_URL_TEMPLATE,
-  ServerBuilder,
-  VERSION_KEYS
+  GRADLE_URL_TEMPLATE, ServerBuilder, VERSION_KEYS
 } from '../../lib/server-builder';
+import { updateDependencyLines } from '../../lib/utils';
 
 chai.should();
 chai.use(chaiAsPromised);
-const expect = chai.expect;
 
 describe('server-builder', function () {
   describe('getCommand', function () {
@@ -84,55 +81,87 @@ describe('server-builder', function () {
     });
   });
 
-  describe('updateDependencyLines', function () {
+  describe('insertAdditionalDependencies', function () {
     const serverPath = 'server';
-    const readFileResult = ' foo=1\n ' + GRADLE_DEPENDENCIES_PLACEHOLDER + '\n bar=2';
-    const goodDependencies = [
-      'a.b.c:1.2.3',
-      'foo.bar.foobar:4.5.6'
-    ];
     it('should generate correct content and keep current indent in build.gradle', function () {
-      let serverBuilder = new ServerBuilder({serverPath});
-      let actualFileContent = serverBuilder.updateDependencyLines(readFileResult, goodDependencies);
+      const gradleContent = `dependencies {
+  ext.annotation_version = '1.1.0'
 
-      actualFileContent.should.eql(
-        ' foo=1\n' +
-        ' implementation \'a.b.c:1.2.3\'\n' +
-        ' implementation \'foo.bar.foobar:4.5.6\'\n' +
-        ' bar=2'
-      );
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+  // additionalAppDependencies placeholder (don't change or delete this line)
+
+  testImplementation "org.powermock:powermock-api-mockito2:$mocklib_version"
+
+  androidTestImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+  // additionalAndroidTestDependencies placeholder (don't change or delete this line)
+}`;
+      const replacedContent = updateDependencyLines(gradleContent, 'additionalAppDependencies', [
+        'a.b.c:1.2.3',
+        'foo.bar.foobar:4.5.6'
+      ]);
+      replacedContent.should.eql(`dependencies {
+  ext.annotation_version = '1.1.0'
+
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+  // additionalAppDependencies placeholder (don't change or delete this line)
+  a.b.c:1.2.3
+  foo.bar.foobar:4.5.6
+
+  testImplementation "org.powermock:powermock-api-mockito2:$mocklib_version"
+
+  androidTestImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+  // additionalAndroidTestDependencies placeholder (don't change or delete this line)
+}`);
+
+      const replacedContent2 = updateDependencyLines(replacedContent, 'additionalAndroidTestDependencies', [
+        'a.b.c:1.2.3',
+        'foo.bar.foobar:4.5.6'
+      ]);
+      replacedContent2.should.eql(`dependencies {
+  ext.annotation_version = '1.1.0'
+
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+  // additionalAppDependencies placeholder (don't change or delete this line)
+  a.b.c:1.2.3
+  foo.bar.foobar:4.5.6
+
+  testImplementation "org.powermock:powermock-api-mockito2:$mocklib_version"
+
+  androidTestImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+  // additionalAndroidTestDependencies placeholder (don't change or delete this line)
+  a.b.c:1.2.3
+  foo.bar.foobar:4.5.6
+}`);
     });
 
-    it('should throw on single quotes in additional dependencies', function () {
+    it('should throw on single quotes in additional dependencies', async function () {
       let serverBuilder = new ServerBuilder({serverPath});
+      serverBuilder.additionalAppDependencies = ['foo.\':1.2.3'];
 
-      expect(function () {
-        serverBuilder.updateDependencyLines(readFileResult, ['foo.\':1.2.3']);
-      }).to.throw(/Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
+      await serverBuilder.insertAdditionalDependencies().should.be.eventually.rejectedWith(
+        /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
     });
 
-    it('should throw on dollar characters in additional dependencies', function () {
+    it('should throw on dollar characters in additional dependencies', async function () {
       let serverBuilder = new ServerBuilder({serverPath});
+      serverBuilder.additionalAndroidTestDependencies = ['foo.\':1.2.3'];
 
-      expect(function () {
-        serverBuilder.updateDependencyLines(readFileResult, ['foo$:1.2.3']);
-      }).to.throw(/Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
+      await serverBuilder.insertAdditionalDependencies().should.be.eventually.rejectedWith(
+        /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
     });
 
-    it('should throw on new lines in additional dependencies', function () {
+    it('should throw on new lines in additional dependencies', async function () {
       let serverBuilder = new ServerBuilder({serverPath});
+      serverBuilder.additionalAppDependencies = ['foo.\n:1.2.3'];
 
-      expect(function () {
-        serverBuilder.updateDependencyLines(readFileResult, ['foo.\n:1.2.3']);
-      }).to.throw(/Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
-    });
-
-    it('should keep other lines not affected', function () {
-      let serverBuilder = new ServerBuilder({serverPath});
-      let actualFileContent = serverBuilder.updateDependencyLines(readFileResult, goodDependencies);
-
-      actualFileContent.should.match(/^ foo=1$/m);
-      actualFileContent.should.match(/^ bar=2$/m);
+      await serverBuilder.insertAdditionalDependencies().should.be.eventually.rejectedWith(
+        /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
     });
   });
 });
