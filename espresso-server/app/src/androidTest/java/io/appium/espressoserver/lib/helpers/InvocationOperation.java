@@ -68,7 +68,7 @@ public class InvocationOperation {
 
     private Method findCompatibleMethod(Object target) throws AppiumException {
         try {
-            Method result = target.getClass().getDeclaredMethod(methodName, argumentTypes);
+            Method result = target.getClass().getMethod(methodName, argumentTypes);
             result.setAccessible(true);
             return result;
         } catch (NoSuchMethodException e) {
