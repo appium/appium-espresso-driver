@@ -34,8 +34,6 @@ import org.junit.Assert.assertEquals
  */
 @LargeTest
 class EspressoServerRunnerTest {
-    private val espressoServer = Server.instance
-
     @Test
     @Throws(InterruptedException::class, IOException::class, DuplicateRouteException::class)
     fun startEspressoServer() {
@@ -44,13 +42,13 @@ class EspressoServerRunnerTest {
             return
         }
         try {
-            espressoServer.start()
+            Server.start()
 
-            while (!espressoServer.isStopRequestReceived) {
+            while (!Server.isStopRequestReceived) {
                 Thread.sleep(1000)
             }
         } finally {
-            espressoServer.stop()
+            Server.stop()
         }
 
         assertEquals(true, true) // Keep Codacy happy

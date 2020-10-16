@@ -18,6 +18,7 @@ package io.appium.espressoserver.lib.helpers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.reflection.MethodUtils
+import java.lang.reflect.Field
 import java.lang.reflect.Method
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
@@ -42,6 +43,12 @@ object ReflectionUtils {
 
     fun invokeMethod(instance: Any?, method: Method, vararg providedParams: Any?): Any? =
             method.invoke(instance, *providedParams)
+
+    fun extractField(clazz: Class<*>, fieldName: String, instance: Any?): Any? {
+        val field: Field = clazz.getDeclaredField(fieldName)
+        field.isAccessible = true
+        return field.get(instance)
+    }
 
     fun extractDeclaredProperties(instance: Any): Map<String, Any?> {
         return instance::class.declaredMemberProperties

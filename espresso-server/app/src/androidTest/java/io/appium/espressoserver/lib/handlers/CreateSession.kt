@@ -19,6 +19,7 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedException
 import io.appium.espressoserver.lib.helpers.ActivityHelpers.startActivity
+import io.appium.espressoserver.lib.helpers.NotificationListener
 import io.appium.espressoserver.lib.helpers.w3c.caps.parseCapabilities
 import io.appium.espressoserver.lib.model.Session
 import io.appium.espressoserver.lib.model.SessionParams
@@ -47,6 +48,7 @@ class CreateSession : RequestHandler<SessionParams, Session> {
                         parsedCaps["activityOptions"] as? Map<String, Any?>
                 ))
             }
+            NotificationListener.start()
         } catch (e: Exception) {
             throw SessionNotCreatedException(e)
         }

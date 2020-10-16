@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import io.appium.espressoserver.lib.helpers.NotificationListener
 import io.appium.espressoserver.lib.http.Server
 import io.appium.espressoserver.lib.http.response.AppiumResponse
 import io.appium.espressoserver.lib.model.AppiumParams
@@ -24,8 +25,9 @@ import io.appium.espressoserver.lib.model.Session
 class DeleteSession : RequestHandler<AppiumParams, AppiumResponse> {
 
     override fun handleInternal(params: AppiumParams): AppiumResponse {
+        NotificationListener.stop()
         Session.deleteGlobalSession()
-        Server.instance.makeRequestForServerToStop()
+        Server.makeRequestForServerToStop()
         return AppiumResponse(null, null)
     }
 }
