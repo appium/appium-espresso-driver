@@ -25,7 +25,7 @@ class GetSession : RequestHandler<AppiumParams, SessionParams.W3CCapabilities?> 
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): SessionParams.W3CCapabilities? {
-        return if (GlobalSession.exists()) {
+        return if (GlobalSession.exists) {
             GlobalSession.capabilities
         } else {
             null

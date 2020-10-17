@@ -215,7 +215,7 @@ internal class Router {
 
             // Validate the sessionId
             if (appiumParams.sessionId != null
-                    && GlobalSession.exists() && appiumParams.sessionId != GlobalSession.sessionId) {
+                    && GlobalSession.exists && appiumParams.sessionId != GlobalSession.sessionId) {
                 return AppiumResponse(NoSuchDriverException("Invalid session ID ${appiumParams.sessionId!!}"))
             }
 

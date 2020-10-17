@@ -52,7 +52,7 @@ val DEFAULT_VIEW_CLASS_NAME = View::javaClass.name
 const val MAX_TRAVERSAL_DEPTH = 70
 const val MAX_XML_VALUE_LENGTH = 64 * 1024
 const val XML_ENCODING = "UTF-8"
-val xpath: XPath = XPathFactory.newInstance().newXPath()
+val XPATH: XPath = XPathFactory.newInstance().newXPath()
 
 
 private fun toXmlNodeName(className: String?): String {
@@ -190,13 +190,10 @@ class SourceDocument @JvmOverloads constructor(
             viewMap.clear()
 
             try {
-                val outputStream: OutputStream
-                if (streamType == FileOutputStream::class.java) {
+                val outputStream = if (streamType == FileOutputStream::class.java) {
                     tmpXmlName = "${UUID.randomUUID()}.xml"
-                    outputStream = getApplicationContext<Context>().openFileOutput(tmpXmlName, Context.MODE_PRIVATE)
-                } else {
-                    outputStream = ByteArrayOutputStream()
-                }
+                    getApplicationContext<Context>().openFileOutput(tmpXmlName, Context.MODE_PRIVATE)
+                } else ByteArrayOutputStream()
                 try {
                     serializer?.let {
                         it.setOutput(outputStream, XML_ENCODING)
@@ -256,7 +253,7 @@ class SourceDocument @JvmOverloads constructor(
     @Throws(AppiumException::class)
     fun findViewsByXPath(xpathSelector: String): List<View> {
         val expr = try {
-            xpath.compile(xpathSelector)
+            XPATH.compile(xpathSelector)
         } catch (xe: XPathExpressionException) {
             throw XPathLookupException(xpathSelector, xe.message!!)
         }

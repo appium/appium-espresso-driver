@@ -23,31 +23,36 @@ import java.util.concurrent.Semaphore
 
 object GlobalSession {
     private val SESSION_GUARD = Semaphore(1)
-    var sessionId: String? = null
-        private set
-    var capabilities: SessionParams.W3CCapabilities? = null
-        private set
+    @Suppress("ObjectPropertyName")
+    private var _sessionId: String? = null
+    @Suppress("ObjectPropertyName")
+    private var _capabilities: SessionParams.W3CCapabilities? = null
 
+    var sessionId: String?
+        get() = SESSION_GUARD.withPermit { _sessionId }
+        private set(value) = SESSION_GUARD.withPermit { _sessionId = value }
+    var capabilities: SessionParams.W3CCapabilities?
+        get () = SESSION_GUARD.withPermit { _capabilities }
+        private set(value) = SESSION_GUARD.withPermit { _capabilities = value }
+    val exists: Boolean
+        get() = SESSION_GUARD.withPermit { _sessionId != null }
+    
     fun create(capabilities: SessionParams.W3CCapabilities): GlobalSession {
         return SESSION_GUARD.withPermit {
-            sessionId?.let {
+            _sessionId?.let {
                 AndroidLogger.warn("Got request for new session creation while the one " +
-                        "is still in progress. Overriding the old session having the id $sessionId")
+                        "is still in progress. Overriding the old session having the id $_sessionId")
             }
-            sessionId = UUID.randomUUID().toString()
-            this.capabilities = capabilities
+            _sessionId = UUID.randomUUID().toString()
+            _capabilities = capabilities
             this
         }
     }
 
-    fun exists(): Boolean {
-        return SESSION_GUARD.withPermit { sessionId != null }
-    }
-
     fun delete() {
         SESSION_GUARD.withPermit {
-            sessionId = null
-            capabilities = null
+            _sessionId = null
+            _capabilities = null
         }
     }
 }

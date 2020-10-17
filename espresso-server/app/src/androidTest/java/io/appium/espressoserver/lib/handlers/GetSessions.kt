@@ -24,7 +24,7 @@ class GetSessions : RequestHandler<AppiumParams, Collection<Map<String, Any?>>> 
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): Collection<Map<String, Any?>> {
-        return if (GlobalSession.exists()) {
+        return if (GlobalSession.exists) {
             listOf(mapOf(
                     "id" to GlobalSession.sessionId,
                     "capabilities" to mapOf(
