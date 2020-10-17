@@ -40,9 +40,40 @@ import org.xmlpull.v1.XmlSerializer
 import java.io.*
 import java.util.*
 import java.util.concurrent.Semaphore
+import javax.xml.xpath.XPath
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathExpressionException
 import javax.xml.xpath.XPathFactory
+
+const val NON_XML_CHAR_REPLACEMENT = "?"
+const val VIEW_INDEX = "viewIndex"
+const val NAMESPACE = ""
+val DEFAULT_VIEW_CLASS_NAME = View::javaClass.name
+const val MAX_TRAVERSAL_DEPTH = 70
+const val MAX_XML_VALUE_LENGTH = 64 * 1024
+const val XML_ENCODING = "UTF-8"
+val xpath: XPath = XPathFactory.newInstance().newXPath()
+
+
+private fun toXmlNodeName(className: String?): String {
+    if (className == null || className.trim { it <= ' ' }.isEmpty()) {
+        return DEFAULT_VIEW_CLASS_NAME
+    }
+
+    var fixedName = className
+            .replace("[$@#&]".toRegex(), ".")
+            .replace("\\.+".toRegex(), ".")
+            .replace("(^\\.|\\.$)".toRegex(), "")
+    fixedName = toNodeName(fixedName)
+    if (fixedName.trim { it <= ' ' }.isEmpty()) {
+        fixedName = DEFAULT_VIEW_CLASS_NAME
+    }
+    if (fixedName != className) {
+        AndroidLogger.info("Rewrote class name '$className' to XML node name '$fixedName'")
+    }
+    return fixedName
+}
+
 
 class SourceDocument @JvmOverloads constructor(
         private val root: View?,
@@ -237,39 +268,5 @@ class SourceDocument @JvmOverloads constructor(
                 }
             }
         }, { performCleanup() })
-    }
-
-    companion object {
-        private val xpath = XPathFactory.newInstance().newXPath()
-        private const val NON_XML_CHAR_REPLACEMENT = "?"
-        private const val VIEW_INDEX = "viewIndex"
-        private const val NAMESPACE = ""
-        private const val DEFAULT_VIEW_CLASS_NAME = "android.view.View"
-        private var MAX_TRAVERSAL_DEPTH = 70
-        private const val MAX_XML_VALUE_LENGTH = 64 * 1024
-        private const val XML_ENCODING = "UTF-8"
-
-        private fun toXmlNodeName(className: String?): String {
-            if (className == null || className.trim { it <= ' ' }.isEmpty()) {
-                return DEFAULT_VIEW_CLASS_NAME
-            }
-
-            var fixedName = className
-                    .replace("[$@#&]".toRegex(), ".")
-                    .replace("\\.+".toRegex(), ".")
-                    .replace("(^\\.|\\.$)".toRegex(), "")
-            fixedName = toNodeName(fixedName)
-            if (fixedName.trim { it <= ' ' }.isEmpty()) {
-                fixedName = DEFAULT_VIEW_CLASS_NAME
-            }
-            if (fixedName != className) {
-                AndroidLogger.info("Rewrote class name '$className' to XML node name '$fixedName'")
-            }
-            return fixedName
-        }
-
-        fun `$setMaxTraverseDepth`(maxTraverseDepth: Int) {
-            MAX_TRAVERSAL_DEPTH = maxTraverseDepth
-        }
     }
 }
