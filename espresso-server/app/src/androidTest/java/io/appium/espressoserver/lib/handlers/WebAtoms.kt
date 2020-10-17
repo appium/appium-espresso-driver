@@ -39,7 +39,7 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
 
         // Initialize onWebView with web view matcher (if webviewEl provided)
         params.webviewElement.let{ webviewElement ->
-            AndroidLogger.logger.info("Initializing webView interaction on webview with el: '$webviewElement'")
+            AndroidLogger.info("Initializing webView interaction on webview with el: '$webviewElement'")
             val matcher = withView(Element.getViewById(webviewElement))
             webViewInteraction = onWebView(matcher)
         }
@@ -55,7 +55,7 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
                     ?: throw InvalidArgumentException("'${method.atom.name}' did not return a valid " +
                             "'${Atom::class.qualifiedName}' object")
 
-            AndroidLogger.logger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
+            AndroidLogger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
 
             val res = invokeInstanceMethod(webViewInteraction, method.name, atom) as? WebInteraction<*>
                     ?: throw InvalidArgumentException("'${method.name}' does not return a valid " +

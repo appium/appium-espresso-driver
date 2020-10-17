@@ -95,13 +95,13 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
         globalTouchDownEvent?.let {
             throw AppiumException("Cannot call touch down while another touch event is still down")
         }
-        AndroidLogger.logger.info("Calling touch down event on (${params.x} ${params.y})")
+        AndroidLogger.info("Calling touch down event on (${params.x} ${params.y})")
         globalTouchDownEvent = handlePointerEvent(params, ACTION_DOWN, TOUCH)
     }
 
     @Throws(AppiumException::class)
     private fun handleTouchUp(params: MotionEventParams) {
-        AndroidLogger.logger.info("Calling touch up event on (${params.x} ${params.y})")
+        AndroidLogger.info("Calling touch up event on (${params.x} ${params.y})")
         globalTouchDownEvent
                 ?: throw AppiumException("Touch up event must be preceded by a touch down event")
         handlePointerEvent(params, ACTION_UP, TOUCH, globalTouchDownEvent!!.downTime)

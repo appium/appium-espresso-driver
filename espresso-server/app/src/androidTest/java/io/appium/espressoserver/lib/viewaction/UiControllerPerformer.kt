@@ -24,7 +24,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.helpers.AndroidLogger.Companion.logger
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.viewmatcher.withView
 import org.hamcrest.Matcher
 
@@ -53,7 +53,7 @@ class UiControllerPerformer<T>(private val runnable: UiControllerRunnable<T>) : 
         // Get the root view because it doesn't matter what we perform this interaction on
         val rootView = ViewGetter().rootView
         val viewInteraction = Espresso.onView(withView(rootView))
-        logger.info("Performing W3C actions sequence")
+        AndroidLogger.info("Performing W3C actions sequence")
         try {
             viewInteraction.perform(this, ViewActions.closeSoftKeyboard())
         } catch (nme: NoMatchingViewException) {

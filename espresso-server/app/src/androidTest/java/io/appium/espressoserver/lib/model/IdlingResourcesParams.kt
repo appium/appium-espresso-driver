@@ -42,14 +42,14 @@ data class IdlingResourcesParams(
                     val getInstanceMethod = try {
                         extractMethod(it, GET_INSTANCE_METHOD)
                     } catch (e: Exception) {
-                        AndroidLogger.logger.error(e.message!!)
+                        AndroidLogger.error(e.message!!)
                         throw IllegalArgumentException("'${it.canonicalName}' class must " +
                                 "have a static ${GET_INSTANCE_METHOD}() method")
                     }
                     val instance = try {
                         invokeMethod(null, getInstanceMethod)
                     } catch (e: Exception) {
-                        AndroidLogger.logger.error(e.message!!)
+                        AndroidLogger.error(e.message!!)
                         throw IllegalArgumentException(
                                 "Got an unexpected exception while calling '${it.canonicalName}.${GET_INSTANCE_METHOD}()': " +
                                         e.message)

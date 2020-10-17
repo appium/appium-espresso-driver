@@ -69,12 +69,12 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueP
                 e.message?.let {
                     if (!it.contains("IME does not understand how to translate")) throw e
                 }
-                AndroidLogger.logger.debug("Trying replaceText action as a workaround to type the '$value' text into the input field")
+                AndroidLogger.debug("Trying replaceText action as a workaround to type the '$value' text into the input field")
                 @Suppress("ReplaceGetOrSet") val currentText = ViewTextGetter().get(viewInteraction)
                 if (currentText.rawText.isEmpty() || currentText.isHint) {
                     viewInteraction.perform(replaceText(value))
                 } else {
-                    AndroidLogger.logger.debug("Current input field's text: '$currentText'")
+                    AndroidLogger.debug("Current input field's text: '$currentText'")
                     viewInteraction.perform(replaceText(currentText.toString() + value))
                 }
             }

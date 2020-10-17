@@ -7,7 +7,7 @@ import androidx.test.espresso.InjectEventSecurityException
 import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.helpers.AndroidLogger.Companion.logger
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ALT
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ARROW_DOWN
@@ -189,7 +189,7 @@ class AndroidKeyEvent(private val uiController: UiController) {
 
         // Inject all of the key events, in order
         for (androidKeyEvent in keyEvents) {
-            logger.info(String.format("Calling key event: %s", androidKeyEvent))
+            AndroidLogger.info(String.format("Calling key event: %s", androidKeyEvent))
             var isSuccess: Boolean
             isSuccess = try {
                 uiController.injectKeyEvent(androidKeyEvent)

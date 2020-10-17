@@ -52,7 +52,7 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
                     "true"
                 } catch (e: Exception) {
                     if (e is EspressoException) {
-                        e.message?.let { msg -> AndroidLogger.logger.info(msg) }
+                        e.message?.let { msg -> AndroidLogger.info(msg) }
                         "false"
                     } else {
                         throw e

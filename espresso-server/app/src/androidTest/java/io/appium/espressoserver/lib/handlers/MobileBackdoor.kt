@@ -13,7 +13,6 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: MobileBackdoorParams): Any? {
-        AndroidLogger.logger.info("Invoking Backdoor")
         params.target?.let {target ->
             val activity = ActivityHelpers.currentActivity
             val ops = getBackdoorOperations(params)

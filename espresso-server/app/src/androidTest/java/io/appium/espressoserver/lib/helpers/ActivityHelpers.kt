@@ -108,11 +108,11 @@ object ActivityHelpers {
                     "flags" to "ACTIVITY_NEW_TASK",
                     "className" to fullyQualifiedAppActivity
             )
-            AndroidLogger.logger.info("Starting activity '$fullyQualifiedAppActivity' " +
+            AndroidLogger.info("Starting activity '$fullyQualifiedAppActivity' " +
                     "with default options: $defaultOptions")
             makeIntent(instrumentation.targetContext, defaultOptions)
         } else {
-            AndroidLogger.logger.info("Staring activity with custom options: ${params.optionalIntentArguments}")
+            AndroidLogger.info("Staring activity with custom options: ${params.optionalIntentArguments}")
             makeIntent(instrumentation.targetContext, params.optionalIntentArguments)
         }
 

@@ -152,7 +152,7 @@ object ViewFinder {
                 val context = getApplicationContext<Context>()
                 if (!selector.matches(ID_PATTERN.toRegex())) {
                     selector = "${context.packageName}:id/$selector"
-                    AndroidLogger.logger.info("Rewrote Id selector to '$selector'")
+                    AndroidLogger.info("Rewrote Id selector to '$selector'")
                 }
                 val id = context.resources.getIdentifier(selector, "Id", context.packageName)
 

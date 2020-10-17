@@ -31,8 +31,6 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: UiautomatorParams): List<Any?> {
-        AndroidLogger.logger.info("Invoking Uiautomator2 Methods")
-
         val validStrategyNames = UiautomatorParams.Strategy.validStrategyNames
         params.strategy ?: throw AppiumException("strategy should be one of '${validStrategyNames}'")
 
@@ -48,7 +46,7 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
             val actionMethod = extractMethod(UiObject2::class.java, params.action.actionName)
 
             val uiObjects = getUiDevice().findObjects(bySelector)
-            AndroidLogger.logger.info("Found ${uiObjects.size} UiObject(s)")
+            AndroidLogger.info("Found ${uiObjects.size} UiObject(s)")
 
             index ?: run {
                 return uiObjects.map {

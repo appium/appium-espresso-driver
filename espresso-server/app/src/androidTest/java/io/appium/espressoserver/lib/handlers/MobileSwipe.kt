@@ -36,7 +36,7 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
 
         if (params.direction != null) {
-            AndroidLogger.logger.info("Performing swipe action with direction '${params.direction}'")
+            AndroidLogger.info("Performing swipe action with direction '${params.direction}'")
             when (params.direction) {
                 UP -> viewInteraction.perform(swipeUp())
                 DOWN -> viewInteraction.perform(swipeDown())
@@ -54,7 +54,7 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
                             params.endCoordinates,
                             params.precisionDescriber
                     )
-                    AndroidLogger.logger.info("""
+                    AndroidLogger.info("""
                     Performing general swipe action with parameters
                     swiper=[${params.swiper}] startCoordinates=[${params.startCoordinates}]
                     endCoordinates=[${params.endCoordinates}] precisionDescriber=[${params.precisionDescriber}]

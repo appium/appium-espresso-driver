@@ -140,7 +140,7 @@ class SourceDocument @JvmOverloads constructor(
                 }
             }
         } else {
-            AndroidLogger.logger.warn("Skipping traversal of ${view.javaClass.name}'s children, since " +
+            AndroidLogger.warn("Skipping traversal of ${view.javaClass.name}'s children, since " +
                     "the current depth has reached its maximum allowed value of $depth")
         }
 
@@ -173,7 +173,7 @@ class SourceDocument @JvmOverloads constructor(
                         val startTime = SystemClock.uptimeMillis()
                         serializeView(rootView, 0)
                         it.endDocument()
-                        AndroidLogger.logger.info("The source XML tree has been fetched in " +
+                        AndroidLogger.info("The source XML tree has been fetched in " +
                                 "${SystemClock.uptimeMillis() - startTime}ms " +
                                 "using ${streamType.simpleName}")
                     }
@@ -287,7 +287,7 @@ class SourceDocument @JvmOverloads constructor(
                 fixedName = DEFAULT_VIEW_CLASS_NAME
             }
             if (fixedName != className) {
-                AndroidLogger.logger.info("Rewrote class name '$className' to XML node name '$fixedName'")
+                AndroidLogger.info("Rewrote class name '$className' to XML node name '$fixedName'")
             }
             return fixedName
         }
