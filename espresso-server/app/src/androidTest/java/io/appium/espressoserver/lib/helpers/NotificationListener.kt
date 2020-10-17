@@ -21,7 +21,7 @@ import android.view.accessibility.AccessibilityEvent
 import java.util.*
 import java.util.concurrent.Semaphore
 
-const val TOAST_CLEAR_TIMEOUT = 3500L
+const val TOAST_CLEAR_TIMEOUT_MS = 3500L
 
 object NotificationListener : OnAccessibilityEventListener {
     private var recentToastTimestamp = 0L
@@ -67,9 +67,10 @@ object NotificationListener : OnAccessibilityEventListener {
 
     var toastMessage: List<CharSequence>
         get() {
-            TOAST_MESSAGE_GUARD.acquireUninterruptibly()
+            TOAST_MESSAGE_GUARD.acquire()
             try {
-                if (_toastMessage.isNotEmpty() && System.currentTimeMillis() - recentToastTimestamp > TOAST_CLEAR_TIMEOUT) {
+                if (_toastMessage.isNotEmpty()
+                        && System.currentTimeMillis() - recentToastTimestamp > TOAST_CLEAR_TIMEOUT_MS) {
                     AndroidLogger.logger.info("Clearing the outdated toast message: $_toastMessage")
                     _toastMessage.clear()
                 }
@@ -79,13 +80,13 @@ object NotificationListener : OnAccessibilityEventListener {
             }
         }
         private set(text) {
-            TOAST_MESSAGE_GUARD.acquireUninterruptibly()
+            TOAST_MESSAGE_GUARD.acquire()
             try {
                 _toastMessage.clear()
                 _toastMessage.addAll(text)
+                recentToastTimestamp = System.currentTimeMillis()
             } finally {
                 TOAST_MESSAGE_GUARD.release()
             }
-            recentToastTimestamp = System.currentTimeMillis()
         }
 }
