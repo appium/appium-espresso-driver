@@ -24,7 +24,6 @@ import java.util.concurrent.Semaphore
 const val TOAST_CLEAR_TIMEOUT = 3500L
 
 object NotificationListener : OnAccessibilityEventListener {
-    private val uiAutomation = UiAutomationWrapper
     private var recentToastTimestamp = 0L
     @Suppress("ObjectPropertyName")
     private val _toastMessage = mutableListOf<CharSequence>()
@@ -41,10 +40,10 @@ object NotificationListener : OnAccessibilityEventListener {
             return
         }
         AndroidLogger.logger.debug("Starting toast notification listener")
-        originalListener = uiAutomation.onAccessibilityEventListener
+        originalListener = UiAutomationWrapper.onAccessibilityEventListener
         isListening = true
         AndroidLogger.logger.debug("Original listener: $originalListener")
-        uiAutomation.onAccessibilityEventListener = this
+        UiAutomationWrapper.onAccessibilityEventListener = this
     }
 
     fun stop() {
@@ -54,17 +53,14 @@ object NotificationListener : OnAccessibilityEventListener {
         }
         AndroidLogger.logger.debug("Stopping toast notification listener")
         isListening = false
-        uiAutomation.onAccessibilityEventListener = originalListener
+        UiAutomationWrapper.onAccessibilityEventListener = originalListener
     }
 
     @Synchronized
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.eventType == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
             AndroidLogger.logger.debug("Caught toast message: $event")
-            val text = event.text
-            if (text != null && text.isNotEmpty()) {
-                toastMessage = text
-            }
+            event.text?.let { if (it.isNotEmpty()) toastMessage = it }
         }
         originalListener?.onAccessibilityEvent(event)
     }
