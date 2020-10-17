@@ -31,6 +31,7 @@ import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate
 import io.appium.espressoserver.lib.helpers.XMLHelpers.toNodeName
 import io.appium.espressoserver.lib.helpers.XMLHelpers.toSafeString
+import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import io.appium.espressoserver.lib.viewaction.ViewGetter
 import org.w3c.dom.Element
 import org.w3c.dom.NodeList
@@ -129,7 +130,7 @@ class SourceDocument @JvmOverloads constructor(
             recordAdapterViewInfo(view)
         }
 
-        serializer?.attribute(NAMESPACE, VIEW_INDEX, Integer.toString(viewMap.size()))
+        serializer?.attribute(NAMESPACE, VIEW_INDEX, viewMap.size().toString())
         viewMap.put(viewMap.size(), view)
 
         if (depth < MAX_TRAVERSAL_DEPTH) {
@@ -207,13 +208,7 @@ class SourceDocument @JvmOverloads constructor(
 
     @Throws(AppiumException::class)
     fun toXMLString(): String {
-        try {
-            RESOURCES_GUARD.acquire()
-        } catch (e: InterruptedException) {
-            throw AppiumException(e)
-        }
-
-        try {
+        return RESOURCES_GUARD.withPermit({
             toStream().use { xmlStream ->
                 val sb = StringBuilder()
                 val reader = BufferedReader(InputStreamReader(xmlStream, XML_ENCODING))
@@ -222,45 +217,26 @@ class SourceDocument @JvmOverloads constructor(
                     sb.append(line)
                     line = reader.readLine()
                 }
-                return sb.toString()
+                sb.toString()
             }
-        } catch (e: IOException) {
-            throw AppiumException(e)
-        } finally {
-            performCleanup()
-            RESOURCES_GUARD.release()
-        }
+        }, { performCleanup() })
     }
 
     @Throws(AppiumException::class)
     fun findViewsByXPath(xpathSelector: String): List<View> {
-        try {
-            // Get the Nodes that match the provided xpath
-            val expr = xpath.compile(xpathSelector)
-            var list: NodeList
-            try {
-                RESOURCES_GUARD.acquire()
-            } catch (e: InterruptedException) {
-                throw AppiumException(e)
-            }
-
-            try {
-                toStream().use {
-                    xmlStream -> list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
-                    return (0 until list.length).map { index ->
-                        viewMap.get(Integer.parseInt((list.item(index) as Element).getAttribute(VIEW_INDEX)))
-                    }
-                }
-            } catch (e: IOException) {
-                throw AppiumException(e)
-            } finally {
-                performCleanup()
-                RESOURCES_GUARD.release()
-            }
+        val expr = try {
+            xpath.compile(xpathSelector)
         } catch (xe: XPathExpressionException) {
             throw XPathLookupException(xpathSelector, xe.message!!)
         }
-
+        return RESOURCES_GUARD.withPermit({
+            toStream().use { xmlStream ->
+                val list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
+                (0 until list.length).map { index ->
+                    viewMap.get(Integer.parseInt((list.item(index) as Element).getAttribute(VIEW_INDEX)))
+                }
+            }
+        }, { performCleanup() })
     }
 
     companion object {

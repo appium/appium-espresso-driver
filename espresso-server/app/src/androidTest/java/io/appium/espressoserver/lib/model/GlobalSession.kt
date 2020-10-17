@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.model
 
 import io.appium.espressoserver.lib.helpers.AndroidLogger
+import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import java.util.*
 import java.util.concurrent.Semaphore
 
@@ -28,36 +29,25 @@ object GlobalSession {
         private set
 
     fun create(capabilities: SessionParams.W3CCapabilities): GlobalSession {
-        SESSION_GUARD.acquire()
-        try {
+        return SESSION_GUARD.withPermit {
             sessionId?.let {
                 AndroidLogger.warn("Got request for new session creation while the one " +
                         "is still in progress. Overriding the old session having the id $sessionId")
             }
             sessionId = UUID.randomUUID().toString()
             this.capabilities = capabilities
-            return this
-        } finally {
-            SESSION_GUARD.release()
+            this
         }
     }
 
     fun exists(): Boolean {
-        SESSION_GUARD.acquire()
-        try {
-            return sessionId != null
-        } finally {
-            SESSION_GUARD.release()
-        }
+        return SESSION_GUARD.withPermit { sessionId != null }
     }
 
     fun delete() {
-        SESSION_GUARD.acquire()
-        try {
+        SESSION_GUARD.withPermit {
             sessionId = null
             capabilities = null
-        } finally {
-            SESSION_GUARD.release()
         }
     }
 }

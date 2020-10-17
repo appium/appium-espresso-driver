@@ -18,6 +18,7 @@ package io.appium.espressoserver.lib.helpers
 
 import android.app.UiAutomation.OnAccessibilityEventListener
 import android.view.accessibility.AccessibilityEvent
+import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import java.util.*
 import java.util.concurrent.Semaphore
 
@@ -67,26 +68,20 @@ object NotificationListener : OnAccessibilityEventListener {
 
     var toastMessage: List<CharSequence>
         get() {
-            TOAST_MESSAGE_GUARD.acquire()
-            try {
+            return TOAST_MESSAGE_GUARD.withPermit {
                 if (_toastMessage.isNotEmpty()
                         && System.currentTimeMillis() - recentToastTimestamp > TOAST_CLEAR_TIMEOUT_MS) {
                     AndroidLogger.info("Clearing the outdated toast message: $_toastMessage")
                     _toastMessage.clear()
                 }
-                return Collections.unmodifiableList(_toastMessage)
-            } finally {
-                TOAST_MESSAGE_GUARD.release()
+                Collections.unmodifiableList(_toastMessage)
             }
         }
         private set(text) {
-            TOAST_MESSAGE_GUARD.acquire()
-            try {
+            TOAST_MESSAGE_GUARD.withPermit {
                 _toastMessage.clear()
                 _toastMessage.addAll(text)
                 recentToastTimestamp = System.currentTimeMillis()
-            } finally {
-                TOAST_MESSAGE_GUARD.release()
             }
         }
 }
