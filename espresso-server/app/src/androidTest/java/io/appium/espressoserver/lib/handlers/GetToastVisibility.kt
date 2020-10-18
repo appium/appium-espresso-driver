@@ -19,22 +19,18 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.NotificationListener
 import io.appium.espressoserver.lib.model.ToastLookupParams
-import java.util.regex.Pattern
 
 class GetToastVisibility : RequestHandler<ToastLookupParams, Boolean> {
     @Throws(AppiumException::class)
     override fun handleInternal(params: ToastLookupParams): Boolean {
-        val toastMessage = NotificationListener.toastMessage
+        val toastMessage = NotificationListener.toastMessage.joinToString(separator = "\n")
         if (toastMessage.isEmpty()) {
             return false
         }
         return if (params.isRegexp) {
-            Pattern.compile(params.text)
-                    .matcher(toastMessage.joinToString(separator = "\n"))
-                    .matches()
+            params.text.toRegex().containsMatchIn(toastMessage)
         } else {
-            toastMessage.joinToString(separator = "\n")
-                    .contains(params.text)
+            toastMessage.contains(params.text)
         }
     }
 }
