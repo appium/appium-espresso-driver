@@ -2,7 +2,7 @@ package io.appium.espressoserver.test.helpers.w3c
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer.Companion.instance
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.dispatchKeyDown
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.dispatchKeyUp
@@ -127,7 +127,7 @@ class KeyDispatchTest {
     @Test
     @Throws(AppiumException::class)
     fun shouldNormalizeKeys() {
-        val normalizedKey = instance!!.getNormalizedKey("\uE008")
+        val normalizedKey = KeyNormalizer.toNormalizedKey("\uE008")
         assertEquals(normalizedKey, NormalizedKeys.SHIFT)
     }
 }

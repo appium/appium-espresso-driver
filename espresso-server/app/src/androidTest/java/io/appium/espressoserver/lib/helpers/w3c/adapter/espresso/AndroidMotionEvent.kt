@@ -1,6 +1,5 @@
 package io.appium.espressoserver.lib.helpers.w3c.adapter.espresso
 
-import android.view.KeyEvent
 import android.view.MotionEvent
 import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
@@ -19,7 +18,7 @@ class AndroidMotionEvent private constructor(private val uiController: UiControl
                      globalKeyInputState: KeyInputState?,
                      downEvent: MotionEvent?,
                      eventTime: Long): MotionEvent {
-        val metaState = getMetaState(globalKeyInputState)
+        val metaState = globalKeyInputState?.toMetaState() ?: 0
         downTime = downEvent?.downTime ?: eventTime
         return MotionEventBuilder()
                 .withAction(action)
@@ -40,7 +39,7 @@ class AndroidMotionEvent private constructor(private val uiController: UiControl
                     pointerType: InputSource.PointerType?,
                     globalKeyInputState: KeyInputState?,
                     downEvent: MotionEvent?) {
-        val metaState = getMetaState(globalKeyInputState)
+        val metaState = globalKeyInputState?.toMetaState() ?: 0
         MotionEventBuilder()
                 .withAction(MotionEvent.ACTION_MOVE)
                 .withDownTime(downTime)
@@ -85,27 +84,6 @@ class AndroidMotionEvent private constructor(private val uiController: UiControl
                 touchMotionEvent = AndroidMotionEvent(uiController)
             }
             return touchMotionEvent!!
-        }
-
-        fun getMetaState(keyInputState: KeyInputState?): Int {
-            if (keyInputState == null) {
-                return 0
-            }
-
-            var metaState = 0
-            if (keyInputState.isAlt) {
-                metaState = metaState or KeyEvent.META_ALT_MASK
-            }
-            if (keyInputState.isCtrl) {
-                metaState = metaState or KeyEvent.META_CTRL_MASK
-            }
-            if (keyInputState.isShift) {
-                metaState = metaState or KeyEvent.META_SHIFT_MASK
-            }
-            if (keyInputState.isMeta) {
-                metaState = metaState or KeyEvent.META_META_MASK
-            }
-            return metaState
         }
     }
 

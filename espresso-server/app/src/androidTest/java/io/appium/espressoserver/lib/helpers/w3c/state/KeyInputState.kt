@@ -1,5 +1,6 @@
 package io.appium.espressoserver.lib.helpers.w3c.state
 
+import android.view.KeyEvent
 import java.util.*
 
 /**
@@ -60,5 +61,22 @@ class KeyInputState : InputState {
 
     fun logMessage(): String {
         return "alt=[$isAlt] shift=[$isShift] ctrl=[$isCtrl] meta=[$isMeta] pressed=[$pressed]"
+    }
+
+    fun toMetaState(): Int {
+        var metaState = 0
+        if (isAlt) {
+            metaState = metaState or KeyEvent.META_ALT_MASK
+        }
+        if (isCtrl) {
+            metaState = metaState or KeyEvent.META_CTRL_MASK
+        }
+        if (isShift) {
+            metaState = metaState or KeyEvent.META_SHIFT_MASK
+        }
+        if (isMeta) {
+            metaState = metaState or KeyEvent.META_META_MASK
+        }
+        return metaState
     }
 }

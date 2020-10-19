@@ -50,12 +50,10 @@ class Element(view: View) {
 
     init {
         element = UUID.randomUUID().toString()
-        cache.put(element, view)
+        ViewsCache.put(element, view)
     }
 
     companion object {
-        private val cache = ViewsCache
-
         /**
          * Retrieve cached view and return the ViewInteraction
          */
@@ -100,11 +98,11 @@ class Element(view: View) {
         @Throws(NoSuchElementException::class, StaleElementException::class)
         fun getViewById(elementId: String?, checkStaleness: Boolean = true): View {
             elementId ?: throw InvalidArgumentException("Cannot find 'null' element")
-            if (!cache.has(elementId)) {
+            if (!ViewsCache.has(elementId)) {
                 throw NoSuchElementException("No such element with ID '$elementId'")
             }
 
-            val (resultView, initialContentDescription1) = Objects.requireNonNull<ViewState>(cache.get(elementId))
+            val (resultView, initialContentDescription1) = Objects.requireNonNull<ViewState>(ViewsCache.get(elementId))
 
             // If the cached view is gone, throw stale element exception
             if (!resultView.isShown) {
@@ -123,7 +121,7 @@ class Element(view: View) {
             }
 
             try {
-                cache.put(elementId, lookupOffscreenView(resultView, initialContentDescription))
+                ViewsCache.put(elementId, lookupOffscreenView(resultView, initialContentDescription))
             } catch (e: Exception) {
                 if (e is EspressoException) {
                     if (!checkStaleness) {

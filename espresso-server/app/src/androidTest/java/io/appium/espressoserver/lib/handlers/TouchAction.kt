@@ -20,8 +20,8 @@ import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions.ActionsBuilder
-import io.appium.espressoserver.lib.model.TouchAction.Companion.toW3CInputSources
 import io.appium.espressoserver.lib.model.TouchActionsParams
+import io.appium.espressoserver.lib.model.toW3CInputSources
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 

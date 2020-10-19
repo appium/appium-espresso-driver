@@ -123,7 +123,7 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     }
 
     override fun getKeyCode(keyValue: String?, location: Int): Int {
-        return AndroidKeyEvent.getKeyCode(keyValue, location)
+        return keyCodeToEvent(keyValue, location)
     }
 
     @Throws(AppiumException::class)

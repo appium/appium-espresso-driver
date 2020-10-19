@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.appium.espressoserver.lib.model.BackdoorMethodArg;
+import io.appium.espressoserver.lib.model.InvocationTarget;
 import io.appium.espressoserver.lib.model.MobileBackdoorMethod;
 import io.appium.espressoserver.lib.model.MobileBackdoorParams;
 
-import static io.appium.espressoserver.lib.model.MobileBackdoorParams.Companion.InvocationTarget.*;
 import static io.appium.espressoserver.test.assets.HelpersKt.readAssetFile;
 import static java.util.Objects.requireNonNull;
 import static junit.framework.Assert.fail;
@@ -94,7 +94,7 @@ public class MobileBackdoorMethodTest {
         MobileBackdoorParams params = (MobileBackdoorParams) (new Gson()).fromJson(backdoorMethods, MobileBackdoorParams.class);
         List<MobileBackdoorMethod> mobileBackdoor = requireNonNull(params).getMethods();
 
-        assertEquals(ACTIVITY, params.getTarget());
+        assertEquals(InvocationTarget.ACTIVITY, params.getTarget());
 
         MobileBackdoorMethod firstMethod = mobileBackdoor.get(0);
         assertEquals("firstMethod", firstMethod.getName());

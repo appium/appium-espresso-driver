@@ -31,17 +31,17 @@ class Uiautomator : RequestHandler<UiautomatorParams, List<Any?>> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: UiautomatorParams): List<Any?> {
-        val validStrategyNames = UiautomatorParams.Strategy.validStrategyNames
+        val validStrategyNames = UiautomatorParams.Strategy.values().map { it.strategyName }
         params.strategy ?: throw AppiumException("strategy should be one of '${validStrategyNames}'")
 
-        val validActionNames = UiautomatorParams.Action.validActionNames
-        params.action ?: throw AppiumException("strategy should be one of '${validActionNames}'")
+        val validActionNames = UiautomatorParams.Action.values().map { it.actionName }
+        params.action ?: throw AppiumException("action should be one of '${validActionNames}'")
 
         val locator = params.locator
         val index = params.index
 
         try {
-            val byMethod = extractMethod(By::class.java, params.strategy.methodName, String::class.java)
+            val byMethod = extractMethod(By::class.java, params.strategy.strategyName, String::class.java)
             val bySelector = invokeMethod(null, byMethod, locator) as BySelector
             val actionMethod = extractMethod(UiObject2::class.java, params.action.actionName)
 

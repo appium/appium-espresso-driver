@@ -3,11 +3,10 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.ActivityHelpers
-import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.InvocationOperation
 import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.InvocationTarget
 import io.appium.espressoserver.lib.model.MobileBackdoorParams
-import io.appium.espressoserver.lib.model.MobileBackdoorParams.Companion.InvocationTarget.*
 
 class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
 
@@ -19,9 +18,9 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
 
             @Suppress("REDUNDANT_ELSE_IN_WHEN")
             return when (target) {
-                ACTIVITY -> invokeBackdoorMethods(activity, ops)
-                APPLICATION -> invokeBackdoorMethods(activity.application, ops)
-                ELEMENT -> invokeBackdoorMethods(Element.getViewById(params.targetElement), ops)
+                InvocationTarget.ACTIVITY -> invokeBackdoorMethods(activity, ops)
+                InvocationTarget.APPLICATION -> invokeBackdoorMethods(activity.application, ops)
+                InvocationTarget.ELEMENT -> invokeBackdoorMethods(Element.getViewById(params.targetElement), ops)
                 else -> throw InvalidArgumentException("target cannot be '$target'")
             }
         }

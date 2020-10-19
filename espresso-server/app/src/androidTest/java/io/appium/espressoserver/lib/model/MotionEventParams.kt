@@ -8,6 +8,19 @@ import android.view.MotionEvent.BUTTON_PRIMARY
 import android.view.MotionEvent.BUTTON_SECONDARY
 import android.view.MotionEvent.BUTTON_TERTIARY
 
+const val MOUSE_LEFT = 0
+const val MOUSE_MIDDLE = 1
+const val MOUSE_RIGHT = 2
+
+fun Int.toAndroidButtonState(): Int {
+    return when (this) {
+        MOUSE_LEFT -> BUTTON_PRIMARY
+        MOUSE_MIDDLE -> BUTTON_TERTIARY
+        MOUSE_RIGHT -> BUTTON_SECONDARY
+        else -> throw InvalidArgumentException(String.format("'%s' is not a valid button type", this))
+    }
+}
+
 data class MotionEventParams(
     @SerializedName("element", alternate = [W3C_ELEMENT_KEY])
     val targetElement: String?,
@@ -20,27 +33,5 @@ data class MotionEventParams(
 
     val androidButtonState: Int
         @Throws(InvalidArgumentException::class)
-        get() = getAndroidButtonState(this.button)
-
-    companion object {
-
-        val MOUSE_LEFT = 0
-        val MOUSE_MIDDLE = 1
-        val MOUSE_RIGHT = 2
-
-        @Throws(InvalidArgumentException::class)
-        fun getAndroidButtonState(button: Int?): Int {
-            if (button == null) {
-                return BUTTON_PRIMARY
-            }
-
-            when (button) {
-                MOUSE_LEFT -> return BUTTON_PRIMARY
-                MOUSE_MIDDLE -> return BUTTON_TERTIARY
-                MOUSE_RIGHT -> return BUTTON_SECONDARY
-                else -> throw InvalidArgumentException(String.format("'%s' is not a valid button type", button))
-            }
-
-        }
-    }
+        get() = this.button.toAndroidButtonState()
 }
