@@ -15,7 +15,7 @@ import io.appium.espressoserver.lib.model.MobileBackdoorParams;
 
 import static io.appium.espressoserver.test.assets.HelpersKt.readAssetFile;
 import static java.util.Objects.requireNonNull;
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.fail;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

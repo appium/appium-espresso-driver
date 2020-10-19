@@ -187,7 +187,6 @@ class PointerDispatchTest {
                 hasAny2 = true
                 assertTrue(pointerMoveEvent.x in 20.0..40.0)
                 assertTrue(pointerMoveEvent.y in 30.0..50.0)
-
             }
         }
         assertTrue(hasAny)
