@@ -79,7 +79,7 @@
   "devDependencies": {
     "android-apidemos": "^3.0.0",
     "appium-chromedriver": "^4.23.1",
-    "appium-gulp-plugins": "^5.3.2",
+    "appium-gulp-plugins": "^5.4.1",
     "appium-test-support": "^1.0.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
