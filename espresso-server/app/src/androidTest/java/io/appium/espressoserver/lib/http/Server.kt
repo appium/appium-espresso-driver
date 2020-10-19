@@ -27,7 +27,9 @@ import java.io.IOException
 import java.net.SocketException
 import java.util.*
 
-class Server private constructor() : NanoHTTPD(DEFAULT_PORT) {
+const val DEFAULT_PORT = 6791
+
+object Server : NanoHTTPD(DEFAULT_PORT) {
 
     private var router: Router? = null
 
@@ -103,10 +105,5 @@ class Server private constructor() : NanoHTTPD(DEFAULT_PORT) {
 
     fun makeRequestForServerToStop() {
         isStopRequestReceived = true
-    }
-
-    companion object {
-        private const val DEFAULT_PORT = 6791
-        val instance = Server()
     }
 }

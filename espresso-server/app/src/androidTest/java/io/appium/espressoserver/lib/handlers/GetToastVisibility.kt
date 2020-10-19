@@ -16,35 +16,21 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import java.util.regex.Pattern
-
-import androidx.test.espresso.EspressoException
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.NotificationListener
 import io.appium.espressoserver.lib.model.ToastLookupParams
-import io.appium.espressoserver.lib.viewmatcher.ToastMatcher
-
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
-import io.appium.espressoserver.lib.viewmatcher.withRegexp
 
 class GetToastVisibility : RequestHandler<ToastLookupParams, Boolean> {
     @Throws(AppiumException::class)
     override fun handleInternal(params: ToastLookupParams): Boolean {
-        try {
-            val viewInteraction = if (params.isRegexp)
-                onView(withRegexp(Pattern.compile(params.text))).inRoot(ToastMatcher())
-            else
-                onView(withText(params.text)).inRoot(ToastMatcher())
-            viewInteraction.check(matches(isDisplayed()))
-            return true
-        } catch (e: Exception) {
-            if (e is EspressoException) {
-                return false
-            }
-            throw e
+        val toastMessage = NotificationListener.toastMessage.joinToString(separator = "\n")
+        if (toastMessage.isEmpty()) {
+            return false
         }
-
+        return if (params.isRegexp) {
+            params.text.toRegex().containsMatchIn(toastMessage)
+        } else {
+            toastMessage.contains(params.text)
+        }
     }
 }
