@@ -89,7 +89,7 @@ fun parseCapabilities(firstMatchValue: List<Map<String, Any?>>?,
                 try {
                     return mergeCaps(requiredCaps, it)
                 } catch (e: Exception) {
-                    AndroidLogger.logger.warn(e)
+                    AndroidLogger.warn(e)
                 }
             }
     throw InvalidArgumentException("Could not find matching capabilities from {$firstMatch, $alwaysMatch}")

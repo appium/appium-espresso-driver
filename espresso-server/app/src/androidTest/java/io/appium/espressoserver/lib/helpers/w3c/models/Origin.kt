@@ -7,7 +7,7 @@ class Origin {
     var type: String? = VIEWPORT
     var elementId: String? = null
 
-    constructor() {}
+    constructor()
     constructor(type: String) {
         this.type = type
     }

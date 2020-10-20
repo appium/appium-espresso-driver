@@ -6,8 +6,8 @@ import android.view.MotionEvent
 import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.AndroidKeyEvent
-import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.AndroidKeyEvent.Companion.getKeyCode
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter
+import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.keyCodeToEvent
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.BACKSPACE
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.getKeyEvent
@@ -108,7 +108,7 @@ class AndroidKeyEventTest {
 
     @Test
     fun keyCode() {
-        Assert.assertEquals(getKeyCode(BACKSPACE, 0).toLong(), KeyEvent.KEYCODE_DEL.toLong())
-        Assert.assertEquals(getKeyCode("A", 0).toLong(), -1)
+        Assert.assertEquals(keyCodeToEvent(BACKSPACE, 0).toLong(), KeyEvent.KEYCODE_DEL.toLong())
+        Assert.assertEquals(keyCodeToEvent("A", 0).toLong(), -1)
     }
 }

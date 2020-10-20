@@ -17,7 +17,6 @@
 package io.appium.espressoserver.lib.model
 
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 class UiautomatorParams : AppiumParams() {
     val strategy: Strategy? = null
@@ -25,7 +24,7 @@ class UiautomatorParams : AppiumParams() {
     val index: Int? = null
     val action: Action? = null
 
-    enum class Strategy constructor(val methodName: String) {
+    enum class Strategy constructor(val strategyName: String) {
         @SerializedName("clazz")
         CLASS_NAME("clazz"),
 
@@ -58,17 +57,6 @@ class UiautomatorParams : AppiumParams() {
 
         @SerializedName("pkg")
         APPLICATION_PACKAGE("pkg");
-
-
-        companion object {
-
-            val validStrategyNames: List<String>
-                get() {
-                    return Strategy.values().map {
-                        it.name
-                    }
-                }
-        }
     }
 
     enum class Action constructor(val actionName: String) {
@@ -131,18 +119,5 @@ class UiautomatorParams : AppiumParams() {
 
         @SerializedName("isSelected")
         IS_SELECTED("isSelected");
-
-
-        companion object {
-
-            val validActionNames: List<String>
-                get() {
-                    val validActions = ArrayList<String>()
-                    for (action in Action.values()) {
-                        validActions.add(action.name)
-                    }
-                    return validActions
-                }
-        }
     }
 }

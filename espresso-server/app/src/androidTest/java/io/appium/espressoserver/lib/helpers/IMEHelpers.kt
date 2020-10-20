@@ -68,7 +68,7 @@ object IMEHelpers {
         }
 
         if (action == null) {
-            AndroidLogger.logger.debug("Performing the default editor action on the focused element")
+            AndroidLogger.debug("Performing the default editor action on the focused element")
             try {
                 viewInteraction.perform(pressImeActionButton())
                 return
@@ -78,7 +78,7 @@ object IMEHelpers {
         }
 
         val actionCode = toActionCode(action)
-        AndroidLogger.logger.debug("Performing editor action $actionCode on the focused element")
+        AndroidLogger.debug("Performing editor action $actionCode on the focused element")
         val view = ViewGetter().getView(viewInteraction)
         val ic = view.onCreateInputConnection(EditorInfo())
         if (!ic.performEditorAction(actionCode)) {

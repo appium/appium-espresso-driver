@@ -18,6 +18,7 @@ package io.appium.espressoserver.lib.helpers
 
 import android.app.UiAutomation.OnAccessibilityEventListener
 import android.view.accessibility.AccessibilityEvent
+import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import java.util.*
 import java.util.concurrent.Semaphore
 
@@ -36,22 +37,22 @@ object NotificationListener : OnAccessibilityEventListener {
 
     fun start() {
         if (isListening) {
-            AndroidLogger.logger.debug("Toast notification listener is already started")
+            AndroidLogger.debug("Toast notification listener is already started")
             return
         }
-        AndroidLogger.logger.debug("Starting toast notification listener")
+        AndroidLogger.debug("Starting toast notification listener")
         originalListener = UiAutomationWrapper.onAccessibilityEventListener
         isListening = true
-        AndroidLogger.logger.debug("Original listener: $originalListener")
+        AndroidLogger.debug("Original listener: $originalListener")
         UiAutomationWrapper.onAccessibilityEventListener = this
     }
 
     fun stop() {
         if (!isListening) {
-            AndroidLogger.logger.debug("Toast notification listener is already stopped")
+            AndroidLogger.debug("Toast notification listener is already stopped")
             return
         }
-        AndroidLogger.logger.debug("Stopping toast notification listener")
+        AndroidLogger.debug("Stopping toast notification listener")
         isListening = false
         UiAutomationWrapper.onAccessibilityEventListener = originalListener
     }
@@ -59,7 +60,7 @@ object NotificationListener : OnAccessibilityEventListener {
     @Synchronized
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.eventType == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
-            AndroidLogger.logger.debug("Caught toast message: $event")
+            AndroidLogger.debug("Caught toast message: $event")
             event.text?.let { if (it.isNotEmpty()) toastMessage = it }
         }
         originalListener?.onAccessibilityEvent(event)
@@ -67,26 +68,20 @@ object NotificationListener : OnAccessibilityEventListener {
 
     var toastMessage: List<CharSequence>
         get() {
-            TOAST_MESSAGE_GUARD.acquireUninterruptibly()
-            try {
+            return TOAST_MESSAGE_GUARD.withPermit {
                 if (_toastMessage.isNotEmpty()
                         && System.currentTimeMillis() - recentToastTimestamp > TOAST_CLEAR_TIMEOUT_MS) {
-                    AndroidLogger.logger.info("Clearing the outdated toast message: $_toastMessage")
+                    AndroidLogger.info("Clearing the outdated toast message: $_toastMessage")
                     _toastMessage.clear()
                 }
-                return Collections.unmodifiableList(_toastMessage)
-            } finally {
-                TOAST_MESSAGE_GUARD.release()
+                Collections.unmodifiableList(_toastMessage)
             }
         }
         private set(text) {
-            TOAST_MESSAGE_GUARD.acquireUninterruptibly()
-            try {
+            TOAST_MESSAGE_GUARD.withPermit {
                 _toastMessage.clear()
                 _toastMessage.addAll(text)
                 recentToastTimestamp = System.currentTimeMillis()
-            } finally {
-                TOAST_MESSAGE_GUARD.release()
             }
         }
 }

@@ -7,23 +7,18 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import java.lang.reflect.Type
 import org.hamcrest.Matcher
 
-@JsonAdapter(MatcherJsonDeserializer::class)
-data class MatcherJson(
-        val matcher: Matcher<*>
-) : AppiumParams() {
-
-    companion object {
-        fun fromJson(selector: String): MatcherJson {
-            try {
-                return Gson().fromJson(selector, MatcherJson::class.java)
-            } catch (e: AppiumException) {
-                throw InvalidSelectorException(String.format("Not a valid selector '%s'. Reason: '%s'", selector, e.cause))
-            } catch (e: JsonParseException) {
-                throw InvalidSelectorException(String.format("Could not parse selector '%s'. Reason: '%s'", selector, e.cause))
-            }
-        }
+fun String.toJsonMatcher(): MatcherJson {
+    try {
+        return Gson().fromJson(this, MatcherJson::class.java)
+    } catch (e: AppiumException) {
+        throw InvalidSelectorException(String.format("Not a valid selector '%s'. Reason: '%s'", this, e.cause), e)
+    } catch (e: JsonParseException) {
+        throw InvalidSelectorException(String.format("Could not parse selector '%s'. Reason: '%s'", this, e.cause), e)
     }
 }
+
+@JsonAdapter(MatcherJsonDeserializer::class)
+data class MatcherJson(val matcher: Matcher<*>) : AppiumParams()
 
 class MatcherJsonDeserializer : JsonDeserializer<MatcherJson> {
     @Throws(JsonParseException::class)

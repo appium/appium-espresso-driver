@@ -1,27 +1,12 @@
 package io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants
 
-import java.util.*
+object KeyNormalizer {
+    private val normalizedKeyMap = mutableMapOf<String, String>()
 
-class KeyNormalizer private constructor() {
-    fun getNormalizedKey(key: String): String? {
+    fun toNormalizedKey(key: String): String {
         return if (normalizedKeyMap.containsKey(key)) {
-            normalizedKeyMap[key]
+            normalizedKeyMap[key]!!
         } else key
-    }
-
-    companion object {
-        private val normalizedKeyMap: MutableMap<String, String> = HashMap()
-
-        @JvmStatic
-        @get:Synchronized
-        var instance: KeyNormalizer? = null
-            get() {
-                if (field == null) {
-                    field = KeyNormalizer()
-                }
-                return field
-            }
-            private set
     }
 
     init {

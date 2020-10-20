@@ -17,6 +17,7 @@
 package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.model.AppiumParams
 
 interface RequestHandler<in T : AppiumParams, out R> {
@@ -25,6 +26,9 @@ interface RequestHandler<in T : AppiumParams, out R> {
 
     @Suppress("UNCHECKED_CAST")
     @Throws(AppiumException::class)
-    fun handle(params: AppiumParams): R = handleInternal(params as? T
-            ?: throw IllegalArgumentException("Invalid type ${params.javaClass.name} passed to ${this.javaClass.name} handler"))
+    fun handle(params: AppiumParams): R {
+        AndroidLogger.info("Executing ${this::class.simpleName} handler")
+        return handleInternal(params as? T
+                ?: throw IllegalArgumentException("Invalid type ${this::class.simpleName} passed to ${this::class.simpleName} handler"))
+    }
 }

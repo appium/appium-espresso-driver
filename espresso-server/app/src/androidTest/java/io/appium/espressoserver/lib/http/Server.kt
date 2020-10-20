@@ -59,10 +59,10 @@ object Server : NanoHTTPD(DEFAULT_PORT) {
 
         if (response is AppiumResponse) {
             if (response.httpStatus === Response.Status.OK) {
-                AndroidLogger.logger.info("Responding to server with value: " +
+                AndroidLogger.info("Responding to server with value: " +
                         StringHelpers.abbreviate(response.value?.toString(), 300))
             } else {
-                AndroidLogger.logger.info("Responding to server with error: ${response.value}")
+                AndroidLogger.info("Responding to server with error: ${response.value}")
             }
         }
 
@@ -94,13 +94,13 @@ object Server : NanoHTTPD(DEFAULT_PORT) {
                     "permission in its manifest", e)
         }
 
-        AndroidLogger.logger.info("\nRunning Appium Espresso Server at port $DEFAULT_PORT\n")
+        AndroidLogger.info("\nRunning Appium Espresso Server at port $DEFAULT_PORT\n")
         router = Router()
     }
 
     override fun stop() {
         super.stop()
-        AndroidLogger.logger.info("\nStopping Appium Espresso at port $DEFAULT_PORT\n")
+        AndroidLogger.info("\nStopping Appium Espresso at port $DEFAULT_PORT\n")
     }
 
     fun makeRequestForServerToStop() {

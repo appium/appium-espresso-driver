@@ -3,7 +3,7 @@ package io.appium.espressoserver.test.helpers.w3c
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.DummyW3CActionAdapter
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer.Companion.instance
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer
 import io.appium.espressoserver.lib.helpers.w3c.models.ActionObject
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType
@@ -59,9 +59,9 @@ class InputStateTableTest {
         actionObject.dispatch(adapter, inputStateTable, 0f, 0)
 
         // Check that the button is depressed
-        val normalizedKey = instance!!.getNormalizedKey(SHIFT)
+        val normalizedKey = KeyNormalizer.toNormalizedKey(SHIFT)
         val inputState = inputStateTable.getInputState("456") as KeyInputState?
-        assertTrue(inputState!!.isPressed(normalizedKey!!))
+        assertTrue(inputState!!.isPressed(normalizedKey))
         assertTrue(inputState.isShift)
 
         // Undo the action and check that it is not depressed anymore

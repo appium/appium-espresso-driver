@@ -35,8 +35,9 @@ class SetOrientation : RequestHandler<OrientationParams, Void?> {
         // Validate the orientaiton
         orientation ?: throw AppiumException("Screen orientation value must not be null")
 
-        if (!OrientationType.supportedOrientationTypes().contains(orientation.toUpperCase())) {
-            throw AppiumException("Screen orientation must be one of LANDSCAPE or PORTRAIT. Found '$orientation'")
+        val supportedValues = OrientationType.values().map { it.name }
+        if (!supportedValues.contains(orientation.toUpperCase())) {
+            throw AppiumException("Screen orientation must be one of $supportedValues. Found '$orientation'")
         }
 
         // Get the view interaction for the element or for the root, if no element provided

@@ -21,16 +21,16 @@ import io.appium.espressoserver.lib.handlers.exceptions.SessionNotCreatedExcepti
 import io.appium.espressoserver.lib.helpers.ActivityHelpers.startActivity
 import io.appium.espressoserver.lib.helpers.NotificationListener
 import io.appium.espressoserver.lib.helpers.w3c.caps.parseCapabilities
-import io.appium.espressoserver.lib.model.Session
+import io.appium.espressoserver.lib.model.GlobalSession
 import io.appium.espressoserver.lib.model.SessionParams
 import io.appium.espressoserver.lib.model.StartActivityParams
 
 
-class CreateSession : RequestHandler<SessionParams, Session> {
+class CreateSession : RequestHandler<SessionParams, GlobalSession> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: SessionParams): Session {
-        val appiumSession = Session.createGlobalSession(params.capabilities
+    override fun handleInternal(params: SessionParams): GlobalSession {
+        val appiumSession = GlobalSession.create(params.capabilities
                 ?: throw SessionNotCreatedException("'capabilities' field is mandatory"))
         try {
             val parsedCaps = parseCapabilities(
@@ -50,6 +50,7 @@ class CreateSession : RequestHandler<SessionParams, Session> {
             }
             NotificationListener.start()
         } catch (e: Exception) {
+            appiumSession.delete()
             throw SessionNotCreatedException(e)
         }
         return appiumSession

@@ -33,6 +33,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.T
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.MotionEventParams
 import io.appium.espressoserver.lib.model.ViewElement
+import io.appium.espressoserver.lib.model.toAndroidButtonState
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 import java.util.*
@@ -49,7 +50,7 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
         @Throws(InvalidArgumentException::class)
         get() {
             return globalMouseButtonDownEvents.keys.fold(0) { buttonState, button ->
-                buttonState or MotionEventParams.getAndroidButtonState(button)
+                buttonState or button.toAndroidButtonState()
             }
         }
 
@@ -95,13 +96,13 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
         globalTouchDownEvent?.let {
             throw AppiumException("Cannot call touch down while another touch event is still down")
         }
-        AndroidLogger.logger.info("Calling touch down event on (${params.x} ${params.y})")
+        AndroidLogger.info("Calling touch down event on (${params.x} ${params.y})")
         globalTouchDownEvent = handlePointerEvent(params, ACTION_DOWN, TOUCH)
     }
 
     @Throws(AppiumException::class)
     private fun handleTouchUp(params: MotionEventParams) {
-        AndroidLogger.logger.info("Calling touch up event on (${params.x} ${params.y})")
+        AndroidLogger.info("Calling touch up event on (${params.x} ${params.y})")
         globalTouchDownEvent
                 ?: throw AppiumException("Touch up event must be preceded by a touch down event")
         handlePointerEvent(params, ACTION_UP, TOUCH, globalTouchDownEvent!!.downTime)

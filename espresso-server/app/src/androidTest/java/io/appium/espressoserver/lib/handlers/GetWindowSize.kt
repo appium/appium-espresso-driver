@@ -31,7 +31,6 @@ class GetWindowSize : RequestHandler<AppiumParams, WindowSize> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): WindowSize {
-        AndroidLogger.logger.info("Get window size of the device")
         val displayMetrics = DisplayMetrics()
         val context = getApplicationContext<Context>()
         val winManager = context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager

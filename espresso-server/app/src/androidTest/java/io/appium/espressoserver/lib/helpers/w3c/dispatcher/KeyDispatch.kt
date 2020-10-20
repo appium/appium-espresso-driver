@@ -2,7 +2,7 @@ package io.appium.espressoserver.lib.helpers.w3c.dispatcher
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.W3CActionAdapter
-import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer.Companion.instance
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.KeyNormalizer
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.getCode
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.getLocation
@@ -134,7 +134,7 @@ fun getKeyEvent(dispatcherAdapter: W3CActionAdapter, rawKey: String): W3CKeyEven
     // 1. Let raw key be action's value property
 
     // 2. Let key be equal to the normalised key value for raw key
-    this.key = instance!!.getNormalizedKey(rawKey)
+    this.key = KeyNormalizer.toNormalizedKey(rawKey)
 
     // 4. Let code be 'code' for raw keypress
     this.code = getCode(rawKey)

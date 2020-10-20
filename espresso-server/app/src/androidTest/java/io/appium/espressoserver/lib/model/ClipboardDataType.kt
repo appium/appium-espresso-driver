@@ -2,22 +2,17 @@ package io.appium.espressoserver.lib.model
 
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 
+fun String.toClipboardDataType(): ClipboardDataType {
+    return when (this.toUpperCase()) {
+        ClipboardDataType.PLAINTEXT.name ->
+            ClipboardDataType.PLAINTEXT
+        else ->
+            throw InvalidArgumentException(
+                    "Only case insensitive ${ClipboardDataType.values().map { it.name }} content types are supported. " +
+                            "'$this' is given instead")
+    }
+}
+
 enum class ClipboardDataType {
     PLAINTEXT;
-
-    companion object {
-        fun getContentType(contentType: String?): ClipboardDataType {
-            if (contentType == null) return PLAINTEXT
-
-            return when (contentType.toUpperCase()) {
-                PLAINTEXT.name ->
-                    PLAINTEXT
-                else ->
-                    throw InvalidArgumentException(
-                        "Only case insensitive ${values().map { it.toString() }} content types are supported. " +
-                                "'$contentType' is given instead")
-            }
-
-        }
-    }
 }

@@ -7,7 +7,7 @@ import androidx.test.espresso.InjectEventSecurityException
 import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.MoveTargetOutOfBoundsException
-import io.appium.espressoserver.lib.helpers.AndroidLogger.Companion.logger
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
 
 class MotionEventBuilder {
@@ -93,7 +93,7 @@ class MotionEventBuilder {
                 }
             }
             val eventTime = if (motionEventParams.eventTime > 0) motionEventParams.eventTime else SystemClock.uptimeMillis()
-            logger.info(String.format(
+            AndroidLogger.info(String.format(
                     "Running Android MotionEvent.obtain with parameters: " +
                             "downTime=[%s], eventTime=[%s], action=[%s], pointerCount=[%s], " + "" +
                             "pointerProperties=[%s], pointerCoords=[%s], metaState=[%s], buttonState=[%s], " +

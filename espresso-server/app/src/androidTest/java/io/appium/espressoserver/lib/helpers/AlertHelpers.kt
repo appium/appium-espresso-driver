@@ -42,11 +42,11 @@ object AlertHelpers {
             getUiDevice().waitForIdle()
 
             if (getUiDevice().findObjects(By.res(regularAlertTitleResIdPattern)).isNotEmpty()) {
-                AndroidLogger.logger.debug("Regular alert has been detected")
+                AndroidLogger.debug("Regular alert has been detected")
                 return AlertType.REGULAR
             }
             if (getUiDevice().findObjects(By.res(permissionAlertTitleResIdPattern)).isNotEmpty()) {
-                AndroidLogger.logger.debug("Permission alert has been detected")
+                AndroidLogger.debug("Permission alert has been detected")
                 return AlertType.PERMISSION
             }
 
@@ -65,12 +65,12 @@ object AlertHelpers {
 
             val alertRoots = getUiDevice().findObjects(By.res(alertContentResId))
             if (alertRoots.isEmpty()) {
-                AndroidLogger.logger.warn("Alert content container is missing")
+                AndroidLogger.warn("Alert content container is missing")
                 throw NoAlertOpenException()
             }
 
             val alertElements = alertRoots[0].findObjects(By.res(alertElementsResIdPattern))
-            AndroidLogger.logger.debug("Detected ${alertElements.size} alert elements")
+            AndroidLogger.debug("Detected ${alertElements.size} alert elements")
             val alertButtonsResIdPattern = if (alertType == AlertType.REGULAR)
                 regularAlertButtonResIdPattern.toString()
             else
@@ -100,7 +100,7 @@ object AlertHelpers {
         if (alertButtonsMapping.isEmpty()) {
             return null
         }
-        AndroidLogger.logger.debug("Found ${alertButtonsMapping.size} buttons on the alert")
+        AndroidLogger.debug("Found ${alertButtonsMapping.size} buttons on the alert")
 
         if (buttonLabel == null) {
             val minIdx = Collections.min(buttonIndexes)
@@ -117,7 +117,7 @@ object AlertHelpers {
         if (buttons.isEmpty()) {
             return null
         }
-        AndroidLogger.logger.debug("Found ${buttons.size} buttons on the alert")
+        AndroidLogger.debug("Found ${buttons.size} buttons on the alert")
 
         if (buttonLabel == null) {
             if (action == AlertAction.ACCEPT) {
@@ -155,7 +155,7 @@ object AlertHelpers {
                 ?: throw InvalidElementStateException("The expected button cannot be detected on the alert")
 
         val actualLabel = dstButton.text
-        AndroidLogger.logger.info("Clicking alert button '$actualLabel' in order to ${action.name.toLowerCase()} it")
+        AndroidLogger.info("Clicking alert button '$actualLabel' in order to ${action.name.toLowerCase()} it")
         dstButton.click()
         return actualLabel
     }

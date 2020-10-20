@@ -31,6 +31,7 @@ import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate
 import io.appium.espressoserver.lib.helpers.XMLHelpers.toNodeName
 import io.appium.espressoserver.lib.helpers.XMLHelpers.toSafeString
+import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import io.appium.espressoserver.lib.viewaction.ViewGetter
 import org.w3c.dom.Element
 import org.w3c.dom.NodeList
@@ -39,9 +40,40 @@ import org.xmlpull.v1.XmlSerializer
 import java.io.*
 import java.util.*
 import java.util.concurrent.Semaphore
+import javax.xml.xpath.XPath
 import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathExpressionException
 import javax.xml.xpath.XPathFactory
+
+const val NON_XML_CHAR_REPLACEMENT = "?"
+const val VIEW_INDEX = "viewIndex"
+const val NAMESPACE = ""
+val DEFAULT_VIEW_CLASS_NAME = View::javaClass.name
+const val MAX_TRAVERSAL_DEPTH = 70
+const val MAX_XML_VALUE_LENGTH = 64 * 1024
+const val XML_ENCODING = "UTF-8"
+val XPATH: XPath = XPathFactory.newInstance().newXPath()
+
+
+private fun toXmlNodeName(className: String?): String {
+    if (className == null || className.trim { it <= ' ' }.isEmpty()) {
+        return DEFAULT_VIEW_CLASS_NAME
+    }
+
+    var fixedName = className
+            .replace("[$@#&]".toRegex(), ".")
+            .replace("\\.+".toRegex(), ".")
+            .replace("(^\\.|\\.$)".toRegex(), "")
+    fixedName = toNodeName(fixedName)
+    if (fixedName.trim { it <= ' ' }.isEmpty()) {
+        fixedName = DEFAULT_VIEW_CLASS_NAME
+    }
+    if (fixedName != className) {
+        AndroidLogger.info("Rewrote class name '$className' to XML node name '$fixedName'")
+    }
+    return fixedName
+}
+
 
 class SourceDocument @JvmOverloads constructor(
         private val root: View?,
@@ -129,7 +161,7 @@ class SourceDocument @JvmOverloads constructor(
             recordAdapterViewInfo(view)
         }
 
-        serializer?.attribute(NAMESPACE, VIEW_INDEX, Integer.toString(viewMap.size()))
+        serializer?.attribute(NAMESPACE, VIEW_INDEX, viewMap.size().toString())
         viewMap.put(viewMap.size(), view)
 
         if (depth < MAX_TRAVERSAL_DEPTH) {
@@ -140,7 +172,7 @@ class SourceDocument @JvmOverloads constructor(
                 }
             }
         } else {
-            AndroidLogger.logger.warn("Skipping traversal of ${view.javaClass.name}'s children, since " +
+            AndroidLogger.warn("Skipping traversal of ${view.javaClass.name}'s children, since " +
                     "the current depth has reached its maximum allowed value of $depth")
         }
 
@@ -158,13 +190,10 @@ class SourceDocument @JvmOverloads constructor(
             viewMap.clear()
 
             try {
-                val outputStream: OutputStream
-                if (streamType == FileOutputStream::class.java) {
+                val outputStream = if (streamType == FileOutputStream::class.java) {
                     tmpXmlName = "${UUID.randomUUID()}.xml"
-                    outputStream = getApplicationContext<Context>().openFileOutput(tmpXmlName, Context.MODE_PRIVATE)
-                } else {
-                    outputStream = ByteArrayOutputStream()
-                }
+                    getApplicationContext<Context>().openFileOutput(tmpXmlName, Context.MODE_PRIVATE)
+                } else ByteArrayOutputStream()
                 try {
                     serializer?.let {
                         it.setOutput(outputStream, XML_ENCODING)
@@ -173,7 +202,7 @@ class SourceDocument @JvmOverloads constructor(
                         val startTime = SystemClock.uptimeMillis()
                         serializeView(rootView, 0)
                         it.endDocument()
-                        AndroidLogger.logger.info("The source XML tree has been fetched in " +
+                        AndroidLogger.info("The source XML tree has been fetched in " +
                                 "${SystemClock.uptimeMillis() - startTime}ms " +
                                 "using ${streamType.simpleName}")
                     }
@@ -207,13 +236,7 @@ class SourceDocument @JvmOverloads constructor(
 
     @Throws(AppiumException::class)
     fun toXMLString(): String {
-        try {
-            RESOURCES_GUARD.acquire()
-        } catch (e: InterruptedException) {
-            throw AppiumException(e)
-        }
-
-        try {
+        return RESOURCES_GUARD.withPermit({
             toStream().use { xmlStream ->
                 val sb = StringBuilder()
                 val reader = BufferedReader(InputStreamReader(xmlStream, XML_ENCODING))
@@ -222,78 +245,25 @@ class SourceDocument @JvmOverloads constructor(
                     sb.append(line)
                     line = reader.readLine()
                 }
-                return sb.toString()
+                sb.toString()
             }
-        } catch (e: IOException) {
-            throw AppiumException(e)
-        } finally {
-            performCleanup()
-            RESOURCES_GUARD.release()
-        }
+        }, { performCleanup() })
     }
 
     @Throws(AppiumException::class)
     fun findViewsByXPath(xpathSelector: String): List<View> {
-        try {
-            // Get the Nodes that match the provided xpath
-            val expr = xpath.compile(xpathSelector)
-            var list: NodeList
-            try {
-                RESOURCES_GUARD.acquire()
-            } catch (e: InterruptedException) {
-                throw AppiumException(e)
-            }
-
-            try {
-                toStream().use {
-                    xmlStream -> list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
-                    return (0 until list.length).map { index ->
-                        viewMap.get(Integer.parseInt((list.item(index) as Element).getAttribute(VIEW_INDEX)))
-                    }
-                }
-            } catch (e: IOException) {
-                throw AppiumException(e)
-            } finally {
-                performCleanup()
-                RESOURCES_GUARD.release()
-            }
+        val expr = try {
+            XPATH.compile(xpathSelector)
         } catch (xe: XPathExpressionException) {
             throw XPathLookupException(xpathSelector, xe.message!!)
         }
-
-    }
-
-    companion object {
-        private val xpath = XPathFactory.newInstance().newXPath()
-        private const val NON_XML_CHAR_REPLACEMENT = "?"
-        private const val VIEW_INDEX = "viewIndex"
-        private const val NAMESPACE = ""
-        private const val DEFAULT_VIEW_CLASS_NAME = "android.view.View"
-        private var MAX_TRAVERSAL_DEPTH = 70
-        private const val MAX_XML_VALUE_LENGTH = 64 * 1024
-        private const val XML_ENCODING = "UTF-8"
-
-        private fun toXmlNodeName(className: String?): String {
-            if (className == null || className.trim { it <= ' ' }.isEmpty()) {
-                return DEFAULT_VIEW_CLASS_NAME
+        return RESOURCES_GUARD.withPermit({
+            toStream().use { xmlStream ->
+                val list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
+                (0 until list.length).map { index ->
+                    viewMap.get(Integer.parseInt((list.item(index) as Element).getAttribute(VIEW_INDEX)))
+                }
             }
-
-            var fixedName = className
-                    .replace("[$@#&]".toRegex(), ".")
-                    .replace("\\.+".toRegex(), ".")
-                    .replace("(^\\.|\\.$)".toRegex(), "")
-            fixedName = toNodeName(fixedName)
-            if (fixedName.trim { it <= ' ' }.isEmpty()) {
-                fixedName = DEFAULT_VIEW_CLASS_NAME
-            }
-            if (fixedName != className) {
-                AndroidLogger.logger.info("Rewrote class name '$className' to XML node name '$fixedName'")
-            }
-            return fixedName
-        }
-
-        fun `$setMaxTraverseDepth`(maxTraverseDepth: Int) {
-            MAX_TRAVERSAL_DEPTH = maxTraverseDepth
-        }
+        }, { performCleanup() })
     }
 }

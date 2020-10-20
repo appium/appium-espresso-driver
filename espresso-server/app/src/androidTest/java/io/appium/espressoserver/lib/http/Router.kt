@@ -35,7 +35,7 @@ internal class Router {
     private val routeMap: RouteMap
 
     init {
-        AndroidLogger.logger.debug("Generating routes")
+        AndroidLogger.debug("Generating routes")
         routeMap = RouteMap()
 
         routeMap.addRoute(RouteDefinition(Method.GET, "/status", Status(), AppiumParams::class.java))
@@ -180,18 +180,18 @@ internal class Router {
     }
 
     fun route(uri: String, method: Method, files: Map<String, String>): BaseResponse {
-        AndroidLogger.logger.debug("Started processing $method request for '$uri'")
+        AndroidLogger.debug("Started processing $method request for '$uri'")
 
         // Look for a route that matches this URL
         val matchingRoute = routeMap.findMatchingRoute(method, uri)
                 ?: return AppiumResponse(AppiumException("No such route: $uri"))
 
         // If no route found, return a 404 Error Response
-        AndroidLogger.logger.debug("Matched route definition: ${matchingRoute.javaClass}")
+        AndroidLogger.debug("Matched route definition: ${matchingRoute.javaClass}")
 
         // Get the handler, parameter class and URI parameters
         val handler = matchingRoute.handler
-        AndroidLogger.logger.debug("Matched route handler: ${handler.javaClass}")
+        AndroidLogger.debug("Matched route handler: ${handler.javaClass}")
         val paramClass = matchingRoute.paramClass
         val uriParams = matchingRoute.getUriParams(uri)
 
@@ -202,7 +202,7 @@ internal class Router {
         try {
             // Parse the parameters
             val appiumParams: AppiumParams = postJson?.let {
-                AndroidLogger.logger.debug("Got raw post data: ${abbreviate(it, 300)}")
+                AndroidLogger.debug("Got raw post data: ${abbreviate(it, 300)}")
                 try {
                     paramClass.cast(Gson().fromJson<AppiumParams>(it, paramClass))
                             ?: return AppiumResponse(InvalidArgumentException("Could not parse JSON: $it"))
@@ -215,8 +215,7 @@ internal class Router {
 
             // Validate the sessionId
             if (appiumParams.sessionId != null
-                    && Session.globalSession != null
-                    && appiumParams.sessionId != Session.globalSession!!.sessionId) {
+                    && GlobalSession.exists && appiumParams.sessionId != GlobalSession.sessionId) {
                 return AppiumResponse(NoSuchDriverException("Invalid session ID ${appiumParams.sessionId!!}"))
             }
 
@@ -225,13 +224,13 @@ internal class Router {
             val handlerResult = handler.handle(appiumParams)
 
             // If it's a new session, pull out the newly created Session ID
-            if (handlerResult is Session) {
+            if (handlerResult is GlobalSession) {
                 sessionId = handlerResult.sessionId
             }
 
             // Construct the response and serve it
             val appiumResponse = AppiumResponse(handlerResult, sessionId)
-            AndroidLogger.logger.debug("Finished processing $method request for '$uri'")
+            AndroidLogger.debug("Finished processing $method request for '$uri'")
             return appiumResponse
         } catch (e: Throwable) {
             var err = e

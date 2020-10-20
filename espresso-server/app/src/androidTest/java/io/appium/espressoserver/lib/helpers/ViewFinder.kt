@@ -50,7 +50,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
-import io.appium.espressoserver.lib.model.MatcherJson
+import io.appium.espressoserver.lib.model.toJsonMatcher
 import io.appium.espressoserver.lib.viewmatcher.withView
 import io.appium.espressoserver.lib.viewmatcher.withXPath
 import org.hamcrest.CoreMatchers.allOf
@@ -67,11 +67,6 @@ object ViewFinder {
     private const val ID_PATTERN = "[\\S]+:id/[\\S]+"
     private const val APP_NOT_IDLE_MESSAGE = "The application is expected to be in idle state in order for Espresso to interact with it. " +
             "Review the threads dump below to know more on which entity is hogging the events loop "
-
-    @Throws(AppiumException::class)
-    fun findBy(strategy: Strategy, selector: String): View? {
-        return findBy(null, strategy, selector)
-    }
 
     /**
      * Find one instance of an element that matches the locator criteria
@@ -91,11 +86,6 @@ object ViewFinder {
         return if (viewInteractions.isEmpty()) {
             null
         } else viewInteractions[0]
-    }
-
-    @Throws(AppiumException::class)
-    fun findAllBy(strategy: Strategy, selector: String): List<View>? {
-        return findAllBy(null, strategy, selector, false)
     }
 
     /**
@@ -152,7 +142,7 @@ object ViewFinder {
                 val context = getApplicationContext<Context>()
                 if (!selector.matches(ID_PATTERN.toRegex())) {
                     selector = "${context.packageName}:id/$selector"
-                    AndroidLogger.logger.info("Rewrote Id selector to '$selector'")
+                    AndroidLogger.info("Rewrote Id selector to '$selector'")
                 }
                 val id = context.resources.getIdentifier(selector, "Id", context.packageName)
 
@@ -185,7 +175,7 @@ object ViewFinder {
             Strategy.VIEW_TAG -> views = getViews(root, withTagValue(allOf(instanceOf(String::class.java),
                     equalTo(selector as Any))), findOne)
             Strategy.DATAMATCHER -> {
-                val matcher = MatcherJson.fromJson(selector)
+                val matcher = selector.toJsonMatcher()
                 views = try {
                     getViewsFromDataInteraction(root, onData(matcher.matcher))
                 } catch (e: PerformException) {
@@ -194,7 +184,7 @@ object ViewFinder {
                 }
             }
             Strategy.VIEWMATCHER -> {
-                val matcherJson = MatcherJson.fromJson(selector)
+                val matcherJson = selector.toJsonMatcher()
                 views = try {
                     @Suppress("UNCHECKED_CAST")
                     getViewsFromViewMatcher(root, matcherJson.matcher as Matcher<View>)

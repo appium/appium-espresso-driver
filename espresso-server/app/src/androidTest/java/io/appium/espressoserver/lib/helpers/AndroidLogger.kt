@@ -16,7 +16,9 @@
 
 package io.appium.espressoserver.lib.helpers
 
-class AndroidLogger : Logger {
+const val TAG = "appium"
+
+object AndroidLogger : Logger {
 
     override fun error(vararg messages: Any) {
         android.util.Log.e(TAG, toString(*messages))
@@ -38,14 +40,6 @@ class AndroidLogger : Logger {
         android.util.Log.w(TAG, toString(*messages))
     }
 
-    companion object {
-        private const val TAG = "appium"
-
-        private fun toString(vararg args: Any): String {
-            return args.toList().joinToString(separator = "") { "$it" }
-        }
-
-        @JvmStatic
-        val logger: Logger = AndroidLogger()
-    }
+    private fun toString(vararg args: Any): String =
+            args.toList().joinToString(separator = "") { "$it" }
 }

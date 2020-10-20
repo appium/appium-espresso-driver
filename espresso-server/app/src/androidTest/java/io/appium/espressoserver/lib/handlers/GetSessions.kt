@@ -18,22 +18,23 @@ package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Session
+import io.appium.espressoserver.lib.model.GlobalSession
 
 class GetSessions : RequestHandler<AppiumParams, Collection<Map<String, Any?>>> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): Collection<Map<String, Any?>> {
-        Session.globalSession?.let { session ->
-            return listOf<Map<String, Any?>>(mapOf(
-                    "id" to session.sessionId,
+        return if (GlobalSession.exists) {
+            listOf(mapOf(
+                    "id" to GlobalSession.sessionId,
                     "capabilities" to mapOf(
-                            "firstMatch" to session.capabilities.firstMatch,
-                            "alwaysMatch" to session.capabilities.alwaysMatch
+                            "firstMatch" to GlobalSession.capabilities?.firstMatch,
+                            "alwaysMatch" to GlobalSession.capabilities?.alwaysMatch
                     )
             ))
+        } else {
+            emptyList()
         }
-        return emptyList()
     }
 
 }

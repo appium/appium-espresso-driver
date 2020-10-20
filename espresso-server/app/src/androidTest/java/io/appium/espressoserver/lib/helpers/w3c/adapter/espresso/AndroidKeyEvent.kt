@@ -7,7 +7,7 @@ import androidx.test.espresso.InjectEventSecurityException
 import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.helpers.AndroidLogger.Companion.logger
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ALT
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ARROW_DOWN
@@ -64,6 +64,73 @@ import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedK
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ZENKAKU_HANKAKU
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ZERO
 import java.util.*
+
+
+/**
+ * Translate a W3C Key into an Android Key Event (if possible
+ * @param keyValue The W3C normalized key value (https://www.w3.org/TR/webdriver1/#keyboard-actions)
+ * @param location The W3C "key location"
+ * @return
+ */
+fun keyCodeToEvent(keyValue: String?, @Suppress("UNUSED_PARAMETER") location: Int): Int {
+    return when (keyValue) {
+        UNIDENTIFIED -> KeyEvent.KEYCODE_UNKNOWN
+        HELP -> KeyEvent.KEYCODE_HELP
+        BACKSPACE -> KeyEvent.KEYCODE_DEL
+        TAB -> KeyEvent.KEYCODE_TAB
+        CLEAR -> KeyEvent.KEYCODE_CLEAR
+        RETURN -> KeyEvent.KEYCODE_ENTER
+        PAUSE -> KeyEvent.KEYCODE_BREAK
+        ESCAPE -> KeyEvent.KEYCODE_ESCAPE
+        WHITESPACE -> KeyEvent.KEYCODE_SPACE
+        SEMICOLON -> KeyEvent.KEYCODE_SEMICOLON
+        EQUALS -> KeyEvent.KEYCODE_EQUALS
+        ZERO -> KeyEvent.KEYCODE_0
+        ONE -> KeyEvent.KEYCODE_1
+        TWO -> KeyEvent.KEYCODE_2
+        THREE -> KeyEvent.KEYCODE_3
+        FOUR -> KeyEvent.KEYCODE_4
+        FIVE -> KeyEvent.KEYCODE_5
+        SIX -> KeyEvent.KEYCODE_6
+        SEVEN -> KeyEvent.KEYCODE_7
+        EIGHT -> KeyEvent.KEYCODE_8
+        NINE -> KeyEvent.KEYCODE_9
+        ASTERISK -> KeyEvent.KEYCODE_STAR
+        PLUS -> KeyEvent.KEYCODE_NUMPAD_ADD
+        COMMA -> KeyEvent.KEYCODE_COMMA
+        HYPHEN -> KeyEvent.KEYCODE_MINUS
+        PERIOD -> KeyEvent.KEYCODE_PERIOD
+        FORWARD_SLASH -> KeyEvent.KEYCODE_SLASH
+        F1 -> KeyEvent.KEYCODE_F1
+        F2 -> KeyEvent.KEYCODE_F2
+        F3 -> KeyEvent.KEYCODE_F3
+        F4 -> KeyEvent.KEYCODE_F4
+        F5 -> KeyEvent.KEYCODE_F5
+        F6 -> KeyEvent.KEYCODE_F6
+        F7 -> KeyEvent.KEYCODE_F7
+        F8 -> KeyEvent.KEYCODE_F8
+        F9 -> KeyEvent.KEYCODE_F9
+        F10 -> KeyEvent.KEYCODE_F10
+        F11 -> KeyEvent.KEYCODE_F11
+        F12 -> KeyEvent.KEYCODE_F12
+        ZENKAKU_HANKAKU -> KeyEvent.KEYCODE_ZENKAKU_HANKAKU
+        SHIFT -> KeyEvent.KEYCODE_SHIFT_LEFT
+        CONTROL -> KeyEvent.KEYCODE_CTRL_LEFT
+        ALT -> KeyEvent.KEYCODE_ALT_LEFT
+        META -> KeyEvent.KEYCODE_META_LEFT
+        PAGEUP -> KeyEvent.KEYCODE_PAGE_UP
+        PAGEDOWN -> KeyEvent.KEYCODE_PAGE_DOWN
+        END -> KeyEvent.KEYCODE_MOVE_END
+        HOME -> KeyEvent.KEYCODE_HOME
+        ARROW_LEFT -> KeyEvent.KEYCODE_DPAD_LEFT
+        ARROW_UP -> KeyEvent.KEYCODE_DPAD_DOWN
+        ARROW_RIGHT -> KeyEvent.KEYCODE_DPAD_RIGHT
+        ARROW_DOWN -> KeyEvent.KEYCODE_DPAD_DOWN
+        INSERT -> KeyEvent.KEYCODE_INSERT
+        DELETE -> KeyEvent.KEYCODE_FORWARD_DEL
+        else -> -1
+    }
+}
 
 class AndroidKeyEvent(private val uiController: UiController) {
     private val keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
@@ -189,7 +256,7 @@ class AndroidKeyEvent(private val uiController: UiController) {
 
         // Inject all of the key events, in order
         for (androidKeyEvent in keyEvents) {
-            logger.info(String.format("Calling key event: %s", androidKeyEvent))
+            AndroidLogger.info(String.format("Calling key event: %s", androidKeyEvent))
             var isSuccess: Boolean
             isSuccess = try {
                 uiController.injectKeyEvent(androidKeyEvent)
@@ -201,74 +268,4 @@ class AndroidKeyEvent(private val uiController: UiController) {
             }
         }
     }
-
-    companion object {
-        /**
-         * Translate a W3C Key into an Android Key Event (if possible
-         * @param keyValue The W3C normalized key value (https://www.w3.org/TR/webdriver1/#keyboard-actions)
-         * @param location The W3C "key location"
-         * @return
-         */
-        @JvmStatic
-        fun getKeyCode(keyValue: String?, @Suppress("UNUSED_PARAMETER") location: Int): Int {
-            return when (keyValue) {
-                UNIDENTIFIED -> KeyEvent.KEYCODE_UNKNOWN
-                HELP -> KeyEvent.KEYCODE_HELP
-                BACKSPACE -> KeyEvent.KEYCODE_DEL
-                TAB -> KeyEvent.KEYCODE_TAB
-                CLEAR -> KeyEvent.KEYCODE_CLEAR
-                RETURN -> KeyEvent.KEYCODE_ENTER
-                PAUSE -> KeyEvent.KEYCODE_BREAK
-                ESCAPE -> KeyEvent.KEYCODE_ESCAPE
-                WHITESPACE -> KeyEvent.KEYCODE_SPACE
-                SEMICOLON -> KeyEvent.KEYCODE_SEMICOLON
-                EQUALS -> KeyEvent.KEYCODE_EQUALS
-                ZERO -> KeyEvent.KEYCODE_0
-                ONE -> KeyEvent.KEYCODE_1
-                TWO -> KeyEvent.KEYCODE_2
-                THREE -> KeyEvent.KEYCODE_3
-                FOUR -> KeyEvent.KEYCODE_4
-                FIVE -> KeyEvent.KEYCODE_5
-                SIX -> KeyEvent.KEYCODE_6
-                SEVEN -> KeyEvent.KEYCODE_7
-                EIGHT -> KeyEvent.KEYCODE_8
-                NINE -> KeyEvent.KEYCODE_9
-                ASTERISK -> KeyEvent.KEYCODE_STAR
-                PLUS -> KeyEvent.KEYCODE_NUMPAD_ADD
-                COMMA -> KeyEvent.KEYCODE_COMMA
-                HYPHEN -> KeyEvent.KEYCODE_MINUS
-                PERIOD -> KeyEvent.KEYCODE_PERIOD
-                FORWARD_SLASH -> KeyEvent.KEYCODE_SLASH
-                F1 -> KeyEvent.KEYCODE_F1
-                F2 -> KeyEvent.KEYCODE_F2
-                F3 -> KeyEvent.KEYCODE_F3
-                F4 -> KeyEvent.KEYCODE_F4
-                F5 -> KeyEvent.KEYCODE_F5
-                F6 -> KeyEvent.KEYCODE_F6
-                F7 -> KeyEvent.KEYCODE_F7
-                F8 -> KeyEvent.KEYCODE_F8
-                F9 -> KeyEvent.KEYCODE_F9
-                F10 -> KeyEvent.KEYCODE_F10
-                F11 -> KeyEvent.KEYCODE_F11
-                F12 -> KeyEvent.KEYCODE_F12
-                ZENKAKU_HANKAKU -> KeyEvent.KEYCODE_ZENKAKU_HANKAKU
-                SHIFT -> KeyEvent.KEYCODE_SHIFT_LEFT
-                CONTROL -> KeyEvent.KEYCODE_CTRL_LEFT
-                ALT -> KeyEvent.KEYCODE_ALT_LEFT
-                META -> KeyEvent.KEYCODE_META_LEFT
-                PAGEUP -> KeyEvent.KEYCODE_PAGE_UP
-                PAGEDOWN -> KeyEvent.KEYCODE_PAGE_DOWN
-                END -> KeyEvent.KEYCODE_MOVE_END
-                HOME -> KeyEvent.KEYCODE_HOME
-                ARROW_LEFT -> KeyEvent.KEYCODE_DPAD_LEFT
-                ARROW_UP -> KeyEvent.KEYCODE_DPAD_DOWN
-                ARROW_RIGHT -> KeyEvent.KEYCODE_DPAD_RIGHT
-                ARROW_DOWN -> KeyEvent.KEYCODE_DPAD_DOWN
-                INSERT -> KeyEvent.KEYCODE_INSERT
-                DELETE -> KeyEvent.KEYCODE_FORWARD_DEL
-                else -> -1
-            }
-        }
-    }
-
 }

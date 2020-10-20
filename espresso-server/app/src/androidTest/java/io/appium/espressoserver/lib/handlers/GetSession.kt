@@ -18,17 +18,17 @@ package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Session
+import io.appium.espressoserver.lib.model.GlobalSession
 import io.appium.espressoserver.lib.model.SessionParams
 
 class GetSession : RequestHandler<AppiumParams, SessionParams.W3CCapabilities?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): SessionParams.W3CCapabilities? {
-        Session.globalSession?.let {
-            return it.capabilities
+        return if (GlobalSession.exists) {
+            GlobalSession.capabilities
+        } else {
+            null
         }
-        return null
     }
-
 }

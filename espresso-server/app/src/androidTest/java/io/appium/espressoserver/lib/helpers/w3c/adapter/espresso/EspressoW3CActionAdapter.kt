@@ -36,7 +36,7 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
         get() = displayMetrics.widthPixels.toLong()
 
     override val logger: Logger
-        get() = AndroidLogger.logger
+        get() = AndroidLogger
 
     @Throws(AppiumException::class)
     override fun keyDown(keyDownEvent: W3CKeyEvent) {
@@ -119,11 +119,11 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     @Throws(AppiumException::class)
     override fun sychronousTickActionsComplete() {
         multiTouchState.perform(uiController)
-        AndroidLogger.logger.info("Pointer event: Tick complete")
+        AndroidLogger.info("Pointer event: Tick complete")
     }
 
     override fun getKeyCode(keyValue: String?, location: Int): Int {
-        return AndroidKeyEvent.getKeyCode(keyValue, location)
+        return keyCodeToEvent(keyValue, location)
     }
 
     @Throws(AppiumException::class)

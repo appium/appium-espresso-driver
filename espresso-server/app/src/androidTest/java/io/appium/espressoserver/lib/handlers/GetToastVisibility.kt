@@ -16,12 +16,10 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.NotificationListener
 import io.appium.espressoserver.lib.model.ToastLookupParams
 
 class GetToastVisibility : RequestHandler<ToastLookupParams, Boolean> {
-    @Throws(AppiumException::class)
     override fun handleInternal(params: ToastLookupParams): Boolean {
         val toastMessage = NotificationListener.toastMessage.joinToString(separator = "\n")
         if (toastMessage.isEmpty()) {

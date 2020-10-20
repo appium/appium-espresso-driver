@@ -25,5 +25,5 @@ data class SetClipboardParams(
     val label: String? = null
 ) : AppiumParams() {
     val contentType : ClipboardDataType
-        get() = ClipboardDataType.getContentType(_contentType)
+        get() = _contentType?.toClipboardDataType() ?: ClipboardDataType.PLAINTEXT
 }

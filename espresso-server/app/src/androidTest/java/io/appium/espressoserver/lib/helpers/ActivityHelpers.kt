@@ -23,6 +23,7 @@ import android.util.ArrayMap
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
+import io.appium.espressoserver.lib.helpers.ReflectionUtils.extractField
 import io.appium.espressoserver.lib.model.StartActivityParams
 import io.appium.espressoserver.lib.model.mapToLocaleParams
 
@@ -46,21 +47,13 @@ object ActivityHelpers {
                 //    https://androidreclib.wordpress.com/2014/11/22/getting-the-current-activity/
                 try {
                     val activityThreadClass = Class.forName("android.app.ActivityThread")
-                    val activityThread = activityThreadClass.getMethod("currentActivityThread")
-                            .invoke(null)
-                    val activitiesField = activityThreadClass.getDeclaredField("mActivities")
-                    activitiesField.isAccessible = true
-                    val activities = activitiesField.get(activityThread) as ArrayMap<*, *>
-                    for (activityRecord in activities.values) {
-                        val activityRecordClass = activityRecord.javaClass
-                        val pausedField = activityRecordClass.getDeclaredField("paused")
-                        pausedField.isAccessible = true
-                        if (!pausedField.getBoolean(activityRecord)) {
-                            val activityField = activityRecordClass.getDeclaredField("activity")
-                            activityField.isAccessible = true
-                            return activityField.get(activityRecord) as Activity
-                        }
-                    }
+                    val activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null)
+                    val activities = extractField(activityThreadClass, "mActivities", activityThread) as ArrayMap<*, *>
+                    return activities.values
+                            .map { Pair(extractField(it.javaClass, "paused", it) as Boolean, it) }
+                            .filter { !it.first }
+                            .map { extractField(it.second.javaClass, "activity", it.second) as Activity }
+                            .firstOrNull()
                 } catch (e: Exception) {
                     // ignore
                 }
@@ -108,11 +101,11 @@ object ActivityHelpers {
                     "flags" to "ACTIVITY_NEW_TASK",
                     "className" to fullyQualifiedAppActivity
             )
-            AndroidLogger.logger.info("Starting activity '$fullyQualifiedAppActivity' " +
+            AndroidLogger.info("Starting activity '$fullyQualifiedAppActivity' " +
                     "with default options: $defaultOptions")
             makeIntent(instrumentation.targetContext, defaultOptions)
         } else {
-            AndroidLogger.logger.info("Staring activity with custom options: ${params.optionalIntentArguments}")
+            AndroidLogger.info("Staring activity with custom options: ${params.optionalIntentArguments}")
             makeIntent(instrumentation.targetContext, params.optionalIntentArguments)
         }
 

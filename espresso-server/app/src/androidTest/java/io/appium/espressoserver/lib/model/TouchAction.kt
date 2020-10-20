@@ -2,7 +2,6 @@ package io.appium.espressoserver.lib.model
 
 import android.view.ViewConfiguration
 import com.google.gson.annotations.SerializedName
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.*
@@ -11,6 +10,29 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceTy
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH
 import io.appium.espressoserver.lib.helpers.w3c.models.Origin
 import java.util.*
+
+fun toW3CInputSources(touchActionsLists: List<List<TouchAction>>): List<InputSource> {
+    val inputSources = ArrayList<InputSource>()
+    for ((touchInputIndex, touchActions) in touchActionsLists.withIndex()) {
+        val w3cActions = ArrayList<Action>()
+        for (touchAction in touchActions) {
+            w3cActions.addAll(touchAction.toW3CAction())
+        }
+
+        val parameters = Parameters()
+        parameters.pointerType = TOUCH
+
+        // Add a finger pointer
+        inputSources.add(InputSourceBuilder()
+                .withType(POINTER)
+                .withParameters(parameters)
+                .withId(String.format("finger%s", touchInputIndex))
+                .withActions(w3cActions)
+                .build())
+    }
+
+    return inputSources
+}
 
 class TouchAction {
 
@@ -152,33 +174,5 @@ class TouchAction {
         var elementId: String? = null
         var x: Long? = null
         var y: Long? = null
-    }
-
-    companion object {
-
-        @Throws(AppiumException::class)
-        fun toW3CInputSources(touchActionsLists: List<List<TouchAction>>): List<InputSource> {
-
-            val inputSources = ArrayList<InputSource>()
-            for ((touchInputIndex, touchActions) in touchActionsLists.withIndex()) {
-                val w3cActions = ArrayList<Action>()
-                for (touchAction in touchActions) {
-                    w3cActions.addAll(touchAction.toW3CAction())
-                }
-
-                val parameters = Parameters()
-                parameters.pointerType = TOUCH
-
-                // Add a finger pointer
-                inputSources.add(InputSourceBuilder()
-                        .withType(POINTER)
-                        .withParameters(parameters)
-                        .withId(String.format("finger%s", touchInputIndex))
-                        .withActions(w3cActions)
-                        .build())
-            }
-
-            return inputSources
-        }
     }
 }
