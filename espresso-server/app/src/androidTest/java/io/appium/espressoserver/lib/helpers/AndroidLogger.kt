@@ -40,7 +40,6 @@ object AndroidLogger : Logger {
         android.util.Log.w(TAG, toString(*messages))
     }
 
-    private fun toString(vararg args: Any): String {
-        return args.toList().joinToString(separator = "") { "$it" }
-    }
+    private fun toString(vararg args: Any): String =
+            args.toList().joinToString(separator = "") { "$it" }
 }
