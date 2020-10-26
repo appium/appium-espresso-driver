@@ -19,26 +19,20 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.InteractionHelper
 import io.appium.espressoserver.lib.model.AppiumParams
-import java.io.File
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 class UiautomatorPageSource : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): String {
-        var dumpXml = ""
-        var dumpView: File? = null
-
         try {
-            val uiDevice = InteractionHelper.getUiDevice()
-            dumpView = File.createTempFile("window_dump", "uix")
-            uiDevice.dumpWindowHierarchy(dumpView)
-            dumpXml = dumpView.inputStream().readBytes().toString(Charsets.UTF_8)
-            dumpView.delete()
-        } catch (e: Exception) {
+
+            val stream = ByteArrayOutputStream()
+            InteractionHelper.getUiDevice().dumpWindowHierarchy(stream)
+            return String(stream.toByteArray())
+        } catch (e: IOException) {
             throw AppiumException("Could not get page source with UiAutomator", e)
-        } finally {
-            dumpView?.delete()
         }
-        return dumpXml
     }
 }
