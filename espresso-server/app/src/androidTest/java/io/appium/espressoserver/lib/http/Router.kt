@@ -130,6 +130,7 @@ internal class Router {
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/backdoor", MobileBackdoor(), MobileBackdoorParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/flash", MobileViewFlash(), ViewFlashParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/uiautomator", Uiautomator(), UiautomatorParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/appium/execute_mobile/uiautomator_page_source", UiautomatorPageSource(), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/click_action", MobileClickAction(), MobileClickActionParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/web_atoms", WebAtoms(), WebAtomsParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/dismiss_autofill", PerformAutofillDismissal(), AppiumParams::class.java))
