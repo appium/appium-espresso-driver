@@ -25,14 +25,11 @@ import java.io.IOException
 class UiautomatorPageSource : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): String {
-        try {
-
-            val stream = ByteArrayOutputStream()
-            InteractionHelper.getUiDevice().dumpWindowHierarchy(stream)
-            return String(stream.toByteArray())
-        } catch (e: IOException) {
-            throw AppiumException("Could not get page source with UiAutomator", e)
-        }
+    override fun handleInternal(params: AppiumParams): String = try {
+        val stream = ByteArrayOutputStream()
+        InteractionHelper.getUiDevice().dumpWindowHierarchy(stream)
+        String(stream.toByteArray())
+    } catch (e: IOException) {
+        throw AppiumException("Could not get page source with UiAutomator", e)
     }
 }
