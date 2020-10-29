@@ -28,7 +28,7 @@ describe('element attributes', function () {
     });
     it('should not work if getting an attribute that does not exist', async function () {
       let el = await driver.elementByXPath("//*[@text='Animation']");
-      await el.getAttribute('some-fake-property').should.eventually.be.rejectedWith(/Attribute name should be one of/);
+      return el.getAttribute('some-fake-property').should.eventually.be.rejectedWith(/Attribute name should be one of/);
     });
   });
 });
