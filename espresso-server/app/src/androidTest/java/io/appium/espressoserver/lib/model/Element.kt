@@ -99,7 +99,8 @@ class Element(view: View) {
         fun getViewById(elementId: String?, checkStaleness: Boolean = true): View {
             elementId ?: throw InvalidArgumentException("Cannot find 'null' element")
             if (!ViewsCache.has(elementId)) {
-                throw NoSuchElementException("No such element with ID '$elementId'")
+                throw NoSuchElementException("The element identified by '$elementId' does not exist in the cache " +
+                        "or has expired. Try to find it again")
             }
 
             val (resultView, initialContentDescription1) = Objects.requireNonNull<ViewState>(ViewsCache.get(elementId))

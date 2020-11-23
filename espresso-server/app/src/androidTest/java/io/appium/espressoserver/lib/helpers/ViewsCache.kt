@@ -16,23 +16,25 @@
 
 package io.appium.espressoserver.lib.helpers
 
+import android.util.LruCache
 import android.view.View
-import java.util.concurrent.ConcurrentHashMap
 
-data class ViewState(val view:View, val initialContentDescription:CharSequence?)
+const val MAX_CACHE_SIZE = 500
+
+data class ViewState(val view: View, val initialContentDescription: CharSequence?)
 
 object ViewsCache {
-    private val cache = ConcurrentHashMap<String, ViewState>()
+    private val cache = LruCache<String, ViewState>(MAX_CACHE_SIZE)
 
     fun put(id: String, view: View) {
-        cache[id] = ViewState(view, view.contentDescription)
+        cache.put(id, ViewState(view, view.contentDescription))
     }
 
-    fun get(id: String): ViewState? {
-        return cache[id]
-    }
+    fun get(id: String): ViewState? = cache.get(id)
 
-    fun has(id: String): Boolean {
-        return cache.containsKey(id)
+    fun has(id: String): Boolean = cache.get(id) != null
+
+    fun reset() {
+        cache.evictAll()
     }
 }
