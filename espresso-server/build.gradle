@@ -14,7 +14,7 @@ buildscript {
         (propertyValue) ? Boolean.parseBoolean(propertyValue) : defaultValue
     }
 
-    ext.android_gradle_plugin_version = getStringProperty('appiumAndroidGradlePlugin', '4.0.2')
+    ext.android_gradle_plugin_version = getStringProperty('appiumAndroidGradlePlugin', '4.1.1')
     ext.kotlin_version = getStringProperty('appiumKotlin', '1.3.72')
 
     repositories {
