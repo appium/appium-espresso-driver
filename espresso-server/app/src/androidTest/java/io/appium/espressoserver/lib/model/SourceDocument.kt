@@ -75,18 +75,17 @@ private fun toXmlNodeName(className: String?): String {
 }
 
 
-class SourceDocument @JvmOverloads constructor(
-        private val root: View?,
-        private val viewMap: SparseArray<View> = SparseArray()
+class SourceDocument constructor(
+        private val root: View? = null,
+        private val includedAttributes: Set<ViewAttributesEnum>? = null
 ) {
+    @Suppress("PrivatePropertyName")
     private val RESOURCES_GUARD = Semaphore(1)
 
+    private val viewMap: SparseArray<View> = SparseArray()
     private var serializer: XmlSerializer? = null
     private var tmpXmlName: String? = null
 
-    constructor() : this(null)
-
-    @Throws(IOException::class)
     private fun setAttribute(attrName: ViewAttributesEnum, attrValue: Any?) {
         // Do not write attributes, whose values equal to null
         attrValue?.let {
@@ -117,48 +116,69 @@ class SourceDocument @JvmOverloads constructor(
         }
     }
 
+    private fun isAttributeIncluded(attr: ViewAttributesEnum): Boolean
+        = null == includedAttributes || includedAttributes.contains(attr)
+
     /**
      * Recursively visit all of the views and map them to XML elements
      *
      * @param view  The root view
      * @param depth The current traversal depth
      */
-    @Throws(IOException::class)
     private fun serializeView(view: View?, depth: Int) {
         if (view == null) {
             return
         }
 
         val viewElement = ViewElement(view)
-        val tagName = toXmlNodeName(viewElement.className)
+        val className = viewElement.className
+        val tagName = toXmlNodeName(className)
         serializer?.startTag(NAMESPACE, tagName)
 
-        // Set attributes
-        setAttribute(ViewAttributesEnum.INDEX, viewElement.index)
-        setAttribute(ViewAttributesEnum.PACKAGE, viewElement.packageName)
-        setAttribute(ViewAttributesEnum.CLASS, viewElement.className)
-        setAttribute(ViewAttributesEnum.CONTENT_DESC, viewElement.contentDescription)
-        setAttribute(ViewAttributesEnum.CHECKABLE, viewElement.isCheckable)
-        setAttribute(ViewAttributesEnum.CHECKED, viewElement.isChecked)
-        setAttribute(ViewAttributesEnum.CLICKABLE, viewElement.isClickable)
-        setAttribute(ViewAttributesEnum.ENABLED, viewElement.isEnabled)
-        setAttribute(ViewAttributesEnum.FOCUSABLE, viewElement.isFocusable)
-        setAttribute(ViewAttributesEnum.FOCUSED, viewElement.isFocused)
-        setAttribute(ViewAttributesEnum.SCROLLABLE, viewElement.isScrollable)
-        setAttribute(ViewAttributesEnum.LONG_CLICKABLE, viewElement.isLongClickable)
-        setAttribute(ViewAttributesEnum.PASSWORD, viewElement.isPassword)
-        setAttribute(ViewAttributesEnum.SELECTED, viewElement.isSelected)
-        setAttribute(ViewAttributesEnum.VISIBLE, viewElement.isVisible)
-        setAttribute(ViewAttributesEnum.BOUNDS, viewElement.bounds.toShortString())
-        val viewText = viewElement.text
-        viewText?.let {
-            setAttribute(ViewAttributesEnum.TEXT, it.rawText)
-            setAttribute(ViewAttributesEnum.HINT, it.isHint)
-        }
-        setAttribute(ViewAttributesEnum.RESOURCE_ID, viewElement.resourceId)
-        setAttribute(ViewAttributesEnum.VIEW_TAG, viewElement.viewTag)
-        if (view is AdapterView<*>) {
-            recordAdapterViewInfo(view)
+        var isTextOrHintRecorded = false
+        var isAdapterInfoRecorded = false
+        linkedMapOf(
+                ViewAttributesEnum.INDEX to { viewElement.index },
+                ViewAttributesEnum.PACKAGE to { viewElement.packageName },
+                ViewAttributesEnum.CLASS to { className },
+                ViewAttributesEnum.CONTENT_DESC to { viewElement.contentDescription },
+                ViewAttributesEnum.CHECKABLE to { viewElement.isCheckable },
+                ViewAttributesEnum.CHECKED to { viewElement.isChecked },
+                ViewAttributesEnum.CLICKABLE to { viewElement.isClickable },
+                ViewAttributesEnum.ENABLED to { viewElement.isEnabled },
+                ViewAttributesEnum.FOCUSABLE to { viewElement.isFocusable },
+                ViewAttributesEnum.FOCUSED to { viewElement.isFocused },
+                ViewAttributesEnum.SCROLLABLE to { viewElement.isScrollable },
+                ViewAttributesEnum.LONG_CLICKABLE to { viewElement.isLongClickable },
+                ViewAttributesEnum.PASSWORD to { viewElement.isPassword },
+                ViewAttributesEnum.SELECTED to { viewElement.isSelected },
+                ViewAttributesEnum.VISIBLE to { viewElement.isVisible },
+                ViewAttributesEnum.BOUNDS to { viewElement.bounds.toShortString() },
+                ViewAttributesEnum.TEXT to null,
+                ViewAttributesEnum.HINT to null,
+                ViewAttributesEnum.RESOURCE_ID to { viewElement.resourceId },
+                ViewAttributesEnum.VIEW_TAG to { viewElement.viewTag },
+                ViewAttributesEnum.ADAPTERS to null,
+                ViewAttributesEnum.ADAPTER_TYPE to null
+        ).forEach {
+            when (it.key) {
+                ViewAttributesEnum.TEXT, ViewAttributesEnum.HINT ->
+                    if (!isTextOrHintRecorded && isAttributeIncluded(it.key)) {
+                        viewElement.text?.let { text ->
+                            setAttribute(ViewAttributesEnum.TEXT, text.rawText)
+                            setAttribute(ViewAttributesEnum.HINT, text.isHint)
+                            isTextOrHintRecorded = true
+                        }
+                    }
+                ViewAttributesEnum.ADAPTERS, ViewAttributesEnum.ADAPTER_TYPE ->
+                    if (!isAdapterInfoRecorded && view is AdapterView<*> && isAttributeIncluded(it.key)) {
+                        recordAdapterViewInfo(view)
+                        isAdapterInfoRecorded = true
+                    }
+                else -> if (isAttributeIncluded(it.key)) {
+                    setAttribute(it.key, it.value!!())
+                }
+            }
         }
 
         serializer?.attribute(NAMESPACE, VIEW_INDEX, viewMap.size().toString())
@@ -179,7 +199,6 @@ class SourceDocument @JvmOverloads constructor(
         serializer?.endTag(NAMESPACE, tagName)
     }
 
-    @Throws(AppiumException::class)
     private fun toStream(): InputStream {
         var lastError: Throwable? = null
         val rootView = root ?: ViewGetter().rootView
@@ -234,7 +253,6 @@ class SourceDocument @JvmOverloads constructor(
         }
     }
 
-    @Throws(AppiumException::class)
     fun toXMLString(): String {
         return RESOURCES_GUARD.withPermit({
             toStream().use { xmlStream ->
@@ -250,7 +268,6 @@ class SourceDocument @JvmOverloads constructor(
         }, { performCleanup() })
     }
 
-    @Throws(AppiumException::class)
     fun findViewsByXPath(xpathSelector: String): List<View> {
         val expr = try {
             XPATH.compile(xpathSelector)
