@@ -116,8 +116,7 @@ class SourceDocument constructor(
         }
     }
 
-    private fun isAttributeIncluded(attr: ViewAttributesEnum): Boolean
-        = null == includedAttributes || includedAttributes.contains(attr)
+    private fun isAttributeIncluded(attr: ViewAttributesEnum): Boolean = null == includedAttributes || includedAttributes.contains(attr)
 
     /**
      * Recursively visit all of the views and map them to XML elements
@@ -161,21 +160,23 @@ class SourceDocument constructor(
                 ViewAttributesEnum.ADAPTERS to null,
                 ViewAttributesEnum.ADAPTER_TYPE to null
         ).forEach {
-            if (it.key == ViewAttributesEnum.TEXT || it.key == ViewAttributesEnum.HINT) {
-                if (!isTextOrHintRecorded && isAttributeIncluded(it.key)) {
-                    viewElement.text?.let { text ->
-                        setAttribute(ViewAttributesEnum.TEXT, text.rawText)
-                        setAttribute(ViewAttributesEnum.HINT, text.isHint)
-                        isTextOrHintRecorded = true
+            when (it.key) {
+                ViewAttributesEnum.TEXT, ViewAttributesEnum.HINT ->
+                    if (!isTextOrHintRecorded && isAttributeIncluded(it.key)) {
+                        viewElement.text?.let { text ->
+                            setAttribute(ViewAttributesEnum.TEXT, text.rawText)
+                            setAttribute(ViewAttributesEnum.HINT, text.isHint)
+                            isTextOrHintRecorded = true
+                        }
                     }
+                ViewAttributesEnum.ADAPTERS, ViewAttributesEnum.ADAPTER_TYPE ->
+                    if (!isAdapterInfoRecorded && view is AdapterView<*> && isAttributeIncluded(it.key)) {
+                        recordAdapterViewInfo(view)
+                        isAdapterInfoRecorded = true
+                    }
+                else -> if (isAttributeIncluded(it.key)) {
+                    setAttribute(it.key, it.value!!())
                 }
-            } else if (it.key == ViewAttributesEnum.ADAPTERS || it.key == ViewAttributesEnum.ADAPTER_TYPE) {
-                if (!isAdapterInfoRecorded && view is AdapterView<*> && isAttributeIncluded(it.key)) {
-                    recordAdapterViewInfo(view)
-                    isAdapterInfoRecorded = true
-                }
-            } else if (isAttributeIncluded(it.key)) {
-                setAttribute(it.key, it.value!!())
             }
         }
 
