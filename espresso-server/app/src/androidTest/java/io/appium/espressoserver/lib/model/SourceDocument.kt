@@ -75,16 +75,16 @@ private fun toXmlNodeName(className: String?): String {
 }
 
 
-class SourceDocument @JvmOverloads constructor(
-        private val root: View?,
-        private val viewMap: SparseArray<View> = SparseArray()
+class SourceDocument constructor(
+        private val root: View? = null,
+        private val includedAttributes: Set<ViewAttributesEnum>? = null
 ) {
+    @Suppress("PrivatePropertyName")
     private val RESOURCES_GUARD = Semaphore(1)
 
+    private val viewMap: SparseArray<View> = SparseArray()
     private var serializer: XmlSerializer? = null
     private var tmpXmlName: String? = null
-
-    constructor() : this(null)
 
     @Throws(IOException::class)
     private fun setAttribute(attrName: ViewAttributesEnum, attrValue: Any?) {
@@ -130,34 +130,75 @@ class SourceDocument @JvmOverloads constructor(
         }
 
         val viewElement = ViewElement(view)
-        val tagName = toXmlNodeName(viewElement.className)
+        val className = viewElement.className
+        val tagName = toXmlNodeName(className)
         serializer?.startTag(NAMESPACE, tagName)
 
         // Set attributes
-        setAttribute(ViewAttributesEnum.INDEX, viewElement.index)
-        setAttribute(ViewAttributesEnum.PACKAGE, viewElement.packageName)
-        setAttribute(ViewAttributesEnum.CLASS, viewElement.className)
-        setAttribute(ViewAttributesEnum.CONTENT_DESC, viewElement.contentDescription)
-        setAttribute(ViewAttributesEnum.CHECKABLE, viewElement.isCheckable)
-        setAttribute(ViewAttributesEnum.CHECKED, viewElement.isChecked)
-        setAttribute(ViewAttributesEnum.CLICKABLE, viewElement.isClickable)
-        setAttribute(ViewAttributesEnum.ENABLED, viewElement.isEnabled)
-        setAttribute(ViewAttributesEnum.FOCUSABLE, viewElement.isFocusable)
-        setAttribute(ViewAttributesEnum.FOCUSED, viewElement.isFocused)
-        setAttribute(ViewAttributesEnum.SCROLLABLE, viewElement.isScrollable)
-        setAttribute(ViewAttributesEnum.LONG_CLICKABLE, viewElement.isLongClickable)
-        setAttribute(ViewAttributesEnum.PASSWORD, viewElement.isPassword)
-        setAttribute(ViewAttributesEnum.SELECTED, viewElement.isSelected)
-        setAttribute(ViewAttributesEnum.VISIBLE, viewElement.isVisible)
-        setAttribute(ViewAttributesEnum.BOUNDS, viewElement.bounds.toShortString())
-        val viewText = viewElement.text
-        viewText?.let {
-            setAttribute(ViewAttributesEnum.TEXT, it.rawText)
-            setAttribute(ViewAttributesEnum.HINT, it.isHint)
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.INDEX)) {
+            setAttribute(ViewAttributesEnum.INDEX, viewElement.index)
         }
-        setAttribute(ViewAttributesEnum.RESOURCE_ID, viewElement.resourceId)
-        setAttribute(ViewAttributesEnum.VIEW_TAG, viewElement.viewTag)
-        if (view is AdapterView<*>) {
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.PACKAGE)) {
+            setAttribute(ViewAttributesEnum.PACKAGE, viewElement.packageName)
+        }
+        // class name is always included
+        setAttribute(ViewAttributesEnum.CLASS, className)
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.CONTENT_DESC)) {
+            setAttribute(ViewAttributesEnum.CONTENT_DESC, viewElement.contentDescription)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.CHECKABLE)) {
+            setAttribute(ViewAttributesEnum.CHECKABLE, viewElement.isCheckable)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.CHECKED)) {
+            setAttribute(ViewAttributesEnum.CHECKED, viewElement.isChecked)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.CLICKABLE)) {
+            setAttribute(ViewAttributesEnum.CLICKABLE, viewElement.isClickable)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.ENABLED)) {
+            setAttribute(ViewAttributesEnum.ENABLED, viewElement.isEnabled)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.FOCUSABLE)) {
+            setAttribute(ViewAttributesEnum.FOCUSABLE, viewElement.isFocusable)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.FOCUSED)) {
+            setAttribute(ViewAttributesEnum.FOCUSED, viewElement.isFocused)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.SCROLLABLE)) {
+            setAttribute(ViewAttributesEnum.SCROLLABLE, viewElement.isScrollable)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.LONG_CLICKABLE)) {
+            setAttribute(ViewAttributesEnum.LONG_CLICKABLE, viewElement.isLongClickable)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.PASSWORD)) {
+            setAttribute(ViewAttributesEnum.PASSWORD, viewElement.isPassword)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.SELECTED)) {
+            setAttribute(ViewAttributesEnum.SELECTED, viewElement.isSelected)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.VISIBLE)) {
+            setAttribute(ViewAttributesEnum.VISIBLE, viewElement.isVisible)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.VISIBLE)) {
+            setAttribute(ViewAttributesEnum.BOUNDS, viewElement.bounds.toShortString())
+        }
+        if (null == includedAttributes
+                || includedAttributes.contains(ViewAttributesEnum.TEXT)
+                || includedAttributes.contains(ViewAttributesEnum.HINT)) {
+            viewElement.text?.let {
+                setAttribute(ViewAttributesEnum.TEXT, it.rawText)
+                setAttribute(ViewAttributesEnum.HINT, it.isHint)
+            }
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.RESOURCE_ID)) {
+            setAttribute(ViewAttributesEnum.RESOURCE_ID, viewElement.resourceId)
+        }
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.VIEW_TAG)) {
+            setAttribute(ViewAttributesEnum.VIEW_TAG, viewElement.viewTag)
+        }
+        if (view is AdapterView<*> && (null == includedAttributes
+                        || includedAttributes.contains(ViewAttributesEnum.ADAPTERS)
+                        || includedAttributes.contains(ViewAttributesEnum.ADAPTER_TYPE))) {
             recordAdapterViewInfo(view)
         }
 

@@ -17,13 +17,27 @@ package io.appium.espressoserver.lib.viewmatcher
 
 import android.view.View
 import io.appium.espressoserver.lib.model.SourceDocument
+import io.appium.espressoserver.lib.model.ViewAttributesEnum
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
+fun fetchIncludedAttributes(xpath: String): Set<ViewAttributesEnum>? {
+    if (xpath.contains("@*")) {
+        return null
+    }
+
+    return ViewAttributesEnum.values().fold(mutableSetOf()) { acc, value ->
+        if (xpath.contains("@$value")) {
+            acc.add(value)
+        }
+        acc
+    }
+}
+
 fun withXPath(root: View?, xpath: String, index: Int? = null): Matcher<View> {
     // Get a list of the Views that match the provided xpath
-    val matchedXPathViews = SourceDocument(root).findViewsByXPath(xpath)
+    val matchedXPathViews = SourceDocument(root, fetchIncludedAttributes(xpath)).findViewsByXPath(xpath)
     return object : TypeSafeMatcher<View>() {
         override fun matchesSafely(item: View): Boolean {
             return if (index != null) {
