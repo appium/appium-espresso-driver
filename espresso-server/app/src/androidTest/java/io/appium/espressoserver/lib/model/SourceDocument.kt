@@ -179,7 +179,7 @@ class SourceDocument constructor(
         if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.VISIBLE)) {
             setAttribute(ViewAttributesEnum.VISIBLE, viewElement.isVisible)
         }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.VISIBLE)) {
+        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.BOUNDS)) {
             setAttribute(ViewAttributesEnum.BOUNDS, viewElement.bounds.toShortString())
         }
         if (null == includedAttributes
