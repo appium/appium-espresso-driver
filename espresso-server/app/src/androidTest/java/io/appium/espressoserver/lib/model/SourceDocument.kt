@@ -86,7 +86,6 @@ class SourceDocument constructor(
     private var serializer: XmlSerializer? = null
     private var tmpXmlName: String? = null
 
-    @Throws(IOException::class)
     private fun setAttribute(attrName: ViewAttributesEnum, attrValue: Any?) {
         // Do not write attributes, whose values equal to null
         attrValue?.let {
@@ -117,13 +116,15 @@ class SourceDocument constructor(
         }
     }
 
+    private fun isAttributeIncluded(attr: ViewAttributesEnum): Boolean
+        = null == includedAttributes || includedAttributes.contains(attr)
+
     /**
      * Recursively visit all of the views and map them to XML elements
      *
      * @param view  The root view
      * @param depth The current traversal depth
      */
-    @Throws(IOException::class)
     private fun serializeView(view: View?, depth: Int) {
         if (view == null) {
             return
@@ -134,72 +135,48 @@ class SourceDocument constructor(
         val tagName = toXmlNodeName(className)
         serializer?.startTag(NAMESPACE, tagName)
 
-        // Set attributes
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.INDEX)) {
-            setAttribute(ViewAttributesEnum.INDEX, viewElement.index)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.PACKAGE)) {
-            setAttribute(ViewAttributesEnum.PACKAGE, viewElement.packageName)
-        }
-        // class name is always included
-        setAttribute(ViewAttributesEnum.CLASS, className)
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.CONTENT_DESC)) {
-            setAttribute(ViewAttributesEnum.CONTENT_DESC, viewElement.contentDescription)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.CHECKABLE)) {
-            setAttribute(ViewAttributesEnum.CHECKABLE, viewElement.isCheckable)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.CHECKED)) {
-            setAttribute(ViewAttributesEnum.CHECKED, viewElement.isChecked)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.CLICKABLE)) {
-            setAttribute(ViewAttributesEnum.CLICKABLE, viewElement.isClickable)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.ENABLED)) {
-            setAttribute(ViewAttributesEnum.ENABLED, viewElement.isEnabled)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.FOCUSABLE)) {
-            setAttribute(ViewAttributesEnum.FOCUSABLE, viewElement.isFocusable)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.FOCUSED)) {
-            setAttribute(ViewAttributesEnum.FOCUSED, viewElement.isFocused)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.SCROLLABLE)) {
-            setAttribute(ViewAttributesEnum.SCROLLABLE, viewElement.isScrollable)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.LONG_CLICKABLE)) {
-            setAttribute(ViewAttributesEnum.LONG_CLICKABLE, viewElement.isLongClickable)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.PASSWORD)) {
-            setAttribute(ViewAttributesEnum.PASSWORD, viewElement.isPassword)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.SELECTED)) {
-            setAttribute(ViewAttributesEnum.SELECTED, viewElement.isSelected)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.VISIBLE)) {
-            setAttribute(ViewAttributesEnum.VISIBLE, viewElement.isVisible)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.BOUNDS)) {
-            setAttribute(ViewAttributesEnum.BOUNDS, viewElement.bounds.toShortString())
-        }
-        if (null == includedAttributes
-                || includedAttributes.contains(ViewAttributesEnum.TEXT)
-                || includedAttributes.contains(ViewAttributesEnum.HINT)) {
-            viewElement.text?.let {
-                setAttribute(ViewAttributesEnum.TEXT, it.rawText)
-                setAttribute(ViewAttributesEnum.HINT, it.isHint)
+        var isTextOrHintRecorded = false
+        var isAdapterInfoRecorded = false
+        linkedMapOf(
+                ViewAttributesEnum.INDEX to { viewElement.index },
+                ViewAttributesEnum.PACKAGE to { viewElement.packageName },
+                ViewAttributesEnum.CLASS to { className },
+                ViewAttributesEnum.CONTENT_DESC to { viewElement.contentDescription },
+                ViewAttributesEnum.CHECKABLE to { viewElement.isCheckable },
+                ViewAttributesEnum.CHECKED to { viewElement.isChecked },
+                ViewAttributesEnum.CLICKABLE to { viewElement.isClickable },
+                ViewAttributesEnum.ENABLED to { viewElement.isEnabled },
+                ViewAttributesEnum.FOCUSABLE to { viewElement.isFocusable },
+                ViewAttributesEnum.FOCUSED to { viewElement.isFocused },
+                ViewAttributesEnum.SCROLLABLE to { viewElement.isScrollable },
+                ViewAttributesEnum.LONG_CLICKABLE to { viewElement.isLongClickable },
+                ViewAttributesEnum.PASSWORD to { viewElement.isPassword },
+                ViewAttributesEnum.SELECTED to { viewElement.isSelected },
+                ViewAttributesEnum.VISIBLE to { viewElement.isVisible },
+                ViewAttributesEnum.BOUNDS to { viewElement.bounds.toShortString() },
+                ViewAttributesEnum.TEXT to null,
+                ViewAttributesEnum.HINT to null,
+                ViewAttributesEnum.RESOURCE_ID to { viewElement.resourceId },
+                ViewAttributesEnum.VIEW_TAG to { viewElement.viewTag },
+                ViewAttributesEnum.ADAPTERS to null,
+                ViewAttributesEnum.ADAPTER_TYPE to null
+        ).forEach {
+            if (it.key == ViewAttributesEnum.TEXT || it.key == ViewAttributesEnum.HINT) {
+                if (!isTextOrHintRecorded && isAttributeIncluded(it.key)) {
+                    viewElement.text?.let { text ->
+                        setAttribute(ViewAttributesEnum.TEXT, text.rawText)
+                        setAttribute(ViewAttributesEnum.HINT, text.isHint)
+                        isTextOrHintRecorded = true
+                    }
+                }
+            } else if (it.key == ViewAttributesEnum.ADAPTERS || it.key == ViewAttributesEnum.ADAPTER_TYPE) {
+                if (!isAdapterInfoRecorded && view is AdapterView<*> && isAttributeIncluded(it.key)) {
+                    recordAdapterViewInfo(view)
+                    isAdapterInfoRecorded = true
+                }
+            } else if (isAttributeIncluded(it.key)) {
+                setAttribute(it.key, it.value!!())
             }
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.RESOURCE_ID)) {
-            setAttribute(ViewAttributesEnum.RESOURCE_ID, viewElement.resourceId)
-        }
-        if (null == includedAttributes || includedAttributes.contains(ViewAttributesEnum.VIEW_TAG)) {
-            setAttribute(ViewAttributesEnum.VIEW_TAG, viewElement.viewTag)
-        }
-        if (view is AdapterView<*> && (null == includedAttributes
-                        || includedAttributes.contains(ViewAttributesEnum.ADAPTERS)
-                        || includedAttributes.contains(ViewAttributesEnum.ADAPTER_TYPE))) {
-            recordAdapterViewInfo(view)
         }
 
         serializer?.attribute(NAMESPACE, VIEW_INDEX, viewMap.size().toString())
@@ -220,7 +197,6 @@ class SourceDocument constructor(
         serializer?.endTag(NAMESPACE, tagName)
     }
 
-    @Throws(AppiumException::class)
     private fun toStream(): InputStream {
         var lastError: Throwable? = null
         val rootView = root ?: ViewGetter().rootView
@@ -275,7 +251,6 @@ class SourceDocument constructor(
         }
     }
 
-    @Throws(AppiumException::class)
     fun toXMLString(): String {
         return RESOURCES_GUARD.withPermit({
             toStream().use { xmlStream ->
@@ -291,7 +266,6 @@ class SourceDocument constructor(
         }, { performCleanup() })
     }
 
-    @Throws(AppiumException::class)
     fun findViewsByXPath(xpathSelector: String): List<View> {
         val expr = try {
             XPATH.compile(xpathSelector)
