@@ -116,7 +116,8 @@ class SourceDocument constructor(
         }
     }
 
-    private fun isAttributeIncluded(attr: ViewAttributesEnum): Boolean = null == includedAttributes || includedAttributes.contains(attr)
+    private fun isAttributeIncluded(attr: ViewAttributesEnum): Boolean
+        = null == includedAttributes || includedAttributes.contains(attr)
 
     /**
      * Recursively visit all of the views and map them to XML elements
