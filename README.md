@@ -226,7 +226,7 @@ data | string | Intent data URI | content://contacts/people/1
 type | string | Intent MIME type | image/png
 categories | string | One or more comma-separated Intent categories | android.intent.category.APP_CONTACTS
 component | string | Component name with package name prefix to create an explicit intent | com.example.app/.ExampleActivity
-intFlags | string | Single string value, which represents intent flags set encoded into an integer. Could also be provided in hexadecimal format. See https://developer.android.com/reference/android/content/Intent.html#setFlags(int) for more details. | 0x0F
+intFlags | string | Single string value, which represents intent flags set encoded into an integer. Could also be provided in hexadecimal format. Check [setFlags method documentation](https://developer.android.com/reference/android/content/Intent.html#setFlags(int)) for more details. | 0x0F
 flags | Comma-separated string of intent flag names | 'FLAG_GRANT_READ_URI_PERMISSION, ACTIVITY_CLEAR_TASK' (the 'FLAG_' prefix could be omitted)
 className | The name of a class inside of the application package that will be used as the component for this Intent | com.example.app.MainActivity
 e or es | `Map<string, string>` | Intent string parameters | {'foo': 'bar'}
