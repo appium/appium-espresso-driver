@@ -67,8 +67,8 @@ appium:appActivity | Main application activity identifier. If not provided then 
 appium:appWaitActivity | Identifier of the first activity that the application invokes. If not provided then equals to `appium:appActivity`. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
 appium:appWaitPackage | Identifier of the first package that is invoked first. If not provided then equals to `appium:appPackage`. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
 appium:appWaitDuration | Maximum amount of milliseconds to wait until the application under test is started (e. g. an activity returns the control to the caller). `20000` ms by default. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
-appium:intentOptions | The mapping of custom options for the intent that is going to be started. Read TBD for more details.
-appium:activityOptions | The mapping of custom options for the activity that is going to be started. Read TBD for more details.
+appium:intentOptions | The mapping of custom options for the intent that is going to be passed to the main app activity. Check [Intent Options](#intent-options) for more details.
+appium:activityOptions | The mapping of custom options for the main app activity that is going to be started. Check [Activity Options](#activity-options) for more details.
 appium:androidInstallTimeout | Maximum amount of milliseconds to wait until the application under test is installed. `90000` ms by default
 appium:autoGrantPermissions | Whether to grant all the requested application permissions automatically when a test starts(`true`). `false` by default
 appium:otherApps | Allows to set one or more comma-separated paths to Android packages that are going to be installed along with the main application under test. This might be useful if the tested app has dependencies
@@ -203,6 +203,52 @@ The value of this entry must be a non empty array of dependent module names with
   "additionalAndroidTestDependencies": ["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]
 }
 ```
+
+
+## Intent Options
+
+By default Espresso creates the following intent to start the app activity:
+
+```json
+{
+  "action": "ACTION_MAIN",
+  "flags": "ACTIVITY_NEW_TASK",
+  "className": "<fullyQualifiedAppActivity>"
+}
+```
+
+Although, it is possible to fully customize these options by providing the `intentOptions` capability. Read [Intent documentation](https://developer.android.com/reference/android/content/Intent) for more details on this topic. The value of this capability is expected to be a map with the following entries:
+
+Name | Type | Description | Example
+--- | --- | --- | ---
+action | string | An action name. Application-specific actions should be prefixed with the vendor's package name. | ACTION_MAIN
+data | string | Intent data URI | content://contacts/people/1
+type | string | Intent MIME type | image/png
+categories | string | One or more comma-separated Intent categories | android.intent.category.APP_CONTACTS
+component | string | Component name with package name prefix to create an explicit intent | com.example.app/.ExampleActivity
+intFlags | string | Single string value, which represents intent flags set encoded into an integer. Could also be provided in hexadecimal format. See https://developer.android.com/reference/android/content/Intent.html#setFlags(int) for more details. | 0x0F
+flags | Comma-separated string of intent flag names | 'FLAG_GRANT_READ_URI_PERMISSION, ACTIVITY_CLEAR_TASK' (the 'FLAG_' prefix could be omitted)
+className | The name of a class inside of the application package that will be used as the component for this Intent | com.example.app.MainActivity
+e or es | `Map<string, string>` | Intent string parameters | {'foo': 'bar'}
+esn | `Array<string>` | Intent null parameters | ['foo', 'bar']
+ez | `Map<string, boolean>` | Intent boolean parameters | {'foo': true, 'bar': false}
+ei | `Map<string, int>` | Intent integer parameters | {'foo': 1, 'bar': 2}
+el | `Map<string, long>` | Intent long integer parameters | {'foo': 1L, 'bar': 2L}
+ef | `Map<string, float>` | Intent long float parameters | {'foo': 1.ff, 'bar': 2.2f}
+eu | `Map<string, string>` | Intent URI-data parameters | {'foo': 'content://contacts/people/1'}
+ecn | `Map<string, string>` | Intent component name parameters | {'foo': 'com.example.app/.ExampleActivity'}
+eia | `Map<string, string>` | Intent integer array parameters | {'foo': '1,2,3,4'}
+ela | `Map<string, string>` | Intent long array parameters | {'foo': '1L,2L,3L,4L'}
+efa | `Map<string, string>` | Intent float array parameters | {'foo': '1.1,2.2,3.2,4.4'}
+
+
+## Activity Options
+
+Espresso driver allows to customize several activity startup options using `activityOptions` capability. The capability value is expected to be a map with the following entries:
+
+Name | Type | Description | Example
+--- | --- | --- | ---
+launchDisplayId | string or int | Display id which you want to assign to launch the main app activity on. This might be useful if the device under test supports multiple displays | 1
 
 
 ## Element Attributes
