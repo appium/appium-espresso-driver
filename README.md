@@ -169,7 +169,7 @@ appium:disableSuppressAccessibilityService | Being set to `true` tells the instr
 
 ## Espresso Build Config
 
-Espresso server is in tight connection with the application under test. That is why it is important it uses the same versions of common dependencies and there are no conflicts. Espresso driver allows to configure several important build options via `espressoBuildConfig` capability. The The configuration JSON supports the following entries:
+Espresso server is in tight connection with the application under test. That is why it is important that the server uses the same versions of common dependencies and there are no conflicts. Espresso driver allows to configure several build options via `espressoBuildConfig` capability. The configuration JSON supports the following entries:
 
 ### toolsVersions
 
