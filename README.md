@@ -234,7 +234,7 @@ esn | `Array<string>` | Intent null parameters | ['foo', 'bar']
 ez | `Map<string, boolean>` | Intent boolean parameters | {'foo': true, 'bar': false}
 ei | `Map<string, int>` | Intent integer parameters | {'foo': 1, 'bar': 2}
 el | `Map<string, long>` | Intent long integer parameters | {'foo': 1L, 'bar': 2L}
-ef | `Map<string, float>` | Intent long float parameters | {'foo': 1.ff, 'bar': 2.2f}
+ef | `Map<string, float>` | Intent float parameters | {'foo': 1.ff, 'bar': 2.2f}
 eu | `Map<string, string>` | Intent URI-data parameters | {'foo': 'content://contacts/people/1'}
 ecn | `Map<string, string>` | Intent component name parameters | {'foo': 'com.example.app/.ExampleActivity'}
 eia | `Map<string, string>` | Intent integer array parameters | {'foo': '1,2,3,4'}
