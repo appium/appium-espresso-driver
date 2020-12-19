@@ -314,7 +314,7 @@ args | `Array<string>` | no | Array of command arguments | `['-f', '/sdcard/myfi
 timeout | number | no | Command timeout in milliseconds. If the command blocks for longer than this timeout then an exception is going to be thrown. The default timeout is `20000` ms | 100000
 includeStderr | boolean | no | Whether to include stderr stream into the returned result. `false` by default | true
 
-#### Returned Result
+#### Returns
 
 Depending on the `includeStderr` value this API could either return a string, which is equal to the `stdout` stream content of the given command or a dictionary whose elements are `stdout` and `stderr` and values are contents of the corresponding outgoing streams. If the command exits with a non-zero return code then an exception is going to be thrown. The exception message will be equal to the command stderr.
 
@@ -332,14 +332,498 @@ execTimeout | number | no | Timeout used to wait for a server reply to the given
 connTimeout | boolean | no | Console connection timeout in milliseconds. `5000` ms by default | 10000
 initTimeout | boolean | no | Telnet console initialization timeout in milliseconds (the time between the connection happens and the command prompt). `5000` ms by default | 10000
 
-#### Returned Result
+#### Returns
 
 The actual command output. An error is thrown if command execution fails.
+
+### mobile: performEditorAction
+
+Performs IME action on the focused edit element. Read [How To Emulate IME Actions Generation](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/android-ime.md) for more details.
+
+### mobile: changePermissions
+
+Changes package permissions in runtime.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+permissions | string or `Array<string>` | yes | The full name of the permission to be changed or a list of permissions. Mandatory argument. | `['android.permission.ACCESS_FINE_LOCATION', 'android.permission.BROADCAST_SMS']`
+appPackage | string | no | The application package to set change permissions on. Defaults to the package name under test | com.mycompany.myapp
+action | string | no | Either `grant` (the default action) or `revoke` | grant
+
+### mobile: getPermissions
+
+Gets runtime permissions list for the given application package.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+type | string | no | One of possible permission types to get. Can be one of: `denied`, `granted` or `requested` (the default value). | granted
+appPackage | string | no | The application package to get permissions from. Defaults to the package name under test | com.mycompany.myapp
+
+#### Returns
+
+Array of strings, where each string is a permission name. the array could be empty.
+
+### mobile: startScreenStreaming
+
+Starts device screen broadcast by creating MJPEG server. Multiple calls to this method have no effect unless the previous streaming session is stopped. This method only works if the `adb_screen_streaming` [feature](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/security.md) is enabled on the server side. It is also required that [GStreamer](https://gstreamer.freedesktop.org/) with `gst-plugins-base`, `gst-plugins-good` and `gst-plugins-bad` packages is installed and available in PATH on the server machine.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+width | number | no | The scaled width of the device's screen. If unset then the script will assign it to the actual screen width measured in pixels. | 768
+height | number | no | The scaled height of the device's screen. If unset then the script will assign it to the actual screen height measured in pixels. | 1024
+bitRate | number | no | The video bit rate for the video, in bits per second. The default value is 4000000 (4 Mb/s). You can increase the bit rate to improve video quality, but doing so results in larger movie files. | 1024000
+host | string | no | The IP address/host name to start the MJPEG server on. You can set it to `0.0.0.0` to trigger the broadcast on all available network interfaces. `127.0.0.1` by default | 0.0.0.0
+pathname | string | no | The HTTP request path the MJPEG server should be available on. If unset then any pathname on the given `host`/`port` combination will work. Note that the value should always start with a single slash: `/` | /myserver
+tcpPort | number | no | The port number to start the internal TCP MJPEG broadcast on. This type of broadcast always starts on the loopback interface (`127.0.0.1`). `8094` by default | 5024
+port | number | no | The port number to start the MJPEG server on. `8093` by default | 5023
+quality | number | no | The quality value for the streamed JPEG images. This number should be in range [1, 100], where 100 is the best quality. `70` by default | 80
+considerRotation | boolean | no | If set to `true` then GStreamer pipeline will increase the dimensions of the resulting images to properly fit images in both landscape and portrait orientations. Set it to `true` if the device rotation is not going to be the same during the broadcasting session. `false` by default | false
+logPipelineDetails | boolean | no | Whether to log GStreamer pipeline events into the standard log output. Might be useful for debugging purposes. `false` by default | true
+
+### mobile: stopScreenStreaming
+
+Stop the previously started screen streaming. If no screen streaming server has been started then nothing is done.
+
+### mobile: deviceInfo
+
+Retrieves the information about the device under test, like the device model, serial number, network connectivity info, etc.
+
+#### Returns
+
+The extension returns a dictionary whose entries are the device properties. Check https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/src/androidTest/java/io/appium/espressoserver/lib/handlers/GetDeviceInfo.kt to get the full list of returned keys and their corresponding values.
+
+### mobile: swipe
+
+Perform swipe action. Invokes Espresso [swipe action](https://developer.android.com/reference/android/support/test/espresso/action/Swipe) under the hood.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | The UDID of the element to perform the swipe on. | 123456-7890-3453-24234243
+direction | string | no | Swipe direction. Either this argument or `swiper` must be provided, but not both. The following values are supported: `up`, `down`, `left`, `right` | down
+swiper | string | no | Swipe speed. Either this argument or `direction` must be provided, but not both. Either `FAST` (Swipes quickly between the co-ordinates) or `SLOW` (Swipes deliberately slowly between the co-ordinates, to aid in visual debugging) | SLOW
+startCoordinates | string | no | The starting coordinates for the action. The following values are supported: `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER` (the default value), `BOTTOM_RIGHT`, `VISIBLE_CENTER` | CENTER_LEFT
+endCoordinates | string | no | The ending coordinates for the action. The following values are supported: `TOP_LEFT`, `TOP_CENTER` (the default value), `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER`, `BOTTOM_RIGHT`, `VISIBLE_CENTER` | TOP_LEFT
+precisionDescriber | string | no | Defines the actual swipe precision. The following values are supported: `PINPOINT` (1px), `FINGER` (average width of the index finger is 16 – 20 mm), `THUMB` (average width of an adult thumb is 25 mm or 1 inch, the default value) | FINGER
+
+### mobile: isToastVisible
+
+Checks whether a toast notification with the given text is currently visible.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+text | string | yes | The actual toast test or a part of it | 'toast text'
+isRegexp | boolean | no | Whether the `text` value should be parsed as a regular expression (`true`) or as a raw text (`false`, the default value) | false
+
+#### Returns
+
+Either `true` or `false`
+
+### mobile: openDrawer
+
+Opens the DrawerLayout drawer with the gravity. This method blocks until the drawer is fully open. No operation if the drawer is already open.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+gravity | int | no | See [GravityCompat](https://developer.android.com/reference/kotlin/androidx/core/view/GravityCompat) and [Gravity](https://developer.android.com/reference/android/view/Gravity) classes documentation | `0x00800000 <bitwise_or> 0x00000003`
+
+### mobile: closeDrawer
+
+Closes the DrawerLayout drawer with the gravity. This method blocks until the drawer is fully closed. No operation if the drawer is already closed.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+gravity | int | no | See [GravityCompat](https://developer.android.com/reference/kotlin/androidx/core/view/GravityCompat) and [Gravity](https://developer.android.com/reference/android/view/Gravity) classes documentation | `0x00800000 <bitwise_or> 0x00000005`
+
+### mobile: scrollToPage
+
+Perform scrolling to the given page. Invokes one of the [ViewPagerActions](https://developer.android.com/reference/androidx/test/espresso/contrib/ViewPagerActions) under the hood. Which action is invoked depends on the given arguments.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+scrollTo | string | no if `scrollToPage` is provided | Shifts ViewPager to the given page. Supported values are: `first`, `last`, `left`, `right` | last
+scrollToPage | int | no if `scrollTo` is provided | Moves ViewPager to a specific page number (numbering starts from zero). | 1
+smoothScroll | boolean | no | Whether to perform smooth (but slower) scrolling (`true`). The default value is `false` | true
+
+### mobile: navigateTo
+
+Invokes [navigateTo](https://developer.android.com/reference/androidx/test/espresso/contrib/NavigationViewActions#navigateto) action under the hood.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | UDID of the element to perform the action on. View constraints: View must be a child of a DrawerLayout; View must be of type NavigationView; View must be visible on screen; View must be displayed on screen | 123456-7890-3453-24234243
+menuItemId | int | yes | The resource id of the destination menu item | 123
+
+### mobile: clickAction
+
+Perform [general click action](https://developer.android.com/reference/androidx/test/espresso/action/GeneralClickAction).
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | The UDID of the element to perform the click on. | 123456-7890-3453-24234243
+tapper | string | no | Tapper type. Supported types are: `SINGLE` (the default value), `LONG`, `DOUBLE` | `LONG`
+coordinatesProvider | string | no | The coordinates for the action. The following values are supported: `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER`, `BOTTOM_RIGHT`, `VISIBLE_CENTER` (the default value) | CENTER_LEFT
+precisionDescriber | string | no | Defines the actual click precision. The following values are supported: `PINPOINT` (1px), `FINGER` (average width of the index finger is 16 – 20 mm, the default value), `THUMB` (average width of an adult thumb is 25 mm or 1 inch) | PINPOINT
+inputDevice | int | no | Input device identifier, `0` by default | 1
+buttonState | int | no | Button state id, `0` by default | 1
+
+### mobile: getContexts
+
+Retrieves a webviews mapping based on CDP endpoints
+
+#### Returns
+
+The following json demonstrates the example of WebviewsMapping object.
+Note that `description` in `page` can be an empty string most likely when it comes to Mobile Chrome)
+
+```json
+ {
+   "proc": "@webview_devtools_remote_22138",
+   "webview": "WEBVIEW_22138",
+   "info": {
+     "Android-Package": "io.appium.settings",
+     "Browser": "Chrome/74.0.3729.185",
+     "Protocol-Version": "1.3",
+     "User-Agent": "Mozilla/5.0 (Linux; Android 10; Android SDK built for x86 Build/QSR1.190920.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.185 Mobile Safari/537.36",
+     "V8-Version": "7.4.288.28",
+     "WebKit-Version": "537.36 (@22955682f94ce09336197bfb8dffea991fa32f0d)",
+     "webSocketDebuggerUrl": "ws://127.0.0.1:10900/devtools/browser"
+   },
+   "pages": [
+     {
+       "description": "{\"attached\":true,\"empty\":false,\"height\":1458,\"screenX\":0,\"screenY\":336,\"visible\":true,\"width\":1080}",
+       "devtoolsFrontendUrl": "http://chrome-devtools-frontend.appspot.com/serve_rev/@22955682f94ce09336197bfb8dffea991fa32f0d/inspector.html?ws=127.0.0.1:10900/devtools/page/27325CC50B600D31B233F45E09487B1F",
+       "id": "27325CC50B600D31B233F45E09487B1F",
+       "title": "Releases · appium/appium · GitHub",
+       "type": "page",
+       "url": "https://github.com/appium/appium/releases",
+       "webSocketDebuggerUrl": "ws://127.0.0.1:10900/devtools/page/27325CC50B600D31B233F45E09487B1F"
+     }
+   ],
+   "webviewName": "WEBVIEW_com.io.appium.setting"
+ }
+```
+
+### mobile: getNotifications
+
+Retrieves Android notifications via Appium Settings helper. Appium Settings app itself must be *manually* granted to access notifications under device Settings in order to make this feature working. Appium Settings helper keeps all the active notifications plus notifications that appeared while it was running in the internal buffer, but no more than 100 items altogether. Newly appeared notifications are always added to the head of the notifications array. The `isRemoved` flag is set to `true` for notifications that have been removed.
+See https://developer.android.com/reference/android/service/notification/StatusBarNotification and https://developer.android.com/reference/android/app/Notification.html for more information on available notification properties and their values.
+
+#### Returns
+
+The example output is:
+```json
+{
+   "statusBarNotifications":[
+     {
+       "isGroup":false,
+       "packageName":"io.appium.settings",
+       "isClearable":false,
+       "isOngoing":true,
+       "id":1,
+       "tag":null,
+       "notification":{
+         "title":null,
+         "bigTitle":"Appium Settings",
+         "text":null,
+         "bigText":"Keep this service running, so Appium for Android can properly interact with several system APIs",
+         "tickerText":null,
+         "subText":null,
+         "infoText":null,
+         "template":"android.app.Notification$BigTextStyle"
+       },
+       "userHandle":0,
+       "groupKey":"0|io.appium.settings|1|null|10133",
+       "overrideGroupKey":null,
+       "postTime":1576853518850,
+       "key":"0|io.appium.settings|1|null|10133",
+       "isRemoved":false
+     }
+   ]
+}
+```
+
+### mobile: listSms
+
+Retrieves the list of the most recent SMS properties list via Appium Settings helper. Messages are sorted by date in descending order.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+max | number | no | The maximum count of recent messages to retrieve. `100` by default | 10
+
+#### Returns
+
+The example output is:
+```json
+ {
+   "items":[
+     {
+       "id":"2",
+       "address":"+123456789",
+       "person":null,
+       "date":"1581936422203",
+       "read":"0",
+       "status":"-1",
+       "type":"1",
+       "subject":null,
+       "body":"\"text message2\"",
+       "serviceCenter":null
+     },
+     {
+       "id":"1",
+       "address":"+123456789",
+       "person":null,
+       "date":"1581936382740",
+       "read":"0",
+       "status":"-1",
+       "type":"1",
+       "subject":null,
+       "body":"\"text message\"",
+       "serviceCenter":null
+     }
+   ],
+   "total":2
+ }
+```
+
+### mobile: sensorSet
+
+Emulate sensors values on the connected emulator.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+sensorType | string | yes | Supported sensor types are: `acceleration`, `light`, `proximity`, `temperature`, `pressure` and `humidity` | light
+value | string | yes | value to set to the sensor | 50
+
+### mobile: deleteFile
+
+Deletes a file on the remote device.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+remotePath | string | yes | The full path to the remote file or a file inside an application bundle | `/sdcard/myfile.txt` or `@my.app.id/path/in/bundle`
+
+### mobile: startService
+
+Starts the given service intent.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+intent | string | yes | The name of the service intent to start. Only services in the app's under test scope could be started. | `com.some.package.name/.YourServiceSubClassName`
+user | number or string | no | The user ID for which the service is started. The `current` user id is used by default | 1006
+foreground | boolean | no | Set it to `true` if your service must be started as foreground service. | false
+
+### mobile: stopService
+
+Stops the given service intent.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+intent | string | yes | The name of the service intent to stop. Only services in the app's under test scope could be stopped. | `com.some.package.name/.YourServiceSubClassName`
+user | number or string | no | The user ID for which the service is started. The `current` user id is used by default | 1006
+
+### mobile: getDeviceTime
+
+Retrieves the current device's timestamp.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+format | string | no | The set of format specifiers. Read https://momentjs.com/docs/ to get the full list of supported datetime format specifiers. The default format is `YYYY-MM-DDTHH:mm:ssZ`, which complies to ISO-8601 | YYYY-MM-DDTHH:mm:ssZ
+
+#### Returns
+
+The device timestamp string formatted according to the given specifiers
+
+### mobile: setDate
+
+Set the given date for a picker control. Invokes https://developer.android.com/reference/androidx/test/espresso/contrib/PickerActions#setdate under the hood.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+year | int | yes | The year to set | 2020
+monthOfYear | int | yes | The number of the month to set | 3
+dayOfMonth | int | yes | The number of the day to set | 20
+
+### mobile: setTime
+
+Set the given time for a picker control. Invokes https://developer.android.com/reference/androidx/test/espresso/contrib/PickerActions#settime under the hood.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+hours | int | yes | Hour to set in range 0..23 | 14
+minutes | int | yes | Minute to set in range 0..59 | 15
+
+### mobile: flashElement
+
+Highlights the given element in the UI by adding flashing to it
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+durationMillis | int | no | Duration of single flashing sequence, 30 ms by default | 50
+repeatCount | int | no | Count of repeats, 15 times by default | 10
+
+### mobile: dismissAutofill
+
+Dismisses [autofill](https://developer.android.com/guide/topics/text/autofill) picker if it is visible on the screen.
+
+### mobile: backdoor
+
+Gives a possibility to invoke methods from your application under test.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+elementId | string | yes if `target` is set to `element` | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+target | string | yes | Select a target for the backdoor mathod execution: `activity`, `application`, `element` | activity
+methods | `Array<Map>` | yes | Methods chain to execute | See [Backdoor Extension Usage](#backdoor-extension-usage)
+
+#### Returns
+
+The result of the last method in the chain
+
+### mobile: uiautomator
+
+Allows to execute a limited set of [UiAutomator](https://developer.android.com/training/testing/ui-automator) commands to allow out-of-app interactions with accessibility elements.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+strategy | string | yes | UiAutomator element location strategy. The following strategies are supported: "clazz", "res", "text", "textContains", "textEndsWith", "textStartsWith", "desc", "descContains", "descEndsWith", "descStartsWith", "pkg" | desc
+locator | string | yes | Valid UiObject2 locator value for the given strategy | 'my description'
+action | string | yes | The action name to perform on the found element. The following actions are supported: "click", "longClick", "getText", "getContentDescription", "getClassName",  "getResourceName", "getVisibleBounds", "getVisibleCenter", "getApplicationPackage", "getChildCount", "clear", "isCheckable", "isChecked", "isClickable", "isEnabled", "isFocusable", "isFocused", "isLongClickable", "isScrollable", "isSelected" | isEnabled
+index | int | no | If the given locator matches multiple elements then only the element located by this index will be selected for the interaction, otherwise the method will be applied to all found elements.  Indexing starts from zero | 1
+
+#### Returns
+
+The result of the selected action applied to found elements. If index is provided then the array will only contain one item. If the index is greater than the count of found elements then an exception will be thrown.
+
+### mobile: uiautomatorPageSource
+
+Allows to retrieve accessibility elements hierarchy tree with [UiAutomator](https://developer.android.com/training/testing/ui-automator) framework. The extension calls [dumpWindowHierarchy](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice#dumpwindowhierarchy_1) under the hood.
+
+#### Returns
+
+The UI accessibility hierarchy represented as XML document.
+
+### mobile: mobileWebAtoms
+
+Allows to run a chain of [Espresso web atoms](https://developer.android.com/training/testing/espresso/web) on a web view element.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+webviewEl | string | yes | The UDID of the destination web view element | 123456-7890-3453-24234243
+forceJavascriptEnabled | boolean | yes | If webview disables javascript then webatoms won't work. Setting this argument to `true` enforces javascript to be enabled. | true
+methodChain | `Array<Map>` | yes | Chain of atoms to execute. Each item in the chain must have the following properties: `name` (must be one of [WebInteraction](https://developer.android.com/reference/androidx/test/espresso/web/sugar/Web.WebInteraction) action names) and `atom`. `atom` is a map with two entries: `name` (must be one of [DriverAtoms](https://developer.android.com/reference/androidx/test/espresso/web/webdriver/DriverAtoms) method names) and `args` (must be an array of the corresponding method values). | `[{"name": "methodName", "atom": {"name": "atomName", "args": ["arg1", "arg2", ...]}}, ...]`
+
+#### Returns
+
+Chain items are executed sequentially and the next item is executed on the result of the previous item. The final result is returned to the caller.
+
+### mobile: registerIdlingResources
+
+Registers one or more [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+classNames | string | yes | Comma-separated list of idling resources class names. Each name must be a full-qualified java class name. Each class in the app source must implement a singleton pattern and have a static `getInstance()` method returning the class instance, which implements `androidx.test.espresso.IdlingResource` interface. Read [Integrate Espresso Idling Resources in your app to build flexible UI tests](https://android.jlelse.eu/integrate-espresso-idling-resources-in-your-app-to-build-flexible-ui-tests-c779e24f5057) for more details on how to design and use idling resources concept in Espresso. | `io.appium.espressoserver.lib.MyIdlingResource`
+
+### mobile: unregisterIdlingResources
+
+Unregisters one or more [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+classNames | string | yes | Comma-separated list of idling resources class names. Each name must be a full-qualified java class name. Each class in the app source must implement a singleton pattern and have a static `getInstance()` method returning the class instance, which implements `androidx.test.espresso.IdlingResource` interface. Read [Integrate Espresso Idling Resources in your app to build flexible UI tests](https://android.jlelse.eu/integrate-espresso-idling-resources-in-your-app-to-build-flexible-ui-tests-c779e24f5057) for more details on how to design and use idling resources concept in Espresso. | `io.appium.espressoserver.lib.MyIdlingResource`
+
+### mobile: listIdlingResources
+
+Lists all the previously registered [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+
+#### Returns
+
+List of fully qualified class names of currently registered idling resources or an empty list if no resources have been registered yet.
+
+
+## Backdoor Extension Usage
+
+Espresso driver allows to directly invoke a method from your application under test using `mobile: backdoor` extension. If `target` is set to `application` then methods will be invoked on the application class. If target is set to `activity` then methods will be invoked on the current application activity. If target is set to `element` then methods will be invoked on the selected view element. Only 'public' methods can be invoked ('open' modifier is necessary in Kotlin). The following primitive types are supported for method arguments: "int", "boolean", "byte", "short", "long", "float", "char". Object wrappers over primitive types with fully qualified names "java.lang.*" are also supported: "java.lang.CharSequence", "java.lang.String", "java.lang.Integer", "java.lang.Float", "java.lang.Double", "java.lang.Boolean", "java.lang.Long", "java.lang.Short", "java.lang.Character", etc.
+
+For example, in the following arguments map
+
+```json
+{
+   "target": "activity",
+   "methods":
+   [
+     {
+       "name": "someMethod",
+     },
+     {
+       "name": "anotherMethod",
+       "args": [
+         {"value": "foo", "type": "java.lang.CharSequence"},
+         {"value": 1, "type": "int"}
+       ]
+     }
+   ]
+}
+```
+
+the `anotherMethod` will be called on the object returned by `someMethod`, which has no arguments and which was executed on the current activity instance. Also `anotherMethod` accepts to arguments of type `java.lang.CharSequence` and `int`. The result of `anotherMethod` will be serialized and returned to the client.
 
 
 ## Troubleshooting
 
-* If there are ever problems starting a session, try setting the capability `forceEspressoRebuild=true` and retrying. This will rebuild a fresh Espresso Server APK. If the session is succcesful, set it back to false so that it doesn't re-install on every single test.
+* If there are ever problems starting a session, try setting the capability `forceEspressoRebuild=true` and retrying. This will rebuild a fresh Espresso Server APK. If the session is successfull, set it back to false so that it doesn't re-install on every single test.
 * Espresso requires the debug APK and app-under-test APK (AUT) to have the same signature. It automatically signs the AUT with the `io.appium.espressoserver.test` signature. This may have problems if you're using an outdated Android SDK tools and/or an outdated Java version.
 * If you experience session startup failures due to exceptions similar to `Resources$NotFoundException` then try to adjust your ProGuard rules:
   ```
@@ -357,6 +841,7 @@ The actual command output. An error is thrown if command execution fails.
   -keep class android.support.v7.** { *; }
   ```
   Please read [#449](https://github.com/appium/appium-espresso-driver/issues/449#issuecomment-537833139) for more details on this topic.
+
 
 ## Contributing
 
