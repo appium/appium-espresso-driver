@@ -314,7 +314,7 @@ args | `Array<string>` | no | Array of command arguments | `['-f', '/sdcard/myfi
 timeout | number | no | Command timeout in milliseconds. If the command blocks for longer than this timeout then an exception is going to be thrown. The default timeout is `20000` ms | 100000
 includeStderr | boolean | no | Whether to include stderr stream into the returned result. `false` by default | true
 
-#### Returned Result
+#### Returns
 
 Depending on the `includeStderr` value this API could either return a string, which is equal to the `stdout` stream content of the given command or a dictionary whose elements are `stdout` and `stderr` and values are contents of the corresponding outgoing streams. If the command exits with a non-zero return code then an exception is going to be thrown. The exception message will be equal to the command stderr.
 
@@ -332,9 +332,149 @@ execTimeout | number | no | Timeout used to wait for a server reply to the given
 connTimeout | boolean | no | Console connection timeout in milliseconds. `5000` ms by default | 10000
 initTimeout | boolean | no | Telnet console initialization timeout in milliseconds (the time between the connection happens and the command prompt). `5000` ms by default | 10000
 
-#### Returned Result
+#### Returns
 
 The actual command output. An error is thrown if command execution fails.
+
+### mobile: performEditorAction
+
+Performs IME action on the focused edit element. Read [How To Emulate IME Actions Generation](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/android-ime.md) for more details.
+
+### mobile: changePermissions
+
+Changes package permissions in runtime.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+permissions | string or `Array<string>` | yes | The full name of the permission to be changed or a list of permissions. Mandatory argument. | `['android.permission.ACCESS_FINE_LOCATION', 'android.permission.BROADCAST_SMS']`
+appPackage | string | no | The application package to set change permissions on. Defaults to the package name under test | com.mycompany.myapp
+action | string | no | Either `grant` (the default action) or `revoke` | grant
+
+### mobile: getPermissions
+
+Gets runtime permissions list for the given application package.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+type | string | no | One of possible permission types to get. Can be one of: `denied`, `granted` or `requested` (the default value). | granted
+appPackage | string | no | The application package to get permissions from. Defaults to the package name under test | com.mycompany.myapp
+
+#### Returns
+
+Array of strings, where each string is a permission name. the array could be empty.
+
+### mobile: startScreenStreaming
+
+Starts device screen broadcast by creating MJPEG server. Multiple calls to this method have no effect unless the previous streaming session is stopped. This method only works if the `adb_screen_streaming` [feature](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/security.md) is enabled on the server side. It is also required that [GStreamer](https://gstreamer.freedesktop.org/) with `gst-plugins-base`, `gst-plugins-good` and `gst-plugins-bad` packages is installed and available in PATH on the server machine.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+width | number | no | The scaled width of the device's screen. If unset then the script will assign it to the actual screen width measured in pixels. | 768
+height | number | no | The scaled height of the device's screen. If unset then the script will assign it to the actual screen height measured in pixels. | 1024
+bitRate | number | no | The video bit rate for the video, in bits per second. The default value is 4000000 (4 Mb/s). You can increase the bit rate to improve video quality, but doing so results in larger movie files. | 1024000
+host | string | no | The IP address/host name to start the MJPEG server on. You can set it to `0.0.0.0` to trigger the broadcast on all available network interfaces. `127.0.0.1` by default | 0.0.0.0
+pathname | string | no | The HTTP request path the MJPEG server should be available on. If unset then any pathname on the given `host`/`port` combination will work. Note that the value should always start with a single slash: `/` | /myserver
+tcpPort | number | no | The port number to start the internal TCP MJPEG broadcast on. This type of broadcast always starts on the loopback interface (`127.0.0.1`). `8094` by default | 5024
+port | number | no | The port number to start the MJPEG server on. `8093` by default | 5023
+quality | number | no | The quality value for the streamed JPEG images. This number should be in range [1, 100], where 100 is the best quality. `70` by default | 80
+considerRotation | boolean | no | If set to `true` then GStreamer pipeline will increase the dimensions of the resulting images to properly fit images in both landscape and portrait orientations. Set it to `true` if the device rotation is not going to be the same during the broadcasting session. `false` by default | false
+logPipelineDetails | boolean | no | Whether to log GStreamer pipeline events into the standard log output. Might be useful for debugging purposes. `false` by default | true
+
+### mobile: stopScreenStreaming
+
+Stop the previously started screen streaming. If no screen streaming server has been started then nothing is done.
+
+### mobile: deviceInfo
+
+Retrieves the information about the device under test, like the device model, serial number, network connectivity info, etc.
+
+#### Returns
+
+The extension returns a dictionary whose entries are the device properties. Check https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/src/androidTest/java/io/appium/espressoserver/lib/handlers/GetDeviceInfo.kt to get the full list of returned keys and their corresponding values.
+
+### mobile: swipe
+
+Perform swipe action. Invokes Espresso [swipe action](https://developer.android.com/reference/android/support/test/espresso/action/Swipe) under the hood.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | The UDID of the element to perform the swipe on. | 123456-7890-3453-24234243
+direction | string | no | Swipe direction. Either this argument or `swiper` must be provided, but not both. The following values are supported: `up`, `down`, `left`, `right` | down
+swiper | string | no | Swipe speed. Either this argument or `direction` must be provided, but not both. Either `FAST` (Swipes quickly between the co-ordinates) or `SLOW` (Swipes deliberately slowly between the co-ordinates, to aid in visual debugging) | SLOW
+startCoordinates | string | no | The starting coordinates for the action. The following values are supported: `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER` (the default value), `BOTTOM_RIGHT`, `VISIBLE_CENTER` | CENTER_LEFT
+endCoordinates | string | no | The ending coordinates for the action. The following values are supported: `TOP_LEFT`, `TOP_CENTER` (the default value), `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER`, `BOTTOM_RIGHT`, `VISIBLE_CENTER` | TOP_LEFT
+precisionDescriber | string | no | Defines the actual swipe precision. The following values are supported: `PINPOINT` (1px), `FINGER` (average width of the index finger is 16 – 20 mm), `THUMB` (average width of an adult thumb is 25 mm or 1 inch, the default value) | FINGER
+
+### mobile: isToastVisible
+
+Checks whether a toast notification with the given text is currently visible.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+text | string | yes | The actual toast test or a part of it | 'toast text'
+isRegexp | boolean | no | Whether the `text` value should be parsed as a regular expression (`true`) or as a raw text (`false`, the default value) | false
+
+#### Returns
+
+Either `true` or `false`
+
+### mobile: openDrawer
+
+Opens the DrawerLayout drawer with the gravity. This method blocks until the drawer is fully open. No operation if the drawer is already open.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+gravity | int | no | See [GravityCompat](https://developer.android.com/reference/kotlin/androidx/core/view/GravityCompat) and [Gravity](https://developer.android.com/reference/android/view/Gravity) classes documentation | `0x00800000 <bitwise_or> 0x00000003`
+
+### mobile: closeDrawer
+
+Closes the DrawerLayout drawer with the gravity. This method blocks until the drawer is fully closed. No operation if the drawer is already closed.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+gravity | int | no | See [GravityCompat](https://developer.android.com/reference/kotlin/androidx/core/view/GravityCompat) and [Gravity](https://developer.android.com/reference/android/view/Gravity) classes documentation | `0x00800000 <bitwise_or> 0x00000005`
+
+### mobile: scrollToPage
+
+Perform scrolling to the given page. Invokes one of the [ViewPagerActions](https://developer.android.com/reference/androidx/test/espresso/contrib/ViewPagerActions) under the hood. Which action is invoked depends on the given arguments.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+scrollTo | string | no if `scrollToPage` is provided | Shifts ViewPager to the given page. Supported values are: `first`, `last`, `left`, `right` | last
+scrollToPage | int | no if `scrollTo` is provided | Moves ViewPager to a specific page number (numbering starts from zero). | 1
+smoothScroll | boolean | no | Whether to perform smooth (but slower) scrolling (`true`). The default value is `false` | true
+
+### mobile: navigateTo
+
+Invokes [navigateTo](https://developer.android.com/reference/androidx/test/espresso/contrib/NavigationViewActions#navigateto) action under the hood.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | UDID of the element to perform the action on. View constraints: View must be a child of a DrawerLayout; View must be of type NavigationView; View must be visible on screen; View must be displayed on screen | 123456-7890-3453-24234243
+menuItemId | int | yes | The resource id of the destination menu item | 123
+
+
 
 
 ## Troubleshooting
