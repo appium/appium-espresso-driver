@@ -476,7 +476,7 @@ menuItemId | int | yes | The resource id of the destination menu item | 123
 
 ### mobile: clickAction
 
-Perform general scroll action. Invokes [GeneralClickAction](https://developer.android.com/reference/androidx/test/espresso/action/GeneralClickAction) under the hood.
+Perform [general click action](https://developer.android.com/reference/androidx/test/espresso/action/GeneralClickAction).
 
 #### Arguments
 
