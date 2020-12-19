@@ -742,7 +742,7 @@ The result of the selected action applied to found elements. If index is provide
 
 ### mobile: uiautomatorPageSource
 
-Allows to retrieve accessibility elements hierarchy tree with UiAutomator](https://developer.android.com/training/testing/ui-automator) framework. The extension calls [dumpWindowHierarchy](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice#dumpwindowhierarchy_1) under the hood.
+Allows to retrieve accessibility elements hierarchy tree with [UiAutomator](https://developer.android.com/training/testing/ui-automator) framework. The extension calls [dumpWindowHierarchy](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice#dumpwindowhierarchy_1) under the hood.
 
 #### Returns
 
