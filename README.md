@@ -1,4 +1,4 @@
-# appium-espresso-driver
+# Appium Espresso Driver
 
 [![Build Status](https://dev.azure.com/AppiumCI/Appium%20CI/_apis/build/status/appium.appium-espresso-driver?branchName=master)](https://dev.azure.com/AppiumCI/Appium%20CI/_build/latest?definitionId=3&branchName=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a877b7395f2d475aa79c08daf665dc3c)](https://www.codacy.com/app/dpgraham/appium-espresso-driver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=appium/appium-espresso-driver&amp;utm_campaign=Badge_Grade)
@@ -54,7 +54,7 @@ appium:systemPort | The number of the port the Espresso server is listening on. 
 appium:skipServerInstallation | Skip the Espresso Server component installation on the device under test and all the related checks if set to `true`. This could help to speed up the session startup if you know for sure the correct server version is installed on the device. In case the server is not installed or an incorrect version of it is installed then you may get an unexpected error later. `false` by default
 appium:espressoServerLaunchTimeout | The maximum number of milliseconds to wait util Espresso server is listening on the device. `45000` ms by default
 appium:forceEspressoRebuild | Whether to always enforce Espresso server rebuild (`true`). By default Espresso caches the already built server apk and only rebuilds it when it is necessary, because rebuilding process needs extra time. `false` by default
-appium:espressoBuildConfig | Either the full path to build config JSON on the server file system or the JSON content itself serialized to a string. This config allows to customize several important properties of Espresso server. Refer to TBD for more information on how to properly construct such config.
+appium:espressoBuildConfig | Either the full path to build config JSON on the server file system or the JSON content itself serialized to a string. This config allows to customize several important properties of Espresso server. Refer to [Espresso Build Config](#espresso-build-config) for more information on how to properly construct such config.
 appium:showGradleLog | Whether to include Gradle log to the regular server logs while building Espresso server. `false` by default.
 
 ### App
@@ -67,8 +67,8 @@ appium:appActivity | Main application activity identifier. If not provided then 
 appium:appWaitActivity | Identifier of the first activity that the application invokes. If not provided then equals to `appium:appActivity`. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
 appium:appWaitPackage | Identifier of the first package that is invoked first. If not provided then equals to `appium:appPackage`. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
 appium:appWaitDuration | Maximum amount of milliseconds to wait until the application under test is started (e. g. an activity returns the control to the caller). `20000` ms by default. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
-appium:intentOptions | The mapping of custom options for the intent that is going to be started. Read TBD for more details.
-appium:activityOptions | The mapping of custom options for the activity that is going to be started. Read TBD for more details.
+appium:intentOptions | The mapping of custom options for the intent that is going to be passed to the main app activity. Check [Intent Options](#intent-options) for more details.
+appium:activityOptions | The mapping of custom options for the main app activity that is going to be started. Check [Activity Options](#activity-options) for more details.
 appium:androidInstallTimeout | Maximum amount of milliseconds to wait until the application under test is installed. `90000` ms by default
 appium:autoGrantPermissions | Whether to grant all the requested application permissions automatically when a test starts(`true`). `false` by default
 appium:otherApps | Allows to set one or more comma-separated paths to Android packages that are going to be installed along with the main application under test. This might be useful if the tested app has dependencies
@@ -167,6 +167,90 @@ Capability Name | Description
 appium:disableSuppressAccessibilityService | Being set to `true` tells the instrumentation process to not suppress accessibility services during the automated test. This might be useful if your automated test needs these services. `false` by default
 
 
+## Espresso Build Config
+
+Espresso server is in tight connection with the application under test. That is why it is important that the server uses the same versions of common dependencies and there are no conflicts. Espresso driver allows to configure several build options via `espressoBuildConfig` capability. The configuration JSON supports the following entries:
+
+### toolsVersions
+
+This entry allows to explicitly set the versions of different server components. The following map entries are supported:
+
+Name | Description | Example
+--- | --- | ---
+gradle | The Gradle version to use for Espresso server building. | '6.3'
+androidGradlePlugin | The Gradle plugin version to use for Espresso server building. By default the version from the [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle) is used | '4.1.1'
+compileSdk | Android SDK version to compile the server for. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | 28
+buildTools | Target Android build tools version to compile the server with. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | '28.0.3'
+minSdk | Minimum Android SDK version to compile the server for. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | 18
+targetSdk | Target Android SDK version to compile the server for. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | 28
+kotlin | Kotlin version to compile the server for. By default the version from the [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle) is used | '1.3.72'
+
+### additionalAppDependencies
+
+The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `implementation` lines of `dependencies` category in the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
+
+### additionalAndroidTestDependencies
+
+The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `androidTestImplementation` lines of `dependencies` category in the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
+
+### Full JSON Example
+
+```json
+{
+  "toolsVersions": {
+    "androidGradlePlugin": "4.0.0"
+  },
+  "additionalAndroidTestDependencies": ["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]
+}
+```
+
+
+## Intent Options
+
+By default Espresso creates the following intent to start the app activity:
+
+```json
+{
+  "action": "ACTION_MAIN",
+  "flags": "ACTIVITY_NEW_TASK",
+  "className": "<fullyQualifiedAppActivity>"
+}
+```
+
+Although, it is possible to fully customize these options by providing the `intentOptions` capability. Read [Intent documentation](https://developer.android.com/reference/android/content/Intent) for more details on this topic. The value of this capability is expected to be a map with the following entries:
+
+Name | Type | Description | Example
+--- | --- | --- | ---
+action | string | An action name. Application-specific actions should be prefixed with the vendor's package name. | ACTION_MAIN
+data | string | Intent data URI | content://contacts/people/1
+type | string | Intent MIME type | image/png
+categories | string | One or more comma-separated Intent categories | android.intent.category.APP_CONTACTS
+component | string | Component name with package name prefix to create an explicit intent | com.example.app/.ExampleActivity
+intFlags | string | Single string value, which represents intent flags set encoded into an integer. Could also be provided in hexadecimal format. Check [setFlags method documentation](https://developer.android.com/reference/android/content/Intent.html#setFlags(int)) for more details. | 0x0F
+flags | Comma-separated string of intent flag names | 'FLAG_GRANT_READ_URI_PERMISSION, ACTIVITY_CLEAR_TASK' (the 'FLAG_' prefix could be omitted)
+className | The name of a class inside of the application package that will be used as the component for this Intent | com.example.app.MainActivity
+e or es | `Map<string, string>` | Intent string parameters | {'foo': 'bar'}
+esn | `Array<string>` | Intent null parameters | ['foo', 'bar']
+ez | `Map<string, boolean>` | Intent boolean parameters | {'foo': true, 'bar': false}
+ei | `Map<string, int>` | Intent integer parameters | {'foo': 1, 'bar': 2}
+el | `Map<string, long>` | Intent long integer parameters | {'foo': 1L, 'bar': 2L}
+ef | `Map<string, float>` | Intent float parameters | {'foo': 1.ff, 'bar': 2.2f}
+eu | `Map<string, string>` | Intent URI-data parameters | {'foo': 'content://contacts/people/1'}
+ecn | `Map<string, string>` | Intent component name parameters | {'foo': 'com.example.app/.ExampleActivity'}
+eia | `Map<string, string>` | Intent integer array parameters | {'foo': '1,2,3,4'}
+ela | `Map<string, string>` | Intent long array parameters | {'foo': '1L,2L,3L,4L'}
+efa | `Map<string, string>` | Intent float array parameters | {'foo': '1.1,2.2,3.2,4.4'}
+
+
+## Activity Options
+
+Espresso driver allows to customize several activity startup options using `activityOptions` capability. The capability value is expected to be a map with the following entries:
+
+Name | Type | Description | Example
+--- | --- | --- | ---
+launchDisplayId | string or int | Display id which you want to assign to launch the main app activity on. This might be useful if the device under test supports multiple displays | 1
+
+
 ## Element Attributes
 
 Espresso driver supports the following element attributes:
@@ -190,8 +274,6 @@ selected | Whether the element is selected | 'false'
 text | The element's text. It never equals to `null` | 'my text'
 hint | The element's hint. Could be `null` | 'my hint text'
 bounds | The element's visible frame (`[left, top][right, bottom]`) | `[0,0][100,100]`
-adapters | Comma-separated list of all adapter data items if the element's view hierarchy contains any, otherwise `null` | TBD
-adapter-type | The full class name of the adapter data items if the element's view hierarchy contains any, otherwise `null` | TBD
 no-multiline-buttons | Whether the element's view hierarchy does not contain multiline buttons | 'true'
 no-overlaps | Whether element's descendant objects assignable to TextView or ImageView do not overlap each other | 'true'
 no-ellipsized-text | Whether the element's view hierarchy does not contain ellipsized or cut off text views | 'false'
@@ -210,9 +292,49 @@ accessibility id | This strategy is mapped to the native Espresso `withContentDe
 class name | This strategy is mapped to the native Espresso `withClassName` [matcher](https://developer.android.com/reference/androidx/test/espresso/matcher/ViewMatchers#withClassName(org.hamcrest.Matcher%3Cjava.lang.String%3E)) (exact match of element's class name). | 'android.view.View'
 text | This strategy is mapped to the native Espresso `withText` [matcher](https://developer.android.com/reference/androidx/test/espresso/matcher/ViewMatchers#withText(org.hamcrest.Matcher%3Cjava.lang.String%3E)) (exact match of element's text). | 'my text'
 `-android viewtag` or `tag name` | This strategy is mapped to the native Espresso `withTagValue` [matcher](https://developer.android.com/reference/androidx/test/espresso/matcher/ViewMatchers#withtagvalue) (exact match of element's tag value). | 'my tag'
--android datamatcher | TBD
--android viewmatcher | TBD
+-android datamatcher | This strategy allows to create Espresso [data interaction](https://developer.android.com/reference/android/support/test/espresso/DataInteraction) selectors which can quickly and reliably scroll to the necessary elements. Read [Espresso DataMatcher Selector](https://appium.io/docs/en/writing-running-appium/android/espresso-datamatcher-selector/) to know more on how to construct these locators. Also check the [Unlocking New Testing Capabilities with Espresso Driver by Daniel Graham](https://www.youtube.com/watch?v=gU9EEUV5n9U) presentation video from Appium Conf 2019. | `{"name": "hasEntry", "args": ["title", "WebView3"]}`
+-android viewmatcher | This strategy allows to construct Espresso [view matcher](https://developer.android.com/reference/androidx/test/espresso/matcher/ViewMatchers) based on the given JSON representation of it. The representation is expected to contain the following fields: `name`: the mandatory matcher function name; `args`: optional matcher function arguments, each argument could also be a function; `class`: the full qualified class name of the corresponding matcher. | `{"name": "withText", "args": [{"name": "containsString", "args": "getExternalStoragePublicDirectory", "class": "org.hamcrest.Matchers"}], "class": "androidx.test.espresso.matcher.ViewMatchers"}`
 xpath | For elements lookup Xpath strategy the driver uses the same XML tree that is generated by page source API. Only Xpath 1.0 is supported. | `By.xpath("//android.view.View[@text=\"Regular\" and @checkable=\"true\"]")`
+
+
+## Platform-Specific Extensions
+
+Beside of standard W3C APIs the driver provides the following custom command extensions to execute platform specific scenarios:
+
+### mobile: shell
+
+Executes the given shell command on the device under test via ADB connection. This extension exposes a potential security risk and thus is only enabled when explicitly activated by the `adb_shell` server [command line feature specifier](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/security.md)
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+command | string | yes | Shell command name to execute, for example `echo` or `rm` | echo
+args | `Array<string>` | no | Array of command arguments | `['-f', '/sdcard/myfile.txt']`
+timeout | number | no | Command timeout in milliseconds. If the command blocks for longer than this timeout then an exception is going to be thrown. The default timeout is `20000` ms | 100000
+includeStderr | boolean | no | Whether to include stderr stream into the returned result. `false` by default | true
+
+#### Returned Result
+
+Depending on the `includeStderr` value this API could either return a string, which is equal to the `stdout` stream content of the given command or a dictionary whose elements are `stdout` and `stderr` and values are contents of the corresponding outgoing streams. If the command exits with a non-zero return code then an exception is going to be thrown. The exception message will be equal to the command stderr.
+
+### mobile: execEmuConsoleCommand
+
+Executes a command through emulator telnet console interface and returns its output.
+The `emulator_console` server [feature](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/security.md) must be enabled in order to use this method.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+command | string | yes | The actual command to execute. See [Android Emulator Console Guide](https://developer.android.com/studio/run/emulator-console) for more details on available commands | help-verbose
+execTimeout | number | no | Timeout used to wait for a server reply to the given command in milliseconds. `60000` ms by default | 100000
+connTimeout | boolean | no | Console connection timeout in milliseconds. `5000` ms by default | 10000
+initTimeout | boolean | no | Telnet console initialization timeout in milliseconds (the time between the connection happens and the command prompt). `5000` ms by default | 10000
+
+#### Returned Result
+
+The actual command output. An error is thrown if command execution fails.
 
 
 ## Troubleshooting
@@ -248,7 +370,6 @@ xpath | For elements lookup Xpath strategy the driver uses the same XML tree tha
 * To build the Espresso server _and_ the NodeJS code, run `npm run build`
 * To just build the Espresso server, run `npm run build:server` or `cd espresso-server && ./gradlew clean assembleDebug assembleAndroidTest`. The server can also be built from Android Studio.
 * To just build NodeJS code, run `gulp transpile`
-
 
 ### Tests
 
