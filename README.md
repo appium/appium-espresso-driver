@@ -474,12 +474,356 @@ Name | Type | Required | Description | Example
 element | string | yes | UDID of the element to perform the action on. View constraints: View must be a child of a DrawerLayout; View must be of type NavigationView; View must be visible on screen; View must be displayed on screen | 123456-7890-3453-24234243
 menuItemId | int | yes | The resource id of the destination menu item | 123
 
+### mobile: clickAction
 
+Perform general scroll action. Invokes [GeneralClickAction](https://developer.android.com/reference/androidx/test/espresso/action/GeneralClickAction) under the hood.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | The UDID of the element to perform the click on. | 123456-7890-3453-24234243
+tapper | string | no | Tapper type. Supported types are: `SINGLE` (the default value), `LONG`, `DOUBLE` | `LONG`
+coordinatesProvider | string | no | The coordinates for the action. The following values are supported: `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER`, `BOTTOM_RIGHT`, `VISIBLE_CENTER` (the default value) | CENTER_LEFT
+precisionDescriber | string | no | Defines the actual click precision. The following values are supported: `PINPOINT` (1px), `FINGER` (average width of the index finger is 16 – 20 mm, the default value), `THUMB` (average width of an adult thumb is 25 mm or 1 inch) | PINPOINT
+inputDevice | int | no | Input device identifier, `0` by default | 1
+buttonState | int | no | Button state id, `0` by default | 1
+
+### mobile: getContexts
+
+Retrieves a webviews mapping based on CDP endpoints
+
+#### Returns
+
+The following json demonstrates the example of WebviewsMapping object.
+Note that `description` in `page` can be an empty string most likely when it comes to Mobile Chrome)
+
+```json
+ {
+   "proc": "@webview_devtools_remote_22138",
+   "webview": "WEBVIEW_22138",
+   "info": {
+     "Android-Package": "io.appium.settings",
+     "Browser": "Chrome/74.0.3729.185",
+     "Protocol-Version": "1.3",
+     "User-Agent": "Mozilla/5.0 (Linux; Android 10; Android SDK built for x86 Build/QSR1.190920.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.185 Mobile Safari/537.36",
+     "V8-Version": "7.4.288.28",
+     "WebKit-Version": "537.36 (@22955682f94ce09336197bfb8dffea991fa32f0d)",
+     "webSocketDebuggerUrl": "ws://127.0.0.1:10900/devtools/browser"
+   },
+   "pages": [
+     {
+       "description": "{\"attached\":true,\"empty\":false,\"height\":1458,\"screenX\":0,\"screenY\":336,\"visible\":true,\"width\":1080}",
+       "devtoolsFrontendUrl": "http://chrome-devtools-frontend.appspot.com/serve_rev/@22955682f94ce09336197bfb8dffea991fa32f0d/inspector.html?ws=127.0.0.1:10900/devtools/page/27325CC50B600D31B233F45E09487B1F",
+       "id": "27325CC50B600D31B233F45E09487B1F",
+       "title": "Releases · appium/appium · GitHub",
+       "type": "page",
+       "url": "https://github.com/appium/appium/releases",
+       "webSocketDebuggerUrl": "ws://127.0.0.1:10900/devtools/page/27325CC50B600D31B233F45E09487B1F"
+     }
+   ],
+   "webviewName": "WEBVIEW_com.io.appium.setting"
+ }
+```
+
+### mobile: getNotifications
+
+Retrieves Android notifications via Appium Settings helper. Appium Settings app itself must be *manually* granted to access notifications under device Settings in order to make this feature working. Appium Settings helper keeps all the active notifications plus notifications that appeared while it was running in the internal buffer, but no more than 100 items altogether. Newly appeared notifications are always added to the head of the notifications array. The `isRemoved` flag is set to `true` for notifications that have been removed.
+See https://developer.android.com/reference/android/service/notification/StatusBarNotification and https://developer.android.com/reference/android/app/Notification.html for more information on available notification properties and their values.
+
+#### Returns
+
+The example output is:
+```json
+{
+   "statusBarNotifications":[
+     {
+       "isGroup":false,
+       "packageName":"io.appium.settings",
+       "isClearable":false,
+       "isOngoing":true,
+       "id":1,
+       "tag":null,
+       "notification":{
+         "title":null,
+         "bigTitle":"Appium Settings",
+         "text":null,
+         "bigText":"Keep this service running, so Appium for Android can properly interact with several system APIs",
+         "tickerText":null,
+         "subText":null,
+         "infoText":null,
+         "template":"android.app.Notification$BigTextStyle"
+       },
+       "userHandle":0,
+       "groupKey":"0|io.appium.settings|1|null|10133",
+       "overrideGroupKey":null,
+       "postTime":1576853518850,
+       "key":"0|io.appium.settings|1|null|10133",
+       "isRemoved":false
+     }
+   ]
+}
+```
+
+### mobile: listSms
+
+Retrieves the list of the most recent SMS properties list via Appium Settings helper. Messages are sorted by date in descending order.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+max | number | no | The maximum count of recent messages to retrieve. `100` by default | 10
+
+#### Returns
+
+The example output is:
+```json
+ {
+   "items":[
+     {
+       "id":"2",
+       "address":"+123456789",
+       "person":null,
+       "date":"1581936422203",
+       "read":"0",
+       "status":"-1",
+       "type":"1",
+       "subject":null,
+       "body":"\"text message2\"",
+       "serviceCenter":null
+     },
+     {
+       "id":"1",
+       "address":"+123456789",
+       "person":null,
+       "date":"1581936382740",
+       "read":"0",
+       "status":"-1",
+       "type":"1",
+       "subject":null,
+       "body":"\"text message\"",
+       "serviceCenter":null
+     }
+   ],
+   "total":2
+ }
+```
+
+### mobile: sensorSet
+
+Emulate sensors values on the connected emulator.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+sensorType | string | yes | Supported sensor types are: `acceleration`, `light`, `proximity`, `temperature`, `pressure` and `humidity` | light
+value | string | yes | value to set to the sensor | 50
+
+### mobile: deleteFile
+
+Deletes a file on the remote device.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+remotePath | string | yes | The full path to the remote file or a file inside an application bundle | `/sdcard/myfile.txt` or `@my.app.id/path/in/bundle`
+
+### mobile: startService
+
+Starts the given service intent.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+intent | string | yes | The name of the service intent to start. Only services in the app's under test scope could be started. | `com.some.package.name/.YourServiceSubClassName`
+user | number or string | no | The user ID for which the service is started. The `current` user id is used by default | 1006
+foreground | boolean | no | Set it to `true` if your service must be started as foreground service. | false
+
+### mobile: stopService
+
+Stops the given service intent.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+intent | string | yes | The name of the service intent to stop. Only services in the app's under test scope could be stopped. | `com.some.package.name/.YourServiceSubClassName`
+user | number or string | no | The user ID for which the service is started. The `current` user id is used by default | 1006
+
+### mobile: getDeviceTime
+
+Retrieves the current device's timestamp.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+format | string | no | The set of format specifiers. Read https://momentjs.com/docs/ to get the full list of supported datetime format specifiers. The default format is `YYYY-MM-DDTHH:mm:ssZ`, which complies to ISO-8601 | YYYY-MM-DDTHH:mm:ssZ
+
+#### Returns
+
+The device timestamp string formatted according to the given specifiers
+
+### mobile: setDate
+
+Set the given date for a picker control. Invokes https://developer.android.com/reference/androidx/test/espresso/contrib/PickerActions#setdate under the hood.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+year | int | yes | The year to set | 2020
+monthOfYear | int | yes | The number of the month to set | 3
+dayOfMonth | int | yes | The number of the day to set | 20
+
+### mobile: setTime
+
+Set the given time for a picker control. Invokes https://developer.android.com/reference/androidx/test/espresso/contrib/PickerActions#settime under the hood.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+hours | int | yes | Hour to set in range 0..23 | 14
+minutes | int | yes | Minute to set in range 0..59 | 15
+
+### mobile: flashElement
+
+Highlights the given element in the UI by adding flashing to it
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+durationMillis | int | no | Duration of single flashing sequence, 30 ms by default | 50
+repeatCount | int | no | Count of repeats, 15 times by default | 10
+
+### mobile: dismissAutofill
+
+Dismisses [autofill](https://developer.android.com/guide/topics/text/autofill) picker if it is visible on the screen.
+
+### mobile: backdoor
+
+Gives a possibility to invoke methods from your application under test.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+elementId | string | yes if `target` is set to `element` | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+target | string | yes | Select a target for the backdoor mathod execution: `activity`, `application`, `element` | activity
+methods | `Array<Map>` | yes | Methods chain to execute | See [Backdoor Extension Usage](#backdoor-extension-usage)
+
+#### Returns
+
+The result of the last method in the chain
+
+### mobile: uiautomator
+
+Allows to execute a limited set of [UiAutomator](https://developer.android.com/training/testing/ui-automator) commands to allow out-of-app interactions with accessibility elements.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+strategy | string | yes | UiAutomator element location strategy. The following strategies are supported: "clazz", "res", "text", "textContains", "textEndsWith", "textStartsWith", "desc", "descContains", "descEndsWith", "descStartsWith", "pkg" | desc
+locator | string | yes | Valid UiObject2 locator value for the given strategy | 'my description'
+action | string | yes | The action name to perform on the found element. The following actions are supported: "click", "longClick", "getText", "getContentDescription", "getClassName",  "getResourceName", "getVisibleBounds", "getVisibleCenter", "getApplicationPackage", "getChildCount", "clear", "isCheckable", "isChecked", "isClickable", "isEnabled", "isFocusable", "isFocused", "isLongClickable", "isScrollable", "isSelected" | isEnabled
+index | int | no | If the given locator matches multiple elements then only the element located by this index will be selected for the interaction, otherwise the method will be applied to all found elements.  Indexing starts from zero | 1
+
+#### Returns
+
+The result of the selected action applied to found elements. If index is provided then the array will only contain one item. If the index is greater than the count of found elements then an exception will be thrown.
+
+### mobile: uiautomatorPageSource
+
+Allows to retrieve accessibility elements hierarchy tree with UiAutomator](https://developer.android.com/training/testing/ui-automator) framework. The extension calls [dumpWindowHierarchy](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice#dumpwindowhierarchy_1) under the hood.
+
+#### Returns
+
+The UI accessibility hierarchy represented as XML document.
+
+### mobile: mobileWebAtoms
+
+Allows to run a chain of [Espresso web atoms](https://developer.android.com/training/testing/espresso/web) on a web view element.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+webviewEl | string | yes | The UDID of the destination web view element | 123456-7890-3453-24234243
+forceJavascriptEnabled | boolean | yes | If webview disables javascript then webatoms won't work. Setting this argument to `true` enforces javascript to be enabled. | true
+methodChain | `Array<Map>` | yes | Chain of atoms to execute. Each item in the chain must have the following properties: `name` (must be one of [WebInteraction](https://developer.android.com/reference/androidx/test/espresso/web/sugar/Web.WebInteraction) action names) and `atom`. `atom` is a map with two entries: `name` (must be one of [DriverAtoms](https://developer.android.com/reference/androidx/test/espresso/web/webdriver/DriverAtoms) method names) and `args` (must be an array of the corresponding method values). | `[{"name": "methodName", "atom": {"name": "atomName", "args": ["arg1", "arg2", ...]}}, ...]`
+
+#### Returns
+
+Chain items are executed sequentially and the next item is executed on the result of the previous item. The final result is returned to the caller.
+
+### mobile: registerIdlingResources
+
+Registers one or more [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+classNames | string | yes | Comma-separated list of idling resources class names. Each name must be a full-qualified java class name. Each class in the app source must implement a singleton pattern and have a static `getInstance()` method returning the class instance, which implements `androidx.test.espresso.IdlingResource` interface. Read [Integrate Espresso Idling Resources in your app to build flexible UI tests](https://android.jlelse.eu/integrate-espresso-idling-resources-in-your-app-to-build-flexible-ui-tests-c779e24f5057) for more details on how to design and use idling resources concept in Espresso. | `io.appium.espressoserver.lib.MyIdlingResource`
+
+### mobile: unregisterIdlingResources
+
+Unregisters one or more [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+classNames | string | yes | Comma-separated list of idling resources class names. Each name must be a full-qualified java class name. Each class in the app source must implement a singleton pattern and have a static `getInstance()` method returning the class instance, which implements `androidx.test.espresso.IdlingResource` interface. Read [Integrate Espresso Idling Resources in your app to build flexible UI tests](https://android.jlelse.eu/integrate-espresso-idling-resources-in-your-app-to-build-flexible-ui-tests-c779e24f5057) for more details on how to design and use idling resources concept in Espresso. | `io.appium.espressoserver.lib.MyIdlingResource`
+
+### mobile: listIdlingResources
+
+Lists all the previously registered [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+
+#### Returns
+
+List of fully qualified class names of currently registered idling resources or an empty list if no resources have been registered yet.
+
+
+## Backdoor Extension Usage
+
+Espresso driver allows to directly invoke a method from your application under test using `mobile: backdoor` extension. If `target` is set to `application` then methods will be invoked on the application class. If target is set to `activity` then methods will be invoked on the current application activity. If target is set to `element` then methods will be invoked on the selected view element. Only 'public' methods can be invoked ('open' modifier is necessary in Kotlin). The following primitive types are supported for method arguments: "int", "boolean", "byte", "short", "long", "float", "char". Object wrappers over primitive types with fully qualified names "java.lang.*" are also supported: "java.lang.CharSequence", "java.lang.String", "java.lang.Integer", "java.lang.Float", "java.lang.Double", "java.lang.Boolean", "java.lang.Long", "java.lang.Short", "java.lang.Character", etc.
+
+For example, in the following arguments map
+
+```json
+{
+   "target": "activity",
+   "methods":
+   [
+     {
+       "name": "someMethod",
+     },
+     {
+       "name": "anotherMethod",
+       "args": [
+         {"value": "foo", "type": "java.lang.CharSequence"},
+         {"value": 1, "type": "int"}
+       ]
+     }
+   ]
+}
+```
+
+the `anotherMethod` will be called on the object returned by `someMethod`, which has no arguments and which was executed on the current activity instance. Also `anotherMethod` accepts to arguments of type `java.lang.CharSequence` and `int`. The result of `anotherMethod` will be serialized and returned to the client.
 
 
 ## Troubleshooting
 
-* If there are ever problems starting a session, try setting the capability `forceEspressoRebuild=true` and retrying. This will rebuild a fresh Espresso Server APK. If the session is succcesful, set it back to false so that it doesn't re-install on every single test.
+* If there are ever problems starting a session, try setting the capability `forceEspressoRebuild=true` and retrying. This will rebuild a fresh Espresso Server APK. If the session is successfull, set it back to false so that it doesn't re-install on every single test.
 * Espresso requires the debug APK and app-under-test APK (AUT) to have the same signature. It automatically signs the AUT with the `io.appium.espressoserver.test` signature. This may have problems if you're using an outdated Android SDK tools and/or an outdated Java version.
 * If you experience session startup failures due to exceptions similar to `Resources$NotFoundException` then try to adjust your ProGuard rules:
   ```
@@ -497,6 +841,7 @@ menuItemId | int | yes | The resource id of the destination menu item | 123
   -keep class android.support.v7.** { *; }
   ```
   Please read [#449](https://github.com/appium/appium-espresso-driver/issues/449#issuecomment-537833139) for more details on this topic.
+
 
 ## Contributing
 
