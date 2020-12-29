@@ -112,6 +112,24 @@ describe('EspressoDriver', function () {
       await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
     });
   });
+
+  describe('.reset', function () {
+    afterEach(async function () {
+      try {
+        await driver.quit();
+      } catch (ign) {}
+    });
+    it('should reset', async function () {
+      await driver.init(APIDEMO_CAPS);
+      const status = await driver.reset(APIDEMO_CAPS);
+
+      status[1].app.should.eql(APIDEMO_CAPS.app);
+
+      const activity = await driver.getCurrentDeviceActivity();
+      activity.should.equal('.ApiDemos');
+    });
+  });
+
   describe('keys', function () {
     beforeEach(async function () {
       await driver.init({
