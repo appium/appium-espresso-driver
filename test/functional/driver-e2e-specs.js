@@ -119,14 +119,9 @@ describe('EspressoDriver', function () {
         await driver.quit();
       } catch (ign) {}
     });
-    it('should reset', async function () {
+    it('should raise an error for resetApp', async function () {
       await driver.init(APIDEMO_CAPS);
-      const status = await driver.reset(APIDEMO_CAPS);
-
-      status[1].app.should.eql(APIDEMO_CAPS.app);
-
-      const activity = await driver.getCurrentDeviceActivity();
-      activity.should.equal('.ApiDemos');
+      await driver.resetApp(APIDEMO_CAPS).should.eventually.be.rejectedWith(/Please quit the session and create a new session/);
     });
   });
 
