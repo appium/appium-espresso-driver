@@ -112,6 +112,19 @@ describe('EspressoDriver', function () {
       await driver.getCurrentDeviceActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
     });
   });
+
+  describe('.reset', function () {
+    afterEach(async function () {
+      try {
+        await driver.quit();
+      } catch (ign) {}
+    });
+    it('should raise an error for resetApp', async function () {
+      await driver.init(APIDEMO_CAPS);
+      await driver.resetApp(APIDEMO_CAPS).should.eventually.be.rejectedWith(/Please quit the session and create a new one/);
+    });
+  });
+
   describe('keys', function () {
     beforeEach(async function () {
       await driver.init({
