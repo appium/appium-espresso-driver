@@ -121,7 +121,7 @@ describe('EspressoDriver', function () {
     });
     it('should raise an error for resetApp', async function () {
       await driver.init(APIDEMO_CAPS);
-      await driver.resetApp(APIDEMO_CAPS).should.eventually.be.rejectedWith(/Please quit the session and create a new session/);
+      await driver.resetApp(APIDEMO_CAPS).should.eventually.be.rejectedWith(/Please quit the session and create a new one/);
     });
   });
 
