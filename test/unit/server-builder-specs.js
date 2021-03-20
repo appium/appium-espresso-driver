@@ -83,7 +83,7 @@ describe('server-builder', function () {
 
   describe('insertAdditionalDependencies', function () {
     const serverPath = 'server';
-    it('should generate correct content and keep current indent in build.gradle', function () {
+    it('should generate correct content and keep current indent in build.gradle.kts', function () {
       const gradleContent = `dependencies {
   ext.annotation_version = '1.1.0'
 
