@@ -178,20 +178,20 @@ This entry allows to explicitly set the versions of different server components.
 Name | Description | Example
 --- | --- | ---
 gradle | The Gradle version to use for Espresso server building. | '6.3'
-androidGradlePlugin | The Gradle plugin version to use for Espresso server building. By default the version from the [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle) is used | '4.1.1'
-compileSdk | Android SDK version to compile the server for. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | 28
-buildTools | Target Android build tools version to compile the server with. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | '28.0.3'
-minSdk | Minimum Android SDK version to compile the server for. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | 18
-targetSdk | Target Android SDK version to compile the server for. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | 28
-kotlin | Kotlin version to compile the server for. By default the version from the [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle) is used | '1.3.72'
+androidGradlePlugin | The Gradle plugin version to use for Espresso server building. By default the version from the [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle.kts) is used | '4.1.1'
+compileSdk | Android SDK version to compile the server for. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | 28
+buildTools | Target Android build tools version to compile the server with. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | '28.0.3'
+minSdk | Minimum Android SDK version to compile the server for. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | 18
+targetSdk | Target Android SDK version to compile the server for. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | 28
+kotlin | Kotlin version to compile the server for. By default the version from the [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle.kts) is used | '1.3.72'
 
 ### additionalAppDependencies
 
-The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `implementation` lines of `dependencies` category in the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
+The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `implementation` lines of `dependencies` category in the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
 
 ### additionalAndroidTestDependencies
 
-The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `androidTestImplementation` lines of `dependencies` category in the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
+The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `androidTestImplementation` lines of `dependencies` category in the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
 
 ### Full JSON Example
 
