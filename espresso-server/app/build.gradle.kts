@@ -13,7 +13,7 @@ android {
         testApplicationId = "io.appium.espressoserver.test"
         testHandleProfiling = false
         testFunctionalTest = false
-        minSdkVersion(getIntProperty("appiumMinSdk", 18))
+        minSdkVersion(getIntProperty("appiumMinSdk", 21))
         targetSdkVersion(getIntProperty("appiumTargetSdk", 28))
         versionCode = 1
         versionName = "1.0"
@@ -99,7 +99,7 @@ dependencies {
     androidTestImplementation("androidx.test:rules:${Version.testlib}")
     androidTestImplementation("com.google.code.gson:gson:${Version.gson}")
     androidTestImplementation("org.nanohttpd:nanohttpd-webserver:${Version.nanohttpd}")
-    androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}")
+    androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Version.kotlin}")
     androidTestImplementation("org.jetbrains.kotlin:kotlin-reflect:${Version.kotlin}")
     // additionalAndroidTestDependencies placeholder (don't change or delete this line)
 }
