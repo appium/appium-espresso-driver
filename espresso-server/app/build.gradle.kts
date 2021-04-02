@@ -99,7 +99,7 @@ dependencies {
     androidTestImplementation("androidx.test:rules:${Version.testlib}")
     androidTestImplementation("com.google.code.gson:gson:${Version.gson}")
     androidTestImplementation("org.nanohttpd:nanohttpd-webserver:${Version.nanohttpd}")
-    androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Version.kotlin}")
+    androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib:${Version.kotlin}")
     androidTestImplementation("org.jetbrains.kotlin:kotlin-reflect:${Version.kotlin}")
     // additionalAndroidTestDependencies placeholder (don't change or delete this line)
 }
