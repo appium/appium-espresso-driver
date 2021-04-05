@@ -14,12 +14,12 @@ describe('server-builder', function () {
     const expectedCmd = system.isWindows() ? 'gradlew.bat' : './gradlew';
 
     it('should not pass properties when no versions are specified', function () {
-      const expected = {cmd: expectedCmd, args: ['assembleAndroidTest']};
+      const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
       new ServerBuilder().getCommand().should.eql(expected);
     });
 
     it('should pass only specified versions as properties and pass them correctly', function () {
-      const expected = {cmd: expectedCmd, args: ['-PappiumAndroidGradlePlugin=1.2.3', 'assembleAndroidTest']};
+      const expected = {cmd: expectedCmd, args: ['-PappiumAndroidGradlePlugin=1.2.3', 'app:assembleAndroidTest']};
       let serverBuilder = new ServerBuilder({
         buildConfiguration: {
           toolsVersions: {
@@ -34,7 +34,7 @@ describe('server-builder', function () {
       const unknownKey = 'unknown_key';
       VERSION_KEYS.should.not.contain(unknownKey);
 
-      const expected = {cmd: expectedCmd, args: ['assembleAndroidTest']};
+      const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
       const serverBuilder = new ServerBuilder({
         buildConfiguration: {
           toolsVersions: {
@@ -46,7 +46,7 @@ describe('server-builder', function () {
     });
 
     it('should not pass gradle_version as property', function () {
-      const expected = {cmd: expectedCmd, args: ['assembleAndroidTest']};
+      const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
       const serverBuilder = new ServerBuilder({
         buildConfiguration: {
           toolsVersions: {
