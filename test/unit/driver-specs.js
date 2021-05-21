@@ -141,4 +141,32 @@ describe('driver', function () {
       });
     });
   });
+
+  describe('driverArgs', function () {
+    describe('driver args passed in', function () {
+      let driver;
+      const reboot = true;
+      const suppressKillServer = true;
+      const driverArgs = {reboot, 'suppress-adb-kill-server': suppressKillServer};
+      before(function () {
+        driver = new EspressoDriver({}, true, driverArgs);
+      });
+
+      it('should set passed in driver args to opts', function () {
+        driver.opts.reboot.should.eql(reboot);
+        driver.opts.suppressKillServer.should.eql(suppressKillServer);
+      });
+    });
+    describe('no driver args passed in', function () {
+      let driver;
+      before(function () {
+        driver = new EspressoDriver({}, true);
+      });
+
+      it('should set default driver args to opts', function () {
+        driver.opts.reboot.should.eql(false);
+        driver.opts.suppressKillServer.should.eql(false);
+      });
+    });
+  });
 });
