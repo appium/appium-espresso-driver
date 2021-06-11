@@ -25,7 +25,6 @@ import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.WindowSize
 
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import io.appium.espressoserver.lib.helpers.AndroidLogger
 
 class GetWindowSize : RequestHandler<AppiumParams, WindowSize> {
 
