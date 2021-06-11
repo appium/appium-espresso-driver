@@ -31,7 +31,7 @@ class SetDate : RequestHandler<SetDateParams, Void?> {
             viewInteraction.perform(PickerActions.setDate(params.year, params.monthOfYear, params.dayOfMonth))
         } catch (e: Exception) {
             if (e is EspressoException) {
-                throw AppiumException("Could not set date on element. Reason: ${e}")
+                throw AppiumException("Could not set date on element. Reason: $e")
             }
             throw e
         }

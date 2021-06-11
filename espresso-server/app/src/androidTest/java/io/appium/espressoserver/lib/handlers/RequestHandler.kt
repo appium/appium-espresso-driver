@@ -17,8 +17,10 @@
 package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.handlers.exceptions.NoSuchDriverException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.GlobalSession
 
 interface RequestHandler<in T : AppiumParams, out R> {
     @Throws(AppiumException::class)
@@ -28,7 +30,14 @@ interface RequestHandler<in T : AppiumParams, out R> {
     @Throws(AppiumException::class)
     fun handle(params: AppiumParams): R {
         AndroidLogger.info("Executing ${this::class.simpleName} handler")
+
+        if (this !is NoSessionCommandHandler
+            && (params.sessionId == null || params.sessionId != GlobalSession.sessionId)) {
+            throw NoSuchDriverException("The requested session id ${params.sessionId} does not exist")
+        }
+
         return handleInternal(params as? T
-                ?: throw IllegalArgumentException("Invalid type ${this::class.simpleName} passed to ${this::class.simpleName} handler"))
+                ?: throw IllegalArgumentException("Invalid type ${params::class.simpleName} " +
+                        "passed to ${this::class.simpleName} handler"))
     }
 }

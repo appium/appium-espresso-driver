@@ -31,7 +31,7 @@ class SetTime : RequestHandler<SetTimeParams, Void?> {
             viewInteraction.perform(PickerActions.setTime(params.hours, params.minutes))
         } catch (e: Exception) {
             if (e is EspressoException) {
-                throw AppiumException("Could not set time on element. Reason: ${e}")
+                throw AppiumException("Could not set time on element. Reason: $e")
             }
             throw e
         }
