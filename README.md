@@ -43,7 +43,7 @@ appium:deviceName | The name of the device under test (actually, it is not used 
 appium:platformVersion | The platform version of an emulator or a real device. This capability is used for device autodetection if `udid` is not provided
 appium:udid | UDID of the device to be tested. Could ve retrieved from `adb devices -l` output. If unset then the driver will try to use the first connected device. Always set this capability if you run parallel tests.
 appium:noReset | Prevents the device to be reset before the session startup if set to `true`. This means that the application under test is not going to be terminated neither its data cleaned. `false` by default
-appium:fullReset | Being set to `true` always enforces the application under test to be fully uninstalled before starting a new session. `false` by default
+appium:fullReset | Being set to `true` always enforces the application under test to be fully uninstalled before starting a new session. `ualse` by default
 appium:printPageSourceOnFindFailure | Enforces the server to dump the actual XML page source into the log if any error happens. `false` by default.
 
 ### Driver/Server
@@ -143,7 +143,7 @@ Capability Name | Description
 appium:autoWebview | If set to `true` then Espresso driver will try to switch to the first available web view after the session is started. `false` by default.
 appium:webviewDevtoolsPort | The local port number to use for devtools communication. By default the first free port from 10900..11000 range is selected. Consider setting the custom value if you are running parallel tests.
 appium:ensureWebviewsHavePages | Whether to skip web views that have no pages from being shown in `getContexts` output. The driver uses devtools connection to retrieve the information about existing pages. `true` by default.
-appium:enableWebviewDetailsCollection | Whether to retrieve extended web views information using devtools protocol. Enabling this capability helps to detect the necessary chromedriver version more precisely. `true` by default.
+appium:enableWebviewDetailsCollection | Whether to retrieve extended web views information using devtools protocol. Enabling this capability helps to detect the necessary chromedriver version more precisely. `true` by default since Appium 1.22.0, `false` lower than 1.22.0.
 appium:chromedriverPort | The port number to use for Chromedriver communication. Any free port number is selected by default if unset.
 appium:chromedriverPorts | Array of possible port numbers to assign for Chromedriver communication. If none of the port in this array is free then an error is thrown.
 appium:chromedriverArgs | Array of chromedriver [command line arguments](http://www.assertselenium.com/java/list-of-chrome-driver-command-line-arguments/). Note, that not all command line arguments that are available for the desktop browser are also available for the mobile one.
