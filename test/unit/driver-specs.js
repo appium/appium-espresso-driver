@@ -5,6 +5,7 @@ import { ADB } from 'appium-adb';
 import { androidHelpers } from 'appium-android-driver';
 import EspressoDriver from '../../lib/driver';
 import EspressoRunner from '../../lib/espresso-runner';
+import _ from 'lodash';
 
 chai.should();
 chai.use(chaiAsPromised);
@@ -138,6 +139,47 @@ describe('driver', function () {
         await driver.createSession({platformName: 'Android', deviceName: 'device', appPackage: driver.caps.appPackage, nativeWebScreenshot: true});
         proxyAvoidList = driver.getProxyAvoidList().filter(nativeWebScreenshotFilter);
         proxyAvoidList.should.not.be.empty;
+      });
+    });
+  });
+
+  describe('driverArgs', function () {
+    const reboot = true;
+    const suppressKillServer = true;
+    const driverArgs = {reboot, suppressKillServer};
+    describe('driver args passed in', function () {
+      let driver;
+      before(function () {
+        driver = new EspressoDriver({}, true, driverArgs);
+      });
+      it('should set passed in driver args to opts', function () {
+        driver.opts.reboot.should.eql(reboot);
+        driver.opts.suppressKillServer.should.eql(suppressKillServer);
+      });
+    });
+    describe('no driver args passed in', function () {
+      let driver;
+      before(function () {
+        driver = new EspressoDriver({}, true);
+      });
+
+      it('should set default driver args to opts', function () {
+        driver.opts.reboot.should.eql(false);
+        driver.opts.suppressKillServer.should.eql(false);
+      });
+    });
+    describe('driver args with opts', function () {
+      let driver;
+      const opts = _.assign({'foo': 'bar', 'foobar': 'foobar'}, driverArgs);
+
+      before(function () {
+        driver = new EspressoDriver(opts, true, {});
+      });
+      it('should set passed in driver args in opts to opts', function () {
+        driver.opts.foo.should.eql('bar');
+        driver.opts.foobar.should.eql('foobar');
+        driver.opts.reboot.should.eql(reboot);
+        driver.opts.suppressKillServer.should.eql(suppressKillServer);
       });
     });
   });
