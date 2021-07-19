@@ -32,7 +32,7 @@ class SetOrientation : RequestHandler<OrientationParams, Void?> {
     override fun handleInternal(params: OrientationParams): Void? {
         val orientation = params.orientation
 
-        // Validate the orientaiton
+        // Validate the orientation
         orientation ?: throw AppiumException("Screen orientation value must not be null")
 
         val supportedValues = OrientationType.values().map { it.name }

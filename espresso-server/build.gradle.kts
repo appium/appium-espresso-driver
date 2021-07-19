@@ -2,7 +2,7 @@
 
 buildscript {
     val appiumKotlin =
-        properties.getOrDefault("appiumKotlin", "1.3.72")
+        properties.getOrDefault("appiumKotlin", "1.4.32")
 
     val appiumAndroidGradlePlugin =
         properties.getOrDefault("appiumAndroidGradlePlugin", "4.1.1")

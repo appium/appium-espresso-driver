@@ -21,10 +21,10 @@ import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
-class Text : RequestHandler<AppiumParams, String?> {
+class Text : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): String? {
+    override fun handleInternal(params: AppiumParams): String {
         val viewInteraction = Element.getViewInteractionById(params.elementId)
         return ViewTextGetter()[viewInteraction].rawText
     }

@@ -18,7 +18,7 @@ package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.model.AppiumParams
 
-class Status : RequestHandler<AppiumParams, Void?> {
+class Status : RequestHandler<AppiumParams, Void?>, NoSessionCommandHandler {
 
     override fun handleInternal(params: AppiumParams): Void? {
         return null

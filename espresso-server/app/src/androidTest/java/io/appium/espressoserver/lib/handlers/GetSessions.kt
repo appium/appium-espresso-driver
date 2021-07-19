@@ -20,7 +20,8 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.GlobalSession
 
-class GetSessions : RequestHandler<AppiumParams, Collection<Map<String, Any?>>> {
+class GetSessions :
+    RequestHandler<AppiumParams, Collection<Map<String, Any?>>>, NoSessionCommandHandler {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): Collection<Map<String, Any?>> {

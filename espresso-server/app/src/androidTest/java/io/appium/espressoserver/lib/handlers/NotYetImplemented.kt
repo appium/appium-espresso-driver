@@ -20,7 +20,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.model.AppiumParams
 
-class NotYetImplemented : RequestHandler<AppiumParams, Void?> {
+class NotYetImplemented : RequestHandler<AppiumParams, Void?>, NoSessionCommandHandler {
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): Void? {
         throw NotYetImplementedException()
