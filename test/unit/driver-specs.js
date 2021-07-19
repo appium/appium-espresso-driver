@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 chai.should();
 chai.use(chaiAsPromised);
+const expect = chai.expect;
 let sandbox = sinon.createSandbox();
 
 describe('driver', function () {
@@ -163,9 +164,9 @@ describe('driver', function () {
         driver = new EspressoDriver({}, true);
       });
 
-      it('should set default driver args to opts', function () {
-        driver.opts.reboot.should.eql(false);
-        driver.opts.suppressKillServer.should.eql(false);
+      it('driver args should not exist if none passed in', function () {
+        expect(typeof driver.opts.reboot === 'undefined').to.be.true;
+        expect(typeof driver.opts.suppressKillServer === 'undefined').to.be.true;
       });
     });
     describe('driver args with opts', function () {
