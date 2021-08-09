@@ -126,7 +126,7 @@ fun Project.getStringProperty(name: String, default: String): String =
     properties.getOrDefault(name, default).toString()
 
 fun Project.getIntProperty(name: String, default: Int): Int =
-    Project.getStringProperty(name, default).toInt()
+    this.getStringProperty(name, default.toString()).toInt()
 
 fun Project.getBooleanProperty(name: String, default: Boolean): Boolean =
-    Project.getStringProperty(name, default).toBoolean()
+    this.getStringProperty(name, default.toString()).toBoolean()
