@@ -19,13 +19,13 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.ScreenshotsHelper
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 
 class ElementScreenshot : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): String {
-        val view = Element.getViewById(params.elementId)
+        val view = EspressoElement.getViewById(params.elementId)
         return ScreenshotsHelper(view).screenshot
     }
 }

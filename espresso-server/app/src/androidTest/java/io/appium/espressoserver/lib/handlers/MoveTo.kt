@@ -18,7 +18,7 @@ package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.PerformException
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.MoveToParams
 import io.appium.espressoserver.lib.viewaction.ScrollTo
 
@@ -31,7 +31,7 @@ class MoveTo : RequestHandler<MoveToParams, Void?> {
     override fun handleInternal(params: MoveToParams): Void? {
         // Get a reference to the view and call onData. This will automatically scroll to the view.
         params.elementToMoveTo ?: throw InvalidArgumentException("Must provide element to move to")
-        val viewInteraction = Element.getViewInteractionById(params.elementToMoveTo)
+        val viewInteraction = EspressoElement.getViewInteractionById(params.elementToMoveTo)
 
         try {
             // Try performing espresso's scrollTo, which will only work if

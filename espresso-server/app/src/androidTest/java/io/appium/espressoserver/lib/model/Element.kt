@@ -19,6 +19,7 @@ package io.appium.espressoserver.lib.model
 import android.view.View
 import android.view.ViewParent
 import android.widget.AdapterView
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.EspressoException
@@ -30,9 +31,10 @@ import com.google.gson.annotations.SerializedName
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
+import io.appium.espressoserver.lib.helpers.ComposeViewCache
 import io.appium.espressoserver.lib.helpers.StringHelpers.charSequenceToNullableString
 import io.appium.espressoserver.lib.helpers.ViewState
-import io.appium.espressoserver.lib.helpers.ViewsCache
+import io.appium.espressoserver.lib.helpers.EspressoViewsCache
 import io.appium.espressoserver.lib.viewaction.ViewGetter
 import io.appium.espressoserver.lib.viewmatcher.withView
 import org.hamcrest.Matchers
@@ -43,14 +45,18 @@ import java.util.*
 const val W3C_ELEMENT_KEY = "element-6066-11e4-a52e-4f735466cecf"
 const val JSONWP_ELEMENT_KEY = "ELEMENT"
 
-class Element(view: View) {
+interface BaseElement {
+    val element: String
+}
+
+class EspressoElement(view: View) : BaseElement {
     @Suppress("JoinDeclarationAndAssignment")
     @SerializedName(JSONWP_ELEMENT_KEY, alternate = [W3C_ELEMENT_KEY])
-    val element: String
+    override val element: String
 
     init {
         element = UUID.randomUUID().toString()
-        ViewsCache.put(element, view)
+        EspressoViewsCache.put(element, view)
     }
 
     companion object {
@@ -73,11 +79,16 @@ class Element(view: View) {
          * view and return that element
          * Look up the view hierarchy to find the closest ancestor AdapterView
          */
-        private fun lookupOffscreenView(initialView: View, initialContentDescription: String): View {
+        private fun lookupOffscreenView(
+            initialView: View,
+            initialContentDescription: String
+        ): View {
             // Try scrolling the view with the expected content description into the viewport
             val dataInteraction = onData(
-                    hasEntry(Matchers.equalTo("contentDescription"),
-                            `is`(initialContentDescription))
+                hasEntry(
+                    Matchers.equalTo("contentDescription"),
+                    `is`(initialContentDescription)
+                )
             )
 
             // Look up the ancestry tree until we find an AdapterView
@@ -98,12 +109,16 @@ class Element(view: View) {
         @Throws(NoSuchElementException::class, StaleElementException::class)
         fun getViewById(elementId: String?, checkStaleness: Boolean = true): View {
             elementId ?: throw InvalidArgumentException("Cannot find 'null' element")
-            if (!ViewsCache.has(elementId)) {
-                throw NoSuchElementException("The element identified by '$elementId' does not exist in the cache " +
-                        "or has expired. Try to find it again")
+            if (!EspressoViewsCache.has(elementId)) {
+                throw NoSuchElementException(
+                    "The element identified by '$elementId' does not exist in the cache " +
+                            "or has expired. Try to find it again"
+                )
             }
 
-            val (resultView, initialContentDescription1) = Objects.requireNonNull<ViewState>(ViewsCache.get(elementId))
+            val (resultView, initialContentDescription1) = Objects.requireNonNull<ViewState>(
+                EspressoViewsCache.get(elementId)
+            )
 
             // If the cached view is gone, throw stale element exception
             if (!resultView.isShown) {
@@ -115,14 +130,18 @@ class Element(view: View) {
             }
 
             val initialContentDescription = charSequenceToNullableString(initialContentDescription1)
-                    ?: return resultView
-            val currentContentDescription = charSequenceToNullableString(resultView.contentDescription)
+                ?: return resultView
+            val currentContentDescription =
+                charSequenceToNullableString(resultView.contentDescription)
             if (currentContentDescription == initialContentDescription) {
                 return resultView
             }
 
             try {
-                ViewsCache.put(elementId, lookupOffscreenView(resultView, initialContentDescription))
+                EspressoViewsCache.put(
+                    elementId,
+                    lookupOffscreenView(resultView, initialContentDescription)
+                )
             } catch (e: Exception) {
                 if (e is EspressoException) {
                     if (!checkStaleness) {
@@ -135,5 +154,16 @@ class Element(view: View) {
 
             return resultView
         }
+    }
+}
+
+class ComposeElement(node: SemanticsNodeInteraction) : BaseElement {
+    @Suppress("JoinDeclarationAndAssignment")
+    @SerializedName(JSONWP_ELEMENT_KEY, alternate = [W3C_ELEMENT_KEY])
+    override val element: String
+
+    init {
+        element = UUID.randomUUID().toString()
+        ComposeViewCache.put(element, node)
     }
 }

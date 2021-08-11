@@ -22,7 +22,7 @@ import androidx.test.espresso.PerformException
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.TextValueParams
 
 import androidx.test.espresso.action.ViewActions.replaceText
@@ -42,7 +42,7 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueP
         }
 
         val elementId = params.elementId
-        val view = Element.getViewById(elementId)
+        val view = EspressoElement.getViewById(elementId)
 
         try {
             if (view is ProgressBar) {
@@ -57,7 +57,7 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueP
             throw InvalidArgumentException(String.format("Cannot convert '$value' to an integer"))
         }
 
-        val viewInteraction = Element.getViewInteractionById(elementId)
+        val viewInteraction = EspressoElement.getViewInteractionById(elementId)
         if (isReplacing) {
             viewInteraction.perform(replaceText(value))
         } else {

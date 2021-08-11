@@ -20,7 +20,7 @@ import androidx.test.espresso.EspressoException
 import androidx.test.espresso.contrib.ViewPagerActions
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.ScrollToPageParams
 import io.appium.espressoserver.lib.model.ScrollToPageParams.ScrollTo.*
 
@@ -28,7 +28,7 @@ class ScrollToPage : RequestHandler<ScrollToPageParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: ScrollToPageParams): Void? {
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
+        val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
         try {
             val smoothScroll = params.smoothScroll
             params.scrollTo?.let {

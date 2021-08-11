@@ -16,14 +16,13 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.model.ViewElement
 
 class GetDisplayed : RequestHandler<AppiumParams, Boolean> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): Boolean =
-            ViewElement(Element.getViewById(params.elementId, false)).isVisible
+        context.driverStrategy.getDisplayed(params)
 }

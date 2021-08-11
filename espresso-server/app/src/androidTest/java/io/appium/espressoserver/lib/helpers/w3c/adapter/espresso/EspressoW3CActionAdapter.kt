@@ -12,7 +12,7 @@ import io.appium.espressoserver.lib.helpers.w3c.adapter.BaseW3CActionAdapter
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType
 import io.appium.espressoserver.lib.helpers.w3c.state.KeyInputState
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 
 import android.view.KeyEvent.ACTION_DOWN
 import android.view.KeyEvent.ACTION_UP
@@ -128,7 +128,7 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
 
     @Throws(AppiumException::class)
     override fun getElementCenterPoint(elementId: String?): Point {
-        val view = Element.getViewById(elementId)
+        val view = EspressoElement.getViewById(elementId)
         val coords = GeneralLocation.CENTER.calculateCoordinates(view)
         val point = Point()
         point.x = coords[0].roundToInt()

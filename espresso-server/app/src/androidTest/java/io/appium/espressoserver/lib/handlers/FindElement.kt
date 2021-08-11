@@ -16,30 +16,14 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.view.View
+import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
 import io.appium.espressoserver.lib.handlers.exceptions.*
-import io.appium.espressoserver.lib.helpers.ViewFinder.findBy
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.BaseElement
 import io.appium.espressoserver.lib.model.Locator
-import io.appium.espressoserver.lib.viewaction.ViewGetter
 
-class FindElement : RequestHandler<Locator, Element> {
+class FindElement : RequestHandler<Locator, BaseElement> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: Locator): Element {
-        var parentView: View? = null
-        params.elementId?.let {
-            parentView = ViewGetter().getView(Element.getViewInteractionById(it))
-        }
-        // Test the selector
-        val view = findBy(parentView,
-                params.using ?: throw InvalidSelectorException("Locator strategy cannot be empty"),
-                params.value ?: throw InvalidArgumentException())
-                ?: throw NoSuchElementException(
-                        String.format("Could not find element with strategy %s and selector %s",
-                                params.using, params.value))
-
-        // If we have a match, return success
-        return Element(view)
-    }
+    override fun handleInternal(params: Locator): BaseElement =
+        context.driverStrategy.findElement(params)
 }

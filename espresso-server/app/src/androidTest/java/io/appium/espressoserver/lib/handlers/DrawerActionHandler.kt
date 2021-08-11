@@ -20,13 +20,13 @@ import androidx.test.espresso.EspressoException
 import androidx.test.espresso.contrib.DrawerActions
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.DrawerActionParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 
 class DrawerActionHandler(private val isOpenAction: Boolean) : RequestHandler<DrawerActionParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: DrawerActionParams): Void? {
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
+        val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
         try {
             params.gravity?.let {gravity ->
                 viewInteraction.perform(if (isOpenAction) DrawerActions.open(gravity) else DrawerActions.close(gravity))
