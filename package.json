@@ -20,6 +20,14 @@
   "engines": [
     "node"
   ],
+  "appium": {
+    "driverName": "espresso",
+    "automationName": "Espresso",
+    "platformNames": [
+      "Android"
+    ],
+    "mainClass": "EspressoDriver"
+  },
   "main": "./build/index.js",
   "bin": {},
   "directories": {
