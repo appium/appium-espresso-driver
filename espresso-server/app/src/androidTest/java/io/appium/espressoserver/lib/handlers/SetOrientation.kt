@@ -17,7 +17,7 @@
 package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.OrientationParams
 
 import androidx.test.espresso.Espresso.onView
@@ -42,7 +42,7 @@ class SetOrientation : RequestHandler<OrientationParams, Void?> {
 
         // Get the view interaction for the element or for the root, if no element provided
         val viewInteraction = params.elementId?.let {elementId ->
-            Element.getViewInteractionById(elementId)
+            EspressoElement.getViewInteractionById(elementId)
         } ?: run {
             onView(isRoot())
         }

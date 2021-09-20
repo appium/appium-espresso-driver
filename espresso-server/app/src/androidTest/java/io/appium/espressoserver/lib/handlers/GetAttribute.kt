@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.ViewAttributesEnum
 import io.appium.espressoserver.lib.model.ViewElement
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
@@ -43,9 +43,9 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
         ViewAttributesEnum.values().find {
             attributeName.equals(it.toString(), ignoreCase = true)
         }?.let {
-            val viewElementGetter: () -> ViewElement = { ViewElement(Element.getViewById(params.elementId)) }
-            val uncheckedViewElementGetter: () -> ViewElement = { ViewElement(Element.getViewById(params.elementId, false)) }
-            val viewInteractionGetter: () -> ViewInteraction = { Element.getViewInteractionById(params.elementId) }
+            val viewElementGetter: () -> ViewElement = { ViewElement(EspressoElement.getViewById(params.elementId)) }
+            val uncheckedViewElementGetter: () -> ViewElement = { ViewElement(EspressoElement.getViewById(params.elementId, false)) }
+            val viewInteractionGetter: () -> ViewInteraction = { EspressoElement.getViewInteractionById(params.elementId) }
             val checkToAttributeValue: (() -> Unit) -> String = {
                 try {
                     it()

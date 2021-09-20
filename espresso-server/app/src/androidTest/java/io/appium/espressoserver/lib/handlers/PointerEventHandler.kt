@@ -30,7 +30,7 @@ import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.MotionEventBuil
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.MOUSE
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.PointerType.TOUCH
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.MotionEventParams
 import io.appium.espressoserver.lib.model.ViewElement
 import io.appium.espressoserver.lib.model.toAndroidButtonState
@@ -124,7 +124,7 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
         var startY = displayMetrics.heightPixels / 2 - params.y / 2
 
         params.targetElement?.let {
-            val view = Element.getViewById(it)
+            val view = EspressoElement.getViewById(it)
             val viewElement = ViewElement(view)
             startX = viewElement.bounds.left.toLong()
             startY = viewElement.bounds.top.toLong()
@@ -180,21 +180,21 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
     private fun handleClick(params: MotionEventParams) {
         params.targetElement
                 ?: throw InvalidArgumentException("Element ID must not be blank for click event")
-        Element.getViewInteractionById(params.targetElement).perform(click())
+        EspressoElement.getViewInteractionById(params.targetElement).perform(click())
     }
 
     @Throws(AppiumException::class)
     private fun handleDoubleClick(params: MotionEventParams) {
         params.targetElement
                 ?: throw InvalidArgumentException("Element ID must not be blank for double click event")
-        Element.getViewInteractionById(params.targetElement).perform(doubleClick())
+        EspressoElement.getViewInteractionById(params.targetElement).perform(doubleClick())
     }
 
     @Throws(AppiumException::class)
     private fun handleLongClick(params: MotionEventParams) {
         params.targetElement
                 ?: throw InvalidArgumentException("Element ID must not be blank for long click event")
-        Element.getViewInteractionById(params.targetElement).perform(longClick())
+        EspressoElement.getViewInteractionById(params.targetElement).perform(longClick())
     }
 
     @Throws(AppiumException::class)

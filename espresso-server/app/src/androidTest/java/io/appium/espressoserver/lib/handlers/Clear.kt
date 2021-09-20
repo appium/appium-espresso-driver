@@ -20,7 +20,7 @@ import androidx.test.espresso.PerformException
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 
 import androidx.test.espresso.action.ViewActions.clearText
 
@@ -28,7 +28,7 @@ class Clear : RequestHandler<AppiumParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): Void? {
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
+        val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
         try {
             viewInteraction.perform(clearText())
         } catch (e: PerformException) {

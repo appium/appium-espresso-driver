@@ -18,14 +18,14 @@ package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.ViewElement
 
 class GetName : RequestHandler<AppiumParams, String?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): String? {
-        val view = Element.getViewById(params.elementId)
+        val view = EspressoElement.getViewById(params.elementId)
         return ViewElement(view).contentDescription?.toString()
     }
 }

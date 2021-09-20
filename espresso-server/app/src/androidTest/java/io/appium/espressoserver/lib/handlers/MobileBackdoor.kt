@@ -4,7 +4,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.ActivityHelpers
 import io.appium.espressoserver.lib.helpers.InvocationOperation
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.InvocationTarget
 import io.appium.espressoserver.lib.model.MobileBackdoorParams
 
@@ -20,7 +20,7 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
             return when (target) {
                 InvocationTarget.ACTIVITY -> invokeBackdoorMethods(activity, ops)
                 InvocationTarget.APPLICATION -> invokeBackdoorMethods(activity.application, ops)
-                InvocationTarget.ELEMENT -> invokeBackdoorMethods(Element.getViewById(params.targetElement), ops)
+                InvocationTarget.ELEMENT -> invokeBackdoorMethods(EspressoElement.getViewById(params.targetElement), ops)
                 else -> throw InvalidArgumentException("target cannot be '$target'")
             }
         }

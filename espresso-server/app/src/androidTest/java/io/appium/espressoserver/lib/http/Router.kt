@@ -118,6 +118,9 @@ internal class Router {
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/perform", TouchAction(), TouchActionsParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/multi/perform", MultiTouchAction(), MultiTouchActionsParams::class.java))
 
+        routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/settings", UpdateSettings(), SettingsParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/appium/settings", GetSettings(), AppiumParams::class.java))
+
         // 'execute mobile' commands
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/swipe", MobileSwipe(), MobileSwipeParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/is_toast_displayed", GetToastVisibility(), ToastLookupParams::class.java))

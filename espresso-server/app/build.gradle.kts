@@ -4,8 +4,8 @@ plugins {
 }
 
 android {
-    compileSdkVersion(getIntProperty("appiumCompileSdk", 28))
-    buildToolsVersion(getStringProperty("appiumBuildTools", "28.0.3"))
+    compileSdkVersion(getIntProperty("appiumCompileSdk", 30))
+    buildToolsVersion(getStringProperty("appiumBuildTools", "30.0.3"))
     defaultConfig {
         // <instrumentation android:targetPackage=""/>
         applicationId = getStringProperty("appiumTargetPackage", "io.appium.espressoserver")
@@ -59,6 +59,19 @@ android {
             }
         }
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    packagingOptions {
+        exclude("META-INF/**")
+    }
 }
 
 dependencies {
@@ -85,6 +98,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:${Version.kotlin}")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${Version.kotlin}")
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:${Version.kotlin}")
+    testImplementation("androidx.compose.ui:ui-test:${Version.compose}")
+    testImplementation("androidx.compose.ui:ui-test-junit4:${Version.compose}")
 
     androidTestImplementation("androidx.annotation:annotation:${Version.annotation}")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:${Version.espresso}") {
@@ -101,6 +116,11 @@ dependencies {
     androidTestImplementation("org.nanohttpd:nanohttpd-webserver:${Version.nanohttpd}")
     androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Version.kotlin}")
     androidTestImplementation("org.jetbrains.kotlin:kotlin-reflect:${Version.kotlin}")
+    androidTestImplementation("androidx.compose.ui:ui-test:${Version.compose}")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Version.compose}"){
+        isTransitive = false
+    }
+
     // additionalAndroidTestDependencies placeholder (don't change or delete this line)
 }
 
@@ -120,6 +140,7 @@ object Version {
     const val mockito = "2.8.9"
     const val robolectric = "4.5.1"
     const val junit = "4.13"
+    const val compose = "1.0.0"
 }
 
 fun Project.getStringProperty(name: String, default: String): String =

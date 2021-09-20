@@ -18,7 +18,7 @@ package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 
 import io.appium.espressoserver.lib.model.ViewElement
 
@@ -26,5 +26,5 @@ class GetEnabled : RequestHandler<AppiumParams, Boolean> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): Boolean =
-            ViewElement(Element.getViewById(params.elementId)).isEnabled
+            ViewElement(EspressoElement.getViewById(params.elementId)).isEnabled
 }

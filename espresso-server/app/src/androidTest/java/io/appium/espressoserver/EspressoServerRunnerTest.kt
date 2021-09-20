@@ -22,10 +22,17 @@ import org.junit.Test
 import java.io.IOException
 
 import androidx.test.filters.LargeTest
+import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.DuplicateRouteException
 import io.appium.espressoserver.lib.http.Server
 
 import org.junit.Assert.assertEquals
+import org.junit.Rule
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import io.appium.espressoserver.lib.drivers.ComposeDriver
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -34,6 +41,25 @@ import org.junit.Assert.assertEquals
  */
 @LargeTest
 class EspressoServerRunnerTest {
+
+    @get:Rule
+    val composeRule = AndroidComposeTestRule(
+        activityRule = EmptyTestRule(),
+        activityProvider = { error("Can't provide current activity") }
+    ).also {
+        composeTestRule = it
+    }
+
+    private val syncComposeClock = Thread {
+        while (!Server.isStopRequestReceived) {
+            if (context.driverStrategy is ComposeDriver) {
+                composeTestRule.mainClock.advanceTimeByFrame()
+            }
+            // Let Android run measure, draw and in general any other async operations. AndroidComposeTestRule.android.kt:325
+            Thread.sleep(ANDROID_ASYNC_WAIT_TIME_MS)
+        }
+    }
+
     @Test
     @Throws(InterruptedException::class, IOException::class, DuplicateRouteException::class)
     fun startEspressoServer() {
@@ -43,14 +69,25 @@ class EspressoServerRunnerTest {
         }
         try {
             Server.start()
-
+            syncComposeClock.start()
             while (!Server.isStopRequestReceived) {
                 Thread.sleep(1000)
             }
         } finally {
             Server.stop()
+            syncComposeClock.join()
         }
 
         assertEquals(true, true) // Keep Codacy happy
+    }
+
+    class EmptyTestRule : TestRule {
+        override fun apply(base: Statement, description: Description): Statement = base
+    }
+
+    companion object {
+        lateinit var composeTestRule: AndroidComposeTestRule<*, *>
+        val context = DriverContext()
+        const val ANDROID_ASYNC_WAIT_TIME_MS = 10L
     }
 }

@@ -16,25 +16,12 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import androidx.test.espresso.PerformException
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
 
-import androidx.test.espresso.action.ViewActions.click
-
-class Click : RequestHandler<AppiumParams, Void?> {
+class Click : RequestHandler<AppiumParams, Unit> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): Void? {
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
-        try {
-            viewInteraction.perform(click())
-        } catch (e: PerformException) {
-            throw InvalidElementStateException("click", params.elementId!!, e)
-        }
-
-        return null
-    }
+    override fun handleInternal(params: AppiumParams): Unit = context.driverStrategy.click(params)
 }
