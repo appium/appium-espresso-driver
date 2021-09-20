@@ -23,6 +23,7 @@ import io.appium.espressoserver.lib.model.Locator
 interface AppDriver {
     val name: DriverContext.StrategyType
     fun findElement(params: Locator): BaseElement
+    fun findElements(params: Locator): List<BaseElement>
     fun click(params: AppiumParams): Unit
     fun getText(params: AppiumParams): String
     fun getDisplayed(params: AppiumParams): Boolean

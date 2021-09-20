@@ -51,6 +51,20 @@ class EspressoDriver : AppDriver {
         return EspressoElement(view)
     }
 
+    override fun findElements(params: Locator): List<EspressoElement> {
+        val parentView = params.elementId?.let {
+            ViewGetter().getView(EspressoElement.getViewInteractionById(it))
+        }
+
+        // Return as list of Elements
+        return ViewFinder.findAllBy(
+            parentView,
+            params.using ?: throw InvalidSelectorException("Locator strategy cannot be empty"),
+            params.value ?: throw InvalidArgumentException()
+        )
+            .map { EspressoElement(it) }
+    }
+
     override fun click(params: AppiumParams): Unit {
         try {
             EspressoElement.getViewInteractionById(params.elementId).perform(ViewActions.click())
