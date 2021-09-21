@@ -82,10 +82,10 @@ object ViewFinder {
     @Throws(AppiumException::class)
     fun findBy(
             root: View?, strategy: Strategy, selector: String): View? {
-        val viewInteractions = findAllBy(root, strategy, selector, true)
-        return if (viewInteractions.isEmpty()) {
+        val views = findAllBy(root, strategy, selector, true)
+        return if (views.isEmpty()) {
             null
-        } else viewInteractions[0]
+        } else views[0]
     }
 
     /**

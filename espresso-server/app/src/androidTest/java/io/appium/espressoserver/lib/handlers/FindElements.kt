@@ -16,28 +16,14 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.view.View
+import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
-import io.appium.espressoserver.lib.helpers.ViewFinder.findAllBy
-import io.appium.espressoserver.lib.model.EspressoElement
+import io.appium.espressoserver.lib.model.BaseElement
 import io.appium.espressoserver.lib.model.Locator
-import io.appium.espressoserver.lib.viewaction.ViewGetter
 
-class FindElements : RequestHandler<Locator, List<EspressoElement>> {
+class FindElements : RequestHandler<Locator, List<BaseElement>> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: Locator): List<EspressoElement> {
-        var parentView: View? = null
-        params.elementId?.let {
-            parentView = ViewGetter().getView(EspressoElement.getViewInteractionById(it))
-        }
-
-        // Return as list of Elements
-        return findAllBy(parentView,
-                params.using ?: throw InvalidSelectorException("Locator strategy cannot be empty"),
-                params.value ?: throw InvalidArgumentException())
-                .map { EspressoElement(it) }
-    }
+    override fun handleInternal(params: Locator): List<BaseElement> =
+        context.driverStrategy.findElements(params)
 }

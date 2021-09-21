@@ -29,20 +29,27 @@ class ComposeDriver : AppDriver {
     override val name = DriverContext.StrategyType.COMPOSE
 
     override fun findElement(params: Locator): BaseElement {
-        val parentNodeInteraction = params.elementId?.let { getNodeInteractionById(it) }
-
-        val nodeInteractions = parentNodeInteraction?.findDescendantNodeInteractions(params)
-            ?: EspressoServerRunnerTest.composeTestRule.onAllNodes(semanticsMatcherForLocator(params))
-
-        if (nodeInteractions.fetchSemanticsNodes(false).isEmpty()) {
-            throw NoSuchElementException(
-                String.format(
-                    "Could not find a compose element with strategy '%s' and selector '%s'",
-                    params.using, params.value
-                )
+        val nodeInteractions = toNodeInteractionsCollection(params)
+        if (nodeInteractions.fetchSemanticsNodes(false).isEmpty()) throw NoSuchElementException(
+            String.format(
+                "Could not find a compose element with strategy '%s' and selector '%s'",
+                params.using, params.value
             )
-        }
+        )
         return ComposeElement(nodeInteractions[0])
+    }
+
+    override fun findElements(params: Locator): List<BaseElement> {
+        val nodeInteractions = toNodeInteractionsCollection(params)
+        return nodeInteractions.fetchSemanticsNodes(false)
+            .mapIndexed { index, semanticsNode -> ComposeElement(nodeInteractions[index]) }
+    }
+
+
+    private fun toNodeInteractionsCollection(params: Locator): SemanticsNodeInteractionCollection {
+        val parentNodeInteraction = params.elementId?.let { getNodeInteractionById(it) }
+        return parentNodeInteraction?.findDescendantNodeInteractions(params)
+            ?: EspressoServerRunnerTest.composeTestRule.onAllNodes(semanticsMatcherForLocator(params))
     }
 
     override fun click(params: AppiumParams): Unit {

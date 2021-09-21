@@ -3,7 +3,6 @@ import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
 
-
 chai.should();
 chai.use(chaiAsPromised);
 
@@ -39,6 +38,23 @@ describe('Jetpack Compose', function () {
     let clickableText = await driver.elementByLinkText('Click to see dialog');
     clickableText.click();
 
+    await driver.elementByLinkText('Congratulations! You just clicked the text successfully');
+
+    await driver.back();
+    await driver.back();
     await driver.settings().should.eventually.eql({ driver: 'compose' });
+  });
+
+  it('should find elements', async function () {
+    await driver.updateSettings({ driver: 'espresso' });
+    let el = await driver.elementByXPath("//*[@text='Horizontal Carousel']");
+    await driver.moveTo(el);
+    await el.click();
+
+    await driver.updateSettings({ driver: 'compose' });
+
+    let e = await driver.elementsByLinkText('Grace Hopper');
+    e.length.should.be.eql(2);
+    await e[0].text().should.eventually.equal('Grace Hopper');
   });
 });
