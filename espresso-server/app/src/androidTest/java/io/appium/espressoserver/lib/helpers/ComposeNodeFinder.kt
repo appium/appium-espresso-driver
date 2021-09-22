@@ -20,12 +20,11 @@ import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.*
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.model.Strategy
-import io.appium.espressoserver.EspressoServerRunnerTest
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
 import io.appium.espressoserver.lib.model.Locator
-import java.util.NoSuchElementException
+import io.appium.espressoserver.lib.model.SourceDocument
+import io.appium.espressoserver.lib.viewmatcher.fetchIncludedAttributes
 
 /**
  * Retrieve cached node and return the SemanticsNodeInteraction
@@ -44,12 +43,18 @@ fun semanticsMatcherForLocator(locator: Locator): SemanticsMatcher =
         Strategy.TEXT -> hasText(locator.value!!)
         Strategy.LINK_TEXT -> hasText(locator.value!!)
         Strategy.ACCESSIBILITY_ID -> hasContentDescription(locator.value!!)
+        Strategy.XPATH -> hasXpath(locator)
         else -> throw InvalidSelectorException(
             "Can't use non-Compose selectors. " +
                     "Only ${Strategy.VIEW_TAG}, ${Strategy.TEXT}, ${Strategy.LINK_TEXT} and " +
                     "${Strategy.ACCESSIBILITY_ID} are supported"
         )
     }
+
+private fun hasXpath(locator: Locator): SemanticsMatcher {
+    val parentNode = locator.elementId?.let { getSemanticsNode(it) }
+    return SourceDocument(parentNode, fetchIncludedAttributes(locator.value!!)).hasXpath(locator.value!!)
+}
 
 fun getSemanticsNode(elementId: String): SemanticsNode =
     try {

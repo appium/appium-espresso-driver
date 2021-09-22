@@ -45,6 +45,19 @@ describe('Jetpack Compose', function () {
     await driver.settings().should.eventually.eql({ driver: 'compose' });
   });
 
+  it('should find element by xpath', async function () {
+    await driver.updateSettings({ driver: 'espresso' });
+    let el = await driver.elementByXPath("//*[@text='Clickable Component']");
+    await driver.moveTo(el);
+    await el.click();
+
+    await driver.updateSettings({ driver: 'compose' });
+
+    let e = await driver.elementByXPath("//*[@view-tag='lol']");
+    await e.text().should.eventually.equal('Click to see dialog');
+    await driver.back();
+  });
+
   it('should find elements', async function () {
     await driver.updateSettings({ driver: 'espresso' });
     let el = await driver.elementByXPath("//*[@text='Horizontal Carousel']");
@@ -56,5 +69,6 @@ describe('Jetpack Compose', function () {
     let e = await driver.elementsByLinkText('Grace Hopper');
     e.length.should.be.eql(2);
     await e[0].text().should.eventually.equal('Grace Hopper');
+    await driver.back();
   });
 });

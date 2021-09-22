@@ -25,6 +25,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.onRoot
+import io.appium.espressoserver.EspressoServerRunnerTest
+import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
+import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
@@ -53,6 +59,7 @@ const val MAX_TRAVERSAL_DEPTH = 70
 const val MAX_XML_VALUE_LENGTH = 64 * 1024
 const val XML_ENCODING = "UTF-8"
 val XPATH: XPath = XPathFactory.newInstance().newXPath()
+const val COMPOSE_TAG_NAME = "ComposeNode"
 
 
 private fun toXmlNodeName(className: String?): String {
@@ -76,7 +83,7 @@ private fun toXmlNodeName(className: String?): String {
 
 
 class SourceDocument constructor(
-        private val root: View? = null,
+        private val root: Any? = null,
         private val includedAttributes: Set<ViewAttributesEnum>? = null
 ) {
     @Suppress("PrivatePropertyName")
@@ -199,9 +206,49 @@ class SourceDocument constructor(
         serializer?.endTag(NAMESPACE, tagName)
     }
 
+    private fun serializeComposeNode(semanticsNode: SemanticsNode?, depth: Int) {
+        if (semanticsNode == null) {
+            return
+        }
+        val nodeElement = ComposeNodeElement(semanticsNode)
+        serializer?.startTag(NAMESPACE, COMPOSE_TAG_NAME)
+
+        linkedMapOf(
+            ViewAttributesEnum.INDEX to { nodeElement.index },
+            ViewAttributesEnum.CLICKABLE to { nodeElement.isClickable },
+            ViewAttributesEnum.ENABLED to { nodeElement.isEnabled },
+            ViewAttributesEnum.FOCUSED to { nodeElement.isFocused },
+            ViewAttributesEnum.SCROLLABLE to { nodeElement.isScrollable },
+            ViewAttributesEnum.SELECTED to { nodeElement.isSelected },
+            ViewAttributesEnum.VISIBLE to { nodeElement.isVisible },
+            ViewAttributesEnum.VIEW_TAG to { nodeElement.viewTag },
+            ViewAttributesEnum.CONTENT_DESC to { nodeElement.contentDescription },
+            ViewAttributesEnum.BOUNDS to { nodeElement.bounds.toShortString() },
+            ViewAttributesEnum.TEXT to { nodeElement.text },
+            ViewAttributesEnum.RESOURCE_ID to { nodeElement.resourceId },
+        ).forEach {
+            setAttribute(it.key, it.value())
+        }
+
+        serializer?.attribute(NAMESPACE, VIEW_INDEX, nodeElement.resourceId)
+
+        if (depth < MAX_TRAVERSAL_DEPTH) {
+            // Visit the children and build them too
+            for (index in 0 until semanticsNode.children.count()) {
+                serializeComposeNode(semanticsNode.children[index], depth + 1)
+            }
+        } else {
+            AndroidLogger.warn(
+                "Skipping traversal of ${semanticsNode.javaClass.name}'s children, since " +
+                        "the current depth has reached its maximum allowed value of $depth"
+            )
+        }
+
+        serializer?.endTag(NAMESPACE, COMPOSE_TAG_NAME)
+    }
+
     private fun toStream(): InputStream {
         var lastError: Throwable? = null
-        val rootView = root ?: ViewGetter().rootView
         // Try to serialize the xml into the memory first, since it is fast
         // Switch to a file system serializer if the first approach causes OutOfMemory
         for (streamType in arrayOf<Class<*>>(ByteArrayOutputStream::class.java, FileOutputStream::class.java)) {
@@ -219,7 +266,17 @@ class SourceDocument constructor(
                         it.startDocument(XML_ENCODING, true)
                         it.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
                         val startTime = SystemClock.uptimeMillis()
-                        serializeView(rootView, 0)
+                        when(context.driverStrategy.name){
+                            DriverContext.StrategyType.COMPOSE -> {
+                                val rootView = root ?: EspressoServerRunnerTest.composeTestRule.onRoot().fetchSemanticsNode()
+                                serializeComposeNode(rootView as SemanticsNode, 0)
+                            }
+                            DriverContext.StrategyType.ESPRESSO -> {
+                                val rootView = root ?: ViewGetter().rootView
+                                serializeView(rootView as View, 0)
+                            }
+                        }
+
                         it.endDocument()
                         AndroidLogger.info("The source XML tree has been fetched in " +
                                 "${SystemClock.uptimeMillis() - startTime}ms " +
@@ -282,5 +339,26 @@ class SourceDocument constructor(
                 }
             }
         }, { performCleanup() })
+    }
+
+    fun hasXpath(xpathSelector: String): SemanticsMatcher {
+        val expr = try {
+            XPATH.compile(xpathSelector)
+        } catch (xe: XPathExpressionException) {
+            throw XPathLookupException(xpathSelector, xe.message!!)
+        }
+        return SemanticsMatcher(
+            "Matches Xpath $xpathSelector"
+        ) {
+            val nodeIndices = RESOURCES_GUARD.withPermit({
+                toStream().use { xmlStream ->
+                    val list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
+                    (0 until list.length).map { index ->
+                        list.item(index).attributes.getNamedItem("viewIndex").nodeValue.toInt()
+                    }
+                }
+            }, { performCleanup() })
+            nodeIndices.contains(it.id)
+        }
     }
 }
