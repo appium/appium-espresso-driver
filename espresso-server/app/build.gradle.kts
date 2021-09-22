@@ -129,7 +129,7 @@ tasks.withType<Test> {
 }
 
 object Version {
-    const val kotlin = "1.4.32"
+    const val kotlin = "1.5.10"
     const val espresso = "3.3.0"
     const val testlib = "1.3.0"
     const val mocklib = "1.7.4"

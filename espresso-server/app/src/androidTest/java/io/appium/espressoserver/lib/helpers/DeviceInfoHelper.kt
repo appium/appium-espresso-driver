@@ -22,18 +22,15 @@ import android.os.Build
 import android.provider.Settings.Secure
 import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
-import android.view.Display
-import android.view.WindowManager
+import androidx.test.core.app.ApplicationProvider
 import java.util.TimeZone
 import java.util.Locale
 
-class DeviceInfoHelper(private val context: Context) {
+class DeviceInfoHelper {
 
-    private val defaultDisplay: Display?
-        get() {
-            val windowManager = context.getSystemService(Context.WINDOW_SERVICE)
-            return (windowManager as? WindowManager)?.defaultDisplay;
-        }
+    private val context by lazy {
+        ApplicationProvider.getApplicationContext<Context>()
+    }
 
     /**
      * A unique serial number identifying a device, if a device has multiple users,  each user appears as a
@@ -73,7 +70,7 @@ class DeviceInfoHelper(private val context: Context) {
      * @return the os version as String
      */
     val apiVersion: String
-        get() = Integer.toString(Build.VERSION.SDK_INT)
+        get() = Build.VERSION.SDK_INT.toString()
 
     /**
      * @return The current version string, for example "1.0" or "3.4b5"
@@ -86,7 +83,7 @@ class DeviceInfoHelper(private val context: Context) {
      */
     val displayDensity: Int?
         get() {
-            val display = defaultDisplay ?: return null
+            val display = context.display ?: return null
             val metrics = DisplayMetrics()
             display.getRealMetrics(metrics)
             return (metrics.density * 160).toInt()
@@ -101,11 +98,11 @@ class DeviceInfoHelper(private val context: Context) {
         get() {
             val telephonyManager = context
                     .getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
-            try {
-                return telephonyManager?.networkOperatorName
+            return try {
+                telephonyManager?.networkOperatorName
             } catch (e: Exception) {
                 e.printStackTrace()
-                return null
+                null
             }
 
         }
@@ -117,7 +114,7 @@ class DeviceInfoHelper(private val context: Context) {
      */
     val realDisplaySize: String?
         get() {
-            val display = defaultDisplay ?: return null
+            val display = context.display ?: return null
             val p = android.graphics.Point()
             display.getRealSize(p)
             return "${p.x}x${p.y}"

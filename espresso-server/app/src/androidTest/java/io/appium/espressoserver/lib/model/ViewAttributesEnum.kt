@@ -46,6 +46,6 @@ enum class ViewAttributesEnum {
     VIEW_TAG;
 
     override fun toString(): String {
-        return this.name.replace("_", "-").toLowerCase()
+        return this.name.replace("_", "-").lowercase()
     }
 }

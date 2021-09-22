@@ -27,7 +27,7 @@ import kotlin.reflect.full.cast
 private fun Intent.addFlags(flags: String) {
     for (flagStr in flags.split(",")) {
         @Suppress("DEPRECATION")
-        when (flagStr.trim().toUpperCase()) {
+        when (flagStr.trim().uppercase()) {
             "FLAG_GRANT_READ_URI_PERMISSION", "GRANT_READ_URI_PERMISSION" ->
                 this.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             "FLAG_GRANT_WRITE_URI_PERMISSION", "GRANT_WRITE_URI_PERMISSION" ->

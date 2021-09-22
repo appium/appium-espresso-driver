@@ -47,14 +47,14 @@ class WebAtomDeserializer : JsonDeserializer<WebAtom> {
                 }
 
                 val supportedLocatorNames = Locator.values().map { v -> v.name }
-                if (using.asString.toUpperCase() !in supportedLocatorNames) {
+                if (using.asString.uppercase() !in supportedLocatorNames) {
                     throw InvalidSelectorException("Only the following locator types are supported: " +
                             "$supportedLocatorNames (case-insensitive). '${locator.get("using")}' is given instead")
                 }
 
                 // Set the args as locator
                 return WebAtom(webAtomName, arrayOf(
-                        Locator.valueOf(using.asString.toUpperCase()),
+                        Locator.valueOf(using.asString.uppercase()),
                         value.asString
                 ))
             }
