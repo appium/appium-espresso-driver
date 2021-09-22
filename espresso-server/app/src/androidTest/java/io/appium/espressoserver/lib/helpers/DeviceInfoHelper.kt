@@ -22,6 +22,8 @@ import android.os.Build
 import android.provider.Settings.Secure
 import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
+import android.view.Display
+import android.view.WindowManager
 import androidx.test.core.app.ApplicationProvider
 import java.util.TimeZone
 import java.util.Locale
@@ -31,6 +33,15 @@ class DeviceInfoHelper {
     private val context by lazy {
         ApplicationProvider.getApplicationContext<Context>()
     }
+
+    private val defaultDisplay: Display?
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            context.display
+        } else {
+            @Suppress("DEPRECATION")
+            (context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)
+                ?.defaultDisplay
+        }
 
     /**
      * A unique serial number identifying a device, if a device has multiple users,  each user appears as a
@@ -83,7 +94,7 @@ class DeviceInfoHelper {
      */
     val displayDensity: Int?
         get() {
-            val display = context.display ?: return null
+            val display = defaultDisplay ?: return null
             val metrics = DisplayMetrics()
             display.getRealMetrics(metrics)
             return (metrics.density * 160).toInt()
@@ -97,7 +108,7 @@ class DeviceInfoHelper {
     val carrierName: String?
         get() {
             val telephonyManager = context
-                    .getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+                .getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
             return try {
                 telephonyManager?.networkOperatorName
             } catch (e: Exception) {
@@ -114,7 +125,7 @@ class DeviceInfoHelper {
      */
     val realDisplaySize: String?
         get() {
-            val display = context.display ?: return null
+            val display = defaultDisplay ?: return null
             val p = android.graphics.Point()
             display.getRealSize(p)
             return "${p.x}x${p.y}"
