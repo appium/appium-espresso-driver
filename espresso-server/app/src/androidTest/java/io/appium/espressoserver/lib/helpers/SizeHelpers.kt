@@ -20,7 +20,6 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.WindowManager
 import androidx.test.core.app.ApplicationProvider
-import java.lang.IllegalStateException
 
 fun getCurrentWindowRect(): Rect {
     val context = ApplicationProvider.getApplicationContext<Context>()
