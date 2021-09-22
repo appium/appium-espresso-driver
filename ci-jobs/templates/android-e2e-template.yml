@@ -28,13 +28,10 @@ jobs:
       displayName: Install MJPEG Consumer
     - script: bash ci-jobs/scripts/start-emulator.sh
       displayName: Create and run Emulator
-    - script: npm run build
-      displayName: Build
     - script: |
-        pushd .
-        cd "$(npm -g root)/../espresso-server"
+        cd "espresso-server"
         ./gradlew -PappiumTargetPackage=io.appium.android.apis app:assembleAndroidTest
-        popd
+        cd ..
       displayName: Prebuild the server
     - script: npx mocha --timeout 6000000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/ -g @skip-ci -i --exit
       env:
