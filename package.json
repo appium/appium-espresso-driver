@@ -88,6 +88,7 @@
     "appium-chromedriver": "^4.23.1",
     "appium-gulp-plugins": "^5.4.1",
     "appium-test-support": "^1.0.0",
+    "async-lock": "^1.0.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "eslint-config-appium": "^4.0.1",
