@@ -18,12 +18,12 @@ package io.appium.espressoserver.lib.helpers
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.hardware.display.DisplayManager
 import android.os.Build
 import android.provider.Settings.Secure
 import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 import android.view.Display
-import android.view.WindowManager
 import androidx.test.core.app.ApplicationProvider
 import java.util.TimeZone
 import java.util.Locale
@@ -35,13 +35,8 @@ class DeviceInfoHelper {
     }
 
     private val defaultDisplay: Display?
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            context.display
-        } else {
-            @Suppress("DEPRECATION")
-            (context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)
-                ?.defaultDisplay
-        }
+        get() = (context.applicationContext.getSystemService(Context.DISPLAY_SERVICE) as? DisplayManager)
+            ?.getDisplay(Display.DEFAULT_DISPLAY)
 
     /**
      * A unique serial number identifying a device, if a device has multiple users,  each user appears as a
