@@ -18,13 +18,21 @@ package io.appium.espressoserver.lib.helpers
 
 import android.content.Context
 import android.graphics.Rect
-import android.view.WindowManager
+import android.hardware.display.DisplayManager
+import android.os.Build
+import android.util.DisplayMetrics
+import android.view.Display
 import androidx.test.core.app.ApplicationProvider
 
 fun getCurrentWindowRect(): Rect {
     val context = ApplicationProvider.getApplicationContext<Context>()
-    val winManager = context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
-        ?: throw IllegalStateException("Couldn't retrieve Window Manager Service instance: " +
-                "context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE) is null")
-    return winManager.currentWindowMetrics.bounds
+    val display = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        context.display
+    } else {
+        (context.applicationContext.getSystemService(Context.DISPLAY_SERVICE) as? DisplayManager)
+            ?.getDisplay(Display.DEFAULT_DISPLAY)
+    }) ?: throw IllegalStateException("Could not retrieve the display instance")
+    val displayMetrics = DisplayMetrics()
+    display.getRealMetrics(displayMetrics)
+    return Rect(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels)
 }
