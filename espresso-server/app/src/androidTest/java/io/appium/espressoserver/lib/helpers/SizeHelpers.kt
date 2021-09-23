@@ -25,14 +25,14 @@ import androidx.test.core.app.ApplicationProvider
 
 fun getCurrentWindowRect(): Rect {
     val context = ApplicationProvider.getApplicationContext<Context>()
-    val windowManager = (context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
-        ?: throw IllegalStateException("Could not retrieve Window Manager Service instance"))
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        windowManager.currentWindowMetrics.bounds
-    } else {
-        val displayMetrics = DisplayMetrics()
-        @Suppress("DEPRECATION")
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        Rect(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels)
+    val windowManager =
+        (context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)
+            ?: throw IllegalStateException("Could not retrieve Window Manager Service instance")
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        return windowManager.currentWindowMetrics.bounds
     }
+    val displayMetrics = DisplayMetrics()
+    @Suppress("DEPRECATION")
+    windowManager.defaultDisplay.getMetrics(displayMetrics)
+    return Rect(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels)
 }
