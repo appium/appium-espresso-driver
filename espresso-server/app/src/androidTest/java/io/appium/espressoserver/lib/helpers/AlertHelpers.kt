@@ -155,7 +155,7 @@ object AlertHelpers {
                 ?: throw InvalidElementStateException("The expected button cannot be detected on the alert")
 
         val actualLabel = dstButton.text
-        AndroidLogger.info("Clicking alert button '$actualLabel' in order to ${action.name.toLowerCase()} it")
+        AndroidLogger.info("Clicking alert button '$actualLabel' in order to ${action.name.lowercase()} it")
         dstButton.click()
         return actualLabel
     }

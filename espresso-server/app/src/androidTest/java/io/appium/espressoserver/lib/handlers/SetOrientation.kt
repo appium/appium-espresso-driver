@@ -36,7 +36,7 @@ class SetOrientation : RequestHandler<OrientationParams, Void?> {
         orientation ?: throw AppiumException("Screen orientation value must not be null")
 
         val supportedValues = OrientationType.values().map { it.name }
-        if (!supportedValues.contains(orientation.toUpperCase())) {
+        if (!supportedValues.contains(orientation.uppercase())) {
             throw AppiumException("Screen orientation must be one of $supportedValues. Found '$orientation'")
         }
 

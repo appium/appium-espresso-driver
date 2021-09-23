@@ -14,38 +14,17 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.model
+package io.appium.espressoserver.lib.helpers
 
-enum class ViewAttributesEnum {
+import android.content.Context
+import android.graphics.Rect
+import android.view.WindowManager
+import androidx.test.core.app.ApplicationProvider
 
-    CONTENT_DESC,
-    CLASS,
-    TEXT,
-    PACKAGE,
-    CHECKABLE,
-    CHECKED,
-    CLICKABLE,
-    ENABLED,
-    FOCUSABLE,
-    FOCUSED,
-    SCROLLABLE,
-    LONG_CLICKABLE,
-    PASSWORD,
-    SELECTED,
-    VISIBLE,
-    NO_MULTILINE_BUTTONS,
-    NO_OVERLAPS,
-    NO_ELLIPSIZED_TEXT,
-    BOUNDS,
-    RESOURCE_ID,
-    INSTANCE,
-    INDEX,
-    ADAPTERS,
-    ADAPTER_TYPE,
-    HINT,
-    VIEW_TAG;
-
-    override fun toString(): String {
-        return this.name.replace("_", "-").lowercase()
-    }
+fun getCurrentWindowRect(): Rect {
+    val context = ApplicationProvider.getApplicationContext<Context>()
+    val winManager = context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+        ?: throw IllegalStateException("Couldn't retrieve Window Manager Service instance: " +
+                "context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE) is null")
+    return winManager.currentWindowMetrics.bounds
 }

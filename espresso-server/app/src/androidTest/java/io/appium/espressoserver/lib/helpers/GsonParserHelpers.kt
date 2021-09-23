@@ -27,7 +27,7 @@ object GsonParserHelpers {
                                                helperMessage: String = "", defaultValue: T? = null): T? {
         val property = jsonObj.get(propName)
         if (property != null) {
-            val propValueAsString = property.asString.toUpperCase()
+            val propValueAsString = property.asString.uppercase()
             try {
                 return enumValueOf<T>(propValueAsString)
             } catch (e: IllegalArgumentException) {

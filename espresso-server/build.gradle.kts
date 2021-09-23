@@ -2,7 +2,7 @@
 
 buildscript {
     val appiumKotlin =
-        properties.getOrDefault("appiumKotlin", "1.4.32")
+        properties.getOrDefault("appiumKotlin", "1.5.10")
 
     val appiumAndroidGradlePlugin =
         properties.getOrDefault("appiumAndroidGradlePlugin", "4.1.1")
@@ -10,7 +10,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$appiumKotlin")

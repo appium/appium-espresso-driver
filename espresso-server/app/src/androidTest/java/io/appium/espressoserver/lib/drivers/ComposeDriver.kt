@@ -42,7 +42,7 @@ class ComposeDriver : AppDriver {
     override fun findElements(params: Locator): List<BaseElement> {
         val nodeInteractions = toNodeInteractionsCollection(params)
         return nodeInteractions.fetchSemanticsNodes(false)
-            .mapIndexed { index, semanticsNode -> ComposeElement(nodeInteractions[index]) }
+            .mapIndexed { index, _ -> ComposeElement(nodeInteractions[index]) }
     }
 
 

@@ -24,15 +24,15 @@ class DriverSetting : AbstractSetting() {
     override var name: String = "driver"
 
     override fun value(): String {
-        return EspressoServerRunnerTest.context.driverStrategy.name.toString().toLowerCase()
+        return EspressoServerRunnerTest.context.driverStrategy.name.toString().lowercase()
     }
 
     override fun apply(value: Any?) {
         val driverStrategy =
-            DriverContext.StrategyType.values().find { it.toString().toLowerCase() == value }
+            DriverContext.StrategyType.values().find { it.toString().lowercase() == value }
                 ?: throw InvalidArgumentException(
                     "driver type must be one of ${
-                        DriverContext.StrategyType.values().map { it.toString().toLowerCase() }
+                        DriverContext.StrategyType.values().map { it.toString().lowercase() }
                     }"
                 )
         EspressoServerRunnerTest.context.setDriverStrategy(driverStrategy)
