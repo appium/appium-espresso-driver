@@ -33,7 +33,7 @@ jobs:
         ./gradlew -PappiumTargetPackage=io.appium.android.apis app:assembleAndroidTest
         cd ..
       displayName: Prebuild the server
-    - script: npx mocha --timeout 6000000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/ -g @skip-ci -i --exit
+    - script: npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/ -g @skip-ci -i --exit
       env:
         JAVA_HOME: $(JAVA_HOME_11_X64)
         PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
