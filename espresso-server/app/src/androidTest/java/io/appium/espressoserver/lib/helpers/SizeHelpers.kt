@@ -29,7 +29,8 @@ fun getCurrentWindowRect(): Rect {
         (context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)
             ?: throw IllegalStateException("Could not retrieve Window Manager Service instance")
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        return windowManager.currentWindowMetrics.bounds
+        val bounds = windowManager.currentWindowMetrics.bounds
+        return Rect(0, 0, bounds.width(), bounds.height())
     }
     val displayMetrics = DisplayMetrics()
     @Suppress("DEPRECATION")
