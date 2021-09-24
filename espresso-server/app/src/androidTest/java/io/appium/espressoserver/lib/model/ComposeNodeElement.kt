@@ -19,32 +19,39 @@ package io.appium.espressoserver.lib.model
 import android.graphics.Rect
 import androidx.compose.ui.semantics.*
 
+const val COMPOSE_TAG_NAME = "ComposeNode"
+
 class ComposeNodeElement(private val node: SemanticsNode) {
 
     val contentDescription: CharSequence? =
-        node.config.getOrNull(SemanticsProperties.ContentDescription)?.firstOrNull()
+        node.config.getOrNull(SemanticsProperties.ContentDescription)?.getOrElse(0) { "" }
 
-    val text: CharSequence? = node.config.getOrNull(SemanticsProperties.Text)?.firstOrNull()
+    val text: CharSequence =
+        node.config.getOrNull(SemanticsProperties.Text)?.firstOrNull()?.toString()
+            ?: node.config.getOrNull(SemanticsProperties.ProgressBarRangeInfo)?.current?.toString()
+            ?: ""
 
     val resourceId: String = node.id.toString()
 
-    val viewTag: CharSequence? = node.config.getOrNull(SemanticsProperties.TestTag)
+    val viewTag: CharSequence = node.config.getOrElse(SemanticsProperties.TestTag) { "" }
 
     val isClickable: Boolean = node.config.contains(SemanticsActions.OnClick)
 
     val isEnabled: Boolean = !node.config.contains(SemanticsProperties.Disabled)
 
-    val isFocused: Boolean = node.config.getOrNull(SemanticsProperties.Focused) == true
+    val isFocused: Boolean =
+        node.config.getOrNull(SemanticsProperties.Focused)?.let { true } ?: false
 
     val isScrollable: Boolean = node.config.contains(SemanticsActions.ScrollBy)
 
-    val isSelected: Boolean = node.config.getOrNull(SemanticsProperties.Selected) == true
+    val isSelected: Boolean =
+        node.config.getOrNull(SemanticsProperties.Selected)?.let { true } ?: false
 
     val className: String =
-        node.config.getOrNull(SemanticsProperties.Role)?.toString() ?: "ComposeNode"
+        node.config.getOrNull(SemanticsProperties.Role)?.toString() ?: COMPOSE_TAG_NAME
 
-    val progress: String? =
-        node.config.getOrNull(SemanticsProperties.ProgressBarRangeInfo)?.toString()
+    val isPassword: Boolean =
+        node.config.getOrNull(SemanticsProperties.Password)?.let { true } ?: false
 
     val index: Int
         get() {
@@ -62,6 +69,4 @@ class ComposeNodeElement(private val node: SemanticsNode) {
                 bounds.bottom.toInt()
             )
         }
-
-    val isPassword: Boolean? = node.config.getOrNull(SemanticsProperties.Password)?.let { true }
 }

@@ -59,7 +59,6 @@ const val MAX_TRAVERSAL_DEPTH = 70
 const val MAX_XML_VALUE_LENGTH = 64 * 1024
 const val XML_ENCODING = "UTF-8"
 val XPATH: XPath = XPathFactory.newInstance().newXPath()
-const val COMPOSE_TAG_NAME = "ComposeNode"
 
 private fun toXmlNodeName(className: String?): String {
     if (className == null || className.trim { it <= ' ' }.isEmpty()) {
@@ -86,7 +85,7 @@ class SourceDocument constructor(
     private val includedAttributes: Set<ViewAttributesEnum>? = null
 ) {
     @Suppress("PrivatePropertyName")
-    private val RESOURCES_GUARD = Semaphore(1)
+    val RESOURCES_GUARD = Semaphore(1)
 
     private val viewMap: SparseArray<View> = SparseArray()
     private var serializer: XmlSerializer? = null
@@ -231,7 +230,6 @@ class SourceDocument constructor(
             ViewAttributesEnum.BOUNDS to { nodeElement.bounds.toShortString() },
             ViewAttributesEnum.TEXT to { nodeElement.text },
             ViewAttributesEnum.PASSWORD to { nodeElement.isPassword },
-            ViewAttributesEnum.PROGRESS to { nodeElement.progress },
             ViewAttributesEnum.RESOURCE_ID to { nodeElement.resourceId },
         ).forEach {
             setAttribute(it.key, it.value())
@@ -252,7 +250,7 @@ class SourceDocument constructor(
         serializer?.endTag(NAMESPACE, tagName)
     }
 
-    private fun toStream(): InputStream {
+    internal fun toStream(): InputStream {
         var lastError: Throwable? = null
         // Try to serialize the xml into the memory first, since it is fast
         // Switch to a file system serializer if the first approach causes OutOfMemory
@@ -318,7 +316,7 @@ class SourceDocument constructor(
         throw AppiumException(lastError!!)
     }
 
-    private fun performCleanup() {
+    internal fun performCleanup() {
         tmpXmlName?.let {
             getApplicationContext<Context>().deleteFile(it)
             tmpXmlName = null
@@ -360,27 +358,5 @@ class SourceDocument constructor(
                 }
             }
         }, { performCleanup() })
-    }
-
-    fun hasXpath(xpathSelector: String): SemanticsMatcher {
-        val expr = try {
-            XPATH.compile(xpathSelector)
-        } catch (xe: XPathExpressionException) {
-            throw XPathLookupException(xpathSelector, xe.message!!)
-        }
-        return SemanticsMatcher(
-            "Matches Xpath $xpathSelector"
-        ) {
-            val nodeIndices = RESOURCES_GUARD.withPermit({
-                toStream().use { xmlStream ->
-                    val list =
-                        expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
-                    (0 until list.length).map { index ->
-                        list.item(index).attributes.getNamedItem("viewIndex").nodeValue.toInt()
-                    }
-                }
-            }, { performCleanup() })
-            nodeIndices.contains(it.id)
-        }
     }
 }
