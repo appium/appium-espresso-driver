@@ -56,7 +56,7 @@ class ComposeNodeElement(private val node: SemanticsNode) {
 
     val bounds: Rect
         get() {
-            val bounds = node.boundsInRoot
+            val bounds = node.boundsInWindow
             return Rect(
                 bounds.left.toInt(), bounds.top.toInt(), bounds.right.toInt(),
                 bounds.bottom.toInt()
