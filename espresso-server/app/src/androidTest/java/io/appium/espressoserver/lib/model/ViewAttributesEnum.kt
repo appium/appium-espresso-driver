@@ -43,6 +43,7 @@ enum class ViewAttributesEnum {
     ADAPTERS,
     ADAPTER_TYPE,
     HINT,
+    PROGRESS,
     VIEW_TAG;
 
     override fun toString(): String {

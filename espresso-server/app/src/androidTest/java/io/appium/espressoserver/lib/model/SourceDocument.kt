@@ -61,16 +61,15 @@ const val XML_ENCODING = "UTF-8"
 val XPATH: XPath = XPathFactory.newInstance().newXPath()
 const val COMPOSE_TAG_NAME = "ComposeNode"
 
-
 private fun toXmlNodeName(className: String?): String {
     if (className == null || className.trim { it <= ' ' }.isEmpty()) {
         return DEFAULT_VIEW_CLASS_NAME
     }
 
     var fixedName = className
-            .replace("[$@#&]".toRegex(), ".")
-            .replace("\\.+".toRegex(), ".")
-            .replace("(^\\.|\\.$)".toRegex(), "")
+        .replace("[$@#&]".toRegex(), ".")
+        .replace("\\.+".toRegex(), ".")
+        .replace("(^\\.|\\.$)".toRegex(), "")
     fixedName = toNodeName(fixedName)
     if (fixedName.trim { it <= ' ' }.isEmpty()) {
         fixedName = DEFAULT_VIEW_CLASS_NAME
@@ -83,8 +82,8 @@ private fun toXmlNodeName(className: String?): String {
 
 
 class SourceDocument constructor(
-        private val root: Any? = null,
-        private val includedAttributes: Set<ViewAttributesEnum>? = null
+    private val root: Any? = null,
+    private val includedAttributes: Set<ViewAttributesEnum>? = null
 ) {
     @Suppress("PrivatePropertyName")
     private val RESOURCES_GUARD = Semaphore(1)
@@ -97,8 +96,10 @@ class SourceDocument constructor(
         // Do not write attributes, whose values equal to null
         attrValue?.let {
             // Cut off longer strings to avoid OOM errors
-            val xmlValue = abbreviate(toSafeString(it.toString(), NON_XML_CHAR_REPLACEMENT),
-                    MAX_XML_VALUE_LENGTH)
+            val xmlValue = abbreviate(
+                toSafeString(it.toString(), NON_XML_CHAR_REPLACEMENT),
+                MAX_XML_VALUE_LENGTH
+            )
             serializer?.attribute(NAMESPACE, attrName.toString(), xmlValue)
         }
     }
@@ -123,8 +124,8 @@ class SourceDocument constructor(
         }
     }
 
-    private fun isAttributeIncluded(attr: ViewAttributesEnum): Boolean
-        = null == includedAttributes || includedAttributes.contains(attr)
+    private fun isAttributeIncluded(attr: ViewAttributesEnum): Boolean =
+        null == includedAttributes || includedAttributes.contains(attr)
 
     /**
      * Recursively visit all of the views and map them to XML elements
@@ -145,28 +146,28 @@ class SourceDocument constructor(
         var isTextOrHintRecorded = false
         var isAdapterInfoRecorded = false
         linkedMapOf(
-                ViewAttributesEnum.INDEX to { viewElement.index },
-                ViewAttributesEnum.PACKAGE to { viewElement.packageName },
-                ViewAttributesEnum.CLASS to { className },
-                ViewAttributesEnum.CONTENT_DESC to { viewElement.contentDescription },
-                ViewAttributesEnum.CHECKABLE to { viewElement.isCheckable },
-                ViewAttributesEnum.CHECKED to { viewElement.isChecked },
-                ViewAttributesEnum.CLICKABLE to { viewElement.isClickable },
-                ViewAttributesEnum.ENABLED to { viewElement.isEnabled },
-                ViewAttributesEnum.FOCUSABLE to { viewElement.isFocusable },
-                ViewAttributesEnum.FOCUSED to { viewElement.isFocused },
-                ViewAttributesEnum.SCROLLABLE to { viewElement.isScrollable },
-                ViewAttributesEnum.LONG_CLICKABLE to { viewElement.isLongClickable },
-                ViewAttributesEnum.PASSWORD to { viewElement.isPassword },
-                ViewAttributesEnum.SELECTED to { viewElement.isSelected },
-                ViewAttributesEnum.VISIBLE to { viewElement.isVisible },
-                ViewAttributesEnum.BOUNDS to { viewElement.bounds.toShortString() },
-                ViewAttributesEnum.TEXT to null,
-                ViewAttributesEnum.HINT to null,
-                ViewAttributesEnum.RESOURCE_ID to { viewElement.resourceId },
-                ViewAttributesEnum.VIEW_TAG to { viewElement.viewTag },
-                ViewAttributesEnum.ADAPTERS to null,
-                ViewAttributesEnum.ADAPTER_TYPE to null
+            ViewAttributesEnum.INDEX to { viewElement.index },
+            ViewAttributesEnum.PACKAGE to { viewElement.packageName },
+            ViewAttributesEnum.CLASS to { className },
+            ViewAttributesEnum.CONTENT_DESC to { viewElement.contentDescription },
+            ViewAttributesEnum.CHECKABLE to { viewElement.isCheckable },
+            ViewAttributesEnum.CHECKED to { viewElement.isChecked },
+            ViewAttributesEnum.CLICKABLE to { viewElement.isClickable },
+            ViewAttributesEnum.ENABLED to { viewElement.isEnabled },
+            ViewAttributesEnum.FOCUSABLE to { viewElement.isFocusable },
+            ViewAttributesEnum.FOCUSED to { viewElement.isFocused },
+            ViewAttributesEnum.SCROLLABLE to { viewElement.isScrollable },
+            ViewAttributesEnum.LONG_CLICKABLE to { viewElement.isLongClickable },
+            ViewAttributesEnum.PASSWORD to { viewElement.isPassword },
+            ViewAttributesEnum.SELECTED to { viewElement.isSelected },
+            ViewAttributesEnum.VISIBLE to { viewElement.isVisible },
+            ViewAttributesEnum.BOUNDS to { viewElement.bounds.toShortString() },
+            ViewAttributesEnum.TEXT to null,
+            ViewAttributesEnum.HINT to null,
+            ViewAttributesEnum.RESOURCE_ID to { viewElement.resourceId },
+            ViewAttributesEnum.VIEW_TAG to { viewElement.viewTag },
+            ViewAttributesEnum.ADAPTERS to null,
+            ViewAttributesEnum.ADAPTER_TYPE to null
         ).forEach {
             when (it.key) {
                 ViewAttributesEnum.TEXT, ViewAttributesEnum.HINT ->
@@ -199,8 +200,10 @@ class SourceDocument constructor(
                 }
             }
         } else {
-            AndroidLogger.warn("Skipping traversal of ${view.javaClass.name}'s children, since " +
-                    "the current depth has reached its maximum allowed value of $depth")
+            AndroidLogger.warn(
+                "Skipping traversal of ${view.javaClass.name}'s children, since " +
+                        "the current depth has reached its maximum allowed value of $depth"
+            )
         }
 
         serializer?.endTag(NAMESPACE, tagName)
@@ -211,26 +214,28 @@ class SourceDocument constructor(
             return
         }
         val nodeElement = ComposeNodeElement(semanticsNode)
-        serializer?.startTag(NAMESPACE, COMPOSE_TAG_NAME)
+        val className = nodeElement.className
+        val tagName = toXmlNodeName(className)
+        serializer?.startTag(NAMESPACE, tagName)
 
         linkedMapOf(
+            ViewAttributesEnum.CLASS to { className },
             ViewAttributesEnum.INDEX to { nodeElement.index },
             ViewAttributesEnum.CLICKABLE to { nodeElement.isClickable },
             ViewAttributesEnum.ENABLED to { nodeElement.isEnabled },
             ViewAttributesEnum.FOCUSED to { nodeElement.isFocused },
             ViewAttributesEnum.SCROLLABLE to { nodeElement.isScrollable },
             ViewAttributesEnum.SELECTED to { nodeElement.isSelected },
-            ViewAttributesEnum.VISIBLE to { nodeElement.isVisible },
             ViewAttributesEnum.VIEW_TAG to { nodeElement.viewTag },
             ViewAttributesEnum.CONTENT_DESC to { nodeElement.contentDescription },
             ViewAttributesEnum.BOUNDS to { nodeElement.bounds.toShortString() },
             ViewAttributesEnum.TEXT to { nodeElement.text },
+            ViewAttributesEnum.PASSWORD to { nodeElement.isPassword },
+            ViewAttributesEnum.PROGRESS to { nodeElement.progress },
             ViewAttributesEnum.RESOURCE_ID to { nodeElement.resourceId },
         ).forEach {
             setAttribute(it.key, it.value())
         }
-
-        serializer?.attribute(NAMESPACE, VIEW_INDEX, nodeElement.resourceId)
 
         if (depth < MAX_TRAVERSAL_DEPTH) {
             // Visit the children and build them too
@@ -244,21 +249,27 @@ class SourceDocument constructor(
             )
         }
 
-        serializer?.endTag(NAMESPACE, COMPOSE_TAG_NAME)
+        serializer?.endTag(NAMESPACE, tagName)
     }
 
     private fun toStream(): InputStream {
         var lastError: Throwable? = null
         // Try to serialize the xml into the memory first, since it is fast
         // Switch to a file system serializer if the first approach causes OutOfMemory
-        for (streamType in arrayOf<Class<*>>(ByteArrayOutputStream::class.java, FileOutputStream::class.java)) {
+        for (streamType in arrayOf<Class<*>>(
+            ByteArrayOutputStream::class.java,
+            FileOutputStream::class.java
+        )) {
             serializer = Xml.newSerializer()
             viewMap.clear()
 
             try {
                 val outputStream = if (streamType == FileOutputStream::class.java) {
                     tmpXmlName = "${UUID.randomUUID()}.xml"
-                    getApplicationContext<Context>().openFileOutput(tmpXmlName, Context.MODE_PRIVATE)
+                    getApplicationContext<Context>().openFileOutput(
+                        tmpXmlName,
+                        Context.MODE_PRIVATE
+                    )
                 } else ByteArrayOutputStream()
                 try {
                     serializer?.let {
@@ -266,9 +277,11 @@ class SourceDocument constructor(
                         it.startDocument(XML_ENCODING, true)
                         it.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
                         val startTime = SystemClock.uptimeMillis()
-                        when(context.driverStrategy.name){
+                        when (context.driverStrategy.name) {
                             DriverContext.StrategyType.COMPOSE -> {
-                                val rootView = root ?: EspressoServerRunnerTest.composeTestRule.onRoot().fetchSemanticsNode()
+                                val rootView =
+                                    root ?: EspressoServerRunnerTest.composeTestRule.onRoot()
+                                        .fetchSemanticsNode()
                                 serializeComposeNode(rootView as SemanticsNode, 0)
                             }
                             DriverContext.StrategyType.ESPRESSO -> {
@@ -278,9 +291,11 @@ class SourceDocument constructor(
                         }
 
                         it.endDocument()
-                        AndroidLogger.info("The source XML tree has been fetched in " +
-                                "${SystemClock.uptimeMillis() - startTime}ms " +
-                                "using ${streamType.simpleName}")
+                        AndroidLogger.info(
+                            "The source XML tree has been fetched in " +
+                                    "${SystemClock.uptimeMillis() - startTime}ms " +
+                                    "using ${streamType.simpleName}"
+                        )
                     }
                 } catch (e: OutOfMemoryError) {
                     lastError = e
@@ -335,7 +350,13 @@ class SourceDocument constructor(
             toStream().use { xmlStream ->
                 val list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
                 (0 until list.length).map { index ->
-                    viewMap.get(Integer.parseInt((list.item(index) as Element).getAttribute(VIEW_INDEX)))
+                    viewMap.get(
+                        Integer.parseInt(
+                            (list.item(index) as Element).getAttribute(
+                                VIEW_INDEX
+                            )
+                        )
+                    )
                 }
             }
         }, { performCleanup() })
@@ -352,7 +373,8 @@ class SourceDocument constructor(
         ) {
             val nodeIndices = RESOURCES_GUARD.withPermit({
                 toStream().use { xmlStream ->
-                    val list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
+                    val list =
+                        expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
                     (0 until list.length).map { index ->
                         list.item(index).attributes.getNamedItem("viewIndex").nodeValue.toInt()
                     }

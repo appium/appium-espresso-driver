@@ -18,17 +18,41 @@ package io.appium.espressoserver.lib.model
 
 import android.graphics.Rect
 import androidx.compose.ui.semantics.*
-import androidx.compose.ui.test.*
-import io.appium.espressoserver.EspressoServerRunnerTest
-import java.lang.AssertionError
 
 class ComposeNodeElement(private val node: SemanticsNode) {
 
-    val contentDescription: CharSequence?
-        get() = node.config.getOrNull(SemanticsProperties.ContentDescription)?.get(0)
+    val contentDescription: CharSequence? =
+        node.config.getOrNull(SemanticsProperties.ContentDescription)?.firstOrNull()
 
-    val viewTag: CharSequence?
-        get() = node.config.getOrNull(SemanticsProperties.TestTag)
+    val text: CharSequence? = node.config.getOrNull(SemanticsProperties.Text)?.firstOrNull()
+
+    val resourceId: String = node.id.toString()
+
+    val viewTag: CharSequence? = node.config.getOrNull(SemanticsProperties.TestTag)
+
+    val isClickable: Boolean = node.config.contains(SemanticsActions.OnClick)
+
+    val isEnabled: Boolean = !node.config.contains(SemanticsProperties.Disabled)
+
+    val isFocused: Boolean = node.config.getOrNull(SemanticsProperties.Focused) == true
+
+    val isScrollable: Boolean = node.config.contains(SemanticsActions.ScrollBy)
+
+    val isSelected: Boolean = node.config.getOrNull(SemanticsProperties.Selected) == true
+
+    val className: String =
+        node.config.getOrNull(SemanticsProperties.Role)?.toString() ?: "ComposeNode"
+
+    val progress: String? =
+        node.config.getOrNull(SemanticsProperties.ProgressBarRangeInfo)?.toString()
+
+    val index: Int
+        get() {
+            node.parent?.let {
+                it.children.mapIndexed { index, childNode -> if (node.id == childNode.id) return index }
+            }
+            return 0
+        }
 
     val bounds: Rect
         get() {
@@ -39,55 +63,5 @@ class ComposeNodeElement(private val node: SemanticsNode) {
             )
         }
 
-    val resourceId: String
-        get() = node.id.toString()
-
-    val text: String
-        get() = node.config.getOrNull(SemanticsProperties.Text)?.get(0).toString()
-
-    val index: Int
-        get() {
-            val parent = node.parent
-            parent?.let {
-                it.children.mapIndexed() { index, childNode -> if (node.id == childNode.id) return index }
-            }
-            return 0
-        }
-
-    val isClickable: Boolean
-        get() = node.config.contains(SemanticsActions.OnClick)
-
-    val isEnabled: Boolean
-        get() = !node.config.contains(SemanticsProperties.Disabled)
-
-    val isFocused: Boolean
-        get() = node.config.getOrNull(SemanticsProperties.Focused) == true
-
-    val isScrollable: Boolean
-        get() = node.config.contains(SemanticsActions.ScrollBy)
-
-    val isSelected: Boolean
-        get() = node.config.getOrNull(SemanticsProperties.Selected) == true
-
-    val isVisible: Boolean
-        get() {
-            return try {
-                getSemanticsNodeInteraction().assertIsDisplayed()
-                true
-            } catch (e: AssertionError) {
-                false
-            }
-        }
-
-    private fun getSemanticsNodeInteraction() =
-        EspressoServerRunnerTest.composeTestRule.onNode(hasId(node.id))
-
-    private fun hasId(id: Int): SemanticsMatcher {
-        return SemanticsMatcher(
-            "hasNodeId"
-        ) {
-            it.id == id
-        }
-    }
-
+    val isPassword: Boolean? = node.config.getOrNull(SemanticsProperties.Password)?.let { true }
 }
