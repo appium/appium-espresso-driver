@@ -56,6 +56,7 @@ const val MAX_XML_VALUE_LENGTH = 64 * 1024
 const val XML_ENCODING = "UTF-8"
 val XPATH: XPath = XPathFactory.newInstance().newXPath()
 
+
 private fun toXmlNodeName(className: String?): String {
     if (className == null || className.trim { it <= ' ' }.isEmpty()) {
         return DEFAULT_VIEW_CLASS_NAME
@@ -89,12 +90,10 @@ class SourceDocument constructor(
 
     private fun setAttribute(attrName: ViewAttributesEnum, attrValue: Any?) {
         // Do not write attributes, whose values equal to null
-        attrValue.let {
+        attrValue?.let {
             // Cut off longer strings to avoid OOM errors
-            val xmlValue = abbreviate(
-                toSafeString(it, NON_XML_CHAR_REPLACEMENT),
-                MAX_XML_VALUE_LENGTH
-            )
+            val xmlValue = abbreviate(toSafeString(it.toString(), NON_XML_CHAR_REPLACEMENT),
+                    MAX_XML_VALUE_LENGTH)
             serializer?.attribute(NAMESPACE, attrName.toString(), xmlValue)
         }
     }
@@ -167,9 +166,9 @@ class SourceDocument constructor(
             when (it.key) {
                 ViewAttributesEnum.TEXT, ViewAttributesEnum.HINT ->
                     if (!isTextOrHintRecorded && isAttributeIncluded(it.key)) {
-                        viewElement.text.let { text ->
-                            setAttribute(ViewAttributesEnum.TEXT, text?.rawText)
-                            setAttribute(ViewAttributesEnum.HINT, text?.isHint)
+                        viewElement.text?.let { text ->
+                            setAttribute(ViewAttributesEnum.TEXT, text.rawText)
+                            setAttribute(ViewAttributesEnum.HINT, text.isHint)
                             isTextOrHintRecorded = true
                         }
                     }
@@ -334,10 +333,8 @@ class SourceDocument constructor(
         }, { performCleanup() })
     }
 
-    fun findViewsByXPath(xpathSelector: String): List<View> {
-        val indices = matchingNodeIds(xpathSelector, VIEW_INDEX)
-        return indices.map { viewMap.get(it) }
-    }
+    fun findViewsByXPath(xpathSelector: String): List<View> =
+        matchingNodeIds(xpathSelector, VIEW_INDEX).map { viewMap.get(it) }
 
     fun matchingNodeIds(xpathSelector: String, attributeName: String): List<Int> {
         val expr = try {

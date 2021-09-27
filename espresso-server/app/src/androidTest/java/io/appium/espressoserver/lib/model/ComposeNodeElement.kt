@@ -49,8 +49,7 @@ class ComposeNodeElement(private val node: SemanticsNode) {
     val className: String =
         node.config.getOrNull(SemanticsProperties.Role)?.toString() ?: COMPOSE_TAG_NAME
 
-    val isPassword: Boolean =
-        node.config.getOrNull(SemanticsProperties.Password)?.let { true } ?: false
+    val isPassword: Boolean = node.config.contains(SemanticsProperties.Password)
 
     val index: Int
         get() {
