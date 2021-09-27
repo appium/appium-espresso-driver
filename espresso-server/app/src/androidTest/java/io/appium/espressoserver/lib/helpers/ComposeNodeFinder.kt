@@ -22,16 +22,10 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.model.Strategy
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
-import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
-import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import io.appium.espressoserver.lib.model.Locator
 import io.appium.espressoserver.lib.model.SourceDocument
-import io.appium.espressoserver.lib.model.XPATH
+import io.appium.espressoserver.lib.model.ViewAttributesEnum
 import io.appium.espressoserver.lib.viewmatcher.fetchIncludedAttributes
-import org.w3c.dom.NodeList
-import org.xml.sax.InputSource
-import javax.xml.xpath.XPathConstants
-import javax.xml.xpath.XPathExpressionException
 
 /**
  * Retrieve cached node and return the SemanticsNodeInteraction
@@ -58,34 +52,19 @@ fun semanticsMatcherForLocator(locator: Locator): SemanticsMatcher =
         )
     }
 
+private fun hasXpath(locator: Locator): SemanticsMatcher {
+    val matchingIds = SourceDocument(
+        locator.elementId?.let { getSemanticsNode(it) }, fetchIncludedAttributes(locator.value!!)
+    ).matchingNodeIds(locator.value!!, ViewAttributesEnum.RESOURCE_ID.toString())
+
+    return SemanticsMatcher("Matches Xpath ${locator.value}") {
+        matchingIds.contains(it.id)
+    }
+}
+
 fun getSemanticsNode(elementId: String): SemanticsNode =
     try {
         getNodeInteractionById(elementId).fetchSemanticsNode()
     } catch (e: AssertionError) {
         throw StaleElementException(elementId)
     }
-
-private fun hasXpath(locator: Locator): SemanticsMatcher {
-    val parentNode = locator.elementId?.let { getSemanticsNode(it) }
-    val xpathSelector = locator.value!!
-    val sourceDocument = SourceDocument(parentNode, fetchIncludedAttributes(xpathSelector))
-    val expr = try {
-        XPATH.compile(xpathSelector)
-    } catch (xe: XPathExpressionException) {
-        throw XPathLookupException(xpathSelector, xe.message!!)
-    }
-    return SemanticsMatcher(
-        "Matches Xpath $xpathSelector"
-    ) {
-        val nodeIndices = sourceDocument.RESOURCES_GUARD.withPermit({
-            sourceDocument.toStream().use { xmlStream ->
-                val list =
-                    expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
-                (0 until list.length).map { index ->
-                    list.item(index).attributes.getNamedItem("viewIndex").nodeValue.toInt()
-                }
-            }
-        }, { sourceDocument.performCleanup() })
-        nodeIndices.contains(it.id)
-    }
-}

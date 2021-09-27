@@ -26,7 +26,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.compose.ui.semantics.SemanticsNode
-import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.onRoot
 import io.appium.espressoserver.EspressoServerRunnerTest
 import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
@@ -46,10 +45,7 @@ import org.xmlpull.v1.XmlSerializer
 import java.io.*
 import java.util.*
 import java.util.concurrent.Semaphore
-import javax.xml.xpath.XPath
-import javax.xml.xpath.XPathConstants
-import javax.xml.xpath.XPathExpressionException
-import javax.xml.xpath.XPathFactory
+import javax.xml.xpath.*
 
 const val NON_XML_CHAR_REPLACEMENT = "?"
 const val VIEW_INDEX = "viewIndex"
@@ -85,7 +81,7 @@ class SourceDocument constructor(
     private val includedAttributes: Set<ViewAttributesEnum>? = null
 ) {
     @Suppress("PrivatePropertyName")
-    val RESOURCES_GUARD = Semaphore(1)
+    private val RESOURCES_GUARD = Semaphore(1)
 
     private val viewMap: SparseArray<View> = SparseArray()
     private var serializer: XmlSerializer? = null
@@ -93,10 +89,10 @@ class SourceDocument constructor(
 
     private fun setAttribute(attrName: ViewAttributesEnum, attrValue: Any?) {
         // Do not write attributes, whose values equal to null
-        attrValue?.let {
+        attrValue.let {
             // Cut off longer strings to avoid OOM errors
             val xmlValue = abbreviate(
-                toSafeString(it.toString(), NON_XML_CHAR_REPLACEMENT),
+                toSafeString(it, NON_XML_CHAR_REPLACEMENT),
                 MAX_XML_VALUE_LENGTH
             )
             serializer?.attribute(NAMESPACE, attrName.toString(), xmlValue)
@@ -171,9 +167,9 @@ class SourceDocument constructor(
             when (it.key) {
                 ViewAttributesEnum.TEXT, ViewAttributesEnum.HINT ->
                     if (!isTextOrHintRecorded && isAttributeIncluded(it.key)) {
-                        viewElement.text?.let { text ->
-                            setAttribute(ViewAttributesEnum.TEXT, text.rawText)
-                            setAttribute(ViewAttributesEnum.HINT, text.isHint)
+                        viewElement.text.let { text ->
+                            setAttribute(ViewAttributesEnum.TEXT, text?.rawText)
+                            setAttribute(ViewAttributesEnum.HINT, text?.isHint)
                             isTextOrHintRecorded = true
                         }
                     }
@@ -250,7 +246,7 @@ class SourceDocument constructor(
         serializer?.endTag(NAMESPACE, tagName)
     }
 
-    internal fun toStream(): InputStream {
+    private fun toStream(): InputStream {
         var lastError: Throwable? = null
         // Try to serialize the xml into the memory first, since it is fast
         // Switch to a file system serializer if the first approach causes OutOfMemory
@@ -316,7 +312,7 @@ class SourceDocument constructor(
         throw AppiumException(lastError!!)
     }
 
-    internal fun performCleanup() {
+    private fun performCleanup() {
         tmpXmlName?.let {
             getApplicationContext<Context>().deleteFile(it)
             tmpXmlName = null
@@ -339,6 +335,11 @@ class SourceDocument constructor(
     }
 
     fun findViewsByXPath(xpathSelector: String): List<View> {
+        val indices = matchingNodeIds(xpathSelector, VIEW_INDEX)
+        return indices.map { viewMap.get(it) }
+    }
+
+    fun matchingNodeIds(xpathSelector: String, attributeName: String): List<Int> {
         val expr = try {
             XPATH.compile(xpathSelector)
         } catch (xe: XPathExpressionException) {
@@ -348,13 +349,7 @@ class SourceDocument constructor(
             toStream().use { xmlStream ->
                 val list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
                 (0 until list.length).map { index ->
-                    viewMap.get(
-                        Integer.parseInt(
-                            (list.item(index) as Element).getAttribute(
-                                VIEW_INDEX
-                            )
-                        )
-                    )
+                    list.item(index).attributes.getNamedItem(attributeName).nodeValue.toInt()
                 }
             }
         }, { performCleanup() })
