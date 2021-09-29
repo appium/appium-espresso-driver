@@ -10,14 +10,19 @@ describe('Jetpack Compose', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
-  before(async function () {
+
+  before(function () {
     // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
     if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 23) {
-      return this.skip();
+      this.skip();
     }
+  });
+
+  beforeEach(async function () {
     driver = await initSession(COMPOSE_CAPS);
   });
-  after(async function () {
+
+  afterEach(async function () {
     await deleteSession();
   });
 
@@ -39,10 +44,20 @@ describe('Jetpack Compose', function () {
     clickableText.click();
 
     await driver.elementByLinkText('Congratulations! You just clicked the text successfully');
-
-    await driver.back();
-    await driver.back();
     await driver.settings().should.eventually.eql({ driver: 'compose' });
+
+  });
+
+  it('should find element by xpath', async function () {
+    await driver.updateSettings({ driver: 'espresso' });
+    let el = await driver.elementByXPath("//*[@text='Clickable Component']");
+    await driver.moveTo(el);
+    await el.click();
+
+    await driver.updateSettings({ driver: 'compose' });
+
+    let e = await driver.elementByXPath("//*[@view-tag='lol']");
+    await e.text().should.eventually.equal('Click to see dialog');
   });
 
   it('should find elements', async function () {
