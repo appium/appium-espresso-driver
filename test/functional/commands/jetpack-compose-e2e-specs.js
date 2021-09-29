@@ -17,6 +17,11 @@ describe('Jetpack Compose', function () {
     }
     driver = await initSession(COMPOSE_CAPS);
   });
+
+  afterEach(async function () {
+    await driver.back();
+  });
+
   after(async function () {
     await deleteSession();
   });
@@ -39,10 +44,9 @@ describe('Jetpack Compose', function () {
     clickableText.click();
 
     await driver.elementByLinkText('Congratulations! You just clicked the text successfully');
+    await driver.settings().should.eventually.eql({ driver: 'compose' });
 
     await driver.back();
-    await driver.back();
-    await driver.settings().should.eventually.eql({ driver: 'compose' });
   });
 
   it('should find element by xpath', async function () {
@@ -55,7 +59,6 @@ describe('Jetpack Compose', function () {
 
     let e = await driver.elementByXPath("//*[@view-tag='lol']");
     await e.text().should.eventually.equal('Click to see dialog');
-    await driver.back();
   });
 
   it('should find elements', async function () {
@@ -69,6 +72,5 @@ describe('Jetpack Compose', function () {
     let e = await driver.elementsByLinkText('Grace Hopper');
     e.length.should.be.eql(2);
     await e[0].text().should.eventually.equal('Grace Hopper');
-    await driver.back();
   });
 });
