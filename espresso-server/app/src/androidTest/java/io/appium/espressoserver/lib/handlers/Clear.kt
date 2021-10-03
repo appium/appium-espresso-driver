@@ -17,17 +17,16 @@
 package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.PerformException
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.EspressoElement
 
 import androidx.test.espresso.action.ViewActions.clearText
+import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 
 class Clear : RequestHandler<AppiumParams, Void?> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): Void? {
+    override fun handleEspresso(params: AppiumParams): Void? {
         val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
         try {
             viewInteraction.perform(clearText())
@@ -36,5 +35,9 @@ class Clear : RequestHandler<AppiumParams, Void?> {
         }
 
         return null
+    }
+
+    override fun handleCompose(params: AppiumParams): Void? {
+        throw NotYetImplementedException("Not yet implemented for Compose")
     }
 }
