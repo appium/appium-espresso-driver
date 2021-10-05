@@ -18,38 +18,45 @@ package io.appium.espressoserver.lib.model
 
 import android.graphics.Rect
 import androidx.compose.ui.semantics.*
+import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 
 const val COMPOSE_TAG_NAME = "ComposeNode"
 
 class ComposeNodeElement(private val node: SemanticsNode) {
 
-    val contentDescription: CharSequence? =
-        node.config.getOrNull(SemanticsProperties.ContentDescription)?.firstOrNull()
+    val contentDescription: CharSequence?
+        get() = node.config.getOrNull(SemanticsProperties.ContentDescription)?.firstOrNull()
 
-    val text: CharSequence? =
-        node.config.getOrNull(SemanticsProperties.Text)?.firstOrNull()?.toString()
+    val text: CharSequence?
+        get() = node.config.getOrNull(SemanticsProperties.Text)?.firstOrNull()?.toString()
             ?: node.config.getOrNull(SemanticsProperties.ProgressBarRangeInfo)?.current?.toString()
 
-    val resourceId: String = node.id.toString()
+    val resourceId: String
+        get() = node.id.toString()
 
-    val viewTag: CharSequence? = node.config.getOrNull(SemanticsProperties.TestTag)
+    val viewTag: CharSequence?
+        get() = node.config.getOrNull(SemanticsProperties.TestTag)
 
-    val isClickable: Boolean = node.config.contains(SemanticsActions.OnClick)
+    val isClickable: Boolean
+        get() = node.config.contains(SemanticsActions.OnClick)
 
-    val isEnabled: Boolean = !node.config.contains(SemanticsProperties.Disabled)
+    val isEnabled: Boolean
+        get() = !node.config.contains(SemanticsProperties.Disabled)
 
-    val isFocused: Boolean =
-        node.config.getOrNull(SemanticsProperties.Focused) == true
+    val isFocused: Boolean
+        get() = node.config.getOrNull(SemanticsProperties.Focused) == true
 
-    val isScrollable: Boolean = node.config.contains(SemanticsActions.ScrollBy)
+    val isScrollable: Boolean
+        get() = node.config.contains(SemanticsActions.ScrollBy)
 
-    val isSelected: Boolean =
-        node.config.getOrNull(SemanticsProperties.Selected) == true
+    val isSelected: Boolean
+        get() = node.config.getOrNull(SemanticsProperties.Selected) == true
 
-    val className: String =
-        node.config.getOrNull(SemanticsProperties.Role)?.toString() ?: COMPOSE_TAG_NAME
+    val className: String
+        get() = node.config.getOrNull(SemanticsProperties.Role)?.toString() ?: COMPOSE_TAG_NAME
 
-    val isPassword: Boolean = node.config.contains(SemanticsProperties.Password)
+    val isPassword: Boolean
+        get() = node.config.contains(SemanticsProperties.Password)
 
     val index: Int
         get() {
@@ -67,4 +74,31 @@ class ComposeNodeElement(private val node: SemanticsNode) {
                 bounds.bottom.toInt()
             )
         }
+
+    val rect: io.appium.espressoserver.lib.model.Rect
+        get() = io.appium.espressoserver.lib.model.Rect(
+            bounds.left,
+            bounds.top,
+            bounds.width(),
+            bounds.height()
+        )
+
+    fun getAttribute(attributeType: ViewAttributesEnum): String? {
+        when (attributeType) {
+            ViewAttributesEnum.CONTENT_DESC -> return contentDescription?.toString()
+            ViewAttributesEnum.CLASS -> return className
+            ViewAttributesEnum.CLICKABLE -> return isClickable.toString()
+            ViewAttributesEnum.ENABLED -> return isEnabled.toString()
+            ViewAttributesEnum.FOCUSED -> return isFocused.toString()
+            ViewAttributesEnum.SCROLLABLE -> return isScrollable.toString()
+            ViewAttributesEnum.PASSWORD -> return isPassword.toString()
+            ViewAttributesEnum.SELECTED -> return isSelected.toString()
+            ViewAttributesEnum.BOUNDS -> return bounds.toShortString()
+            ViewAttributesEnum.RESOURCE_ID -> return resourceId
+            ViewAttributesEnum.INDEX -> return index.toString()
+            ViewAttributesEnum.VIEW_TAG -> return viewTag?.toString()
+            ViewAttributesEnum.TEXT -> return text?.toString()
+            else -> throw NotYetImplementedException("Attribute $attributeType is not yet supported in Compose")
+        }
+    }
 }

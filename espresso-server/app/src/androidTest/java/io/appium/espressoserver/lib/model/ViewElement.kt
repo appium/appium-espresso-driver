@@ -45,6 +45,14 @@ class ViewElement(private val view: View) {
             return Rect(l[0], l[1], l[0] + view.width, l[1] + view.height)
         }
 
+    val rect: io.appium.espressoserver.lib.model.Rect
+        get() = io.appium.espressoserver.lib.model.Rect(
+            bounds.left,
+            bounds.top,
+            bounds.width(),
+            bounds.height()
+        )
+
     val isClickable: Boolean
         get() = ViewMatchers.isClickable().matches(view)
 
