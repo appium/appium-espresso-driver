@@ -49,7 +49,10 @@ class ComposeDriver : AppDriver {
     private fun toNodeInteractionsCollection(params: Locator): SemanticsNodeInteractionCollection {
         val parentNodeInteraction = params.elementId?.let { getNodeInteractionById(it) }
         return parentNodeInteraction?.findDescendantNodeInteractions(params)
-            ?: EspressoServerRunnerTest.composeTestRule.onAllNodes(semanticsMatcherForLocator(params))
+            ?: EspressoServerRunnerTest.composeTestRule.onAllNodes(
+                useUnmergedTree = true,
+                matcher = semanticsMatcherForLocator(params)
+            )
     }
 
     override fun click(params: AppiumParams): Unit {
