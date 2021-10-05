@@ -34,11 +34,11 @@ describe('Jetpack Compose', function () {
     await driver.updateSettings({ driver: 'compose' });
 
     let e = await driver.elementByTagName('lol');
-    e.isDisplayed().should.eventually.be.true;
+    await e.isDisplayed().should.eventually.be.true;
 
     let elementWithDescription = await driver.elementByAccessibilityId('desc');
     await elementWithDescription.text().should.eventually.equal('Click to see dialog');
-    elementWithDescription.isDisplayed().should.eventually.be.true;
+    await elementWithDescription.isDisplayed().should.eventually.be.true;
 
     let clickableText = await driver.elementByLinkText('Click to see dialog');
     clickableText.click();
