@@ -69,7 +69,7 @@ class ComposeDriver : AppDriver {
     // https://developer.android.com/jetpack/compose/semantics#merged-vs-unmerged
     override fun getText(params: AppiumParams): String {
         val config = getSemanticsNode(params.elementId!!).config
-        if (!(config.contains(SemanticsProperties.Text) || config[SemanticsProperties.Text].isEmpty())) throw InvalidElementStateException()
+        if (!(config.contains(SemanticsProperties.Text)) || config[SemanticsProperties.Text].isEmpty()) throw InvalidElementStateException()
         return config[SemanticsProperties.Text][0].text
     }
 
