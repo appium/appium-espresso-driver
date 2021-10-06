@@ -4,6 +4,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.ActivityHelpers
 import io.appium.espressoserver.lib.helpers.InvocationOperation
+import io.appium.espressoserver.lib.helpers.reflection.ClassUtils
 import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.InvocationTarget
 import io.appium.espressoserver.lib.model.MobileBackdoorParams
@@ -17,12 +18,15 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
             val ops = getBackdoorOperations(params)
 
             @Suppress("REDUNDANT_ELSE_IN_WHEN")
-            return when (target) {
+            val result = when (target) {
                 InvocationTarget.ACTIVITY -> invokeBackdoorMethods(activity, ops)
                 InvocationTarget.APPLICATION -> invokeBackdoorMethods(activity.application, ops)
                 InvocationTarget.ELEMENT -> invokeBackdoorMethods(EspressoElement.getViewById(params.targetElement), ops)
                 else -> throw InvalidArgumentException("target cannot be '$target'")
-            }
+            } ?: return null
+
+            ClassUtils.wrapperToPrimitive(result.javaClass)?.let { return result }
+                ?: return result.toString()
         }
 
         throw InvalidArgumentException("Target must not be empty and must be of type: 'activity', 'application'")
