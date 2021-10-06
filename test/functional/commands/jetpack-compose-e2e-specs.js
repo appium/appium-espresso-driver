@@ -41,7 +41,7 @@ describe('Jetpack Compose', function () {
     await elementWithDescription.isDisplayed().should.eventually.be.true;
 
     let clickableText = await driver.elementByLinkText('Click to see dialog');
-    clickableText.click();
+    await clickableText.click();
 
     await driver.elementByLinkText('Congratulations! You just clicked the text successfully');
     await driver.settings().should.eventually.eql({ driver: 'compose' });
