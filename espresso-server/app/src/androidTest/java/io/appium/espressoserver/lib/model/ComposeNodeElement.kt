@@ -19,6 +19,7 @@ package io.appium.espressoserver.lib.model
 import android.graphics.Rect
 import androidx.compose.ui.semantics.*
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
+import io.appium.espressoserver.lib.model.Rect.Companion.fromBounds
 
 const val COMPOSE_TAG_NAME = "ComposeNode"
 
@@ -76,12 +77,7 @@ class ComposeNodeElement(private val node: SemanticsNode) {
         }
 
     val rect: io.appium.espressoserver.lib.model.Rect
-        get() = io.appium.espressoserver.lib.model.Rect(
-            bounds.left,
-            bounds.top,
-            bounds.width(),
-            bounds.height()
-        )
+        get() = fromBounds(bounds)
 
     fun getAttribute(attributeType: ViewAttributesEnum): String? {
         when (attributeType) {
@@ -98,7 +94,15 @@ class ComposeNodeElement(private val node: SemanticsNode) {
             ViewAttributesEnum.INDEX -> return index.toString()
             ViewAttributesEnum.VIEW_TAG -> return viewTag?.toString()
             ViewAttributesEnum.TEXT -> return text?.toString()
-            else -> throw NotYetImplementedException("Attribute $attributeType is not yet supported in Compose")
+            else -> throw NotYetImplementedException(
+                "Only ${ViewAttributesEnum.CONTENT_DESC}, " +
+                        "${ViewAttributesEnum.CLASS}, ${ViewAttributesEnum.CLICKABLE}, " +
+                        "${ViewAttributesEnum.ENABLED}, ${ViewAttributesEnum.FOCUSED}, " +
+                        "${ViewAttributesEnum.SCROLLABLE},${ViewAttributesEnum.PASSWORD}, " +
+                        "${ViewAttributesEnum.SELECTED}, ${ViewAttributesEnum.BOUNDS}, " +
+                        "${ViewAttributesEnum.RESOURCE_ID}, ${ViewAttributesEnum.INDEX}, " +
+                        "${ViewAttributesEnum.VIEW_TAG} and ${ViewAttributesEnum.TEXT} attributes are supported in Compose"
+            )
         }
     }
 }

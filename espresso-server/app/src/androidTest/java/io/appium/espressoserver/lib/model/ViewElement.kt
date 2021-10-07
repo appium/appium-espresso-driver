@@ -31,6 +31,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.matcher.ViewMatchers
+import io.appium.espressoserver.lib.model.Rect.Companion.fromBounds
 
 class ViewElement(private val view: View) {
     private var activity: Activity? = null
@@ -46,12 +47,7 @@ class ViewElement(private val view: View) {
         }
 
     val rect: io.appium.espressoserver.lib.model.Rect
-        get() = io.appium.espressoserver.lib.model.Rect(
-            bounds.left,
-            bounds.top,
-            bounds.width(),
-            bounds.height()
-        )
+        get() = fromBounds(bounds)
 
     val isClickable: Boolean
         get() = ViewMatchers.isClickable().matches(view)

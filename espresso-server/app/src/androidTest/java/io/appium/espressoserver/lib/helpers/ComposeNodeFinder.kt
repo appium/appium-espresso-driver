@@ -47,7 +47,7 @@ fun semanticsMatcherForLocator(locator: Locator): SemanticsMatcher =
         Strategy.XPATH -> hasXpath(locator)
         else -> throw InvalidSelectorException(
             "Can't use non-Compose selectors. " +
-                    "Only ${Strategy.VIEW_TAG}, ${Strategy.TEXT}, ${Strategy.LINK_TEXT} and " +
+                    "Only ${Strategy.VIEW_TAG}, ${Strategy.TEXT}, ${Strategy.LINK_TEXT}, ${Strategy.XPATH} and " +
                     "${Strategy.ACCESSIBILITY_ID} are supported"
         )
     }
