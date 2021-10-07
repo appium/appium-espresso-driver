@@ -13,7 +13,7 @@ describe('source commands', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
-  describe('regular app', function () {
+  describe('jetpack-compose app', function () {
     before(async function () {
       // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
       if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 23) {
@@ -25,7 +25,7 @@ describe('source commands', function () {
       await deleteSession();
     });
 
-    it('should get sourceXML, parse it, and find a node by xpath', async function () {
+    it('should get jetpack-compose sourceXML, parse it, and find a node by xpath', async function () {
       let el = await driver.elementByXPath("//*[@text='Display Text']");
       await driver.moveTo(el);
       await el.click();

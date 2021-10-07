@@ -34,14 +34,14 @@ describe('Jetpack Compose', function () {
     await driver.updateSettings({ driver: 'compose' });
 
     let e = await driver.elementByTagName('lol');
-    await e.text().should.eventually.equal('Click to see dialog');
+    await e.isDisplayed().should.eventually.be.true;
 
     let elementWithDescription = await driver.elementByAccessibilityId('desc');
     await elementWithDescription.text().should.eventually.equal('Click to see dialog');
-    elementWithDescription.isDisplayed().should.eventually.be.true;
+    await elementWithDescription.isDisplayed().should.eventually.be.true;
 
     let clickableText = await driver.elementByLinkText('Click to see dialog');
-    clickableText.click();
+    await clickableText.click();
 
     await driver.elementByLinkText('Congratulations! You just clicked the text successfully');
     await driver.settings().should.eventually.eql({ driver: 'compose' });
@@ -56,7 +56,7 @@ describe('Jetpack Compose', function () {
 
     await driver.updateSettings({ driver: 'compose' });
 
-    let e = await driver.elementByXPath("//*[@view-tag='lol']");
+    let e = await driver.elementByXPath("//*[@view-tag='lol']//*[@content-desc='desc']");
     await e.text().should.eventually.equal('Click to see dialog');
   });
 

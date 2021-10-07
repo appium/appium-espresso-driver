@@ -49,7 +49,10 @@ class ComposeDriver : AppDriver {
     private fun toNodeInteractionsCollection(params: Locator): SemanticsNodeInteractionCollection {
         val parentNodeInteraction = params.elementId?.let { getNodeInteractionById(it) }
         return parentNodeInteraction?.findDescendantNodeInteractions(params)
-            ?: EspressoServerRunnerTest.composeTestRule.onAllNodes(semanticsMatcherForLocator(params))
+            ?: EspressoServerRunnerTest.composeTestRule.onAllNodes(
+                useUnmergedTree = true,
+                matcher = semanticsMatcherForLocator(params)
+            )
     }
 
     override fun click(params: AppiumParams): Unit {
@@ -66,7 +69,7 @@ class ComposeDriver : AppDriver {
     // https://developer.android.com/jetpack/compose/semantics#merged-vs-unmerged
     override fun getText(params: AppiumParams): String {
         val config = getSemanticsNode(params.elementId!!).config
-        if (!(config.contains(SemanticsProperties.Text) || config[SemanticsProperties.Text].isEmpty())) throw InvalidElementStateException()
+        if (!(config.contains(SemanticsProperties.Text)) || config[SemanticsProperties.Text].isEmpty()) throw InvalidElementStateException()
         return config[SemanticsProperties.Text][0].text
     }
 

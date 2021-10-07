@@ -273,7 +273,7 @@ class SourceDocument constructor(
                         when (context.driverStrategy.name) {
                             DriverContext.StrategyType.COMPOSE -> {
                                 val rootView =
-                                    root ?: EspressoServerRunnerTest.composeTestRule.onRoot()
+                                    root ?: EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true)
                                         .fetchSemanticsNode()
                                 serializeComposeNode(rootView as SemanticsNode, 0)
                             }
