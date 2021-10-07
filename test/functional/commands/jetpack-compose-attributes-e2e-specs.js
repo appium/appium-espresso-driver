@@ -12,6 +12,10 @@ describe('compose node attributes', function () {
 
   let driver;
   before(async function () {
+    // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
+    if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 23) {
+      return this.skip();
+    }
     driver = await initSession(COMPOSE_CAPS);
   });
   after(async function () {
