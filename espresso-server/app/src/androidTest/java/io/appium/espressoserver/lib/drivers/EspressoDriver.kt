@@ -16,12 +16,13 @@
 
 package io.appium.espressoserver.lib.drivers
 
+import androidx.test.espresso.EspressoException
 import androidx.test.espresso.PerformException
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
-import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException
+import androidx.test.espresso.assertion.LayoutAssertions
+import io.appium.espressoserver.lib.handlers.exceptions.*
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.ViewFinder
 import io.appium.espressoserver.lib.model.*
 import io.appium.espressoserver.lib.viewaction.ViewGetter
@@ -81,4 +82,61 @@ class EspressoDriver : AppDriver {
     override fun getDisplayed(params: AppiumParams): Boolean =
         ViewElement(EspressoElement.getViewById(params.elementId, false)).isVisible
 
+    override fun getRect(params: AppiumParams): Rect {
+        return ViewElement(EspressoElement.getViewById(params.elementId)).rect
+    }
+
+    override fun getAttribute(elementId: String, attributeType: ViewAttributesEnum): String? {
+        val viewElementGetter: () -> ViewElement =
+            { ViewElement(EspressoElement.getViewById(elementId)) }
+        val uncheckedViewElementGetter: () -> ViewElement =
+            { ViewElement(EspressoElement.getViewById(elementId, false)) }
+        val viewInteractionGetter: () -> ViewInteraction =
+            { EspressoElement.getViewInteractionById(elementId) }
+        val checkToAttributeValue: (() -> Unit) -> String = {
+            try {
+                it()
+                "true"
+            } catch (e: Exception) {
+                if (e is EspressoException) {
+                    e.message?.let { msg -> AndroidLogger.info(msg) }
+                    "false"
+                } else {
+                    throw e
+                }
+            }
+        }
+        when (attributeType) {
+            ViewAttributesEnum.CONTENT_DESC -> return viewElementGetter().contentDescription?.toString()
+            ViewAttributesEnum.CLASS -> return viewElementGetter().className
+            ViewAttributesEnum.CHECKABLE -> return viewElementGetter().isCheckable.toString()
+            ViewAttributesEnum.CHECKED -> return viewElementGetter().isChecked.toString()
+            ViewAttributesEnum.CLICKABLE -> return viewElementGetter().isClickable.toString()
+            ViewAttributesEnum.ENABLED -> return viewElementGetter().isEnabled.toString()
+            ViewAttributesEnum.FOCUSABLE -> return viewElementGetter().isFocusable.toString()
+            ViewAttributesEnum.FOCUSED -> return viewElementGetter().isFocused.toString()
+            ViewAttributesEnum.SCROLLABLE -> return viewElementGetter().isScrollable.toString()
+            ViewAttributesEnum.LONG_CLICKABLE -> return viewElementGetter().isLongClickable.toString()
+            ViewAttributesEnum.PASSWORD -> return viewElementGetter().isPassword.toString()
+            ViewAttributesEnum.SELECTED -> return viewElementGetter().isSelected.toString()
+            ViewAttributesEnum.VISIBLE -> return uncheckedViewElementGetter().isVisible.toString()
+            ViewAttributesEnum.BOUNDS -> return viewElementGetter().bounds.toShortString()
+            ViewAttributesEnum.RESOURCE_ID -> return viewElementGetter().resourceId
+            ViewAttributesEnum.INDEX -> return viewElementGetter().index.toString()
+            ViewAttributesEnum.PACKAGE -> return viewElementGetter().packageName
+            ViewAttributesEnum.VIEW_TAG -> return viewElementGetter().viewTag
+            ViewAttributesEnum.NO_ELLIPSIZED_TEXT -> return checkToAttributeValue {
+                viewInteractionGetter().check(LayoutAssertions.noEllipsizedText())
+            }
+            ViewAttributesEnum.NO_MULTILINE_BUTTONS -> return checkToAttributeValue {
+                viewInteractionGetter().check(LayoutAssertions.noMultilineButtons())
+            }
+            ViewAttributesEnum.NO_OVERLAPS -> return checkToAttributeValue {
+                viewInteractionGetter().check(LayoutAssertions.noOverlaps())
+            }
+            // If it's a TEXT attribute, return the view's raw text
+            ViewAttributesEnum.TEXT -> return ViewTextGetter()[viewInteractionGetter()].rawText
+            else -> throw NotYetImplementedException()
+        }
+    }
 }

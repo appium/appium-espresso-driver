@@ -16,9 +16,21 @@
 
 package io.appium.espressoserver.lib.model
 
-data class Rect(
-        var x: Int? = null,
-        var y: Int? = null,
-        var width: Int? = null,
-        var height: Int? = null
-) : AppiumParams()
+import android.graphics.Rect
+
+class Rect(
+    var x: Int? = null,
+    var y: Int? = null,
+    var width: Int? = null,
+    var height: Int? = null
+) : AppiumParams() {
+    companion object {
+        fun fromBounds(bounds: Rect): io.appium.espressoserver.lib.model.Rect =
+            io.appium.espressoserver.lib.model.Rect(
+                bounds.left,
+                bounds.top,
+                bounds.width(),
+                bounds.height()
+            )
+    }
+}

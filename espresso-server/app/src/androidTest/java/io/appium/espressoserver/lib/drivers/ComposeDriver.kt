@@ -24,6 +24,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.NoSuchElementException
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
 import io.appium.espressoserver.lib.helpers.*
 import io.appium.espressoserver.lib.model.*
+import io.appium.espressoserver.lib.model.Rect
 
 class ComposeDriver : AppDriver {
     override val name = DriverContext.StrategyType.COMPOSE
@@ -80,4 +81,10 @@ class ComposeDriver : AppDriver {
         } catch (e: AssertionError) {
             false
         }
+
+    override fun getRect(params: AppiumParams): Rect =
+        ComposeNodeElement(getSemanticsNode(params.elementId!!)).rect
+
+    override fun getAttribute(elementId: String, attributeType: ViewAttributesEnum): String? =
+        ComposeNodeElement(getSemanticsNode(elementId)).getAttribute(attributeType)
 }

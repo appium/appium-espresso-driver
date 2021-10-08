@@ -16,9 +16,7 @@
 
 package io.appium.espressoserver.lib.drivers
 
-import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.BaseElement
-import io.appium.espressoserver.lib.model.Locator
+import io.appium.espressoserver.lib.model.*
 
 interface AppDriver {
     val name: DriverContext.StrategyType
@@ -27,4 +25,6 @@ interface AppDriver {
     fun click(params: AppiumParams): Unit
     fun getText(params: AppiumParams): String
     fun getDisplayed(params: AppiumParams): Boolean
+    fun getRect(params: AppiumParams): Rect
+    fun getAttribute(elementId: String, attributeType: ViewAttributesEnum): String?
 }
