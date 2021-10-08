@@ -25,13 +25,12 @@ class Rect(
     var height: Int? = null
 ) : AppiumParams() {
     companion object {
-        fun fromBounds(bounds: Rect): io.appium.espressoserver.lib.model.Rect {
-            return io.appium.espressoserver.lib.model.Rect(
+        fun fromBounds(bounds: Rect): io.appium.espressoserver.lib.model.Rect =
+            io.appium.espressoserver.lib.model.Rect(
                 bounds.left,
                 bounds.top,
                 bounds.width(),
                 bounds.height()
             )
-        }
     }
 }
