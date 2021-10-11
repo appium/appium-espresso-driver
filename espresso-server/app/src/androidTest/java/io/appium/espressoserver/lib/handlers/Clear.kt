@@ -16,13 +16,15 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import androidx.compose.ui.test.performTextClearance
 import androidx.test.espresso.PerformException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.EspressoElement
 
 import androidx.test.espresso.action.ViewActions.clearText
-import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
+import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
+import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 
 class Clear : RequestHandler<AppiumParams, Void?> {
 
@@ -38,6 +40,13 @@ class Clear : RequestHandler<AppiumParams, Void?> {
     }
 
     override fun handleCompose(params: AppiumParams): Void? {
-        throw NotYetImplementedException("Not yet implemented for Compose")
+        try {
+            getNodeInteractionById(params.elementId).performTextClearance()
+        } catch (e: AssertionError) {
+            throw StaleElementException(params.elementId!!)
+        } catch (e: IllegalArgumentException) {
+            throw InvalidElementStateException("Clear", params.elementId!!, e)
+        }
+        return null
     }
 }
