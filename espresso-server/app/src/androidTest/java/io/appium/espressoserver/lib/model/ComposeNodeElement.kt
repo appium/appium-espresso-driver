@@ -28,8 +28,9 @@ class ComposeNodeElement(private val node: SemanticsNode) {
     val contentDescription: CharSequence?
         get() = node.config.getOrNull(SemanticsProperties.ContentDescription)?.firstOrNull()
 
-    val text: CharSequence?
+    val text: String?
         get() = node.config.getOrNull(SemanticsProperties.Text)?.firstOrNull()?.toString()
+            ?: node.config.getOrNull(SemanticsProperties.EditableText)?.text
             ?: node.config.getOrNull(SemanticsProperties.ProgressBarRangeInfo)?.current?.toString()
 
     val resourceId: String

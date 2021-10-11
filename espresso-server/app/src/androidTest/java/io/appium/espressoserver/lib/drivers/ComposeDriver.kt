@@ -46,7 +46,7 @@ class ComposeDriver : AppDriver {
             .mapIndexed { index, _ -> ComposeElement(nodeInteractions[index]) }
     }
 
-
+    // https://developer.android.com/jetpack/compose/semantics#merged-vs-unmerged
     private fun toNodeInteractionsCollection(params: Locator): SemanticsNodeInteractionCollection {
         val parentNodeInteraction = params.elementId?.let { getNodeInteractionById(it) }
         return parentNodeInteraction?.findDescendantNodeInteractions(params)
@@ -66,13 +66,9 @@ class ComposeDriver : AppDriver {
         }
     }
 
-
-    // https://developer.android.com/jetpack/compose/semantics#merged-vs-unmerged
-    override fun getText(params: AppiumParams): String {
-        val config = getSemanticsNode(params.elementId!!).config
-        if (!(config.contains(SemanticsProperties.Text)) || config[SemanticsProperties.Text].isEmpty()) throw InvalidElementStateException()
-        return config[SemanticsProperties.Text][0].text
-    }
+    override fun getText(params: AppiumParams): String =
+        ComposeNodeElement(getSemanticsNode(params.elementId!!)).text
+            ?: throw InvalidElementStateException()
 
     override fun getDisplayed(params: AppiumParams): Boolean =
         try {
