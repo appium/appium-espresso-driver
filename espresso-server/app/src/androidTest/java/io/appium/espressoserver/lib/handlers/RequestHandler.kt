@@ -40,12 +40,10 @@ interface RequestHandler<in T : AppiumParams, out R> {
         }
     }
 
-    @Throws(AppiumException::class)
     fun handleEspresso(params: T): R {
         throw NotYetImplementedException()
     }
 
-    @Throws(AppiumException::class)
     fun handleCompose(params: T): R {
         throw NotYetImplementedException()
     }

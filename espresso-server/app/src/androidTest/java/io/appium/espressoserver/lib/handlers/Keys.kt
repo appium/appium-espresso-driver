@@ -35,10 +35,9 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.ActionType.KE
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.KEY
 import io.appium.espressoserver.lib.model.TextValueParams
 
-class Keys : RequestHandler<TextValueParams, Void?> {
+class Keys : RequestHandler<TextValueParams, Unit> {
 
-    @Throws(AppiumException::class)
-    override fun handleEspresso(params: TextValueParams): Void? {
+    override fun handleEspresso(params: TextValueParams): Unit {
         val keys = params.value ?: emptyList()
 
         val runnable = object : UiControllerRunnable<Void?> {
@@ -80,21 +79,18 @@ class Keys : RequestHandler<TextValueParams, Void?> {
         }
 
         UiControllerPerformer(runnable).run()
-        return null
     }
 
-    @Throws(AppiumException::class)
-    override fun handleCompose(params: TextValueParams): Void? {
+    override fun handleCompose(params: TextValueParams): Unit {
         try {
-            val keys = params.value ?: emptyList()
+            val keys = params.value ?: return
             keys.forEach {
                 getNodeInteractionById(params.elementId).performTextInput(it)
             }
         } catch (e: AssertionError) {
             throw StaleElementException(params.elementId!!)
         } catch (e: IllegalArgumentException) {
-            throw InvalidElementStateException("Clear", params.elementId!!, e)
+            throw InvalidElementStateException("Keys", params.elementId!!, e)
         }
-        return null
     }
 }

@@ -22,6 +22,7 @@ class DriverContext {
     private val espressoDriver = EspressoDriver()
     var driverStrategy: AppDriver = espressoDriver
     var currentStrategyType: StrategyType = StrategyType.ESPRESSO
+        private set
 
     fun setDriverStrategy(strategyType: StrategyType) {
         currentStrategyType = strategyType
