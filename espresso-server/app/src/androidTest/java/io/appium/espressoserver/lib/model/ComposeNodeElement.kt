@@ -18,6 +18,7 @@ package io.appium.espressoserver.lib.model
 
 import android.graphics.Rect
 import androidx.compose.ui.semantics.*
+import androidx.compose.ui.state.ToggleableState
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.model.Rect.Companion.fromBounds
 
@@ -60,6 +61,9 @@ class ComposeNodeElement(private val node: SemanticsNode) {
     val isPassword: Boolean
         get() = node.config.contains(SemanticsProperties.Password)
 
+    val isChecked: Boolean
+        get() = node.config.getOrNull(SemanticsProperties.ToggleableState) == ToggleableState.On
+
     val index: Int
         get() {
             node.parent?.let {
@@ -95,6 +99,7 @@ class ComposeNodeElement(private val node: SemanticsNode) {
             ViewAttributesEnum.INDEX -> return index.toString()
             ViewAttributesEnum.VIEW_TAG -> return viewTag?.toString()
             ViewAttributesEnum.TEXT -> return text?.toString()
+            ViewAttributesEnum.CHECKED -> return isChecked.toString()
             else -> throw NotYetImplementedException(
                 "Only ${ViewAttributesEnum.CONTENT_DESC}, " +
                         "${ViewAttributesEnum.CLASS}, ${ViewAttributesEnum.CLICKABLE}, " +

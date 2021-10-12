@@ -220,6 +220,7 @@ class SourceDocument constructor(
             ViewAttributesEnum.FOCUSED to { nodeElement.isFocused },
             ViewAttributesEnum.SCROLLABLE to { nodeElement.isScrollable },
             ViewAttributesEnum.SELECTED to { nodeElement.isSelected },
+            ViewAttributesEnum.CHECKED to { nodeElement.isChecked },
             ViewAttributesEnum.VIEW_TAG to { nodeElement.viewTag },
             ViewAttributesEnum.CONTENT_DESC to { nodeElement.contentDescription },
             ViewAttributesEnum.BOUNDS to { nodeElement.bounds.toShortString() },
