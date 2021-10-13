@@ -56,7 +56,7 @@ class ComposeNodeElement(private val node: SemanticsNode) {
         get() = node.config.getOrNull(SemanticsProperties.Selected) == true
 
     val className: String
-        get() = node.config.getOrNull(SemanticsProperties.Role)?.toString() ?: COMPOSE_TAG_NAME
+        get() = node.config.getOrNull(SemanticsProperties.Role)?.toString() ?: getClassName(node)
 
     val isPassword: Boolean
         get() = node.config.contains(SemanticsProperties.Password)
@@ -83,6 +83,20 @@ class ComposeNodeElement(private val node: SemanticsNode) {
 
     val rect: io.appium.espressoserver.lib.model.Rect
         get() = fromBounds(bounds)
+
+    fun getClassName(node: SemanticsNode): String {
+//        Compose API doesn't have class level info, relaying on node SemanticsProperties as a work around.
+//        Following are the list of possible properties.
+        val propertiesList = listOf(SemanticsProperties.EditableText,
+            SemanticsProperties.Text,
+            SemanticsProperties.ProgressBarRangeInfo,
+            SemanticsProperties.HorizontalScrollAxisRange,
+            SemanticsProperties.VerticalScrollAxisRange,
+            SemanticsProperties.SelectableGroup,
+            SemanticsProperties.PaneTitle,
+            SemanticsProperties.Password)
+        return propertiesList.firstOrNull{  node.config.contains(it) }?.name ?: COMPOSE_TAG_NAME
+    }
 
     fun getAttribute(attributeType: ViewAttributesEnum): String? {
         when (attributeType) {
