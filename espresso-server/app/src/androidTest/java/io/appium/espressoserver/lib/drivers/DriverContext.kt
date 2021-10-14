@@ -21,8 +21,11 @@ class DriverContext {
     private val composeDriver = ComposeDriver()
     private val espressoDriver = EspressoDriver()
     var driverStrategy: AppDriver = espressoDriver
+    var currentStrategyType: StrategyType = StrategyType.ESPRESSO
+        private set
 
     fun setDriverStrategy(strategyType: StrategyType) {
+        currentStrategyType = strategyType
         when (strategyType) {
             StrategyType.COMPOSE -> this.driverStrategy = composeDriver
             StrategyType.ESPRESSO -> this.driverStrategy = espressoDriver
