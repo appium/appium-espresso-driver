@@ -17,12 +17,15 @@
 package io.appium.espressoserver.lib.model
 
 import android.graphics.Rect
-import androidx.compose.ui.semantics.*
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.state.ToggleableState
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.model.Rect.Companion.fromBounds
 
-const val COMPOSE_TAG_NAME = "ComposeNode"
+const val DEFAULT_TAG_NAME = "ComposeNode"
 
 class ComposeNodeElement(private val node: SemanticsNode) {
 
@@ -56,7 +59,22 @@ class ComposeNodeElement(private val node: SemanticsNode) {
         get() = node.config.getOrNull(SemanticsProperties.Selected) == true
 
     val className: String
-        get() = node.config.getOrNull(SemanticsProperties.Role)?.toString() ?: getClassName(node)
+        get() {
+            //  Compose API doesn't have class name info, as a workaround relaying on node SemanticsProperties.
+            val possibleClassProperties = listOf(
+                SemanticsProperties.EditableText,
+                SemanticsProperties.Text,
+                SemanticsProperties.ProgressBarRangeInfo,
+                SemanticsProperties.HorizontalScrollAxisRange,
+                SemanticsProperties.VerticalScrollAxisRange,
+                SemanticsProperties.SelectableGroup,
+                SemanticsProperties.PaneTitle,
+                SemanticsProperties.Password
+            )
+            return node.config.getOrNull(SemanticsProperties.Role)?.toString()
+                ?: possibleClassProperties.firstOrNull { node.config.contains(it) }?.name
+                ?: DEFAULT_TAG_NAME
+        }
 
     val isPassword: Boolean
         get() = node.config.contains(SemanticsProperties.Password)
@@ -83,20 +101,6 @@ class ComposeNodeElement(private val node: SemanticsNode) {
 
     val rect: io.appium.espressoserver.lib.model.Rect
         get() = fromBounds(bounds)
-
-    fun getClassName(node: SemanticsNode): String {
-//        Compose API doesn't have class level info, relaying on node SemanticsProperties as a work around.
-//        Following are the list of possible properties.
-        val propertiesList = listOf(SemanticsProperties.EditableText,
-            SemanticsProperties.Text,
-            SemanticsProperties.ProgressBarRangeInfo,
-            SemanticsProperties.HorizontalScrollAxisRange,
-            SemanticsProperties.VerticalScrollAxisRange,
-            SemanticsProperties.SelectableGroup,
-            SemanticsProperties.PaneTitle,
-            SemanticsProperties.Password)
-        return propertiesList.firstOrNull{  node.config.contains(it) }?.name ?: COMPOSE_TAG_NAME
-    }
 
     fun getAttribute(attributeType: ViewAttributesEnum): String? {
         when (attributeType) {
