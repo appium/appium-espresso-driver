@@ -35,3 +35,4 @@ class GetDisplayed : RequestHandler<AppiumParams, Boolean> {
             false
         }
 }
+
