@@ -16,13 +16,22 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import androidx.compose.ui.test.assertIsDisplayed
+import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.EspressoElement
+import io.appium.espressoserver.lib.model.ViewElement
 
 class GetDisplayed : RequestHandler<AppiumParams, Boolean> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): Boolean =
-        context.driverStrategy.getDisplayed(params)
+    override fun handleEspresso(params: AppiumParams): Boolean =
+        ViewElement(EspressoElement.getViewById(params.elementId, false)).isVisible
+
+    override fun handleCompose(params: AppiumParams): Boolean =
+        try {
+            getNodeInteractionById(params.elementId).assertIsDisplayed()
+            true
+        } catch (e: AssertionError) {
+            false
+        }
 }
