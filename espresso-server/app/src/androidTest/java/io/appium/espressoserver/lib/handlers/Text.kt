@@ -31,6 +31,5 @@ class Text : RequestHandler<AppiumParams, String> {
     }
 
     override fun handleCompose(params: AppiumParams): String =
-        ComposeNodeElement(getSemanticsNode(params.elementId!!)).text
-            ?: throw InvalidElementStateException()
+        ComposeNodeElement(getSemanticsNode(params.elementId!!)).text.toString()
 }
