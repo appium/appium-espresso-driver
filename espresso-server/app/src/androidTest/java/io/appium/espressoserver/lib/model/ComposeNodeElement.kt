@@ -20,12 +20,26 @@ import android.graphics.Rect
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.state.ToggleableState
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.model.Rect.Companion.fromBounds
 
 const val DEFAULT_TAG_NAME = "ComposeNode"
+
+val POSSIBLE_CLASS_PROPERTIES: List<SemanticsPropertyKey<out Any>> by lazy {
+    listOf(
+        SemanticsProperties.EditableText,
+        SemanticsProperties.Text,
+        SemanticsProperties.ProgressBarRangeInfo,
+        SemanticsProperties.HorizontalScrollAxisRange,
+        SemanticsProperties.VerticalScrollAxisRange,
+        SemanticsProperties.SelectableGroup,
+        SemanticsProperties.PaneTitle,
+        SemanticsProperties.Password
+    )
+}
 
 class ComposeNodeElement(private val node: SemanticsNode) {
 
@@ -61,18 +75,8 @@ class ComposeNodeElement(private val node: SemanticsNode) {
     val className: String
         get() {
             //  Compose API doesn't have class name info, as a workaround relaying on node SemanticsProperties.
-            val possibleClassProperties = listOf(
-                SemanticsProperties.EditableText,
-                SemanticsProperties.Text,
-                SemanticsProperties.ProgressBarRangeInfo,
-                SemanticsProperties.HorizontalScrollAxisRange,
-                SemanticsProperties.VerticalScrollAxisRange,
-                SemanticsProperties.SelectableGroup,
-                SemanticsProperties.PaneTitle,
-                SemanticsProperties.Password
-            )
             return node.config.getOrNull(SemanticsProperties.Role)?.toString()
-                ?: possibleClassProperties.firstOrNull { node.config.contains(it) }?.name
+                ?: POSSIBLE_CLASS_PROPERTIES.firstOrNull { node.config.contains(it) }?.name
                 ?: DEFAULT_TAG_NAME
         }
 
