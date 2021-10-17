@@ -16,14 +16,18 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.ComposeNodeElement
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.Rect
+import io.appium.espressoserver.lib.model.ViewElement
 
 class GetRect : RequestHandler<AppiumParams, Rect> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): Rect =
-        context.driverStrategy.getRect(params)
+    override fun handleEspresso(params: AppiumParams): Rect =
+        ViewElement(EspressoElement.getViewById(params.elementId)).rect
+
+    override fun handleCompose(params: AppiumParams): Rect =
+        ComposeNodeElement(getSemanticsNode(params.elementId!!)).rect
 }

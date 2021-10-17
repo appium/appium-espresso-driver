@@ -56,31 +56,6 @@ class ComposeDriver : AppDriver {
             )
     }
 
-    override fun click(params: AppiumParams): Unit {
-        try {
-            getNodeInteractionById(params.elementId).performClick()
-        } catch (e: AssertionError) {
-            throw StaleElementException(params.elementId!!)
-        } catch (e: IllegalArgumentException) {
-            throw InvalidElementStateException("Click", params.elementId!!, e)
-        }
-    }
-
-    override fun getText(params: AppiumParams): String =
-        ComposeNodeElement(getSemanticsNode(params.elementId!!)).text
-            ?: throw InvalidElementStateException()
-
-    override fun getDisplayed(params: AppiumParams): Boolean =
-        try {
-            getNodeInteractionById(params.elementId).assertIsDisplayed()
-            true
-        } catch (e: AssertionError) {
-            false
-        }
-
-    override fun getRect(params: AppiumParams): Rect =
-        ComposeNodeElement(getSemanticsNode(params.elementId!!)).rect
-
     override fun getAttribute(elementId: String, attributeType: ViewAttributesEnum): String? =
         ComposeNodeElement(getSemanticsNode(elementId)).getAttribute(attributeType)
 }

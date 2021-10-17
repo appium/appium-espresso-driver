@@ -16,13 +16,20 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
+import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.ComposeNodeElement
+import io.appium.espressoserver.lib.model.EspressoElement
+import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
 class Text : RequestHandler<AppiumParams, String> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): String =
-        context.driverStrategy.getText(params)
+    override fun handleEspresso(params: AppiumParams): String {
+        val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
+        return ViewTextGetter()[viewInteraction].rawText
+    }
+
+    override fun handleCompose(params: AppiumParams): String =
+        ComposeNodeElement(getSemanticsNode(params.elementId!!)).text.toString()
 }

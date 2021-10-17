@@ -66,26 +66,6 @@ class EspressoDriver : AppDriver {
             .map { EspressoElement(it) }
     }
 
-    override fun click(params: AppiumParams): Unit {
-        try {
-            EspressoElement.getViewInteractionById(params.elementId).perform(ViewActions.click())
-        } catch (e: PerformException) {
-            throw InvalidElementStateException("click", params.elementId!!, e)
-        }
-    }
-
-    override fun getText(params: AppiumParams): String {
-        val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
-        return ViewTextGetter()[viewInteraction].rawText
-    }
-
-    override fun getDisplayed(params: AppiumParams): Boolean =
-        ViewElement(EspressoElement.getViewById(params.elementId, false)).isVisible
-
-    override fun getRect(params: AppiumParams): Rect {
-        return ViewElement(EspressoElement.getViewById(params.elementId)).rect
-    }
-
     override fun getAttribute(elementId: String, attributeType: ViewAttributesEnum): String? {
         val viewElementGetter: () -> ViewElement =
             { ViewElement(EspressoElement.getViewById(elementId)) }
