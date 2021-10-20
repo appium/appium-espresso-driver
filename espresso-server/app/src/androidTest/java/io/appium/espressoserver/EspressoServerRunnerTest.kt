@@ -32,7 +32,6 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
-import io.appium.espressoserver.lib.drivers.ComposeDriver
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -52,7 +51,7 @@ class EspressoServerRunnerTest {
 
     private val syncComposeClock = Thread {
         while (!Server.isStopRequestReceived) {
-            if (context.driverStrategy is ComposeDriver) {
+            if (context.currentStrategyType == DriverContext.StrategyType.COMPOSE) {
                 composeTestRule.mainClock.advanceTimeByFrame()
             }
             // Let Android run measure, draw and in general any other async operations. AndroidComposeTestRule.android.kt:325

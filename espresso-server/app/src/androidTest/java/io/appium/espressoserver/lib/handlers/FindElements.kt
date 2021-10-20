@@ -16,14 +16,34 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
+import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
+import io.appium.espressoserver.lib.helpers.*
 import io.appium.espressoserver.lib.model.BaseElement
+import io.appium.espressoserver.lib.model.ComposeElement
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.Locator
+import io.appium.espressoserver.lib.viewaction.ViewGetter
 
 class FindElements : RequestHandler<Locator, List<BaseElement>> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: Locator): List<BaseElement> =
-        context.driverStrategy.findElements(params)
+    override fun handleEspresso(params: Locator): List<BaseElement> {
+        val parentView = params.elementId?.let {
+            ViewGetter().getView(EspressoElement.getViewInteractionById(it))
+        }
+
+        // Return as list of Elements
+        return ViewFinder.findAllBy(
+            parentView,
+            params.using ?: throw InvalidSelectorException("Locator strategy cannot be empty"),
+            params.value ?: throw InvalidArgumentException()
+        )
+            .map { EspressoElement(it) }
+    }
+
+    override fun handleCompose(params: Locator): List<BaseElement> {
+        val nodeInteractions = toNodeInteractionsCollection(params)
+        return nodeInteractions.fetchSemanticsNodes(false)
+            .mapIndexed { index, _ -> ComposeElement(nodeInteractions[index]) }
+    }
 }

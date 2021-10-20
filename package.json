@@ -70,7 +70,7 @@
     "test": "npm run lint && npm run test:node",
     "test:node": "gulp once",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace && cd ..",
-    "e2e-test": "gulp transpile && mocha --timeout 600000 --recursive build/test/functional/",
+    "e2e-test": "gulp transpile && mocha --timeout 600000 --recursive build/test/functional/commands/jetpack-compose*.js",
     "watch": "gulp watch",
     "coverage": "gulp coveralls",
     "prepare": "gulp prepublish && npm run build:server",

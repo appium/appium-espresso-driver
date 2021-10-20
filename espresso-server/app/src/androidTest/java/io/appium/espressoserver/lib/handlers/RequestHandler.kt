@@ -17,8 +17,6 @@
 package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.EspressoServerRunnerTest
-import io.appium.espressoserver.lib.drivers.AppDriver
-import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchDriverException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException

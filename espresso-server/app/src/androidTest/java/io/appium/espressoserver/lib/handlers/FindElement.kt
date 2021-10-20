@@ -16,14 +16,45 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
 import io.appium.espressoserver.lib.handlers.exceptions.*
+import io.appium.espressoserver.lib.helpers.*
 import io.appium.espressoserver.lib.model.BaseElement
+import io.appium.espressoserver.lib.model.ComposeElement
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.Locator
+import io.appium.espressoserver.lib.viewaction.ViewGetter
 
 class FindElement : RequestHandler<Locator, BaseElement> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: Locator): BaseElement =
-        context.driverStrategy.findElement(params)
+    override fun handleEspresso(params: Locator): BaseElement {
+        val parentView = params.elementId?.let {
+            ViewGetter().getView(EspressoElement.getViewInteractionById(it))
+        }
+        // Test the selector
+        val view = ViewFinder.findBy(
+            parentView,
+            params.using ?: throw InvalidSelectorException("Locator strategy cannot be empty"),
+            params.value ?: throw InvalidArgumentException()
+        )
+            ?: throw NoSuchElementException(
+                String.format(
+                    "Could not find espresso element with strategy %s and selector %s",
+                    params.using, params.value
+                )
+            )
+
+        // If we have a match, return success
+        return EspressoElement(view)
+    }
+
+    override fun handleCompose(params: Locator): BaseElement {
+        val nodeInteractions = toNodeInteractionsCollection(params)
+        if (nodeInteractions.fetchSemanticsNodes(false).isEmpty()) throw NoSuchElementException(
+            String.format(
+                "Could not find a compose element with strategy '%s' and selector '%s'",
+                params.using, params.value
+            )
+        )
+        return ComposeElement(nodeInteractions[0])
+    }
 }

@@ -271,7 +271,7 @@ class SourceDocument constructor(
                         it.startDocument(XML_ENCODING, true)
                         it.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
                         val startTime = SystemClock.uptimeMillis()
-                        when (context.driverStrategy.name) {
+                        when (context.currentStrategyType) {
                             DriverContext.StrategyType.COMPOSE -> {
                                 val rootView =
                                     root ?: EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true)
