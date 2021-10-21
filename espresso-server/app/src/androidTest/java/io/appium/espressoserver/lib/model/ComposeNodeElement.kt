@@ -124,7 +124,7 @@ class ComposeNodeElement(private val node: SemanticsNode) {
             AttributesEnum.TEXT -> return text?.toString()
             AttributesEnum.CHECKED -> return isChecked.toString()
             else -> throw NotYetImplementedException(
-                "Compose supports only ${composeAttributes.supportedAttributes()} attributes but '$attributeName' is given instead")
+                "Compose doesn't support attribute '$attributeName', Attribute name should be one of ${composeAttributes.supportedAttributes()}")
         }
     }
 }

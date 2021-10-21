@@ -18,6 +18,7 @@ package io.appium.espressoserver.lib.viewmatcher
 import android.view.View
 import io.appium.espressoserver.lib.model.SourceDocument
 import io.appium.espressoserver.lib.model.AttributesEnum
+import io.appium.espressoserver.lib.model.EspressoAttributes
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -27,7 +28,7 @@ fun fetchIncludedAttributes(xpath: String): Set<AttributesEnum>? {
         return null
     }
 
-    return AttributesEnum.values().fold(mutableSetOf()) { acc, value ->
+    return EspressoAttributes().attributes.fold(mutableSetOf()) { acc, value ->
         if (xpath.contains("@$value")) {
             acc.add(value)
         }

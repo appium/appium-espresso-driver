@@ -52,8 +52,7 @@ enum class AttributesEnum {
     }
 }
 
-class EspressoAttributes(override var attributes: List<AttributesEnum> =
-                             commonAttributes + espressoAttributes) : CommonAttributes() {
+class EspressoAttributes : CommonAttributes(commonAttributes + espressoAttributes) {
     companion object {
         private val espressoAttributes: List<AttributesEnum> by lazy {
             listOf(
@@ -75,9 +74,9 @@ class EspressoAttributes(override var attributes: List<AttributesEnum> =
     }
 }
 
-class ComposeAttributes(override var attributes: List<AttributesEnum> = commonAttributes) : CommonAttributes()
+class ComposeAttributes : CommonAttributes(commonAttributes)
 
-abstract class CommonAttributes() {
+abstract class CommonAttributes(var attributes: List<AttributesEnum>) {
     companion object {
         val commonAttributes: List<AttributesEnum> by lazy {
             listOf(
@@ -97,7 +96,6 @@ abstract class CommonAttributes() {
             )
         }
     }
-    abstract var attributes: List<AttributesEnum>
 
     fun contains(value: AttributesEnum): Boolean {
         return attributes.contains(value)
@@ -108,6 +106,6 @@ abstract class CommonAttributes() {
     }
 
     fun valueOf(value: String): AttributesEnum? {
-        return attributes.find { it.name == value }
+        return attributes.find { it.toString().equals(value, ignoreCase = false) }
     }
 }
