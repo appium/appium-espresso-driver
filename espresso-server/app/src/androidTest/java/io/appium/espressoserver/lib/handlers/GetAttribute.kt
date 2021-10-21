@@ -71,35 +71,35 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
             }
         }
         when (espressoAttributes.valueOf(attributeName)) {
-            ViewAttributesEnum.CONTENT_DESC -> return viewElementGetter().contentDescription?.toString()
-            ViewAttributesEnum.CLASS -> return viewElementGetter().className
-            ViewAttributesEnum.CHECKABLE -> return viewElementGetter().isCheckable.toString()
-            ViewAttributesEnum.CHECKED -> return viewElementGetter().isChecked.toString()
-            ViewAttributesEnum.CLICKABLE -> return viewElementGetter().isClickable.toString()
-            ViewAttributesEnum.ENABLED -> return viewElementGetter().isEnabled.toString()
-            ViewAttributesEnum.FOCUSABLE -> return viewElementGetter().isFocusable.toString()
-            ViewAttributesEnum.FOCUSED -> return viewElementGetter().isFocused.toString()
-            ViewAttributesEnum.SCROLLABLE -> return viewElementGetter().isScrollable.toString()
-            ViewAttributesEnum.LONG_CLICKABLE -> return viewElementGetter().isLongClickable.toString()
-            ViewAttributesEnum.PASSWORD -> return viewElementGetter().isPassword.toString()
-            ViewAttributesEnum.SELECTED -> return viewElementGetter().isSelected.toString()
-            ViewAttributesEnum.VISIBLE -> return uncheckedViewElementGetter().isVisible.toString()
-            ViewAttributesEnum.BOUNDS -> return viewElementGetter().bounds.toShortString()
-            ViewAttributesEnum.RESOURCE_ID -> return viewElementGetter().resourceId
-            ViewAttributesEnum.INDEX -> return viewElementGetter().index.toString()
-            ViewAttributesEnum.PACKAGE -> return viewElementGetter().packageName
-            ViewAttributesEnum.VIEW_TAG -> return viewElementGetter().viewTag
-            ViewAttributesEnum.NO_ELLIPSIZED_TEXT -> return checkToAttributeValue {
+            AttributesEnum.CONTENT_DESC -> return viewElementGetter().contentDescription?.toString()
+            AttributesEnum.CLASS -> return viewElementGetter().className
+            AttributesEnum.CHECKABLE -> return viewElementGetter().isCheckable.toString()
+            AttributesEnum.CHECKED -> return viewElementGetter().isChecked.toString()
+            AttributesEnum.CLICKABLE -> return viewElementGetter().isClickable.toString()
+            AttributesEnum.ENABLED -> return viewElementGetter().isEnabled.toString()
+            AttributesEnum.FOCUSABLE -> return viewElementGetter().isFocusable.toString()
+            AttributesEnum.FOCUSED -> return viewElementGetter().isFocused.toString()
+            AttributesEnum.SCROLLABLE -> return viewElementGetter().isScrollable.toString()
+            AttributesEnum.LONG_CLICKABLE -> return viewElementGetter().isLongClickable.toString()
+            AttributesEnum.PASSWORD -> return viewElementGetter().isPassword.toString()
+            AttributesEnum.SELECTED -> return viewElementGetter().isSelected.toString()
+            AttributesEnum.VISIBLE -> return uncheckedViewElementGetter().isVisible.toString()
+            AttributesEnum.BOUNDS -> return viewElementGetter().bounds.toShortString()
+            AttributesEnum.RESOURCE_ID -> return viewElementGetter().resourceId
+            AttributesEnum.INDEX -> return viewElementGetter().index.toString()
+            AttributesEnum.PACKAGE -> return viewElementGetter().packageName
+            AttributesEnum.VIEW_TAG -> return viewElementGetter().viewTag
+            AttributesEnum.NO_ELLIPSIZED_TEXT -> return checkToAttributeValue {
                 viewInteractionGetter().check(LayoutAssertions.noEllipsizedText())
             }
-            ViewAttributesEnum.NO_MULTILINE_BUTTONS -> return checkToAttributeValue {
+            AttributesEnum.NO_MULTILINE_BUTTONS -> return checkToAttributeValue {
                 viewInteractionGetter().check(LayoutAssertions.noMultilineButtons())
             }
-            ViewAttributesEnum.NO_OVERLAPS -> return checkToAttributeValue {
+            AttributesEnum.NO_OVERLAPS -> return checkToAttributeValue {
                 viewInteractionGetter().check(LayoutAssertions.noOverlaps())
             }
             // If it's a TEXT attribute, return the view's raw text
-            ViewAttributesEnum.TEXT -> return ViewTextGetter()[viewInteractionGetter()].rawText
+            AttributesEnum.TEXT -> return ViewTextGetter()[viewInteractionGetter()].rawText
             else -> throw NotYetImplementedException(
                 "Espresso supports only ${espressoAttributes.supportedAttributes()} attributes but '$attributeName' is given instead")
         }

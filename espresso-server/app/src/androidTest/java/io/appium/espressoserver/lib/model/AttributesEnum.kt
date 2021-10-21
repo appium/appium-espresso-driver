@@ -16,7 +16,7 @@
 
 package io.appium.espressoserver.lib.model
 
-enum class ViewAttributesEnum {
+enum class AttributesEnum {
     //  Common Attributes
     BOUNDS,
     CLASS,
@@ -52,54 +52,54 @@ enum class ViewAttributesEnum {
     }
 }
 
-class EspressoAttributes(override var attributes: List<ViewAttributesEnum> =
+class EspressoAttributes(override var attributes: List<AttributesEnum> =
                              commonAttributes + espressoAttributes) : CommonAttributes() {
     companion object {
-        private val espressoAttributes: List<ViewAttributesEnum> by lazy {
+        private val espressoAttributes: List<AttributesEnum> by lazy {
             listOf(
-                ViewAttributesEnum.ADAPTERS,
-                ViewAttributesEnum.ADAPTER_TYPE,
-                ViewAttributesEnum.CHECKABLE,
-                ViewAttributesEnum.CHECKED,
-                ViewAttributesEnum.FOCUSABLE,
-                ViewAttributesEnum.HINT,
-                ViewAttributesEnum.INSTANCE,
-                ViewAttributesEnum.LONG_CLICKABLE,
-                ViewAttributesEnum.NO_ELLIPSIZED_TEXT,
-                ViewAttributesEnum.NO_MULTILINE_BUTTONS,
-                ViewAttributesEnum.NO_OVERLAPS,
-                ViewAttributesEnum.PACKAGE,
-                ViewAttributesEnum.VISIBLE
+                AttributesEnum.ADAPTERS,
+                AttributesEnum.ADAPTER_TYPE,
+                AttributesEnum.CHECKABLE,
+                AttributesEnum.CHECKED,
+                AttributesEnum.FOCUSABLE,
+                AttributesEnum.HINT,
+                AttributesEnum.INSTANCE,
+                AttributesEnum.LONG_CLICKABLE,
+                AttributesEnum.NO_ELLIPSIZED_TEXT,
+                AttributesEnum.NO_MULTILINE_BUTTONS,
+                AttributesEnum.NO_OVERLAPS,
+                AttributesEnum.PACKAGE,
+                AttributesEnum.VISIBLE
             )
         }
     }
 }
 
-class ComposeAttributes(override var attributes: List<ViewAttributesEnum> = commonAttributes) : CommonAttributes()
+class ComposeAttributes(override var attributes: List<AttributesEnum> = commonAttributes) : CommonAttributes()
 
 abstract class CommonAttributes() {
     companion object {
-        val commonAttributes: List<ViewAttributesEnum> by lazy {
+        val commonAttributes: List<AttributesEnum> by lazy {
             listOf(
-                ViewAttributesEnum.BOUNDS,
-                ViewAttributesEnum.CLASS,
-                ViewAttributesEnum.CLICKABLE,
-                ViewAttributesEnum.CONTENT_DESC,
-                ViewAttributesEnum.ENABLED,
-                ViewAttributesEnum.FOCUSED,
-                ViewAttributesEnum.INDEX,
-                ViewAttributesEnum.PASSWORD,
-                ViewAttributesEnum.RESOURCE_ID,
-                ViewAttributesEnum.SCROLLABLE,
-                ViewAttributesEnum.SELECTED,
-                ViewAttributesEnum.TEXT,
-                ViewAttributesEnum.VIEW_TAG,
+                AttributesEnum.BOUNDS,
+                AttributesEnum.CLASS,
+                AttributesEnum.CLICKABLE,
+                AttributesEnum.CONTENT_DESC,
+                AttributesEnum.ENABLED,
+                AttributesEnum.FOCUSED,
+                AttributesEnum.INDEX,
+                AttributesEnum.PASSWORD,
+                AttributesEnum.RESOURCE_ID,
+                AttributesEnum.SCROLLABLE,
+                AttributesEnum.SELECTED,
+                AttributesEnum.TEXT,
+                AttributesEnum.VIEW_TAG,
             )
         }
     }
-    abstract var attributes: List<ViewAttributesEnum>
+    abstract var attributes: List<AttributesEnum>
 
-    fun contains(value: ViewAttributesEnum): Boolean {
+    fun contains(value: AttributesEnum): Boolean {
         return attributes.contains(value)
     }
 
@@ -107,7 +107,7 @@ abstract class CommonAttributes() {
         return attributes.joinToString{ "\'${it}\'" }
     }
 
-    fun valueOf(value: String): ViewAttributesEnum? {
+    fun valueOf(value: String): AttributesEnum? {
         return attributes.find { it.name == value }
     }
 }

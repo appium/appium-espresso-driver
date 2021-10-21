@@ -109,22 +109,22 @@ class ComposeNodeElement(private val node: SemanticsNode) {
 
     fun getAttribute(attributeName: String): String? {
         when (composeAttributes.valueOf(attributeName)) {
-            ViewAttributesEnum.CONTENT_DESC -> return contentDescription?.toString()
-            ViewAttributesEnum.CLASS -> return className
-            ViewAttributesEnum.CLICKABLE -> return isClickable.toString()
-            ViewAttributesEnum.ENABLED -> return isEnabled.toString()
-            ViewAttributesEnum.FOCUSED -> return isFocused.toString()
-            ViewAttributesEnum.SCROLLABLE -> return isScrollable.toString()
-            ViewAttributesEnum.PASSWORD -> return isPassword.toString()
-            ViewAttributesEnum.SELECTED -> return isSelected.toString()
-            ViewAttributesEnum.BOUNDS -> return bounds.toShortString()
-            ViewAttributesEnum.RESOURCE_ID -> return resourceId
-            ViewAttributesEnum.INDEX -> return index.toString()
-            ViewAttributesEnum.VIEW_TAG -> return viewTag?.toString()
-            ViewAttributesEnum.TEXT -> return text?.toString()
-            ViewAttributesEnum.CHECKED -> return isChecked.toString()
+            AttributesEnum.CONTENT_DESC -> return contentDescription?.toString()
+            AttributesEnum.CLASS -> return className
+            AttributesEnum.CLICKABLE -> return isClickable.toString()
+            AttributesEnum.ENABLED -> return isEnabled.toString()
+            AttributesEnum.FOCUSED -> return isFocused.toString()
+            AttributesEnum.SCROLLABLE -> return isScrollable.toString()
+            AttributesEnum.PASSWORD -> return isPassword.toString()
+            AttributesEnum.SELECTED -> return isSelected.toString()
+            AttributesEnum.BOUNDS -> return bounds.toShortString()
+            AttributesEnum.RESOURCE_ID -> return resourceId
+            AttributesEnum.INDEX -> return index.toString()
+            AttributesEnum.VIEW_TAG -> return viewTag?.toString()
+            AttributesEnum.TEXT -> return text?.toString()
+            AttributesEnum.CHECKED -> return isChecked.toString()
             else -> throw NotYetImplementedException(
-                "Compose supports only ${composeAttributes.supportedAttributes()} attributes but'$attributeName' is given instead")
+                "Compose supports only ${composeAttributes.supportedAttributes()} attributes but '$attributeName' is given instead")
         }
     }
 }
