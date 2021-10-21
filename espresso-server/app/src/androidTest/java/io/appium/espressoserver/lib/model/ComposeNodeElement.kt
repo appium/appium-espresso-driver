@@ -27,6 +27,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedExcepti
 import io.appium.espressoserver.lib.model.Rect.Companion.fromBounds
 
 const val DEFAULT_TAG_NAME = "ComposeNode"
+val composeAttributes by lazy { ComposeAttributes() }
 
 val POSSIBLE_CLASS_PROPERTIES: List<SemanticsPropertyKey<out Any>> by lazy {
     listOf(
@@ -106,8 +107,8 @@ class ComposeNodeElement(private val node: SemanticsNode) {
     val rect: io.appium.espressoserver.lib.model.Rect
         get() = fromBounds(bounds)
 
-    fun getAttribute(attributeType: ViewAttributesEnum): String? {
-        when (attributeType) {
+    fun getAttribute(attributeName: String): String? {
+        when (composeAttributes.valueOf(attributeName)) {
             ViewAttributesEnum.CONTENT_DESC -> return contentDescription?.toString()
             ViewAttributesEnum.CLASS -> return className
             ViewAttributesEnum.CLICKABLE -> return isClickable.toString()
@@ -123,14 +124,7 @@ class ComposeNodeElement(private val node: SemanticsNode) {
             ViewAttributesEnum.TEXT -> return text?.toString()
             ViewAttributesEnum.CHECKED -> return isChecked.toString()
             else -> throw NotYetImplementedException(
-                "Only ${ViewAttributesEnum.CONTENT_DESC}, " +
-                        "${ViewAttributesEnum.CLASS}, ${ViewAttributesEnum.CLICKABLE}, " +
-                        "${ViewAttributesEnum.ENABLED}, ${ViewAttributesEnum.FOCUSED}, " +
-                        "${ViewAttributesEnum.SCROLLABLE},${ViewAttributesEnum.PASSWORD}, " +
-                        "${ViewAttributesEnum.SELECTED}, ${ViewAttributesEnum.BOUNDS}, " +
-                        "${ViewAttributesEnum.RESOURCE_ID}, ${ViewAttributesEnum.INDEX}, " +
-                        "${ViewAttributesEnum.VIEW_TAG} and ${ViewAttributesEnum.TEXT} attributes are supported in Compose"
-            )
+                "Compose supports only ${composeAttributes.supportedAttributes()} attributes but'$attributeName' is given instead")
         }
     }
 }

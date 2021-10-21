@@ -30,6 +30,8 @@ import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
 class GetAttribute : RequestHandler<AppiumParams, String?> {
 
+    val espressoAttributes by lazy { EspressoAttributes() }
+
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): String? {
         val attributeName = params.getUriParameterValue("name")
@@ -37,22 +39,18 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
             throw AppiumException("Attribute name cannot be null or empty")
         }
 
-        // Map attributeName to ENUM attribute
-        ViewAttributesEnum.values().find { attributeName.equals(it.toString(), ignoreCase = true) }
-            ?.let { attributeType -> return getAttribute(params.elementId!!, attributeType, EspressoServerRunnerTest.context.currentStrategyType) }
-
-        // If we made it this far, we found no matching attribute. Throw an exception
-        val supportedAttributeNames = ViewAttributesEnum.values().map { it.toString() }
-        throw AppiumException("Attribute name should be one of $supportedAttributeNames. " +
-                "'$attributeName' is given instead")
+        return when (EspressoServerRunnerTest.context.currentStrategyType) {
+            DriverContext.StrategyType.COMPOSE -> getComposeAttribute(params.elementId!!, attributeName)
+            DriverContext.StrategyType.ESPRESSO -> getEspressoAttribute(params.elementId!!, attributeName)
+        }
     }
 
-    private fun getAttribute(elementId: String, attributeType: ViewAttributesEnum, driverStrategy: DriverContext.StrategyType): String? {
 
-        if ( driverStrategy == DriverContext.StrategyType.COMPOSE) {
-            return ComposeNodeElement(getSemanticsNode(elementId)).getAttribute(attributeType)
-        }
+    private fun getComposeAttribute(elementId: String, attributeName: String): String? {
+        return ComposeNodeElement(getSemanticsNode(elementId)).getAttribute(attributeName)
+    }
 
+    private fun getEspressoAttribute(elementId: String, attributeName: String): String? {
         val viewElementGetter: () -> ViewElement =
             { ViewElement(EspressoElement.getViewById(elementId)) }
         val uncheckedViewElementGetter: () -> ViewElement =
@@ -72,7 +70,7 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
                 }
             }
         }
-        when (attributeType) {
+        when (espressoAttributes.valueOf(attributeName)) {
             ViewAttributesEnum.CONTENT_DESC -> return viewElementGetter().contentDescription?.toString()
             ViewAttributesEnum.CLASS -> return viewElementGetter().className
             ViewAttributesEnum.CHECKABLE -> return viewElementGetter().isCheckable.toString()
@@ -102,7 +100,8 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
             }
             // If it's a TEXT attribute, return the view's raw text
             ViewAttributesEnum.TEXT -> return ViewTextGetter()[viewInteractionGetter()].rawText
-            else -> throw NotYetImplementedException()
+            else -> throw NotYetImplementedException(
+                "Espresso supports only ${espressoAttributes.supportedAttributes()} attributes but '$attributeName' is given instead")
         }
     }
 }
