@@ -46,6 +46,10 @@ enum class ViewAttributesEnum {
     NO_OVERLAPS,
     PACKAGE,
     VISIBLE;
+
+    override fun toString(): String {
+        return this.name.replace("_", "-").lowercase()
+    }
 }
 
 class EspressoAttributes(override var attributes: List<ViewAttributesEnum> =
