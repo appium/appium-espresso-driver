@@ -16,7 +16,7 @@
 
 package io.appium.espressoserver.test.helpers
 
-import io.appium.espressoserver.lib.model.ViewAttributesEnum
+import io.appium.espressoserver.lib.model.AttributesEnum
 import io.appium.espressoserver.lib.viewmatcher.fetchIncludedAttributes
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -27,7 +27,7 @@ class `Xpath Query Parser Tests` {
     @Test
     fun `should parse attributes from query`() {
         assertEquals(fetchIncludedAttributes("//*[@text=\"yolo\" and @enabled=\"true\"]"),
-        setOf(ViewAttributesEnum.TEXT, ViewAttributesEnum.ENABLED))
+        setOf(AttributesEnum.TEXT, AttributesEnum.ENABLED))
     }
 
     @Test

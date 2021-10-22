@@ -18,13 +18,14 @@ package io.appium.espressoserver.lib.helpers
 
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.*
+import io.appium.espressoserver.EspressoServerRunnerTest
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.model.Strategy
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
 import io.appium.espressoserver.lib.model.Locator
 import io.appium.espressoserver.lib.model.SourceDocument
-import io.appium.espressoserver.lib.model.ViewAttributesEnum
+import io.appium.espressoserver.lib.model.AttributesEnum
 import io.appium.espressoserver.lib.viewmatcher.fetchIncludedAttributes
 
 /**
@@ -34,6 +35,15 @@ fun getNodeInteractionById(elementId: String?): SemanticsNodeInteraction =
     elementId?.let { ComposeViewCache.get(it) ?: throw StaleElementException(it) }
         ?: throw InvalidArgumentException("Cannot find 'null' element")
 
+// https://developer.android.com/jetpack/compose/semantics#merged-vs-unmerged
+fun toNodeInteractionsCollection(params: Locator): SemanticsNodeInteractionCollection {
+    val parentNodeInteraction = params.elementId?.let { getNodeInteractionById(it) }
+    return parentNodeInteraction?.findDescendantNodeInteractions(params)
+        ?: EspressoServerRunnerTest.composeTestRule.onAllNodes(
+            useUnmergedTree = true,
+            matcher = semanticsMatcherForLocator(params)
+        )
+}
 
 fun SemanticsNodeInteraction.findDescendantNodeInteractions(locator: Locator): SemanticsNodeInteractionCollection =
     this.onChildren().filter(semanticsMatcherForLocator(locator))
@@ -55,7 +65,7 @@ fun semanticsMatcherForLocator(locator: Locator): SemanticsMatcher =
 private fun hasXpath(locator: Locator): SemanticsMatcher {
     val matchingIds = SourceDocument(
         locator.elementId?.let { getSemanticsNode(it) }, fetchIncludedAttributes(locator.value!!)
-    ).matchingNodeIds(locator.value!!, ViewAttributesEnum.RESOURCE_ID.toString())
+    ).matchingNodeIds(locator.value!!, AttributesEnum.RESOURCE_ID.toString())
 
     return SemanticsMatcher("Matches Xpath ${locator.value}") {
         matchingIds.contains(it.id)

@@ -24,7 +24,7 @@ class DriverSetting : AbstractSetting() {
     override var name: String = "driver"
 
     override fun value(): String {
-        return EspressoServerRunnerTest.context.driverStrategy.name.toString().lowercase()
+        return EspressoServerRunnerTest.context.currentStrategyType.name.toString().lowercase()
     }
 
     override fun apply(value: Any?) {

@@ -38,7 +38,6 @@ import io.appium.espressoserver.lib.helpers.XMLHelpers.toNodeName
 import io.appium.espressoserver.lib.helpers.XMLHelpers.toSafeString
 import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import io.appium.espressoserver.lib.viewaction.ViewGetter
-import org.w3c.dom.Element
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import org.xmlpull.v1.XmlSerializer
@@ -79,7 +78,7 @@ private fun toXmlNodeName(className: String?): String {
 
 class SourceDocument constructor(
     private val root: Any? = null,
-    private val includedAttributes: Set<ViewAttributesEnum>? = null
+    private val includedAttributes: Set<AttributesEnum>? = null
 ) {
     @Suppress("PrivatePropertyName")
     private val RESOURCES_GUARD = Semaphore(1)
@@ -88,7 +87,7 @@ class SourceDocument constructor(
     private var serializer: XmlSerializer? = null
     private var tmpXmlName: String? = null
 
-    private fun setAttribute(attrName: ViewAttributesEnum, attrValue: Any?) {
+    private fun setAttribute(attrName: AttributesEnum, attrValue: Any?) {
         // Do not write attributes, whose values equal to null
         attrValue?.let {
             // Cut off longer strings to avoid OOM errors
@@ -109,16 +108,16 @@ class SourceDocument constructor(
 
             // Get the type of the adapter item
             if (!isAdapterTypeSet) {
-                setAttribute(ViewAttributesEnum.ADAPTER_TYPE, adapterItem.javaClass.simpleName)
+                setAttribute(AttributesEnum.ADAPTER_TYPE, adapterItem.javaClass.simpleName)
                 isAdapterTypeSet = true
             }
         }
         if (adapterData.isNotEmpty()) {
-            setAttribute(ViewAttributesEnum.ADAPTERS, TextUtils.join(",", adapterData))
+            setAttribute(AttributesEnum.ADAPTERS, TextUtils.join(",", adapterData))
         }
     }
 
-    private fun isAttributeIncluded(attr: ViewAttributesEnum): Boolean =
+    private fun isAttributeIncluded(attr: AttributesEnum): Boolean =
         null == includedAttributes || includedAttributes.contains(attr)
 
     /**
@@ -140,39 +139,39 @@ class SourceDocument constructor(
         var isTextOrHintRecorded = false
         var isAdapterInfoRecorded = false
         linkedMapOf(
-            ViewAttributesEnum.INDEX to { viewElement.index },
-            ViewAttributesEnum.PACKAGE to { viewElement.packageName },
-            ViewAttributesEnum.CLASS to { className },
-            ViewAttributesEnum.CONTENT_DESC to { viewElement.contentDescription },
-            ViewAttributesEnum.CHECKABLE to { viewElement.isCheckable },
-            ViewAttributesEnum.CHECKED to { viewElement.isChecked },
-            ViewAttributesEnum.CLICKABLE to { viewElement.isClickable },
-            ViewAttributesEnum.ENABLED to { viewElement.isEnabled },
-            ViewAttributesEnum.FOCUSABLE to { viewElement.isFocusable },
-            ViewAttributesEnum.FOCUSED to { viewElement.isFocused },
-            ViewAttributesEnum.SCROLLABLE to { viewElement.isScrollable },
-            ViewAttributesEnum.LONG_CLICKABLE to { viewElement.isLongClickable },
-            ViewAttributesEnum.PASSWORD to { viewElement.isPassword },
-            ViewAttributesEnum.SELECTED to { viewElement.isSelected },
-            ViewAttributesEnum.VISIBLE to { viewElement.isVisible },
-            ViewAttributesEnum.BOUNDS to { viewElement.bounds.toShortString() },
-            ViewAttributesEnum.TEXT to null,
-            ViewAttributesEnum.HINT to null,
-            ViewAttributesEnum.RESOURCE_ID to { viewElement.resourceId },
-            ViewAttributesEnum.VIEW_TAG to { viewElement.viewTag },
-            ViewAttributesEnum.ADAPTERS to null,
-            ViewAttributesEnum.ADAPTER_TYPE to null
+            AttributesEnum.INDEX to { viewElement.index },
+            AttributesEnum.PACKAGE to { viewElement.packageName },
+            AttributesEnum.CLASS to { className },
+            AttributesEnum.CONTENT_DESC to { viewElement.contentDescription },
+            AttributesEnum.CHECKABLE to { viewElement.isCheckable },
+            AttributesEnum.CHECKED to { viewElement.isChecked },
+            AttributesEnum.CLICKABLE to { viewElement.isClickable },
+            AttributesEnum.ENABLED to { viewElement.isEnabled },
+            AttributesEnum.FOCUSABLE to { viewElement.isFocusable },
+            AttributesEnum.FOCUSED to { viewElement.isFocused },
+            AttributesEnum.SCROLLABLE to { viewElement.isScrollable },
+            AttributesEnum.LONG_CLICKABLE to { viewElement.isLongClickable },
+            AttributesEnum.PASSWORD to { viewElement.isPassword },
+            AttributesEnum.SELECTED to { viewElement.isSelected },
+            AttributesEnum.VISIBLE to { viewElement.isVisible },
+            AttributesEnum.BOUNDS to { viewElement.bounds.toShortString() },
+            AttributesEnum.TEXT to null,
+            AttributesEnum.HINT to null,
+            AttributesEnum.RESOURCE_ID to { viewElement.resourceId },
+            AttributesEnum.VIEW_TAG to { viewElement.viewTag },
+            AttributesEnum.ADAPTERS to null,
+            AttributesEnum.ADAPTER_TYPE to null
         ).forEach {
             when (it.key) {
-                ViewAttributesEnum.TEXT, ViewAttributesEnum.HINT ->
+                AttributesEnum.TEXT, AttributesEnum.HINT ->
                     if (!isTextOrHintRecorded && isAttributeIncluded(it.key)) {
                         viewElement.text?.let { text ->
-                            setAttribute(ViewAttributesEnum.TEXT, text.rawText)
-                            setAttribute(ViewAttributesEnum.HINT, text.isHint)
+                            setAttribute(AttributesEnum.TEXT, text.rawText)
+                            setAttribute(AttributesEnum.HINT, text.isHint)
                             isTextOrHintRecorded = true
                         }
                     }
-                ViewAttributesEnum.ADAPTERS, ViewAttributesEnum.ADAPTER_TYPE ->
+                AttributesEnum.ADAPTERS, AttributesEnum.ADAPTER_TYPE ->
                     if (!isAdapterInfoRecorded && view is AdapterView<*> && isAttributeIncluded(it.key)) {
                         recordAdapterViewInfo(view)
                         isAdapterInfoRecorded = true
@@ -213,20 +212,20 @@ class SourceDocument constructor(
         serializer?.startTag(NAMESPACE, tagName)
 
         linkedMapOf(
-            ViewAttributesEnum.CLASS to { className },
-            ViewAttributesEnum.INDEX to { nodeElement.index },
-            ViewAttributesEnum.CLICKABLE to { nodeElement.isClickable },
-            ViewAttributesEnum.ENABLED to { nodeElement.isEnabled },
-            ViewAttributesEnum.FOCUSED to { nodeElement.isFocused },
-            ViewAttributesEnum.SCROLLABLE to { nodeElement.isScrollable },
-            ViewAttributesEnum.SELECTED to { nodeElement.isSelected },
-            ViewAttributesEnum.CHECKED to { nodeElement.isChecked },
-            ViewAttributesEnum.VIEW_TAG to { nodeElement.viewTag },
-            ViewAttributesEnum.CONTENT_DESC to { nodeElement.contentDescription },
-            ViewAttributesEnum.BOUNDS to { nodeElement.bounds.toShortString() },
-            ViewAttributesEnum.TEXT to { nodeElement.text },
-            ViewAttributesEnum.PASSWORD to { nodeElement.isPassword },
-            ViewAttributesEnum.RESOURCE_ID to { nodeElement.resourceId },
+            AttributesEnum.CLASS to { className },
+            AttributesEnum.INDEX to { nodeElement.index },
+            AttributesEnum.CLICKABLE to { nodeElement.isClickable },
+            AttributesEnum.ENABLED to { nodeElement.isEnabled },
+            AttributesEnum.FOCUSED to { nodeElement.isFocused },
+            AttributesEnum.SCROLLABLE to { nodeElement.isScrollable },
+            AttributesEnum.SELECTED to { nodeElement.isSelected },
+            AttributesEnum.CHECKED to { nodeElement.isChecked },
+            AttributesEnum.VIEW_TAG to { nodeElement.viewTag },
+            AttributesEnum.CONTENT_DESC to { nodeElement.contentDescription },
+            AttributesEnum.BOUNDS to { nodeElement.bounds.toShortString() },
+            AttributesEnum.TEXT to { nodeElement.text },
+            AttributesEnum.PASSWORD to { nodeElement.isPassword },
+            AttributesEnum.RESOURCE_ID to { nodeElement.resourceId },
         ).forEach {
             setAttribute(it.key, it.value())
         }
@@ -271,7 +270,7 @@ class SourceDocument constructor(
                         it.startDocument(XML_ENCODING, true)
                         it.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
                         val startTime = SystemClock.uptimeMillis()
-                        when (context.driverStrategy.name) {
+                        when (context.currentStrategyType) {
                             DriverContext.StrategyType.COMPOSE -> {
                                 val rootView =
                                     root ?: EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true)

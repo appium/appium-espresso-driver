@@ -27,6 +27,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedExcepti
 import io.appium.espressoserver.lib.model.Rect.Companion.fromBounds
 
 const val DEFAULT_TAG_NAME = "ComposeNode"
+val composeAttributes by lazy { ComposeAttributes() }
 
 val POSSIBLE_CLASS_PROPERTIES: List<SemanticsPropertyKey<out Any>> by lazy {
     listOf(
@@ -106,31 +107,24 @@ class ComposeNodeElement(private val node: SemanticsNode) {
     val rect: io.appium.espressoserver.lib.model.Rect
         get() = fromBounds(bounds)
 
-    fun getAttribute(attributeType: ViewAttributesEnum): String? {
-        when (attributeType) {
-            ViewAttributesEnum.CONTENT_DESC -> return contentDescription?.toString()
-            ViewAttributesEnum.CLASS -> return className
-            ViewAttributesEnum.CLICKABLE -> return isClickable.toString()
-            ViewAttributesEnum.ENABLED -> return isEnabled.toString()
-            ViewAttributesEnum.FOCUSED -> return isFocused.toString()
-            ViewAttributesEnum.SCROLLABLE -> return isScrollable.toString()
-            ViewAttributesEnum.PASSWORD -> return isPassword.toString()
-            ViewAttributesEnum.SELECTED -> return isSelected.toString()
-            ViewAttributesEnum.BOUNDS -> return bounds.toShortString()
-            ViewAttributesEnum.RESOURCE_ID -> return resourceId
-            ViewAttributesEnum.INDEX -> return index.toString()
-            ViewAttributesEnum.VIEW_TAG -> return viewTag?.toString()
-            ViewAttributesEnum.TEXT -> return text?.toString()
-            ViewAttributesEnum.CHECKED -> return isChecked.toString()
+    fun getAttribute(attributeName: String): String? {
+        when (composeAttributes.valueOf(attributeName)) {
+            AttributesEnum.CONTENT_DESC -> return contentDescription?.toString()
+            AttributesEnum.CLASS -> return className
+            AttributesEnum.CLICKABLE -> return isClickable.toString()
+            AttributesEnum.ENABLED -> return isEnabled.toString()
+            AttributesEnum.FOCUSED -> return isFocused.toString()
+            AttributesEnum.SCROLLABLE -> return isScrollable.toString()
+            AttributesEnum.PASSWORD -> return isPassword.toString()
+            AttributesEnum.SELECTED -> return isSelected.toString()
+            AttributesEnum.BOUNDS -> return bounds.toShortString()
+            AttributesEnum.RESOURCE_ID -> return resourceId
+            AttributesEnum.INDEX -> return index.toString()
+            AttributesEnum.VIEW_TAG -> return viewTag?.toString()
+            AttributesEnum.TEXT -> return text?.toString()
+            AttributesEnum.CHECKED -> return isChecked.toString()
             else -> throw NotYetImplementedException(
-                "Only ${ViewAttributesEnum.CONTENT_DESC}, " +
-                        "${ViewAttributesEnum.CLASS}, ${ViewAttributesEnum.CLICKABLE}, " +
-                        "${ViewAttributesEnum.ENABLED}, ${ViewAttributesEnum.FOCUSED}, " +
-                        "${ViewAttributesEnum.SCROLLABLE},${ViewAttributesEnum.PASSWORD}, " +
-                        "${ViewAttributesEnum.SELECTED}, ${ViewAttributesEnum.BOUNDS}, " +
-                        "${ViewAttributesEnum.RESOURCE_ID}, ${ViewAttributesEnum.INDEX}, " +
-                        "${ViewAttributesEnum.VIEW_TAG} and ${ViewAttributesEnum.TEXT} attributes are supported in Compose"
-            )
+                "Compose doesn't support attribute '$attributeName', Attribute name should be one of ${composeAttributes.supportedAttributes()}")
         }
     }
 }
