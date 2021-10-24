@@ -26,6 +26,8 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.test.SelectionResult
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.onRoot
 import io.appium.espressoserver.EspressoServerRunnerTest
 import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
@@ -42,9 +44,12 @@ import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import org.xmlpull.v1.XmlSerializer
 import java.io.*
+import java.lang.AssertionError
 import java.util.*
 import java.util.concurrent.Semaphore
 import javax.xml.xpath.*
+import kotlin.reflect.full.declaredMemberFunctions
+import kotlin.reflect.jvm.isAccessible
 
 const val NON_XML_CHAR_REPLACEMENT = "?"
 const val VIEW_INDEX = "viewIndex"
@@ -272,10 +277,18 @@ class SourceDocument constructor(
                         val startTime = SystemClock.uptimeMillis()
                         when (context.currentStrategyType) {
                             DriverContext.StrategyType.COMPOSE -> {
-                                val rootView =
-                                    root ?: EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true)
-                                        .fetchSemanticsNode()
-                                serializeComposeNode(rootView as SemanticsNode, 0)
+                                if (root != null) {
+                                    serializeComposeNode(root as SemanticsNode, 0)
+                                } else {
+                                    val rootNodes = rootSemanticNodes()
+                                    if (rootNodes.size == 1) {
+                                        serializeComposeNode(rootNodes.first(), 0)
+                                    } else {
+                                        serializer?.startTag(NAMESPACE, DEFAULT_TAG_NAME)
+                                        rootNodes.forEach { semanticsNode -> serializeComposeNode(semanticsNode, 0) }
+                                        serializer?.endTag(NAMESPACE, DEFAULT_TAG_NAME)
+                                    }
+                                }
                             }
                             DriverContext.StrategyType.ESPRESSO -> {
                                 val rootView = root ?: ViewGetter().rootView
@@ -309,6 +322,21 @@ class SourceDocument constructor(
             throw lastError
         }
         throw AppiumException(lastError!!)
+    }
+
+    private fun rootSemanticNodes(): List<SemanticsNode> {
+        return try {
+            listOf(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true).fetchSemanticsNode())
+        } catch (e: AssertionError) {
+//            Ideally there should be on `root` node but on some cases e.g:overlays screen, there can be more than 1 root.
+//            Compose API not respecting such cases instead throws AssertionError, as a work around fetching all root nodes by relaying on internal API.
+//            e.g: "Reason: Expected exactly '1' node but found '2' nodes that satisfy: (isRoot)"
+            val result: SelectionResult = SemanticsNodeInteraction::class.declaredMemberFunctions.find { it.name == "fetchSemanticsNodes" }?.let {
+                it.isAccessible = true
+                it.call(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true), true, null)
+            } as SelectionResult
+            result.selectedNodes
+        }
     }
 
     private fun performCleanup() {
