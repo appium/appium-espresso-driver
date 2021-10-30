@@ -134,6 +134,7 @@ Capability Name | Description
 appium:skipUnlock | Whether to skip the check for lock screen presence (`true`). By default Espresso driver tries to detect if the device's screen is locked before starting the test and to unlock that (which sometimes might be unstable). Note, that this operation takes some time, so it is highly recommended to set this capability to `false` and disable screen locking on devices under test.
 appium:unlockType | Set one of the possible types of Android lock screens to unlock. Read the [Unlock tutorial](https://github.com/appium/appium-android-driver/blob/master/docs/UNLOCK.md) for more details.
 appium:unlockKey | Allows to set an unlock key. Read the [Unlock tutorial](https://github.com/appium/appium-android-driver/blob/master/docs/UNLOCK.md) for more details.
+appium:unlockStrategy | Either 'locksettings' (default) or 'uiautomator'. Setting it to 'uiautomator' will enforce the driver to avoid using special ADB shortcuts in order to speed up the unlock procedure.
 appium:unlockSuccessTimeout | Maximum number of milliseconds to wait until the device is unlocked. `2000` ms by default
 
 ### Web Context
@@ -791,6 +792,19 @@ Lists all the previously registered [idling resources](https://developer.android
 #### Returns
 
 List of fully qualified class names of currently registered idling resources or an empty list if no resources have been registered yet.
+
+### mobile: unlock
+
+Unlocks the device if it is locked. Noop if the device's screen is not locked.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+key | string | yes | The unlock key. See the documentation on [appium:unlockKey](#device-locking) capability for more details | 12345
+type | string | yes | The unlock type. See the documentation on [appium:unlockType](#device-locking) capability for more details | password
+strategy | string | no | Unlock strategy. See the documentation on [appium:unlockStrategy](#device-locking) capability for more details | uiautomator
+timeoutMs | number | no | Unlock timeout. See the documentation on [appium:unlockSuccessTimeout](#device-locking) capability for more details | 5000
 
 
 ## Backdoor Extension Usage
