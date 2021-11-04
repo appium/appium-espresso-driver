@@ -1,6 +1,6 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { DOMParser } from 'xmldom';
+import { DOMParser } from '@xmldom/xmldom';
 import xpath from 'xpath';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
