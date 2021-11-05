@@ -15,7 +15,7 @@ import kotlin.test.assertEquals
 class `mobile swipe test` {
 
     @Test
-    fun `should parse "MobileSwipeActionParams" with 'direction' property` () {
+    fun `should parse 'MobileSwipeActionParams' with 'direction' property` () {
         val jsonElement = JsonObject()
         jsonElement.add("direction", JsonPrimitive("DOWN"))
         val mobileSwipeActionParams = MobileSwipeActionParamsDeserializer()
@@ -24,7 +24,7 @@ class `mobile swipe test` {
     }
 
     @Test
-    fun `should parse "MobileSwipeActionParams" with 'swiper' property and use default parameters` () {
+    fun `should parse 'MobileSwipeActionParams' with 'swiper' property and use default parameters` () {
         val jsonElement = JsonObject()
         jsonElement.add("swiper", JsonPrimitive("FAST"))
         val mobileSwipeActionParams = MobileSwipeActionParamsDeserializer()
@@ -36,7 +36,7 @@ class `mobile swipe test` {
     }
 
     @Test
-    fun `should parse "MobileSwipeActionParams" with 'swiper' property plus other parameters` () {
+    fun `should parse 'MobileSwipeActionParams' with 'swiper' property plus other parameters` () {
         val jsonElement = JsonObject()
         jsonElement.add("swiper", JsonPrimitive("FAST"))
         jsonElement.add("startCoordinates", JsonPrimitive("TOP_LEFT"))

@@ -4,8 +4,8 @@ plugins {
 }
 
 android {
-    compileSdkVersion(getIntProperty("appiumCompileSdk", 30))
-    buildToolsVersion(getStringProperty("appiumBuildTools", "30.0.3"))
+    compileSdk = getIntProperty("appiumCompileSdk", 30)
+    buildToolsVersion = getStringProperty("appiumBuildTools", "30.0.3")
     defaultConfig {
         // <instrumentation android:targetPackage=""/>
         applicationId = getStringProperty("appiumTargetPackage", "io.appium.espressoserver")
@@ -13,8 +13,8 @@ android {
         testApplicationId = "io.appium.espressoserver.test"
         testHandleProfiling = false
         testFunctionalTest = false
-        minSdkVersion(getIntProperty("appiumMinSdk", 21))
-        targetSdkVersion(getIntProperty("appiumTargetSdk", 28))
+        minSdk = getIntProperty("appiumMinSdk", 21)
+        targetSdk = getIntProperty("appiumTargetSdk", 28)
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         getByName("debug") {
-            zipAlignEnabled(getBooleanProperty("appiumZipAlign", true))
+            isZipAlignEnabled = getBooleanProperty("appiumZipAlign", true)
         }
         getByName("release") {
             isMinifyEnabled = false
@@ -43,19 +43,19 @@ android {
     signingConfigs {
         getByName("debug") {
             findProperty("appiumKeystoreFile")?.also {
-                storeFile(File(it.toString()))
+                storeFile = File(it.toString())
             }
 
             findProperty("appiumKeystorePassword")?.also {
-                storePassword(it.toString())
+                storePassword = it.toString()
             }
 
             findProperty("appiumKeyAlias")?.also {
-                keyAlias(it.toString())
+                keyAlias = it.toString()
             }
 
             findProperty("appiumKeyPassword")?.also {
-                keyPassword(it.toString())
+                keyPassword = it.toString()
             }
         }
     }
@@ -80,7 +80,7 @@ android {
     }
 
     packagingOptions {
-        exclude("META-INF/**")
+        resources.excludes.add("META-INF/**")
     }
 }
 
@@ -140,17 +140,17 @@ tasks.withType<Test> {
 
 object Version {
     const val kotlin = "1.5.10"
-    const val espresso = "3.3.0"
-    const val testlib = "1.3.0"
-    const val mocklib = "1.7.4"
-    const val gson = "2.8.6"
+    const val espresso = "3.4.0"
+    const val testlib = "1.4.0"
+    const val mocklib = "2.0.9"
+    const val gson = "2.8.9"
     const val uia = "2.2.0"
     const val nanohttpd = "2.3.1"
-    const val annotation = "1.1.0"
-    const val mockito = "2.8.9"
+    const val annotation = "1.3.0"
+    const val mockito = "4.0.0"
     const val robolectric = "4.5.1"
-    const val junit = "4.13"
-    const val compose = "1.0.0"
+    const val junit = "4.13.2"
+    const val compose = "1.0.5"
 }
 
 fun Project.getStringProperty(name: String, default: String): String =

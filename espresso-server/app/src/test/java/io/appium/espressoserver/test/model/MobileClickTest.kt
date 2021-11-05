@@ -15,7 +15,7 @@ import kotlin.test.assertEquals
 class `mobile clickAction test` {
 
     @Test
-    fun `should parse "MobileClickParams" and set defaults if some params not provided` () {
+    fun `should parse 'MobileClickParams' and set defaults if some params not provided` () {
         val jsonElement = JsonObject()
         val clickActionParams = MobileClickActionParams.MobileClickActionParamsDeserializer()
                 .deserialize(jsonElement, null, null)
@@ -27,7 +27,7 @@ class `mobile clickAction test` {
     }
 
     @Test
-    fun `should parse "MobileClickParams" and set values if all params provided` () {
+    fun `should parse 'MobileClickParams' and set values if all params provided` () {
         val jsonElement = JsonObject()
         jsonElement.add("inputDevice", JsonPrimitive(2))
         jsonElement.add("buttonState", JsonPrimitive("3"))
