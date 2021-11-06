@@ -61,12 +61,22 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.valueOf(
+            getStringProperty(
+                "appiumSourceCompatibility",
+                "VERSION_1_8"
+            ).toUpperCase()
+        )
+        targetCompatibility = JavaVersion.valueOf(
+            getStringProperty(
+                "appiumTargetCompatibility",
+                "VERSION_1_8"
+            ).toUpperCase()
+        )
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = getStringProperty("appiumJvmTarget", JavaVersion.VERSION_1_8.toString())
     }
 
     packagingOptions {
