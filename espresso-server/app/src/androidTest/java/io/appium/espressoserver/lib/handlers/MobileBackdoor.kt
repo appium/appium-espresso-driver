@@ -25,6 +25,12 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
                 else -> throw InvalidArgumentException("target cannot be '$target'")
             } ?: return null
 
+            if (result is Array<*> && result.filterNotNull()
+                    .all { it is String || (ClassUtils.wrapperToPrimitive(it.javaClass) != null) }
+            ) {
+                return result
+            }
+
             ClassUtils.wrapperToPrimitive(result.javaClass)?.let { return result }
                 ?: return result.toString()
         }
