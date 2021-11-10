@@ -26,17 +26,14 @@ import io.appium.espressoserver.lib.model.GlobalSession
 import io.appium.espressoserver.lib.drivers.DriverContext.StrategyType
 
 interface RequestHandler<in T : AppiumParams, out R> {
-    @Throws(AppiumException::class)
-    fun handleInternal(params: T): R {
-        return invokeStrategy(params)
-    }
+    fun handleInternal(params: T): R = invokeStrategy(params)
 
-    fun invokeStrategy(params: AppiumParams): R {
+    @Suppress("UNCHECKED_CAST")
+    fun invokeStrategy(params: AppiumParams): R =
         when (EspressoServerRunnerTest.context.currentStrategyType) {
-            StrategyType.COMPOSE -> return handleCompose(params as T)
-            StrategyType.ESPRESSO -> return handleEspresso(params as T)
+            StrategyType.COMPOSE -> handleCompose(params as T)
+            StrategyType.ESPRESSO -> handleEspresso(params as T)
         }
-    }
 
     fun handleEspresso(params: T): R {
         throw NotYetImplementedException()
@@ -52,12 +49,17 @@ interface RequestHandler<in T : AppiumParams, out R> {
         AndroidLogger.info("Executing ${this::class.simpleName} handler")
 
         if (this !is NoSessionCommandHandler
-            && (params.sessionId == null || params.sessionId != GlobalSession.sessionId)) {
+            && (params.sessionId == null || params.sessionId != GlobalSession.sessionId)
+        ) {
             throw NoSuchDriverException("The requested session id ${params.sessionId} does not exist")
         }
 
-        return handleInternal(params as? T
-                ?: throw IllegalArgumentException("Invalid type ${params::class.simpleName} " +
-                        "passed to ${this::class.simpleName} handler"))
+        return handleInternal(
+            params as? T
+                ?: throw IllegalArgumentException(
+                    "Invalid type ${params::class.simpleName} " +
+                            "passed to ${this::class.simpleName} handler"
+                )
+        )
     }
 }
