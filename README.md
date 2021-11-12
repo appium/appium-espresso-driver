@@ -168,6 +168,42 @@ Capability Name | Description
 appium:disableSuppressAccessibilityService | Being set to `true` tells the instrumentation process to not suppress accessibility services during the automated test. This might be useful if your automated test needs these services. `false` by default
 
 
+## Settings API
+
+Espresso driver supports Appium [Settings API](https://appium.io/docs/en/advanced-concepts/settings/).
+Along with the common settings the following driver-specific settings are currently available:
+
+Name | Type | Description
+--- | --- | ---
+driver | 'compose' or 'espresso' | The name of the subdriver to use for elements interactions. The default value is `espresso`. Switching the value to `compose` enables interactions with [Jetpack Compose](https://developer.android.com/jetpack/compose)-based application user interfaces. Read [Jetpack Compose Support](#jetpack-compose-support) for more details.
+
+
+## Jetpack Compose Support
+
+[Jetpack Compose](https://developer.android.com/jetpack/compose) is Android’s modern toolkit for building native UI. Espresso driver supports basic interactions with Compose-based applications since version *1.46.0*.
+
+### Interaction With Compose Elements
+
+Espresso driver has the concept of subdrivers. This works quite similarly to the concept of contexts, while contexts are used to switch between native and web, and subdrivers are still
+under the native one. Each subdriver operates its own elements cache, so it is not be possible
+to mix Espresso and Compose elements.
+
+In order to change between subdrivers use the [driver](#settings-api) setting. Setting its value to `compose` modifies driver behavior in the way it interacts with Compose elements rather that with classic Android views. It is possible to switch between `espresso` and `compose` modes at any point of time. When `compose` mode is active the the following webdriver commands behave differently (as of driver version *1.50.0*):
+- findElement(s): Element finding commands only support Compose-based locators. Read [Compose Elements Location](#compose-elements-location) for more details.
+- getPageSource: The returned page source is retrieved from Compose and all elements there contain [Compose-specific](#compose-element-attributes) attributes.
+- click, isDisplayed, isEnabled, clear, getText, sendKeys, getElementRect, getValue: These commands should properly support compose elements.
+- getAttribute: Accepts and returns Compose-specific element attributes. See [Compose Element Attributes](#compose-element-attributes) for the full list of supported Compose element attributes.
+
+Calling other driver element-specific APIs not listed above would most likely throw an exception as Compose and Espresso elements are being stored in completely separated internal caches and must not be mixed.
+
+You could also check end-to-end tests for more examples on how to setup test capabilities and
+on the Compose usage in general:
+- https://github.com/appium/appium-espresso-driver/blob/master/test/functional/commands/jetpack-componse-element-values-e2e-specs.js
+- https://github.com/appium/appium-espresso-driver/blob/master/test/functional/commands/jetpack-compose-attributes-e2e-specs.js
+- https://github.com/appium/appium-espresso-driver/blob/master/test/functional/commands/jetpack-compose-e2e-specs.js
+- https://github.com/appium/appium-espresso-driver/blob/master/test/functional/commands/jetpack-compose-e2e-specs.js
+
+
 ## Espresso Build Config
 
 Espresso server is in tight connection with the application under test. That is why it is important that the server uses the same versions of common dependencies and there are no conflicts. Espresso driver allows to configure several build options via `espressoBuildConfig` capability. The configuration JSON supports the following entries:
@@ -255,9 +291,9 @@ Name | Type | Description | Example
 launchDisplayId | string or int | Display id which you want to assign to launch the main app activity on. This might be useful if the device under test supports multiple displays | 1
 
 
-## Element Attributes
+## Espresso Element Attributes
 
-Espresso driver supports the following element attributes:
+Espresso driver supports the following element attributes in `espresso` subdriver:
 
 Name | Description | Example
 --- | --- | ---
@@ -285,9 +321,31 @@ visible | Whether the element is visible to the user | 'true'
 view-tag | The tag value assigned to the element. Could be `null` | 'my tag'
 
 
-## Element Location
+## Compose Element Attributes
 
-Espresso driver supports the following location strategies:
+Espresso driver supports the following element attributes in `compose` subdriver:
+
+Name | Description | Example
+--- | --- | ---
+bounds | The element's visible frame (`[left, top][right, bottom]`) | `[0,0][100,100]`
+checked | Whether the element is checked. Always `false` if the element is not checkable | 'false'
+class | The full name of the element's class. Could be `ComposeNode` for some elements | 'ComposeNode'
+clickable | Whether the element could be clicked | 'false'
+content-desc | The content-description attribute of the accessible element | 'foo'
+enabled | Whether the element could be clicked | 'true'
+focused | Whether the element could is focused. Always `false` if the element is not focusable | 'false'
+index | Element's index in the tree hierarchy | `0`
+password | Whether the element is a password input field | 'true'
+resource-id | Element's resource identifier. Could be `null` | 'com.mycompany:id/resId'
+scrollable | Whether the element is scrollable | 'true'
+selected | Whether the element is selected | 'false'
+text | The element's text | 'my text'
+view-tag | The tag value assigned to the element. Could be `null` | 'my tag'
+
+
+## Espresso Elements Location
+
+Espresso driver supports the following location strategies in `espresso` subdriver:
 
 Name | Description | Example
 --- | --- | ---
@@ -299,6 +357,18 @@ text | This strategy is mapped to the native Espresso `withText` [matcher](https
 -android datamatcher | This strategy allows to create Espresso [data interaction](https://developer.android.com/reference/android/support/test/espresso/DataInteraction) selectors which can quickly and reliably scroll to the necessary elements. Read [Espresso DataMatcher Selector](https://appium.io/docs/en/writing-running-appium/android/espresso-datamatcher-selector/) to know more on how to construct these locators. Also check the [Unlocking New Testing Capabilities with Espresso Driver by Daniel Graham](https://www.youtube.com/watch?v=gU9EEUV5n9U) presentation video from Appium Conf 2019. | `{"name": "hasEntry", "args": ["title", "WebView3"]}`
 -android viewmatcher | This strategy allows to construct Espresso [view matcher](https://developer.android.com/reference/androidx/test/espresso/matcher/ViewMatchers) based on the given JSON representation of it. The representation is expected to contain the following fields: `name`: the mandatory matcher function name; `args`: optional matcher function arguments, each argument could also be a function; `class`: the full qualified class name of the corresponding matcher. | `{"name": "withText", "args": [{"name": "containsString", "args": "getExternalStoragePublicDirectory", "class": "org.hamcrest.Matchers"}], "class": "androidx.test.espresso.matcher.ViewMatchers"}`
 xpath | For elements lookup Xpath strategy the driver uses the same XML tree that is generated by page source API. Only Xpath 1.0 is supported. | `By.xpath("//android.view.View[@text=\"Regular\" and @checkable=\"true\"]")`
+
+
+## Compose Elements Location
+
+Espresso driver supports the following location strategies in `compose` subdriver:
+
+Name | Description | Example
+--- | --- | ---
+accessibility id | This strategy is mapped to the native Espresso `hasContentDescription` [matcher](https://developer.android.com/reference/kotlin/androidx/compose/ui/test/package-summary#hasContentDescription(kotlin.String,kotlin.Boolean,kotlin.Boolean)) (inclusion of element's content description). | 'my description'
+`-android viewtag` or `tag name` | This strategy is mapped to the native Compose `hasTestTag` [matcher](https://developer.android.com/reference/kotlin/androidx/compose/ui/test/package-summary#hasTestTag(kotlin.String)) (exact match of element's tag value). | 'my tag'
+`text` or `link text` | This strategy is mapped to the native Compose `hasText` [matcher](https://developer.android.com/reference/kotlin/androidx/compose/ui/test/package-summary#hasText(kotlin.String,kotlin.Boolean,kotlin.Boolean)) (inclusion of element's text). | 'my text'
+xpath | For elements lookup Xpath strategy the driver uses the same XML tree that is generated by page source API. Only Xpath 1.0 is supported. | `By.xpath("//ComposeNode[@text=\"Regular\" and @selected=\"true\"]")`
 
 
 ## Platform-Specific Extensions
