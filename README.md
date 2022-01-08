@@ -696,6 +696,24 @@ Name | Type | Required | Description | Example
 sensorType | string | yes | The set of all supported sensor types could be found in [adb-emu-commands.js](https://github.com/appium/appium-adb/blob/master/lib/tools/adb-emu-commands.js) (look for *SENSORS* object values). Check the output of `sensor status` command in the [emulator console](https://developer.android.com/studio/run/emulator-console) to see more details on the available sensor types | light
 value | string | yes | Check the output of `sensor get <sensorType>` command in the [emulator console](https://developer.android.com/studio/run/emulator-console) to see the acceptable value format for the given sensor type | 50
 
+### mobile: refreshGpsCache
+
+Sends a request to refresh the GPS cache on the device under test.
+By default the location tracking is configured for
+[low battery consumption](https://github.com/appium/io.appium.settings/blob/master/app/src/main/java/io/appium/settings/LocationTracker.java),
+so you might need to call this extension periodically to get the updated geo
+location if the actual (or mocked) device location is changed too frequently.
+The feature only works if the device under test has Google Play Services installed.
+In case the vanilla
+[LocationManager](https://developer.android.com/reference/android/location/LocationManager)
+is used the device API level must be at version 30 (Android R) or higher.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+timeoutMs | number | no | The maximum number of milliseconds to block until GPS cache is refreshed. If the API call does not receive a confirmation about successful cache refresh within this timeout then an error is thrown. Providing zero or a negative value to it skips waiting completely and does not check for any errors. 20000 ms by default. | 60000
+
 ### mobile: deleteFile
 
 Deletes a file on the remote device.
