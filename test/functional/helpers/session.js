@@ -1,4 +1,4 @@
-import wd from 'wd';
+import remote from 'webdriverio';
 import { startServer } from '../../..';
 import AsyncLock from 'async-lock';
 
@@ -15,13 +15,8 @@ async function initSession (caps) {
   }
 
   return await SESSION_GUARD.acquire(HOST, async () => {
-    driver = wd.promiseChainRemote(HOST, PORT);
     server = await startServer(PORT, HOST);
-    const serverRes = await driver.init(caps);
-    if (!caps.udid && !caps.fullReset && serverRes[1].udid) {
-      caps.udid = serverRes[1].udid;
-    }
-    // await driver.setImplicitWaitTimeout(5000);
+    driver = await remote(caps);
     return driver;
   });
 }
