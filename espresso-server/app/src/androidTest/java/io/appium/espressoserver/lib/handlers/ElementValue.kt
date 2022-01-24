@@ -18,46 +18,41 @@ package io.appium.espressoserver.lib.handlers
 
 import android.widget.NumberPicker
 import android.widget.ProgressBar
+import androidx.compose.ui.test.performTextClearance
+import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.PerformException
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.TextValueParams
 
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.typeText
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
+import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
-class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueParams, Void?> {
+class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueParams, Unit> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: TextValueParams): Void? {
-        val value: String = when (Pair(params.value == null, params.text == null)) {
-            Pair(first=true, second=true) -> throw InvalidArgumentException("Must provide 'value' or 'text' property")
-            Pair(first=false, second=true) -> params.value!!.joinToString(separator="") // for MJSONWP
-            else -> params.text!! // Prior W3C
-        }
+    override fun handleEspresso(params: TextValueParams): Unit {
+        val value: String = extractTextToEnter(params)
 
         val elementId = params.elementId
-        val view = Element.getViewById(elementId)
+        val view = EspressoElement.getViewById(elementId)
 
         try {
             if (view is ProgressBar) {
                 view.progress = Integer.parseInt(value)
-                return null
             }
             if (view is NumberPicker) {
                 view.value = Integer.parseInt(value)
-                return null
             }
         } catch (e: NumberFormatException) {
             throw InvalidArgumentException(String.format("Cannot convert '$value' to an integer"))
         }
 
-        val viewInteraction = Element.getViewInteractionById(elementId)
+        val viewInteraction = EspressoElement.getViewInteractionById(elementId)
         if (isReplacing) {
             viewInteraction.perform(replaceText(value))
         } else {
@@ -79,7 +74,30 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueP
                 }
             }
         }
-
-        return null
     }
+
+    override fun handleCompose(params: TextValueParams): Unit {
+        val value: String = extractTextToEnter(params)
+        try {
+            if (isReplacing) {
+                getNodeInteractionById(params.elementId).performTextClearance()
+            }
+            getNodeInteractionById(params.elementId).performTextInput(value)
+        } catch (e: IllegalArgumentException) {
+            throw InvalidElementStateException("Clear", params.elementId!!, e)
+        }
+    }
+
+    private fun extractTextToEnter(params: TextValueParams) =
+        when (Pair(params.value == null, params.text == null)) {
+            Pair(
+                first = true,
+                second = true
+            ) -> throw InvalidArgumentException("Must provide 'value' or 'text' property")
+            Pair(
+                first = false,
+                second = true
+            ) -> params.value!!.joinToString(separator = "") // for MJSONWP
+            else -> params.text!! // Prior W3C
+        }
 }

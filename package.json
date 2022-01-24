@@ -7,7 +7,7 @@
     "automated testing",
     "android"
   ],
-  "version": "1.41.0",
+  "version": "1.50.1",
   "author": "appium",
   "license": "Apache-2.0",
   "repository": {
@@ -20,6 +20,14 @@
   "engines": [
     "node"
   ],
+  "appium": {
+    "driverName": "espresso",
+    "automationName": "Espresso",
+    "platformNames": [
+      "Android"
+    ],
+    "mainClass": "EspressoDriver"
+  },
   "main": "./build/index.js",
   "bin": {},
   "directories": {
@@ -32,27 +40,26 @@
     "build/lib",
     "espresso-server/app/src",
     "espresso-server/app/build/outputs/apk",
-    "espresso-server/app/build.gradle",
+    "espresso-server/app/build.gradle.kts",
     "espresso-server/app/proguard-rules.pro",
     "espresso-server/gradle*",
-    "espresso-server/build.gradle",
-    "espresso-server/settings.gradle",
+    "espresso-server/build.gradle.kts",
+    "espresso-server/settings.gradle.kts",
     "espresso-server/lint.xml",
     "!.DS_Store"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.16.7",
-    "appium-adb": "^9.0.0",
-    "appium-android-driver": "^5.0.0",
-    "appium-base-driver": "^7.11.3",
-    "appium-support": "^2.55.0",
-    "asyncbox": "^2.9.2",
-    "bluebird": "^3.7.2",
-    "lodash": "^4.17.21",
-    "portscanner": "^2.2.0",
-    "source-map-support": "^0.5.21",
-    "validate.js": "^0.13.1",
-    "yargs": "^17.3.1"
+    "@babel/runtime": "^7.4.3",
+    "appium-adb": "^8.18.0",
+    "appium-android-driver": "^4.54.0",
+    "appium-base-driver": "^7.0.0",
+    "appium-support": "^2.54.4",
+    "asyncbox": "^2.3.1",
+    "bluebird": "^3.5.0",
+    "lodash": "^4.17.11",
+    "portscanner": "^2.1.1",
+    "source-map-support": "^0.x",
+    "validate.js": "^0.x"
   },
   "scripts": {
     "clean": "rm -rf node_modules && rm -f package-lock.json && npm install",
@@ -77,22 +84,23 @@
     "precommit-test"
   ],
   "devDependencies": {
-    "android-apidemos": "^4.0.0",
-    "appium-chromedriver": "^5.0.1",
-    "appium-gulp-plugins": "^5.5.0",
-    "appium-test-support": "^1.3.3",
-    "chai": "^4.3.4",
+    "@xmldom/xmldom": "^0.x",
+    "android-apidemos": "^3.0.0",
+    "appium-chromedriver": "^4.23.1",
+    "appium-gulp-plugins": "^5.4.1",
+    "appium-test-support": "^1.0.0",
+    "async-lock": "^1.0.0",
+    "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "eslint-config-appium": "^4.7.0",
     "gps-demo-app": "^2.1.1",
-    "gulp": "^4.0.2",
-    "mocha": "~9.1.4",
-    "mocha-junit-reporter": "^2.0.2",
-    "mocha-multi-reporters": "^1.5.1",
+    "gulp": "^4.0.0",
+    "mocha": "^9.0.0",
+    "mocha-junit-reporter": "^2.0.0",
+    "mocha-multi-reporters": "^1.1.7",
     "pre-commit": "^1.2.2",
-    "sinon": "^12.0.1",
-    "wd": "^1.14.0",
-    "xmldom": "^0.6.0",
-    "xpath": "0.0.32"
+    "sinon": "^12.0.0",
+    "wd": "^1.10.3",
+    "xpath": "^0.x"
   }
 }

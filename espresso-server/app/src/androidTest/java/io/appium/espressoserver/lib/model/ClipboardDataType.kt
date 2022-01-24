@@ -3,7 +3,7 @@ package io.appium.espressoserver.lib.model
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 
 fun String.toClipboardDataType(): ClipboardDataType {
-    return when (this.toUpperCase()) {
+    return when (this.uppercase()) {
         ClipboardDataType.PLAINTEXT.name ->
             ClipboardDataType.PLAINTEXT
         else ->

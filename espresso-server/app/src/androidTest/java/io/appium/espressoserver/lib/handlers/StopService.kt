@@ -21,9 +21,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import io.appium.espressoserver.lib.helpers.extractQualifiedClassName
 import io.appium.espressoserver.lib.model.StopServiceParams
 
-class StopService : RequestHandler<StopServiceParams, String?> {
+class StopService : RequestHandler<StopServiceParams, String> {
 
-    override fun handleInternal(params: StopServiceParams): String? {
+    override fun handleInternal(params: StopServiceParams): String {
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext,
                 Class.forName(extractQualifiedClassName(targetContext.packageName, params.intent)))

@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.ReflectionUtils.invokeInstanceMethod
 import io.appium.espressoserver.lib.helpers.ReflectionUtils.invokeStaticMethod
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import io.appium.espressoserver.lib.viewmatcher.withView
 
@@ -40,7 +40,7 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
         // Initialize onWebView with web view matcher (if webviewEl provided)
         params.webviewElement.let{ webviewElement ->
             AndroidLogger.info("Initializing webView interaction on webview with el: '$webviewElement'")
-            val matcher = withView(Element.getViewById(webviewElement))
+            val matcher = withView(EspressoElement.getViewById(webviewElement))
             webViewInteraction = onWebView(matcher)
         }
 

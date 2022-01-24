@@ -18,7 +18,12 @@ package io.appium.espressoserver.lib.handlers.exceptions
 
 import fi.iki.elonen.NanoHTTPD
 
-class NoSuchElementException(reason: String) : AppiumException(reason) {
+class NoSuchElementException : AppiumException {
+
+    constructor(reason: String): super(reason)
+
+    constructor(reason: String, e: Throwable): super(reason, e)
+
     override fun error(): String {
         return "no such element"
     }

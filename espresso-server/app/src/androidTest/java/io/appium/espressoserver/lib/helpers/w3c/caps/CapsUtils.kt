@@ -34,7 +34,7 @@ val STANDARD_CAPS = listOf(
 const val APPIUM_PREFIX = "appium"
 
 
-fun isStandardCap(capName: String): Boolean = STANDARD_CAPS.any { it.toLowerCase() == capName.toLowerCase() }
+fun isStandardCap(capName: String): Boolean = STANDARD_CAPS.any { it.lowercase() == capName.lowercase() }
 
 
 fun mergeCaps(primary: Map<String, Any?>, secondary: Map<String, Any?>): Map<String, Any?> {

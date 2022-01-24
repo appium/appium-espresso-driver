@@ -16,28 +16,17 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.content.Context
-import android.util.DisplayMetrics
-import android.view.WindowManager
-
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.WindowRect
 
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import io.appium.espressoserver.lib.helpers.getCurrentWindowRect
 
 class GetWindowRect : RequestHandler<AppiumParams, WindowRect> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): WindowRect {
-        val displayMetrics = DisplayMetrics()
-        val context = getApplicationContext<Context>()
-        val winManager = context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
-            ?: throw AppiumException("Couldn't get default display: " +
-                "context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE) is null")
-
-        winManager.defaultDisplay.getMetrics(displayMetrics)
-
-        return WindowRect(displayMetrics.widthPixels, displayMetrics.heightPixels, 0, 0)
+        val rect = getCurrentWindowRect()
+        return WindowRect(rect.width(), rect.height(), rect.left, rect.top)
     }
 }

@@ -18,7 +18,7 @@ package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.Size
 import io.appium.espressoserver.lib.model.ViewElement
 
@@ -26,7 +26,7 @@ class GetSize : RequestHandler<AppiumParams, Size> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): Size {
-        val bounds = ViewElement(Element.getViewById(params.elementId)).bounds
+        val bounds = ViewElement(EspressoElement.getViewById(params.elementId)).bounds
         return Size(bounds.width(), bounds.height())
     }
 }

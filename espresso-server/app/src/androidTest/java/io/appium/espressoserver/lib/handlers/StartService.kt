@@ -21,9 +21,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import io.appium.espressoserver.lib.helpers.extractQualifiedClassName
 import io.appium.espressoserver.lib.model.StartServiceParams
 
-class StartService : RequestHandler<StartServiceParams, String?> {
+class StartService : RequestHandler<StartServiceParams, String> {
 
-    override fun handleInternal(params: StartServiceParams): String? {
+    override fun handleInternal(params: StartServiceParams): String {
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext,
                 Class.forName(extractQualifiedClassName(targetContext.packageName, params.intent)))

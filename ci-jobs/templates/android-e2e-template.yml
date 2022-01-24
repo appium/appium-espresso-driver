@@ -4,7 +4,7 @@ parameters:
   vmImage: 'macOS-11'
   MOCHA_FILE: 'mocha-test-results.xml'
   CHROMEDRIVER_VERSION: 2.44
-  NODE_VERSION: 10.x
+  NODE_VERSION: 12.x
   ANDROID_SDK_VERSION: 28
 
 jobs:
@@ -28,9 +28,12 @@ jobs:
       displayName: Install MJPEG Consumer
     - script: bash ci-jobs/scripts/start-emulator.sh
       displayName: Create and run Emulator
-    - script: npm run build
-      displayName: Build
-    - script: npx mocha --timeout 6000000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/ -g @skip-ci -i --exit
+    - script: |
+        cd "espresso-server"
+        ./gradlew -PappiumTargetPackage=io.appium.android.apis app:assembleAndroidTest
+        cd ..
+      displayName: Prebuild the server
+    - script: npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/ -g @skip-ci -i --exit
       env:
         JAVA_HOME: $(JAVA_HOME_11_X64)
         PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)

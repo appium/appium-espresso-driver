@@ -25,6 +25,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.test.SelectionResult
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.onRoot
+import io.appium.espressoserver.EspressoServerRunnerTest
+import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
+import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
@@ -33,17 +40,16 @@ import io.appium.espressoserver.lib.helpers.XMLHelpers.toNodeName
 import io.appium.espressoserver.lib.helpers.XMLHelpers.toSafeString
 import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import io.appium.espressoserver.lib.viewaction.ViewGetter
-import org.w3c.dom.Element
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import org.xmlpull.v1.XmlSerializer
 import java.io.*
+import java.lang.AssertionError
 import java.util.*
 import java.util.concurrent.Semaphore
-import javax.xml.xpath.XPath
-import javax.xml.xpath.XPathConstants
-import javax.xml.xpath.XPathExpressionException
-import javax.xml.xpath.XPathFactory
+import javax.xml.xpath.*
+import kotlin.reflect.full.declaredMemberFunctions
+import kotlin.reflect.jvm.isAccessible
 
 const val NON_XML_CHAR_REPLACEMENT = "?"
 const val VIEW_INDEX = "viewIndex"
@@ -61,9 +67,9 @@ private fun toXmlNodeName(className: String?): String {
     }
 
     var fixedName = className
-            .replace("[$@#&]".toRegex(), ".")
-            .replace("\\.+".toRegex(), ".")
-            .replace("(^\\.|\\.$)".toRegex(), "")
+        .replace("[$@#&]".toRegex(), ".")
+        .replace("\\.+".toRegex(), ".")
+        .replace("(^\\.|\\.$)".toRegex(), "")
     fixedName = toNodeName(fixedName)
     if (fixedName.trim { it <= ' ' }.isEmpty()) {
         fixedName = DEFAULT_VIEW_CLASS_NAME
@@ -76,8 +82,8 @@ private fun toXmlNodeName(className: String?): String {
 
 
 class SourceDocument constructor(
-        private val root: View? = null,
-        private val includedAttributes: Set<ViewAttributesEnum>? = null
+    private val root: Any? = null,
+    private val includedAttributes: Set<AttributesEnum>? = null
 ) {
     @Suppress("PrivatePropertyName")
     private val RESOURCES_GUARD = Semaphore(1)
@@ -86,7 +92,7 @@ class SourceDocument constructor(
     private var serializer: XmlSerializer? = null
     private var tmpXmlName: String? = null
 
-    private fun setAttribute(attrName: ViewAttributesEnum, attrValue: Any?) {
+    private fun setAttribute(attrName: AttributesEnum, attrValue: Any?) {
         // Do not write attributes, whose values equal to null
         attrValue?.let {
             // Cut off longer strings to avoid OOM errors
@@ -107,17 +113,17 @@ class SourceDocument constructor(
 
             // Get the type of the adapter item
             if (!isAdapterTypeSet) {
-                setAttribute(ViewAttributesEnum.ADAPTER_TYPE, adapterItem.javaClass.simpleName)
+                setAttribute(AttributesEnum.ADAPTER_TYPE, adapterItem.javaClass.simpleName)
                 isAdapterTypeSet = true
             }
         }
         if (adapterData.isNotEmpty()) {
-            setAttribute(ViewAttributesEnum.ADAPTERS, TextUtils.join(",", adapterData))
+            setAttribute(AttributesEnum.ADAPTERS, TextUtils.join(",", adapterData))
         }
     }
 
-    private fun isAttributeIncluded(attr: ViewAttributesEnum): Boolean
-        = null == includedAttributes || includedAttributes.contains(attr)
+    private fun isAttributeIncluded(attr: AttributesEnum): Boolean =
+        null == includedAttributes || includedAttributes.contains(attr)
 
     /**
      * Recursively visit all of the views and map them to XML elements
@@ -138,39 +144,39 @@ class SourceDocument constructor(
         var isTextOrHintRecorded = false
         var isAdapterInfoRecorded = false
         linkedMapOf(
-                ViewAttributesEnum.INDEX to { viewElement.index },
-                ViewAttributesEnum.PACKAGE to { viewElement.packageName },
-                ViewAttributesEnum.CLASS to { className },
-                ViewAttributesEnum.CONTENT_DESC to { viewElement.contentDescription },
-                ViewAttributesEnum.CHECKABLE to { viewElement.isCheckable },
-                ViewAttributesEnum.CHECKED to { viewElement.isChecked },
-                ViewAttributesEnum.CLICKABLE to { viewElement.isClickable },
-                ViewAttributesEnum.ENABLED to { viewElement.isEnabled },
-                ViewAttributesEnum.FOCUSABLE to { viewElement.isFocusable },
-                ViewAttributesEnum.FOCUSED to { viewElement.isFocused },
-                ViewAttributesEnum.SCROLLABLE to { viewElement.isScrollable },
-                ViewAttributesEnum.LONG_CLICKABLE to { viewElement.isLongClickable },
-                ViewAttributesEnum.PASSWORD to { viewElement.isPassword },
-                ViewAttributesEnum.SELECTED to { viewElement.isSelected },
-                ViewAttributesEnum.VISIBLE to { viewElement.isVisible },
-                ViewAttributesEnum.BOUNDS to { viewElement.bounds.toShortString() },
-                ViewAttributesEnum.TEXT to null,
-                ViewAttributesEnum.HINT to null,
-                ViewAttributesEnum.RESOURCE_ID to { viewElement.resourceId },
-                ViewAttributesEnum.VIEW_TAG to { viewElement.viewTag },
-                ViewAttributesEnum.ADAPTERS to null,
-                ViewAttributesEnum.ADAPTER_TYPE to null
+            AttributesEnum.INDEX to { viewElement.index },
+            AttributesEnum.PACKAGE to { viewElement.packageName },
+            AttributesEnum.CLASS to { className },
+            AttributesEnum.CONTENT_DESC to { viewElement.contentDescription },
+            AttributesEnum.CHECKABLE to { viewElement.isCheckable },
+            AttributesEnum.CHECKED to { viewElement.isChecked },
+            AttributesEnum.CLICKABLE to { viewElement.isClickable },
+            AttributesEnum.ENABLED to { viewElement.isEnabled },
+            AttributesEnum.FOCUSABLE to { viewElement.isFocusable },
+            AttributesEnum.FOCUSED to { viewElement.isFocused },
+            AttributesEnum.SCROLLABLE to { viewElement.isScrollable },
+            AttributesEnum.LONG_CLICKABLE to { viewElement.isLongClickable },
+            AttributesEnum.PASSWORD to { viewElement.isPassword },
+            AttributesEnum.SELECTED to { viewElement.isSelected },
+            AttributesEnum.VISIBLE to { viewElement.isVisible },
+            AttributesEnum.BOUNDS to { viewElement.bounds.toShortString() },
+            AttributesEnum.TEXT to null,
+            AttributesEnum.HINT to null,
+            AttributesEnum.RESOURCE_ID to { viewElement.resourceId },
+            AttributesEnum.VIEW_TAG to { viewElement.viewTag },
+            AttributesEnum.ADAPTERS to null,
+            AttributesEnum.ADAPTER_TYPE to null
         ).forEach {
             when (it.key) {
-                ViewAttributesEnum.TEXT, ViewAttributesEnum.HINT ->
+                AttributesEnum.TEXT, AttributesEnum.HINT ->
                     if (!isTextOrHintRecorded && isAttributeIncluded(it.key)) {
                         viewElement.text?.let { text ->
-                            setAttribute(ViewAttributesEnum.TEXT, text.rawText)
-                            setAttribute(ViewAttributesEnum.HINT, text.isHint)
+                            setAttribute(AttributesEnum.TEXT, text.rawText)
+                            setAttribute(AttributesEnum.HINT, text.isHint)
                             isTextOrHintRecorded = true
                         }
                     }
-                ViewAttributesEnum.ADAPTERS, ViewAttributesEnum.ADAPTER_TYPE ->
+                AttributesEnum.ADAPTERS, AttributesEnum.ADAPTER_TYPE ->
                     if (!isAdapterInfoRecorded && view is AdapterView<*> && isAttributeIncluded(it.key)) {
                         recordAdapterViewInfo(view)
                         isAdapterInfoRecorded = true
@@ -192,8 +198,53 @@ class SourceDocument constructor(
                 }
             }
         } else {
-            AndroidLogger.warn("Skipping traversal of ${view.javaClass.name}'s children, since " +
-                    "the current depth has reached its maximum allowed value of $depth")
+            AndroidLogger.warn(
+                "Skipping traversal of ${view.javaClass.name}'s children, since " +
+                        "the current depth has reached its maximum allowed value of $depth"
+            )
+        }
+
+        serializer?.endTag(NAMESPACE, tagName)
+    }
+
+    private fun serializeComposeNode(semanticsNode: SemanticsNode?, depth: Int) {
+        if (semanticsNode == null) {
+            return
+        }
+        val nodeElement = ComposeNodeElement(semanticsNode)
+        val className = nodeElement.className
+        val tagName = toXmlNodeName(className)
+        serializer?.startTag(NAMESPACE, tagName)
+
+        linkedMapOf(
+            AttributesEnum.CLASS to { className },
+            AttributesEnum.INDEX to { nodeElement.index },
+            AttributesEnum.CLICKABLE to { nodeElement.isClickable },
+            AttributesEnum.ENABLED to { nodeElement.isEnabled },
+            AttributesEnum.FOCUSED to { nodeElement.isFocused },
+            AttributesEnum.SCROLLABLE to { nodeElement.isScrollable },
+            AttributesEnum.SELECTED to { nodeElement.isSelected },
+            AttributesEnum.CHECKED to { nodeElement.isChecked },
+            AttributesEnum.VIEW_TAG to { nodeElement.viewTag },
+            AttributesEnum.CONTENT_DESC to { nodeElement.contentDescription },
+            AttributesEnum.BOUNDS to { nodeElement.bounds.toShortString() },
+            AttributesEnum.TEXT to { nodeElement.text },
+            AttributesEnum.PASSWORD to { nodeElement.isPassword },
+            AttributesEnum.RESOURCE_ID to { nodeElement.resourceId },
+        ).forEach {
+            setAttribute(it.key, it.value())
+        }
+
+        if (depth < MAX_TRAVERSAL_DEPTH) {
+            // Visit the children and build them too
+            for (index in 0 until semanticsNode.children.count()) {
+                serializeComposeNode(semanticsNode.children[index], depth + 1)
+            }
+        } else {
+            AndroidLogger.warn(
+                "Skipping traversal of ${semanticsNode.javaClass.name}'s children, since " +
+                        "the current depth has reached its maximum allowed value of $depth"
+            )
         }
 
         serializer?.endTag(NAMESPACE, tagName)
@@ -201,17 +252,22 @@ class SourceDocument constructor(
 
     private fun toStream(): InputStream {
         var lastError: Throwable? = null
-        val rootView = root ?: ViewGetter().rootView
         // Try to serialize the xml into the memory first, since it is fast
         // Switch to a file system serializer if the first approach causes OutOfMemory
-        for (streamType in arrayOf<Class<*>>(ByteArrayOutputStream::class.java, FileOutputStream::class.java)) {
+        for (streamType in arrayOf<Class<*>>(
+            ByteArrayOutputStream::class.java,
+            FileOutputStream::class.java
+        )) {
             serializer = Xml.newSerializer()
             viewMap.clear()
 
             try {
                 val outputStream = if (streamType == FileOutputStream::class.java) {
                     tmpXmlName = "${UUID.randomUUID()}.xml"
-                    getApplicationContext<Context>().openFileOutput(tmpXmlName, Context.MODE_PRIVATE)
+                    getApplicationContext<Context>().openFileOutput(
+                        tmpXmlName,
+                        Context.MODE_PRIVATE
+                    )
                 } else ByteArrayOutputStream()
                 try {
                     serializer?.let {
@@ -219,11 +275,33 @@ class SourceDocument constructor(
                         it.startDocument(XML_ENCODING, true)
                         it.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
                         val startTime = SystemClock.uptimeMillis()
-                        serializeView(rootView, 0)
+                        when (context.currentStrategyType) {
+                            DriverContext.StrategyType.COMPOSE -> {
+                                if (root != null) {
+                                    serializeComposeNode(root as SemanticsNode, 0)
+                                } else {
+                                    val rootNodes = rootSemanticNodes()
+                                    if (rootNodes.size == 1) {
+                                        serializeComposeNode(rootNodes.first(), 0)
+                                    } else {
+                                        serializer?.startTag(NAMESPACE, DEFAULT_TAG_NAME)
+                                        rootNodes.forEach { semanticsNode -> serializeComposeNode(semanticsNode, 0) }
+                                        serializer?.endTag(NAMESPACE, DEFAULT_TAG_NAME)
+                                    }
+                                }
+                            }
+                            DriverContext.StrategyType.ESPRESSO -> {
+                                val rootView = root ?: ViewGetter().rootView
+                                serializeView(rootView as View, 0)
+                            }
+                        }
+
                         it.endDocument()
-                        AndroidLogger.info("The source XML tree has been fetched in " +
-                                "${SystemClock.uptimeMillis() - startTime}ms " +
-                                "using ${streamType.simpleName}")
+                        AndroidLogger.info(
+                            "The source XML tree has been fetched in " +
+                                    "${SystemClock.uptimeMillis() - startTime}ms " +
+                                    "using ${streamType.simpleName}"
+                        )
                     }
                 } catch (e: OutOfMemoryError) {
                     lastError = e
@@ -244,6 +322,21 @@ class SourceDocument constructor(
             throw lastError
         }
         throw AppiumException(lastError!!)
+    }
+
+    private fun rootSemanticNodes(): List<SemanticsNode> {
+        return try {
+            listOf(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true).fetchSemanticsNode())
+        } catch (e: AssertionError) {
+//            Ideally there should be on `root` node but on some cases e.g:overlays screen, there can be more than 1 root.
+//            Compose API not respecting such cases instead throws AssertionError, as a work around fetching all root nodes by relaying on internal API.
+//            e.g: "Reason: Expected exactly '1' node but found '2' nodes that satisfy: (isRoot)"
+            val result: SelectionResult = SemanticsNodeInteraction::class.declaredMemberFunctions.find { it.name == "fetchSemanticsNodes" }?.let {
+                it.isAccessible = true
+                it.call(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true), true, null)
+            } as SelectionResult
+            result.selectedNodes
+        }
     }
 
     private fun performCleanup() {
@@ -268,7 +361,10 @@ class SourceDocument constructor(
         }, { performCleanup() })
     }
 
-    fun findViewsByXPath(xpathSelector: String): List<View> {
+    fun findViewsByXPath(xpathSelector: String): List<View> =
+        matchingNodeIds(xpathSelector, VIEW_INDEX).map { viewMap.get(it) }
+
+    fun matchingNodeIds(xpathSelector: String, attributeName: String): List<Int> {
         val expr = try {
             XPATH.compile(xpathSelector)
         } catch (xe: XPathExpressionException) {
@@ -278,7 +374,7 @@ class SourceDocument constructor(
             toStream().use { xmlStream ->
                 val list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
                 (0 until list.length).map { index ->
-                    viewMap.get(Integer.parseInt((list.item(index) as Element).getAttribute(VIEW_INDEX)))
+                    list.item(index).attributes.getNamedItem(attributeName).nodeValue.toInt()
                 }
             }
         }, { performCleanup() })

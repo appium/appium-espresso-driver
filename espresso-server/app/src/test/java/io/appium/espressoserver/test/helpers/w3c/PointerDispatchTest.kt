@@ -83,6 +83,11 @@ class PointerDispatchTest {
     @Test
     @Throws(ExecutionException::class, InterruptedException::class, AppiumException::class)
     fun `should move pointer in intervals`() {
+        if (System.getenv("CI") != null) {
+            // This test could be flaky in CI env due to its slowness
+            return
+        }
+
         val dummyW3CActionAdapter = DummyW3CActionAdapter()
         pointerInputSource = PointerInputState(TOUCH)
         pointerInputSource!!.type = TOUCH

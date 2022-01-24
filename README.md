@@ -61,7 +61,7 @@ appium:showGradleLog | Whether to include Gradle log to the regular server logs 
 
 Capability Name | Description
 --- | ---
-appium:app | Full path to the application to be tested (the app must be located on the same machine where the server is running). Both `.apk` and `.apks` application extensions are supported. Could also be an URL to a remote location. If neither of the `app` or `appPackage` capabilities are provided then the driver will fail to start a session. Also, if `app` capability is not provided it is expected that the app under test is already installed on the device under test and `noReset` is equal to `true`.
+appium:app | Full path to the application to be tested (the app must be located on the same machine where the server is running). Only `.apk` application extension is supported. `.aab` files need to be [converted](https://stackoverflow.com/questions/53040047/generate-apk-file-from-aab-file-android-app-bundle) to `.apk` format using [bundletool](https://developer.android.com/studio/command-line/bundletool) first in order to be used with this driver. Could also be an URL to a remote location. If neither of the `app` or `appPackage` capabilities are provided then the driver will fail to start a session. Also, if `app` capability is not provided it is expected that the app under test is already installed on the device under test and `noReset` is equal to `true`.
 appium:appPackage | Application package identifier to be started. If not provided then Espresso will try to detect it automatically from the package provided by the `app` capability. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
 appium:appActivity | Main application activity identifier. If not provided then Espresso will try to detect it automatically from the package provided by the `app` capability. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
 appium:appWaitActivity | Identifier of the first activity that the application invokes. If not provided then equals to `appium:appActivity`. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
@@ -98,7 +98,7 @@ appium:buildToolsVersion | The version of Android build tools to use. By default
 appium:skipLogcatCapture | Being set to `true` disables automatic logcat output collection during the test run. `false` by default
 appium:suppressKillServer | Being set to `true` prevents the driver from ever killing the ADB server explicitly. Could be useful if ADB is connected wirelessly. `false` by default
 appium:ignoreHiddenApiPolicyError | Being set to `true` ignores a failure while changing hidden API access policies. Could be useful on some devices, where access to these policies has been locked by its vendor. `false` by default.
-appium:mockLocationApp | If set to `true` then location mocking app gets assigned to Appium Settings (the default behavior), so Appium could mock GPS location. The `false` value prevents that from happening.
+appium:mockLocationApp | Sets the package identifier of the app, which is used as a system mock location provider since Appium 1.18.0+. This capability has no effect on emulators. If the value is set to `null` or an empty string, then Appium will skip the mocked location provider setup procedure. Defaults to Appium Setting package identifier (`io.appium.settings`).
 appium:logcatFormat | The log print format, where `format` is one of: `brief` `process` `tag` `thread` `raw` `time` `threadtime` `long`. `threadtime` is the default value.
 appium:logcatFilterSpecs | Series of `tag[:priority]` where `tag` is a log component tag (or * for all) and priority is: `V    Verbose`, `D    Debug`, `I    Info`, `W    Warn`, `E    Error`, `F    Fatal`, `S    Silent (supress all output)`. '*' means '*:d' and `tag` by itself means `tag:v`. If not specified on the commandline, filterspec is set from ANDROID_LOG_TAGS. If no filterspec is found, filter defaults to '*:I'.
 appium:allowDelayAdb | Being set to `false` prevents emulator to use `-delay-adb` feature to detect its startup. See https://github.com/appium/appium/issues/14773 for more details.
@@ -120,7 +120,7 @@ appium:isHeadless | If set to `true` then emulator starts in headless mode (e.g.
 
 Capability Name | Description
 --- | ---
-appium:useKeystore | Whether to use a custom keystore to sign the app under test. `false` by default, which means apps are always signed with the default Appium debug certificate (unless canceled by `noSign` capability). This capability is used in combination with `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities.
+appium:useKeystore | Whether to use a custom [keystore](https://developer.android.com/studio/publish/app-signing#certificates-keystores) to sign the app under test. `false` by default, which means apps are always signed with the default Appium debug certificate (unless canceled by `noSign` capability). This capability is used in combination with `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities.
 appium:keystorePath | The full path to the keystore file on the server filesystem. This capability is used in combination with `useKeystore`, `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities. Unset by default
 appium:keystorePassword | The password to the keystore file provided in `keystorePath` capability. This capability is used in combination with `useKeystore`, `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities. Unset by default
 appium:keyAlias | The alias of the key in the keystore file provided in `keystorePath` capability. This capability is used in combination with `useKeystore`, `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities. Unset by default
@@ -134,6 +134,7 @@ Capability Name | Description
 appium:skipUnlock | Whether to skip the check for lock screen presence (`true`). By default Espresso driver tries to detect if the device's screen is locked before starting the test and to unlock that (which sometimes might be unstable). Note, that this operation takes some time, so it is highly recommended to set this capability to `false` and disable screen locking on devices under test.
 appium:unlockType | Set one of the possible types of Android lock screens to unlock. Read the [Unlock tutorial](https://github.com/appium/appium-android-driver/blob/master/docs/UNLOCK.md) for more details.
 appium:unlockKey | Allows to set an unlock key. Read the [Unlock tutorial](https://github.com/appium/appium-android-driver/blob/master/docs/UNLOCK.md) for more details.
+appium:unlockStrategy | Either 'locksettings' (default) or 'uiautomator'. Setting it to 'uiautomator' will enforce the driver to avoid using special ADB shortcuts in order to speed up the unlock procedure.
 appium:unlockSuccessTimeout | Maximum number of milliseconds to wait until the device is unlocked. `2000` ms by default
 
 ### Web Context
@@ -142,8 +143,8 @@ Capability Name | Description
 --- | ---
 appium:autoWebview | If set to `true` then Espresso driver will try to switch to the first available web view after the session is started. `false` by default.
 appium:webviewDevtoolsPort | The local port number to use for devtools communication. By default the first free port from 10900..11000 range is selected. Consider setting the custom value if you are running parallel tests.
-appium:ensureWebviewsHavePages | Whether to skip web views that have no pages from being shown in `getContexts` output. The driver uses devtools connection to retrieve the information about existing pages. `true` by default.
-appium:enableWebviewDetailsCollection | Whether to retrieve extended web views information using devtools protocol. Enabling this capability helps to detect the necessary chromedriver version more precisely. `false` by default.
+appium:ensureWebviewsHavePages | Whether to skip web views that have no pages from being shown in `getContexts` output. The driver uses devtools connection to retrieve the information about existing pages. `true` by default since Appium 1.19.0, `false` if lower than 1.19.0.
+appium:enableWebviewDetailsCollection | Whether to retrieve extended web views information using devtools protocol. Enabling this capability helps to detect the necessary chromedriver version more precisely. `true` by default since Appium 1.22.0, `false` if lower than 1.22.0.
 appium:chromedriverPort | The port number to use for Chromedriver communication. Any free port number is selected by default if unset.
 appium:chromedriverPorts | Array of possible port numbers to assign for Chromedriver communication. If none of the port in this array is free then an error is thrown.
 appium:chromedriverArgs | Array of chromedriver [command line arguments](http://www.assertselenium.com/java/list-of-chrome-driver-command-line-arguments/). Note, that not all command line arguments that are available for the desktop browser are also available for the mobile one.
@@ -167,6 +168,42 @@ Capability Name | Description
 appium:disableSuppressAccessibilityService | Being set to `true` tells the instrumentation process to not suppress accessibility services during the automated test. This might be useful if your automated test needs these services. `false` by default
 
 
+## Settings API
+
+Espresso driver supports Appium [Settings API](https://appium.io/docs/en/advanced-concepts/settings/).
+Along with the common settings the following driver-specific settings are currently available:
+
+Name | Type | Description
+--- | --- | ---
+driver | 'compose' or 'espresso' | The name of the subdriver to use for elements interactions. The default value is `espresso`. Switching the value to `compose` enables interactions with [Jetpack Compose](https://developer.android.com/jetpack/compose)-based application user interfaces. Read [Jetpack Compose Support](#jetpack-compose-support) for more details.
+
+
+## Jetpack Compose Support
+
+[Jetpack Compose](https://developer.android.com/jetpack/compose) is Android’s modern toolkit for building native UI. Espresso driver supports basic interactions with Compose-based applications since version *1.46.0*.
+
+### Interaction With Compose Elements
+
+Espresso driver has the concept of subdrivers. This works quite similarly to the concept of contexts, while contexts are used to switch between native and web, and subdrivers are still
+under the native one. Each subdriver operates its own elements cache, so it is not be possible
+to mix Espresso and Compose elements.
+
+In order to change between subdrivers use the [driver](#settings-api) setting. Setting its value to `compose` modifies driver behavior in the way it interacts with Compose elements rather that with classic Android views. It is possible to switch between `espresso` and `compose` modes at any point of time. When `compose` mode is active the the following webdriver commands behave differently (as of driver version *1.50.0*):
+- findElement(s): Element finding commands only support Compose-based locators. Read [Compose Elements Location](#compose-elements-location) for more details.
+- getPageSource: The returned page source is retrieved from Compose and all elements there contain [Compose-specific](#compose-element-attributes) attributes.
+- click, isDisplayed, isEnabled, clear, getText, sendKeys, getElementRect, getValue: These commands should properly support compose elements.
+- getAttribute: Accepts and returns Compose-specific element attributes. See [Compose Element Attributes](#compose-element-attributes) for the full list of supported Compose element attributes.
+
+Calling other driver element-specific APIs not listed above would most likely throw an exception as Compose and Espresso elements are being stored in completely separated internal caches and must not be mixed.
+
+You could also check end-to-end tests for more examples on how to setup test capabilities and
+on the Compose usage in general:
+- https://github.com/appium/appium-espresso-driver/blob/master/test/functional/commands/jetpack-componse-element-values-e2e-specs.js
+- https://github.com/appium/appium-espresso-driver/blob/master/test/functional/commands/jetpack-compose-attributes-e2e-specs.js
+- https://github.com/appium/appium-espresso-driver/blob/master/test/functional/commands/jetpack-compose-e2e-specs.js
+- https://github.com/appium/appium-espresso-driver/blob/master/test/functional/commands/jetpack-compose-e2e-specs.js
+
+
 ## Espresso Build Config
 
 Espresso server is in tight connection with the application under test. That is why it is important that the server uses the same versions of common dependencies and there are no conflicts. Espresso driver allows to configure several build options via `espressoBuildConfig` capability. The configuration JSON supports the following entries:
@@ -178,20 +215,23 @@ This entry allows to explicitly set the versions of different server components.
 Name | Description | Example
 --- | --- | ---
 gradle | The Gradle version to use for Espresso server building. | '6.3'
-androidGradlePlugin | The Gradle plugin version to use for Espresso server building. By default the version from the [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle) is used | '4.1.1'
-compileSdk | Android SDK version to compile the server for. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | 28
-buildTools | Target Android build tools version to compile the server with. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | '28.0.3'
-minSdk | Minimum Android SDK version to compile the server for. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | 18
-targetSdk | Target Android SDK version to compile the server for. By default the version from the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) is used | 28
-kotlin | Kotlin version to compile the server for. By default the version from the [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle) is used | '1.3.72'
+androidGradlePlugin | The Gradle plugin version to use for Espresso server building. By default the version from the [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle.kts) is used | '4.1.1'
+compileSdk | Android SDK version to compile the server for. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | 28
+buildTools | Target Android build tools version to compile the server with. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | '28.0.3'
+minSdk | Minimum Android SDK version to compile the server for. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | 18
+targetSdk | Target Android SDK version to compile the server for. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | 28
+kotlin | Kotlin version to compile the server for. By default the version from the [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle.kts) is used | '1.3.72'
+sourceCompatibility | The minimum version of JVM the project sources are compatible with. The default value is `VERSION_1_8` | VERSION_12
+sourceCompatibility | The target version of JVM the project sources are compatible with. The default value is `VERSION_1_8` | VERSION_12
+jvmTarget | Target version of the generated JVM bytecode as a string. The default value is `1.8` | `1_10`
 
 ### additionalAppDependencies
 
-The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `implementation` lines of `dependencies` category in the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
+The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `implementation` lines of `dependencies` category in the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
 
 ### additionalAndroidTestDependencies
 
-The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `androidTestImplementation` lines of `dependencies` category in the app [build.gradle](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
+The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `androidTestImplementation` lines of `dependencies` category in the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
 
 ### Full JSON Example
 
@@ -251,9 +291,9 @@ Name | Type | Description | Example
 launchDisplayId | string or int | Display id which you want to assign to launch the main app activity on. This might be useful if the device under test supports multiple displays | 1
 
 
-## Element Attributes
+## Espresso Element Attributes
 
-Espresso driver supports the following element attributes:
+Espresso driver supports the following element attributes in `espresso` subdriver:
 
 Name | Description | Example
 --- | --- | ---
@@ -281,9 +321,31 @@ visible | Whether the element is visible to the user | 'true'
 view-tag | The tag value assigned to the element. Could be `null` | 'my tag'
 
 
-## Element Location
+## Compose Element Attributes
 
-Espresso driver supports the following location strategies:
+Espresso driver supports the following element attributes in `compose` subdriver:
+
+Name | Description | Example
+--- | --- | ---
+bounds | The element's visible frame (`[left, top][right, bottom]`) | `[0,0][100,100]`
+checked | Whether the element is checked. Always `false` if the element is not checkable | 'false'
+class | The full name of the element's class. Could be `ComposeNode` for some elements | 'ComposeNode'
+clickable | Whether the element could be clicked | 'false'
+content-desc | The content-description attribute of the accessible element | 'foo'
+enabled | Whether the element could be clicked | 'true'
+focused | Whether the element could is focused. Always `false` if the element is not focusable | 'false'
+index | Element's index in the tree hierarchy | `0`
+password | Whether the element is a password input field | 'true'
+resource-id | Element's resource identifier. Could be `null` | 'com.mycompany:id/resId'
+scrollable | Whether the element is scrollable | 'true'
+selected | Whether the element is selected | 'false'
+text | The element's text | 'my text'
+view-tag | The [testTag](https://developer.android.com/reference/kotlin/androidx/compose/ui/platform/package-summary#(androidx.compose.ui.Modifier).testTag(kotlin.String)) element's value. Could be `null` | 'my tag'
+
+
+## Espresso Elements Location
+
+Espresso driver supports the following location strategies in `espresso` subdriver:
 
 Name | Description | Example
 --- | --- | ---
@@ -295,6 +357,18 @@ text | This strategy is mapped to the native Espresso `withText` [matcher](https
 -android datamatcher | This strategy allows to create Espresso [data interaction](https://developer.android.com/reference/android/support/test/espresso/DataInteraction) selectors which can quickly and reliably scroll to the necessary elements. Read [Espresso DataMatcher Selector](https://appium.io/docs/en/writing-running-appium/android/espresso-datamatcher-selector/) to know more on how to construct these locators. Also check the [Unlocking New Testing Capabilities with Espresso Driver by Daniel Graham](https://www.youtube.com/watch?v=gU9EEUV5n9U) presentation video from Appium Conf 2019. | `{"name": "hasEntry", "args": ["title", "WebView3"]}`
 -android viewmatcher | This strategy allows to construct Espresso [view matcher](https://developer.android.com/reference/androidx/test/espresso/matcher/ViewMatchers) based on the given JSON representation of it. The representation is expected to contain the following fields: `name`: the mandatory matcher function name; `args`: optional matcher function arguments, each argument could also be a function; `class`: the full qualified class name of the corresponding matcher. | `{"name": "withText", "args": [{"name": "containsString", "args": "getExternalStoragePublicDirectory", "class": "org.hamcrest.Matchers"}], "class": "androidx.test.espresso.matcher.ViewMatchers"}`
 xpath | For elements lookup Xpath strategy the driver uses the same XML tree that is generated by page source API. Only Xpath 1.0 is supported. | `By.xpath("//android.view.View[@text=\"Regular\" and @checkable=\"true\"]")`
+
+
+## Compose Elements Location
+
+Espresso driver supports the following location strategies in `compose` subdriver:
+
+Name | Description | Example
+--- | --- | ---
+accessibility id | This strategy is mapped to the native Espresso `hasContentDescription` [matcher](https://developer.android.com/reference/kotlin/androidx/compose/ui/test/package-summary#hasContentDescription(kotlin.String,kotlin.Boolean,kotlin.Boolean)) (exact match of element's content description). | 'my description'
+`-android viewtag` or `tag name` | This strategy is mapped to the native Compose `hasTestTag` [matcher](https://developer.android.com/reference/kotlin/androidx/compose/ui/test/package-summary#hasTestTag(kotlin.String)) (exact match of element's tag value). | 'my tag'
+`text` or `link text` | This strategy is mapped to the native Compose `hasText` [matcher](https://developer.android.com/reference/kotlin/androidx/compose/ui/test/package-summary#hasText(kotlin.String,kotlin.Boolean,kotlin.Boolean)) (exact match of element's text). | 'my text'
+xpath | For elements lookup Xpath strategy the driver uses the same XML tree that is generated by page source API. Only Xpath 1.0 is supported. | `By.xpath("//ComposeNode[@text=\"Regular\" and @selected=\"true\"]")`
 
 
 ## Platform-Specific Extensions
@@ -612,14 +686,33 @@ The example output is:
 
 ### mobile: sensorSet
 
-Emulate sensors values on the connected emulator.
+Emulate changing of sensor values on the connected emulator.
+This extension does not work on real devices.
 
 #### Arguments
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-sensorType | string | yes | Supported sensor types are: `acceleration`, `light`, `proximity`, `temperature`, `pressure` and `humidity` | light
-value | string | yes | value to set to the sensor | 50
+sensorType | string | yes | The set of all supported sensor types could be found in [adb-emu-commands.js](https://github.com/appium/appium-adb/blob/master/lib/tools/adb-emu-commands.js) (look for *SENSORS* object values). Check the output of `sensor status` command in the [emulator console](https://developer.android.com/studio/run/emulator-console) to see more details on the available sensor types | light
+value | string | yes | Check the output of `sensor get <sensorType>` command in the [emulator console](https://developer.android.com/studio/run/emulator-console) to see the acceptable value format for the given sensor type | 50
+
+### mobile: refreshGpsCache
+
+Sends a request to refresh the GPS cache on the device under test.
+By default the location tracking is configured for
+[low battery consumption](https://github.com/appium/io.appium.settings/blob/master/app/src/main/java/io/appium/settings/LocationTracker.java),
+so you might need to call this extension periodically to get the updated geo
+location if the actual (or mocked) device location is changed too frequently.
+The feature only works if the device under test has Google Play Services installed.
+In case the vanilla
+[LocationManager](https://developer.android.com/reference/android/location/LocationManager)
+is used the device API level must be at version 30 (Android R) or higher.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+timeoutMs | number | no | The maximum number of milliseconds to block until GPS cache is refreshed. If the API call does not receive a confirmation about successful cache refresh within this timeout then an error is thrown. Providing zero or a negative value to it skips waiting completely and does not check for any errors. 20000 ms by default. | 60000
 
 ### mobile: deleteFile
 
@@ -792,6 +885,19 @@ Lists all the previously registered [idling resources](https://developer.android
 
 List of fully qualified class names of currently registered idling resources or an empty list if no resources have been registered yet.
 
+### mobile: unlock
+
+Unlocks the device if it is locked. Noop if the device's screen is not locked.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+key | string | yes | The unlock key. See the documentation on [appium:unlockKey](#device-locking) capability for more details | 12345
+type | string | yes | The unlock type. See the documentation on [appium:unlockType](#device-locking) capability for more details | password
+strategy | string | no | Unlock strategy. See the documentation on [appium:unlockStrategy](#device-locking) capability for more details | uiautomator
+timeoutMs | number | no | Unlock timeout. See the documentation on [appium:unlockSuccessTimeout](#device-locking) capability for more details | 5000
+
 
 ## Backdoor Extension Usage
 
@@ -854,6 +960,7 @@ the `anotherMethod` will be called on the object returned by `someMethod`, which
 
 * To build the Espresso server _and_ the NodeJS code, run `npm run build`
 * To just build the Espresso server, run `npm run build:server` or `cd espresso-server && ./gradlew clean assembleDebug assembleAndroidTest`. The server can also be built from Android Studio.
+    * To build the espresso server for a custom target package `./gradlew -PappiumTargetPackage=io.appium.android.apis assembleAndroidTest`
 * To just build NodeJS code, run `gulp transpile`
 
 ### Tests

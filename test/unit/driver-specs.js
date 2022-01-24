@@ -23,6 +23,7 @@ describe('driver', function () {
       };
       driver.opts = { autoLaunch: false, skipUnlock: true };
       sandbox.stub(driver, 'initEspressoServer');
+      sandbox.stub(driver, 'initAUT');
       sandbox.stub(driver, 'addDeviceInfoToCaps');
       sandbox.stub(androidHelpers, 'getDeviceInfoFromCaps').callsFake(function () {
         return {udid: 1, emPort: 8888};

@@ -16,8 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.DeviceInfoHelper
 import io.appium.espressoserver.lib.model.AppiumParams
@@ -26,7 +24,7 @@ import java.util.*
 class GetDeviceInfo : RequestHandler<AppiumParams, Map<String, Any?>> {
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): Map<String, Any?> {
-        val deviceInfoHelper = DeviceInfoHelper(getApplicationContext<Context>())
+        val deviceInfoHelper = DeviceInfoHelper()
         val result = HashMap<String, Any?>()
         result["androidId"] = deviceInfoHelper.androidId
         result["manufacturer"] = deviceInfoHelper.manufacturer

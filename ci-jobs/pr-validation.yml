@@ -1,6 +1,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
 jobs:
   - job: gradle_junit_tests
+    pool:
+        vmImage: ubuntu-latest
+    variables:
+      CI: true
     steps:
       - task: Gradle@2
         inputs:
