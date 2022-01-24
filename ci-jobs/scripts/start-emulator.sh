@@ -3,7 +3,7 @@
 # This script was copy-pasted from https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/android?view=azure-devops#test-on-the-android-emulator
 # with some changes
 
-if [ $ANDROID_SDK_VERSION -gt 30 ]; then
+if [ $ANDROID_SDK_VERSION -gt 29 ]; then
   # API Level 30 does not have 'default' for now
   declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;google_apis;x86"
 else
