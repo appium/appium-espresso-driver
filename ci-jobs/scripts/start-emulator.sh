@@ -5,7 +5,7 @@
 
 if [ $ANDROID_SDK_VERSION -gt 29 ]; then
   # API Level 30 does not have 'default' for now
-  declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;google_apis;x86"
+  declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;google_apis;x86_64"
 else
   declare -r emulator="system-images;android-$ANDROID_SDK_VERSION;default;x86"
 fi
