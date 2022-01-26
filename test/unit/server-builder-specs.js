@@ -1,6 +1,6 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { system } from 'appium-support';
+import { system } from '@appium/support';
 import {
   GRADLE_URL_TEMPLATE, ServerBuilder, VERSION_KEYS
 } from '../../lib/server-builder';

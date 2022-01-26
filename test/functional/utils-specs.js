@@ -1,4 +1,4 @@
-import { fs, mkdirp, tempDir } from 'appium-support';
+import { fs, mkdirp, tempDir } from '@appium/support';
 import { copyGradleProjectRecursively } from '../../lib/utils';
 import path from 'path';
 import chai from 'chai';

@@ -1,7 +1,7 @@
 import path from 'path';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import wd from 'wd';
+import remote from 'webdriverio';
 import axios from 'axios';
 import { HOST, PORT } from './helpers/session';
 import { APIDEMO_CAPS, GPS_CAPS } from './desired';
@@ -16,7 +16,7 @@ describe('EspressoDriver', function () {
   let server;
   before(async function () {
     server = await startServer(PORT, HOST);
-    driver = wd.promiseChainRemote(HOST, PORT);
+    driver = await remote();
   });
   after(async function () {
     try {

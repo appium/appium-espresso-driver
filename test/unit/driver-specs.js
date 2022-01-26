@@ -130,12 +130,28 @@ describe('driver', function () {
       });
 
       it('should proxy screenshot if nativeWebScreenshot is off on chromedriver mode', async function () {
-        await driver.createSession({platformName: 'Android', deviceName: 'device', appPackage: driver.caps.appPackage, nativeWebScreenshot: false});
+        await driver.createSession(null, null, {
+          firstMatch: [{}],
+          alwaysMatch: {
+            platformName: 'Android',
+            'appium:deviceName': 'device',
+            'appium:appPackage': driver.caps.appPackage,
+            'appium:nativeWebScreenshot': false
+          }
+        });
         proxyAvoidList = driver.getProxyAvoidList().filter(nativeWebScreenshotFilter);
         proxyAvoidList.should.be.empty;
       });
       it('should not proxy screenshot if nativeWebScreenshot is on on chromedriver mode', async function () {
-        await driver.createSession({platformName: 'Android', deviceName: 'device', appPackage: driver.caps.appPackage, nativeWebScreenshot: true});
+        await driver.createSession(null, null, {
+          firstMatch: [{}],
+          alwaysMatch: {
+            platformName: 'Android',
+            'appium:deviceName': 'device',
+            'appium:appPackage': driver.caps.appPackage,
+            'appium:nativeWebScreenshot': true
+          }
+        });
         proxyAvoidList = driver.getProxyAvoidList().filter(nativeWebScreenshotFilter);
         proxyAvoidList.should.not.be.empty;
       });
