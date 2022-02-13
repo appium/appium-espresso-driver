@@ -7,6 +7,8 @@ jobs:
       TERM: dumb
       ANDROID_AVD: test
       ANDROID_SDK_VERSION: 28
+      JAVA_HOME: $(JAVA_HOME_11_X64)
+      PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
     steps:
     - task: NodeTool@0
       inputs:
