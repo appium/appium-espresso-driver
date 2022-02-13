@@ -11,10 +11,12 @@ jobs:
     - task: NodeTool@0
       inputs:
         versionSpec: 14.x
+    - task: JavaToolInstaller@0
+      inputs:
+        versionSpec: '11'
+        jdkArchitectureOption: 'x64'
+        jdkSourceOption: 'PreInstalled'
     - script: npm install
       displayName: Install Node dependencies
-      env:
-        JAVA_HOME: $(JAVA_HOME_11_X64)
-        PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
     - script: npm test
       displayName: NPM Test
