@@ -1,7 +1,11 @@
 # Appium Espresso Driver
 
 [![Build Status](https://dev.azure.com/AppiumCI/Appium%20CI/_apis/build/status/appium.appium-espresso-driver?branchName=master)](https://dev.azure.com/AppiumCI/Appium%20CI/_build/latest?definitionId=3&branchName=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a877b7395f2d475aa79c08daf665dc3c)](https://www.codacy.com/app/dpgraham/appium-espresso-driver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=appium/appium-espresso-driver&amp;utm_campaign=Badge_Grade)
+
+[![NPM version](http://img.shields.io/npm/v/appium-espresso-driver.svg)](https://npmjs.org/package/appium-espresso-driver)
+[![Downloads](http://img.shields.io/npm/dm/appium-espresso-driver.svg)](https://npmjs.org/package/appium-espresso-driver)
+
+[![Release](https://github.com/appium/appium-espresso-driver/actions/workflows/publish.js.yml/badge.svg)](https://github.com/appium/appium-espresso-driver/actions/workflows/publish.js.yml)
 
 Appium's Espresso Driver is a test automation server for Android that uses [Espresso](https://developer.android.com/training/testing/espresso/) as the underlying test technology. The Espresso Driver is a part of the Appium framework. The driver operates in scope of [W3C WebDriver protocol](https://www.w3.org/TR/webdriver/) with several custom extensions to cover operating-system specific scenarios.
 
