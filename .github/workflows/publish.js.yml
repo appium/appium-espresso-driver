@@ -4,9 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: [ master ]
-  # todo: remove before merging this to the master
-  pull_request:
-    branches: [ master ]
 
 jobs:
   build:
@@ -30,8 +27,9 @@ jobs:
     - run: npm shrinkwrap
     - run: npm test
       name: Run NPM Test
-    # - run: npx semantic-release
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-    #   name: Release
+    - run: npx semantic-release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      name: Release
+
