@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  # todo: remove before merging this to the master
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 14.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+    - name: set up JDK 8
+      uses: actions/setup-java@v2
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        cache: gradle
+    - run: npm install --production
+      name: Install prod dependencies
+    - run: npm run build
+      name: Run Build
+#     - run: rm -rf package-lock.json
+#     - run: npm shrinkwrap
+#     - run: npm install --no-package-lock
+#       name: Install dev dependencies
+#     - run: npm test
+#       name: Run NPM Test
+#     - run: npx semantic-release
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#       name: Release
