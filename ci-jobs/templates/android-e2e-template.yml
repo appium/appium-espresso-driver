@@ -16,13 +16,14 @@ jobs:
       TERM: dumb
       MOCHA_FILE: ${{ parameters.MOCHA_FILE }}
       ANDROID_SDK_VERSION: ${{ parameters.ANDROID_SDK_VERSION }}
-      JAVA_HOME: $(JAVA_HOME_11_X64)
-      PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
     steps:
     - task: NodeTool@0
       inputs:
         versionSpec: ${{ parameters.NODE_VERSION }}
     - script: npm install --chromedriver_version="${{ parameters.CHROMEDRIVER_VERSION }}"
+      env:
+        JAVA_HOME: $(JAVA_HOME_11_X64)
+        PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
       displayName: Install Node dependencies
     - script: npm test
       displayName: NPM Test
@@ -31,11 +32,17 @@ jobs:
     - script: bash ci-jobs/scripts/start-emulator.sh
       displayName: Create and run Emulator
     - script: |
-        cd "espresso-server"
+        pushd "$(pwd)/espresso-server"
         ./gradlew -PappiumTargetPackage=io.appium.android.apis app:assembleAndroidTest
-        cd ..
+        popd
+      env:
+        JAVA_HOME: $(JAVA_HOME_11_X64)
+        PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
       displayName: Prebuild the server
     - script: npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/ -g @skip-ci -i --exit
+      env:
+        JAVA_HOME: $(JAVA_HOME_11_X64)
+        PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
       displayName: Run tests
     - task: PublishTestResults@2
       condition: always()
