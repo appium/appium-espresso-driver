@@ -19,7 +19,7 @@ import kotlin.test.assertTrue
 class `KReflectionUtils Test` {
 
     @Test
-    fun `"invokeMethod" should find methods specific to parameters provided and call it`(){
+    fun `'invokeMethod' should find methods specific to parameters provided and call it`(){
         val obj = TestClass()
 
         var methodResult = ReflectionUtils.invokeInstanceMethod(obj, "plus", null, 1)
@@ -36,13 +36,13 @@ class `KReflectionUtils Test` {
     }
 
     @Test
-    fun `"invokeInstanceMethod" should extract method of an object`() {
+    fun `'invokeInstanceMethod' should extract method of an object`() {
         val methodResult = ReflectionUtils.extractMethod(TestClass::class.java, "plus", Int::class.java, Int::class.java)
         assertNotNull(methodResult)
     }
 
     @Test
-    fun `"invokeInstanceMethod" should invoke method on instance of an object`() {
+    fun `'invokeInstanceMethod' should invoke method on instance of an object`() {
         val obj = TestClass()
         val methodResult = ReflectionUtils.invokeInstanceMethod(obj, "plus", 2, 2)
         assertTrue(methodResult is Number)
@@ -56,7 +56,7 @@ class `KReflectionUtils Test` {
     }
 
     @Test
-    fun `should parse Driver Atoms "findElement"`() {
+    fun `should parse Driver Atoms 'findElement'`() {
         val findElementAtom = invokeStaticMethod(DriverAtoms::class.java,
                 "findElement", Locator.ID, "some Identifier")
         assertTrue(findElementAtom is Atom<*>)

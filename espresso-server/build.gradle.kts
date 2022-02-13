@@ -1,11 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+
     val appiumKotlin =
         properties.getOrDefault("appiumKotlin", "1.5.10")
 
     val appiumAndroidGradlePlugin =
-        properties.getOrDefault("appiumAndroidGradlePlugin", "4.1.1")
+        properties.getOrDefault("appiumAndroidGradlePlugin", "7.0.3")
 
     repositories {
         google()
