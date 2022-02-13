@@ -24,8 +24,8 @@ jobs:
         java-version: '8'
         distribution: 'temurin'
         cache: gradle
-    - run: npm install --production
-      name: Install prod dependencies
+    - run: npm install
+      name: Install dependencies
     - run: npm run build
       name: Run Build
 #     - run: rm -rf package-lock.json
