@@ -52,7 +52,7 @@
     "@appium/base-driver": "^8.0.0",
     "@appium/support": "^2.55.3",
     "@babel/runtime": "^7.4.3",
-    "appium-adb": "^8.18.0",
+    "appium-adb": "^9.1.0",
     "appium-android-driver": "^5.0.0",
     "asyncbox": "^2.3.1",
     "bluebird": "^3.5.0",
