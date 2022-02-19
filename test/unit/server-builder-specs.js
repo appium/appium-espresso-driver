@@ -19,7 +19,7 @@ describe('server-builder', function () {
     });
 
     it('should pass only specified versions as properties and pass them correctly', function () {
-      const expected = {cmd: expectedCmd, args: ['-PappiumAndroidGradlePlugin=1.2.3', 'app:assembleAndroidTest']};
+      const expected = {cmd: expectedCmd, args: ['-PappiumAndroidGradlePlugin="1.2.3"', 'app:assembleAndroidTest']};
       let serverBuilder = new ServerBuilder({
         buildConfiguration: {
           toolsVersions: {
