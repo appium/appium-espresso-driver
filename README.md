@@ -126,9 +126,9 @@ Capability Name | Description
 --- | ---
 appium:useKeystore | Whether to use a custom [keystore](https://developer.android.com/studio/publish/app-signing#certificates-keystores) to sign the app under test. `false` by default, which means apps are always signed with the default Appium debug certificate (unless canceled by `noSign` capability). This capability is used in combination with `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities.
 appium:keystorePath | The full path to the keystore file on the server filesystem. This capability is used in combination with `useKeystore`, `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities. Unset by default
-appium:keystorePassword | The password to the keystore file provided in `keystorePath` capability. This value should not include `"`. This capability is used in combination with `useKeystore`, `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities. Unset by default
-appium:keyAlias | The alias of the key in the keystore file provided in `keystorePath` capability. This value should not include `"`. This capability is used in combination with `useKeystore`, `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities. Unset by default
-appium:keyPassword | The password of the key in the keystore file provided in `keystorePath` capability. This value should not include `"`. This capability is used in combination with `useKeystore`, `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities. Unset by default
+appium:keystorePassword | The password to the keystore file provided in `keystorePath` capability. This capability is used in combination with `useKeystore`, `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities. Unset by default
+appium:keyAlias | The alias of the key in the keystore file provided in `keystorePath` capability. This capability is used in combination with `useKeystore`, `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities. Unset by default
+appium:keyPassword | The password of the key in the keystore file provided in `keystorePath` capability. This capability is used in combination with `useKeystore`, `keystorePath`, `keystorePassword`, `keyAlias` and `keyPassword` capabilities. Unset by default
 appium:noSign | Set it to `true` in order to skip application signing. By default all apps are always signed with the default Appium debug signature. This capability cancels all the signing checks and makes the driver to use the application package as is. This capability does not affect `.apks` packages as these are expected to be already signed. Make sure that the server package is signed with the same signature as the application under test before disabling this capability.
 
 ### Device Locking
@@ -228,8 +228,6 @@ kotlin | Kotlin version to compile the server for. By default the version from t
 sourceCompatibility | The minimum version of JVM the project sources are compatible with. The default value is `VERSION_1_8` | VERSION_12
 sourceCompatibility | The target version of JVM the project sources are compatible with. The default value is `VERSION_1_8` | VERSION_12
 jvmTarget | Target version of the generated JVM bytecode as a string. The default value is `1.8` | `1_10`
-
-These value should not include `"`.
 
 ### additionalAppDependencies
 
