@@ -84,6 +84,9 @@ android {
     }
 }
 
+val kotlinVersion = rootProject.extra["appiumKotlin"]
+val composeVersion = getStringProperty("appiumComposeVersion", Version.compose)
+
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     // additionalAppDependencies placeholder (don't change or delete this line)
@@ -105,11 +108,11 @@ dependencies {
     testImplementation("org.mockito:mockito-core:${Version.mockito}")
     testImplementation("org.nanohttpd:nanohttpd-webserver:${Version.nanohttpd}")
     testImplementation("org.robolectric:robolectric:${Version.robolectric}")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:${Version.kotlin}")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${Version.kotlin}")
-    testImplementation("org.jetbrains.kotlin:kotlin-reflect:${Version.kotlin}")
-    testImplementation("androidx.compose.ui:ui-test:${Version.compose}")
-    testImplementation("androidx.compose.ui:ui-test-junit4:${Version.compose}")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    testImplementation("androidx.compose.ui:ui-test:${composeVersion}")
+    testImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}")
 
     androidTestImplementation("androidx.annotation:annotation:${Version.annotation}")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:${Version.espresso}") {
@@ -124,10 +127,10 @@ dependencies {
     androidTestImplementation("androidx.test:rules:${Version.testlib}")
     androidTestImplementation("com.google.code.gson:gson:${Version.gson}")
     androidTestImplementation("org.nanohttpd:nanohttpd-webserver:${Version.nanohttpd}")
-    androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Version.kotlin}")
-    androidTestImplementation("org.jetbrains.kotlin:kotlin-reflect:${Version.kotlin}")
-    androidTestImplementation("androidx.compose.ui:ui-test:${Version.compose}")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Version.compose}"){
+    androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    androidTestImplementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    androidTestImplementation("androidx.compose.ui:ui-test:${composeVersion}")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}"){
         isTransitive = false
     }
 
@@ -139,7 +142,6 @@ tasks.withType<Test> {
 }
 
 object Version {
-    const val kotlin = "1.5.10"
     const val espresso = "3.4.0"
     const val testlib = "1.4.0"
     const val mocklib = "2.0.9"
