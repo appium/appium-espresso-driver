@@ -49,7 +49,7 @@
     "!.DS_Store"
   ],
   "dependencies": {
-    "@appium/base-driver": "^8.2.4",
+    "@appium/base-driver": "^8.3.0",
     "@appium/support": "^2.55.3",
     "@babel/runtime": "^7.4.3",
     "appium-adb": "^9.1.0",

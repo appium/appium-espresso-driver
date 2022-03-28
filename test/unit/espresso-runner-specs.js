@@ -3,6 +3,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { EspressoRunner, REQUIRED_PARAMS } from '../../lib/espresso-runner';
 import { ADB } from 'appium-adb';
 import sinon from 'sinon';
+import log from '../../lib/logger';
 
 chai.should();
 chai.use(chaiAsPromised);
@@ -21,7 +22,7 @@ describe('espresso-runner', function () {
     function runConstructorTest (opts, missingParam) {
       it(`should error out if missing '${missingParam}' parameter`, function () {
         expect(function () {
-          new EspressoRunner(opts);
+          new EspressoRunner(log, opts);
         }).to.throw(`Option '${missingParam}' is required!`);
       });
     }
@@ -69,7 +70,7 @@ describe('espresso-runner', function () {
       });
 
       const adb = ADB.createADB();
-      const espresso = new EspressoRunner({
+      const espresso = new EspressoRunner(log, {
         adb, tmpDir: 'tmp', host: 'localhost',
         systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
         forceEspressoRebuild: false
@@ -93,7 +94,7 @@ describe('espresso-runner', function () {
       });
 
       const adb = ADB.createADB();
-      const espresso = new EspressoRunner({
+      const espresso = new EspressoRunner(log, {
         adb, tmpDir: 'tmp', host: 'localhost',
         systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
         forceEspressoRebuild: false
@@ -117,7 +118,7 @@ describe('espresso-runner', function () {
       });
 
       const adb = ADB.createADB();
-      const espresso = new EspressoRunner({
+      const espresso = new EspressoRunner(log, {
         adb, tmpDir: 'tmp', host: 'localhost',
         systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
         forceEspressoRebuild: false
@@ -144,7 +145,7 @@ describe('espresso-runner', function () {
       });
 
       const adb = ADB.createADB();
-      const espresso = new EspressoRunner({
+      const espresso = new EspressoRunner(log, {
         adb, tmpDir: 'tmp', host: 'localhost',
         systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
         forceEspressoRebuild: false
