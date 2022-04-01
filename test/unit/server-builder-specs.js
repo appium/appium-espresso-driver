@@ -12,7 +12,7 @@ chai.use(chaiAsPromised);
 
 describe('server-builder', function () {
   describe('getCommand', function () {
-    const expectedCmd = `/path/to/project/${system.isWindows() ? 'gradlew.bat' : 'gradlew'}`;
+    const expectedCmd = system.isWindows() ? 'gradlew.bat' : '/path/to/project/gradlew';
 
     it('should not pass properties when no versions are specified', function () {
       const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
