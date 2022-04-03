@@ -12,11 +12,11 @@ chai.use(chaiAsPromised);
 
 describe('server-builder', function () {
   describe('getCommand', function () {
-    const expectedCmd = system.isWindows() ? 'gradlew.bat' : './gradlew';
+    const expectedCmd = system.isWindows() ? 'gradlew.bat' : '/path/to/project/gradlew';
 
     it('should not pass properties when no versions are specified', function () {
       const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
-      new ServerBuilder(log).getCommand().should.eql(expected);
+      new ServerBuilder(log, {serverPath: '/path/to/project'}).getCommand().should.eql(expected);
     });
 
     it('should pass only specified versions as properties and pass them correctly', function () {
@@ -26,7 +26,8 @@ describe('server-builder', function () {
           toolsVersions: {
             androidGradlePlugin: '1.2.3'
           }
-        }
+        },
+        serverPath: '/path/to/project'
       });
       serverBuilder.getCommand().should.eql(expected);
     });
@@ -41,7 +42,8 @@ describe('server-builder', function () {
           toolsVersions: {
             [unknownKey]: '1.2.3'
           }
-        }
+        },
+        serverPath: '/path/to/project'
       });
       serverBuilder.getCommand().should.eql(expected);
     });
@@ -53,7 +55,8 @@ describe('server-builder', function () {
           toolsVersions: {
             gradle_version: '1.2.3'
           }
-        }
+        },
+        serverPath: '/path/to/project'
       });
       serverBuilder.getCommand().should.eql(expected);
     });
