@@ -1,7 +1,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
 parameters:
   name: 'android_e2e_tests'
-  vmImage: 'macOS-10.15'
+  vmImage: 'macOS-latest'
   MOCHA_FILE: 'mocha-test-results.xml'
   CHROMEDRIVER_VERSION: 2.44
   NODE_VERSION: 14.x
@@ -38,7 +38,7 @@ jobs:
         ./gradlew -PappiumTargetPackage=io.appium.android.apis app:assembleAndroidTest
         popd
       displayName: Prebuild the server
-    - script: npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/ -g @skip-ci -i --exit
+    - script: npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/driver-e2e-specs.js -g @skip-ci -i --exit
       displayName: Run tests
     - task: PublishTestResults@2
       condition: always()
