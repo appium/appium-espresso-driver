@@ -51,13 +51,6 @@ jobs:
       name: sdk29_e2e_tests
       CHROMEDRIVER_VERSION: 74.0.3729.6
       ANDROID_SDK_VERSION: 29
-  It seems the Azure instance has no valid API Level 28 device. Below was the output of '$ANDROID_HOME/tools/bin/sdkmanager list'
-  null
-  - template: templates/android-e2e-template.yml
-    parameters:
-      name: sdk28_e2e_tests
-      CHROMEDRIVER_VERSION: 2.40
-      ANDROID_SDK_VERSION: 28
   - template: templates/android-e2e-template.yml
     parameters:
       name: sdk25_e2e_tests
