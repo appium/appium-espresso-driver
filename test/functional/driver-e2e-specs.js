@@ -114,22 +114,6 @@ describe('EspressoDriver', function () {
     });
   });
 
-  describe('.reset', function () {
-    afterEach(async function () {
-      try {
-        await driver.deleteSession();
-      } catch (ign) {}
-      driver = null;
-    });
-    it('should raise an error for resetApp', async function () {
-      driver = await remote({
-        ...COMMON_REMOTE_OPTIONS,
-        capabilities: APIDEMO_CAPS,
-      });
-      await driver.resetApp().should.eventually.be.rejectedWith(/Please quit the session and create a new one/);
-    });
-  });
-
   // TODO: Update tests for wdio compatibility
   // describe('keys', function () {
   //   beforeEach(async function () {
