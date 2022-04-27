@@ -1,7 +1,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
 parameters:
   name: 'android_e2e_tests'
-  vmImage: 'macOS-latest'
+  vmImage: 'ubuntu-latest'
   MOCHA_FILE: 'mocha-test-results.xml'
   CHROMEDRIVER_VERSION: 2.44
   NODE_VERSION: 14.x
