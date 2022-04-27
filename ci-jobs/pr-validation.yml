@@ -1,7 +1,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: macOS-10.15
 
 variables:
   CI: true
