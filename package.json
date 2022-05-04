@@ -85,7 +85,7 @@
   ],
   "devDependencies": {
     "@appium/gulp-plugins": "^6.0.0",
-    "@appium/eslint-config-appium": "^5.0.0",
+    "@appium/eslint-config-appium": "^6.0.0",
     "@semantic-release/git": "^10.0.1",
     "@xmldom/xmldom": "^0.x",
     "android-apidemos": "^4.0.0",
