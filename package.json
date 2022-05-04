@@ -84,7 +84,7 @@
     "precommit-test"
   ],
   "devDependencies": {
-    "@appium/gulp-plugins": "^6.0.0",
+    "@appium/gulp-plugins": "^7.0.0",
     "@appium/eslint-config-appium": "^5.0.0",
     "@semantic-release/git": "^10.0.1",
     "@xmldom/xmldom": "^0.x",
