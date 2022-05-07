@@ -50,7 +50,7 @@
   ],
   "dependencies": {
     "@appium/base-driver": "^8.5.2",
-    "@appium/support": "^2.55.3",
+    "@appium/support": "^2.58.0",
     "@babel/runtime": "^7.4.3",
     "appium-adb": "^9.1.0",
     "appium-android-driver": "^5.0.0",
