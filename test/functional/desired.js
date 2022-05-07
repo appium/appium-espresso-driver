@@ -1,28 +1,18 @@
 import path from 'path';
 import _ from 'lodash';
 import gpsdemoApp from 'gps-demo-app';
+import { node } from '@appium/support';
 
 const apidemosApp = require.resolve('android-apidemos');
 
-function deepFreeze (object) {
-  const propNames = Object.getOwnPropertyNames(object);
-  for (const name of propNames) {
-    const value = object[name];
-    if (value && typeof value === 'object') {
-      deepFreeze(value);
-    }
-  }
-  return Object.freeze(object);
-}
-
 function amendCapabilities (baseCaps, ...newCaps) {
-  return deepFreeze({
+  return node.deepFreeze({
     alwaysMatch: _.cloneDeep(Object.assign({}, baseCaps.alwaysMatch, ...newCaps)),
     firstMatch: [{}],
   });
 }
 
-const GENERIC_CAPS = deepFreeze({
+const GENERIC_CAPS = node.deepFreeze({
   alwaysMatch: {
     'appium:androidInstallTimeout': process.env.CI ? 120000 : 90000,
     'appium:deviceName': 'Android',
