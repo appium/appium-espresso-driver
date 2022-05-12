@@ -21,6 +21,8 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: gradle
+    - name: install newer npm
+      run: npm install -g npm
     - run: npm install
       name: Install dependencies
     - run: rm -rf package-lock.json
