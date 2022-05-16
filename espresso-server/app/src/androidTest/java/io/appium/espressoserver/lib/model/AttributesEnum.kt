@@ -59,7 +59,6 @@ class EspressoAttributes : CommonAttributes(commonAttributes + espressoAttribute
                 AttributesEnum.ADAPTERS,
                 AttributesEnum.ADAPTER_TYPE,
                 AttributesEnum.CHECKABLE,
-                AttributesEnum.CHECKED,
                 AttributesEnum.FOCUSABLE,
                 AttributesEnum.HINT,
                 AttributesEnum.INSTANCE,
@@ -81,6 +80,7 @@ abstract class CommonAttributes(var attributes: List<AttributesEnum>) {
         val commonAttributes: List<AttributesEnum> by lazy {
             listOf(
                 AttributesEnum.BOUNDS,
+                AttributesEnum.CHECKED,
                 AttributesEnum.CLASS,
                 AttributesEnum.CLICKABLE,
                 AttributesEnum.CONTENT_DESC,
