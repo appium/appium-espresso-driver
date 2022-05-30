@@ -16,18 +16,15 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.Location
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.ViewElement
 
 class GetLocationInView : RequestHandler<AppiumParams, Location> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): Location {
-        val view = EspressoElement.getViewById(params.elementId)
-        val viewElement = ViewElement(view)
+    override fun handleEspresso(params: AppiumParams): Location {
+        val viewElement = ViewElement(EspressoElement.getViewById(params.elementId))
         return Location(viewElement.relativeLeft, viewElement.relativeTop)
     }
 }

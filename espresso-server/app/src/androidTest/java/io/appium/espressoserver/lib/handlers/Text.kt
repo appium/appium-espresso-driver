@@ -16,7 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.ComposeNodeElement

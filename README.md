@@ -195,7 +195,7 @@ to mix Espresso and Compose elements.
 In order to change between subdrivers use the [driver](#settings-api) setting. Setting its value to `compose` modifies driver behavior in the way it interacts with Compose elements rather that with classic Android views. It is possible to switch between `espresso` and `compose` modes at any point of time. When `compose` mode is active the the following webdriver commands behave differently (as of driver version *1.50.0*):
 - findElement(s): Element finding commands only support Compose-based locators. Read [Compose Elements Location](#compose-elements-location) for more details.
 - getPageSource: The returned page source is retrieved from Compose and all elements there contain [Compose-specific](#compose-element-attributes) attributes.
-- click, isDisplayed, isEnabled, clear, getText, sendKeys, getElementRect, getValue: These commands should properly support compose elements.
+- click, isDisplayed, isEnabled, clear, getText, sendKeys, getElementRect, getValue, isSelected: These commands should properly support compose elements.
 - getAttribute: Accepts and returns Compose-specific element attributes. See [Compose Element Attributes](#compose-element-attributes) for the full list of supported Compose element attributes.
 
 Calling other driver element-specific APIs not listed above would most likely throw an exception as Compose and Espresso elements are being stored in completely separated internal caches and must not be mixed.

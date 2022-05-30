@@ -16,17 +16,22 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.Location
 import io.appium.espressoserver.lib.model.ViewElement
+import io.appium.espressoserver.lib.model.EspressoElement
+import io.appium.espressoserver.lib.model.ComposeNodeElement
 
 class GetLocation : RequestHandler<AppiumParams, Location> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): Location {
+    override fun handleEspresso(params: AppiumParams): Location {
         val viewElement = ViewElement(EspressoElement.getViewById(params.elementId))
         return Location(viewElement.bounds.left, viewElement.bounds.top)
+    }
+
+    override fun handleCompose(params: AppiumParams): Location {
+        val composeNodeElement = ComposeNodeElement(getSemanticsNode(params.elementId!!))
+        return Location(composeNodeElement.bounds.left, composeNodeElement.bounds.top)
     }
 }
