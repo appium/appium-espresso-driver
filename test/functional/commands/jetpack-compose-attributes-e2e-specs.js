@@ -23,17 +23,17 @@ describe('compose node attributes', function () {
   });
   describe('compose getAttribute', function () {
     it(`should get the 'content-desc' of a View`, async function () {
-      let el = await driver.elementByXPath("//*[@text='Clickable Component']");
+      let el = await driver.findElement('xpath', "//*[@text='Clickable Component']");
       await driver.moveTo(el);
       await el.click();
 
       await driver.updateSettings({ driver: 'compose' });
 
-      let taggedElement = await driver.elementByTagName('lol');
+      let taggedElement = await driver.findElement('tag name', 'lol');
       await taggedElement.getAttribute('view-tag').should.eventually.equal('lol');
     });
     it(`should get the 'text' of a View`, async function () {
-      let el = await driver.elementByLinkText('Click to see dialog');
+      let el = await driver.findElement('link text', 'Click to see dialog');
       await el.getAttribute('text').should.eventually.equal('Click to see dialog');
 
       const selected = await el.getAttribute('selected');
