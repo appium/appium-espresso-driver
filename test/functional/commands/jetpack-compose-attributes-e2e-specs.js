@@ -35,6 +35,15 @@ describe('compose node attributes', function () {
     it(`should get the 'text' of a View`, async function () {
       let el = await driver.elementByLinkText('Click to see dialog');
       await el.getAttribute('text').should.eventually.equal('Click to see dialog');
+
+      const selected = el.getAttribute('selected');
+      await el.isSelected().should.eventually.equal(selected);
+      // el.getAttribute('class');
+      // el.getAttribute('clickable');
+      // el.getAttribute('content-desc');
+      // el.getAttribute('enabled');
+      // el.getAttribute('focused');
+      // el.getAttribute('text');
     });
   });
 });
