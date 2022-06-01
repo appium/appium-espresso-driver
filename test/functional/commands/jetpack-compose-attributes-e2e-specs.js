@@ -1,40 +1,82 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
+import { remote } from 'webdriverio';
+import { MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
+import { startServer } from '../../..';
 
 
 chai.should();
 chai.use(chaiAsPromised);
 
+const COMMON_REMOTE_OPTIONS = {
+  hostname: HOST,
+  port: PORT,
+};
+
 describe('compose node attributes', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
+  let server;
+
   before(async function () {
     // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
     if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 23) {
       return this.skip();
     }
-    driver = await initSession(COMPOSE_CAPS);
+
+    server = await startServer(PORT, HOST);
   });
   after(async function () {
-    await deleteSession();
+    try {
+      await server.close();
+    } catch (ign) {}
   });
   describe('compose getAttribute', function () {
+    beforeEach(async function () {
+      driver = await remote({
+        ...COMMON_REMOTE_OPTIONS,
+        capabilities: COMPOSE_CAPS,
+      });
+    });
+    afterEach(async function () {
+      try {
+        await driver.deleteSession();
+      } catch (ign) {}
+      driver = null;
+    });
+
     it(`should get the 'content-desc' of a View`, async function () {
-      let el = await driver.findElement('xpath', "//*[@text='Clickable Component']");
+      driver = await remote({
+        ...COMMON_REMOTE_OPTIONS,
+        capabilities: COMPOSE_CAPS,
+      });
+
+      const el = await driver.findElement('xpath', "//*[@text='Clickable Component']");
       await driver.moveTo(el);
       await el.click();
 
       await driver.updateSettings({ driver: 'compose' });
 
-      let taggedElement = await driver.findElement('tag name', 'lol');
+      const taggedElement = await driver.findElement('tag name', 'lol');
       await taggedElement.getAttribute('view-tag').should.eventually.equal('lol');
     });
+
     it(`should get the 'text' of a View`, async function () {
-      let el = await driver.findElement('link text', 'Click to see dialog');
-      await el.getAttribute('text').should.eventually.equal('Click to see dialog');
+      driver = await remote({
+        ...COMMON_REMOTE_OPTIONS,
+        capabilities: COMPOSE_CAPS,
+      });
+
+      const el = await driver.findElement('xpath', "//*[@text='Clickable Component']");
+      await driver.moveTo(el);
+      await el.click();
+
+      await driver.updateSettings({ driver: 'compose' });
+
+      const click_dialog = await driver.findElement('link text', 'Click to see dialog');
+      await click_dialog.getAttribute('text').should.eventually.equal('Click to see dialog');
 
       const selected = await el.getAttribute('selected');
       await el.isSelected().should.eventually.equal(selected);
