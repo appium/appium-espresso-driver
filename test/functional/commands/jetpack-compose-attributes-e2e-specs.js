@@ -53,7 +53,7 @@ describe('compose node attributes', function () {
         capabilities: COMPOSE_CAPS,
       });
 
-      const el = await driver.findElement('xpath', "//*[@text='Clickable Component']");
+      const el = await driver.$("//*[@text='Clickable Component']");
       // await driver.moveTo(el);
       await el.click();
 
@@ -69,13 +69,13 @@ describe('compose node attributes', function () {
         capabilities: COMPOSE_CAPS,
       });
 
-      const el = await driver.findElement('xpath', "//*[@text='Clickable Component']");
+      const el = await driver.$("//*[@text='Clickable Component']");
       // await driver.moveTo(el);
       await el.click();
 
       await driver.updateSettings({ driver: 'compose' });
 
-      const click_dialog = await driver.findElement('link text', 'Click to see dialog');
+      const click_dialog = await driver.$('Click to see dialog');
       await click_dialog.getAttribute('text').should.eventually.equal('Click to see dialog');
 
       const selected = await el.getAttribute('selected');
