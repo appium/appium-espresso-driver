@@ -54,7 +54,7 @@ describe('compose node attributes', function () {
       });
 
       const el = await driver.findElement('xpath', "//*[@text='Clickable Component']");
-      await driver.moveTo(el);
+      // await driver.moveTo(el);
       await el.click();
 
       await driver.updateSettings({ driver: 'compose' });
@@ -70,7 +70,7 @@ describe('compose node attributes', function () {
       });
 
       const el = await driver.findElement('xpath', "//*[@text='Clickable Component']");
-      await driver.moveTo(el);
+      // await driver.moveTo(el);
       await el.click();
 
       await driver.updateSettings({ driver: 'compose' });
