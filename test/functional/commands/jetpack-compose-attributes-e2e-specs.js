@@ -62,7 +62,7 @@ describe('compose node attributes', function () {
       await taggedElement.getAttribute('view-tag').should.eventually.equal('lol');
     });
 
-    it(`should get the 'text' of a View`, async function () {
+    it(`should get attributes of a View`, async function () {
       driver = await remote({
         ...COMMON_REMOTE_OPTIONS,
         capabilities: COMPOSE_CAPS,
@@ -75,18 +75,21 @@ describe('compose node attributes', function () {
 
       const click_dialog = await driver.$("//*[@text='Click to see dialog']");
       await click_dialog.getAttribute('text').should.eventually.equal('Click to see dialog');
+      await click_dialog.getText().should.eventually.equal('Click to see dialog');
 
       await click_dialog.getAttribute('selected').should.eventually.equal('false');
       await click_dialog.isSelected().should.eventually.equal(false);
 
-      await click_dialog.getAttribute('class').should.eventually.equal('');
+      await click_dialog.isDisplayed().should.eventually.equal(true);
 
-      await click_dialog.getAttribute('clickable').should.eventually.equal(true);
-      await click_dialog.getAttribute('enabled').should.eventually.equal(true);
+      await click_dialog.getAttribute('class').should.eventually.equal('Text');
 
-      await click_dialog.getAttribute('focused').should.eventually.equal(false);
+      await click_dialog.getAttribute('clickable').should.eventually.equal('true');
 
-      await click_dialog.getAttribute('focused').should.eventually.equal(false);
+      await click_dialog.getAttribute('enabled').should.eventually.equal('true');
+      await click_dialog.isEnabled('enabled').should.eventually.equal(true);
+
+      await click_dialog.getAttribute('focused').should.eventually.equal('false');
     });
   });
 });
