@@ -47,7 +47,7 @@ describe('compose node attributes', function () {
       driver = null;
     });
 
-    it(`should get the 'content-desc' of a View`, async function () {
+    it(`should get attributes of a View`, async function () {
       driver = await remote({
         ...COMMON_REMOTE_OPTIONS,
         capabilities: COMPOSE_CAPS,
@@ -60,18 +60,6 @@ describe('compose node attributes', function () {
 
       const taggedElement = await driver.$('<lol>');
       await taggedElement.getAttribute('view-tag').should.eventually.equal('lol');
-    });
-
-    it(`should get attributes of a View`, async function () {
-      driver = await remote({
-        ...COMMON_REMOTE_OPTIONS,
-        capabilities: COMPOSE_CAPS,
-      });
-
-      const el = await driver.$("//*[@text='Clickable Component']");
-      await el.click();
-
-      await driver.updateSettings({ driver: 'compose' });
 
       const click_dialog = await driver.$("//*[@text='Click to see dialog']");
       await click_dialog.getAttribute('text').should.eventually.equal('Click to see dialog');
