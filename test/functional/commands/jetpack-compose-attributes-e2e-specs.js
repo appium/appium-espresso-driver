@@ -76,17 +76,17 @@ describe('compose node attributes', function () {
       const click_dialog = await driver.$("//*[@text='Click to see dialog']");
       await click_dialog.getAttribute('text').should.eventually.equal('Click to see dialog');
 
-      const selected = await el.getAttribute('selected');
-      await el.isSelected().should.eventually.equal(selected);
+      const selected = await click_dialog.getAttribute('selected');
+      await click_dialog.isSelected().should.eventually.equal(selected);
 
-      await el.getAttribute('class').should.eventually.equal('');
+      await click_dialog.getAttribute('class').should.eventually.equal('');
 
-      await el.getAttribute('clickable').should.eventually.equal(true);
-      await el.getAttribute('enabled').should.eventually.equal(true);
+      await click_dialog.getAttribute('clickable').should.eventually.equal(true);
+      await click_dialog.getAttribute('enabled').should.eventually.equal(true);
 
-      await el.getAttribute('focused').should.eventually.equal(false);
+      await click_dialog.getAttribute('focused').should.eventually.equal(false);
 
-      await el.getAttribute('focused').should.eventually.equal(false);
+      await click_dialog.getAttribute('focused').should.eventually.equal(false);
     });
   });
 });
