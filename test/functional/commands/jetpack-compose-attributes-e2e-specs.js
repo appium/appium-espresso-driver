@@ -4,6 +4,7 @@ import { remote } from 'webdriverio';
 import { MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
 import { startServer } from '../../..';
+import $ from 'webdriverio/build/commands/browser/$';
 
 
 chai.should();
@@ -53,12 +54,12 @@ describe('compose node attributes', function () {
         capabilities: COMPOSE_CAPS,
       });
 
-      const el = await driver.findElement('xpath', "//*[@text='Clickable Component']");
+      const el = await $(driver.findElement('xpath', "//*[@text='Clickable Component']"));
       await el.click();
 
       await driver.updateSettings({ driver: 'compose' });
 
-      const taggedElement = await driver.findElement('tag name', 'lol');
+      const taggedElement = await $(driver.findElement('tag name', 'lol'));
       await taggedElement.getAttribute('view-tag').should.eventually.equal('lol');
     });
 
@@ -68,12 +69,12 @@ describe('compose node attributes', function () {
         capabilities: COMPOSE_CAPS,
       });
 
-      const el = await driver.findElement('xpath', "//*[@text='Clickable Component']");
+      const el = await $(driver.findElement('xpath', "//*[@text='Clickable Component']"));
       await el.click();
 
       await driver.updateSettings({ driver: 'compose' });
 
-      const click_dialog = await driver.findElement('xpath', "//*[@text='Click to see dialog']");
+      const click_dialog = await $(driver.findElement('xpath', "//*[@text='Click to see dialog']"));
       await click_dialog.getAttribute('text').should.eventually.equal('Click to see dialog');
 
       const selected = await el.getAttribute('selected');
