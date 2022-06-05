@@ -78,12 +78,15 @@ describe('compose node attributes', function () {
 
       const selected = await el.getAttribute('selected');
       await el.isSelected().should.eventually.equal(selected);
-      // el.getAttribute('class');
-      // el.getAttribute('clickable');
-      // el.getAttribute('content-desc');
-      // el.getAttribute('enabled');
-      // el.getAttribute('focused');
-      // el.getAttribute('text');
+
+      await el.getAttribute('class').should.eventually.equal('');
+
+      await el.getAttribute('clickable').should.eventually.equal(true);
+      await el.getAttribute('enabled').should.eventually.equal(true);
+
+      await el.getAttribute('focused').should.eventually.equal(false);
+
+      await el.getAttribute('focused').should.eventually.equal(false);
     });
   });
 });
