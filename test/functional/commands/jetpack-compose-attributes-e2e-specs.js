@@ -77,7 +77,7 @@ describe('compose node attributes', function () {
       await click_dialog.getAttribute('text').should.eventually.equal('Click to see dialog');
 
       const selected = await click_dialog.getAttribute('selected');
-      await click_dialog.isSelected().should.eventually.equal(selected);
+      await click_dialog.isSelected().should.eventually.equal(`${selected}`);
 
       await click_dialog.getAttribute('class').should.eventually.equal('');
 
