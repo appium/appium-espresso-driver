@@ -58,7 +58,7 @@ describe('compose node attributes', function () {
 
       await driver.updateSettings({ driver: 'compose' });
 
-      const taggedElement = await driver.findElement('tag name', 'lol');
+      const taggedElement = await driver.$('tag name', 'lol');
       await taggedElement.getAttribute('view-tag').should.eventually.equal('lol');
     });
 
@@ -73,7 +73,7 @@ describe('compose node attributes', function () {
 
       await driver.updateSettings({ driver: 'compose' });
 
-      const click_dialog = await driver.$('Click to see dialog');
+      const click_dialog = await driver.$("//*[@text='Click to see dialog']");
       await click_dialog.getAttribute('text').should.eventually.equal('Click to see dialog');
 
       const selected = await el.getAttribute('selected');
