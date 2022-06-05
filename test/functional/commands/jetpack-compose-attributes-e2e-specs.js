@@ -84,7 +84,7 @@ describe('compose node attributes', function () {
 
       await click_dialog.getAttribute('class').should.eventually.equal('Text');
 
-      await click_dialog.getAttribute('clickable').should.eventually.equal('true');
+      await click_dialog.getAttribute('clickable').should.eventually.equal('false');
 
       await click_dialog.getAttribute('enabled').should.eventually.equal('true');
       await click_dialog.isEnabled('enabled').should.eventually.equal(true);
