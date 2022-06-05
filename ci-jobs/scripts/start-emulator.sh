@@ -20,10 +20,6 @@ echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "$emulator"
 # Create emulator
 echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n $ANDROID_AVD -k "$emulator" --force -d pixel_xl
 
-echo $ANDROID_HOME/tools/bin/avdmanager create avd --help
-echo $ANDROID_HOME/tools/bin/avdmanager list
-echo $ANDROID_HOME/emulator/emulator -list-avds
-
 echo "Starting emulator"
 
 if [ $ANDROID_SDK_VERSION -ge 28 ]; then
