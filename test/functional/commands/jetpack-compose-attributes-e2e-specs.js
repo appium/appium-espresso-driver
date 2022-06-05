@@ -76,8 +76,8 @@ describe('compose node attributes', function () {
       const click_dialog = await driver.$("//*[@text='Click to see dialog']");
       await click_dialog.getAttribute('text').should.eventually.equal('Click to see dialog');
 
-      const selected = await click_dialog.getAttribute('selected');
-      await click_dialog.isSelected().should.eventually.equal(`${selected}`);
+      await click_dialog.getAttribute('selected').should.eventually.equal('false');
+      await click_dialog.isSelected().should.eventually.equal(false);
 
       await click_dialog.getAttribute('class').should.eventually.equal('');
 
