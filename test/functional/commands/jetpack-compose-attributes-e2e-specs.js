@@ -54,7 +54,6 @@ describe('compose node attributes', function () {
       });
 
       const el = await driver.$("//*[@text='Clickable Component']");
-      await driver.executeScript('mobile: scrollGesture', el.id);
       await el.click();
 
       await driver.updateSettings({ driver: 'compose' });
@@ -70,7 +69,6 @@ describe('compose node attributes', function () {
       });
 
       const el = await driver.$("//*[@text='Clickable Component']");
-      await driver.executeScript('mobile: scrollGesture', el.id);
       await el.click();
 
       await driver.updateSettings({ driver: 'compose' });
