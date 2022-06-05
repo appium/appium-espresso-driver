@@ -28,11 +28,13 @@ describe('compose node attributes', function () {
 
     server = await startServer(PORT, HOST);
   });
+
   after(async function () {
     try {
       await server.close();
     } catch (ign) {}
   });
+
   describe('compose getAttribute', function () {
     beforeEach(async function () {
       driver = await remote({
@@ -40,6 +42,7 @@ describe('compose node attributes', function () {
         capabilities: COMPOSE_CAPS,
       });
     });
+
     afterEach(async function () {
       try {
         await driver.deleteSession();
