@@ -18,9 +18,7 @@ declare -r ANDROID_AVD=test
 echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "$emulator"
 
 # Create emulator
-echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n $ANDROID_AVD -k "$emulator" --force
-
-echo $ANDROID_HOME/emulator/emulator -list-avds
+echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n $ANDROID_AVD -k "$emulator" --force -d pixel_xl
 
 echo "Starting emulator"
 
