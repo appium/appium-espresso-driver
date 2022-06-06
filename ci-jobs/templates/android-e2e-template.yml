@@ -38,9 +38,7 @@ jobs:
         ./gradlew -PappiumTargetPackage=io.appium.android.apis app:assembleAndroidTest
         popd
       displayName: Prebuild the server
-    - script: npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/driver-e2e-specs.js -g @skip-ci -i --exit
-      displayName: Run tests
-    - script: npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/commands/jetpack-compose-attributes-e2e-specs.js -g @skip-ci -i --exit
+    - script: npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/driver-e2e-specs.js|build/test/functional/commands/jetpack-compose-attributes-e2e-specs.js -g @skip-ci -i --exit
       displayName: Run tests
     - task: PublishTestResults@2
       condition: always()
