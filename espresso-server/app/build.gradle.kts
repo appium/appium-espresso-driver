@@ -96,6 +96,7 @@ dependencies {
     testImplementation("org.powermock:powermock-classloading-xstream:${Version.mocklib}")
     testImplementation("org.powermock:powermock-module-junit4-rule:${Version.mocklib}")
     testImplementation("org.powermock:powermock-module-junit4:${Version.mocklib}")
+    testImplementation("androidx.annotation:annotation:${annotationVersion}")
     testImplementation("androidx.test.espresso:espresso-contrib:${Version.espresso}")
     testImplementation("androidx.test.espresso:espresso-core:${Version.espresso}")
     testImplementation("androidx.test.espresso:espresso-web:${Version.espresso}")
@@ -114,6 +115,7 @@ dependencies {
     testImplementation("androidx.compose.ui:ui-test:${composeVersion}")
     testImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}")
 
+    androidTestImplementation("androidx.annotation:annotation:${annotationVersion}")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:${Version.espresso}") {
         // Exclude transitive dependencies to limit conflicts with AndroidX libraries from AUT.
         // Link to PR with fix and discussion https://github.com/appium/appium-espresso-driver/pull/596
