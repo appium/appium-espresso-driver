@@ -229,6 +229,7 @@ composeVersion | The version for the Jetpack Compose dependencies to use for Esp
 sourceCompatibility | The minimum version of JVM the project sources are compatible with. The default value is `VERSION_1_8` | VERSION_12
 targetCompatibility | The target version of JVM the project sources are compatible with. The default value is `VERSION_1_8` | VERSION_12
 jvmTarget | Target version of the generated JVM bytecode as a string. The default value is `1_8` | `1_10`
+annotationVersion | The target version of `androidx.annotation:annotation` pakage. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | '1.2.0'
 
 ### additionalAppDependencies
 

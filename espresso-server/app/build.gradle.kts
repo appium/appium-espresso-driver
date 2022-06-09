@@ -86,6 +86,7 @@ android {
 
 val kotlinVersion = rootProject.extra["appiumKotlin"]
 val composeVersion = getStringProperty("appiumComposeVersion", Version.compose)
+val annotationVersion = getStringProperty("appiumAnnotationVersion", Version.annotation)
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
@@ -95,7 +96,7 @@ dependencies {
     testImplementation("org.powermock:powermock-classloading-xstream:${Version.mocklib}")
     testImplementation("org.powermock:powermock-module-junit4-rule:${Version.mocklib}")
     testImplementation("org.powermock:powermock-module-junit4:${Version.mocklib}")
-    testImplementation("androidx.annotation:annotation:${Version.annotation}")
+    testImplementation("androidx.annotation:annotation:${annotationVersion}")
     testImplementation("androidx.test.espresso:espresso-contrib:${Version.espresso}")
     testImplementation("androidx.test.espresso:espresso-core:${Version.espresso}")
     testImplementation("androidx.test.espresso:espresso-web:${Version.espresso}")
@@ -114,7 +115,7 @@ dependencies {
     testImplementation("androidx.compose.ui:ui-test:${composeVersion}")
     testImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}")
 
-    androidTestImplementation("androidx.annotation:annotation:${Version.annotation}")
+    androidTestImplementation("androidx.annotation:annotation:${annotationVersion}")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:${Version.espresso}") {
         // Exclude transitive dependencies to limit conflicts with AndroidX libraries from AUT.
         // Link to PR with fix and discussion https://github.com/appium/appium-espresso-driver/pull/596
@@ -135,6 +136,15 @@ dependencies {
     }
 
     // additionalAndroidTestDependencies placeholder (don't change or delete this line)
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency {
+        // To avoid "androidx.annotation:annotation" version conflict.
+        if (requested.group == "androidx.annotation" && !requested.name.contains("annotation")) {
+            useVersion(annotationVersion)
+        }
+    }
 }
 
 tasks.withType<Test> {
