@@ -3,7 +3,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { remote } from 'webdriverio';
 import { MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
-import { startServer } from '../../..';
+import { startServer } from '../../server';
 
 
 chai.should();

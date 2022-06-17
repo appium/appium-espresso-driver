@@ -1,7 +1,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
 
 pool:
-  vmImage: macOS-10.15
+  vmImage: macOS-12
 
 variables:
   CI: true
@@ -16,7 +16,7 @@ jobs:
     steps:
     - task: NodeTool@0
       inputs:
-        versionSpec: 14.x
+        versionSpec: 16.x
     - task: JavaToolInstaller@0
       inputs:
         versionSpec: '11'

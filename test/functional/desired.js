@@ -1,7 +1,7 @@
 import path from 'path';
 import _ from 'lodash';
 import gpsdemoApp from 'gps-demo-app';
-import { node } from '@appium/support';
+import { node } from 'appium/support';
 
 const apidemosApp = require.resolve('android-apidemos');
 
@@ -16,6 +16,7 @@ const GENERIC_CAPS = node.deepFreeze({
   alwaysMatch: {
     'appium:androidInstallTimeout': process.env.CI ? 120000 : 90000,
     'appium:deviceName': 'Android',
+    'appium:automationName': 'Espresso',
     platformName: 'Android',
     'appium:forceEspressoRebuild': true,
     'appium:adbExecTimeout': process.env.CI ? 120000 : 20000,
