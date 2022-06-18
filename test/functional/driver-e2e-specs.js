@@ -5,7 +5,7 @@ import { remote } from 'webdriverio';
 // import axios from 'axios';
 import { HOST, PORT } from './helpers/session';
 import { APIDEMO_CAPS, amendCapabilities } from './desired';
-import { startServer } from '../..';
+import { startServer } from '../server';
 
 
 chai.should();

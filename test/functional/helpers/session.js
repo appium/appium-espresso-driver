@@ -1,5 +1,5 @@
 import remote from 'webdriverio';
-import { startServer } from '../../..';
+import { startServer } from '../../server';
 import AsyncLock from 'async-lock';
 
 const SESSION_GUARD = new AsyncLock();
