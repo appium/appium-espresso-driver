@@ -44,11 +44,11 @@ jobs:
       displayName: Prebuild the server
     - script: |
         bash ci-jobs/scripts/run_server.sh
-        npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/driver-e2e-specs.js -g @skip-ci -i --exit
-      displayName: Run tests
-    - script: |
-        bash ci-jobs/scripts/run_server.sh
-        npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/commands/jetpack-compose-attributes-e2e-specs.js -g @skip-ci -i --exit
+        npx mocha --timeout 300000 \
+          --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json \
+          build/test/functional/driver-e2e-specs.js \
+          build/test/functional/commands/jetpack-compose-attributes-e2e-specs.js \
+          -g @skip-ci -i --exit
       displayName: Run tests
     - task: PublishTestResults@2
       condition: always()

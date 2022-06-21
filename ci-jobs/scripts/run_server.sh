@@ -1,4 +1,6 @@
-export cwd=$(pwd)
+#!/usr/bin/env bash
+
+cwd=$(pwd)
 pushd "$cwd"
 cd ~
 appium driver install --source=local "$cwd"
