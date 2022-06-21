@@ -3,7 +3,6 @@ import chaiAsPromised from 'chai-as-promised';
 import { remote } from 'webdriverio';
 import { MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
-import { startServer } from '../../server';
 
 
 chai.should();
@@ -18,21 +17,12 @@ describe('compose node attributes', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
-  let server;
 
-  before(async function () {
+  before(function () {
     // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
     if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 23) {
       return this.skip();
     }
-
-    server = await startServer(PORT, HOST);
-  });
-
-  after(async function () {
-    try {
-      await server.close();
-    } catch (ign) {}
   });
 
   describe('compose getAttribute', function () {
