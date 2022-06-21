@@ -16,7 +16,9 @@ jobs:
         versionSpec: '11'
         jdkArchitectureOption: 'x64'
         jdkSourceOption: 'PreInstalled'
-    - script: npm install
+    - script: |
+        npm install -g appium@next
+        npm install
       displayName: Install Node dependencies
     - script: npm test
       displayName: NPM Test

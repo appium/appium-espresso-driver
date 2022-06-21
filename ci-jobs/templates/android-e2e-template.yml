@@ -16,6 +16,8 @@ jobs:
       TERM: dumb
       MOCHA_FILE: ${{ parameters.MOCHA_FILE }}
       ANDROID_SDK_VERSION: ${{ parameters.ANDROID_SDK_VERSION }}
+      APPIUM_TEST_SERVER_PORT: 4567
+      APPIUM_TEST_SERVER_HOST: '127.0.0.1'
     steps:
     - task: NodeTool@0
       inputs:
@@ -25,7 +27,9 @@ jobs:
         versionSpec: '11'
         jdkArchitectureOption: 'x64'
         jdkSourceOption: 'PreInstalled'
-    - script: npm install --chromedriver_version="${{ parameters.CHROMEDRIVER_VERSION }}"
+    - script: |
+        npm install -g appium@next
+        npm install --chromedriver_version="${{ parameters.CHROMEDRIVER_VERSION }}"
       displayName: Install Node dependencies
     - script: npm test
       displayName: NPM Test
@@ -38,9 +42,13 @@ jobs:
         ./gradlew -PappiumTargetPackage=io.appium.android.apis app:assembleAndroidTest
         popd
       displayName: Prebuild the server
-    - script: npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/driver-e2e-specs.js -g @skip-ci -i --exit
-      displayName: Run tests
-    - script: npx mocha --timeout 300000 --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json --recursive build/test/functional/commands/jetpack-compose-attributes-e2e-specs.js -g @skip-ci -i --exit
+    - script: |
+        bash ci-jobs/scripts/run_server.sh
+        npx mocha --timeout 300000 \
+          --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json \
+          build/test/functional/driver-e2e-specs.js \
+          build/test/functional/commands/jetpack-compose-attributes-e2e-specs.js \
+          -g @skip-ci -i --exit
       displayName: Run tests
     - task: PublishTestResults@2
       condition: always()

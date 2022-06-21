@@ -5,7 +5,6 @@ import { remote } from 'webdriverio';
 // import axios from 'axios';
 import { HOST, PORT } from './helpers/session';
 import { APIDEMO_CAPS, amendCapabilities } from './desired';
-import { startServer } from '../server';
 
 
 chai.should();
@@ -18,15 +17,6 @@ const COMMON_REMOTE_OPTIONS = {
 
 describe('EspressoDriver', function () {
   let driver;
-  let server;
-  before(async function () {
-    server = await startServer(PORT, HOST);
-  });
-  after(async function () {
-    try {
-      await server.close();
-    } catch (ign) {}
-  });
   describe('createSession', function () {
     describe('success', function () {
       afterEach(async function () {
