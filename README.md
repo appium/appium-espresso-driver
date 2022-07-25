@@ -730,6 +730,19 @@ Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 remotePath | string | yes | The full path to the remote file or a file inside an application bundle | `/sdcard/myfile.txt` or `@my.app.id/path/in/bundle`
 
+### mobile: startActivity
+
+Starts the given activity with intent options, activity options and locale.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+appActivity | string | yes | Applicaiton acitivity identifier to start | `com.myapp.myacitivty`
+locale | object | no | Sets the locale for the app under test. It only uses public APIs for its purpose. See https://github.com/libyal/libfwnt/wiki/Language-Code-identifiers to get the list of available language abbreviations. | `{"language": "zh", "country": "CN", "variant": "Hans"}`
+optionalIntentArguments | object | no | The mapping of custom options for the intent that is going to be passed to the main app activity. Check [Intent Options](#intent-options) for more details. | `{ 'flags': 'ACTIVITY_NEW_TASK', 'action': '<intent_action>', 'className': '<fullyQualifiedAppActivity>', 'es': {'foo': 'bar'} }`
+optionalActivityArguments | object | no | The mapping of custom options for the main app activity that is going to be started. Check [Activity Options](#activity-options) for more details. | `{ 'launchDisplayId': 1 }`
+
 ### mobile: startService
 
 Starts the given service intent.
