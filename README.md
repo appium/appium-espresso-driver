@@ -732,7 +732,7 @@ remotePath | string | yes | The full path to the remote file or a file inside an
 
 ### mobile: startActivity
 
-Starts the given activity with intent options, activity options and locale.
+Starts the given activity with intent options, activity options and locale. Activity could only be executed in scope of the current app package.
 
 #### Arguments
 
