@@ -283,6 +283,7 @@ el | `Map<string, long>` | Intent long integer parameters | {'foo': 1L, 'bar': 2
 ef | `Map<string, float>` | Intent float parameters | {'foo': 1.ff, 'bar': 2.2f}
 eu | `Map<string, string>` | Intent URI-data parameters | {'foo': 'content://contacts/people/1'}
 ecn | `Map<string, string>` | Intent component name parameters | {'foo': 'com.example.app/.ExampleActivity'}
+esa | `Map<string, string>` | Intent string array parameters | {'foo': 'bar1,bar2,bar3,bar4'}
 eia | `Map<string, string>` | Intent integer array parameters | {'foo': '1,2,3,4'}
 ela | `Map<string, string>` | Intent long array parameters | {'foo': '1L,2L,3L,4L'}
 efa | `Map<string, string>` | Intent float array parameters | {'foo': '1.1,2.2,3.2,4.4'}
