@@ -143,7 +143,7 @@ private fun String.toComponentName(): ComponentName = ComponentName.unflattenFro
  * - `ecn`: Component name data as key-value pairs stored in a map with
  * keys and values of type string->string, such as {'foo': 'com.example.app/.ExampleActivity'}
  * - `esa`: Array of strings data as key-value pairs stored in a map with
- * keys and values of type string->string, such as {'foo': 'bar1,bar2,bar3,bar4'}
+ * keys and values of type string->list, such as {'foo': ['bar1','bar2','bar3','bar4']}
  * - `eia`: Array of integers data as key-value pairs stored in a map with
  * keys and values of type string->string, such as {'foo': '1,2,3,4'}
  * - `ela`: Array of long data as key-value pairs stored in a map with
@@ -249,10 +249,9 @@ fun makeIntent(context: Context?, options: Map<String, Any?>): Intent {
                 requireMap(key, value)
                         .filter { it.key is String }
                         .forEach { entry ->
-                            requireString(entry.key as String, entry.value)
-                                    .split(",")
+                            requireList(entry.key as String, entry.value)
                                     .map {
-                                        it.trim()
+                                        it.toString().trim()
                                     }
                                     .toTypedArray()
                                     .let { intent.putExtra(entry.key as String, it) }
