@@ -251,7 +251,7 @@ fun makeIntent(context: Context?, options: Map<String, Any?>): Intent {
                         .forEach { entry ->
                             requireList(entry.key as String, entry.value)
                                     .map {
-                                        it.toString().trim()
+                                        it.toString()
                                     }
                                     .toTypedArray()
                                     .let { intent.putExtra(entry.key as String, it) }
