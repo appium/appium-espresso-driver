@@ -19,6 +19,11 @@ package io.appium.espressoserver.lib.handlers
 import androidx.test.espresso.UiController
 import androidx.test.espresso.action.GeneralSwipeAction
 import androidx.test.espresso.action.ViewActions.*
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.*
+import io.appium.espressoserver.lib.helpers.getSemanticsNode
+import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
@@ -31,7 +36,8 @@ import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: MobileSwipeParams): Void? {
+
+    override fun handleEspresso(params: MobileSwipeParams): Void? {
         // Get a reference to the view and call onData. This will automatically scroll to the view.
         val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
 
@@ -49,10 +55,10 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
             val runnable = object : UiControllerRunnable<Void?> {
                 override fun run(uiController: UiController): Void? {
                     val swipeAction = GeneralSwipeAction(
-                            params.swiper,
-                            params.startCoordinates,
-                            params.endCoordinates,
-                            params.precisionDescriber
+                        params.swiper,
+                        params.startCoordinates,
+                        params.endCoordinates,
+                        params.precisionDescriber
                     )
                     AndroidLogger.info("""
                     Performing general swipe action with parameters
@@ -64,6 +70,23 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
                 }
             }
             UiControllerPerformer(runnable).run()
+        }
+
+        return null
+    }
+    override fun handleCompose(params: MobileSwipeParams): Void? {
+        // Get a reference to the view and call onData. This will automatically scroll to the view.
+        val nodeInteractions = getNodeInteractionById(params.elementId)
+
+        if (params.direction != null) {
+            AndroidLogger.info("Performing swipe action with direction '${params.direction}'")
+            when (params.direction) {
+                UP -> nodeInteractions.performTouchInput{swipeUp()}
+                DOWN -> nodeInteractions.performTouchInput{swipeDown()}
+                LEFT -> nodeInteractions.performTouchInput{swipeLeft()}
+                RIGHT -> nodeInteractions.performTouchInput{swipeRight()}
+                else -> throw InvalidArgumentException("Direction cannot be ${params.direction}")
+            }
         }
 
         return null
