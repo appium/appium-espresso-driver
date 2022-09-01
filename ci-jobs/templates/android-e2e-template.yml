@@ -2,7 +2,6 @@
 parameters:
   name: 'android_e2e_tests'
   vmImage: 'macOS-12'
-  MOCHA_FILE: 'mocha-test-results.xml'
   CHROMEDRIVER_VERSION: 2.44
   NODE_VERSION: 16.x
   ANDROID_SDK_VERSION: 28
@@ -14,7 +13,6 @@ jobs:
     variables:
       CI: true
       TERM: dumb
-      MOCHA_FILE: ${{ parameters.MOCHA_FILE }}
       ANDROID_SDK_VERSION: ${{ parameters.ANDROID_SDK_VERSION }}
       APPIUM_TEST_SERVER_PORT: 4567
       APPIUM_TEST_SERVER_HOST: '127.0.0.1'
@@ -31,8 +29,6 @@ jobs:
         npm install -g appium@next
         npm install --chromedriver_version="${{ parameters.CHROMEDRIVER_VERSION }}"
       displayName: Install Node dependencies
-    - script: npm test
-      displayName: NPM Test
     - script: npm install -g mjpeg-consumer
       displayName: Install MJPEG Consumer
     - script: bash ci-jobs/scripts/start-emulator.sh
@@ -45,12 +41,8 @@ jobs:
     - script: |
         bash ci-jobs/scripts/run_server.sh
         npx mocha --timeout 300000 \
-          --reporter mocha-multi-reporters --reporter-options config-file=./ci-jobs/mocha-config.json \
-          build/test/functional/driver-e2e-specs.js \
-          build/test/functional/commands/jetpack-compose-attributes-e2e-specs.js \
+          ./test/functional/driver-e2e-specs.js \
+          ./test/functional/commands/jetpack-compose-attributes-e2e-specs.js \
           -g @skip-ci -i --exit
       displayName: Run tests
-    - task: PublishTestResults@2
-      condition: always()
-      inputs:
-        testResultsFiles: ${{ parameters.MOCHA_FILE }}
+

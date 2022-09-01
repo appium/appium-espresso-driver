@@ -1027,7 +1027,7 @@ the `anotherMethod` will be called on the object returned by `someMethod`, which
 * To build the Espresso server _and_ the NodeJS code, run `npm run build`
 * To just build the Espresso server, run `npm run build:server` or `cd espresso-server && ./gradlew clean assembleDebug assembleAndroidTest`. The server can also be built from Android Studio.
     * To build the espresso server for a custom target package `./gradlew -PappiumTargetPackage=io.appium.android.apis assembleAndroidTest`
-* To just build NodeJS code, run `gulp transpile`
+* To just build NodeJS code, run `npm run build:node`
 
 ### Tests
 

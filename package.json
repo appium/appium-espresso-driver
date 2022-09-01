@@ -7,8 +7,8 @@
     "automated testing",
     "android"
   ],
-  "version": "2.8.3",
-  "author": "appium",
+  "version": "2.8.4",
+  "author": "Appium Contributors",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -17,9 +17,20 @@
   "bugs": {
     "url": "https://github.com/appium/appium-espresso-driver/issues"
   },
-  "engines": [
-    "node"
-  ],
+  "engines": {
+    "node": ">=14",
+    "npm": ">=8"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix"
+    ]
+  },
+  "prettier": {
+    "bracketSpacing": false,
+    "printWidth": 100,
+    "singleQuote": true
+  },
   "appium": {
     "driverName": "espresso",
     "automationName": "Espresso",
@@ -61,47 +72,52 @@
     "validate.js": "^0.x"
   },
   "scripts": {
-    "clean": "rm -rf node_modules && rm -f package-lock.json && npm install",
-    "build:server": "cd espresso-server && ./gradlew clean assembleAndroidTest && cd ..",
-    "build:node": "gulp transpile",
     "build": "npm run build:node && npm run build:server",
-    "mocha": "mocha",
-    "test": "npm run lint && npm run test:node",
-    "test:node": "gulp once",
-    "test:server": "cd espresso-server && ./gradlew test --stacktrace && cd ..",
-    "e2e-test": "gulp transpile && mocha --timeout 600000 --recursive build/test/functional/",
-    "watch": "gulp watch",
-    "coverage": "gulp coveralls",
-    "prepare": "gulp prepublish && npm run build:server",
+    "build:node": "rimraf build && babel --out-dir=build/lib lib && babel --out-dir=build index.js",
+    "build:server": "cd espresso-server && ./gradlew clean assembleAndroidTest || cd ..",
+    "dev": "npm run build -- --watch",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
-    "precommit-test": "REPORTER=dot gulp once && npm run test:server",
-    "lint": "gulp lint",
-    "lint:fix": "gulp eslint --fix"
+    "precommit-lint": "lint-staged",
+    "prepare": "npm run build",
+    "test": "npm run test:node",
+    "test:node": "mocha --exit --timeout 1m \"./test/unit/**/*-specs.js\"",
+    "test:server": "cd espresso-server && ./gradlew test --stacktrace || cd ..",
+    "e2e-test": "mocha --exit --timeout 5m \"./test/functional/**/*-specs.js\""
   },
   "pre-commit": [
     "precommit-msg",
-    "precommit-test"
+    "precommit-lint"
   ],
   "peerDependencies": {
     "appium": "^2.0.0-beta.40"
   },
   "devDependencies": {
-    "@appium/gulp-plugins": "^7.0.0",
     "@appium/eslint-config-appium": "^6.0.0",
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.18.10",
+    "@babel/eslint-parser": "^7.18.9",
+    "@babel/plugin-transform-runtime": "^7.18.10",
+    "@babel/preset-env": "^7.18.10",
+    "@babel/register": "^7.18.9",
     "@semantic-release/git": "^10.0.1",
     "@xmldom/xmldom": "^0.x",
-    "android-apidemos": "^4.0.0",
+    "babel-plugin-source-map-support": "^2.2.0",
+    "android-apidemos": "^4.1.1",
     "appium-chromedriver": "^5.1.4",
     "async-lock": "^1.0.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
-    "gps-demo-app": "^2.1.1",
-    "gulp": "^4.0.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-mocha": "^9.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "lint-staged": "^13.0.3",
     "mocha": "^10.0.0",
-    "mocha-junit-reporter": "^2.0.0",
-    "mocha-multi-reporters": "^1.1.7",
     "pre-commit": "^1.2.2",
+    "rimraf": "^3.0.2",
     "semantic-release": "^19.0.2",
     "sinon": "^14.0.0",
     "webdriverio": "^7.0.0",
