@@ -28,7 +28,7 @@ jobs:
       name: Run server linter
     - run: npm run test:node
       name: Run js unit tests
-    - run: npm run test:java
+    - run: npm run test:server
       name: Run server unit tests
 
   e2e_test:
@@ -75,7 +75,7 @@ jobs:
       name: Install dev dependencies
     - run: |
         pushd "$(pwd)/espresso-server"
-        nohup ./gradlew -PappiumTargetPackage=io.appium.android.apis app:assembleAndroidTest &
+        nohup ./gradlew -PappiumTargetPackage=io.appium.android.apis app:assembleAndroidTest
         popd
       name: Prebuild Espresso server
     - run: |
