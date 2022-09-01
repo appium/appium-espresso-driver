@@ -1,9 +1,7 @@
 import path from 'path';
 import _ from 'lodash';
-import gpsdemoApp from 'gps-demo-app';
 import { node } from 'appium/support';
-
-const apidemosApp = require.resolve('android-apidemos');
+import { API_DEMOS_APK_PATH as apidemosApp } from 'android-apidemos';
 
 function amendCapabilities (baseCaps, ...newCaps) {
   return node.deepFreeze({
@@ -37,6 +35,8 @@ const COMPOSE_CAPS = amendCapabilities(GENERIC_CAPS, {
     '"androidx.activity:activity:1.3.1", ' +
     '"androidx.fragment:fragment:1.3.4"]}'
 });
+
+const gpsdemoApp = path.resolve(__dirname, '..', 'assets', 'gpsDemo-debug.apk');
 
 const GPS_CAPS = amendCapabilities(GENERIC_CAPS, {
   'appium:app': gpsdemoApp,
