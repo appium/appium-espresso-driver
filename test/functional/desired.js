@@ -36,6 +36,7 @@ const COMPOSE_CAPS = amendCapabilities(GENERIC_CAPS, {
     '"androidx.fragment:fragment:1.3.4"]}'
 });
 
+// http://www.impressive-artworx.de/tutorials/android/gps_tutorial_1.zip
 const gpsdemoApp = path.resolve(__dirname, '..', 'assets', 'gpsDemo-debug.apk');
 
 const GPS_CAPS = amendCapabilities(GENERIC_CAPS, {
