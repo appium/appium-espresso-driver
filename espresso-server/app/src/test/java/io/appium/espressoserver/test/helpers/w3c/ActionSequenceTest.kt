@@ -27,6 +27,7 @@ import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceTy
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.InputSourceType.POINTER
 import io.appium.espressoserver.test.assets.readAssetFile
 import org.junit.Assert.*
+import org.junit.Ignore
 
 class ActionSequenceTest {
 
@@ -204,6 +205,7 @@ class ActionSequenceTest {
     }
 
     @Test
+    @Ignore("The test is unstable in CI env")
     @Throws(IOException::class, AppiumException::class, InterruptedException::class, ExecutionException::class)
     fun shouldDispatchW3CKeyActions() {
         val inputStateTable = InputStateTable()
