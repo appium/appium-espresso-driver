@@ -77,6 +77,7 @@
     "build:server": "cd espresso-server && ./gradlew clean assembleAndroidTest || cd ..",
     "dev": "npm run build -- --watch",
     "lint": "eslint .",
+    "lint:server": "cd espresso-server && ./gradlew lint || cd ..",
     "lint:fix": "npm run lint -- --fix",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
     "precommit-lint": "lint-staged",
