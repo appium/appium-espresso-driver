@@ -53,9 +53,9 @@ import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateExcep
 import io.appium.espressoserver.lib.model.toJsonMatcher
 import io.appium.espressoserver.lib.viewmatcher.withView
 import io.appium.espressoserver.lib.viewmatcher.withXPath
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.hasEntry
 import org.hamcrest.Matchers.instanceOf
