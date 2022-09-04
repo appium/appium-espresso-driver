@@ -21,7 +21,10 @@ import androidx.test.espresso.action.GeneralSwipeAction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.*
+import androidx.compose.ui.test.swipeUp
+import androidx.compose.ui.test.swipeDown
+import androidx.compose.ui.test.swipeLeft
+import androidx.compose.ui.test.swipeRight
 import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
@@ -36,7 +39,6 @@ import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
 
     @Throws(AppiumException::class)
-
     override fun handleEspresso(params: MobileSwipeParams): Void? {
         // Get a reference to the view and call onData. This will automatically scroll to the view.
         val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
@@ -74,6 +76,7 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
 
         return null
     }
+
     override fun handleCompose(params: MobileSwipeParams): Void? {
         // Get a reference to the view and call onData. This will automatically scroll to the view.
         val nodeInteractions = getNodeInteractionById(params.elementId)
@@ -87,6 +90,8 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
                 RIGHT -> nodeInteractions.performTouchInput{swipeRight()}
                 else -> throw InvalidArgumentException("Direction cannot be ${params.direction}")
             }
+        } else{
+            throw InvalidArgumentException("Must provide direction to swipe to :up,down,right,left")
         }
 
         return null
