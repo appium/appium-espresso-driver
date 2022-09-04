@@ -78,7 +78,7 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
     }
 
     override fun handleCompose(params: MobileSwipeParams): Void? {
-        // Get a reference to the view and call onData. This will automatically scroll to the view.
+        // Get a reference to the compose node
         val nodeInteractions = getNodeInteractionById(params.elementId)
 
         if (params.direction != null) {
