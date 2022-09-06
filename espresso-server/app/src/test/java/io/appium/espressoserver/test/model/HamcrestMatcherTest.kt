@@ -109,4 +109,13 @@ class HamcrestMatcherTest {
             {"args": "Hello World!"}
         """.trimIndent(), HamcrestMatcher::class.java)
     }
+
+    @Test
+    fun `should parse Hamcrest matcher that have regex as an arg` () {
+        val matcher = g.fromJson("""
+            {"name": "matchesRegex", "args": "[A-Za-z ]*"}
+        """.trimIndent(), HamcrestMatcher::class.java)
+        assertTrue(matcher.invoke().matches("Hello World"))
+        assertFalse(matcher.invoke().matches("Hello World!"))
+    }
 }
