@@ -721,6 +721,45 @@ Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 timeoutMs | number | no | The maximum number of milliseconds to block until GPS cache is refreshed. If the API call does not receive a confirmation about successful cache refresh within this timeout then an error is thrown. Providing zero or a negative value to it skips waiting completely and does not check for any errors. 20000 ms by default. | 60000
 
+### mobile: pullFile
+
+Pulls a remote file from the device.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+remotePath | string | yes | The full path to the remote file or a specially formatted path, which points to an item inside an app bundle, for example `@my.app.id/my/path`. It is mandatory for the app bundle to have [debugging enabled](https://developer.android.com/studio/debug) in order to use the latter remotePath format. If the file with the given name does not exist then an exception will be thrown. | /sdcard/foo.bar
+
+#### Returned Result
+
+Base64-encoded string, which represents the content of the remote file.
+
+### mobile: pushFile
+
+Pushes a local file to the device.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+remotePath | string | yes | The path on the device to where the payload should be written. The value format is similar to the one used in [pullFile](#mobile-pullfile) extension. If the file with the same name already exists then it will be silently overridden. | /sdcard/foo.bar
+payload | string | yes | Base64-encoded content of the file to be pushed. | QXBwaXVt
+
+### mobile: pullFolder
+
+Pulls a remote folder from the device.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+remotePath | string | yes | Same as for [pullFile](#mobile-pullfile) extension, but should be pointing to a remote folder | /sdcard/yolo/
+
+#### Returned Result
+
+Base64-encoded string, which represents the zipped content of the remote folder.
+
 ### mobile: deleteFile
 
 Deletes a file on the remote device.
@@ -730,6 +769,111 @@ Deletes a file on the remote device.
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 remotePath | string | yes | The full path to the remote file or a file inside an application bundle | `/sdcard/myfile.txt` or `@my.app.id/path/in/bundle`
+
+### mobile: isAppInstalled
+
+Verify whether an application is installed on the device under test.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+appId | string | yes | The identifier of the application package to be checked | `my.app.id`
+
+#### Returned Result
+
+True or false
+
+### mobile: queryAppState
+
+Queries the current state of the app.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+appId | string | yes | The identifier of the application package to be checked | `my.app.id`
+
+#### Returned Result
+
+The following numbers could returned:
+- The app is not installed: `0`
+- The app is installed and is not running: `1`
+- The app is running in background: `3`
+- The app is running in foreground: `4`
+
+### mobile: activateApp
+
+Activates the given application or launches it if necessary.
+The action literally simulates
+clicking the corresponding application icon on the dashboard.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+appId | string | yes | The identifier of the application package to be activated | `my.app.id`
+
+### mobile: removeApp
+
+Remove the corresponding application if is installed.
+The call is ignored if the app is not installed.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+appId | string | yes | The identifier of the application package to be removed | `my.app.id`
+
+#### Returned Result
+
+True is the app has been found on the device and successfully removed. Otherwise false.
+
+### mobile: terminateApp
+
+Terminates the app if it is running.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+appId | string | yes | The identifier of the application package to be terminated | `my.app.id`
+timeout | number | no | The count of milliseconds to wait until the app is terminated. 500ms by default. | 1500
+
+#### Returned Result
+
+True if the app has been successfully terminated.
+
+### mobile: installApp
+
+Installs the given application package to the device under test.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+appPath | string | yes | The local .apk(s) path on the server filesystem or a remote url. | `/app/path.apk`
+timeout | number | no | The count of milliseconds to wait until the app is installed.. 6000ms by default. | 120000
+allowTestPackages | boolean | no | Set to true in order to allow test packages installation. false by default | true
+useSdcard | boolean | no | Set to true to install the app on sdcard instead of the device memory. false by default | true
+grantPermissions | boolean | no | Set to true in order to grant all the permissions requested in the application's manifest automatically after the installation is completed under Android 6+. false by default | true
+replace | boolean | no | Set it to false if you don't want the application to be upgraded/reinstalled if it is already present on the device, but throw an error instead. true by default | false
+
+### mobile: clearApp
+
+Deletes all data associated with a package. Calls `adb shell pm clear` under the hood.
+The app should be accessible, should not be running,
+and should exist on the device under test for this extension to work properly.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+appId | string | yes | The identifier of the application package to be cleared | `my.app.id`
+
+#### Returned Result
+
+Stdout of the corresponding adb command.
 
 ### mobile: startActivity
 
@@ -766,6 +910,32 @@ Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 intent | string | yes | The name of the service intent to stop. Only services in the app's under test scope could be stopped. | `com.some.package.name/.YourServiceSubClassName`
 user | number or string | no | The user ID for which the service is started. The `current` user id is used by default | 1006
+
+### mobile: broadcast
+
+Send a broadcast Intent. Invokes `am broadcast` command under the hood.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+intent | string | no | The full name of the intent to broadcast | `com.some.package.name/.YourIntentClassName`
+user | number or string | no | Specify which user to send to; if not specified then send to all users. Possible values are `all`/`current`/`<numeric user id>` | current
+receiverPermission | string | no | Require receiver to hold the given permission | android.permission.READ_PROFILE
+allowBackgroundActivityStarts | boolean | no | The receiver may start activities even if in the background if set to `true` | false
+action | string | no | Action name. The actual value for the Activity Manager's `-a` argument. | android.intent.action.MAIN
+uri | string | no | Unified resource identifier. The actual value for the Activity Manager's `-d` argument. | https://appium.io
+mimeType | string | no | Mime type. The actual value for the Activity Manager's `-t` argument. | application/json
+identifier | string | no | Optional identifier. The actual value for the Activity Manager's `-i` argument. | my_identifier
+categories | string or Array&lt;string&gt; | no | One or more category names. The actual value(s) for the Activity Manager's `-c` argument. | android.intent.category.LAUNCHER
+component | string | no | Component name. The actual value for the Activity Manager's `-n` argument. | com.myapp/com.myapp.SplashActivity
+package | string | no | Package name. The actual value for the Activity Manager's `-p` argument. | com.myapp
+extras | Array&lt;Array&lt;string&gt;&gt; | no | Optional intent arguments. Must be represented as an array of arrays, where each subarray item contains two (only in case it no value is required for the given type) or three string items: value type, key (variable name) and the value itself. Supported value types are: `s`: string. Value must be a valid string; `sn`: null. Value is ignored for this type; `z`: boolean. Value must be either `true` or `false`; `i`: integer. Value must be a valid 4-byte integer number; `l`: long. Value must be a valid 8-byte long number; `f`: float: Value must be a valid float number; `u`: uri. Value must be a valid uniform resource identifier string; `cn`: component name. Value must be a valid component name string; `ia`: Integer[]. Value must be a string of comma-separated integers; `ial`: List&lt;Integer&gt;. Value must be a string of comma-separated integers; `la`: Long[]. Value must be a string of comma-separated long numbers; `lal`: List&lt;Long&gt;. Value must be a string of comma-separated long numbers; `fa`: Float[]. Value must be a string of comma-separated float numbers; `fal`: List&lt;Float&gt;. Value must be a string of comma-separated float numbers; `sa`: String[]. Value must be comma-separated strings. To embed a comma into a string escape it using "\,"; `sal`: List&lt;String&gt;. Value must be comma-separated strings. To embed a comma into a string, escape it using "\," | [['s', 'varName1', 'My String1'], ['s', 'varName2', 'My String2'], ['ia', 'arrName', '1,2,3,4']]
+flags | string | no | Intent startup-specific flags as a hexadecimal string. Check [Intent documentation](https://developer.android.com/reference/android/content/Intent.html) for the list of available flag values (constants starting with `FLAG_ACTIVITY_`). Flag values could be merged using the logical 'or' operation. | 0x10200000 is the combination of two flags: 0x10000000 `FLAG_ACTIVITY_NEW_TASK` `|` 0x00200000 `FLAG_ACTIVITY_RESET_TASK_IF_NEEDED`
+
+#### Returned Result
+
+The actual stdout of the downstream `am` command.
 
 ### mobile: getDeviceTime
 
