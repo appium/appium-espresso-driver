@@ -1183,10 +1183,24 @@ For example, in the following arguments map
 the `anotherMethod` will be called on the object returned by `someMethod`, which has no arguments and which was executed on the current activity instance. Also `anotherMethod` accepts to arguments of type `java.lang.CharSequence` and `int`. The result of `anotherMethod` will be serialized and returned to the client.
 
 
+## Parallel Tests
+
+It is possible to execute tests in parallel using Espresso driver.
+Appium allows to do this on per-process (multiple server processes running on different ports managing single session)
+or per-request basis (single server process managing multiple sessions, more preferable, uses less resources and ensures better control over running sessions). Check [Parallel Android Tests](docs/parallel-tests.md) article for
+more details.
+
+> **Note**
+> If you are _not_ going to run your tests in parallel then consider enabling the `--session-override` Appium server argument. It forces the server to close all pending sessions before a new one could be opened,
+> which allows you to avoid possible issues with such sessions silently running/expiring in the background.
+
+
 ## Troubleshooting
 
-* If there are ever problems starting a session, try setting the capability `forceEspressoRebuild=true` and retrying. This will rebuild a fresh Espresso Server APK. If the session is successfull, set it back to false so that it doesn't re-install on every single test.
-* Espresso requires the debug APK and app-under-test APK (AUT) to have the same signature. It automatically signs the AUT with the `io.appium.espressoserver.test` signature. This may have problems if you're using an outdated Android SDK tools and/or an outdated Java version.
+* If you observe Espresso server crash on startup and various exceptions about missing class/method in the logcat output then consider updating [appium:espressoBuildConfig](#espresso-build-config) capability with module versions that match your application under test. This might require some experimentation, as different apps have different module requirements. Check, for example, [issue #812](https://github.com/appium/appium-espresso-driver/issues/812)
+* If you experince issues with application activities being not found or not starting then consider checking [How To Troubleshoot Activities Startup](docs/activity-startup.md) article.
+* Espresso requires the debug APK and app-under-test APK (AUT) to have the same signature. It automatically signs the AUT with the `io.appium.espressoserver.test` signature. This may be problematic if you're using an outdated Android SDK tools and/or an outdated Java version.
+* If there are problems starting a session, set the capability `forceEspressoRebuild` to `true` and retry. This will force rebuilding of Espresso Server. If the following session startup is successfull, set it back to `false`, so the session startup performance is back to normal.
 * If you experience session startup failures due to exceptions similar to `Resources$NotFoundException` then try to adjust your ProGuard rules:
   ```
   -dontwarn com.google.android.material.**
