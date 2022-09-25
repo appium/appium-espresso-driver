@@ -54,7 +54,7 @@ appium:printPageSourceOnFindFailure | Enforces the server to dump the actual XML
 
 Capability Name | Description
 --- | ---
-appium:systemPort | The number of the port the Espresso server is listening on. By default the first free port from 8300..8399 range is selected. It is recommended to set this value if you are running [parallel tests](https://github.com/appium/appium/blob/master/docs/en/advanced-concepts/parallel-tests.md) on the same machine.
+appium:systemPort | The number of the port the Espresso server is listening on. By default the first free port from 8300..8399 range is selected. It is recommended to set this value if you are running [parallel tests](docs/parallel-tests.md) on the same machine.
 appium:skipServerInstallation | Skip the Espresso Server component installation on the device under test and all the related checks if set to `true`. This could help to speed up the session startup if you know for sure the correct server version is installed on the device. In case the server is not installed or an incorrect version of it is installed then you may get an unexpected error later. `false` by default
 appium:espressoServerLaunchTimeout | The maximum number of milliseconds to wait util Espresso server is listening on the device. `45000` ms by default
 appium:forceEspressoRebuild | Whether to always enforce Espresso server rebuild (`true`). By default Espresso caches the already built server apk and only rebuilds it when it is necessary, because rebuilding process needs extra time. `false` by default
@@ -66,11 +66,11 @@ appium:showGradleLog | Whether to include Gradle log to the regular server logs 
 Capability Name | Description
 --- | ---
 appium:app | Full path to the application to be tested (the app must be located on the same machine where the server is running). The `.apk` application extension is supported. Since driver version 2.1.0 `.aab` files are supported as well (they get converted to `.apk` format automatically if [bundletool.jar](https://github.com/google/bundletool/releases) could be found in your PATH). For older driver versions `.aab` files need to be [converted](https://stackoverflow.com/questions/53040047/generate-apk-file-from-aab-file-android-app-bundle) manually to `.apk` format using [bundletool](https://developer.android.com/studio/command-line/bundletool) first. Could also be an URL to a remote location. If neither of the `app` or `appPackage` capabilities are provided then the driver will fail to start a session. Also, if `app` capability is not provided it is expected that the app under test is already installed on the device under test and `noReset` is equal to `true`.
-appium:appPackage | Application package identifier to be started. If not provided then Espresso will try to detect it automatically from the package provided by the `app` capability. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
-appium:appActivity | Main application activity identifier. If not provided then Espresso will try to detect it automatically from the package provided by the `app` capability. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
-appium:appWaitActivity | Identifier of the first activity that the application invokes. If not provided then equals to `appium:appActivity`. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
-appium:appWaitPackage | Identifier of the first package that is invoked first. If not provided then equals to `appium:appPackage`. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
-appium:appWaitDuration | Maximum amount of milliseconds to wait until the application under test is started (e. g. an activity returns the control to the caller). `20000` ms by default. Read [How To Troubleshoot Activities Startup](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/activity-startup.md) for more details
+appium:appPackage | Application package identifier to be started. If not provided then Espresso will try to detect it automatically from the package provided by the `app` capability. Read [How To Troubleshoot Activities Startup](docs/activity-startup.md) for more details
+appium:appActivity | Main application activity identifier. If not provided then Espresso will try to detect it automatically from the package provided by the `app` capability. Read [How To Troubleshoot Activities Startup](docs/activity-startup.md) for more details
+appium:appWaitActivity | Identifier of the first activity that the application invokes. If not provided then equals to `appium:appActivity`. Read [How To Troubleshoot Activities Startup](docs/activity-startup.md) for more details
+appium:appWaitPackage | Identifier of the first package that is invoked first. If not provided then equals to `appium:appPackage`. Read [How To Troubleshoot Activities Startup](docs/activity-startup.md) for more details
+appium:appWaitDuration | Maximum amount of milliseconds to wait until the application under test is started (e. g. an activity returns the control to the caller). `20000` ms by default. Read [How To Troubleshoot Activities Startup](docs/activity-startup.md) for more details
 appium:intentOptions | The mapping of custom options for the intent that is going to be passed to the main app activity. Check [Intent Options](#intent-options) for more details.
 appium:activityOptions | The mapping of custom options for the main app activity that is going to be started. Check [Activity Options](#activity-options) for more details.
 appium:androidInstallTimeout | Maximum amount of milliseconds to wait until the application under test is installed. `90000` ms by default
@@ -153,8 +153,8 @@ appium:chromedriverPort | The port number to use for Chromedriver communication.
 appium:chromedriverPorts | Array of possible port numbers to assign for Chromedriver communication. If none of the port in this array is free then an error is thrown.
 appium:chromedriverArgs | Array of chromedriver [command line arguments](http://www.assertselenium.com/java/list-of-chrome-driver-command-line-arguments/). Note, that not all command line arguments that are available for the desktop browser are also available for the mobile one.
 appium:chromedriverExecutable | Full path to the chromedriver executable on the server file system.
-appium:chromedriverExecutableDir | Full path to the folder where chromedriver executables are located. This folder is used then to store the downloaded chromedriver executables if automatic download is enabled. Read [Automatic Chromedriver Discovery article](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/web/chromedriver.md#automatic-discovery-of-compatible-chromedriver) for more details.
-appium:chromedriverChromeMappingFile | Full path to the chromedrivers mapping file. This file is used to statically map webview/browser versions to the chromedriver versions that are capable of automating them. Read [Automatic Chromedriver Discovery article](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/web/chromedriver.md#automatic-discovery-of-compatible-chromedriver) for more details.
+appium:chromedriverExecutableDir | Full path to the folder where chromedriver executables are located. This folder is used then to store the downloaded chromedriver executables if automatic download is enabled. Read [Automatic Chromedriver Discovery article](docs/hybrid-mode.md#automatic-discovery-of-compatible-chromedriver) for more details.
+appium:chromedriverChromeMappingFile | Full path to the chromedrivers mapping file. This file is used to statically map webview/browser versions to the chromedriver versions that are capable of automating them. Read [Automatic Chromedriver Discovery article](docs/hybrid-mode.md#automatic-discovery-of-compatible-chromedriver) for more details.
 appium:chromedriverUseSystemExecutable | Set it to `true` in order to enforce the usage of chromedriver, which gets downloaded by Appium automatically upon installation. This driver might not be compatible with the destination browser or a web view. `false` by default.
 appium:chromedriverDisableBuildCheck | Being set to `true` disables the compatibility validation between the current chromedriver and the destination browser/web view. Use it with care.
 appium:autoWebviewTimeout | Set the maximum number of milliseconds to wait until a web view is available if `autoWebview` capability is set to `true`. `2000` ms by default
@@ -361,7 +361,7 @@ accessibility id | This strategy is mapped to the native Espresso `withContentDe
 class name | This strategy is mapped to the native Espresso `withClassName` [matcher](https://developer.android.com/reference/androidx/test/espresso/matcher/ViewMatchers#withClassName(org.hamcrest.Matcher%3Cjava.lang.String%3E)) (exact match of element's class name). | 'android.view.View'
 text | This strategy is mapped to the native Espresso `withText` [matcher](https://developer.android.com/reference/androidx/test/espresso/matcher/ViewMatchers#withText(org.hamcrest.Matcher%3Cjava.lang.String%3E)) (exact match of element's text). | 'my text'
 `-android viewtag` or `tag name` | This strategy is mapped to the native Espresso `withTagValue` [matcher](https://developer.android.com/reference/androidx/test/espresso/matcher/ViewMatchers#withtagvalue) (exact match of element's tag value). | 'my tag'
--android datamatcher | This strategy allows to create Espresso [data interaction](https://developer.android.com/reference/android/support/test/espresso/DataInteraction) selectors which can quickly and reliably scroll to the necessary elements. Read [Espresso DataMatcher Selector](https://appium.io/docs/en/writing-running-appium/android/espresso-datamatcher-selector/) to know more on how to construct these locators. Also check the [Unlocking New Testing Capabilities with Espresso Driver by Daniel Graham](https://www.youtube.com/watch?v=gU9EEUV5n9U) presentation video from Appium Conf 2019. | `{"name": "hasEntry", "args": ["title", "WebView3"]}`
+-android datamatcher | This strategy allows to create Espresso [data interaction](https://developer.android.com/reference/android/support/test/espresso/DataInteraction) selectors which can quickly and reliably scroll to the necessary elements. Read [Espresso DataMatcher Selector](docs/espresso-datamatcher-selector.md) to know more on how to construct these locators. Also check the [Unlocking New Testing Capabilities with Espresso Driver by Daniel Graham](https://www.youtube.com/watch?v=gU9EEUV5n9U) presentation video from Appium Conf 2019. | `{"name": "hasEntry", "args": ["title", "WebView3"]}`
 -android viewmatcher | This strategy allows to construct Espresso [view matcher](https://developer.android.com/reference/androidx/test/espresso/matcher/ViewMatchers) based on the given JSON representation of it. The representation is expected to contain the following fields: `name`: the mandatory matcher function name; `args`: optional matcher function arguments, each argument could also be a function; `class`: the full qualified class name of the corresponding matcher. | `{"name": "withText", "args": [{"name": "containsString", "args": "getExternalStoragePublicDirectory", "class": "org.hamcrest.Matchers"}], "class": "androidx.test.espresso.matcher.ViewMatchers"}`
 xpath | For elements lookup Xpath strategy the driver uses the same XML tree that is generated by page source API. Only Xpath 1.0 is supported. | `By.xpath("//android.view.View[@text=\"Regular\" and @checkable=\"true\"]")`
 
@@ -384,7 +384,7 @@ Beside of standard W3C APIs the driver provides the following custom command ext
 
 ### mobile: shell
 
-Executes the given shell command on the device under test via ADB connection. This extension exposes a potential security risk and thus is only enabled when explicitly activated by the `adb_shell` server [command line feature specifier](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/security.md)
+Executes the given shell command on the device under test via ADB connection. This extension exposes a potential security risk and thus is only enabled when explicitly activated by the `adb_shell` server command line feature specifier
 
 #### Arguments
 
@@ -402,7 +402,7 @@ Depending on the `includeStderr` value this API could either return a string, wh
 ### mobile: execEmuConsoleCommand
 
 Executes a command through emulator telnet console interface and returns its output.
-The `emulator_console` server [feature](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/security.md) must be enabled in order to use this method.
+The `emulator_console` server feature must be enabled in order to use this method.
 
 #### Arguments
 
@@ -419,7 +419,27 @@ The actual command output. An error is thrown if command execution fails.
 
 ### mobile: performEditorAction
 
-Performs IME action on the focused edit element. Read [How To Emulate IME Actions Generation](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/android/android-ime.md) for more details.
+Performs IME action on the _currently focused_ edit element.
+
+Very often Android developers use [onEditorAction](https://developer.android.com/reference/android/widget/TextView.OnEditorActionListener.html#onEditorAction(android.widget.TextView,%20int,%20android.view.KeyEvent)) callback with `actionId` argument to implement actions handling, for example, when `Search` or `Done` button is pressed on the on-screen keyboard. This mobile extension is supposed to emulate the invokation of such callback on the focused element.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+action | string | yes | The name or an integer code of the editor action to be executed. The following action names are supported: `normal, unspecified, none, go, search, send, next, done, previous`. Read [EditorInfo](https://developer.android.com/reference/android/view/inputmethod/EditorInfo) for more details on this topic. | search
+
+#### Examples
+
+```java
+// Java
+driver.executeScript("mobile: performEditorAction", ImmutableMap.of("action", "Go"));
+```
+
+```python
+# Python
+driver.execute_script('mobile: performEditorAction', {'action': 'previous'})
+```
 
 ### mobile: changePermissions
 
@@ -450,7 +470,7 @@ Array of strings, where each string is a permission name. the array could be emp
 
 ### mobile: startScreenStreaming
 
-Starts device screen broadcast by creating MJPEG server. Multiple calls to this method have no effect unless the previous streaming session is stopped. This method only works if the `adb_screen_streaming` [feature](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/security.md) is enabled on the server side. It is also required that [GStreamer](https://gstreamer.freedesktop.org/) with `gst-plugins-base`, `gst-plugins-good` and `gst-plugins-bad` packages is installed and available in PATH on the server machine.
+Starts device screen broadcast by creating MJPEG server. Multiple calls to this method have no effect unless the previous streaming session is stopped. This method only works if the `adb_screen_streaming` feature is enabled on the server side. It is also required that [GStreamer](https://gstreamer.freedesktop.org/) with `gst-plugins-base`, `gst-plugins-good` and `gst-plugins-bad` packages is installed and available in PATH on the server machine.
 
 #### Arguments
 
