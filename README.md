@@ -1,4 +1,4 @@
-11# Appium Espresso Driver
+# Appium Espresso Driver
 
 [![Build Status](https://dev.azure.com/AppiumCI/Appium%20CI/_apis/build/status/appium.appium-espresso-driver?branchName=master)](https://dev.azure.com/AppiumCI/Appium%20CI/_build/latest?definitionId=3&branchName=master)
 
@@ -198,11 +198,7 @@ In order to change between subdrivers use the [driver](#settings-api) setting. S
 - click, isDisplayed, isEnabled, clear, getText, sendKeys, getElementRect, getValue, isSelected: These commands should properly support compose elements.
 - getAttribute: Accepts and returns Compose-specific element attributes. See [Compose Element Attributes](#compose-element-attributes) for the full list of supported Compose element attributes.
 - mobile: swipe command should properly support compose element as long as the element is swipeable.
-  Name | Type | Required | Description | Example
-  --- | --- | --- | --- | ---
-  element | string | yes | The UDID of the element to perform the swipe on. | 123456-7890-3453-24234243
-  direction | string | yes | Swipe direction.The following values are supported: `up`, `down`, `left`, `right`
-  
+
 Calling other driver element-specific APIs not listed above would most likely throw an exception as Compose and Espresso elements are being stored in completely separated internal caches and must not be mixed.
 
 You could also check end-to-end tests for more examples on how to setup test capabilities and

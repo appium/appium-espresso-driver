@@ -81,7 +81,7 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
         // Get a reference to the compose node
         val nodeInteractions = getNodeInteractionById(params.elementId)
 
-        if (params.direction != null) {
+        require((param.direction !=null){"Must provide direction to swipe to :up,down,right,left"}
             AndroidLogger.info("Performing swipe action with direction '${params.direction}'")
             when (params.direction) {
                 UP -> nodeInteractions.performTouchInput{swipeUp()}
@@ -90,10 +90,6 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
                 RIGHT -> nodeInteractions.performTouchInput{swipeRight()}
                 else -> throw InvalidArgumentException("Direction cannot be ${params.direction}")
             }
-        } else{
-            throw InvalidArgumentException("Must provide direction to swipe to :up,down,right,left")
-        }
-
         return null
     }
 }
