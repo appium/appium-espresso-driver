@@ -27,7 +27,6 @@ import org.hamcrest.TypeSafeMatcher
 
 import java.util.ArrayList
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
 import io.appium.espressoserver.lib.model.Strategy
@@ -79,13 +78,9 @@ object ViewFinder {
      * @throws InvalidSelectorException
      * @throws XPathLookupException
      */
-    @Throws(AppiumException::class)
-    fun findBy(
-            root: View?, strategy: Strategy, selector: String): View? {
+    fun findBy(root: View?, strategy: Strategy, selector: String): View? {
         val views = findAllBy(root, strategy, selector, true)
-        return if (views.isEmpty()) {
-            null
-        } else views[0]
+        return if (views.isEmpty()) null else views[0]
     }
 
     /**
@@ -99,9 +94,7 @@ object ViewFinder {
      * @throws InvalidSelectorException
      * @throws XPathLookupException
      */
-    @Throws(AppiumException::class)
-    fun findAllBy(root: View?,
-                  strategy: Strategy, selector: String): List<View> {
+    fun findAllBy(root: View?, strategy: Strategy, selector: String): List<View> {
         return findAllBy(root, strategy, selector, false)
     }
 
@@ -123,15 +116,16 @@ object ViewFinder {
                     }
                 },
                 true)
-        return if (views.isEmpty()) {
-            null
-        } else views[0]
+        return if (views.isEmpty()) null else views[0]
     }
 
     ///Find By different strategies
-    @Throws(AppiumException::class)
-    private fun findAllBy(root: View?, strategy: Strategy,
-                          selector: String, findOne: Boolean): List<View> {
+    private fun findAllBy(
+        root: View?,
+        strategy: Strategy,
+        selector: String,
+        findOne: Boolean
+    ): List<View> {
         @Suppress("NAME_SHADOWING") var selector = selector
         var views: List<View>
         when (strategy) {
@@ -205,8 +199,7 @@ object ViewFinder {
      * @param contentDesc Content description
      * @return
      */
-    private fun canScrollToViewWithContentDescription(parentView: View?,
-                                                      contentDesc: String): Boolean {
+    private fun canScrollToViewWithContentDescription(parentView: View?, contentDesc: String): Boolean {
         try {
             val dataInteraction = onData(
                     hasEntry(equalTo("contentDescription"), `is`(contentDesc))
@@ -245,7 +238,9 @@ object ViewFinder {
     }
 
     private fun getViews(
-            root: View?, matcher: Matcher<View>, findOne: Boolean,
+            root: View?,
+            matcher: Matcher<View>,
+            findOne: Boolean,
             rootMatcher: Matcher<Root>? = null
     ): List<View> {
         // If it's just one view we want, return a singleton list
