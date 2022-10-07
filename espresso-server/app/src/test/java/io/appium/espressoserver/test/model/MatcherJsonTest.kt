@@ -10,11 +10,11 @@ class `MatcherJson Tests` {
     val g = Gson()
 
     @Test
-    fun `should parse matchers`() {
+    fun `should parse matchers as object`() {
         val dataMatcher = g.fromJson("""{
             "name": "instanceOf", "args": "String.class"
         }""".trimIndent(), MatcherJson::class.java)
-        assertTrue(dataMatcher.matcher.matches("A STRING"))
-        assertFalse(dataMatcher.matcher.matches(100))
+        assertTrue(dataMatcher.query.matcher.matches("A STRING"))
+        assertFalse(dataMatcher.query.matcher.matches(100))
     }
 }
