@@ -282,10 +282,19 @@ object ViewFinder {
         var i = 0
         do {
             try {
-                val viewInteraction = if (root == null)
-                    onView(withIndex(matcher, i++))
-                else
-                    onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, i++)))
+                val viewInteraction = if (root == null) {
+                    if (rootMatcher == null) {
+                        onView(withIndex(matcher, i++))
+                    } else {
+                        onView(withIndex(matcher, i++)).inRoot(rootMatcher)
+                    }
+                } else {
+                    if (rootMatcher == null) {
+                        onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, i++)))
+                    } else {
+                        onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, i++))).inRoot(rootMatcher)
+                    }
+                }
                 val view = ViewGetter().getView(viewInteraction)
                 viewInteractions.add(view)
             } catch (e: AppNotIdleException){
