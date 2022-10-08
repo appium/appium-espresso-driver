@@ -32,8 +32,18 @@ import kotlin.reflect.KClass
 
 const val CLASS_SUFFIX = ".class"
 
+data class ScopedMatcher(
+    val matcher: Matcher<*>,
+    val scope: Matcher<*>? = null
+)
+
 @JsonAdapter(HamcrestMatcher.HamcrestMatcherDeserializer::class)
-data class HamcrestMatcher(var name: String, var args: Array<Any?>, var matcherClass: KClass<*> = Matchers::class) {
+data class HamcrestMatcher(
+    val name: String,
+    val args: Array<Any?>,
+    val cls: KClass<*>? = null,
+    val scope: HamcrestMatcher? = null
+) {
 
     private fun argsWithTypes(): List<*> {
         return this.args
@@ -59,10 +69,11 @@ data class HamcrestMatcher(var name: String, var args: Array<Any?>, var matcherC
         }
     }
 
-    fun invoke(): Matcher<*> {
-        val typedArgs = this.argsWithTypes().toTypedArray()
+    fun invoke(): ScopedMatcher {
+        val typedArgs = argsWithTypes().toTypedArray()
+        val matcherClass: KClass<*> = cls ?: Matchers::class
         val matcher = try {
-            invokeStaticMethod(this.matcherClass.java, this.name, *typedArgs)
+            invokeStaticMethod(matcherClass.java, name, *typedArgs)
         } catch (e: NoSuchMethodException) {
             throw InvalidSelectorException("${matcherClass.qualifiedName} does not implement any $name " +
                     "methods that accept $typedArgs argument(s)", e)
@@ -71,74 +82,71 @@ data class HamcrestMatcher(var name: String, var args: Array<Any?>, var matcherC
             throw InvalidArgumentException("'${this}' does not return a Matcher when invoked. " +
                     "Found '${matcher?.let { it::class.qualifiedName } ?: "null"}'")
         }
-        return matcher
+        return ScopedMatcher(matcher, scope?.invoke()?.matcher)
     }
 
     class HamcrestMatcherDeserializer : JsonDeserializer<HamcrestMatcher> {
         @Throws(JsonParseException::class)
         override fun deserialize(json: JsonElement, paramType: Type?,
                                  paramJsonDeserializationContext: JsonDeserializationContext?): HamcrestMatcher {
-
             if (json.isJsonObject) {
-
                 val jsonObj = json.asJsonObject
 
                 // Validate and parse the name property
-                val nameProp = jsonObj.get("name")
+                val nameProp = jsonObj.get("name") ?: throw JsonParseException("'name' property is mandatory")
+                val name = requireValidString("name", nameProp)
 
-                if (nameProp == null) {
-                    throw JsonParseException("Matcher must contain 'name' property")
-                } else if (!nameProp.isJsonPrimitive) {
-                    throw JsonParseException("'name' property on matcher must be a JSON primitive")
+                val scope = jsonObj.get("scope")?.let {
+                    if (!it.isJsonObject) {
+                        throw JsonParseException("'scope' value must be a JSON object")
+                    }
+                    deserialize(it.asJsonObject, null, null)
                 }
-
-                val name = nameProp.asString
 
                 // Parse args property
                 val listOfArgs = GsonParserHelpers.asArray(jsonObj, "args")
-
                 val args = arrayListOf<Any?>()
                 for (arg in listOfArgs) {
                     when {
                         arg.isJsonPrimitive -> args.add(GsonParserHelpers.parsePrimitive(arg.asJsonPrimitive))
                         arg.isJsonNull -> args.add(null)
-                        arg.isJsonObject -> args.add(HamcrestMatcherDeserializer().deserialize(arg, null, null).invoke())
+                        arg.isJsonObject -> args.add(
+                            deserialize(arg, null, null).invoke().matcher
+                        )
                     }
                 }
 
                 // Parse the 'class' property
-                jsonObj.get("class")?.let {
-                    if (it.isJsonPrimitive) {
-                        val className = it.asString
-
-                        // Try fully casting class as fully qualified name
-                        try {
-                            val matcherClass = Class.forName(className).kotlin
-                            return HamcrestMatcher(name, args.toTypedArray(), matcherClass)
-                        } catch (cnfe: ClassNotFoundException) {
-                        }
-
-                        // If above didn't work, try prepending 'androidx.test.espresso.matcher' package name
-                        try {
-                            val qualifiedClassName = "androidx.test.espresso.matcher.${className}"
-                            val matcherClass = Class.forName(qualifiedClassName).kotlin
-                            return HamcrestMatcher(name, args.toTypedArray(), matcherClass)
-                        } catch (cnfe: ClassCastException) {
-                            throw JsonParseException("No such class found '${className}'")
-                        }
+                val cls = jsonObj.get("class")?.let {
+                    val className = requireValidString("class", it)
+                    // Try fully casting class as fully qualified name
+                    try {
+                        return@let Class.forName(className).kotlin
+                    } catch (cnfe: ClassNotFoundException) { }
+                    // If above didn't work, try prepending 'androidx.test.espresso.matcher' package name
+                    try {
+                        val qualifiedClassName = "androidx.test.espresso.matcher.${className}"
+                        return@let Class.forName(qualifiedClassName).kotlin
+                    } catch (cnfe: ClassCastException) {
+                        throw JsonParseException("No such class found '${className}'")
                     }
-
-                    throw JsonParseException("'matcherClass' must be a string. Found '${it}'")
                 }
 
-                return HamcrestMatcher(name, args.toTypedArray())
+                return HamcrestMatcher(name, args.toTypedArray(), cls, scope)
             } else if (json.isJsonPrimitive) {
                 // If it's just a primitive, return that as the name and no args
-                return HamcrestMatcher(json.asString, emptyArray())
+                return HamcrestMatcher(requireValidString(json.asString, json), emptyArray())
             }
 
-            throw JsonParseException("Matcher must be a JSON object with a 'name' property (required) " +
-                    "and optional 'args' property and 'matcherClass' property")
+            throw JsonParseException("Must be a valid JSON object with a required 'name' property " +
+                    "plus optional 'args', 'class' and 'scope' properties. Got '$json' instead")
         }
     }
+}
+
+fun requireValidString(name: String, json: JsonElement): String {
+    require(json.isJsonPrimitive && json.asJsonPrimitive.isString && json.asString.isNotBlank()) {
+        throw JsonParseException("'$name' must be a valid string. Found '$json'")
+    }
+    return json.asString
 }

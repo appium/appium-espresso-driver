@@ -1,11 +1,14 @@
 package io.appium.espressoserver.lib.model
 
-import com.google.gson.*
+import com.google.gson.Gson
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonParseException
 import com.google.gson.annotations.JsonAdapter
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import java.lang.reflect.Type
-import org.hamcrest.Matcher
 
 fun String.toJsonMatcher(): MatcherJson {
     try {
@@ -18,7 +21,7 @@ fun String.toJsonMatcher(): MatcherJson {
 }
 
 @JsonAdapter(MatcherJsonDeserializer::class)
-data class MatcherJson(val matcher: Matcher<*>) : AppiumParams()
+data class MatcherJson(val query: ScopedMatcher) : AppiumParams()
 
 class MatcherJsonDeserializer : JsonDeserializer<MatcherJson> {
     @Throws(JsonParseException::class)
@@ -31,7 +34,6 @@ class MatcherJsonDeserializer : JsonDeserializer<MatcherJson> {
         val matcher = HamcrestMatcher.HamcrestMatcherDeserializer()
                 .deserialize(json, null, null)
                 .invoke()
-
         return MatcherJson(matcher)
     }
 }

@@ -18,20 +18,15 @@ package io.appium.espressoserver.lib.helpers
 
 import android.content.Context
 
-import androidx.test.espresso.DataInteraction
-import androidx.test.espresso.EspressoException
-import androidx.test.espresso.PerformException
 import android.view.View
 import android.widget.AdapterView
 
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.hamcrest.TypeSafeMatcher
 
 import java.util.ArrayList
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
 import io.appium.espressoserver.lib.model.Strategy
@@ -39,8 +34,12 @@ import io.appium.espressoserver.lib.viewaction.ViewGetter
 
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.AppNotIdleException
+import androidx.test.espresso.DataInteraction
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.EspressoException
+import androidx.test.espresso.PerformException
+import androidx.test.espresso.Root
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -79,13 +78,9 @@ object ViewFinder {
      * @throws InvalidSelectorException
      * @throws XPathLookupException
      */
-    @Throws(AppiumException::class)
-    fun findBy(
-            root: View?, strategy: Strategy, selector: String): View? {
+    fun findBy(root: View?, strategy: Strategy, selector: String): View? {
         val views = findAllBy(root, strategy, selector, true)
-        return if (views.isEmpty()) {
-            null
-        } else views[0]
+        return if (views.isEmpty()) null else views[0]
     }
 
     /**
@@ -99,9 +94,7 @@ object ViewFinder {
      * @throws InvalidSelectorException
      * @throws XPathLookupException
      */
-    @Throws(AppiumException::class)
-    fun findAllBy(root: View?,
-                  strategy: Strategy, selector: String): List<View> {
+    fun findAllBy(root: View?, strategy: Strategy, selector: String): List<View> {
         return findAllBy(root, strategy, selector, false)
     }
 
@@ -123,15 +116,16 @@ object ViewFinder {
                     }
                 },
                 true)
-        return if (views.isEmpty()) {
-            null
-        } else views[0]
+        return if (views.isEmpty()) null else views[0]
     }
 
     ///Find By different strategies
-    @Throws(AppiumException::class)
-    private fun findAllBy(root: View?, strategy: Strategy,
-                          selector: String, findOne: Boolean): List<View> {
+    private fun findAllBy(
+        root: View?,
+        strategy: Strategy,
+        selector: String,
+        findOne: Boolean
+    ): List<View> {
         @Suppress("NAME_SHADOWING") var selector = selector
         var views: List<View>
         when (strategy) {
@@ -177,7 +171,7 @@ object ViewFinder {
             Strategy.DATAMATCHER -> {
                 val matcher = selector.toJsonMatcher()
                 views = try {
-                    getViewsFromDataInteraction(root, onData(matcher.matcher))
+                    getViewsFromDataInteraction(root, onData(matcher.query.matcher))
                 } catch (e: PerformException) {
                     // Perform Exception means nothing was found. Return empty list
                     emptyList()
@@ -187,7 +181,7 @@ object ViewFinder {
                 val matcherJson = selector.toJsonMatcher()
                 views = try {
                     @Suppress("UNCHECKED_CAST")
-                    getViewsFromViewMatcher(root, matcherJson.matcher as Matcher<View>)
+                    getViews(root, matcherJson.query.matcher as Matcher<View>, findOne, matcherJson.query.scope as Matcher<Root>)
                 } catch (e: PerformException) {
                     // Perform Exception means nothing was found. Return empty list
                     emptyList()
@@ -205,11 +199,10 @@ object ViewFinder {
      * @param contentDesc Content description
      * @return
      */
-    private fun canScrollToViewWithContentDescription(parentView: View?,
-                                                      contentDesc: String): Boolean {
+    private fun canScrollToViewWithContentDescription(parentView: View?, contentDesc: String): Boolean {
         try {
             val dataInteraction = onData(
-                    hasEntry(Matchers.equalTo("contentDescription"), `is`(contentDesc))
+                    hasEntry(equalTo("contentDescription"), `is`(contentDesc))
             )
 
             // If the parentView provided is an AdapterView, set 'inAdapterView' so that the
@@ -244,23 +237,28 @@ object ViewFinder {
         return listOf(ViewGetter().getView(dataInteractionCopy))
     }
 
-    private fun getViewsFromViewMatcher(root: View?, matcher: Matcher<View>): List<View> {
-        val viewInteraction = if (root == null)
-            onView(matcher)
-        else
-            onView(allOf(isDescendantOfA(`is`(root)), matcher))
-        return listOf(ViewGetter().getView(viewInteraction))
-    }
-
     private fun getViews(
-            root: View?, matcher: Matcher<View>, findOne: Boolean): List<View> {
+            root: View?,
+            matcher: Matcher<View>,
+            findOne: Boolean,
+            rootMatcher: Matcher<Root>? = null
+    ): List<View> {
         // If it's just one view we want, return a singleton list
         if (findOne) {
             try {
-                val viewInteraction = if (root == null)
-                    onView(withIndex(matcher, 0))
-                else
-                    onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, 0)))
+                val viewInteraction = if (root == null) {
+                    if (rootMatcher == null) {
+                        onView(withIndex(matcher, 0))
+                    } else {
+                        onView(withIndex(matcher, 0)).inRoot(rootMatcher)
+                    }
+                } else {
+                    if (rootMatcher == null) {
+                        onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, 0)))
+                    } else {
+                        onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, 0))).inRoot(rootMatcher)
+                    }
+                }
                 return listOf(ViewGetter().getView(viewInteraction))
             } catch (e: AppNotIdleException){
                 throw InvalidElementStateException(APP_NOT_IDLE_MESSAGE + getThreadDump(), e)
@@ -279,10 +277,19 @@ object ViewFinder {
         var i = 0
         do {
             try {
-                val viewInteraction = if (root == null)
-                    onView(withIndex(matcher, i++))
-                else
-                    onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, i++)))
+                val viewInteraction = if (root == null) {
+                    if (rootMatcher == null) {
+                        onView(withIndex(matcher, i++))
+                    } else {
+                        onView(withIndex(matcher, i++)).inRoot(rootMatcher)
+                    }
+                } else {
+                    if (rootMatcher == null) {
+                        onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, i++)))
+                    } else {
+                        onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, i++))).inRoot(rootMatcher)
+                    }
+                }
                 val view = ViewGetter().getView(viewInteraction)
                 viewInteractions.add(view)
             } catch (e: AppNotIdleException){
