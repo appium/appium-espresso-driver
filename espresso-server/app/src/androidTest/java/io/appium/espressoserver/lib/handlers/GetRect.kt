@@ -26,7 +26,7 @@ import io.appium.espressoserver.lib.model.ViewElement
 class GetRect : RequestHandler<AppiumParams, Rect> {
 
     override fun handleEspresso(params: AppiumParams): Rect =
-        ViewElement(EspressoElement.getViewById(params.elementId)).rect
+        ViewElement(EspressoElement.getCachedViewStateById(params.elementId).view).rect
 
     override fun handleCompose(params: AppiumParams): Rect =
         ComposeNodeElement(getSemanticsNode(params.elementId!!)).rect

@@ -18,7 +18,6 @@ package io.appium.espressoserver.lib.handlers
 
 import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.UiController
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
 import io.appium.espressoserver.lib.helpers.getNodeInteractionById
@@ -37,7 +36,7 @@ import io.appium.espressoserver.lib.model.TextValueParams
 
 class Keys : RequestHandler<TextValueParams, Unit> {
 
-    override fun handleEspresso(params: TextValueParams): Unit {
+    override fun handleEspresso(params: TextValueParams) {
         val keys = params.value ?: emptyList()
 
         val runnable = object : UiControllerRunnable<Void?> {
@@ -81,7 +80,7 @@ class Keys : RequestHandler<TextValueParams, Unit> {
         UiControllerPerformer(runnable).run()
     }
 
-    override fun handleCompose(params: TextValueParams): Unit {
+    override fun handleCompose(params: TextValueParams) {
         try {
             val keys = params.value ?: return
             keys.forEach {

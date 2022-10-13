@@ -28,7 +28,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import com.google.gson.annotations.SerializedName
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
 import io.appium.espressoserver.lib.helpers.ComposeViewCache
@@ -49,24 +48,26 @@ interface BaseElement {
     val element: String
 }
 
-class EspressoElement(view: View) : BaseElement {
+class EspressoElement(viewState: ViewState) : BaseElement {
     @Suppress("JoinDeclarationAndAssignment")
     @SerializedName(JSONWP_ELEMENT_KEY, alternate = [W3C_ELEMENT_KEY])
     override val element: String
 
     init {
         element = UUID.randomUUID().toString()
-        EspressoViewsCache.put(element, view)
+        EspressoViewsCache.put(element, viewState)
     }
 
     companion object {
         /**
          * Retrieve cached view and return the ViewInteraction
          */
-        @Throws(AppiumException::class)
         fun getViewInteractionById(elementId: String?): ViewInteraction {
-            val view = getViewById(elementId)
-            return onView(withView(view))
+            val cachedView = getCachedViewStateById(elementId)
+            return if (cachedView.rootMatcher == null)
+                onView(withView(cachedView.view))
+            else
+                onView(withView(cachedView.view)).inRoot(cachedView.rootMatcher)
         }
 
         /**
@@ -107,7 +108,7 @@ class EspressoElement(view: View) : BaseElement {
         }
 
         @Throws(NoSuchElementException::class, StaleElementException::class)
-        fun getViewById(elementId: String?, checkStaleness: Boolean = true): View {
+        fun getCachedViewStateById(elementId: String?, checkStaleness: Boolean = true): ViewState {
             elementId ?: throw InvalidArgumentException("Cannot find 'null' element")
             if (!EspressoViewsCache.has(elementId)) {
                 throw NoSuchElementException(
@@ -116,43 +117,47 @@ class EspressoElement(view: View) : BaseElement {
                 )
             }
 
-            val (resultView, initialContentDescription1) = Objects.requireNonNull<ViewState>(
+            val resultState = Objects.requireNonNull<ViewState>(
                 EspressoViewsCache.get(elementId)
             )
 
             // If the cached view is gone, throw stale element exception
-            if (!resultView.isShown) {
+            if (!resultState.view.isShown) {
                 if (checkStaleness) {
                     throw StaleElementException(elementId)
                 } else {
-                    return resultView
+                    return resultState
                 }
             }
 
-            val initialContentDescription = charSequenceToNullableString(initialContentDescription1)
-                ?: return resultView
+            val initialContentDescription =
+                charSequenceToNullableString(resultState.initialContentDescription)
+                    ?: return resultState
             val currentContentDescription =
-                charSequenceToNullableString(resultView.contentDescription)
+                charSequenceToNullableString(resultState.view.contentDescription)
             if (currentContentDescription == initialContentDescription) {
-                return resultView
+                return resultState
             }
 
             try {
                 EspressoViewsCache.put(
                     elementId,
-                    lookupOffscreenView(resultView, initialContentDescription)
+                    ViewState(
+                        lookupOffscreenView(resultState.view, initialContentDescription),
+                        rootMatcher = resultState.rootMatcher
+                    )
                 )
             } catch (e: Exception) {
                 if (e is EspressoException) {
                     if (!checkStaleness) {
-                        return resultView
+                        return resultState
                     }
                     throw StaleElementException(elementId)
                 }
                 throw e
             }
 
-            return resultView
+            return resultState
         }
     }
 }

@@ -26,7 +26,7 @@ import io.appium.espressoserver.lib.model.ComposeNodeElement
 class GetLocation : RequestHandler<AppiumParams, Location> {
 
     override fun handleEspresso(params: AppiumParams): Location {
-        val viewElement = ViewElement(EspressoElement.getViewById(params.elementId))
+        val viewElement = ViewElement(EspressoElement.getCachedViewStateById(params.elementId).view)
         return Location(viewElement.bounds.left, viewElement.bounds.top)
     }
 

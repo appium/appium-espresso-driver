@@ -35,11 +35,11 @@ import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
 class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueParams, Unit> {
 
-    override fun handleEspresso(params: TextValueParams): Unit {
+    override fun handleEspresso(params: TextValueParams) {
         val value: String = extractTextToEnter(params)
 
         val elementId = params.elementId
-        val view = EspressoElement.getViewById(elementId)
+        val view = EspressoElement.getCachedViewStateById(elementId).view
 
         try {
             if (view is ProgressBar) {
@@ -76,7 +76,7 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueP
         }
     }
 
-    override fun handleCompose(params: TextValueParams): Unit {
+    override fun handleCompose(params: TextValueParams) {
         val value: String = extractTextToEnter(params)
         try {
             if (isReplacing) {

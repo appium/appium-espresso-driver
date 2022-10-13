@@ -21,7 +21,7 @@ class MobileBackdoor : RequestHandler<MobileBackdoorParams, Any?> {
             val result = when (target) {
                 InvocationTarget.ACTIVITY -> invokeBackdoorMethods(activity, ops)
                 InvocationTarget.APPLICATION -> invokeBackdoorMethods(activity.application, ops)
-                InvocationTarget.ELEMENT -> invokeBackdoorMethods(EspressoElement.getViewById(params.targetElement), ops)
+                InvocationTarget.ELEMENT -> invokeBackdoorMethods(EspressoElement.getCachedViewStateById(params.targetElement), ops)
                 else -> throw InvalidArgumentException("target cannot be '$target'")
             } ?: return null
 

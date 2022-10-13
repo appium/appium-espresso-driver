@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.model.ViewElement
 class GetDisplayed : RequestHandler<AppiumParams, Boolean> {
 
     override fun handleEspresso(params: AppiumParams): Boolean =
-        ViewElement(EspressoElement.getViewById(params.elementId, false)).isVisible
+        ViewElement(EspressoElement.getCachedViewStateById(params.elementId, false).view).isVisible
 
     override fun handleCompose(params: AppiumParams): Boolean =
         try {

@@ -52,9 +52,9 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
 
     private fun getEspressoAttribute(elementId: String, attributeName: String): String? {
         val viewElementGetter: () -> ViewElement =
-            { ViewElement(EspressoElement.getViewById(elementId)) }
+            { ViewElement(EspressoElement.getCachedViewStateById(elementId).view) }
         val uncheckedViewElementGetter: () -> ViewElement =
-            { ViewElement(EspressoElement.getViewById(elementId, false)) }
+            { ViewElement(EspressoElement.getCachedViewStateById(elementId, false).view) }
         val viewInteractionGetter: () -> ViewInteraction =
             { EspressoElement.getViewInteractionById(elementId) }
         val checkToAttributeValue: (() -> Unit) -> String = {

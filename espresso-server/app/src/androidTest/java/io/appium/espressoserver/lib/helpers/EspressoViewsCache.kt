@@ -19,16 +19,22 @@ package io.appium.espressoserver.lib.helpers
 import android.util.LruCache
 import android.view.View
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.test.espresso.Root
+import org.hamcrest.Matcher
 
 const val MAX_CACHE_SIZE = 500
 
-data class ViewState(val view: View, val initialContentDescription: CharSequence?)
+data class ViewState(
+    val view: View,
+    val initialContentDescription: CharSequence? = view.contentDescription,
+    val rootMatcher: Matcher<Root>? = null
+)
 
 object EspressoViewsCache {
     private val cache = LruCache<String, ViewState>(MAX_CACHE_SIZE)
 
-    fun put(id: String, view: View) {
-        cache.put(id, ViewState(view, view.contentDescription))
+    fun put(id: String, viewState: ViewState) {
+        cache.put(id, viewState)
     }
 
     fun get(id: String): ViewState? = cache.get(id)

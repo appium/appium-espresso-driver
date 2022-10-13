@@ -126,10 +126,9 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
         return keyCodeToEvent(keyValue, location)
     }
 
-    @Throws(AppiumException::class)
     override fun getElementCenterPoint(elementId: String?): Point {
-        val view = EspressoElement.getViewById(elementId)
-        val coords = GeneralLocation.CENTER.calculateCoordinates(view)
+        val viewState = EspressoElement.getCachedViewStateById(elementId)
+        val coords = GeneralLocation.CENTER.calculateCoordinates(viewState.view)
         val point = Point()
         point.x = coords[0].roundToInt()
         point.y = coords[1].roundToInt()

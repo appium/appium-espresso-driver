@@ -26,7 +26,7 @@ import io.appium.espressoserver.lib.model.ViewElement
 class GetSelected : RequestHandler<AppiumParams, Boolean> {
 
     override fun handleEspresso(params: AppiumParams): Boolean =
-            ViewElement(EspressoElement.getViewById(params.elementId)).isSelected
+            ViewElement(EspressoElement.getCachedViewStateById(params.elementId).view).isSelected
 
     override fun handleCompose(params: AppiumParams): Boolean =
             ComposeNodeElement(getSemanticsNode(params.elementId!!)).isSelected

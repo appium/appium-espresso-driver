@@ -25,8 +25,8 @@ import io.appium.espressoserver.lib.model.ComposeNodeElement
 class GetName : RequestHandler<AppiumParams, String?> {
 
     override fun handleEspresso(params: AppiumParams): String? {
-        val view = EspressoElement.getViewById(params.elementId)
-        return ViewElement(view).contentDescription?.toString()
+        val viewState = EspressoElement.getCachedViewStateById(params.elementId)
+        return ViewElement(viewState.view).contentDescription?.toString()
     }
 
     override fun handleCompose(params: AppiumParams): String? {

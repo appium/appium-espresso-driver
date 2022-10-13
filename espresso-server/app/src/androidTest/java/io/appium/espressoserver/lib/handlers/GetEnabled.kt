@@ -25,7 +25,7 @@ import io.appium.espressoserver.lib.model.ComposeNodeElement
 class GetEnabled : RequestHandler<AppiumParams, Boolean> {
 
     override fun handleEspresso(params: AppiumParams): Boolean =
-        ViewElement(EspressoElement.getViewById(params.elementId)).isEnabled
+        ViewElement(EspressoElement.getCachedViewStateById(params.elementId).view).isEnabled
 
     override fun handleCompose(params: AppiumParams): Boolean =
         ComposeNodeElement(getSemanticsNode(params.elementId!!)).isEnabled

@@ -23,6 +23,7 @@ import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.MobileClickActionParams
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
+import io.appium.espressoserver.lib.viewaction.ViewGetter
 
 class MobileClickAction : RequestHandler<MobileClickActionParams, Void?> {
 
@@ -37,7 +38,8 @@ class MobileClickAction : RequestHandler<MobileClickActionParams, Void?> {
                         params.inputDevice,
                         params.buttonState
                 )
-                clickAction.perform(uiController, EspressoElement.getViewById(params.elementId))
+                val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
+                clickAction.perform(uiController, ViewGetter().getView(viewInteraction))
 
                 return null
             }
