@@ -182,7 +182,7 @@ object ViewFinder {
                 val matcherJson = selector.toJsonMatcher()
                 return try {
                     @Suppress("UNCHECKED_CAST")
-                    getViews(root, matcherJson.query.matcher as Matcher<View>, findOne, matcherJson.query.scope as Matcher<Root>)
+                    getViews(root, matcherJson.query.matcher as Matcher<View>, findOne, matcherJson.query.scope as Matcher<Root>?)
                         .map { ViewState(it, rootMatcher = matcherJson.query.scope) }
                 } catch (e: PerformException) {
                     // Perform Exception means nothing was found. Return empty list
