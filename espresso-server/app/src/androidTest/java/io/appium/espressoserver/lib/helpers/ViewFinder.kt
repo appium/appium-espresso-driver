@@ -265,21 +265,16 @@ object ViewFinder {
             if (isDataMatcher) {
                 if (parent == null) {
                     if (rootMatcher == null) {
-                        @Suppress("UNCHECKED_CAST")
-                        onData(if (index == 0) matcher else withIndex(matcher as Matcher<View>, index))
+                        onData(if (index == 0) matcher else withIndex(matcher, index))
                     } else {
-                        @Suppress("UNCHECKED_CAST")
-                        onData(if (index == 0) matcher else withIndex(matcher as Matcher<View>, index))
-                            .inRoot(rootMatcher)
+                        onData(if (index == 0) matcher else withIndex(matcher, index)).inRoot(rootMatcher)
                     }
                 } else {
                     if (rootMatcher == null) {
-                        @Suppress("UNCHECKED_CAST")
-                        onData(if (index == 0) matcher else withIndex(matcher as Matcher<View>, index))
+                        onData(if (index == 0) matcher else withIndex(matcher, index))
                             .inAdapterView(withView(parent))
                     } else {
-                        @Suppress("UNCHECKED_CAST")
-                        onData(if (index == 0) matcher else withIndex(matcher as Matcher<View>, index))
+                        onData(if (index == 0) matcher else withIndex(matcher, index))
                             .inAdapterView(withView(parent))
                             .inRoot(rootMatcher)
                     }
@@ -349,8 +344,8 @@ object ViewFinder {
         return resultViews
     }
 
-    private fun withIndex(matcher: Matcher<View>, index: Int): Matcher<View> {
-        return object : TypeSafeMatcher<View>() {
+    private fun <T: Any> withIndex(matcher: Matcher<T>, index: Int): Matcher<T> {
+        return object : TypeSafeMatcher<T>() {
             var currentIndex = 0
 
             override fun describeTo(description: Description) {
@@ -359,8 +354,8 @@ object ViewFinder {
                 matcher.describeTo(description)
             }
 
-            public override fun matchesSafely(view: View): Boolean {
-                return matcher.matches(view) && currentIndex++ == index
+            public override fun matchesSafely(item: T): Boolean {
+                return matcher.matches(item) && currentIndex++ == index
             }
         }
     }
