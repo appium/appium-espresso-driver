@@ -17,6 +17,7 @@ describe('driver', function () {
       driver = new EspressoDriver({}, false);
       driver.adb = new ADB();
       driver.caps = {};
+      driver.opts = {};
       sandbox.stub(driver.adb, 'stopLogcat');
     });
     afterEach(function () {
