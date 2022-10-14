@@ -265,18 +265,15 @@ object ViewFinder {
             if (isDataMatcher) {
                 if (parent == null) {
                     if (rootMatcher == null) {
-                        onData(if (index == 0) matcher else withIndex(matcher, index))
+                        onData(withIndex(matcher, index))
                     } else {
-                        onData(if (index == 0) matcher else withIndex(matcher, index)).inRoot(rootMatcher)
+                        onData(withIndex(matcher, index)).inRoot(rootMatcher)
                     }
                 } else {
                     if (rootMatcher == null) {
-                        onData(if (index == 0) matcher else withIndex(matcher, index))
-                            .inAdapterView(withView(parent))
+                        onData(withIndex(matcher, index)).inAdapterView(withView(parent))
                     } else {
-                        onData(if (index == 0) matcher else withIndex(matcher, index))
-                            .inAdapterView(withView(parent))
-                            .inRoot(rootMatcher)
+                        onData(withIndex(matcher, index)).inAdapterView(withView(parent)).inRoot(rootMatcher)
                     }
                 }
             } else {
