@@ -301,32 +301,11 @@ object ViewFinder {
             }
         }
 
-        // If it's just one view we want, return a singleton list
-        if (findOne) {
-            try {
-                return when (val interaction = buildInteraction(0)) {
-                    is ViewInteraction -> listOf(ViewGetter().getView(interaction))
-                    is DataInteraction -> listOf(ViewGetter().getView(interaction))
-                    else -> throw RuntimeException("Cannot build a valid location interaction")
-                }
-            } catch (e: AppNotIdleException) {
-                throw InvalidElementStateException(APP_NOT_IDLE_MESSAGE + getThreadDump(), e)
-            } catch (e: Exception) {
-                if (e is EspressoException) {
-                    return emptyList()
-                }
-                throw e
-            }
-        }
-
-        // If we want all views that match the criteria, start looking for ViewInteractions by
-        // index and add each match to the List. As soon as we find no match, break the loop
-        // and return the list
         val resultViews = mutableListOf<View>()
-        var i = 0
+        var viewIndex = 0
         do {
             try {
-                val view = when (val interaction = buildInteraction(i++)) {
+                val view = when (val interaction = buildInteraction(viewIndex++)) {
                     is ViewInteraction -> ViewGetter().getView(interaction)
                     is DataInteraction -> ViewGetter().getView(interaction)
                     else -> throw RuntimeException("Cannot build a valid location interaction")
@@ -340,7 +319,7 @@ object ViewFinder {
                 }
                 throw e
             }
-        } while (i < Integer.MAX_VALUE)
+        } while (!findOne && viewIndex < Integer.MAX_VALUE)
         return resultViews
     }
 
