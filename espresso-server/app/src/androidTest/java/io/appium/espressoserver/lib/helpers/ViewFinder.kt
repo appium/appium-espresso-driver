@@ -140,8 +140,7 @@ object ViewFinder {
                     id = context.resources.getIdentifier(selector, "Id", context.packageName)
                 }
 
-                return if (id == 0) emptyList() else getViews(withId(id), findOne, parent)
-                    .map { ViewState(it) }
+                return if (id == 0) emptyList() else getViews(withId(id), findOne, parent).map { ViewState(it) }
             }
             Strategy.CLASS_NAME -> {
                 // with class name
