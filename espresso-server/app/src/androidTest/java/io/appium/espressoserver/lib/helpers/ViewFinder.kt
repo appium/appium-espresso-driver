@@ -43,7 +43,6 @@ import androidx.test.espresso.Root
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
@@ -55,7 +54,6 @@ import io.appium.espressoserver.lib.viewmatcher.withXPath
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.hasEntry
 import org.hamcrest.Matchers.instanceOf
 
@@ -136,14 +134,22 @@ object ViewFinder {
                     patchedSelector = "${context.packageName}:id/$selector"
                     AndroidLogger.info("Rewrote Id selector to '$patchedSelector'")
                 }
-                val id = context.resources.getIdentifier(patchedSelector, "Id", context.packageName)
+                var id = context.resources.getIdentifier(patchedSelector, "Id", context.packageName)
+                if (id == 0 && patchedSelector != selector) {
+                    id = context.resources.getIdentifier(selector, "Id", context.packageName)
+                }
 
-                return getViews(root, withId(id), findOne).map { ViewState(it) }
+                return if (id == 0) emptyList() else getViews(root, withId(id), findOne).map { ViewState(it) }
             }
-            Strategy.CLASS_NAME ->
+            Strategy.CLASS_NAME -> {
                 // with class name
-                // TODO: improve this finder with instanceOf
-                return getViews(root, withClassName(endsWith(selector)), findOne).map { ViewState(it) }
+                val cls = try {
+                    Class.forName(selector)
+                } catch (e: ClassNotFoundException) {
+                    return emptyList()
+                }
+                return getViews(root, instanceOf(cls), findOne).map { ViewState(it) }
+            }
             Strategy.TEXT ->
                 // with text
                 return getViews(root, withText(selector), findOne).map { ViewState(it) }
@@ -166,8 +172,11 @@ object ViewFinder {
                     getViews(root, withXPath(root, selector), false).map { ViewState(it) }
                 }
             Strategy.VIEW_TAG ->
-                return getViews(root, withTagValue(allOf(instanceOf(String::class.java), equalTo(selector as Any))), findOne)
-                    .map { ViewState(it) }
+                return getViews(
+                    root,
+                    withTagValue(allOf(instanceOf(String::class.java), equalTo(selector as Any))),
+                    findOne
+                ).map { ViewState(it) }
             Strategy.DATAMATCHER -> {
                 val matcher = selector.toJsonMatcher()
                 return try {
@@ -182,8 +191,12 @@ object ViewFinder {
                 val matcherJson = selector.toJsonMatcher()
                 return try {
                     @Suppress("UNCHECKED_CAST")
-                    getViews(root, matcherJson.query.matcher as Matcher<View>, findOne, matcherJson.query.scope as Matcher<Root>?)
-                        .map { ViewState(it, rootMatcher = matcherJson.query.scope) }
+                    getViews(
+                        root,
+                        matcherJson.query.matcher as Matcher<View>,
+                        findOne,
+                        matcherJson.query.scope as Matcher<Root>?
+                    ).map { ViewState(it, rootMatcher = matcherJson.query.scope) }
                 } catch (e: PerformException) {
                     // Perform Exception means nothing was found. Return empty list
                     emptyList()
