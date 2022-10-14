@@ -25,8 +25,6 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
-import java.util.ArrayList
-
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
 import io.appium.espressoserver.lib.model.Strategy
@@ -40,6 +38,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.EspressoException
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.Root
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -62,13 +61,14 @@ import org.hamcrest.Matchers.instanceOf
  */
 object ViewFinder {
     private const val ID_PATTERN = "[\\S]+:id/[\\S]+"
-    private const val APP_NOT_IDLE_MESSAGE = "The application is expected to be in idle state in order for Espresso to interact with it. " +
-            "Review the threads dump below to know more on which entity is hogging the events loop "
+    private const val APP_NOT_IDLE_MESSAGE =
+        "The application is expected to be in idle state in order for Espresso to interact with it. " +
+                "Review the threads dump below to know more on which entity is hogging the events loop "
 
     /**
      * Find one instance of an element that matches the locator criteria
      *
-     * @param root     Parent view instance or null if the search is executed against the
+     * @param parent     Parent view instance or null if the search is executed against the
      * full hierarchy
      * @param strategy Locator strategy (xpath, class name, etc...)
      * @param selector Selector string
@@ -76,15 +76,15 @@ object ViewFinder {
      * @throws InvalidSelectorException
      * @throws XPathLookupException
      */
-    fun findBy(root: View?, strategy: Strategy, selector: String): ViewState? {
-        val viewStates = findAllBy(root, strategy, selector, true)
+    fun findBy(parent: View?, strategy: Strategy, selector: String): ViewState? {
+        val viewStates = findAllBy(parent, strategy, selector, true)
         return if (viewStates.isEmpty()) null else viewStates[0]
     }
 
     /**
      * Find all instances of an element that matches the locator criteria
      *
-     * @param root     Parent view instance or null if the search is executed against the
+     * @param parent     Parent view instance or null if the search is executed against the
      * full hierarchy
      * @param strategy Locator strategy (xpath, class name, etc...)
      * @param selector Selector string
@@ -92,8 +92,8 @@ object ViewFinder {
      * @throws InvalidSelectorException
      * @throws XPathLookupException
      */
-    fun findAllBy(root: View?, strategy: Strategy, selector: String): List<ViewState> {
-        return findAllBy(root, strategy, selector, false)
+    fun findAllBy(parent: View?, strategy: Strategy, selector: String): List<ViewState> {
+        return findAllBy(parent, strategy, selector, false)
     }
 
     /**
@@ -103,23 +103,24 @@ object ViewFinder {
      * @return focused element instance or null
      */
     fun findActive(): View? {
-        val views = getViews(null,
-                object : TypeSafeMatcher<View>() {
-                    override fun matchesSafely(item: View): Boolean {
-                        return item.isFocused
-                    }
+        val views = getViews(
+            object : TypeSafeMatcher<View>() {
+                override fun matchesSafely(item: View): Boolean {
+                    return item.isFocused
+                }
 
-                    override fun describeTo(description: Description) {
-                        description.appendText("is focused")
-                    }
-                },
-                true)
+                override fun describeTo(description: Description) {
+                    description.appendText("is focused")
+                }
+            },
+            true
+        )
         return if (views.isEmpty()) null else views[0]
     }
 
     ///Find By different strategies
     private fun findAllBy(
-        root: View?,
+        parent: View?,
         strategy: Strategy,
         selector: String,
         findOne: Boolean
@@ -139,7 +140,8 @@ object ViewFinder {
                     id = context.resources.getIdentifier(selector, "Id", context.packageName)
                 }
 
-                return if (id == 0) emptyList() else getViews(root, withId(id), findOne).map { ViewState(it) }
+                return if (id == 0) emptyList() else getViews(withId(id), findOne, parent)
+                    .map { ViewState(it) }
             }
             Strategy.CLASS_NAME -> {
                 // with class name
@@ -148,40 +150,48 @@ object ViewFinder {
                 } catch (e: ClassNotFoundException) {
                     return emptyList()
                 }
-                return getViews(root, instanceOf(cls), findOne).map { ViewState(it) }
+                return getViews(instanceOf<Class<*>>(cls), findOne, parent).map { ViewState(it) }
             }
             Strategy.TEXT ->
                 // with text
-                return getViews(root, withText(selector), findOne).map { ViewState(it) }
+                return getViews(withText(selector), findOne, parent).map { ViewState(it) }
             Strategy.ACCESSIBILITY_ID -> {
-                val result = getViews(root, withContentDescription(selector), findOne)
+                val result = getViews(withContentDescription(selector), findOne, parent)
 
                 // If the item is not found on the screen, use 'onData' to try
                 // to scroll it into view and then locate it again
-                return if (result.isEmpty() && canScrollToViewWithContentDescription(root, selector))
-                    getViews(root, withContentDescription(selector), findOne).map { ViewState(it) }
+                return if (result.isEmpty() && canScrollToViewWithContentDescription(parent, selector))
+                    getViews(withContentDescription(selector), findOne, parent).map { ViewState(it) }
                 else
                     result.map { ViewState(it) }
             }
             Strategy.XPATH ->
                 // If we're only looking for one item that matches xpath, pass it index 0 or else
                 // Espresso throws an AmbiguousMatcherException
-                return if (findOne) {
-                    getViews(root, withXPath(root, selector, 0), true).map { ViewState(it) }
-                } else {
-                    getViews(root, withXPath(root, selector), false).map { ViewState(it) }
-                }
+                return getViews(
+                    if (findOne) withXPath(parent, selector, 0) else withXPath(parent, selector),
+                    true,
+                    parent
+                ).map { ViewState(it) }
             Strategy.VIEW_TAG ->
                 return getViews(
-                    root,
                     withTagValue(allOf(instanceOf(String::class.java), equalTo(selector as Any))),
-                    findOne
+                    findOne,
+                    parent
                 ).map { ViewState(it) }
             Strategy.DATAMATCHER -> {
-                val matcher = selector.toJsonMatcher()
+                val matcherJson = selector.toJsonMatcher()
                 return try {
-                    getViewsFromDataInteraction(root, onData(matcher.query.matcher))
-                        .map { ViewState(it) }
+                    @Suppress("UNCHECKED_CAST")
+                    getViews(
+                        matcherJson.query.matcher,
+                        findOne,
+                        parent,
+                        matcherJson.query.scope as Matcher<Root>?,
+                        true
+                    ).map { ViewState(it, rootMatcher = matcherJson.query.scope) }
+                } catch (e: ClassCastException) {
+                    throw InvalidSelectorException("Not a valid selector '${selector}'. Reason: '${e.cause}'", e)
                 } catch (e: PerformException) {
                     // Perform Exception means nothing was found. Return empty list
                     emptyList()
@@ -192,11 +202,13 @@ object ViewFinder {
                 return try {
                     @Suppress("UNCHECKED_CAST")
                     getViews(
-                        root,
                         matcherJson.query.matcher as Matcher<View>,
                         findOne,
+                        parent,
                         matcherJson.query.scope as Matcher<Root>?
                     ).map { ViewState(it, rootMatcher = matcherJson.query.scope) }
+                } catch (e: ClassCastException) {
+                    throw InvalidSelectorException("Not a valid selector '${selector}'. Reason: '${e.cause}'", e)
                 } catch (e: PerformException) {
                     // Perform Exception means nothing was found. Return empty list
                     emptyList()
@@ -212,68 +224,97 @@ object ViewFinder {
      * @param contentDesc Content description
      * @return
      */
-    private fun canScrollToViewWithContentDescription(parentView: View?, contentDesc: String): Boolean {
-        try {
-            val dataInteraction = onData(
-                    hasEntry(equalTo("contentDescription"), `is`(contentDesc))
-            )
+    private fun canScrollToViewWithContentDescription(
+        parentView: View?,
+        contentDesc: String
+    ): Boolean = try {
+        val dataInteraction = onData(
+            hasEntry(equalTo("contentDescription"), `is`(contentDesc))
+        )
 
-            // If the parentView provided is an AdapterView, set 'inAdapterView' so that the
-            // selector is restricted to the adapter subtree
-            if (parentView is AdapterView<*>) {
-                dataInteraction.inAdapterView(withView(parentView))
-            }
-            dataInteraction.check(matches(isDisplayed()))
-        } catch (e: Exception) {
-            return false
+        // If the parentView provided is an AdapterView, set 'inAdapterView' so that the
+        // selector is restricted to the adapter subtree
+        if (parentView is AdapterView<*>) {
+            dataInteraction.inAdapterView(withView(parentView))
         }
-
-        return true
-    }
-
-    private fun getViewsFromDataInteraction(
-            root: View?, dataInteraction: DataInteraction
-    ): List<View> {
-        // Defensive copy
-        var dataInteractionCopy = dataInteraction
-
-        // Look up the view hierarchy to find the closest ancestor AdapterView
-        var ancestorAdapterView = root
-        while (ancestorAdapterView != null && ancestorAdapterView !is AdapterView<*>) {
-            val parent = ancestorAdapterView.parent
-            ancestorAdapterView = parent as? View
-        }
-        ancestorAdapterView?.let {
-            dataInteractionCopy = dataInteractionCopy.inAdapterView(withView(it))
-        }
-
-        return listOf(ViewGetter().getView(dataInteractionCopy))
+        dataInteraction.check(matches(isDisplayed()))
+        true
+    } catch (e: PerformException) {
+        false
     }
 
     private fun getViews(
-            root: View?,
-            matcher: Matcher<View>,
-            findOne: Boolean,
-            rootMatcher: Matcher<Root>? = null
+        matcher: Matcher<*>,
+        findOne: Boolean,
+        parent: View? = null,
+        rootMatcher: Matcher<Root>? = null,
+        isDataMatcher: Boolean = false
     ): List<View> {
-        // If it's just one view we want, return a singleton list
-        if (findOne) {
-            try {
-                val viewInteraction = if (root == null) {
+        if (isDataMatcher) {
+            parent?.let {
+                require(it is AdapterView<*>) {
+                    throw InvalidSelectorException(
+                        "The parent view must be a valid ${AdapterView::class.qualifiedName} instance. " +
+                                "${it::class.qualifiedName} is given instead."
+                    )
+                }
+            }
+        }
+
+        val buildInteraction: (Int) -> Any = { index: Int ->
+            if (isDataMatcher) {
+                if (parent == null) {
                     if (rootMatcher == null) {
-                        onView(withIndex(matcher, 0))
+                        @Suppress("UNCHECKED_CAST")
+                        onData(if (index == 0) matcher else withIndex(matcher as Matcher<View>, index))
                     } else {
-                        onView(withIndex(matcher, 0)).inRoot(rootMatcher)
+                        @Suppress("UNCHECKED_CAST")
+                        onData(if (index == 0) matcher else withIndex(matcher as Matcher<View>, index))
+                            .inRoot(rootMatcher)
                     }
                 } else {
                     if (rootMatcher == null) {
-                        onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, 0)))
+                        @Suppress("UNCHECKED_CAST")
+                        onData(if (index == 0) matcher else withIndex(matcher as Matcher<View>, index))
+                            .inAdapterView(withView(parent))
                     } else {
-                        onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, 0))).inRoot(rootMatcher)
+                        @Suppress("UNCHECKED_CAST")
+                        onData(if (index == 0) matcher else withIndex(matcher as Matcher<View>, index))
+                            .inAdapterView(withView(parent))
+                            .inRoot(rootMatcher)
                     }
                 }
-                return listOf(ViewGetter().getView(viewInteraction))
-            } catch (e: AppNotIdleException){
+            } else {
+                if (parent == null) {
+                    if (rootMatcher == null) {
+                        @Suppress("UNCHECKED_CAST")
+                        onView(withIndex(matcher as Matcher<View>, index))
+                    } else {
+                        @Suppress("UNCHECKED_CAST")
+                        onView(withIndex(matcher as Matcher<View>, index)).inRoot(rootMatcher)
+                    }
+                } else {
+                    if (rootMatcher == null) {
+                        @Suppress("UNCHECKED_CAST")
+                        onView(allOf(isDescendantOfA(`is`(parent)), withIndex(matcher as Matcher<View>, index)))
+                    } else {
+                        @Suppress("UNCHECKED_CAST")
+                        onView(allOf(isDescendantOfA(`is`(parent)), withIndex(matcher as Matcher<View>, index)))
+                            .inRoot(rootMatcher)
+                    }
+                }
+            }
+        }
+
+        // If it's just one view we want, return a singleton list
+        if (findOne) {
+            try {
+                return when (val interaction = buildInteraction(0)) {
+                    is ViewInteraction -> listOf(ViewGetter().getView(interaction))
+                    is DataInteraction -> listOf(ViewGetter().getView(interaction))
+                    else -> throw RuntimeException("Cannot build a valid location interaction")
+                }
+            } catch (e: AppNotIdleException) {
                 throw InvalidElementStateException(APP_NOT_IDLE_MESSAGE + getThreadDump(), e)
             } catch (e: Exception) {
                 if (e is EspressoException) {
@@ -286,36 +327,26 @@ object ViewFinder {
         // If we want all views that match the criteria, start looking for ViewInteractions by
         // index and add each match to the List. As soon as we find no match, break the loop
         // and return the list
-        val viewInteractions = ArrayList<View>()
+        val resultViews = mutableListOf<View>()
         var i = 0
         do {
             try {
-                val viewInteraction = if (root == null) {
-                    if (rootMatcher == null) {
-                        onView(withIndex(matcher, i++))
-                    } else {
-                        onView(withIndex(matcher, i++)).inRoot(rootMatcher)
-                    }
-                } else {
-                    if (rootMatcher == null) {
-                        onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, i++)))
-                    } else {
-                        onView(allOf(isDescendantOfA(`is`(root)), withIndex(matcher, i++))).inRoot(rootMatcher)
-                    }
+                val view = when (val interaction = buildInteraction(i++)) {
+                    is ViewInteraction -> ViewGetter().getView(interaction)
+                    is DataInteraction -> ViewGetter().getView(interaction)
+                    else -> throw RuntimeException("Cannot build a valid location interaction")
                 }
-                val view = ViewGetter().getView(viewInteraction)
-                viewInteractions.add(view)
-            } catch (e: AppNotIdleException){
+                resultViews.add(view)
+            } catch (e: AppNotIdleException) {
                 throw InvalidElementStateException(APP_NOT_IDLE_MESSAGE + getThreadDump(), e)
             } catch (e: Exception) {
                 if (e is EspressoException) {
-                    return viewInteractions
+                    return resultViews
                 }
                 throw e
             }
-
         } while (i < Integer.MAX_VALUE)
-        return viewInteractions
+        return resultViews
     }
 
     private fun withIndex(matcher: Matcher<View>, index: Int): Matcher<View> {
