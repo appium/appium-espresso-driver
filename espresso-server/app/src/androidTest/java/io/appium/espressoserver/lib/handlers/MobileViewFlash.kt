@@ -17,7 +17,7 @@ class MobileViewFlash : RequestHandler<ViewFlashParams, Void?> {
         val duration = params.durationMillis
         val repeatCount = params.repeatCount
 
-        val view = EspressoElement.getViewById(params.elementId)
+        val view = EspressoElement.getCachedViewStateById(params.elementId).view
         val latch = CountDownLatch(1)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val animation = AlphaAnimation(1f, 0f)

@@ -31,7 +31,7 @@ class FindElement : RequestHandler<Locator, BaseElement> {
             ViewGetter().getView(EspressoElement.getViewInteractionById(it))
         }
         // Test the selector
-        val view = ViewFinder.findBy(
+        val viewState = ViewFinder.findBy(
             parentView,
             params.using ?: throw InvalidSelectorException("Locator strategy cannot be empty"),
             params.value ?: throw InvalidArgumentException()
@@ -44,7 +44,7 @@ class FindElement : RequestHandler<Locator, BaseElement> {
             )
 
         // If we have a match, return success
-        return EspressoElement(view)
+        return EspressoElement(viewState)
     }
 
     override fun handleCompose(params: Locator): BaseElement {

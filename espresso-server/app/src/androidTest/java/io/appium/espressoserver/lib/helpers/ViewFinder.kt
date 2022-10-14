@@ -43,7 +43,6 @@ import androidx.test.espresso.Root
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
@@ -55,7 +54,6 @@ import io.appium.espressoserver.lib.viewmatcher.withXPath
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.endsWith
 import org.hamcrest.Matchers.hasEntry
 import org.hamcrest.Matchers.instanceOf
 
@@ -78,9 +76,9 @@ object ViewFinder {
      * @throws InvalidSelectorException
      * @throws XPathLookupException
      */
-    fun findBy(root: View?, strategy: Strategy, selector: String): View? {
-        val views = findAllBy(root, strategy, selector, true)
-        return if (views.isEmpty()) null else views[0]
+    fun findBy(root: View?, strategy: Strategy, selector: String): ViewState? {
+        val viewStates = findAllBy(root, strategy, selector, true)
+        return if (viewStates.isEmpty()) null else viewStates[0]
     }
 
     /**
@@ -94,7 +92,7 @@ object ViewFinder {
      * @throws InvalidSelectorException
      * @throws XPathLookupException
      */
-    fun findAllBy(root: View?, strategy: Strategy, selector: String): List<View> {
+    fun findAllBy(root: View?, strategy: Strategy, selector: String): List<ViewState> {
         return findAllBy(root, strategy, selector, false)
     }
 
@@ -125,53 +123,65 @@ object ViewFinder {
         strategy: Strategy,
         selector: String,
         findOne: Boolean
-    ): List<View> {
-        @Suppress("NAME_SHADOWING") var selector = selector
-        var views: List<View>
+    ): List<ViewState> {
         when (strategy) {
-            Strategy.ID // with ID
-            -> {
-
+            Strategy.ID -> {
+                // with ID
                 // find id from target context
                 val context = getApplicationContext<Context>()
+                var patchedSelector = selector
                 if (!selector.matches(ID_PATTERN.toRegex())) {
-                    selector = "${context.packageName}:id/$selector"
-                    AndroidLogger.info("Rewrote Id selector to '$selector'")
+                    patchedSelector = "${context.packageName}:id/$selector"
+                    AndroidLogger.info("Rewrote Id selector to '$patchedSelector'")
                 }
-                val id = context.resources.getIdentifier(selector, "Id", context.packageName)
+                var id = context.resources.getIdentifier(patchedSelector, "Id", context.packageName)
+                if (id == 0 && patchedSelector != selector) {
+                    id = context.resources.getIdentifier(selector, "Id", context.packageName)
+                }
 
-                views = getViews(root, withId(id), findOne)
+                return if (id == 0) emptyList() else getViews(root, withId(id), findOne).map { ViewState(it) }
             }
-            Strategy.CLASS_NAME ->
+            Strategy.CLASS_NAME -> {
                 // with class name
-                // TODO: improve this finder with instanceOf
-                views = getViews(root, withClassName(endsWith(selector)), findOne)
+                val cls = try {
+                    Class.forName(selector)
+                } catch (e: ClassNotFoundException) {
+                    return emptyList()
+                }
+                return getViews(root, instanceOf(cls), findOne).map { ViewState(it) }
+            }
             Strategy.TEXT ->
                 // with text
-                views = getViews(root, withText(selector), findOne)
+                return getViews(root, withText(selector), findOne).map { ViewState(it) }
             Strategy.ACCESSIBILITY_ID -> {
-                views = getViews(root, withContentDescription(selector), findOne)
+                val result = getViews(root, withContentDescription(selector), findOne)
 
                 // If the item is not found on the screen, use 'onData' to try
                 // to scroll it into view and then locate it again
-                if (views.isEmpty() && canScrollToViewWithContentDescription(root, selector)) {
-                    views = getViews(root, withContentDescription(selector), findOne)
-                }
+                return if (result.isEmpty() && canScrollToViewWithContentDescription(root, selector))
+                    getViews(root, withContentDescription(selector), findOne).map { ViewState(it) }
+                else
+                    result.map { ViewState(it) }
             }
             Strategy.XPATH ->
                 // If we're only looking for one item that matches xpath, pass it index 0 or else
                 // Espresso throws an AmbiguousMatcherException
-                views = if (findOne) {
-                    getViews(root, withXPath(root, selector, 0), true)
+                return if (findOne) {
+                    getViews(root, withXPath(root, selector, 0), true).map { ViewState(it) }
                 } else {
-                    getViews(root, withXPath(root, selector), false)
+                    getViews(root, withXPath(root, selector), false).map { ViewState(it) }
                 }
-            Strategy.VIEW_TAG -> views = getViews(root, withTagValue(allOf(instanceOf(String::class.java),
-                    equalTo(selector as Any))), findOne)
+            Strategy.VIEW_TAG ->
+                return getViews(
+                    root,
+                    withTagValue(allOf(instanceOf(String::class.java), equalTo(selector as Any))),
+                    findOne
+                ).map { ViewState(it) }
             Strategy.DATAMATCHER -> {
                 val matcher = selector.toJsonMatcher()
-                views = try {
+                return try {
                     getViewsFromDataInteraction(root, onData(matcher.query.matcher))
+                        .map { ViewState(it) }
                 } catch (e: PerformException) {
                     // Perform Exception means nothing was found. Return empty list
                     emptyList()
@@ -179,9 +189,14 @@ object ViewFinder {
             }
             Strategy.VIEWMATCHER -> {
                 val matcherJson = selector.toJsonMatcher()
-                views = try {
+                return try {
                     @Suppress("UNCHECKED_CAST")
-                    getViews(root, matcherJson.query.matcher as Matcher<View>, findOne, matcherJson.query.scope as Matcher<Root>)
+                    getViews(
+                        root,
+                        matcherJson.query.matcher as Matcher<View>,
+                        findOne,
+                        matcherJson.query.scope as Matcher<Root>?
+                    ).map { ViewState(it, rootMatcher = matcherJson.query.scope) }
                 } catch (e: PerformException) {
                     // Perform Exception means nothing was found. Return empty list
                     emptyList()
@@ -189,8 +204,6 @@ object ViewFinder {
             }
             else -> throw InvalidSelectorException("Strategy is not implemented: ${strategy.strategyName}")
         }
-
-        return views
     }
 
     /**

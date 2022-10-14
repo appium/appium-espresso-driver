@@ -37,13 +37,12 @@ class FindElements : RequestHandler<Locator, List<BaseElement>> {
             parentView,
             params.using ?: throw InvalidSelectorException("Locator strategy cannot be empty"),
             params.value ?: throw InvalidArgumentException()
-        )
-            .map { EspressoElement(it) }
+        ).map { EspressoElement(it) }
     }
 
     override fun handleCompose(params: Locator): List<BaseElement> {
         val nodeInteractions = toNodeInteractionsCollection(params)
-        return nodeInteractions.fetchSemanticsNodes(false)
-            .mapIndexed { index, _ -> ComposeElement(nodeInteractions[index]) }
+        return List(nodeInteractions.fetchSemanticsNodes(false).size)
+            { index -> ComposeElement(nodeInteractions[index]) }
     }
 }

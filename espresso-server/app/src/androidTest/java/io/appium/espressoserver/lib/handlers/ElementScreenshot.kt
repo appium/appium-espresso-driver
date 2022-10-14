@@ -25,7 +25,7 @@ class ElementScreenshot : RequestHandler<AppiumParams, String> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): String {
-        val view = EspressoElement.getViewById(params.elementId)
+        val view = EspressoElement.getCachedViewStateById(params.elementId).view
         return ScreenshotsHelper(view).screenshot
     }
 }

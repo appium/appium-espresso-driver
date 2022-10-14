@@ -27,6 +27,7 @@ import io.appium.espressoserver.lib.model.MobileSwipeParams
 import io.appium.espressoserver.lib.model.MobileSwipeParams.Direction.*
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
+import io.appium.espressoserver.lib.viewaction.ViewGetter
 
 class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
 
@@ -59,7 +60,7 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
                     swiper=[${params.swiper}] startCoordinates=[${params.startCoordinates}]
                     endCoordinates=[${params.endCoordinates}] precisionDescriber=[${params.precisionDescriber}]
                     """.trimIndent())
-                    swipeAction.perform(uiController, EspressoElement.getViewById(params.elementId))
+                    swipeAction.perform(uiController, ViewGetter().getView(viewInteraction))
                     return null
                 }
             }

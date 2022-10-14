@@ -12,8 +12,8 @@ class ElementEquals : RequestHandler<AppiumParams, Boolean> {
         val elementId = params.elementId
         val otherElementId = params.getUriParameterValue("otherId")
                 ?: throw InvalidArgumentException("'otherElementId' query parameter not found")
-        val viewOne = EspressoElement.getViewById(elementId)
-        val viewTwo = EspressoElement.getViewById(otherElementId)
+        val viewOne = EspressoElement.getCachedViewStateById(elementId).view
+        val viewTwo = EspressoElement.getCachedViewStateById(otherElementId).view
         return viewOne == viewTwo
     }
 }

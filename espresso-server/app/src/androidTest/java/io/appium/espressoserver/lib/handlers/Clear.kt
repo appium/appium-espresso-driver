@@ -23,13 +23,12 @@ import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.EspressoElement
 
 import androidx.test.espresso.action.ViewActions.clearText
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
 import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 
 class Clear : RequestHandler<AppiumParams, Unit> {
 
-    override fun handleEspresso(params: AppiumParams): Unit {
+    override fun handleEspresso(params: AppiumParams) {
         val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
         try {
             viewInteraction.perform(clearText())
@@ -38,7 +37,7 @@ class Clear : RequestHandler<AppiumParams, Unit> {
         }
     }
 
-    override fun handleCompose(params: AppiumParams): Unit {
+    override fun handleCompose(params: AppiumParams) {
         try {
             getNodeInteractionById(params.elementId).performTextClearance()
         } catch (e: AssertionError) {

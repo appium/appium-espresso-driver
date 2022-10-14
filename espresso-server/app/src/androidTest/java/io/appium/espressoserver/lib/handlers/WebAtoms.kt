@@ -40,7 +40,8 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
         // Initialize onWebView with web view matcher (if webviewEl provided)
         params.webviewElement.let{ webviewElement ->
             AndroidLogger.info("Initializing webView interaction on webview with el: '$webviewElement'")
-            val matcher = withView(EspressoElement.getViewById(webviewElement))
+            val viewState = EspressoElement.getCachedViewStateById(webviewElement)
+            val matcher = withView(viewState.view)
             webViewInteraction = onWebView(matcher)
         }
 

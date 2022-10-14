@@ -124,7 +124,7 @@ class PointerEventHandler(private val touchType: TouchType) : RequestHandler<Mot
         var startY = displayMetrics.heightPixels / 2 - params.y / 2
 
         params.targetElement?.let {
-            val view = EspressoElement.getViewById(it)
+            val view = EspressoElement.getCachedViewStateById(it).view
             val viewElement = ViewElement(view)
             startX = viewElement.bounds.left.toLong()
             startY = viewElement.bounds.top.toLong()
