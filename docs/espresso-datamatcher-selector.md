@@ -183,21 +183,35 @@ onData(allOf(is(instanceOf(Map.class)), hasEntry(equalTo("STR"), is("item: 50"))
 ```js
 // 'cursor matchers' JSON
 {
-  "name": "is", "args": {
-    "name": "instanceOf", "args": "Cursor.class"
-  },
-  "name": "CursorMatchers.withRowString", "args": [
-    "job_title", {"name": "is", "args": "Barista"}
-  ]
+  "name": "anyOf",
+  "args": [
+    {
+      "name": "is",
+      "args": {"name": "instanceOf", "args": "Cursor.class"}
+    }, {
+      "name": "withRowString",
+      "args": [
+        "job_title",
+        {"name": "is", "args": "Barista"}
+      ],
+      "class": "androidx.test.espresso.matcher.CursorMatchers"
+    }
+  ],
+  "scope": {
+    "name": "isDialog",
+    "class": "androidx.test.espresso.matcher.RootMatchers"
+  }
 }
 ```
 
 ```java
 // Espresso 'cursor matchers' example
 onData(
+  anyOf(
     is(instanceOf(Cursor.class)),
     CursorMatchers.withRowString("job_title", is("Barista"))
-);
+  )
+).inRoot(isDialog());
 ```
 
 
