@@ -54,6 +54,6 @@ class ScreenshotsHelper @JvmOverloads constructor(private val view: View? = null
             }
             val outputStream = ByteArrayOutputStream()
             bitmapScreenCap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-            return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
+            return Base64.encodeToString(outputStream.toByteArray(), Base64.NO_WRAP)
         }
 }

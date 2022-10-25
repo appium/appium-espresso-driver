@@ -48,7 +48,7 @@ class GetClipboard : RequestHandler<GetClipboardParams, String?> {
     }
 
     private fun toBase64String(s: String): String {
-        return Base64.encodeToString(s.toByteArray(StandardCharsets.UTF_8), Base64.DEFAULT)
+        return Base64.encodeToString(s.toByteArray(StandardCharsets.UTF_8), Base64.NO_WRAP)
     }
 
     private inner class GetClipboardRunnable internal constructor(private val contentType: ClipboardDataType) : Runnable {
