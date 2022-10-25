@@ -45,7 +45,7 @@ class SetClipboard : RequestHandler<SetClipboardParams, Void?> {
     }
 
     private fun fromBase64String(s: String?): String {
-        return String(Base64.decode(s, Base64.DEFAULT), StandardCharsets.UTF_8)
+        return String(Base64.decode(s, Base64.NO_WRAP), StandardCharsets.UTF_8)
     }
 
     // Clip feature should run with main thread
