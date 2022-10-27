@@ -168,8 +168,8 @@ object ViewFinder {
                 // If we're only looking for one item that matches xpath, pass it index 0 or else
                 // Espresso throws an AmbiguousMatcherException
                 return getViews(
-                    if (findOne) withXPath(parent, selector, 0) else withXPath(parent, selector),
-                    true,
+                    withXPath(parent, selector, if (findOne) 0 else null),
+                    findOne,
                     parent
                 ).map { ViewState(it) }
             Strategy.VIEW_TAG ->
