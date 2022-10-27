@@ -37,10 +37,15 @@ fun fetchIncludedAttributes(xpath: String): Set<AttributesEnum>? {
 }
 
 fun withXPath(root: View?, xpath: String, index: Int? = null): Matcher<View> {
-    // Get a list of the Views that match the provided xpath
-    val matchedXPathViews = SourceDocument(root, fetchIncludedAttributes(xpath)).findViewsByXPath(xpath)
+    val matchedXPathViews = mutableListOf<View>()
     return object : TypeSafeMatcher<View>() {
         override fun matchesSafely(item: View): Boolean {
+            if (matchedXPathViews.isEmpty()) {
+                matchedXPathViews.addAll(
+                    SourceDocument(root ?: item.rootView, fetchIncludedAttributes(xpath)).findViewsByXPath(xpath)
+                )
+            }
+
             return if (index != null) {
                 // If index is not null, match it with the xpath in the list at the provided index
                 index < matchedXPathViews.size && matchedXPathViews[index] == item
