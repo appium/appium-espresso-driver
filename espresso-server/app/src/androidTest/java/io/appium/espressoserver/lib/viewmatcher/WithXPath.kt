@@ -20,6 +20,7 @@ import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import io.appium.espressoserver.lib.model.SourceDocument
 import io.appium.espressoserver.lib.model.AttributesEnum
 import io.appium.espressoserver.lib.model.EspressoAttributes
+import io.appium.espressoserver.lib.model.compileXpathExpression
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -39,6 +40,8 @@ fun fetchIncludedAttributes(xpath: String): Set<AttributesEnum>? {
 }
 
 fun withXPath(root: View?, xpath: String, index: Int? = null): Matcher<View> {
+    val expression = compileXpathExpression(xpath)
+    val attributes = fetchIncludedAttributes(xpath)
     val matchedXPathViews = mutableListOf<View>()
     var didLookup = false
     val lookupGuard = Semaphore(1)
@@ -47,8 +50,7 @@ fun withXPath(root: View?, xpath: String, index: Int? = null): Matcher<View> {
             lookupGuard.withPermit {
                 if (!didLookup) {
                     matchedXPathViews.addAll(
-                        SourceDocument(root ?: item.rootView, fetchIncludedAttributes(xpath))
-                            .findViewsByXPath(xpath)
+                        SourceDocument(root ?: item.rootView, attributes).findViewsByXPath(expression)
                     )
                     didLookup = true
                 }
