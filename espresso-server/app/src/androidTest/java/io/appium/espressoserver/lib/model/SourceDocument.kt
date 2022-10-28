@@ -80,13 +80,12 @@ private fun toXmlNodeName(className: String?): String {
     return fixedName
 }
 
-fun compileXpathExpression(selector: String): XPathExpression {
-    return try {
+fun compileXpathExpression(selector: String): XPathExpression =
+    try {
         XPATH.compile(selector)
     } catch (xe: XPathExpressionException) {
         throw XPathLookupException(selector, xe.message!!)
     }
-}
 
 class SourceDocument constructor(
     private val root: Any? = null,
