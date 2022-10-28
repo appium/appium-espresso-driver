@@ -16,12 +16,15 @@
 package io.appium.espressoserver.lib.viewmatcher
 
 import android.view.View
+import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import io.appium.espressoserver.lib.model.SourceDocument
 import io.appium.espressoserver.lib.model.AttributesEnum
 import io.appium.espressoserver.lib.model.EspressoAttributes
+import io.appium.espressoserver.lib.model.compileXpathExpression
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import java.util.concurrent.Semaphore
 
 fun fetchIncludedAttributes(xpath: String): Set<AttributesEnum>? {
     if (xpath.contains("@*")) {
@@ -37,13 +40,24 @@ fun fetchIncludedAttributes(xpath: String): Set<AttributesEnum>? {
 }
 
 fun withXPath(root: View?, xpath: String, index: Int? = null): Matcher<View> {
+    val expression = compileXpathExpression(xpath)
+    val attributes = fetchIncludedAttributes(xpath)
     val matchedXPathViews = mutableListOf<View>()
+    var didLookup = false
+    val lookupGuard = Semaphore(1)
     return object : TypeSafeMatcher<View>() {
         override fun matchesSafely(item: View): Boolean {
+            lookupGuard.withPermit {
+                if (!didLookup) {
+                    matchedXPathViews.addAll(
+                        SourceDocument(root ?: item.rootView, attributes).findViewsByXPath(expression)
+                    )
+                    didLookup = true
+                }
+            }
+
             if (matchedXPathViews.isEmpty()) {
-                matchedXPathViews.addAll(
-                    SourceDocument(root ?: item.rootView, fetchIncludedAttributes(xpath)).findViewsByXPath(xpath)
-                )
+                return false
             }
 
             return if (index != null) {

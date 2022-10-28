@@ -80,6 +80,12 @@ private fun toXmlNodeName(className: String?): String {
     return fixedName
 }
 
+fun compileXpathExpression(selector: String): XPathExpression =
+    try {
+        XPATH.compile(selector)
+    } catch (xe: XPathExpressionException) {
+        throw XPathLookupException(selector, xe.message!!)
+    }
 
 class SourceDocument constructor(
     private val root: Any? = null,
@@ -324,8 +330,8 @@ class SourceDocument constructor(
         throw AppiumException(lastError!!)
     }
 
-    private fun rootSemanticNodes(): List<SemanticsNode> {
-        return try {
+    private fun rootSemanticNodes(): List<SemanticsNode> =
+        try {
             listOf(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true).fetchSemanticsNode())
         } catch (e: AssertionError) {
 //            Ideally there should be on `root` node but on some cases e.g:overlays screen, there can be more than 1 root.
@@ -337,7 +343,6 @@ class SourceDocument constructor(
             } as SelectionResult
             result.selectedNodes
         }
-    }
 
     private fun performCleanup() {
         tmpXmlName?.let {
@@ -346,8 +351,8 @@ class SourceDocument constructor(
         }
     }
 
-    fun toXMLString(): String {
-        return RESOURCES_GUARD.withPermit({
+    fun toXMLString(): String =
+        RESOURCES_GUARD.withPermit({
             toStream().use { xmlStream ->
                 val sb = StringBuilder()
                 val reader = BufferedReader(InputStreamReader(xmlStream, XML_ENCODING))
@@ -359,24 +364,17 @@ class SourceDocument constructor(
                 sb.toString()
             }
         }, { performCleanup() })
-    }
 
-    fun findViewsByXPath(xpathSelector: String): List<View> =
-        matchingNodeIds(xpathSelector, VIEW_INDEX).map { viewMap.get(it) }
+    fun findViewsByXPath(expression: XPathExpression): List<View> =
+        findMatchingNodeIds(expression, VIEW_INDEX).map { viewMap.get(it) }
 
-    fun matchingNodeIds(xpathSelector: String, attributeName: String): List<Int> {
-        val expr = try {
-            XPATH.compile(xpathSelector)
-        } catch (xe: XPathExpressionException) {
-            throw XPathLookupException(xpathSelector, xe.message!!)
-        }
-        return RESOURCES_GUARD.withPermit({
+    fun findMatchingNodeIds(expression: XPathExpression, attributeName: String): List<Int> =
+        RESOURCES_GUARD.withPermit({
             toStream().use { xmlStream ->
-                val list = expr.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
+                val list = expression.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
                 (0 until list.length).map { index ->
                     list.item(index).attributes.getNamedItem(attributeName).nodeValue.toInt()
                 }
             }
         }, { performCleanup() })
-    }
 }
