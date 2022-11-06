@@ -57,7 +57,8 @@
     "espresso-server/build.gradle.kts",
     "espresso-server/settings.gradle.kts",
     "espresso-server/lint.xml",
-    "!.DS_Store"
+    "!.DS_Store",
+    "CHANGELOG.md"
   ],
   "dependencies": {
     "@babel/runtime": "^7.4.3",
@@ -103,6 +104,7 @@
     "@babel/preset-env": "^7.18.10",
     "@babel/register": "^7.18.9",
     "@semantic-release/git": "^10.0.1",
+    "@semantic-release/changelog": "^6.0.1",
     "@xmldom/xmldom": "^0.x",
     "babel-plugin-source-map-support": "^2.2.0",
     "android-apidemos": "^4.1.1",
