@@ -152,8 +152,8 @@ tasks.withType<Test> {
 }
 
 object Version {
-    const val espresso = "3.4.0"
-    const val testlib = "1.4.0"
+    const val espresso = "3.5.0"
+    const val testlib = "1.5.0"
     const val mocklib = "2.0.9"
     const val gson = "2.8.9"
     const val uia = "2.2.0"
