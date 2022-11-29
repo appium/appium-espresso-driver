@@ -1,3 +1,5 @@
+## [2.13.6](https://github.com/appium/appium-espresso-driver/compare/v2.13.5...v2.13.6) (2022-11-29)
+
 ## [2.13.5](https://github.com/appium/appium-espresso-driver/compare/v2.13.4...v2.13.5) (2022-11-06)
 
 ## [2.13.4](https://github.com/appium/appium-espresso-driver/compare/v2.13.3...v2.13.4) (2022-11-06)
