@@ -1,3 +1,10 @@
+## [2.13.7](https://github.com/appium/appium-espresso-driver/compare/v2.13.6...v2.13.7) (2022-12-01)
+
+
+### Miscellaneous Chores
+
+* update releaserc ([#837](https://github.com/appium/appium-espresso-driver/issues/837)) ([655c333](https://github.com/appium/appium-espresso-driver/commit/655c33323f19085adc678160666ad83f5249aa31))
+
 ## [2.13.6](https://github.com/appium/appium-espresso-driver/compare/v2.13.5...v2.13.6) (2022-11-29)
 
 ## [2.13.5](https://github.com/appium/appium-espresso-driver/compare/v2.13.4...v2.13.5) (2022-11-06)
