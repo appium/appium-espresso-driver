@@ -1,3 +1,10 @@
+## [2.13.8](https://github.com/appium/appium-espresso-driver/compare/v2.13.7...v2.13.8) (2022-12-03)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump webdriverio from 7.27.0 to 8.0.2 ([#838](https://github.com/appium/appium-espresso-driver/issues/838)) ([2b22c11](https://github.com/appium/appium-espresso-driver/commit/2b22c11a302b74fa931065d59d894dd42ff82f6f))
+
 ## [2.13.7](https://github.com/appium/appium-espresso-driver/compare/v2.13.6...v2.13.7) (2022-12-01)
 
 
