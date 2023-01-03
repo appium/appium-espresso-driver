@@ -1,3 +1,10 @@
+## [2.13.9](https://github.com/appium/appium-espresso-driver/compare/v2.13.8...v2.13.9) (2023-01-03)
+
+
+### Miscellaneous Chores
+
+* add because in the gradle file ([#841](https://github.com/appium/appium-espresso-driver/issues/841)) ([4fe7088](https://github.com/appium/appium-espresso-driver/commit/4fe7088e280a1fc3c504d0934f80fab1132c3437))
+
 ## [2.13.8](https://github.com/appium/appium-espresso-driver/compare/v2.13.7...v2.13.8) (2022-12-03)
 
 
