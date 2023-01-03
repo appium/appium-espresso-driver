@@ -121,8 +121,12 @@ dependencies {
         // Link to PR with fix and discussion https://github.com/appium/appium-espresso-driver/pull/596
         isTransitive = false
     }
-    androidTestImplementation("androidx.test.espresso:espresso-web:${Version.espresso}")
-    androidTestImplementation("androidx.test.uiautomator:uiautomator:${Version.uia}")
+    androidTestImplementation("androidx.test.espresso:espresso-web:${Version.espresso}") {
+        because("Espresso Web Atoms support (mobile: webAtoms)")
+    }
+    androidTestImplementation("androidx.test.uiautomator:uiautomator:${Version.uia}") {
+        because("UiAutomator support (mobile: uiautomator)")
+    }
     androidTestImplementation("androidx.test:core:${Version.testlib}")
     androidTestImplementation("androidx.test:runner:${Version.testlib}")
     androidTestImplementation("androidx.test:rules:${Version.testlib}")
@@ -130,9 +134,12 @@ dependencies {
     androidTestImplementation("org.nanohttpd:nanohttpd-webserver:${Version.nanohttpd}")
     androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     androidTestImplementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
-    androidTestImplementation("androidx.compose.ui:ui-test:${composeVersion}")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}"){
+    androidTestImplementation("androidx.compose.ui:ui-test:${composeVersion}") {
+        because("Android Compose support")
+    }
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}") {
         isTransitive = false
+        because("Android Compose support")
     }
 
     // additionalAndroidTestDependencies placeholder (don't change or delete this line)
