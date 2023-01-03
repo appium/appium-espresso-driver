@@ -112,8 +112,12 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
-    testImplementation("androidx.compose.ui:ui-test:${composeVersion}")
-    testImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}")
+    testImplementation("androidx.compose.ui:ui-test:${composeVersion}") {
+        because("Android Compose Support")
+    }
+    testImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}") {
+        because("Android Compose Support")
+    }
 
     androidTestImplementation("androidx.annotation:annotation:${annotationVersion}")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:${Version.espresso}") {
@@ -130,9 +134,12 @@ dependencies {
     androidTestImplementation("org.nanohttpd:nanohttpd-webserver:${Version.nanohttpd}")
     androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     androidTestImplementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
-    androidTestImplementation("androidx.compose.ui:ui-test:${composeVersion}")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}"){
-        isTransitive = false
+    androidTestImplementation("androidx.compose.ui:ui-test:${composeVersion}") {
+        because("Android Compose Support")
+    }
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}") {
+        isTransitive = false,
+        because("Android Compose Support")
     }
 
     // additionalAndroidTestDependencies placeholder (don't change or delete this line)
