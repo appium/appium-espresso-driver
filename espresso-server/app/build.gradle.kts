@@ -112,12 +112,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
-    testImplementation("androidx.compose.ui:ui-test:${composeVersion}") {
-        because("Android Compose Support")
-    }
-    testImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}") {
-        because("Android Compose Support")
-    }
+    testImplementation("androidx.compose.ui:ui-test:${composeVersion}")
+    testImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}")
 
     androidTestImplementation("androidx.annotation:annotation:${annotationVersion}")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:${Version.espresso}") {
@@ -125,8 +121,12 @@ dependencies {
         // Link to PR with fix and discussion https://github.com/appium/appium-espresso-driver/pull/596
         isTransitive = false
     }
-    androidTestImplementation("androidx.test.espresso:espresso-web:${Version.espresso}")
-    androidTestImplementation("androidx.test.uiautomator:uiautomator:${Version.uia}")
+    androidTestImplementation("androidx.test.espresso:espresso-web:${Version.espresso}") {
+        because("Espresso Web Atoms support (mobile: webAtoms)")
+    }
+    androidTestImplementation("androidx.test.uiautomator:uiautomator:${Version.uia}") {
+        because("UiAutomator support (mobile: uiautomator)")
+    }
     androidTestImplementation("androidx.test:core:${Version.testlib}")
     androidTestImplementation("androidx.test:runner:${Version.testlib}")
     androidTestImplementation("androidx.test:rules:${Version.testlib}")
@@ -135,11 +135,11 @@ dependencies {
     androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     androidTestImplementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     androidTestImplementation("androidx.compose.ui:ui-test:${composeVersion}") {
-        because("Android Compose Support")
+        because("Android Compose support")
     }
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}") {
         isTransitive = false,
-        because("Android Compose Support")
+        because("Android Compose support")
     }
 
     // additionalAndroidTestDependencies placeholder (don't change or delete this line)

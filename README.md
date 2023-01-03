@@ -1061,7 +1061,7 @@ Allows to retrieve accessibility elements hierarchy tree with [UiAutomator](http
 
 The UI accessibility hierarchy represented as XML document.
 
-### mobile: mobileWebAtoms
+### mobile: webAtoms
 
 Allows to run a chain of [Espresso web atoms](https://developer.android.com/training/testing/espresso/web) on a web view element.
 
