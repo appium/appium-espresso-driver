@@ -138,7 +138,7 @@ dependencies {
         because("Android Compose support")
     }
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}") {
-        isTransitive = false,
+        isTransitive = false
         because("Android Compose support")
     }
 
