@@ -1,3 +1,26 @@
+## [2.13.9](https://github.com/appium/appium-espresso-driver/compare/v2.13.8...v2.13.9) (2023-01-03)
+
+
+### Miscellaneous Chores
+
+* add because in the gradle file ([#841](https://github.com/appium/appium-espresso-driver/issues/841)) ([4fe7088](https://github.com/appium/appium-espresso-driver/commit/4fe7088e280a1fc3c504d0934f80fab1132c3437))
+
+## [2.13.8](https://github.com/appium/appium-espresso-driver/compare/v2.13.7...v2.13.8) (2022-12-03)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump webdriverio from 7.27.0 to 8.0.2 ([#838](https://github.com/appium/appium-espresso-driver/issues/838)) ([2b22c11](https://github.com/appium/appium-espresso-driver/commit/2b22c11a302b74fa931065d59d894dd42ff82f6f))
+
+## [2.13.7](https://github.com/appium/appium-espresso-driver/compare/v2.13.6...v2.13.7) (2022-12-01)
+
+
+### Miscellaneous Chores
+
+* update releaserc ([#837](https://github.com/appium/appium-espresso-driver/issues/837)) ([655c333](https://github.com/appium/appium-espresso-driver/commit/655c33323f19085adc678160666ad83f5249aa31))
+
+## [2.13.6](https://github.com/appium/appium-espresso-driver/compare/v2.13.5...v2.13.6) (2022-11-29)
+
 ## [2.13.5](https://github.com/appium/appium-espresso-driver/compare/v2.13.4...v2.13.5) (2022-11-06)
 
 ## [2.13.4](https://github.com/appium/appium-espresso-driver/compare/v2.13.3...v2.13.4) (2022-11-06)

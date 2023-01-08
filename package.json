@@ -7,7 +7,7 @@
     "automated testing",
     "android"
   ],
-  "version": "2.13.5",
+  "version": "2.13.9",
   "author": "Appium Contributors",
   "license": "Apache-2.0",
   "repository": {
@@ -112,6 +112,7 @@
     "async-lock": "^1.0.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "conventional-changelog-conventionalcommits": "^5.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.3",
@@ -122,8 +123,8 @@
     "pre-commit": "^1.2.2",
     "rimraf": "^3.0.2",
     "semantic-release": "^19.0.2",
-    "sinon": "^14.0.0",
-    "webdriverio": "^7.0.0",
+    "sinon": "^15.0.0",
+    "webdriverio": "^8.0.2",
     "xpath": "^0.x"
   }
 }
