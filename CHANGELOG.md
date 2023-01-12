@@ -1,3 +1,10 @@
+## [2.13.10](https://github.com/appium/appium-espresso-driver/compare/v2.13.9...v2.13.10) (2023-01-12)
+
+
+### Bug Fixes
+
+* specify supported non-standard commands in newMethodMap ([578ef7c](https://github.com/appium/appium-espresso-driver/commit/578ef7c4ab1fe703f92c12799436863ebfb2df42))
+
 ## [2.13.9](https://github.com/appium/appium-espresso-driver/compare/v2.13.8...v2.13.9) (2023-01-03)
 
 
