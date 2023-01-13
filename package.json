@@ -121,7 +121,7 @@
     "lint-staged": "^13.0.3",
     "mocha": "^10.0.0",
     "pre-commit": "^1.2.2",
-    "rimraf": "^3.0.2",
+    "rimraf": "^4.0.4",
     "semantic-release": "^19.0.2",
     "sinon": "^15.0.0",
     "webdriverio": "^8.0.2",
