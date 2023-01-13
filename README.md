@@ -202,6 +202,7 @@ In order to change between subdrivers use the [driver](#settings-api) setting. S
 - getPageSource: The returned page source is retrieved from Compose and all elements there contain [Compose-specific](#compose-element-attributes) attributes.
 - click, isDisplayed, isEnabled, clear, getText, sendKeys, getElementRect, getValue, isSelected: These commands should properly support compose elements.
 - getAttribute: Accepts and returns Compose-specific element attributes. See [Compose Element Attributes](#compose-element-attributes) for the full list of supported Compose element attributes.
+- getElementScreenshot: Fetches a screenshot of the given Compose element. Available since driver version *2.14.0*
 
 Calling other driver element-specific APIs not listed above would most likely throw an exception as Compose and Espresso elements are being stored in completely separated internal caches and must not be mixed.
 

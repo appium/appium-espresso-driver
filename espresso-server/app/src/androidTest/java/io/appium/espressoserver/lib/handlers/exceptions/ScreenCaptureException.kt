@@ -19,7 +19,11 @@ package io.appium.espressoserver.lib.handlers.exceptions
 import fi.iki.elonen.NanoHTTPD
 
 
-class ScreenCaptureException(reason: String) : AppiumException(reason) {
+class ScreenCaptureException : AppiumException {
+    constructor(reason: String) : super(reason)
+
+    constructor(reason: String, e: Throwable) : super(reason, e)
+
     override fun error(): String {
         return "unable to capture screen"
     }
