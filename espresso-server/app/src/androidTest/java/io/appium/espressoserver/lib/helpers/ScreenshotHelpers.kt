@@ -46,7 +46,7 @@ fun takeEspressoViewScreenshot(view: View): String =
     try {
         encodeBitmap(Screenshot.capture(view).bitmap) { view.javaClass.name }
     } catch (e: RuntimeException) {
-        throw ScreenCaptureException(e.message!!, e)
+        throw ScreenCaptureException("Cannot take a screenshot of a view", e)
     }
 
 fun takeComposeNodeScreenshot(nodeInteraction: SemanticsNodeInteraction): String =
@@ -55,5 +55,5 @@ fun takeComposeNodeScreenshot(nodeInteraction: SemanticsNodeInteraction): String
             nodeInteraction.captureToImage().asAndroidBitmap()
         ) { nodeInteraction.fetchSemanticsNode().toString() }
     } catch (e: RuntimeException) {
-        throw ScreenCaptureException(e.message!!, e)
+        throw ScreenCaptureException("Cannot take a screenshot of a node", e)
     }
