@@ -1,3 +1,10 @@
+## [2.14.0](https://github.com/appium/appium-espresso-driver/compare/v2.13.11...v2.14.0) (2023-01-13)
+
+
+### Features
+
+* Add compose element screenshot ([#847](https://github.com/appium/appium-espresso-driver/issues/847)) ([95bded7](https://github.com/appium/appium-espresso-driver/commit/95bded7e1816eb42ded501efcbca24b07b283f35))
+
 ## [2.13.11](https://github.com/appium/appium-espresso-driver/compare/v2.13.10...v2.13.11) (2023-01-13)
 
 
