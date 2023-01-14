@@ -16,30 +16,45 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.view.View
 import io.appium.espressoserver.lib.handlers.exceptions.*
-import io.appium.espressoserver.lib.helpers.ViewFinder.findBy
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.helpers.*
+import io.appium.espressoserver.lib.model.BaseElement
+import io.appium.espressoserver.lib.model.ComposeElement
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.Locator
 import io.appium.espressoserver.lib.viewaction.ViewGetter
 
-class FindElement : RequestHandler<Locator, Element> {
+class FindElement : RequestHandler<Locator, BaseElement> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: Locator): Element {
-        var parentView: View? = null
-        params.elementId?.let {
-            parentView = ViewGetter().getView(Element.getViewInteractionById(it))
+    override fun handleEspresso(params: Locator): BaseElement {
+        val parentView = params.elementId?.let {
+            ViewGetter().getView(EspressoElement.getViewInteractionById(it))
         }
         // Test the selector
-        val view = findBy(parentView,
-                params.using ?: throw InvalidSelectorException("Locator strategy cannot be empty"),
-                params.value ?: throw InvalidArgumentException())
-                ?: throw NoSuchElementException(
-                        String.format("Could not find element with strategy %s and selector %s",
-                                params.using, params.value))
+        val viewState = ViewFinder.findBy(
+            parentView,
+            params.using ?: throw InvalidSelectorException("Locator strategy cannot be empty"),
+            params.value ?: throw InvalidArgumentException()
+        )
+            ?: throw NoSuchElementException(
+                String.format(
+                    "Could not find espresso element with strategy %s and selector %s",
+                    params.using, params.value
+                )
+            )
 
         // If we have a match, return success
-        return Element(view)
+        return EspressoElement(viewState)
+    }
+
+    override fun handleCompose(params: Locator): BaseElement {
+        val nodeInteractions = toNodeInteractionsCollection(params)
+        if (nodeInteractions.fetchSemanticsNodes(false).isEmpty()) throw NoSuchElementException(
+            String.format(
+                "Could not find a compose element with strategy '%s' and selector '%s'",
+                params.using, params.value
+            )
+        )
+        return ComposeElement(nodeInteractions[0])
     }
 }

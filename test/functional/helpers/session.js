@@ -1,37 +1,31 @@
-import wd from 'wd';
-import { startServer } from '../../..';
+import remote from 'webdriverio';
+import AsyncLock from 'async-lock';
 
+const SESSION_GUARD = new AsyncLock();
+const HOST = process.env.APPIUM_TEST_SERVER_HOST || '127.0.0.1';
+const PORT = parseInt(process.env.APPIUM_TEST_SERVER_PORT, 10) || 4567;
+const MOCHA_TIMEOUT = (process.env.CI ? 10 : 4) * 60 * 1000;
 
-const HOST = '127.0.0.1',
-      PORT = 4994;
-const MOCHA_TIMEOUT = 60 * 1000 * (process.env.TRAVIS ? 10 : 4);
-
-let driver, server;
+let driver;
 
 async function initSession (caps) {
-  if (driver || server) {
+  if (driver) {
     await deleteSession();
   }
 
-  driver = wd.promiseChainRemote(HOST, PORT);
-  server = await startServer(PORT, HOST);
-  const serverRes = await driver.init(caps);
-  if (!caps.udid && !caps.fullReset && serverRes[1].udid) {
-    caps.udid = serverRes[1].udid;
-  }
-  // await driver.setImplicitWaitTimeout(5000);
-  return driver;
+  return await SESSION_GUARD.acquire(HOST, async () => {
+    driver = await remote(caps);
+    return driver;
+  });
 }
 
 async function deleteSession () {
-  try {
-    await driver.quit();
-  } catch (ign) {}
-  try {
-    await server.close();
-  } catch (ign) {}
-  driver = null;
-  server = null;
+  await SESSION_GUARD.acquire(HOST, async () => {
+    try {
+      await driver.quit();
+    } catch (ign) {}
+    driver = null;
+  });
 }
 
 export { initSession, deleteSession, HOST, PORT, MOCHA_TIMEOUT };

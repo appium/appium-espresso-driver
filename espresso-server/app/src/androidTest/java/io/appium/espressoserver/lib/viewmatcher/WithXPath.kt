@@ -16,18 +16,22 @@
 package io.appium.espressoserver.lib.viewmatcher
 
 import android.view.View
+import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import io.appium.espressoserver.lib.model.SourceDocument
-import io.appium.espressoserver.lib.model.ViewAttributesEnum
+import io.appium.espressoserver.lib.model.AttributesEnum
+import io.appium.espressoserver.lib.model.EspressoAttributes
+import io.appium.espressoserver.lib.model.compileXpathExpression
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import java.util.concurrent.Semaphore
 
-fun fetchIncludedAttributes(xpath: String): Set<ViewAttributesEnum>? {
+fun fetchIncludedAttributes(xpath: String): Set<AttributesEnum>? {
     if (xpath.contains("@*")) {
         return null
     }
 
-    return ViewAttributesEnum.values().fold(mutableSetOf()) { acc, value ->
+    return EspressoAttributes().attributes.fold(mutableSetOf()) { acc, value ->
         if (xpath.contains("@$value")) {
             acc.add(value)
         }
@@ -36,10 +40,26 @@ fun fetchIncludedAttributes(xpath: String): Set<ViewAttributesEnum>? {
 }
 
 fun withXPath(root: View?, xpath: String, index: Int? = null): Matcher<View> {
-    // Get a list of the Views that match the provided xpath
-    val matchedXPathViews = SourceDocument(root, fetchIncludedAttributes(xpath)).findViewsByXPath(xpath)
+    val expression = compileXpathExpression(xpath)
+    val attributes = fetchIncludedAttributes(xpath)
+    val matchedXPathViews = mutableListOf<View>()
+    var didLookup = false
+    val lookupGuard = Semaphore(1)
     return object : TypeSafeMatcher<View>() {
         override fun matchesSafely(item: View): Boolean {
+            lookupGuard.withPermit {
+                if (!didLookup) {
+                    matchedXPathViews.addAll(
+                        SourceDocument(root ?: item.rootView, attributes).findViewsByXPath(expression)
+                    )
+                    didLookup = true
+                }
+            }
+
+            if (matchedXPathViews.isEmpty()) {
+                return false
+            }
+
             return if (index != null) {
                 // If index is not null, match it with the xpath in the list at the provided index
                 index < matchedXPathViews.size && matchedXPathViews[index] == item

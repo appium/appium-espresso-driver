@@ -47,7 +47,7 @@ object IMEHelpers {
             return action.toInt()
         }
         if (action is String) {
-            return ACTION_CODES_MAP[action.toLowerCase()]
+            return ACTION_CODES_MAP[action.lowercase()]
                     ?: throw InvalidArgumentException(
                             "The action value can be one of ${ACTION_CODES_MAP.keys}. '$action' is given instead")
         }

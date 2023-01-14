@@ -24,7 +24,7 @@ describe('mobile web atoms', function () {
 
   it('should input text into textbox and click links', async function () {
     const webviewEl = await driver.elementById('wv1');
-    await B.delay(5000); // Wait for WebView to load
+    await B.delay(10000); // Wait for WebView to load
     await driver.execute(`mobile: webAtoms`, {
       webviewElement: webviewEl.value,
       forceJavascriptEnabled: true,

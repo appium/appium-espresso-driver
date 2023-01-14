@@ -1,0 +1,65 @@
+name: Unit Tests
+
+on: [pull_request, push]
+
+
+jobs:
+  prepare_matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.generate-matrix.outputs.versions }}
+    steps:
+    - name: Generate Node.js versions matrix
+      id: generate-matrix
+      run: |
+        sudo apt-get install -y lynx
+        lynx -dump https://endoflife.date/nodejs | grep -E -o '[0-9]+ \(LTS\)' | grep -E -o '([0-9]+)' > eol.list
+        cat eol.list
+        lts1=$(cat eol.list | head -1)
+        lts2=$(cat eol.list | head -2 | tail -1)
+        lts3=$(cat eol.list | head -3 | tail -1)
+        VERSIONS="[$lts1, $lts2, $lts3]"
+        echo ::set-output name=versions::${VERSIONS}
+
+  node_test:
+    needs:
+    - prepare_matrix
+    strategy:
+      matrix:
+        node-version: ${{ fromJSON(needs.prepare_matrix.outputs.versions) }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+    - run: npm i -g npm
+      name: Update NPM
+    - run: npm install --no-package-lock
+      name: Install dev dependencies
+    - run: npm run lint
+      name: Run js linter
+    - run: npm run test:node
+      name: Run js unit tests
+
+  kotlin_test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: lts/*
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+    - run: npm install --no-package-lock
+      name: Install dev dependencies
+    - run: npm run lint:server
+      name: Run server linter
+    - run: npm run test:server
+      name: Run server unit tests

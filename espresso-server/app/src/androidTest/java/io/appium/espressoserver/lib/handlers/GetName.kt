@@ -16,16 +16,21 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.ViewElement
+import io.appium.espressoserver.lib.model.EspressoElement
+import io.appium.espressoserver.lib.model.ComposeNodeElement
 
 class GetName : RequestHandler<AppiumParams, String?> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): String? {
-        val view = Element.getViewById(params.elementId)
-        return ViewElement(view).contentDescription?.toString()
+    override fun handleEspresso(params: AppiumParams): String? {
+        val viewState = EspressoElement.getCachedViewStateById(params.elementId)
+        return ViewElement(viewState.view).contentDescription?.toString()
+    }
+
+    override fun handleCompose(params: AppiumParams): String? {
+        val composeNodeElement = ComposeNodeElement(getSemanticsNode(params.elementId!!))
+        return composeNodeElement.contentDescription?.toString()
     }
 }

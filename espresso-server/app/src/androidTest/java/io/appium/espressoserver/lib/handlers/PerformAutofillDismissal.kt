@@ -19,13 +19,13 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.DisableAutofillAction
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 
 class PerformAutofillDismissal : RequestHandler<AppiumParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): Void? {
-        Element.getViewInteractionById(params.elementId).perform(DisableAutofillAction())
+        EspressoElement.getViewInteractionById(params.elementId).perform(DisableAutofillAction())
         return null
     }
 }

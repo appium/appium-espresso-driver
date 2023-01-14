@@ -19,6 +19,7 @@ package io.appium.espressoserver.lib.model
 import android.view.View
 import android.view.ViewParent
 import android.widget.AdapterView
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.EspressoException
@@ -27,12 +28,12 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import com.google.gson.annotations.SerializedName
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
+import io.appium.espressoserver.lib.helpers.ComposeViewCache
 import io.appium.espressoserver.lib.helpers.StringHelpers.charSequenceToNullableString
 import io.appium.espressoserver.lib.helpers.ViewState
-import io.appium.espressoserver.lib.helpers.ViewsCache
+import io.appium.espressoserver.lib.helpers.EspressoViewsCache
 import io.appium.espressoserver.lib.viewaction.ViewGetter
 import io.appium.espressoserver.lib.viewmatcher.withView
 import org.hamcrest.Matchers
@@ -43,24 +44,30 @@ import java.util.*
 const val W3C_ELEMENT_KEY = "element-6066-11e4-a52e-4f735466cecf"
 const val JSONWP_ELEMENT_KEY = "ELEMENT"
 
-class Element(view: View) {
+interface BaseElement {
+    val element: String
+}
+
+class EspressoElement(viewState: ViewState) : BaseElement {
     @Suppress("JoinDeclarationAndAssignment")
     @SerializedName(JSONWP_ELEMENT_KEY, alternate = [W3C_ELEMENT_KEY])
-    val element: String
+    override val element: String
 
     init {
         element = UUID.randomUUID().toString()
-        ViewsCache.put(element, view)
+        EspressoViewsCache.put(element, viewState)
     }
 
     companion object {
         /**
          * Retrieve cached view and return the ViewInteraction
          */
-        @Throws(AppiumException::class)
         fun getViewInteractionById(elementId: String?): ViewInteraction {
-            val view = getViewById(elementId)
-            return onView(withView(view))
+            val cachedView = getCachedViewStateById(elementId)
+            return if (cachedView.rootMatcher == null)
+                onView(withView(cachedView.view))
+            else
+                onView(withView(cachedView.view)).inRoot(cachedView.rootMatcher)
         }
 
         /**
@@ -73,11 +80,16 @@ class Element(view: View) {
          * view and return that element
          * Look up the view hierarchy to find the closest ancestor AdapterView
          */
-        private fun lookupOffscreenView(initialView: View, initialContentDescription: String): View {
+        private fun lookupOffscreenView(
+            initialView: View,
+            initialContentDescription: String
+        ): View {
             // Try scrolling the view with the expected content description into the viewport
             val dataInteraction = onData(
-                    hasEntry(Matchers.equalTo("contentDescription"),
-                            `is`(initialContentDescription))
+                hasEntry(
+                    Matchers.equalTo("contentDescription"),
+                    `is`(initialContentDescription)
+                )
             )
 
             // Look up the ancestry tree until we find an AdapterView
@@ -96,44 +108,67 @@ class Element(view: View) {
         }
 
         @Throws(NoSuchElementException::class, StaleElementException::class)
-        fun getViewById(elementId: String?, checkStaleness: Boolean = true): View {
+        fun getCachedViewStateById(elementId: String?, checkStaleness: Boolean = true): ViewState {
             elementId ?: throw InvalidArgumentException("Cannot find 'null' element")
-            if (!ViewsCache.has(elementId)) {
-                throw NoSuchElementException("The element identified by '$elementId' does not exist in the cache " +
-                        "or has expired. Try to find it again")
+            if (!EspressoViewsCache.has(elementId)) {
+                throw NoSuchElementException(
+                    "The element identified by '$elementId' does not exist in the cache " +
+                            "or has expired. Try to find it again"
+                )
             }
 
-            val (resultView, initialContentDescription1) = Objects.requireNonNull<ViewState>(ViewsCache.get(elementId))
+            val resultState = Objects.requireNonNull<ViewState>(
+                EspressoViewsCache.get(elementId)
+            )
 
             // If the cached view is gone, throw stale element exception
-            if (!resultView.isShown) {
+            if (!resultState.view.isShown) {
                 if (checkStaleness) {
                     throw StaleElementException(elementId)
                 } else {
-                    return resultView
+                    return resultState
                 }
             }
 
-            val initialContentDescription = charSequenceToNullableString(initialContentDescription1)
-                    ?: return resultView
-            val currentContentDescription = charSequenceToNullableString(resultView.contentDescription)
+            val initialContentDescription =
+                charSequenceToNullableString(resultState.initialContentDescription)
+                    ?: return resultState
+            val currentContentDescription =
+                charSequenceToNullableString(resultState.view.contentDescription)
             if (currentContentDescription == initialContentDescription) {
-                return resultView
+                return resultState
             }
 
             try {
-                ViewsCache.put(elementId, lookupOffscreenView(resultView, initialContentDescription))
+                EspressoViewsCache.put(
+                    elementId,
+                    ViewState(
+                        lookupOffscreenView(resultState.view, initialContentDescription),
+                        rootMatcher = resultState.rootMatcher
+                    )
+                )
             } catch (e: Exception) {
                 if (e is EspressoException) {
                     if (!checkStaleness) {
-                        return resultView
+                        return resultState
                     }
                     throw StaleElementException(elementId)
                 }
                 throw e
             }
 
-            return resultView
+            return resultState
         }
+    }
+}
+
+class ComposeElement(node: SemanticsNodeInteraction) : BaseElement {
+    @Suppress("JoinDeclarationAndAssignment")
+    @SerializedName(JSONWP_ELEMENT_KEY, alternate = [W3C_ELEMENT_KEY])
+    override val element: String
+
+    init {
+        element = UUID.randomUUID().toString()
+        ComposeViewCache.put(element, node)
     }
 }

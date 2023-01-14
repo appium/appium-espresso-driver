@@ -19,14 +19,14 @@ package io.appium.espressoserver.lib.handlers
 import androidx.test.espresso.EspressoException
 import androidx.test.espresso.contrib.PickerActions
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.SetDateParams
 
 class SetDate : RequestHandler<SetDateParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: SetDateParams): Void? {
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
+        val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
         try {
             viewInteraction.perform(PickerActions.setDate(params.year, params.monthOfYear, params.dayOfMonth))
         } catch (e: Exception) {

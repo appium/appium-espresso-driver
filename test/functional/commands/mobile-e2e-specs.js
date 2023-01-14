@@ -222,8 +222,9 @@ describe('mobile', function () {
       const element = await driver.elementByAccessibilityId('Views');
       // Below returns like: {"mStyle"=>0, "mSupportedAxes"=>nil, "mWeight"=>400, "native_instance"=>131438067610240}
       await driver.execute('mobile: backdoor', {
-        target: 'element', elementId: element.value, methods: [{ name: 'getTypeface' }]}
-      ).should.eventually.contain({ mStyle: 0 });
+        target: 'element', elementId: element.value, methods: [{ name: 'getTypeface' }, { name: 'getStyle' }]
+      }
+      ).should.eventually.eql(0);
     });
   });
 });

@@ -18,19 +18,19 @@ package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.EspressoException
 import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.assertion.LayoutAssertions.noEllipsizedText
-import androidx.test.espresso.assertion.LayoutAssertions.noMultilineButtons
-import androidx.test.espresso.assertion.LayoutAssertions.noOverlaps
+import androidx.test.espresso.assertion.LayoutAssertions
+import io.appium.espressoserver.EspressoServerRunnerTest
+import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
-import io.appium.espressoserver.lib.model.ViewAttributesEnum
-import io.appium.espressoserver.lib.model.ViewElement
+import io.appium.espressoserver.lib.helpers.getSemanticsNode
+import io.appium.espressoserver.lib.model.*
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
 class GetAttribute : RequestHandler<AppiumParams, String?> {
+
+    val espressoAttributes by lazy { EspressoAttributes() }
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): String? {
@@ -39,63 +39,69 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
             throw AppiumException("Attribute name cannot be null or empty")
         }
 
-        // Map attributeName to ENUM attribute
-        ViewAttributesEnum.values().find {
-            attributeName.equals(it.toString(), ignoreCase = true)
-        }?.let {
-            val viewElementGetter: () -> ViewElement = { ViewElement(Element.getViewById(params.elementId)) }
-            val uncheckedViewElementGetter: () -> ViewElement = { ViewElement(Element.getViewById(params.elementId, false)) }
-            val viewInteractionGetter: () -> ViewInteraction = { Element.getViewInteractionById(params.elementId) }
-            val checkToAttributeValue: (() -> Unit) -> String = {
-                try {
-                    it()
-                    "true"
-                } catch (e: Exception) {
-                    if (e is EspressoException) {
-                        e.message?.let { msg -> AndroidLogger.info(msg) }
-                        "false"
-                    } else {
-                        throw e
-                    }
+        return when (EspressoServerRunnerTest.context.currentStrategyType) {
+            DriverContext.StrategyType.COMPOSE -> getComposeAttribute(params.elementId!!, attributeName)
+            DriverContext.StrategyType.ESPRESSO -> getEspressoAttribute(params.elementId!!, attributeName)
+        }
+    }
+
+
+    private fun getComposeAttribute(elementId: String, attributeName: String): String? {
+        return ComposeNodeElement(getSemanticsNode(elementId)).getAttribute(attributeName)
+    }
+
+    private fun getEspressoAttribute(elementId: String, attributeName: String): String? {
+        val viewElementGetter: () -> ViewElement =
+            { ViewElement(EspressoElement.getCachedViewStateById(elementId).view) }
+        val uncheckedViewElementGetter: () -> ViewElement =
+            { ViewElement(EspressoElement.getCachedViewStateById(elementId, false).view) }
+        val viewInteractionGetter: () -> ViewInteraction =
+            { EspressoElement.getViewInteractionById(elementId) }
+        val checkToAttributeValue: (() -> Unit) -> String = {
+            try {
+                it()
+                "true"
+            } catch (e: Exception) {
+                if (e is EspressoException) {
+                    e.message?.let { msg -> AndroidLogger.info(msg) }
+                    "false"
+                } else {
+                    throw e
                 }
-            }
-            when (it) {
-                ViewAttributesEnum.CONTENT_DESC -> return viewElementGetter().contentDescription?.toString()
-                ViewAttributesEnum.CLASS -> return viewElementGetter().className
-                ViewAttributesEnum.CHECKABLE -> return viewElementGetter().isCheckable.toString()
-                ViewAttributesEnum.CHECKED -> return viewElementGetter().isChecked.toString()
-                ViewAttributesEnum.CLICKABLE -> return viewElementGetter().isClickable.toString()
-                ViewAttributesEnum.ENABLED -> return viewElementGetter().isEnabled.toString()
-                ViewAttributesEnum.FOCUSABLE -> return viewElementGetter().isFocusable.toString()
-                ViewAttributesEnum.FOCUSED -> return viewElementGetter().isFocused.toString()
-                ViewAttributesEnum.SCROLLABLE -> return viewElementGetter().isScrollable.toString()
-                ViewAttributesEnum.LONG_CLICKABLE -> return viewElementGetter().isLongClickable.toString()
-                ViewAttributesEnum.PASSWORD -> return viewElementGetter().isPassword.toString()
-                ViewAttributesEnum.SELECTED -> return viewElementGetter().isSelected.toString()
-                ViewAttributesEnum.VISIBLE -> return uncheckedViewElementGetter().isVisible.toString()
-                ViewAttributesEnum.BOUNDS -> return viewElementGetter().bounds.toShortString()
-                ViewAttributesEnum.RESOURCE_ID -> return viewElementGetter().resourceId
-                ViewAttributesEnum.INDEX -> return viewElementGetter().index.toString()
-                ViewAttributesEnum.PACKAGE -> return viewElementGetter().packageName
-                ViewAttributesEnum.VIEW_TAG -> return viewElementGetter().viewTag
-                ViewAttributesEnum.NO_ELLIPSIZED_TEXT -> return checkToAttributeValue {
-                    viewInteractionGetter().check(noEllipsizedText())
-                }
-                ViewAttributesEnum.NO_MULTILINE_BUTTONS -> return checkToAttributeValue {
-                    viewInteractionGetter().check(noMultilineButtons())
-                }
-                ViewAttributesEnum.NO_OVERLAPS -> return checkToAttributeValue {
-                    viewInteractionGetter().check(noOverlaps())
-                }
-                // If it's a TEXT attribute, return the view's raw text
-                ViewAttributesEnum.TEXT -> return ViewTextGetter()[viewInteractionGetter()].rawText
-                else -> throw NotYetImplementedException()
             }
         }
-
-        // If we made it this far, we found no matching attribute. Throw an exception
-        val supportedAttributeNames = ViewAttributesEnum.values().map { it.toString() }
-        throw AppiumException("Attribute name should be one of $supportedAttributeNames. " +
-                "'$attributeName' is given instead")
+        when (espressoAttributes.valueOf(attributeName)) {
+            AttributesEnum.CONTENT_DESC -> return viewElementGetter().contentDescription?.toString()
+            AttributesEnum.CLASS -> return viewElementGetter().className
+            AttributesEnum.CHECKABLE -> return viewElementGetter().isCheckable.toString()
+            AttributesEnum.CHECKED -> return viewElementGetter().isChecked.toString()
+            AttributesEnum.CLICKABLE -> return viewElementGetter().isClickable.toString()
+            AttributesEnum.ENABLED -> return viewElementGetter().isEnabled.toString()
+            AttributesEnum.FOCUSABLE -> return viewElementGetter().isFocusable.toString()
+            AttributesEnum.FOCUSED -> return viewElementGetter().isFocused.toString()
+            AttributesEnum.SCROLLABLE -> return viewElementGetter().isScrollable.toString()
+            AttributesEnum.LONG_CLICKABLE -> return viewElementGetter().isLongClickable.toString()
+            AttributesEnum.PASSWORD -> return viewElementGetter().isPassword.toString()
+            AttributesEnum.SELECTED -> return viewElementGetter().isSelected.toString()
+            AttributesEnum.VISIBLE -> return uncheckedViewElementGetter().isVisible.toString()
+            AttributesEnum.BOUNDS -> return viewElementGetter().bounds.toShortString()
+            AttributesEnum.RESOURCE_ID -> return viewElementGetter().resourceId
+            AttributesEnum.INDEX -> return viewElementGetter().index.toString()
+            AttributesEnum.PACKAGE -> return viewElementGetter().packageName
+            AttributesEnum.VIEW_TAG -> return viewElementGetter().viewTag
+            AttributesEnum.NO_ELLIPSIZED_TEXT -> return checkToAttributeValue {
+                viewInteractionGetter().check(LayoutAssertions.noEllipsizedText())
+            }
+            AttributesEnum.NO_MULTILINE_BUTTONS -> return checkToAttributeValue {
+                viewInteractionGetter().check(LayoutAssertions.noMultilineButtons())
+            }
+            AttributesEnum.NO_OVERLAPS -> return checkToAttributeValue {
+                viewInteractionGetter().check(LayoutAssertions.noOverlaps())
+            }
+            // If it's a TEXT attribute, return the view's raw text
+            AttributesEnum.TEXT -> return ViewTextGetter()[viewInteractionGetter()].rawText
+            else -> throw NotYetImplementedException(
+                "Espresso doesn't support attribute '$attributeName', Attribute name should be one of ${composeAttributes.supportedAttributes()}\"")
+        }
     }
 }

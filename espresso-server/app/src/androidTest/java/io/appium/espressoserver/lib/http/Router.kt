@@ -99,6 +99,7 @@ internal class Router {
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/device/get_clipboard", GetClipboard(), GetClipboardParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/device/set_clipboard", SetClipboard(), SetClipboardParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/device/open_notifications", OpenNotifications(), AppiumParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/appium/device/display_density", GetDisplayDensity(), AppiumParams::class.java))
 
         // touch events
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/click", PointerEventHandler(CLICK), MotionEventParams::class.java))
@@ -117,6 +118,9 @@ internal class Router {
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/doubleclick", PointerEventHandler(MOUSE_DOUBLECLICK), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/perform", TouchAction(), TouchActionsParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/multi/perform", MultiTouchAction(), MultiTouchActionsParams::class.java))
+
+        routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/settings", UpdateSettings(), SettingsParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/appium/settings", GetSettings(), AppiumParams::class.java))
 
         // 'execute mobile' commands
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/:elementId/swipe", MobileSwipe(), MobileSwipeParams::class.java))

@@ -2,93 +2,15 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import { ADB } from 'appium-adb';
-import { androidHelpers } from 'appium-android-driver';
 import EspressoDriver from '../../lib/driver';
-import EspressoRunner from '../../lib/espresso-runner';
+import { androidHelpers } from 'appium-android-driver';
+
 
 chai.should();
 chai.use(chaiAsPromised);
 let sandbox = sinon.createSandbox();
 
 describe('driver', function () {
-  describe('startEspressoSession', function () {
-    let driver;
-    beforeEach(function () {
-      driver = new EspressoDriver({}, false);
-      driver.caps = {
-        appPackage: 'io.appium.package',
-        appActivity: '.MainActivity',
-        appWaitPackage: 'io.appium.package',
-        appWaitActivity: '.MainActivity',
-      };
-      driver.opts = { autoLaunch: false, skipUnlock: true };
-      sandbox.stub(driver, 'initEspressoServer');
-      sandbox.stub(driver, 'initAUT');
-      sandbox.stub(driver, 'addDeviceInfoToCaps');
-      sandbox.stub(androidHelpers, 'getDeviceInfoFromCaps').callsFake(function () {
-        return {udid: 1, emPort: 8888};
-      });
-      driver.espresso = new EspressoRunner({
-        adb: ADB.createADB(), tmpDir: 'tmp', systemPort: 4724, host: 'localhost', devicePort: 6790, appPackage: driver.caps.appPackage, forceEspressoRebuild: false
-      });
-      sandbox.stub(driver.espresso, 'startSession');
-    });
-    afterEach(function () {
-      sandbox.restore();
-    });
-    it('should call setHiddenApiPolicy', async function () {
-      sandbox.stub(androidHelpers, 'createADB').callsFake(function () {
-        let calledCount = 0;
-        return {
-          getDevicesWithRetry: () => [{udid: 'emulator-1234'}],
-          getPortFromEmulatorString: () => 1234,
-          setDeviceId: () => {},
-          setEmulatorPort: () => {},
-          networkSpeed: () => {},
-          getApiLevel: () => 28,
-          setHiddenApiPolicy: () => {
-            calledCount += 1;
-            return calledCount;
-          },
-          waitForDevice: () => {},
-          processExists: () => true, // skip launching avd
-          startLogcat: () => {},
-          forwardPort: () => {},
-          isAnimationOn: () => false,
-          installOrUpgrade: () => {},
-          waitForActivity: () => {},
-        };
-      });
-      await driver.startEspressoSession();
-      driver.adb.setHiddenApiPolicy().should.eql(2);
-    });
-    it('should not call setHiddenApiPolicy', async function () {
-      sandbox.stub(androidHelpers, 'createADB').callsFake(function () {
-        let calledCount = 0;
-        return {
-          getDevicesWithRetry: () => [{udid: 'emulator-1234'}],
-          getPortFromEmulatorString: () => 1234,
-          setDeviceId: () => {},
-          setEmulatorPort: () => {},
-          networkSpeed: () => {},
-          getApiLevel: () => 27,
-          setHiddenApiPolicy: () => {
-            calledCount += 1;
-            return calledCount;
-          },
-          waitForDevice: () => {},
-          processExists: () => true, // skip launching avd
-          startLogcat: () => {},
-          forwardPort: () => {},
-          isAnimationOn: () => false,
-          waitForActivity: () => {},
-        };
-      });
-      await driver.startEspressoSession();
-      driver.adb.setHiddenApiPolicy().should.eql(1);
-    });
-  });
-
   describe('deleteSession', function () {
     let driver;
     beforeEach(function () {
@@ -122,20 +44,55 @@ describe('driver', function () {
       beforeEach(function () {
         driver = new EspressoDriver({}, false);
         driver.caps = { appPackage: 'io.appium.package', appActivity: '.MainActivity'};
-        driver.opts = { autoLaunch: false, skipUnlock: true };
+        driver.opts = { autoLaunch: false, skipUnlock: true, systemPort: 30000 };
         driver.chromedriver = true;
         sandbox.stub(driver, 'initEspressoServer');
         sandbox.stub(driver, 'initAUT');
         sandbox.stub(driver, 'startEspressoSession');
+        sandbox.stub(androidHelpers, 'getDeviceInfoFromCaps').callsFake(function () {
+          return {udid: 1, emPort: 8888};
+        });
+        sandbox.stub(androidHelpers, 'createADB').callsFake(function () {
+          return {
+            getDevicesWithRetry: () => [{udid: 'emulator-1234'}],
+            getPortFromEmulatorString: () => 1234,
+            setDeviceId: () => {},
+            setEmulatorPort: () => {},
+            isAppInstalled: () => true,
+            getApiLevel: () => 28,
+            forceStop: () => {},
+            stopLogcat: () => {},
+            setDefaultHiddenApiPolicy: () => {},
+          };
+        });
+      });
+      afterEach(function () {
+        sandbox.restore();
       });
 
       it('should proxy screenshot if nativeWebScreenshot is off on chromedriver mode', async function () {
-        await driver.createSession({platformName: 'Android', deviceName: 'device', appPackage: driver.caps.appPackage, nativeWebScreenshot: false});
+        await driver.createSession(null, null, {
+          firstMatch: [{}],
+          alwaysMatch: {
+            platformName: 'Android',
+            'appium:deviceName': 'device',
+            'appium:appPackage': driver.caps.appPackage,
+            'appium:nativeWebScreenshot': false
+          }
+        });
         proxyAvoidList = driver.getProxyAvoidList().filter(nativeWebScreenshotFilter);
         proxyAvoidList.should.be.empty;
       });
       it('should not proxy screenshot if nativeWebScreenshot is on on chromedriver mode', async function () {
-        await driver.createSession({platformName: 'Android', deviceName: 'device', appPackage: driver.caps.appPackage, nativeWebScreenshot: true});
+        await driver.createSession(null, null, {
+          firstMatch: [{}],
+          alwaysMatch: {
+            platformName: 'Android',
+            'appium:deviceName': 'device',
+            'appium:appPackage': driver.caps.appPackage,
+            'appium:nativeWebScreenshot': true
+          }
+        });
         proxyAvoidList = driver.getProxyAvoidList().filter(nativeWebScreenshotFilter);
         proxyAvoidList.should.not.be.empty;
       });

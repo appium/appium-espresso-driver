@@ -18,22 +18,25 @@ package io.appium.espressoserver.lib.helpers
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.hardware.display.DisplayManager
 import android.os.Build
 import android.provider.Settings.Secure
 import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 import android.view.Display
-import android.view.WindowManager
+import androidx.test.core.app.ApplicationProvider
 import java.util.TimeZone
 import java.util.Locale
 
-class DeviceInfoHelper(private val context: Context) {
+class DeviceInfoHelper {
+
+    private val context by lazy {
+        ApplicationProvider.getApplicationContext<Context>()
+    }
 
     private val defaultDisplay: Display?
-        get() {
-            val windowManager = context.getSystemService(Context.WINDOW_SERVICE)
-            return (windowManager as? WindowManager)?.defaultDisplay;
-        }
+        get() = (context.applicationContext.getSystemService(Context.DISPLAY_SERVICE) as? DisplayManager)
+            ?.getDisplay(Display.DEFAULT_DISPLAY)
 
     /**
      * A unique serial number identifying a device, if a device has multiple users,  each user appears as a
@@ -73,7 +76,7 @@ class DeviceInfoHelper(private val context: Context) {
      * @return the os version as String
      */
     val apiVersion: String
-        get() = Integer.toString(Build.VERSION.SDK_INT)
+        get() = Build.VERSION.SDK_INT.toString()
 
     /**
      * @return The current version string, for example "1.0" or "3.4b5"
@@ -100,12 +103,12 @@ class DeviceInfoHelper(private val context: Context) {
     val carrierName: String?
         get() {
             val telephonyManager = context
-                    .getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
-            try {
-                return telephonyManager?.networkOperatorName
+                .getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+            return try {
+                telephonyManager?.networkOperatorName
             } catch (e: Exception) {
                 e.printStackTrace()
-                return null
+                null
             }
 
         }

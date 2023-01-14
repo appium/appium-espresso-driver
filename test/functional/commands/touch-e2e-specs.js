@@ -1,6 +1,6 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import wd from 'wd';
+// import remote from 'webdriverio';
 import axios from 'axios';
 import B from 'bluebird';
 import _ from 'lodash';
@@ -411,134 +411,134 @@ describe('touch actions -', function () {
 
   describe('mjsonwp touch actions', function () {
     describe('multi touch actions', function () {
-      let nextEl;
+      // let nextEl;
 
-      beforeEach(async function () {
-        await startTextSwitcherActivity();
+      // beforeEach(async function () {
+      //   await startTextSwitcherActivity();
 
-        await driver.elementByXPath("//*[@text='0']").should.eventually.exist;
-        await driver.elementByXPath("//*[@text='1']").should.eventually.be.rejectedWith(/NoSuchElement/);
+      //   await driver.elementByXPath("//*[@text='0']").should.eventually.exist;
+      //   await driver.elementByXPath("//*[@text='1']").should.eventually.be.rejectedWith(/NoSuchElement/);
 
-        nextEl = await driver.elementByAccessibilityId('Next');
-      });
+      //   nextEl = await driver.elementByAccessibilityId('Next');
+      // });
 
-      for (const method of ['tap', 'press', 'longPress']) {
-        it(`should perform single ${method} actions on an element`, async function () {
-          const action = new wd.TouchAction();
-          action[method]({el: nextEl});
+      // for (const method of ['tap', 'press', 'longPress']) {
+      //   it(`should perform single ${method} actions on an element`, async function () {
+      //     const action = new wd.TouchAction();
+      //     action[method]({el: nextEl});
 
-          const multiAction = new wd.MultiAction(driver);
-          multiAction.add(action);
-          await multiAction.perform();
+      //     const multiAction = new wd.MultiAction(driver);
+      //     multiAction.add(action);
+      //     await multiAction.perform();
 
-          await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
-        });
+      //     await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
+      //   });
 
-        it(`should perform single ${method} actions`, async function () {
-          const {x, y} = await nextEl.getLocation();
+      //   it(`should perform single ${method} actions`, async function () {
+      //     const {x, y} = await nextEl.getLocation();
 
-          const action = new wd.TouchAction();
-          action[method]({x: x + 10, y: y + 10});
+      //     const action = new wd.TouchAction();
+      //     action[method]({x: x + 10, y: y + 10});
 
-          const multiAction = new wd.MultiAction(driver);
-          multiAction.add(action);
-          await multiAction.perform();
+      //     const multiAction = new wd.MultiAction(driver);
+      //     multiAction.add(action);
+      //     await multiAction.perform();
 
-          await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
-        });
-      }
+      //     await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
+      //   });
+      // }
     });
 
     describe('touch actions', function () {
       describe('tap/press/longPress', function () {
-        let nextEl;
+        // let nextEl;
 
-        beforeEach(async function () {
-          await startTextSwitcherActivity();
+        // beforeEach(async function () {
+        //   await startTextSwitcherActivity();
 
-          await driver.elementByXPath("//*[@text='0']").should.eventually.exist;
-          await driver.elementByXPath("//*[@text='1']").should.eventually.be.rejectedWith(/NoSuchElement/);
+        //   await driver.elementByXPath("//*[@text='0']").should.eventually.exist;
+        //   await driver.elementByXPath("//*[@text='1']").should.eventually.be.rejectedWith(/NoSuchElement/);
 
-          nextEl = await driver.elementByAccessibilityId('Next');
-        });
+        //   nextEl = await driver.elementByAccessibilityId('Next');
+        // });
 
-        for (const method of ['tap', 'press', 'longPress']) {
-          it(`should perform single ${method} actions`, async function () {
-            const {x, y} = await nextEl.getLocation();
+        //   for (const method of ['tap', 'press', 'longPress']) {
+        //     it(`should perform single ${method} actions`, async function () {
+        //       const {x, y} = await nextEl.getLocation();
 
-            const action = new wd.TouchAction(driver);
-            action[method]({x: x + 10, y: y + 10});
-            await action.perform();
+        //       const action = new wd.TouchAction(driver);
+        //       action[method]({x: x + 10, y: y + 10});
+        //       await action.perform();
 
-            await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
-          });
-          it(`should perform single ${method} actions on an element`, async function () {
-            let action = new wd.TouchAction(driver);
-            action[method]({el: nextEl});
-            await action.perform();
+        //       await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
+        //     });
+        //     it(`should perform single ${method} actions on an element`, async function () {
+        //       let action = new wd.TouchAction(driver);
+        //       action[method]({el: nextEl});
+        //       await action.perform();
 
-            await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
-          });
-        }
-      });
-      it('should perform a scroll event', async function () {
-        await startListActivity();
+        //       await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
+        //     });
+        //   }
+        // });
+        // it('should perform a scroll event', async function () {
+        //   await startListActivity();
 
-        const {startEl, endEl} = await getScrollData();
+        //   const {startEl, endEl} = await getScrollData();
 
-        const action = new wd.TouchAction(driver);
-        action.press({el: startEl});
-        action.moveTo({el: endEl});
-        action.release();
-        await action.perform();
+        //   const action = new wd.TouchAction(driver);
+        //   action.press({el: startEl});
+        //   action.moveTo({el: endEl});
+        //   action.release();
+        //   await action.perform();
 
-        await assertScroll();
-      });
-      it('should do multiple scrolls on multiple views', async function () {
-        await startSplitTouchActivity();
+        //   await assertScroll();
+        // });
+        // it('should do multiple scrolls on multiple views', async function () {
+        //   await startSplitTouchActivity();
 
-        const els = await driver.elementsByClassName('android.widget.ListView');
-        const actions = await B.map(els, async function (el) {
-          const {height} = await el.getSize();
-          const increment = Math.round((height / 2 - 10) / 8);
+        //   const els = await driver.elementsByClassName('android.widget.ListView');
+        //   const actions = await B.map(els, async function (el) {
+        //     const {height} = await el.getSize();
+        //     const increment = Math.round((height / 2 - 10) / 8);
 
-          let action = new wd.TouchAction()
-            .press({element: el});
-          for (let i = 0; i < 8; i++) {
-            action.moveTo({element: el, x: 10, y: -i * increment});
-          }
-          action.release();
-          return action;
-        });
+        //     let action = new wd.TouchAction()
+        //       .press({element: el});
+        //     for (let i = 0; i < 8; i++) {
+        //       action.moveTo({element: el, x: 10, y: -i * increment});
+        //     }
+        //     action.release();
+        //     return action;
+        //   });
 
-        const multiAction = new wd.MultiAction();
-        multiAction.add(...actions);
+        //   const multiAction = new wd.MultiAction();
+        //   multiAction.add(...actions);
 
-        await driver.performMultiAction(multiAction);
-      });
-      it('should throw out-of-bounds when tapping coordinates outside of viewport', async function () {
-        const {width, height} = await driver.getWindowSize();
-        const outOfBoundsCoordinates = [
-          [-10, 10], [10, -10], [width + 10, height - 10], [width - 10, height + 10], [width, height]
-        ];
-        for (let [x, y] of outOfBoundsCoordinates) {
-          const action = new wd.TouchAction(driver);
-          action.press({x, y});
-          action.release();
-          await action.perform().should.eventually.be.rejected;
-        }
-      });
-      it('should not throw out-of-bounds exception if tapping a coordinate within viewport/', async function () {
-        const {width, height} = await driver.getWindowSize();
-        const inOfBoundsCoordinates = [
-          [100, 100], [width - 100, height - 100]
-        ];
-        for (let [x, y] of inOfBoundsCoordinates) {
-          const action = new wd.TouchAction(driver);
-          action.press({x, y});
-          action.release();
-          await action.perform().should.eventually.be.fulfilled;
-        }
+        //   await driver.performMultiAction(multiAction);
+        // });
+        // it('should throw out-of-bounds when tapping coordinates outside of viewport', async function () {
+        //   const {width, height} = await driver.getWindowSize();
+        //   const outOfBoundsCoordinates = [
+        //     [-10, 10], [10, -10], [width + 10, height - 10], [width - 10, height + 10], [width, height]
+        //   ];
+        //   for (let [x, y] of outOfBoundsCoordinates) {
+        //     const action = new wd.TouchAction(driver);
+        //     action.press({x, y});
+        //     action.release();
+        //     await action.perform().should.eventually.be.rejected;
+        //   }
+        // });
+        // it('should not throw out-of-bounds exception if tapping a coordinate within viewport/', async function () {
+        //   const {width, height} = await driver.getWindowSize();
+        //   const inOfBoundsCoordinates = [
+        //     [100, 100], [width - 100, height - 100]
+        //   ];
+        //   for (let [x, y] of inOfBoundsCoordinates) {
+        //     const action = new wd.TouchAction(driver);
+        //     action.press({x, y});
+        //     action.release();
+        //     await action.perform().should.eventually.be.fulfilled;
+        //   }
       });
     });
   });

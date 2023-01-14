@@ -19,14 +19,14 @@ package io.appium.espressoserver.lib.handlers
 import androidx.test.espresso.EspressoException
 import androidx.test.espresso.contrib.NavigationViewActions
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.NavigateToParams
 
 class NavigateTo : RequestHandler<NavigateToParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: NavigateToParams): Void? {
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
+        val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
         val menuItemId = params.menuItemId
         try {
             viewInteraction.perform(NavigationViewActions.navigateTo(menuItemId))

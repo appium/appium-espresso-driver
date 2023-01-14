@@ -22,18 +22,19 @@ import androidx.test.espresso.action.ViewActions.*
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.MobileSwipeParams
 import io.appium.espressoserver.lib.model.MobileSwipeParams.Direction.*
 import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
+import io.appium.espressoserver.lib.viewaction.ViewGetter
 
 class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: MobileSwipeParams): Void? {
         // Get a reference to the view and call onData. This will automatically scroll to the view.
-        val viewInteraction = Element.getViewInteractionById(params.elementId)
+        val viewInteraction = EspressoElement.getViewInteractionById(params.elementId)
 
         if (params.direction != null) {
             AndroidLogger.info("Performing swipe action with direction '${params.direction}'")
@@ -59,7 +60,7 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
                     swiper=[${params.swiper}] startCoordinates=[${params.startCoordinates}]
                     endCoordinates=[${params.endCoordinates}] precisionDescriber=[${params.precisionDescriber}]
                     """.trimIndent())
-                    swipeAction.perform(uiController, Element.getViewById(params.elementId))
+                    swipeAction.perform(uiController, ViewGetter().getView(viewInteraction))
                     return null
                 }
             }

@@ -16,14 +16,9 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.helpers.ScreenshotsHelper
+import io.appium.espressoserver.lib.helpers.takeScreenshot
 import io.appium.espressoserver.lib.model.AppiumParams
 
 class ScreenshotHandler : RequestHandler<AppiumParams, String> {
-
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): String {
-        return ScreenshotsHelper().screenshot
-    }
+    override fun handleInternal(params: AppiumParams): String = takeScreenshot()
 }

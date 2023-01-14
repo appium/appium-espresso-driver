@@ -16,15 +16,18 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
+import io.appium.espressoserver.lib.model.ComposeNodeElement
+import io.appium.espressoserver.lib.model.EspressoElement
 
 import io.appium.espressoserver.lib.model.ViewElement
 
 class GetSelected : RequestHandler<AppiumParams, Boolean> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): Boolean =
-            ViewElement(Element.getViewById(params.elementId)).isSelected
+    override fun handleEspresso(params: AppiumParams): Boolean =
+            ViewElement(EspressoElement.getCachedViewStateById(params.elementId).view).isSelected
+
+    override fun handleCompose(params: AppiumParams): Boolean =
+            ComposeNodeElement(getSemanticsNode(params.elementId!!)).isSelected
 }

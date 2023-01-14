@@ -16,17 +16,22 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
+import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.Element
 import io.appium.espressoserver.lib.model.Size
 import io.appium.espressoserver.lib.model.ViewElement
+import io.appium.espressoserver.lib.model.EspressoElement
+import io.appium.espressoserver.lib.model.ComposeNodeElement
 
 class GetSize : RequestHandler<AppiumParams, Size> {
 
-    @Throws(AppiumException::class)
-    override fun handleInternal(params: AppiumParams): Size {
-        val bounds = ViewElement(Element.getViewById(params.elementId)).bounds
+    override fun handleEspresso(params: AppiumParams): Size {
+        val bounds = ViewElement(EspressoElement.getCachedViewStateById(params.elementId).view).bounds
+        return Size(bounds.width(), bounds.height())
+    }
+
+    override fun handleCompose(params: AppiumParams): Size {
+        val bounds = ComposeNodeElement(getSemanticsNode(params.elementId!!)).bounds
         return Size(bounds.width(), bounds.height())
     }
 }
