@@ -43,19 +43,19 @@ android {
     signingConfigs {
         getByName("debug") {
             findProperty("appiumKeystoreFile")?.also {
-                storeFile = File(it.toString())
+                storeFile.apply { file(it.toString()) }
             }
 
             findProperty("appiumKeystorePassword")?.also {
-                storePassword = it.toString()
+                storePassword.apply { file(it.toString()) }
             }
 
             findProperty("appiumKeyAlias")?.also {
-                keyAlias = it.toString()
+                keyAlias.apply { file(it.toString()) }
             }
 
             findProperty("appiumKeyPassword")?.also {
-                keyPassword = it.toString()
+                keyPassword.apply { file(it.toString()) }
             }
         }
     }
