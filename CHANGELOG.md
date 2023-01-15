@@ -1,3 +1,10 @@
+## [2.14.1](https://github.com/appium/appium-espresso-driver/compare/v2.14.0...v2.14.1) (2023-01-15)
+
+
+### Miscellaneous Chores
+
+* Make binary compatible with java 15 ([#849](https://github.com/appium/appium-espresso-driver/issues/849)) ([3fe18cf](https://github.com/appium/appium-espresso-driver/commit/3fe18cfafe9ee9ae073fbe3fe30c128695484088))
+
 ## [2.14.0](https://github.com/appium/appium-espresso-driver/compare/v2.13.11...v2.14.0) (2023-01-13)
 
 
