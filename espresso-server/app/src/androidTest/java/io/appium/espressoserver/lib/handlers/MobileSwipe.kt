@@ -47,7 +47,11 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
                 DOWN -> viewInteraction.perform(androidx.test.espresso.action.ViewActions.swipeDown())
                 LEFT -> viewInteraction.perform(androidx.test.espresso.action.ViewActions.swipeLeft())
                 RIGHT -> viewInteraction.perform(androidx.test.espresso.action.ViewActions.swipeRight())
-                else -> throw InvalidArgumentException("Direction cannot be ${params.direction}")
+                else -> throw InvalidArgumentException(
+                    "Unknown swipe direction '${params.direction}'. " +
+                            "Only the following values are supported: " +
+                            values().joinToString(",") { x -> x.name.lowercase() }
+                )
             }
         } else if (params.swiper != null) {
             val runnable = object : UiControllerRunnable<Void?> {
@@ -85,7 +89,8 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
             RIGHT -> nodeInteractions.performGesture { swipeRight() }
             else -> throw InvalidArgumentException(
                 "Unknown swipe direction '${params.direction}'. " +
-                        "Supported directions are: up, down, right, left"
+                        "Only the following values are supported: " +
+                        values().joinToString(",") { x -> x.name.lowercase() }
             )
         }
         return null
