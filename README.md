@@ -204,7 +204,7 @@ In order to change between subdrivers use the [driver](#settings-api) setting. S
 - getAttribute: Accepts and returns Compose-specific element attributes. See [Compose Element Attributes](#compose-element-attributes) for the full list of supported Compose element attributes.
 - getElementScreenshot: Fetches a screenshot of the given Compose element. Available since driver version *2.14.0*
 - `mobile: swipe`: Performs swipe gesture on the given element in the given direction. 
-The `swiper` argument is not supported in Compose mode. Available since driver version *2.14.0*
+The `swiper` argument is not supported in Compose mode. Available since driver version *2.15.0*
 
 Calling other driver element-specific APIs not listed above would most likely throw an exception as Compose and Espresso elements are being stored in completely separated internal caches and must not be mixed.
 
