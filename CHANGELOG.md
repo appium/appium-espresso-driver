@@ -1,3 +1,10 @@
+## [2.15.0](https://github.com/appium/appium-espresso-driver/compare/v2.14.1...v2.15.0) (2023-01-16)
+
+
+### Features
+
+* Add swipe support in Compose mode ([#850](https://github.com/appium/appium-espresso-driver/issues/850)) ([97d2064](https://github.com/appium/appium-espresso-driver/commit/97d20643e8513dc2d8a94b2edae6110f71bb79d0))
+
 ## [2.14.1](https://github.com/appium/appium-espresso-driver/compare/v2.14.0...v2.14.1) (2023-01-15)
 
 
