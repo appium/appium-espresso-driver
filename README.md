@@ -191,6 +191,9 @@ driver | 'compose' or 'espresso' | The name of the subdriver to use for elements
 
 [Jetpack Compose](https://developer.android.com/jetpack/compose) is Android’s modern toolkit for building native UI. Espresso driver supports basic interactions with Compose-based applications since version *1.46.0*.
 
+[Appium UiAutomator2 driver](https://github.com/appium/appium-uiautomator2-driver/) allows to interact with Jetpack Compose elements via the accessibility layer by providing [testTag](https://developer.android.com/reference/kotlin/androidx/compose/ui/platform/package-summary#(androidx.compose.ui.Modifier).testTag(kotlin.String)) modifier attribute or the displayed text, but this Espresso driver allows you to access Jetpack Compose elements directly.
+
+
 ### Interaction With Compose Elements
 
 Espresso driver has the concept of subdrivers. This works quite similarly to the concept of contexts, while contexts are used to switch between native and web, and subdrivers are still
