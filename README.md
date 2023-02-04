@@ -42,7 +42,7 @@ On top of standard Appium requirements Espresso driver also expects the followin
 
 ## Scripts
 
-- `appium driver run log-espresso-path` prints the path to the Appium Espresso server root. You can modify the gradle file directly if [Espresso Build Config](#espresso-build-config) was not sufficient.
+- `appium driver run print-espresso-path` prints the path to the Appium Espresso server root. You can modify the gradle file directly if [Espresso Build Config](#espresso-build-config) was not sufficient.
 
 ## Capabilities
 
