@@ -7,7 +7,7 @@
     "automated testing",
     "android"
   ],
-  "version": "2.15.1",
+  "version": "2.15.3",
   "author": "Appium Contributors",
   "license": "Apache-2.0",
   "repository": {
@@ -37,7 +37,10 @@
     "platformNames": [
       "Android"
     ],
-    "mainClass": "EspressoDriver"
+    "mainClass": "EspressoDriver",
+    "scripts": {
+      "print-espresso-path": "./scripts/print-espresso-path.js"
+    }
   },
   "main": "./build/index.js",
   "bin": {},
@@ -58,7 +61,8 @@
     "espresso-server/settings.gradle.kts",
     "espresso-server/lint.xml",
     "!.DS_Store",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "scripts"
   ],
   "dependencies": {
     "@babel/runtime": "^7.4.3",

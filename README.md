@@ -40,6 +40,10 @@ On top of standard Appium requirements Espresso driver also expects the followin
 - The package under test must not have mangled class names (e.g. [Proguard](https://developer.android.com/studio/build/shrink-code) must not be enabled for it)
 
 
+## Scripts
+
+- `appium driver run print-espresso-path` prints the path to the Appium Espresso server root. You can modify the gradle file directly if [Espresso Build Config](#espresso-build-config) was not sufficient.
+
 ## Capabilities
 
 ### General
@@ -206,7 +210,7 @@ In order to change between subdrivers use the [driver](#settings-api) setting. S
 - click, isDisplayed, isEnabled, clear, getText, sendKeys, getElementRect, getValue, isSelected: These commands should properly support compose elements.
 - getAttribute: Accepts and returns Compose-specific element attributes. See [Compose Element Attributes](#compose-element-attributes) for the full list of supported Compose element attributes.
 - getElementScreenshot: Fetches a screenshot of the given Compose element. Available since driver version *2.14.0*
-- `mobile: swipe`: Performs swipe gesture on the given element in the given direction. 
+- `mobile: swipe`: Performs swipe gesture on the given element in the given direction.
 The `swiper` argument is not supported in Compose mode. Available since driver version *2.15.0*
 
 Calling other driver element-specific APIs not listed above would most likely throw an exception as Compose and Espresso elements are being stored in completely separated internal caches and must not be mixed.
