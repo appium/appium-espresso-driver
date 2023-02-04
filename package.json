@@ -61,7 +61,8 @@
     "espresso-server/settings.gradle.kts",
     "espresso-server/lint.xml",
     "!.DS_Store",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "scripts"
   ],
   "dependencies": {
     "@babel/runtime": "^7.4.3",
