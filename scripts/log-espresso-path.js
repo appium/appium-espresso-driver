@@ -1,9 +1,8 @@
 const path = require('path');
-const log = require('fancy-log');
 
 function logEspressoServerPath () {
   const dstPath = path.resolve(__dirname, '..', 'espresso-server');
-  log.info(`Appium Espresso server exists in '${dstPath}'`);
+  console.log(dstPath); // eslint-disable-line no-console
 }
 
 logEspressoServerPath();
