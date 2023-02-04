@@ -1,3 +1,10 @@
+## [2.15.3](https://github.com/appium/appium-espresso-driver/compare/v2.15.2...v2.15.3) (2023-02-04)
+
+
+### Bug Fixes
+
+* add scripts in the package ([f8b6e9c](https://github.com/appium/appium-espresso-driver/commit/f8b6e9cd273f4e6471986c449133d8a2c71f6217))
+
 ## [2.15.2](https://github.com/appium/appium-espresso-driver/compare/v2.15.1...v2.15.2) (2023-02-04)
 
 
