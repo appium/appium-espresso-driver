@@ -37,7 +37,10 @@
     "platformNames": [
       "Android"
     ],
-    "mainClass": "EspressoDriver"
+    "mainClass": "EspressoDriver",
+    "scripts": {
+      "log-espresso-path": "./scripts/log-espresso-path.js"
+    }
   },
   "main": "./build/index.js",
   "bin": {},
@@ -66,6 +69,7 @@
     "appium-android-driver": "^5.8.7",
     "asyncbox": "^2.3.1",
     "bluebird": "^3.5.0",
+    "fancy-log": "^2.0.0",
     "lodash": "^4.17.11",
     "portscanner": "^2.1.1",
     "source-map-support": "^0.x",
