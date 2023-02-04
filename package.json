@@ -37,7 +37,10 @@
     "platformNames": [
       "Android"
     ],
-    "mainClass": "EspressoDriver"
+    "mainClass": "EspressoDriver",
+    "scripts": {
+      "print-espresso-path": "./scripts/print-espresso-path.js"
+    }
   },
   "main": "./build/index.js",
   "bin": {},
