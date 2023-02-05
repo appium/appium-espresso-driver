@@ -39,7 +39,8 @@
     ],
     "mainClass": "EspressoDriver",
     "scripts": {
-      "print-espresso-path": "./scripts/print-espresso-path.js"
+      "print-espresso-path": "./scripts/print-espresso-path.js",
+      "build-espresso.js": "./scripts/build-espresso.js"
     }
   },
   "main": "./build/index.js",

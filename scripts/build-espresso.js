@@ -26,4 +26,4 @@ if (require.main === module) {
   asyncify(buildEspressoServer);
 }
 
-module.exports = buildEspressoServer;
+(async () => await buildEspressoServer())();
