@@ -1,3 +1,10 @@
+## [2.15.4](https://github.com/appium/appium-espresso-driver/compare/v2.15.3...v2.15.4) (2023-02-17)
+
+
+### Miscellaneous Chores
+
+* remove unused unicode caps ([#856](https://github.com/appium/appium-espresso-driver/issues/856)) ([39f66ae](https://github.com/appium/appium-espresso-driver/commit/39f66ae38320031fa6343b761b53b719f7a6a719))
+
 ## [2.15.3](https://github.com/appium/appium-espresso-driver/compare/v2.15.2...v2.15.3) (2023-02-04)
 
 
