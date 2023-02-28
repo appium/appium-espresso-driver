@@ -179,6 +179,7 @@ appium:chromeOptions | A mapping, that allows to customize chromedriver options.
 Capability Name | Description
 --- | ---
 appium:disableSuppressAccessibilityService | Being set to `true` tells the instrumentation process to not suppress accessibility services during the automated test. This might be useful if your automated test needs these services. `false` by default
+appium:setAnimation | Sets the animation for Android device under test. `false` by default
 
 
 ## Settings API
