@@ -14,7 +14,7 @@ android {
         testHandleProfiling = false
         testFunctionalTest = false
         minSdk = getIntProperty("appiumMinSdk", 21)
-        targetSdk = getIntProperty("appiumTargetSdk", 28)
+        targetSdk = getIntProperty("appiumTargetSdk", 30)
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -159,17 +159,17 @@ tasks.withType<Test> {
 }
 
 object Version {
-    const val espresso = "3.4.0"
-    const val testlib = "1.4.0"
+    const val espresso = "3.5.1"
+    const val testlib = "1.5.0"
     const val mocklib = "2.0.9"
-    const val gson = "2.8.9"
+    const val gson = "2.10.1"
     const val uia = "2.2.0"
     const val nanohttpd = "2.3.1"
-    const val annotation = "1.3.0"
-    const val mockito = "4.0.0"
-    const val robolectric = "4.5.1"
+    const val annotation = "1.6.0"
+    const val mockito = "5.1.1"
+    const val robolectric = "4.9.2"
     const val junit = "4.13.2"
-    const val compose = "1.0.5"
+    const val compose = "1.3.3"
 }
 
 fun Project.getStringProperty(name: String, default: String): String =
