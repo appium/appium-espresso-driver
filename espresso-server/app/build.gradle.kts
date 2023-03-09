@@ -4,8 +4,8 @@ plugins {
 }
 
 android {
-    compileSdk = getIntProperty("appiumCompileSdk", 30)
-    buildToolsVersion = getStringProperty("appiumBuildTools", "30.0.3")
+    compileSdk = getIntProperty("appiumCompileSdk", 33)
+    buildToolsVersion = getStringProperty("appiumBuildTools", "33.0.2")
     defaultConfig {
         // <instrumentation android:targetPackage=""/>
         applicationId = getStringProperty("appiumTargetPackage", "io.appium.espressoserver")
