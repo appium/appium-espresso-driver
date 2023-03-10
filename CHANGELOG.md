@@ -1,3 +1,10 @@
+## [2.16.0](https://github.com/appium/appium-espresso-driver/compare/v2.15.4...v2.16.0) (2023-03-10)
+
+
+### Features
+
+* Update default component versions ([#860](https://github.com/appium/appium-espresso-driver/issues/860)) ([2193c25](https://github.com/appium/appium-espresso-driver/commit/2193c252cd8f975cd1e9391f594a41d70badd26b))
+
 ## [2.15.4](https://github.com/appium/appium-espresso-driver/compare/v2.15.3...v2.15.4) (2023-02-17)
 
 
