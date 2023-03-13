@@ -1,3 +1,10 @@
+## [2.17.0](https://github.com/appium/appium-espresso-driver/compare/v2.16.1...v2.17.0) (2023-03-13)
+
+
+### Features
+
+* add disableWindowAnimation caps ([#857](https://github.com/appium/appium-espresso-driver/issues/857)) ([eb4f60e](https://github.com/appium/appium-espresso-driver/commit/eb4f60ef65a39437c78066b388c4f7470087419f))
+
 ## [2.16.1](https://github.com/appium/appium-espresso-driver/compare/v2.16.0...v2.16.1) (2023-03-10)
 
 
