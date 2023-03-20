@@ -1,4 +1,4 @@
-const l = require('lodash');
+const _ = require('lodash');
 const path = require('path');
 const { logger, fs } = require('@appium/support');
 const { ServerBuilder } = require('../build/lib/server-builder.js');
@@ -16,7 +16,7 @@ async function buildEspressoServer () {
 
   const opts = {
     serverPath: ESPRESSO_SERVER_ROOT,
-    showGradleLog: !l.isEmpty(process.env.SHOW_GRADLE_LOG) && ['1', 'true'].includes(l.toLower(process.env.SHOW_GRADLE_LOG))
+    showGradleLog: !_.isEmpty(process.env.SHOW_GRADLE_LOG) && ['1', 'true'].includes(_.toLower(process.env.SHOW_GRADLE_LOG))
   };
 
   if (process.env.TEST_APP_PACKAGE) {
@@ -43,8 +43,12 @@ async function buildEspressoServer () {
     throw Error(`Failed to build the espresso server. SHOW_GRADLE_LOG=true environment variable helps to check the gradle log. Error: ${e}`);
   }
 
-  const dstPath = path.resolve(ESPRESSO_SERVER_ROOT, 'app', 'build', 'outputs', 'apk', 'androidTest', 'debug');
-  LOG.info(`The built server apk, app-debug-androidTest.apk, is in ${dstPath}`);
+  const dstPath = path.resolve(ESPRESSO_SERVER_ROOT, 'app', 'build', 'outputs', 'apk', 'androidTest', 'debug', 'app-debug-androidTest.apk');
+  if (await fs.exists(dstPath)) {
+    LOG.info(`The built server apk is ${dstPath}`);
+  } else {
+    LOG.info(`The built server androidTest.apk might be in ${ESPRESSO_SERVER_BUILD}`);
+  }
 }
 
 (async () => await buildEspressoServer())();
