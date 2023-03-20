@@ -1,5 +1,5 @@
 const path = require('path');
-const { logger } = require('@appium/support');
+const { logger, fs } = require('@appium/support');
 const { ServerBuilder } = require('../build/lib/server-builder.js');
 
 const LOG = new logger.getLogger('EspressoBuild');
@@ -14,15 +14,18 @@ async function buildEspressoServer () {
 
   const opts = {
     serverPath: ESPRESSO_SERVER_ROOT,
-    showGradleLog: process.env.SHOW_GRADLE_LOG ? process.env.SHOW_GRADLE_LOG : false,
-    buildConfiguration: {toolsVersions: {}}
+    showGradleLog: process.env.SHOW_GRADLE_LOG ? process.env.SHOW_GRADLE_LOG : false
   };
 
   if (process.env.TEST_APP_PACKAGE) {
     opts.testAppPackage = process.env.TEST_APP_PACKAGE;
   }
 
-  // TODO: add 'buildConfiguration'
+  if (process.env.ESPRESSO_BUILD_CONFIG) {
+    const buildConfigurationStr = await fs.readFile(process.env.ESPRESSO_BUILD_CONFIG, 'utf8');
+    opts.buildConfiguration = JSON.parse(buildConfigurationStr);
+    console.log(`The espresso build config is ${JSON.stringify(opts.buildConfiguration)}`); // eslint-disable-line no-console
+  }
 
   const builder = new ServerBuilder(LOG, opts);
   await builder.build();
