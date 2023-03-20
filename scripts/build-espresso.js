@@ -31,7 +31,7 @@ async function buildEspressoServer () {
   await builder.build();
 
   const dstPath = path.resolve(ESPRESSO_SERVER_ROOT, 'app', 'build', 'outputs', 'apk', 'androidTest', 'debug');
-  console.log(`The built server apk is ${dstPath}`); // eslint-disable-line no-console
+  console.log(`The built server apk, app-debug-androidTest.apk, is in ${dstPath}`); // eslint-disable-line no-console
 }
 
 (async () => await buildEspressoServer())();
