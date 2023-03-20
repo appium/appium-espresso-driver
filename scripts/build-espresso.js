@@ -1,3 +1,4 @@
+const l = require('lodash');
 const path = require('path');
 const { logger, fs } = require('@appium/support');
 const { ServerBuilder } = require('../build/lib/server-builder.js');
@@ -10,11 +11,12 @@ const ESPRESSO_SERVER_ROOT = path.join(ROOT_DIR, 'espresso-server');
 const ESPRESSO_SERVER_BUILD = path.join(ESPRESSO_SERVER_ROOT, 'app', 'build');
 
 async function buildEspressoServer () {
-  console.log(`Deleting the build directory ${ESPRESSO_SERVER_BUILD}`); // eslint-disable-line no-console
+
+  LOG.info(`Deleting the build directory ${ESPRESSO_SERVER_BUILD}`);
 
   const opts = {
     serverPath: ESPRESSO_SERVER_ROOT,
-    showGradleLog: process.env.SHOW_GRADLE_LOG ? process.env.SHOW_GRADLE_LOG : false
+    showGradleLog: !l.isEmpty(process.env.SHOW_GRADLE_LOG) && ['1', 'true'].includes(l.toLower(process.env.SHOW_GRADLE_LOG))
   };
 
   if (process.env.TEST_APP_PACKAGE) {
@@ -28,17 +30,21 @@ async function buildEspressoServer () {
     try {
       const buildConfigurationStr = await fs.readFile(process.env.ESPRESSO_BUILD_CONFIG, 'utf8');
       opts.buildConfiguration = JSON.parse(buildConfigurationStr);
-      console.log(`The espresso build config is ${JSON.stringify(opts.buildConfiguration)}`); // eslint-disable-line no-console
+      LOG.info(`The espresso build config is ${JSON.stringify(opts.buildConfiguration)}`);
     } catch (e) {
       throw Error(`Failed to parse the ${process.env.ESPRESSO_BUILD_CONFIG}. Please make sure that the JSON is valid format. Error: ${e}`);
     }
   }
 
   const builder = new ServerBuilder(LOG, opts);
-  await builder.build();
+  try {
+    await builder.build();
+  } catch (e) {
+    throw Error(`Failed to build the espresso server. SHOW_GRADLE_LOG=true environment variable helps to check the gradle log. Error: ${e}`);
+  }
 
   const dstPath = path.resolve(ESPRESSO_SERVER_ROOT, 'app', 'build', 'outputs', 'apk', 'androidTest', 'debug');
-  console.log(`The built server apk, app-debug-androidTest.apk, is in ${dstPath}`); // eslint-disable-line no-console
+  LOG.info(`The built server apk, app-debug-androidTest.apk, is in ${dstPath}`);
 }
 
 (async () => await buildEspressoServer())();

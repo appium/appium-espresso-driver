@@ -44,7 +44,7 @@ On top of standard Appium requirements Espresso driver also expects the followin
 
 - `appium driver run espresso print-espresso-path` prints the path to the Appium Espresso server root. You can modify the gradle file directly if [Espresso Build Config](#espresso-build-config) was not sufficient.
 - `appium driver run espresso build-espresso` builds the espresso server since driver version 2.18.0. It helps building the espresso server outside Appium process. Available environment variables are below:
-  - `SHOW_GRADLE_LOG` configures if the command shows the gradle task logs.
+  - `SHOW_GRADLE_LOG` configures if the command shows the gradle task logs. `true` or `1`  sets it as enabled, but others set it as disabled. Defaults to disabled.
   - `TEST_APP_PACKAGE` configures the target application to build the espresso server for.
   - `ESPRESSO_BUILD_CONFIG` is an absolute path to the [Espresso Build Config](#espresso-build-config) as JSON format file.
     - e.g. `SHOW_GRADLE_LOG=true TEST_APP_PACKAGE=your.test.pkg ESPRESSO_BUILD_CONFIG=/path/to/the/config.json appium driver run build-espresso`
@@ -1264,4 +1264,3 @@ more details.
 * Espresso server unit tests are located at `io.appium.espressoserver.test` and can be run in Android Studio
 * NodeJS unit tests are run with `npm run test`
 * End-to-end tests are run with `npm run e2e-test` (remember to run `npm run build` before running this command so that it has up-to-date Espresso Server and NodeJS code)
-
