@@ -43,7 +43,7 @@ On top of standard Appium requirements Espresso driver also expects the followin
 ## Scripts
 
 - `appium driver run espresso print-espresso-path` prints the path to the Appium Espresso server root. You can modify the gradle file directly if [Espresso Build Config](#espresso-build-config) was not sufficient.
-- `appium driver run espresso build-espresso` builds the espresso server. Available environment variables are below:
+- `appium driver run espresso build-espresso` builds the espresso server since driver version 2.18.0. It helps building the espresso server outside Appium process. Available environment variables are below:
   - `SHOW_GRADLE_LOG` configures if the command shows the gradle task logs.
   - `TEST_APP_PACKAGE` configures the target application to build the espresso server for.
   - `ESPRESSO_BUILD_CONFIG` is an absolute path to the [Espresso Build Config](#espresso-build-config) as JSON format file.
