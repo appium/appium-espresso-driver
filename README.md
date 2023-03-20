@@ -184,6 +184,7 @@ appium:chromeOptions | A mapping, that allows to customize chromedriver options.
 Capability Name | Description
 --- | ---
 appium:disableSuppressAccessibilityService | Being set to `true` tells the instrumentation process to not suppress accessibility services during the automated test. This might be useful if your automated test needs these services. `false` by default
+appium:disableWindowAnimation | To avoid flakiness google [recommends](https://developer.android.com/training/testing/espresso/setup#set-up-environment) to disable the window animation of the Android device under test when running espresso test. `true` by default
 
 
 ## Settings API
@@ -1263,3 +1264,4 @@ more details.
 * Espresso server unit tests are located at `io.appium.espressoserver.test` and can be run in Android Studio
 * NodeJS unit tests are run with `npm run test`
 * End-to-end tests are run with `npm run e2e-test` (remember to run `npm run build` before running this command so that it has up-to-date Espresso Server and NodeJS code)
+

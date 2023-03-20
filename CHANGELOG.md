@@ -1,3 +1,31 @@
+## [2.17.0](https://github.com/appium/appium-espresso-driver/compare/v2.16.1...v2.17.0) (2023-03-13)
+
+
+### Features
+
+* add disableWindowAnimation caps ([#857](https://github.com/appium/appium-espresso-driver/issues/857)) ([eb4f60e](https://github.com/appium/appium-espresso-driver/commit/eb4f60ef65a39437c78066b388c4f7470087419f))
+
+## [2.16.1](https://github.com/appium/appium-espresso-driver/compare/v2.16.0...v2.16.1) (2023-03-10)
+
+
+### Miscellaneous Chores
+
+* no changes since 2.16.0, but to kick a release task again ([#861](https://github.com/appium/appium-espresso-driver/issues/861)) ([ebc1084](https://github.com/appium/appium-espresso-driver/commit/ebc108436604532ea46d59eac43963d0eb803dac))
+
+## [2.16.0](https://github.com/appium/appium-espresso-driver/compare/v2.15.4...v2.16.0) (2023-03-10)
+
+
+### Features
+
+* Update default component versions ([#860](https://github.com/appium/appium-espresso-driver/issues/860)) ([2193c25](https://github.com/appium/appium-espresso-driver/commit/2193c252cd8f975cd1e9391f594a41d70badd26b))
+
+## [2.15.4](https://github.com/appium/appium-espresso-driver/compare/v2.15.3...v2.15.4) (2023-02-17)
+
+
+### Miscellaneous Chores
+
+* remove unused unicode caps ([#856](https://github.com/appium/appium-espresso-driver/issues/856)) ([39f66ae](https://github.com/appium/appium-espresso-driver/commit/39f66ae38320031fa6343b761b53b719f7a6a719))
+
 ## [2.15.3](https://github.com/appium/appium-espresso-driver/compare/v2.15.2...v2.15.3) (2023-02-04)
 
 
