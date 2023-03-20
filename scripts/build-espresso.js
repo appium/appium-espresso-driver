@@ -22,9 +22,16 @@ async function buildEspressoServer () {
   }
 
   if (process.env.ESPRESSO_BUILD_CONFIG) {
-    const buildConfigurationStr = await fs.readFile(process.env.ESPRESSO_BUILD_CONFIG, 'utf8');
-    opts.buildConfiguration = JSON.parse(buildConfigurationStr);
-    console.log(`The espresso build config is ${JSON.stringify(opts.buildConfiguration)}`); // eslint-disable-line no-console
+    if (!(await fs.exists(process.env.ESPRESSO_BUILD_CONFIG))) {
+      throw Error(`'${process.env.ESPRESSO_BUILD_CONFIG}' did not exist. Please set the path as an absolute path.`);
+    }
+    try {
+      const buildConfigurationStr = await fs.readFile(process.env.ESPRESSO_BUILD_CONFIG, 'utf8');
+      opts.buildConfiguration = JSON.parse(buildConfigurationStr);
+      console.log(`The espresso build config is ${JSON.stringify(opts.buildConfiguration)}`); // eslint-disable-line no-console
+    } catch (e) {
+      throw Error(`Failed to parse the ${process.env.ESPRESSO_BUILD_CONFIG}. Please make sure that the JSON is valid format.`);
+    }
   }
 
   const builder = new ServerBuilder(LOG, opts);
