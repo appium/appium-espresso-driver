@@ -81,7 +81,6 @@
     "build": "npm run build:node && npm run build:server",
     "build:node": "rimraf build && babel --out-dir=build/lib lib && babel --out-dir=build index.js",
     "build:server": "cd espresso-server && ./gradlew clean assembleAndroidTest || cd ..",
-    "build:server_js": "node ./scripts/build-espresso.js",
     "dev": "npm run build -- --watch",
     "lint": "eslint .",
     "lint:server": "cd espresso-server && ./gradlew lint || cd ..",
