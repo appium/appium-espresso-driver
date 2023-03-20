@@ -30,7 +30,7 @@ async function buildEspressoServer () {
       opts.buildConfiguration = JSON.parse(buildConfigurationStr);
       console.log(`The espresso build config is ${JSON.stringify(opts.buildConfiguration)}`); // eslint-disable-line no-console
     } catch (e) {
-      throw Error(`Failed to parse the ${process.env.ESPRESSO_BUILD_CONFIG}. Please make sure that the JSON is valid format.`);
+      throw Error(`Failed to parse the ${process.env.ESPRESSO_BUILD_CONFIG}. Please make sure that the JSON is valid format. Error: ${e}`);
     }
   }
 
