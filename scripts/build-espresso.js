@@ -25,14 +25,15 @@ async function buildEspressoServer () {
 
   if (process.env.ESPRESSO_BUILD_CONFIG) {
     if (!(await fs.exists(process.env.ESPRESSO_BUILD_CONFIG))) {
-      throw Error(`'${process.env.ESPRESSO_BUILD_CONFIG}' did not exist. Please set the path as an absolute path.`);
+      throw new Error(`'${process.env.ESPRESSO_BUILD_CONFIG}' did not exist. Please set the path as an absolute path.`);
     }
     try {
       const buildConfigurationStr = await fs.readFile(process.env.ESPRESSO_BUILD_CONFIG, 'utf8');
       opts.buildConfiguration = JSON.parse(buildConfigurationStr);
       LOG.info(`The espresso build config is ${JSON.stringify(opts.buildConfiguration)}`);
     } catch (e) {
-      throw Error(`Failed to parse the ${process.env.ESPRESSO_BUILD_CONFIG}. Please make sure that the JSON is valid format. Error: ${e}`);
+      throw new Error(`Failed to parse the ${process.env.ESPRESSO_BUILD_CONFIG}. `
+        `Please make sure that the JSON is valid format. Error: ${e}`);
     }
   }
 
@@ -40,14 +41,15 @@ async function buildEspressoServer () {
   try {
     await builder.build();
   } catch (e) {
-    throw Error(`Failed to build the espresso server. SHOW_GRADLE_LOG=true environment variable helps to check the gradle log. Error: ${e}`);
+    throw new Error(`Failed to build the espresso server. `
+      `SHOW_GRADLE_LOG=true environment variable helps to check the gradle log. Error: ${e}`);
   }
 
   const dstPath = path.resolve(ESPRESSO_SERVER_ROOT, 'app', 'build', 'outputs', 'apk', 'androidTest', 'debug', 'app-debug-androidTest.apk');
   if (await fs.exists(dstPath)) {
-    LOG.info(`The built server apk is ${dstPath}`);
+    LOG.info(`Full path to the server APK: ${dstPath}`);
   } else {
-    LOG.info(`The built server androidTest.apk might be in ${ESPRESSO_SERVER_BUILD}`);
+    LOG.info(`Full path to the server build folder: ${ESPRESSO_SERVER_BUILD}`);
   }
 }
 
