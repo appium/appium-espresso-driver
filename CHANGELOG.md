@@ -1,3 +1,10 @@
+## [2.18.0](https://github.com/appium/appium-espresso-driver/compare/v2.17.0...v2.18.0) (2023-03-22)
+
+
+### Features
+
+* add building espresso server command via appium command ([#858](https://github.com/appium/appium-espresso-driver/issues/858)) ([cfaad9a](https://github.com/appium/appium-espresso-driver/commit/cfaad9a9cf82679df11cc4cbf57206d4f6d55b9c))
+
 ## [2.17.0](https://github.com/appium/appium-espresso-driver/compare/v2.16.1...v2.17.0) (2023-03-13)
 
 
