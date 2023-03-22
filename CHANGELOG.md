@@ -1,3 +1,10 @@
+## [2.18.1](https://github.com/appium/appium-espresso-driver/compare/v2.18.0...v2.18.1) (2023-03-22)
+
+
+### Bug Fixes
+
+* remove .js ext from build-espresso command ([d13b85d](https://github.com/appium/appium-espresso-driver/commit/d13b85da41973e321b54dbd91c7679e9ee97ba35))
+
 ## [2.18.0](https://github.com/appium/appium-espresso-driver/compare/v2.17.0...v2.18.0) (2023-03-22)
 
 
