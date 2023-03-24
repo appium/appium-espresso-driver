@@ -1121,6 +1121,11 @@ Lists all the previously registered [idling resources](https://developer.android
 
 List of fully qualified class names of currently registered idling resources or an empty list if no resources have been registered yet.
 
+### mobile: waitForUIThread
+
+Wait for the UI thread to become idle, in other words, wait for the APP to become idle(https://developer.android.com/reference/androidx/test/espresso/UiController#loopMainThreadUntilIdle()).
+
+
 ### mobile: unlock
 
 Unlocks the device if it is locked. Noop if the device's screen is not locked.

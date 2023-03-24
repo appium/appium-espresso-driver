@@ -143,6 +143,8 @@ internal class Router {
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/register_idling_resources", RegisterIdlingResources(), IdlingResourcesParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/execute_mobile/unregister_idling_resources", UnregisterIdlingResources(), IdlingResourcesParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/appium/execute_mobile/list_idling_resources", ListIdlingResources(), AppiumParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/appium/execute_mobile/ui_thread_sync", UIThreadSynchronizer(), AppiumParams::class.java))
+
 
         // Not implemented
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/flick", NotYetImplemented(), AppiumParams::class.java))
