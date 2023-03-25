@@ -23,8 +23,6 @@ import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
 import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 
 class UIThreadSynchronizer : RequestHandler<AppiumParams, Void?> {
-
-    @Throws(AppiumException::class)
     override fun handleInternal(params: AppiumParams): Void? {
         val runnable = object : UiControllerRunnable<Void?> {
             override fun run(uiController: UiController): Void? {
