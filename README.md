@@ -1121,6 +1121,12 @@ Lists all the previously registered [idling resources](https://developer.android
 
 List of fully qualified class names of currently registered idling resources or an empty list if no resources have been registered yet.
 
+### mobile: waitForUIThread
+
+- Wait for the UI thread to become idle, in other words, wait for the APP to become idle(https://developer.android.com/reference/androidx/test/espresso/UiController#loopMainThreadUntilIdle()). 
+- Use case: On compose and native combination screens, it's possible for the Espresso API to block the UI thread, which can cause the app to freeze. To resolve this issue, it's recommended to explicitly call the `mobile:waitForUIThread` API, which can help to unfreeze the UI thread.
+
+
 ### mobile: unlock
 
 Unlocks the device if it is locked. Noop if the device's screen is not locked.
