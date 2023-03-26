@@ -1,3 +1,10 @@
+## [2.19.0](https://github.com/appium/appium-espresso-driver/compare/v2.18.1...v2.19.0) (2023-03-26)
+
+
+### Features
+
+* Expose API to Wait For UI Thread ([#864](https://github.com/appium/appium-espresso-driver/issues/864)) ([18d71f6](https://github.com/appium/appium-espresso-driver/commit/18d71f60f4c55be608f5e80ebf69e615a900e9f5))
+
 ## [2.18.1](https://github.com/appium/appium-espresso-driver/compare/v2.18.0...v2.18.1) (2023-03-22)
 
 
