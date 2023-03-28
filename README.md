@@ -247,6 +247,7 @@ minSdk | Minimum Android SDK version to compile the server for. By default the v
 targetSdk | Target Android SDK version to compile the server for. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | 28
 kotlin | Kotlin version to compile the server for. By default the version from the [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle.kts) is used | '1.3.72'
 composeVersion | The version for the Jetpack Compose dependencies to use for Espresso server building. By default the version from the [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle.kts) is used | '1.1.1'
+espressoVersion | The version for the Espresso dependencies to use for Espresso server building. By default the version from the [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/build.gradle.kts) is used | '3.5.0'
 sourceCompatibility | The minimum version of JVM the project sources are compatible with. The default value is `VERSION_1_8` | VERSION_12
 targetCompatibility | The target version of JVM the project sources are compatible with. The default value is `VERSION_1_8` | VERSION_12
 jvmTarget | Target version of the generated JVM bytecode as a string. The default value is `1_8` | `1_10`

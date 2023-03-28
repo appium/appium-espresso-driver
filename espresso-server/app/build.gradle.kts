@@ -86,6 +86,7 @@ android {
 
 val kotlinVersion = rootProject.extra["appiumKotlin"]
 val composeVersion = getStringProperty("appiumComposeVersion", Version.compose)
+val espressoVersion = getStringProperty("appiumEspressoVersion", Version.espresso)
 val annotationVersion = getStringProperty("appiumAnnotationVersion", Version.annotation)
 
 dependencies {
@@ -97,9 +98,9 @@ dependencies {
     testImplementation("org.powermock:powermock-module-junit4-rule:${Version.mocklib}")
     testImplementation("org.powermock:powermock-module-junit4:${Version.mocklib}")
     testImplementation("androidx.annotation:annotation:${annotationVersion}")
-    testImplementation("androidx.test.espresso:espresso-contrib:${Version.espresso}")
-    testImplementation("androidx.test.espresso:espresso-core:${Version.espresso}")
-    testImplementation("androidx.test.espresso:espresso-web:${Version.espresso}")
+    testImplementation("androidx.test.espresso:espresso-contrib:${espressoVersion}")
+    testImplementation("androidx.test.espresso:espresso-core:${espressoVersion}")
+    testImplementation("androidx.test.espresso:espresso-web:${espressoVersion}")
     testImplementation("androidx.test.uiautomator:uiautomator:${Version.uia}")
     testImplementation("androidx.test:core:${Version.testlib}")
     testImplementation("androidx.test:runner:${Version.testlib}")
@@ -116,12 +117,12 @@ dependencies {
     testImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}")
 
     androidTestImplementation("androidx.annotation:annotation:${annotationVersion}")
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:${Version.espresso}") {
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:${espressoVersion}") {
         // Exclude transitive dependencies to limit conflicts with AndroidX libraries from AUT.
         // Link to PR with fix and discussion https://github.com/appium/appium-espresso-driver/pull/596
         isTransitive = false
     }
-    androidTestImplementation("androidx.test.espresso:espresso-web:${Version.espresso}") {
+    androidTestImplementation("androidx.test.espresso:espresso-web:${espressoVersion}") {
         because("Espresso Web Atoms support (mobile: webAtoms)")
     }
     androidTestImplementation("androidx.test.uiautomator:uiautomator:${Version.uia}") {
