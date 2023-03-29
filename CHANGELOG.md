@@ -1,3 +1,10 @@
+## [2.20.0](https://github.com/appium/appium-espresso-driver/compare/v2.19.0...v2.20.0) (2023-03-29)
+
+
+### Features
+
+* add ability to customize espresso version ([#866](https://github.com/appium/appium-espresso-driver/issues/866)) ([8b62ecb](https://github.com/appium/appium-espresso-driver/commit/8b62ecbf2be804b3fa4a41ecfa30c3d38e3942f3))
+
 ## [2.19.0](https://github.com/appium/appium-espresso-driver/compare/v2.18.1...v2.19.0) (2023-03-26)
 
 
