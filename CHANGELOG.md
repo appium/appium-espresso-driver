@@ -1,3 +1,10 @@
+## [2.20.1](https://github.com/appium/appium-espresso-driver/compare/v2.20.0...v2.20.1) (2023-04-10)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump rimraf from 4.4.1 to 5.0.0 ([#868](https://github.com/appium/appium-espresso-driver/issues/868)) ([67cfe30](https://github.com/appium/appium-espresso-driver/commit/67cfe30e1345cbb6ede1d975213179f074aa8151))
+
 ## [2.20.0](https://github.com/appium/appium-espresso-driver/compare/v2.19.0...v2.20.0) (2023-03-29)
 
 
