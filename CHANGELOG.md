@@ -1,3 +1,10 @@
+## [2.21.0](https://github.com/appium/appium-espresso-driver/compare/v2.20.1...v2.21.0) (2023-04-18)
+
+
+### Features
+
+* Expose keyboard extensions ([#870](https://github.com/appium/appium-espresso-driver/issues/870)) ([3a91658](https://github.com/appium/appium-espresso-driver/commit/3a916581f509958f81b2ee85c63aa74c124c87fc))
+
 ## [2.20.1](https://github.com/appium/appium-espresso-driver/compare/v2.20.0...v2.20.1) (2023-04-10)
 
 
