@@ -1124,7 +1124,7 @@ List of fully qualified class names of currently registered idling resources or 
 
 ### mobile: waitForUIThread
 
-- Wait for the UI thread to become idle, in other words, wait for the APP to become idle(https://developer.android.com/reference/androidx/test/espresso/UiController#loopMainThreadUntilIdle()). 
+- Wait for the UI thread to become idle, in other words, wait for the APP to become [idle](https://developer.android.com/reference/androidx/test/espresso/UiController#loopMainThreadUntilIdle()).
 - Use case: On compose and native combination screens, it's possible for the Espresso API to block the UI thread, which can cause the app to freeze. To resolve this issue, it's recommended to explicitly call the `mobile:waitForUIThread` API, which can help to unfreeze the UI thread.
 
 
@@ -1186,6 +1186,23 @@ formFields | Map&lt;string, string&gt; or Array&lt;Pair&gt; | no | Additional fo
 #### Returned Result
 
 Base64-encoded content of the recorded media file if `remotePath` argument is falsy or an empty string.
+
+### mobile: hideKeyboard
+
+Tries to hide the on-screen keyboard. Throws an exception if the keyboard cannot be hidden.
+Does nothing if the keyboard is already hidden.
+
+#### Returned Result
+
+`true` if the keyboard was successfully hidden or `false` if it was already invisible.
+
+### mobile: isKeyboardShown
+
+Checks if the system on-screen keyboard is visible.
+
+#### Returned Result
+
+`true` if the keyboard is visible
 
 
 ## Backdoor Extension Usage
