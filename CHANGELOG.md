@@ -1,3 +1,10 @@
+## [2.21.1](https://github.com/appium/appium-espresso-driver/compare/v2.21.0...v2.21.1) (2023-04-20)
+
+
+### Bug Fixes
+
+* build app with Gradle 8.x ([894d7d2](https://github.com/appium/appium-espresso-driver/commit/894d7d22d65a1c3498eb066d8f2616437bc0b206))
+
 ## [2.21.0](https://github.com/appium/appium-espresso-driver/compare/v2.20.1...v2.21.0) (2023-04-18)
 
 
