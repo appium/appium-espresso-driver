@@ -82,6 +82,8 @@ android {
     packagingOptions {
         resources.excludes.add("META-INF/**")
     }
+
+    namespace = "io.appium.espressoserver"
 }
 
 val kotlinVersion = rootProject.extra["appiumKotlin"]
