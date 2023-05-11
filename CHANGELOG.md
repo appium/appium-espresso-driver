@@ -1,3 +1,10 @@
+## [2.22.0](https://github.com/appium/appium-espresso-driver/compare/v2.21.1...v2.22.0) (2023-05-11)
+
+
+### Features
+
+* remove isTransitive in compose for newer compose versions ([#875](https://github.com/appium/appium-espresso-driver/issues/875)) ([d82abda](https://github.com/appium/appium-espresso-driver/commit/d82abda466ed5703ba429e3006c90e6e0428919a))
+
 ## [2.21.1](https://github.com/appium/appium-espresso-driver/compare/v2.21.0...v2.21.1) (2023-04-20)
 
 
