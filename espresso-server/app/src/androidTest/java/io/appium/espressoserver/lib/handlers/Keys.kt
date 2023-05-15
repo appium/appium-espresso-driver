@@ -16,11 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.UiController
-import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
-import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
-import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions.ActionsBuilder
 import io.appium.espressoserver.lib.helpers.w3c.models.InputSource.Action
@@ -78,18 +74,5 @@ class Keys : RequestHandler<TextValueParams, Unit> {
         }
 
         UiControllerPerformer(runnable).run()
-    }
-
-    override fun handleCompose(params: TextValueParams) {
-        try {
-            val keys = params.value ?: return
-            keys.forEach {
-                getNodeInteractionById(params.elementId).performTextInput(it)
-            }
-        } catch (e: AssertionError) {
-            throw StaleElementException(params.elementId!!)
-        } catch (e: IllegalArgumentException) {
-            throw InvalidElementStateException("Keys", params.elementId!!, e)
-        }
     }
 }

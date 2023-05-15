@@ -18,8 +18,6 @@ package io.appium.espressoserver.lib.handlers
 
 import android.widget.NumberPicker
 import android.widget.ProgressBar
-import androidx.compose.ui.test.performTextClearance
-import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.PerformException
 
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
@@ -30,7 +28,6 @@ import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.typeText
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
 class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueParams, Unit> {
@@ -73,18 +70,6 @@ class ElementValue(private val isReplacing: Boolean) : RequestHandler<TextValueP
                     viewInteraction.perform(replaceText(currentText.toString() + value))
                 }
             }
-        }
-    }
-
-    override fun handleCompose(params: TextValueParams) {
-        val value: String = extractTextToEnter(params)
-        try {
-            if (isReplacing) {
-                getNodeInteractionById(params.elementId).performTextClearance()
-            }
-            getNodeInteractionById(params.elementId).performTextInput(value)
-        } catch (e: IllegalArgumentException) {
-            throw InvalidElementStateException("Clear", params.elementId!!, e)
         }
     }
 

@@ -18,7 +18,6 @@ package io.appium.espressoserver.lib.helpers
 
 import android.util.LruCache
 import android.view.View
-import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.test.espresso.Root
 import org.hamcrest.Matcher
 
@@ -40,22 +39,6 @@ object EspressoViewsCache {
     fun get(id: String): ViewState? = cache.get(id)
 
     fun has(id: String): Boolean = cache.get(id) != null
-
-    fun reset() {
-        cache.evictAll()
-    }
-}
-
-/** Compose does not have stable instances, use locator again. */
-object ComposeViewCache {
-    private val cache = LruCache<String, SemanticsNodeInteraction>(MAX_CACHE_SIZE)
-
-    fun put(id: String, composeNode: SemanticsNodeInteraction) {
-        cache.put(id, composeNode)
-    }
-
-    fun get(id: String?): SemanticsNodeInteraction? =
-        cache.get(id)
 
     fun reset() {
         cache.evictAll()

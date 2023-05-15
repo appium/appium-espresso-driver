@@ -19,7 +19,6 @@ package io.appium.espressoserver.lib.model
 import android.view.View
 import android.view.ViewParent
 import android.widget.AdapterView
-import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.EspressoException
@@ -30,7 +29,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import com.google.gson.annotations.SerializedName
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
-import io.appium.espressoserver.lib.helpers.ComposeViewCache
 import io.appium.espressoserver.lib.helpers.StringHelpers.charSequenceToNullableString
 import io.appium.espressoserver.lib.helpers.ViewState
 import io.appium.espressoserver.lib.helpers.EspressoViewsCache
@@ -159,16 +157,5 @@ class EspressoElement(viewState: ViewState) : BaseElement {
 
             return resultState
         }
-    }
-}
-
-class ComposeElement(node: SemanticsNodeInteraction) : BaseElement {
-    @Suppress("JoinDeclarationAndAssignment")
-    @SerializedName(JSONWP_ELEMENT_KEY, alternate = [W3C_ELEMENT_KEY])
-    override val element: String
-
-    init {
-        element = UUID.randomUUID().toString()
-        ComposeViewCache.put(element, node)
     }
 }

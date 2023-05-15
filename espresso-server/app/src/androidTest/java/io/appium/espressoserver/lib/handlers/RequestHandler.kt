@@ -29,17 +29,9 @@ interface RequestHandler<in T : AppiumParams, out R> {
     fun handleInternal(params: T): R = invokeStrategy(params)
 
     @Suppress("UNCHECKED_CAST")
-    fun invokeStrategy(params: AppiumParams): R =
-        when (EspressoServerRunnerTest.context.currentStrategyType) {
-            StrategyType.COMPOSE -> handleCompose(params as T)
-            StrategyType.ESPRESSO -> handleEspresso(params as T)
-        }
+    fun invokeStrategy(params: AppiumParams): R = handleEspresso(params as T)
 
     fun handleEspresso(params: T): R {
-        throw NotYetImplementedException()
-    }
-
-    fun handleCompose(params: T): R {
         throw NotYetImplementedException()
     }
 

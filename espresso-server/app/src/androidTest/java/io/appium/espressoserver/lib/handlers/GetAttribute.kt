@@ -24,7 +24,6 @@ import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.model.*
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
@@ -39,15 +38,7 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
             throw AppiumException("Attribute name cannot be null or empty")
         }
 
-        return when (EspressoServerRunnerTest.context.currentStrategyType) {
-            DriverContext.StrategyType.COMPOSE -> getComposeAttribute(params.elementId!!, attributeName)
-            DriverContext.StrategyType.ESPRESSO -> getEspressoAttribute(params.elementId!!, attributeName)
-        }
-    }
-
-
-    private fun getComposeAttribute(elementId: String, attributeName: String): String? {
-        return ComposeNodeElement(getSemanticsNode(elementId)).getAttribute(attributeName)
+        return getEspressoAttribute(params.elementId!!, attributeName)
     }
 
     private fun getEspressoAttribute(elementId: String, attributeName: String): String? {
@@ -101,7 +92,7 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
             // If it's a TEXT attribute, return the view's raw text
             AttributesEnum.TEXT -> return ViewTextGetter()[viewInteractionGetter()].rawText
             else -> throw NotYetImplementedException(
-                "Espresso doesn't support attribute '$attributeName', Attribute name should be one of ${composeAttributes.supportedAttributes()}\"")
+                "Espresso doesn't support attribute '$attributeName', Attribute name should be one of ${espressoAttributes.supportedAttributes()}\"")
         }
     }
 }

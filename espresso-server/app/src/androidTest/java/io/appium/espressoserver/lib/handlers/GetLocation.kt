@@ -16,22 +16,15 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.Location
 import io.appium.espressoserver.lib.model.ViewElement
 import io.appium.espressoserver.lib.model.EspressoElement
-import io.appium.espressoserver.lib.model.ComposeNodeElement
 
 class GetLocation : RequestHandler<AppiumParams, Location> {
 
     override fun handleEspresso(params: AppiumParams): Location {
         val viewElement = ViewElement(EspressoElement.getCachedViewStateById(params.elementId).view)
         return Location(viewElement.bounds.left, viewElement.bounds.top)
-    }
-
-    override fun handleCompose(params: AppiumParams): Location {
-        val composeNodeElement = ComposeNodeElement(getSemanticsNode(params.elementId!!))
-        return Location(composeNodeElement.bounds.left, composeNodeElement.bounds.top)
     }
 }
