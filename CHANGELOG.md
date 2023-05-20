@@ -1,3 +1,10 @@
+## [2.22.1](https://github.com/appium/appium-espresso-driver/compare/v2.22.0...v2.22.1) (2023-05-20)
+
+
+### Bug Fixes
+
+* error message of espresso attribute ([#876](https://github.com/appium/appium-espresso-driver/issues/876)) ([38e71fb](https://github.com/appium/appium-espresso-driver/commit/38e71fb3929f71a83953236f835150fc9968ef16))
+
 ## [2.22.0](https://github.com/appium/appium-espresso-driver/compare/v2.21.1...v2.22.0) (2023-05-11)
 
 
