@@ -101,7 +101,7 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
             // If it's a TEXT attribute, return the view's raw text
             AttributesEnum.TEXT -> return ViewTextGetter()[viewInteractionGetter()].rawText
             else -> throw NotYetImplementedException(
-                "Espresso doesn't support attribute '$attributeName', Attribute name should be one of ${composeAttributes.supportedAttributes()}\"")
+                "Espresso doesn't support attribute '$attributeName', Attribute name should be one of ${espressoAttributes.supportedAttributes()}\"")
         }
     }
 }
