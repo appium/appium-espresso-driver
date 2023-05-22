@@ -21,7 +21,7 @@ The Espresso package consists of two main parts:
 
 ## Comparison with UiAutomator2
 
-The key difference between [UiAutomator2 Driver](https://github.com/appium/appium-uiautomator2-driver) and Espresso Driver is that UiAutomator2 is a black-box testing framework, and Espresso is a "grey-box" testing framework. The Espresso Driver itself is black-box (no internals of the code are exposed to the tester), but the Espresso framework itself has access to the internals of Android applications. This distinction has a few notable benefits. It can find elements that aren't rendered on the screen, it can identify elements by the Android View Tag and it makes use of [IdlingResource](https://developer.android.com/reference/android/support/test/espresso/IdlingResource) which blocks the framework from running commands until the UI thread is free. There is limited support to automate out of app areas using the mobile command [uiautomator](https://github.com/appium/appium-espresso-driver/blob/b2b0883ab088a131a47d88f6aeddd8ff5882087d/lib/commands/general.js#L188)
+The key difference between [UiAutomator2 Driver](https://github.com/appium/appium-uiautomator2-driver) and Espresso Driver is that UiAutomator2 is a black-box testing framework, and Espresso is a "grey-box" testing framework. The Espresso Driver itself is black-box (no internals of the code are exposed to the tester), but the Espresso framework itself has access to the internals of Android applications. This distinction has a few notable benefits. It can find elements that aren't rendered on the screen, it can identify elements by the Android View Tag, and it makes use of [IdlingResource](https://developer.android.com/reference/android/support/test/espresso/IdlingResource) which blocks the framework from running commands until the UI thread is free. There is a limited support of out-of-app areas automation via the [mobile: uiautomator](#mobile-uiautomator) command.
 
 
 ## Requirements
@@ -1127,7 +1127,6 @@ List of fully qualified class names of currently registered idling resources or 
 - Wait for the UI thread to become idle, in other words, wait for the APP to become [idle](https://developer.android.com/reference/androidx/test/espresso/UiController#loopMainThreadUntilIdle()).
 - Use case: On compose and native combination screens, it's possible for the Espresso API to block the UI thread, which can cause the app to freeze. To resolve this issue, it's recommended to explicitly call the `mobile:waitForUIThread` API, which can help to unfreeze the UI thread.
 
-
 ### mobile: unlock
 
 Unlocks the device if it is locked. Noop if the device's screen is not locked.
@@ -1140,6 +1139,24 @@ key | string | yes | The unlock key. See the documentation on [appium:unlockKey]
 type | string | yes | The unlock type. See the documentation on [appium:unlockType](#device-locking) capability for more details | password
 strategy | string | no | Unlock strategy. See the documentation on [appium:unlockStrategy](#device-locking) capability for more details | uiautomator
 timeoutMs | number | no | Unlock timeout. See the documentation on [appium:unlockSuccessTimeout](#device-locking) capability for more details | 5000
+
+### mobile: isLocked
+
+Determine whether the device is locked.
+
+#### Returned Result
+
+Either `true` or `false`
+
+### mobile: lock
+
+Lock the device (and optionally unlock it after a certain amount of time). Only simple (e.g. without a password) locks are supported.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+seconds | number|string | no | The number of seconds after which to unlock the device. Set to `0` or leave it empty to require manual unlock (e.g. do not block and automatically unlock afterwards). | 5
 
 ### mobile: startMediaProjectionRecording
 
@@ -1203,6 +1220,320 @@ Checks if the system on-screen keyboard is visible.
 #### Returned Result
 
 `true` if the keyboard is visible
+
+### mobile: pressKey
+
+Emulates single key press on the key with the given code. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+keycode | number | yes | A valid Android key code. See [KeyEvent documentation](https://developer.android.com/reference/android/view/KeyEvent) for the list of available key codes | 0x00000099 (which is KEYCODE_NUMPAD_9)
+metastate | number | no | An integer in which each bit set to 1 represents a pressed meta key. See [KeyEvent documentation](https://developer.android.com/reference/android/view/KeyEvent) for more details. | 0x00000010 (which is META_ALT_LEFT_ON)
+flags | number | no | Flags for the particular key event. See [KeyEvent documentation](https://developer.android.com/reference/android/view/KeyEvent) for more details. | 0x00000001 (which is FLAG_WOKE_HERE)
+isLongPress | boolean | no | Whether to emulate long key press. `false` by default. | true
+
+### mobile: getConnectivity
+
+Returns connectivity states for different services
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+services | string or string[] | no | One or more services to get the connectivity for. Supported service names are: wifi, data, airplaneMode. If no service names are provided then all supported names are assumed by default. | [wifi, data]
+
+#### Returned Result
+
+A map is returned containing the following possible items (depending on which values have been passed to `services` argument):
+
+Name | Type | Description
+--- | --- | ---
+wifi | boolean | True if wifi is enabled
+data | boolean | True if mobile data connection is enabled
+airplaneMode | boolean | True if Airplane Mode is enabled
+
+### mobile: setConnectivity
+
+Set the connectivity state for different services. At least one valid service name must be provided in arguments.
+Missing values tell the driver to not change the corresponding service's state.
+
+> **Note**
+>
+> Switching Wi-Fi and mobile data states reliably work on emulators for all Android versions.
+> Real devices support proper state switching only since Android 11.
+
+> **Note**
+>
+> Espresso REST server app is running on the device under test and might be terminated/disconnected by Android
+> thus failing the driver session as a result of using this API. The only way to restore the session would be to quit it
+> after the network state is changed and then reopen it with `noReset` capability being set to `true` when the connectivity
+> is restored.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+wifi | booolean | no | Either to enable or disable Wi-Fi. | false
+data | booolean | no | Either to enable or disable mobile data. | false
+airplaneMode | booolean | no | Either to enable or disable Airplane Mode. | false
+
+### mobile: getAppStrings
+
+Retrieves string resources for the given app language. An error is thrown if strings cannot be fetched or no strings exist
+for the given language abbreviation. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+language | string | no | The language abbreviation to fetch app strings mapping for. If no language is provided then strings for the default language on the device under test would be returned | fr
+
+#### Returned Result
+
+App strings map, where keys are resource identifiers.
+
+### mobile: backgroundApp
+
+Puts the app to the background and waits the given number of seconds. Then restores the app
+if necessary. The call is blocking. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+seconds | number | no | The amount of seconds to wait between putting the app to background and restoring it. Any negative value means to not restore the app after putting it to background (the default behavior). | 5
+
+### mobile: getCurrentActivity
+
+Returns the name of the currently focused app activity. Available since driver version 2.23
+
+#### Returned Result
+
+The activity class name. Could be `null`
+
+### mobile: getCurrentPackage
+
+Returns the name of the currently focused app package identifier. Available since driver version 2.23
+
+#### Returned Result
+
+The package class name. Could be `null`
+
+### mobile: getDisplayDensity
+
+Returns the display density value measured in DPI. Available since driver version 2.23
+
+#### Returned Result
+
+The actual DPI value as integer number
+
+### mobile: getSystemBars
+
+Returns properties of various system bars. Available since driver version 2.23
+
+#### Returned Result
+
+A dictionary whose entries are:
+- `statusBar`
+- `navigationBar`
+
+Values are dictionaries with the following properties:
+- `visible`: Whether the bar is visible (equals to `false` if the bar is not present in the system info output)
+- `x`: Bar x coordinate (might be zero if the bar is not present in the system info output)
+- `y`: Bar y coordinate (might be zero if the bar is not present in the system info output)
+- `width`: Bar width (might be zero if the bar is not present in the system info output)
+- `height`: Bar height (might be zero if the bar is not present in the system info output)
+
+### mobile: fingerprint
+
+Emulate [fingerprint](https://learn.microsoft.com/en-us/xamarin/android/platform/fingerprint-authentication/enrolling-fingerprint) on Android Emulator. Only works on API 23+. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+fingerprintId | number | yes | The value is the id for the finger that was "scanned". It is a unique integer that you assign for each virtual fingerprint. When the app is running you can run this same command each time the emulator prompts you for a fingerprint, you can run the adb command and pass it the fingerprintId to simulate the fingerprint scan. | 1
+
+### mobile: sendSms
+
+Emulate sending an SMS to the given phone number. Only works on emulators. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+phoneNumber | string | yes | The phone number to send SMS to | 0123456789
+message | string | yes | The SMS message payload | Hello
+
+### mobile: gsmCall
+
+Emulate a GSM call to the given phone number. Only works on emulators. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+phoneNumber | string | yes | The phone number to call to | 0123456789
+action | call or accept or cancel or hold | yes | One of possible actions to take | accept
+
+### mobile: gsmSignal
+
+Emulate GSM signal strength change event. Only works on emulators. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+strength | 0 or 1 or 2 or 3 or 4 | yes | One of possible signal strength values, where 4 is the best signal. | 3
+
+### mobile: gsmVoice
+
+Emulate GSM voice state change event. Only works on emulators. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+state | on or off or denied or searching or roaming or home or unregistered | yes | Voice state | off
+
+### mobile: powerAC
+
+Emulate AC power state change. Only works on emulators. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+state | on or off | yes | AC Power state | off
+
+### mobile: powerCapacity
+
+Emulate power capacity change. Only works on emulators. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+percent | 0 to 100 | yes | Percentage value in range [0, 100] | 50
+
+### mobile: networkSpeed
+
+Emulate different network connection speed modes. Only works on emulators. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+speed | gsm or scsd or gprs or edge or umts or hsdpa or lte or evdo or full | yes | Mobile network speed mode name | edge
+
+### mobile: replaceElementValue
+
+Sends a text to the given element by replacing its previous content. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+elementId | string | yes | Hexadecimal identifier of the destination text input | 123456-3456-3435-3453453
+text | string | yes | The text to enter. It could also contain Unicode characters. If the text ends with `\\n` (the backslash must be escaped, so the char is NOT translated into `0x0A`) then the Enter key press is going to be emulated after it is entered (the `\\n` substring itself will be cut off from the typed text). | yolo
+
+### mobile: toggleGps
+
+Switches GPS setting state. This API only works reliably since Android 12 (API 31). Available since driver version 2.23
+
+### mobile: isGpsEnabled
+
+Returns `true` if GPS is enabled on the device under test. Available since driver version 2.23
+
+### mobile: getPerformanceDataTypes
+
+Fetches the list of supported perfomance data types that could be used as `dataType` argument value to [mobile: getPerformanceData](#mobile-getperformancedata) extension. Available since driver version 2.23
+
+#### Returned Result
+
+List of strings, where each item is data type name.
+
+### mobile: getPerformanceData
+
+Retrieves performance data about the given Android subsystem. The data is parsed from the output of the dumpsys utility. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+packageName | string | yes | The name of the package identifier to fetch the data for | com.myapp
+dataType | string | yes | One of supported subsystem names. The full list of supported values is returned by [mobile: getPerformanceDataTypes](#mobile-getperformancedatatypes) extension. | batteryinfo or cpuinfo or memoryinfo or networkinfo
+
+#### Returned Result
+
+The output depends on the selected subsystem. It is organized into a table, where the first row represents column names and the following rows represent the sampled data for each column.
+Example output for different data types:
+
+- batteryinfo:
+```
+[
+  [power],
+  [23]
+]
+```
+- memoryinfo:
+```
+[
+  [totalPrivateDirty, nativePrivateDirty, dalvikPrivateDirty, eglPrivateDirty, glPrivateDirty, totalPss, nativePss, dalvikPss, eglPss, glPss, nativeHeapAllocatedSize, nativeHeapSize],
+  [18360, 8296, 6132, null, null, 42588, 8406, 7024, null, null, 26519, 10344]
+]
+```
+- networkinfo:
+```
+// emulator
+[
+  [bucketStart, activeTime, rxBytes, rxPackets, txBytes, txPackets, operations, bucketDuration],
+  [1478091600000, null, 1099075, 610947, 928, 114362, 769, 0, 3600000],
+  [1478095200000, null, 1306300, 405997, 509, 46359, 370, 0, 3600000]
+]
+// real devices
+[
+  [st, activeTime, rb, rp, tb, tp, op, bucketDuration],
+  [1478088000, null, null, 32115296, 34291, 2956805, 25705, 0, 3600],
+  [1478091600, null, null, 2714683, 11821, 1420564, 12650, 0, 3600],
+  [1478095200, null, null, 10079213, 19962, 2487705, 20015, 0, 3600],
+  [1478098800, null, null, 4444433, 10227, 1430356, 10493, 0, 3600]
+]
+```
+- cpuinfo:
+```
+[
+  [user, kernel],
+  [0.9, 1.3]
+]
+```
+
+### mobile: statusBar
+
+Performs commands on the system status bar. A thin wrapper over `adb shell cmd statusbar` CLI. Works on Android 8 (Oreo) and newer. Available since driver version 2.23
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+command | string | yes | One of [supported status bar commands](#status-bar-commands). | expandNotifications
+component | string | no | The name of the tile component. It is only required for (add\|remove\|click)Tile commands. | com.package.name/.service.QuickSettingsTileComponent
+
+#### Status Bar Commands
+
+- expandNotifications: Open the notifications panel.
+- expandSettings: Open the notifications panel and expand quick settings if present.
+- collapse: Collapse the notifications and settings panel.
+- addTile: Add a TileService of the specified component.
+- removeTile: Remove a TileService of the specified component.
+- clickTile: Click on a TileService of the specified component.
+- getStatusIcons: Returns the list of status bar icons and the order they appear in. Each list item is separated with a new line character.
+
+#### Returned Result
+
+The actual downstream command output. It depends on the selected command and might be empty.
 
 
 ## Backdoor Extension Usage
