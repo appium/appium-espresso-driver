@@ -1,3 +1,10 @@
+## [2.23.0](https://github.com/appium/appium-espresso-driver/compare/v2.22.1...v2.23.0) (2023-05-23)
+
+
+### Features
+
+* Expose several mobile commands that are available in android-driver ([#881](https://github.com/appium/appium-espresso-driver/issues/881)) ([d0d24c4](https://github.com/appium/appium-espresso-driver/commit/d0d24c46600548290e0a3aadca0f1e9e75e5ad37))
+
 ## [2.22.1](https://github.com/appium/appium-espresso-driver/compare/v2.22.0...v2.22.1) (2023-05-20)
 
 
