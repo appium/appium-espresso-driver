@@ -1,3 +1,10 @@
+## [2.23.1](https://github.com/appium/appium-espresso-driver/compare/v2.23.0...v2.23.1) (2023-05-24)
+
+
+### Bug Fixes
+
+* Update mobile extension name ([f570663](https://github.com/appium/appium-espresso-driver/commit/f570663bf92efcb919d947c0b9df277a12601a4a))
+
 ## [2.23.0](https://github.com/appium/appium-espresso-driver/compare/v2.22.1...v2.23.0) (2023-05-23)
 
 
