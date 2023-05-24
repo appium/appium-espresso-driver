@@ -1,3 +1,24 @@
+## [2.23.1](https://github.com/appium/appium-espresso-driver/compare/v2.23.0...v2.23.1) (2023-05-24)
+
+
+### Bug Fixes
+
+* Update mobile extension name ([f570663](https://github.com/appium/appium-espresso-driver/commit/f570663bf92efcb919d947c0b9df277a12601a4a))
+
+## [2.23.0](https://github.com/appium/appium-espresso-driver/compare/v2.22.1...v2.23.0) (2023-05-23)
+
+
+### Features
+
+* Expose several mobile commands that are available in android-driver ([#881](https://github.com/appium/appium-espresso-driver/issues/881)) ([d0d24c4](https://github.com/appium/appium-espresso-driver/commit/d0d24c46600548290e0a3aadca0f1e9e75e5ad37))
+
+## [2.22.1](https://github.com/appium/appium-espresso-driver/compare/v2.22.0...v2.22.1) (2023-05-20)
+
+
+### Bug Fixes
+
+* error message of espresso attribute ([#876](https://github.com/appium/appium-espresso-driver/issues/876)) ([38e71fb](https://github.com/appium/appium-espresso-driver/commit/38e71fb3929f71a83953236f835150fc9968ef16))
+
 ## [2.22.0](https://github.com/appium/appium-espresso-driver/compare/v2.21.1...v2.22.0) (2023-05-11)
 
 
