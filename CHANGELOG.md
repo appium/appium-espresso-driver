@@ -1,3 +1,10 @@
+## [2.23.2](https://github.com/appium/appium-espresso-driver/compare/v2.23.1...v2.23.2) (2023-06-07)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump conventional-changelog-conventionalcommits ([#884](https://github.com/appium/appium-espresso-driver/issues/884)) ([6a5f62c](https://github.com/appium/appium-espresso-driver/commit/6a5f62c278a40ae8ea2d8571bea24bbe2b46aa64))
+
 ## [2.23.1](https://github.com/appium/appium-espresso-driver/compare/v2.23.0...v2.23.1) (2023-05-24)
 
 
