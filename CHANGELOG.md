@@ -1,3 +1,10 @@
+## [2.23.3](https://github.com/appium/appium-espresso-driver/compare/v2.23.2...v2.23.3) (2023-06-19)
+
+
+### Bug Fixes
+
+* Add the missing wrapper for mobile: pressKey ([#886](https://github.com/appium/appium-espresso-driver/issues/886)) ([72961b5](https://github.com/appium/appium-espresso-driver/commit/72961b549b39fdb407cae2db174f0a034eb37b81))
+
 ## [2.23.2](https://github.com/appium/appium-espresso-driver/compare/v2.23.1...v2.23.2) (2023-06-07)
 
 
