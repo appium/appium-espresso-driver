@@ -1,3 +1,10 @@
+## [2.23.4](https://github.com/appium/appium-espresso-driver/compare/v2.23.3...v2.23.4) (2023-06-21)
+
+
+### Bug Fixes
+
+* mobile: lock ([#887](https://github.com/appium/appium-espresso-driver/issues/887)) ([69fbf54](https://github.com/appium/appium-espresso-driver/commit/69fbf54e0e9e358898af24fc80226295bd7d8530))
+
 ## [2.23.3](https://github.com/appium/appium-espresso-driver/compare/v2.23.2...v2.23.3) (2023-06-19)
 
 
