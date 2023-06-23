@@ -1,3 +1,10 @@
+## [2.23.5](https://github.com/appium/appium-espresso-driver/compare/v2.23.4...v2.23.5) (2023-06-23)
+
+
+### Bug Fixes
+
+* Fix the 'mobile: backgroundApp' functionality ([#889](https://github.com/appium/appium-espresso-driver/issues/889)) ([9025248](https://github.com/appium/appium-espresso-driver/commit/902524812efc3539e8cde5118dfce20ed90f416e))
+
 ## [2.23.4](https://github.com/appium/appium-espresso-driver/compare/v2.23.3...v2.23.4) (2023-06-21)
 
 
