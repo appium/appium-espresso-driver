@@ -1,3 +1,10 @@
+## [2.24.0](https://github.com/appium/appium-espresso-driver/compare/v2.23.5...v2.24.0) (2023-06-26)
+
+
+### Features
+
+* Add 'mobile: screenshots' extension ([#890](https://github.com/appium/appium-espresso-driver/issues/890)) ([1989c14](https://github.com/appium/appium-espresso-driver/commit/1989c14d675f6628a78b1c57dc715b7af7bec9b0))
+
 ## [2.23.5](https://github.com/appium/appium-espresso-driver/compare/v2.23.4...v2.23.5) (2023-06-23)
 
 
