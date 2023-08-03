@@ -32,6 +32,10 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.base.DefaultFailureHandler
+import androidx.test.platform.app.InstrumentationRegistry
+import io.appium.espressoserver.lib.helpers.AndroidLogger
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -66,6 +70,9 @@ class EspressoServerRunnerTest {
             Assume.assumeTrue(true)
             return
         }
+
+        disableCaptureScreenshotOnFailureByEspressoLib()
+
         try {
             Server.start()
             syncComposeClock.start()
@@ -78,6 +85,16 @@ class EspressoServerRunnerTest {
         }
 
         assertEquals(true, true) // Keep Codacy happy
+    }
+
+    private fun disableCaptureScreenshotOnFailureByEspressoLib() {
+        val constructors = DefaultFailureHandler::class.constructors
+        val disableScreenShotOnFailure = constructors.any { it.parameters.last().name.toString() == "captureScreenshotOnFailure" }
+        if (disableScreenShotOnFailure) {
+            AndroidLogger.info("`DefaultFailureHandler` has `captureScreenshotOnFailure` parameter which is set to `true` by default" +
+            "Setting it to `false` to fix slow espresso test run" + "\nFixes https://github.com/android/android-test/issues/1801")
+            Espresso.setFailureHandler(DefaultFailureHandler(InstrumentationRegistry.getInstrumentation().targetContext, /* captureScreenshotOnFailure = */ false))
+        }
     }
 
     class EmptyTestRule : TestRule {
