@@ -89,11 +89,19 @@ class EspressoServerRunnerTest {
 
     private fun disableCaptureScreenshotOnFailureByEspressoLib() {
         val constructors = DefaultFailureHandler::class.constructors
-        val disableScreenShotOnFailure = constructors.any { it.parameters.last().name.toString() == "captureScreenshotOnFailure" }
+        val disableScreenShotOnFailure = constructors.any {
+            it.parameters.last().name.toString() == "captureScreenshotOnFailure"
+        }
         if (disableScreenShotOnFailure) {
-            AndroidLogger.info("`DefaultFailureHandler` has `captureScreenshotOnFailure` parameter which is set to `true` by default" +
-            "Setting it to `false` to fix slow espresso test run" + "\nFixes https://github.com/android/android-test/issues/1801")
-            Espresso.setFailureHandler(DefaultFailureHandler(InstrumentationRegistry.getInstrumentation().targetContext, /* captureScreenshotOnFailure = */ false))
+            AndroidLogger.info("""
+                `DefaultFailureHandler` has `captureScreenshotOnFailure`parameter which is set to 
+                `true` by default Setting it to `false` to fix slow espresso test run
+                Fixes https://github.com/android/android-test/issues/1801
+                """.trimIndent()
+            )
+            Espresso.setFailureHandler(
+                    DefaultFailureHandler(InstrumentationRegistry.getInstrumentation().targetContext,
+                            /* captureScreenshotOnFailure = */ false))
         }
     }
 
