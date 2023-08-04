@@ -16,9 +16,12 @@
 
 package io.appium.espressoserver.lib.http
 
+import androidx.test.espresso.Espresso
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.GsonBuilder
 import fi.iki.elonen.NanoHTTPD
 import io.appium.espressoserver.lib.helpers.AndroidLogger
+import io.appium.espressoserver.lib.helpers.CustomFailureHandler
 import io.appium.espressoserver.lib.helpers.StringHelpers
 import io.appium.espressoserver.lib.helpers.setAccessibilityServiceState
 import io.appium.espressoserver.lib.http.response.AppiumResponse
@@ -86,6 +89,7 @@ object Server : NanoHTTPD(DEFAULT_PORT) {
         }
 
         setAccessibilityServiceState()
+        setCustomFailureHandler()
 
         try {
             super.start(SOCKET_READ_TIMEOUT, false)
@@ -97,6 +101,11 @@ object Server : NanoHTTPD(DEFAULT_PORT) {
         AndroidLogger.info("\nRunning Appium Espresso Server at port $DEFAULT_PORT\n")
         router = Router()
     }
+
+    private fun setCustomFailureHandler() =
+        Espresso.setFailureHandler(
+            CustomFailureHandler(InstrumentationRegistry.getInstrumentation().targetContext)
+        )
 
     override fun stop() {
         super.stop()
