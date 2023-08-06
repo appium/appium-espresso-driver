@@ -26,7 +26,7 @@ The key difference between [UiAutomator2 Driver](https://github.com/appium/appiu
 
 ## Jetpack compose dependencies
 
-Espresso driver [suppots Jetpack Compose](#jetpack-compose-support) by default while the gradle dependencies affect badly for the application under test in some cases. For example, the application under test does have the Jetpack Compose dependencies. Then. you can try out [no compose dependencies branch](https://github.com/appium/appium-espresso-driver/pull/879)). In Appium 2.0, the branc is available as `appium driver install --source=local /path/to/the/appium-espress-driver` with the `no-compose-deps` branch instead of npm installation.
+Espresso driver has Jetpack Compose dependencies to [support Jetpack Compose](#jetpack-compose-support). It could break the application under test's dependencies. The typical case is when the application under test does not have the Jetpack Compose dependencies. Then. you can try out [no compose dependencies branch](https://github.com/appium/appium-espresso-driver/pull/879)). In Appium 2.0, the branch is available as `appium driver install --source=local /path/to/the/appium-espress-driver` with the `no-compose-deps` branch instead of npm installation.
 
 ## Requirements
 
