@@ -23,11 +23,6 @@ The Espresso package consists of two main parts:
 
 The key difference between [UiAutomator2 Driver](https://github.com/appium/appium-uiautomator2-driver) and Espresso Driver is that UiAutomator2 is a black-box testing framework, and Espresso is a "grey-box" testing framework. The Espresso Driver itself is black-box (no internals of the code are exposed to the tester), but the Espresso framework itself has access to the internals of Android applications. This distinction has a few notable benefits. It can find elements that aren't rendered on the screen, it can identify elements by the Android View Tag and it makes use of [IdlingResource](https://developer.android.com/reference/android/support/test/espresso/IdlingResource) which blocks the framework from running commands until the UI thread is free. There is limited support to automate out of app areas using the mobile command [uiautomator](https://github.com/appium/appium-espresso-driver/blob/b2b0883ab088a131a47d88f6aeddd8ff5882087d/lib/commands/general.js#L188)
 
-
-## Jetpack compose dependencies
-
-Espresso driver has Jetpack Compose dependencies to [support Jetpack Compose](#jetpack-compose-support). It could break the application under test's dependencies. The typical case is when the application under test does not have the Jetpack Compose dependencies. Then, you can try out [no compose dependencies branch](https://github.com/appium/appium-espresso-driver/pull/879)). In Appium 2.0, the branch is available as `appium driver install --source=local /path/to/the/appium-espress-driver` with the `no-compose-deps` branch instead of npm installation.
-
 ## Requirements
 
 On top of standard Appium requirements Espresso driver also expects the following prerequisites:
@@ -1271,6 +1266,8 @@ more details.
   -keep class android.support.v7.** { *; }
   ```
   Please read [#449](https://github.com/appium/appium-espresso-driver/issues/449#issuecomment-537833139) for more details on this topic.
+* When you want to build without compose dependencies
+    * Espresso driver has Jetpack Compose dependencies to [support Jetpack Compose](#jetpack-compose-support). It could break the application under test's dependencies. The typical case is when the application under test does not have the Jetpack Compose dependencies. Then, you can try out [no compose dependencies branch](https://github.com/appium/appium-espresso-driver/pull/879)). In Appium 2.0, the branch is available as `appium driver install --source=local /path/to/the/appium-espress-driver` with the `no-compose-deps` branch instead of npm installation.
 
 
 ## Contributing
