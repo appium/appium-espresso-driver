@@ -1,3 +1,10 @@
+## [2.25.0](https://github.com/appium/appium-espresso-driver/compare/v2.24.0...v2.25.0) (2023-08-07)
+
+
+### Features
+
+* Disable screenshots and hierarchy snapshots on failures ([#895](https://github.com/appium/appium-espresso-driver/issues/895)) ([40bd4a7](https://github.com/appium/appium-espresso-driver/commit/40bd4a7074e1e11bb5778e2b323a0ef7950e58a4))
+
 ## [2.24.0](https://github.com/appium/appium-espresso-driver/compare/v2.23.5...v2.24.0) (2023-06-26)
 
 
