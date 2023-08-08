@@ -40,9 +40,7 @@ class CustomFailureHandler(appContext: Context) : FailureHandler {
         // This functionality was added in Espresso 3.5.0
         // https://github.com/android/android-test/commit/e25a980edfd32bdcb33432bd5a8ae4302678b63c
         // https://github.com/android/android-test/commit/49a46f6f366d12626414e3d2a00af89af14fe394
-        while (originalHandlers.first().javaClass.name == "androidx.test.espresso.base.ViewHierarchyExceptionHandler") {
-            originalHandlers.removeFirst()
-        }
+        originalHandlers.removeAll { it.javaClass.name == "androidx.test.espresso.base.ViewHierarchyExceptionHandler" }
     }
 
     override fun handle(error: Throwable?, viewMatcher: Matcher<View>?) {
