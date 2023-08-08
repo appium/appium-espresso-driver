@@ -35,11 +35,8 @@ class CustomFailureHandler(appContext: Context) : FailureHandler {
         get() = handlersField.get(originalHandler) as ArrayList<FailureHandler>
 
     init {
-        // This is to remove handlers that can dump whole view hierarchy
-        // It can cause issues as it can happen in another thread in Appium server
-        // This functionality was added in Espresso 3.5.0
-        // https://github.com/android/android-test/commit/e25a980edfd32bdcb33432bd5a8ae4302678b63c
-        // https://github.com/android/android-test/commit/49a46f6f366d12626414e3d2a00af89af14fe394
+        // This is to remove handlers that would dump whole view hierarchy on exception
+        // It can cause exceptions as exceptions happen in another thread in Appium server and accessing views from another thread is prohibited
         originalHandlers.removeAll { it.javaClass.name == "androidx.test.espresso.base.ViewHierarchyExceptionHandler" }
     }
 
