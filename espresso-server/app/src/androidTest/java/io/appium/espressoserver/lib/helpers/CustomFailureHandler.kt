@@ -36,7 +36,7 @@ class CustomFailureHandler(appContext: Context) : FailureHandler {
 
     init {
         // This is to remove handlers that would dump whole view hierarchy on exception
-        // It can cause exceptions as exceptions happen in another thread in Appium server and accessing views from another thread is prohibited
+        // It will cause exceptions because it will access the views from another thread (Appium server one)
         originalHandlers.removeAll { it.javaClass.name == "androidx.test.espresso.base.ViewHierarchyExceptionHandler" }
     }
 
