@@ -26,15 +26,26 @@ import java.util.concurrent.atomic.AtomicInteger
 class CustomFailureHandler(appContext: Context) : FailureHandler {
     private val originalHandler = DefaultFailureHandler(appContext)
 
+    private val handlersField = DefaultFailureHandler::class.java.getDeclaredField("handlers").apply {
+        isAccessible = true
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val originalHandlers: ArrayList<FailureHandler>
+        get() = handlersField.get(originalHandler) as ArrayList<FailureHandler>
+
+    init {
+        // This is to remove handlers that would dump whole view hierarchy on exception
+        // It will cause exceptions because it will access the views from another thread (Appium server one)
+        originalHandlers.removeAll { it.javaClass.name == "androidx.test.espresso.base.ViewHierarchyExceptionHandler" }
+    }
+
     override fun handle(error: Throwable?, viewMatcher: Matcher<View>?) {
         val failureCountField = DefaultFailureHandler::class.java.getDeclaredField("failureCount")
         failureCountField.isAccessible = true
         (failureCountField.get(originalHandler) as AtomicInteger).incrementAndGet()
 
-        val handlersField = DefaultFailureHandler::class.java.getDeclaredField("handlers")
-        handlersField.isAccessible = true
-        @Suppress("UNCHECKED_CAST")
-        for (handler in (handlersField.get(originalHandler) as java.util.ArrayList<FailureHandler>)) {
+        for (handler in originalHandlers) {
             handler.handle(error, viewMatcher)
         }
     }
