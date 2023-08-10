@@ -2,24 +2,36 @@ name: Functional Tests
 
 on: [pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
         include:
+        - chromedriverVersion: "113.0.5672.63"
+          apiLevel: 32
+          emuTag: google_apis
+          arch: x86_64
         - chromedriverVersion: "83.0.4103.39"
           apiLevel: 30
           emuTag: google_apis
+          arch: x86
         - chromedriverVersion: "74.0.3729.6"
           apiLevel: 29
           emuTag: default
+          arch: x86
         - chromedriverVersion: "2.28"
           apiLevel: 25
           emuTag: default
+          arch: x86
         - chromedriverVersion: "2.20"
           apiLevel: 23
           emuTag: default
+          arch: x86
 
     env:
       CI: true
@@ -74,6 +86,9 @@ jobs:
         api-level: ${{ matrix.apiLevel }}
         disable-spellchecker: true
         target: ${{ matrix.emuTag }}
+        arch: ${{ matrix.arch }}
+        ram-size: 4096M
+        heap-size: 1024M
     - name: Save logcat output
       if: ${{ always() }}
       uses: actions/upload-artifact@master

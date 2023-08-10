@@ -1,3 +1,45 @@
+## [2.25.0](https://github.com/appium/appium-espresso-driver/compare/v2.24.0...v2.25.0) (2023-08-07)
+
+
+### Features
+
+* Disable screenshots and hierarchy snapshots on failures ([#895](https://github.com/appium/appium-espresso-driver/issues/895)) ([40bd4a7](https://github.com/appium/appium-espresso-driver/commit/40bd4a7074e1e11bb5778e2b323a0ef7950e58a4))
+
+## [2.24.0](https://github.com/appium/appium-espresso-driver/compare/v2.23.5...v2.24.0) (2023-06-26)
+
+
+### Features
+
+* Add 'mobile: screenshots' extension ([#890](https://github.com/appium/appium-espresso-driver/issues/890)) ([1989c14](https://github.com/appium/appium-espresso-driver/commit/1989c14d675f6628a78b1c57dc715b7af7bec9b0))
+
+## [2.23.5](https://github.com/appium/appium-espresso-driver/compare/v2.23.4...v2.23.5) (2023-06-23)
+
+
+### Bug Fixes
+
+* Fix the 'mobile: backgroundApp' functionality ([#889](https://github.com/appium/appium-espresso-driver/issues/889)) ([9025248](https://github.com/appium/appium-espresso-driver/commit/902524812efc3539e8cde5118dfce20ed90f416e))
+
+## [2.23.4](https://github.com/appium/appium-espresso-driver/compare/v2.23.3...v2.23.4) (2023-06-21)
+
+
+### Bug Fixes
+
+* mobile: lock ([#887](https://github.com/appium/appium-espresso-driver/issues/887)) ([69fbf54](https://github.com/appium/appium-espresso-driver/commit/69fbf54e0e9e358898af24fc80226295bd7d8530))
+
+## [2.23.3](https://github.com/appium/appium-espresso-driver/compare/v2.23.2...v2.23.3) (2023-06-19)
+
+
+### Bug Fixes
+
+* Add the missing wrapper for mobile: pressKey ([#886](https://github.com/appium/appium-espresso-driver/issues/886)) ([72961b5](https://github.com/appium/appium-espresso-driver/commit/72961b549b39fdb407cae2db174f0a034eb37b81))
+
+## [2.23.2](https://github.com/appium/appium-espresso-driver/compare/v2.23.1...v2.23.2) (2023-06-07)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump conventional-changelog-conventionalcommits ([#884](https://github.com/appium/appium-espresso-driver/issues/884)) ([6a5f62c](https://github.com/appium/appium-espresso-driver/commit/6a5f62c278a40ae8ea2d8571bea24bbe2b46aa64))
+
 ## [2.23.1](https://github.com/appium/appium-espresso-driver/compare/v2.23.0...v2.23.1) (2023-05-24)
 
 

@@ -23,7 +23,6 @@ The Espresso package consists of two main parts:
 
 The key difference between [UiAutomator2 Driver](https://github.com/appium/appium-uiautomator2-driver) and Espresso Driver is that UiAutomator2 is a black-box testing framework, and Espresso is a "grey-box" testing framework. The Espresso Driver itself is black-box (no internals of the code are exposed to the tester), but the Espresso framework itself has access to the internals of Android applications. This distinction has a few notable benefits. It can find elements that aren't rendered on the screen, it can identify elements by the Android View Tag, and it makes use of [IdlingResource](https://developer.android.com/reference/android/support/test/espresso/IdlingResource) which blocks the framework from running commands until the UI thread is free. There is a limited support of out-of-app areas automation via the [mobile: uiautomator](#mobile-uiautomator) command.
 
-
 ## Requirements
 
 On top of standard Appium requirements Espresso driver also expects the following prerequisites:
@@ -1510,6 +1509,25 @@ Example output for different data types:
 ]
 ```
 
+### mobile: screenshots
+
+Retrieves a screenshot of each display available to Android.
+This functionality is only supported since Android 10.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+displayId | number or string | no | Display identifier to take a screenshot for. If not provided then all display screenshots are going to be returned. If no matches were found then an error is thrown. Actual display identifiers could be retrived from the `adb shell dumpsys SurfaceFlinger --display-id` command output. | 1
+
+#### Returns
+
+A dictionary where each key is the diplay identifier and the value has the following keys:
+- `id`: The same display identifier
+- `name`: Display name
+- `isDefault`: Whether this display is the default one
+- `payload`: The actual PNG screenshot data encoded to base64 string
+
 ### mobile: statusBar
 
 Performs commands on the system status bar. A thin wrapper over `adb shell cmd statusbar` CLI. Works on Android 8 (Oreo) and newer. Available since driver version 2.23
@@ -1598,6 +1616,8 @@ more details.
   -keep class android.support.v7.** { *; }
   ```
   Please read [#449](https://github.com/appium/appium-espresso-driver/issues/449#issuecomment-537833139) for more details on this topic.
+* When you want to build without compose dependencies
+    * Espresso driver has Jetpack Compose dependencies to [support Jetpack Compose](#jetpack-compose-support). It could break the application under test's dependencies. The typical case is when the application under test does not have the Jetpack Compose dependencies. Then, you can try out [no compose dependencies branch](https://github.com/appium/appium-espresso-driver/pull/879)). In Appium 2.0, the branch is available as `appium driver install --source=local /path/to/the/appium-espress-driver` with the `no-compose-deps` branch instead of npm installation.
 
 
 ## Contributing

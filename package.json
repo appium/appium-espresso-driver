@@ -7,7 +7,7 @@
     "automated testing",
     "android"
   ],
-  "version": "2.23.1",
+  "version": "2.25.0",
   "author": "Appium Contributors",
   "license": "Apache-2.0",
   "repository": {
@@ -67,8 +67,8 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.4.3",
-    "appium-adb": "^9.10.2",
-    "appium-android-driver": "^5.13.0",
+    "appium-adb": "^9.13.2",
+    "appium-android-driver": "^5.14.0",
     "asyncbox": "^2.3.1",
     "bluebird": "^3.5.0",
     "lodash": "^4.17.11",
@@ -117,7 +117,7 @@
     "async-lock": "^1.0.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "conventional-changelog-conventionalcommits": "^5.0.0",
+    "conventional-changelog-conventionalcommits": "^6.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.3",
