@@ -1,3 +1,10 @@
+## [2.25.1](https://github.com/appium/appium-espresso-driver/compare/v2.25.0...v2.25.1) (2023-08-14)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump lint-staged from 13.3.0 to 14.0.0 ([#899](https://github.com/appium/appium-espresso-driver/issues/899)) ([ca0048f](https://github.com/appium/appium-espresso-driver/commit/ca0048f841f8e8469ceaa69b4cfe01cc890348e8))
+
 ## [2.25.0](https://github.com/appium/appium-espresso-driver/compare/v2.24.0...v2.25.0) (2023-08-07)
 
 
