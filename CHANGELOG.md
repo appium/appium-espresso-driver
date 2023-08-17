@@ -1,3 +1,10 @@
+## [2.25.2](https://github.com/appium/appium-espresso-driver/compare/v2.25.1...v2.25.2) (2023-08-17)
+
+
+### Bug Fixes
+
+* calls this.settings in settings handling ([#901](https://github.com/appium/appium-espresso-driver/issues/901)) ([7858760](https://github.com/appium/appium-espresso-driver/commit/7858760365734c9edf0f981808cd85b3f7e80436))
+
 ## [2.25.1](https://github.com/appium/appium-espresso-driver/compare/v2.25.0...v2.25.1) (2023-08-14)
 
 
