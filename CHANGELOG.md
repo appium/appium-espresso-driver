@@ -1,3 +1,10 @@
+## [2.25.3](https://github.com/appium/appium-espresso-driver/compare/v2.25.2...v2.25.3) (2023-08-21)
+
+
+### Bug Fixes
+
+* do not reply error message in updateSettings to follow other drivers ([#902](https://github.com/appium/appium-espresso-driver/issues/902)) ([19f02cc](https://github.com/appium/appium-espresso-driver/commit/19f02cccb30252c8bced24c3da572454caccbab5))
+
 ## [2.25.2](https://github.com/appium/appium-espresso-driver/compare/v2.25.1...v2.25.2) (2023-08-17)
 
 
