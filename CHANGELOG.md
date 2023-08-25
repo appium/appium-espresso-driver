@@ -1,3 +1,10 @@
+## [2.25.4](https://github.com/appium/appium-espresso-driver/compare/v2.25.3...v2.25.4) (2023-08-25)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump semantic-release from 20.1.3 to 21.1.0 ([#904](https://github.com/appium/appium-espresso-driver/issues/904)) ([a8d0354](https://github.com/appium/appium-espresso-driver/commit/a8d03541380b6e30e927b29409e8c9ca829cada5))
+
 ## [2.25.3](https://github.com/appium/appium-espresso-driver/compare/v2.25.2...v2.25.3) (2023-08-21)
 
 
