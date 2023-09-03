@@ -1,3 +1,10 @@
+## [2.25.6](https://github.com/appium/appium-espresso-driver/compare/v2.25.5...v2.25.6) (2023-09-03)
+
+
+### Miscellaneous Chores
+
+* modify README.md to release once ([9998e7c](https://github.com/appium/appium-espresso-driver/commit/9998e7cc9db460050442aa1ee375f93782653d48))
+
 ## [2.25.5](https://github.com/appium/appium-espresso-driver/compare/v2.25.4...v2.25.5) (2023-08-28)
 
 
