@@ -18,7 +18,6 @@ The Espresso package consists of two main parts:
 > Since version 2.0.0 Espresso driver has dropped the support of Appium 1, and is only compatible to Appium 2. Use the `appium driver install espresso`
 > command to add it to your Appium 2 dist.
 
-
 ## Comparison with UiAutomator2
 
 The key difference between [UiAutomator2 Driver](https://github.com/appium/appium-uiautomator2-driver) and Espresso Driver is that UiAutomator2 is a black-box testing framework, and Espresso is a "grey-box" testing framework. The Espresso Driver itself is black-box (no internals of the code are exposed to the tester), but the Espresso framework itself has access to the internals of Android applications. This distinction has a few notable benefits. It can find elements that aren't rendered on the screen, it can identify elements by the Android View Tag, and it makes use of [IdlingResource](https://developer.android.com/reference/android/support/test/espresso/IdlingResource) which blocks the framework from running commands until the UI thread is free. There is a limited support of out-of-app areas automation via the [mobile: uiautomator](#mobile-uiautomator) command.
