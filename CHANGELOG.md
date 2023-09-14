@@ -1,3 +1,10 @@
+## [2.25.7](https://github.com/appium/appium-espresso-driver/compare/v2.25.6...v2.25.7) (2023-09-14)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump sinon from 15.2.0 to 16.0.0 ([#912](https://github.com/appium/appium-espresso-driver/issues/912)) ([e046a85](https://github.com/appium/appium-espresso-driver/commit/e046a8567533735ce7d69397e5ab35bf60a74df2))
+
 ## [2.25.6](https://github.com/appium/appium-espresso-driver/compare/v2.25.5...v2.25.6) (2023-09-03)
 
 
