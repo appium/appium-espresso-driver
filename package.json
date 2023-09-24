@@ -63,7 +63,9 @@
     "espresso-server/lint.xml",
     "!.DS_Store",
     "CHANGELOG.md",
-    "scripts"
+    "scripts",
+    "LICENSE",
+    "npm-shrinkwrap.json"
   ],
   "dependencies": {
     "@babel/runtime": "^7.4.3",
