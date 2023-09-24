@@ -1,3 +1,10 @@
+## [2.25.8](https://github.com/appium/appium-espresso-driver/compare/v2.25.7...v2.25.8) (2023-09-24)
+
+
+### Bug Fixes
+
+* release package ([#915](https://github.com/appium/appium-espresso-driver/issues/915)) ([bb6563b](https://github.com/appium/appium-espresso-driver/commit/bb6563bc45b740e8b6e1db3ee4ce3e0bf4398cab))
+
 ## [2.25.7](https://github.com/appium/appium-espresso-driver/compare/v2.25.6...v2.25.7) (2023-09-14)
 
 
