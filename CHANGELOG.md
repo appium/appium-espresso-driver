@@ -1,3 +1,59 @@
+## [2.25.8](https://github.com/appium/appium-espresso-driver/compare/v2.25.7...v2.25.8) (2023-09-24)
+
+
+### Bug Fixes
+
+* release package ([#915](https://github.com/appium/appium-espresso-driver/issues/915)) ([bb6563b](https://github.com/appium/appium-espresso-driver/commit/bb6563bc45b740e8b6e1db3ee4ce3e0bf4398cab))
+
+## [2.25.7](https://github.com/appium/appium-espresso-driver/compare/v2.25.6...v2.25.7) (2023-09-14)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump sinon from 15.2.0 to 16.0.0 ([#912](https://github.com/appium/appium-espresso-driver/issues/912)) ([e046a85](https://github.com/appium/appium-espresso-driver/commit/e046a8567533735ce7d69397e5ab35bf60a74df2))
+
+## [2.25.6](https://github.com/appium/appium-espresso-driver/compare/v2.25.5...v2.25.6) (2023-09-03)
+
+
+### Miscellaneous Chores
+
+* modify README.md to release once ([9998e7c](https://github.com/appium/appium-espresso-driver/commit/9998e7cc9db460050442aa1ee375f93782653d48))
+
+## [2.25.5](https://github.com/appium/appium-espresso-driver/compare/v2.25.4...v2.25.5) (2023-08-28)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump conventional-changelog-conventionalcommits ([#906](https://github.com/appium/appium-espresso-driver/issues/906)) ([9258a33](https://github.com/appium/appium-espresso-driver/commit/9258a33084be02d4b63ce743ff57d81d731b44bb))
+
+## [2.25.4](https://github.com/appium/appium-espresso-driver/compare/v2.25.3...v2.25.4) (2023-08-25)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump semantic-release from 20.1.3 to 21.1.0 ([#904](https://github.com/appium/appium-espresso-driver/issues/904)) ([a8d0354](https://github.com/appium/appium-espresso-driver/commit/a8d03541380b6e30e927b29409e8c9ca829cada5))
+
+## [2.25.3](https://github.com/appium/appium-espresso-driver/compare/v2.25.2...v2.25.3) (2023-08-21)
+
+
+### Bug Fixes
+
+* do not reply error message in updateSettings to follow other drivers ([#902](https://github.com/appium/appium-espresso-driver/issues/902)) ([19f02cc](https://github.com/appium/appium-espresso-driver/commit/19f02cccb30252c8bced24c3da572454caccbab5))
+
+## [2.25.2](https://github.com/appium/appium-espresso-driver/compare/v2.25.1...v2.25.2) (2023-08-17)
+
+
+### Bug Fixes
+
+* calls this.settings in settings handling ([#901](https://github.com/appium/appium-espresso-driver/issues/901)) ([7858760](https://github.com/appium/appium-espresso-driver/commit/7858760365734c9edf0f981808cd85b3f7e80436))
+
+## [2.25.1](https://github.com/appium/appium-espresso-driver/compare/v2.25.0...v2.25.1) (2023-08-14)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump lint-staged from 13.3.0 to 14.0.0 ([#899](https://github.com/appium/appium-espresso-driver/issues/899)) ([ca0048f](https://github.com/appium/appium-espresso-driver/commit/ca0048f841f8e8469ceaa69b4cfe01cc890348e8))
+
 ## [2.25.0](https://github.com/appium/appium-espresso-driver/compare/v2.24.0...v2.25.0) (2023-08-07)
 
 

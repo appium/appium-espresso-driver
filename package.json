@@ -7,7 +7,7 @@
     "automated testing",
     "android"
   ],
-  "version": "2.25.0",
+  "version": "2.25.8",
   "author": "Appium Contributors",
   "license": "Apache-2.0",
   "repository": {
@@ -63,7 +63,9 @@
     "espresso-server/lint.xml",
     "!.DS_Store",
     "CHANGELOG.md",
-    "scripts"
+    "scripts",
+    "LICENSE",
+    "npm-shrinkwrap.json"
   ],
   "dependencies": {
     "@babel/runtime": "^7.4.3",
@@ -117,18 +119,18 @@
     "async-lock": "^1.0.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "conventional-changelog-conventionalcommits": "^6.0.0",
+    "conventional-changelog-conventionalcommits": "^7.0.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-mocha": "^9.0.0",
     "eslint-plugin-promise": "^6.0.0",
-    "lint-staged": "^13.0.3",
+    "lint-staged": "^14.0.0",
     "mocha": "^10.0.0",
     "pre-commit": "^1.2.2",
     "rimraf": "^5.0.0",
     "semantic-release": "^20.0.2",
-    "sinon": "^15.0.0",
+    "sinon": "^16.0.0",
     "webdriverio": "^8.0.2",
     "xpath": "^0.x"
   }
