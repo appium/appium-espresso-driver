@@ -1,3 +1,10 @@
+## [2.25.9](https://github.com/appium/appium-espresso-driver/compare/v2.25.8...v2.25.9) (2023-09-27)
+
+
+### Bug Fixes
+
+* signingConfigs for test apk ([#918](https://github.com/appium/appium-espresso-driver/issues/918)) ([fcdd29f](https://github.com/appium/appium-espresso-driver/commit/fcdd29f11167a044c4c176f1f2fa709ac80db905))
+
 ## [2.25.8](https://github.com/appium/appium-espresso-driver/compare/v2.25.7...v2.25.8) (2023-09-24)
 
 
