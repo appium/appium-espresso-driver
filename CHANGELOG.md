@@ -1,3 +1,15 @@
+## [2.26.0](https://github.com/appium/appium-espresso-driver/compare/v2.25.9...v2.26.0) (2023-10-14)
+
+
+### Features
+
+* Update android driver to v7 ([#920](https://github.com/appium/appium-espresso-driver/issues/920)) ([bcb9b6b](https://github.com/appium/appium-espresso-driver/commit/bcb9b6b917dd713bc255c15c3b6980c2264399b8))
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump semantic-release from 20.1.3 to 22.0.5 ([#916](https://github.com/appium/appium-espresso-driver/issues/916)) ([58be850](https://github.com/appium/appium-espresso-driver/commit/58be850d13c12726230b85c5085b038a1d9afa24))
+
 ## [2.25.9](https://github.com/appium/appium-espresso-driver/compare/v2.25.8...v2.25.9) (2023-09-27)
 
 
