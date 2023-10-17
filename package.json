@@ -68,8 +68,8 @@
     "npm-shrinkwrap.json"
   ],
   "dependencies": {
-    "appium-adb": "^9.13.2",
-    "appium-android-driver": "^7.0.0",
+    "appium-adb": "^10.0.0",
+    "appium-android-driver": "^7.1.3",
     "asyncbox": "^2.3.1",
     "bluebird": "^3.5.0",
     "lodash": "^4.17.11",
