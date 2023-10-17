@@ -1,6 +1,7 @@
-import { commonCapConstraints } from 'appium-android-driver';
+import {Constraints} from '@appium/types';
+import {commonCapConstraints} from 'appium-android-driver';
 
-const espressoCapConstraints = {
+export const ESPRESSO_CONSTRAINTS = {
   systemPort: {
     isNumber: true
   },
@@ -34,9 +35,7 @@ const espressoCapConstraints = {
   appLocale: {
     isObject: true,
   },
-};
-
-export const desiredCapConstraints = {
   ...commonCapConstraints,
-  ...espressoCapConstraints,
-};
+} as const satisfies Constraints;
+
+export type EspressoConstraints = typeof ESPRESSO_CONSTRAINTS;
