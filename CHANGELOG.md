@@ -1,3 +1,10 @@
+## [2.26.2](https://github.com/appium/appium-espresso-driver/compare/v2.26.1...v2.26.2) (2023-10-17)
+
+
+### Miscellaneous Chores
+
+* Improve type declarations ([#925](https://github.com/appium/appium-espresso-driver/issues/925)) ([bdcce0b](https://github.com/appium/appium-espresso-driver/commit/bdcce0bcdd935e2e04188063e6ef13f16183c9d3))
+
 ## [2.26.1](https://github.com/appium/appium-espresso-driver/compare/v2.26.0...v2.26.1) (2023-10-17)
 
 
