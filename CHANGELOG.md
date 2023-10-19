@@ -1,3 +1,10 @@
+## [2.26.4](https://github.com/appium/appium-espresso-driver/compare/v2.26.3...v2.26.4) (2023-10-19)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump appium-adb from 10.0.0 to 11.0.1 ([#926](https://github.com/appium/appium-espresso-driver/issues/926)) ([662bab5](https://github.com/appium/appium-espresso-driver/commit/662bab5d4ac027432957e8a336c1757b320956a3))
+
 ## [2.26.3](https://github.com/appium/appium-espresso-driver/compare/v2.26.2...v2.26.3) (2023-10-19)
 
 
