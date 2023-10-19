@@ -1,3 +1,12 @@
+## [2.26.3](https://github.com/appium/appium-espresso-driver/compare/v2.26.2...v2.26.3) (2023-10-19)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @types/teen_process from 2.0.1 to 2.0.2 ([#929](https://github.com/appium/appium-espresso-driver/issues/929)) ([7158f17](https://github.com/appium/appium-espresso-driver/commit/7158f17fcb36d535418070ab22d55316e6b68ba4))
+* **deps-dev:** bump eslint-config-prettier from 8.10.0 to 9.0.0 ([#928](https://github.com/appium/appium-espresso-driver/issues/928)) ([21461b4](https://github.com/appium/appium-espresso-driver/commit/21461b4c7cb6fecb32d0dd96d53cf0815b132ab9))
+* Use latest types ([2404b59](https://github.com/appium/appium-espresso-driver/commit/2404b59e799699ed5983f6a4092974c55ac818cc))
+
 ## [2.26.2](https://github.com/appium/appium-espresso-driver/compare/v2.26.1...v2.26.2) (2023-10-17)
 
 
