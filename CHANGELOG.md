@@ -1,3 +1,10 @@
+## [2.26.5](https://github.com/appium/appium-espresso-driver/compare/v2.26.4...v2.26.5) (2023-10-24)
+
+
+### Reverts
+
+* Revert "chore(deps-dev): bump semantic-release from 20.1.3 to 22.0.5 (#916)" (#932) ([8b4fb51](https://github.com/appium/appium-espresso-driver/commit/8b4fb51caf348de463e5a0d73c35db8e4bb26f89)), closes [#916](https://github.com/appium/appium-espresso-driver/issues/916) [#932](https://github.com/appium/appium-espresso-driver/issues/932)
+
 ## [2.26.4](https://github.com/appium/appium-espresso-driver/compare/v2.26.3...v2.26.4) (2023-10-19)
 
 
