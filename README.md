@@ -1580,7 +1580,6 @@ For example, in the following arguments map
 
 the `anotherMethod` will be called on the object returned by `someMethod`, which has no arguments and which was executed on the current activity instance. Also `anotherMethod` accepts to arguments of type `java.lang.CharSequence` and `int`. The result of `anotherMethod` will be serialized and returned to the client.
 
-
 ## Parallel Tests
 
 It is possible to execute tests in parallel using Espresso driver.
