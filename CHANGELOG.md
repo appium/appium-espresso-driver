@@ -1,3 +1,10 @@
+## [2.26.7](https://github.com/appium/appium-espresso-driver/compare/v2.26.6...v2.26.7) (2023-10-24)
+
+
+### Bug Fixes
+
+* dummy commit to trigger a release ([5daba6b](https://github.com/appium/appium-espresso-driver/commit/5daba6bd6524cae3bf7bd9cb9e2e13fae247da48))
+
 ## [2.26.6](https://github.com/appium/appium-espresso-driver/compare/v2.26.5...v2.26.6) (2023-10-24)
 
 
