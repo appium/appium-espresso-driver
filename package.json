@@ -58,6 +58,8 @@
     "espresso-server/app/build.gradle.kts",
     "espresso-server/app/proguard-rules.pro",
     "espresso-server/gradle",
+    "espresso-server/gradlew",
+    "espresso-server/gradlew.bat",
     "espresso-server/build.gradle.kts",
     "espresso-server/settings.gradle.kts",
     "espresso-server/lint.xml",
