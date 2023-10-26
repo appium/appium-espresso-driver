@@ -60,6 +60,7 @@
     "espresso-server/gradle",
     "espresso-server/gradlew",
     "espresso-server/gradlew.bat",
+    "espresso-server/gradle.properties",
     "espresso-server/build.gradle.kts",
     "espresso-server/settings.gradle.kts",
     "espresso-server/lint.xml",
