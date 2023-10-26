@@ -1,3 +1,10 @@
+## [2.26.10](https://github.com/appium/appium-espresso-driver/compare/v2.26.9...v2.26.10) (2023-10-26)
+
+
+### Bug Fixes
+
+* missing /gradle.properties ([bedf0be](https://github.com/appium/appium-espresso-driver/commit/bedf0bece36efd4d4b59e6a11c8a9a483804bdce))
+
 ## [2.26.9](https://github.com/appium/appium-espresso-driver/compare/v2.26.8...v2.26.9) (2023-10-24)
 
 
