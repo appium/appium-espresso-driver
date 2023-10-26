@@ -29,11 +29,7 @@ const APIDEMO_CAPS = amendCapabilities(GENERIC_CAPS, {
 });
 
 const COMPOSE_CAPS = amendCapabilities(GENERIC_CAPS, {
-  'appium:app': path.resolve('test', 'assets', 'compose_playground.apk'),
-  'appium:espressoBuildConfig': '{"additionalAndroidTestDependencies": ' +
-    '["androidx.lifecycle:lifecycle-extensions:2.2.0", ' +
-    '"androidx.activity:activity:1.3.1", ' +
-    '"androidx.fragment:fragment:1.3.4"]}'
+  'appium:app': path.resolve('test', 'assets', 'compose_playground.apk')
 });
 
 // http://www.impressive-artworx.de/tutorials/android/gps_tutorial_1.zip
