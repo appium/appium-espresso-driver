@@ -68,7 +68,7 @@ class WebAtoms : RequestHandler<WebAtomsParams, Any> {
 
             webViewInteraction = res
         }
-
-        return webViewInteraction.get()
+        // param size check is for the case when we want to check element exists but don't have any action to perform
+        return if (params.methodChain.size == 1) "success" else webViewInteraction.get()
     }
 }
