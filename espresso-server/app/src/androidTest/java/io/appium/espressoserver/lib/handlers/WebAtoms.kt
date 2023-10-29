@@ -54,21 +54,21 @@ class WebAtoms : RequestHandler<WebAtomsParams, Any?> {
         params.methodChain.forEach { method ->
             val atom = invokeStaticMethod(DriverAtoms::class.java, method.atom.name, *method.atom.args) as? Atom<*>
                 ?: throw InvalidArgumentException(
-                    "'${method.atom.name}' did not return a valid " +
-                        "'${Atom::class.qualifiedName}' object",
+                    "'${method.atom.name}' did not return a valid '${Atom::class.qualifiedName}' object",
                 )
 
             AndroidLogger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
 
             val res = invokeInstanceMethod(webViewInteraction, method.name, atom) as? WebInteraction<*>
                 ?: throw InvalidArgumentException(
-                    "'${method.name}' does not return a valid " +
-                        "'${WebInteraction::class.qualifiedName}' object",
+                    "'${method.name}' does not return a valid '${WebInteraction::class.qualifiedName}' object",
                 )
 
             webViewInteraction = res
         }
-        // param size check is for the case when we want to check element exists but don't have any action to perform
-        return if (params.methodChain.size == 1) "success" else webViewInteraction.get()
+        // if you don't pass any action to perform `webViewInteraction.get()` will throw error
+        // java.lang.IllegalStateException: Perform or Check never called on this WebInteraction!
+        // when you just want to just check element existence call with `selectActiveElement` as action
+        return webViewInteraction.get()
     }
 }
