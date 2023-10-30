@@ -1,3 +1,10 @@
+## [2.27.0](https://github.com/appium/appium-espresso-driver/compare/v2.26.10...v2.27.0) (2023-10-30)
+
+
+### Features
+
+* Return web atom response ([#941](https://github.com/appium/appium-espresso-driver/issues/941)) ([440a6fd](https://github.com/appium/appium-espresso-driver/commit/440a6fd98d1ec7fcc476731c1b45fce21407181b))
+
 ## [2.26.10](https://github.com/appium/appium-espresso-driver/compare/v2.26.9...v2.26.10) (2023-10-26)
 
 
