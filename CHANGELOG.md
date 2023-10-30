@@ -1,3 +1,10 @@
+## [2.28.0](https://github.com/appium/appium-espresso-driver/compare/v2.27.1...v2.28.0) (2023-10-30)
+
+
+### Features
+
+* Add 'hideKeyboard' capability ([#942](https://github.com/appium/appium-espresso-driver/issues/942)) ([367ee86](https://github.com/appium/appium-espresso-driver/commit/367ee86a233ab6a6f18bae64eec4fe2d963ed0b7))
+
 ## [2.27.1](https://github.com/appium/appium-espresso-driver/compare/v2.27.0...v2.27.1) (2023-10-30)
 
 
