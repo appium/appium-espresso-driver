@@ -76,9 +76,13 @@ object AlertHelpers {
             else
                 permissionAlertButtonResIdPattern.toString()
             return alertElements.toTypedArray()
-                    .filter { it.resourceName != null && !it.resourceName.matches(alertButtonsResIdPattern.toRegex()) }
-                    .filter { (it.text ?: "").isNotEmpty() }
-                    .joinToString(separator = "\n")
+                .filter {
+                    it.resourceName != null && !it.resourceName.matches(
+                        alertButtonsResIdPattern.toRegex()
+                    )
+                }
+                .filter { (it.text ?: "").isNotEmpty() }
+                .joinToString(separator = "\n") { it.text }
         }
 
     private fun buttonResIdByIdx(index: Int): String {
