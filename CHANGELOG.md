@@ -1,3 +1,10 @@
+## [2.28.2](https://github.com/appium/appium-espresso-driver/compare/v2.28.1...v2.28.2) (2023-11-01)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump asyncbox from 2.9.4 to 3.0.0 ([#945](https://github.com/appium/appium-espresso-driver/issues/945)) ([e3173f8](https://github.com/appium/appium-espresso-driver/commit/e3173f84fe5551bf5073c37c1ef60bb152f12018))
+
 ## [2.28.1](https://github.com/appium/appium-espresso-driver/compare/v2.28.0...v2.28.1) (2023-11-01)
 
 
