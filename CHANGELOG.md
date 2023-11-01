@@ -1,3 +1,10 @@
+## [2.28.1](https://github.com/appium/appium-espresso-driver/compare/v2.28.0...v2.28.1) (2023-11-01)
+
+
+### Bug Fixes
+
+* Alert text retrieval ([#944](https://github.com/appium/appium-espresso-driver/issues/944)) ([9c97ddc](https://github.com/appium/appium-espresso-driver/commit/9c97ddc647d64d19edd9d707382037eb9f0f7e5c))
+
 ## [2.28.0](https://github.com/appium/appium-espresso-driver/compare/v2.27.1...v2.28.0) (2023-10-30)
 
 
