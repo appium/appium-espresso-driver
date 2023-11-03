@@ -1,3 +1,15 @@
+## [2.29.0](https://github.com/appium/appium-espresso-driver/compare/v2.28.2...v2.29.0) (2023-11-03)
+
+
+### Features
+
+* Add support of UiModeManager service commands ([#947](https://github.com/appium/appium-espresso-driver/issues/947)) ([320e0ac](https://github.com/appium/appium-espresso-driver/commit/320e0ac650c421ab5092af73edc49f6eae51a98d))
+
+
+### Miscellaneous Chores
+
+* Update arguments validation in several mobile extensions ([#948](https://github.com/appium/appium-espresso-driver/issues/948)) ([f90118f](https://github.com/appium/appium-espresso-driver/commit/f90118fd74b3fec544f2a1a8e1cedfe17d888dea))
+
 ## [2.28.2](https://github.com/appium/appium-espresso-driver/compare/v2.28.1...v2.28.2) (2023-11-01)
 
 
