@@ -78,8 +78,7 @@
     "lodash": "^4.17.11",
     "portscanner": "^2.1.1",
     "source-map-support": "^0.x",
-    "teen_process": "^2.0.0",
-    "validate.js": "^0.x"
+    "teen_process": "^2.0.0"
   },
   "scripts": {
     "build": "npm run build:node && npm run build:server",

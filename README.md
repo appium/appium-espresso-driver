@@ -570,7 +570,7 @@ Perform swipe action. Invokes Espresso [swipe action](https://developer.android.
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | The UDID of the element to perform the swipe on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | The UDID of the element to perform the swipe on. | 123456-7890-3453-24234243
 direction | string | no | Swipe direction. Either this argument or `swiper` must be provided, but not both. The following values are supported: `up`, `down`, `left`, `right` | down
 swiper | string | no | Swipe speed. Either this argument or `direction` must be provided, but not both. Either `FAST` (Swipes quickly between the co-ordinates) or `SLOW` (Swipes deliberately slowly between the co-ordinates, to aid in visual debugging) | SLOW
 startCoordinates | string | no | The starting coordinates for the action. The following values are supported: `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER` (the default value), `BOTTOM_RIGHT`, `VISIBLE_CENTER` | CENTER_LEFT
@@ -600,7 +600,7 @@ Opens the DrawerLayout drawer with the gravity. This method blocks until the dra
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
 gravity | int | no | See [GravityCompat](https://developer.android.com/reference/kotlin/androidx/core/view/GravityCompat) and [Gravity](https://developer.android.com/reference/android/view/Gravity) classes documentation | `0x00800000 <bitwise_or> 0x00000003`
 
 ### mobile: closeDrawer
@@ -611,7 +611,7 @@ Closes the DrawerLayout drawer with the gravity. This method blocks until the dr
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
 gravity | int | no | See [GravityCompat](https://developer.android.com/reference/kotlin/androidx/core/view/GravityCompat) and [Gravity](https://developer.android.com/reference/android/view/Gravity) classes documentation | `0x00800000 <bitwise_or> 0x00000005`
 
 ### mobile: scrollToPage
@@ -622,7 +622,7 @@ Perform scrolling to the given page. Invokes one of the [ViewPagerActions](https
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
 scrollTo | string | no if `scrollToPage` is provided | Shifts ViewPager to the given page. Supported values are: `first`, `last`, `left`, `right` | last
 scrollToPage | int | no if `scrollTo` is provided | Moves ViewPager to a specific page number (numbering starts from zero). | 1
 smoothScroll | boolean | no | Whether to perform smooth (but slower) scrolling (`true`). The default value is `false` | true
@@ -635,7 +635,7 @@ Invokes [navigateTo](https://developer.android.com/reference/androidx/test/espre
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | UDID of the element to perform the action on. View constraints: View must be a child of a DrawerLayout; View must be of type NavigationView; View must be visible on screen; View must be displayed on screen | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | UDID of the element to perform the action on. View constraints: View must be a child of a DrawerLayout; View must be of type NavigationView; View must be visible on screen; View must be displayed on screen | 123456-7890-3453-24234243
 menuItemId | int | yes | The resource id of the destination menu item | 123
 
 ### mobile: clickAction
@@ -646,7 +646,7 @@ Perform [general click action](https://developer.android.com/reference/androidx/
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | The UDID of the element to perform the click on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | The UDID of the element to perform the click on. | 123456-7890-3453-24234243
 tapper | string | no | Tapper type. Supported types are: `SINGLE` (the default value), `LONG`, `DOUBLE` | `LONG`
 coordinatesProvider | string | no | The coordinates for the action. The following values are supported: `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER`, `BOTTOM_RIGHT`, `VISIBLE_CENTER` (the default value) | CENTER_LEFT
 precisionDescriber | string | no | Defines the actual click precision. The following values are supported: `PINPOINT` (1px), `FINGER` (average width of the index finger is 16 – 20 mm, the default value), `THUMB` (average width of an adult thumb is 25 mm or 1 inch) | PINPOINT
@@ -1070,7 +1070,7 @@ Highlights the given element in the UI by adding flashing to it
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
 durationMillis | int | no | Duration of single flashing sequence, 30 ms by default | 50
 repeatCount | int | no | Count of repeats, 15 times by default | 10
 
