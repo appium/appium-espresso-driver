@@ -1595,6 +1595,28 @@ component | string | no | The name of the tile component. It is only required fo
 
 The actual downstream command output. It depends on the selected command and might be empty.
 
+### mobile: setUiMode
+
+Set the device UI appearance. A thin wrapper over `adb shell cmd uimode` CLI.
+Works on Android 10 and newer. Available since driver version 2.29
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+mode | string | yes | One of the supported UI mode names: `night` or `car`. | night
+value | string | yes | The actual mode value to set. Supported values for different UI modes are: `night`: yes,no,auto,custom_schedule,custom_bedtime, `car`: yes,no. For example, to switch the device UI to the dark mode you should set `mode` to `night` and `value` to `yes`, or to `no` in order to switch back to the light mode. | yes
+
+### mobile: getUiMode
+
+Gets the device UI appearance for the given mode. A thin wrapper over `adb shell cmd uimode` CLI. Works on Android 10 and newer. Available since driver version 2.29
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+mode | string | yes | One of the supported UI mode names: `night` or `car`. | night
+
 
 ## Backdoor Extension Usage
 
