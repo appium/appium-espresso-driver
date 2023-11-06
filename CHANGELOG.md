@@ -1,3 +1,10 @@
+## [2.29.1](https://github.com/appium/appium-espresso-driver/compare/v2.29.0...v2.29.1) (2023-11-06)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @types/sinon from 10.0.20 to 17.0.0 ([#949](https://github.com/appium/appium-espresso-driver/issues/949)) ([f01b31b](https://github.com/appium/appium-espresso-driver/commit/f01b31baa621c39c9abf9b49da037e584a333fb6))
+
 ## [2.29.0](https://github.com/appium/appium-espresso-driver/compare/v2.28.2...v2.29.0) (2023-11-03)
 
 
