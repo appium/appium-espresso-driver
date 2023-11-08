@@ -1,3 +1,10 @@
+## [2.29.2](https://github.com/appium/appium-espresso-driver/compare/v2.29.1...v2.29.2) (2023-11-08)
+
+
+### Miscellaneous Chores
+
+* use omit to prune dev and peer ([#950](https://github.com/appium/appium-espresso-driver/issues/950)) ([bf9268a](https://github.com/appium/appium-espresso-driver/commit/bf9268a3853a8e86422d4a26d04ffca048a797c0))
+
 ## [2.29.1](https://github.com/appium/appium-espresso-driver/compare/v2.29.0...v2.29.1) (2023-11-06)
 
 
