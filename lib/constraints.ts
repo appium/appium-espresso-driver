@@ -1,23 +1,12 @@
-import { commonCapConstraints } from 'appium-android-driver';
+import {Constraints} from '@appium/types';
+import {commonCapConstraints} from 'appium-android-driver';
 
-let espressoCapConstraints = {
-  app: {
-    isString: true,
-  },
-  automationName: {
-    isString: true,
-  },
+export const ESPRESSO_CONSTRAINTS = {
   systemPort: {
     isNumber: true
   },
-  browserName: {
-    isString: true
-  },
   launchTimeout: {
     isNumber: true
-  },
-  skipUnlock: {
-    isBoolean: true
   },
   forceEspressoRebuild: {
     isBoolean: true
@@ -46,13 +35,7 @@ let espressoCapConstraints = {
   appLocale: {
     isObject: true,
   },
-  disableWindowAnimation: {
-    isBoolean: true,
-  }
-};
+  ...commonCapConstraints,
+} as const satisfies Constraints;
 
-let desiredCapConstraints = {};
-Object.assign(desiredCapConstraints, espressoCapConstraints,
-              commonCapConstraints);
-
-export default desiredCapConstraints;
+export type EspressoConstraints = typeof ESPRESSO_CONSTRAINTS;

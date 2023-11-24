@@ -1,3 +1,156 @@
+## [2.29.2](https://github.com/appium/appium-espresso-driver/compare/v2.29.1...v2.29.2) (2023-11-08)
+
+
+### Miscellaneous Chores
+
+* use omit to prune dev and peer ([#950](https://github.com/appium/appium-espresso-driver/issues/950)) ([bf9268a](https://github.com/appium/appium-espresso-driver/commit/bf9268a3853a8e86422d4a26d04ffca048a797c0))
+
+## [2.29.1](https://github.com/appium/appium-espresso-driver/compare/v2.29.0...v2.29.1) (2023-11-06)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @types/sinon from 10.0.20 to 17.0.0 ([#949](https://github.com/appium/appium-espresso-driver/issues/949)) ([f01b31b](https://github.com/appium/appium-espresso-driver/commit/f01b31baa621c39c9abf9b49da037e584a333fb6))
+
+## [2.29.0](https://github.com/appium/appium-espresso-driver/compare/v2.28.2...v2.29.0) (2023-11-03)
+
+
+### Features
+
+* Add support of UiModeManager service commands ([#947](https://github.com/appium/appium-espresso-driver/issues/947)) ([320e0ac](https://github.com/appium/appium-espresso-driver/commit/320e0ac650c421ab5092af73edc49f6eae51a98d))
+
+
+### Miscellaneous Chores
+
+* Update arguments validation in several mobile extensions ([#948](https://github.com/appium/appium-espresso-driver/issues/948)) ([f90118f](https://github.com/appium/appium-espresso-driver/commit/f90118fd74b3fec544f2a1a8e1cedfe17d888dea))
+
+## [2.28.2](https://github.com/appium/appium-espresso-driver/compare/v2.28.1...v2.28.2) (2023-11-01)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump asyncbox from 2.9.4 to 3.0.0 ([#945](https://github.com/appium/appium-espresso-driver/issues/945)) ([e3173f8](https://github.com/appium/appium-espresso-driver/commit/e3173f84fe5551bf5073c37c1ef60bb152f12018))
+
+## [2.28.1](https://github.com/appium/appium-espresso-driver/compare/v2.28.0...v2.28.1) (2023-11-01)
+
+
+### Bug Fixes
+
+* Alert text retrieval ([#944](https://github.com/appium/appium-espresso-driver/issues/944)) ([9c97ddc](https://github.com/appium/appium-espresso-driver/commit/9c97ddc647d64d19edd9d707382037eb9f0f7e5c))
+
+## [2.28.0](https://github.com/appium/appium-espresso-driver/compare/v2.27.1...v2.28.0) (2023-10-30)
+
+
+### Features
+
+* Add 'hideKeyboard' capability ([#942](https://github.com/appium/appium-espresso-driver/issues/942)) ([367ee86](https://github.com/appium/appium-espresso-driver/commit/367ee86a233ab6a6f18bae64eec4fe2d963ed0b7))
+
+## [2.27.1](https://github.com/appium/appium-espresso-driver/compare/v2.27.0...v2.27.1) (2023-10-30)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump semantic-release from 21.1.2 to 22.0.5 ([#935](https://github.com/appium/appium-espresso-driver/issues/935)) ([0d43021](https://github.com/appium/appium-espresso-driver/commit/0d43021bac8a62a3fe4a95e9ee8293ae897af686))
+
+## [2.27.0](https://github.com/appium/appium-espresso-driver/compare/v2.26.10...v2.27.0) (2023-10-30)
+
+
+### Features
+
+* Return web atom response ([#941](https://github.com/appium/appium-espresso-driver/issues/941)) ([440a6fd](https://github.com/appium/appium-espresso-driver/commit/440a6fd98d1ec7fcc476731c1b45fce21407181b))
+
+## [2.26.10](https://github.com/appium/appium-espresso-driver/compare/v2.26.9...v2.26.10) (2023-10-26)
+
+
+### Bug Fixes
+
+* missing /gradle.properties ([bedf0be](https://github.com/appium/appium-espresso-driver/commit/bedf0bece36efd4d4b59e6a11c8a9a483804bdce))
+
+## [2.26.9](https://github.com/appium/appium-espresso-driver/compare/v2.26.8...v2.26.9) (2023-10-24)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @typescript-eslint/eslint-plugin from 5.62.0 to 6.9.0 ([#936](https://github.com/appium/appium-espresso-driver/issues/936)) ([d93f550](https://github.com/appium/appium-espresso-driver/commit/d93f55032ad31073d51e4e701119a7c340878c06))
+
+## [2.26.8](https://github.com/appium/appium-espresso-driver/compare/v2.26.7...v2.26.8) (2023-10-24)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump sinon from 16.1.3 to 17.0.0 ([#930](https://github.com/appium/appium-espresso-driver/issues/930)) ([67f64e2](https://github.com/appium/appium-espresso-driver/commit/67f64e25771cb279b3cf571f86e2bcddd3976aa6))
+
+## [2.26.7](https://github.com/appium/appium-espresso-driver/compare/v2.26.6...v2.26.7) (2023-10-24)
+
+
+### Bug Fixes
+
+* dummy commit to trigger a release ([5daba6b](https://github.com/appium/appium-espresso-driver/commit/5daba6bd6524cae3bf7bd9cb9e2e13fae247da48))
+
+## [2.26.6](https://github.com/appium/appium-espresso-driver/compare/v2.26.5...v2.26.6) (2023-10-24)
+
+
+### Bug Fixes
+
+* package ([#933](https://github.com/appium/appium-espresso-driver/issues/933)) ([b580870](https://github.com/appium/appium-espresso-driver/commit/b5808709a3f85c26e6a1042b02eff490f460f237))
+
+## [2.26.5](https://github.com/appium/appium-espresso-driver/compare/v2.26.4...v2.26.5) (2023-10-24)
+
+
+### Reverts
+
+* Revert "chore(deps-dev): bump semantic-release from 20.1.3 to 22.0.5 (#916)" (#932) ([8b4fb51](https://github.com/appium/appium-espresso-driver/commit/8b4fb51caf348de463e5a0d73c35db8e4bb26f89)), closes [#916](https://github.com/appium/appium-espresso-driver/issues/916) [#932](https://github.com/appium/appium-espresso-driver/issues/932)
+
+## [2.26.4](https://github.com/appium/appium-espresso-driver/compare/v2.26.3...v2.26.4) (2023-10-19)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump appium-adb from 10.0.0 to 11.0.1 ([#926](https://github.com/appium/appium-espresso-driver/issues/926)) ([662bab5](https://github.com/appium/appium-espresso-driver/commit/662bab5d4ac027432957e8a336c1757b320956a3))
+
+## [2.26.3](https://github.com/appium/appium-espresso-driver/compare/v2.26.2...v2.26.3) (2023-10-19)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @types/teen_process from 2.0.1 to 2.0.2 ([#929](https://github.com/appium/appium-espresso-driver/issues/929)) ([7158f17](https://github.com/appium/appium-espresso-driver/commit/7158f17fcb36d535418070ab22d55316e6b68ba4))
+* **deps-dev:** bump eslint-config-prettier from 8.10.0 to 9.0.0 ([#928](https://github.com/appium/appium-espresso-driver/issues/928)) ([21461b4](https://github.com/appium/appium-espresso-driver/commit/21461b4c7cb6fecb32d0dd96d53cf0815b132ab9))
+* Use latest types ([2404b59](https://github.com/appium/appium-espresso-driver/commit/2404b59e799699ed5983f6a4092974c55ac818cc))
+
+## [2.26.2](https://github.com/appium/appium-espresso-driver/compare/v2.26.1...v2.26.2) (2023-10-17)
+
+
+### Miscellaneous Chores
+
+* Improve type declarations ([#925](https://github.com/appium/appium-espresso-driver/issues/925)) ([bdcce0b](https://github.com/appium/appium-espresso-driver/commit/bdcce0bcdd935e2e04188063e6ef13f16183c9d3))
+
+## [2.26.1](https://github.com/appium/appium-espresso-driver/compare/v2.26.0...v2.26.1) (2023-10-17)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump lint-staged from 14.0.1 to 15.0.1 ([#922](https://github.com/appium/appium-espresso-driver/issues/922)) ([0843ef7](https://github.com/appium/appium-espresso-driver/commit/0843ef7fe8a1be14a17d409de30842566e248dba))
+* **deps:** bump appium-adb from 9.14.12 to 10.0.0 ([#924](https://github.com/appium/appium-espresso-driver/issues/924)) ([e449d04](https://github.com/appium/appium-espresso-driver/commit/e449d04e2261ad6c221ac579843b04f768c2346a))
+
+## [2.26.0](https://github.com/appium/appium-espresso-driver/compare/v2.25.9...v2.26.0) (2023-10-14)
+
+
+### Features
+
+* Update android driver to v7 ([#920](https://github.com/appium/appium-espresso-driver/issues/920)) ([bcb9b6b](https://github.com/appium/appium-espresso-driver/commit/bcb9b6b917dd713bc255c15c3b6980c2264399b8))
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump semantic-release from 20.1.3 to 22.0.5 ([#916](https://github.com/appium/appium-espresso-driver/issues/916)) ([58be850](https://github.com/appium/appium-espresso-driver/commit/58be850d13c12726230b85c5085b038a1d9afa24))
+
+## [2.25.9](https://github.com/appium/appium-espresso-driver/compare/v2.25.8...v2.25.9) (2023-09-27)
+
+
+### Bug Fixes
+
+* signingConfigs for test apk ([#918](https://github.com/appium/appium-espresso-driver/issues/918)) ([fcdd29f](https://github.com/appium/appium-espresso-driver/commit/fcdd29f11167a044c4c176f1f2fa709ac80db905))
+
 ## [2.25.8](https://github.com/appium/appium-espresso-driver/compare/v2.25.7...v2.25.8) (2023-09-24)
 
 

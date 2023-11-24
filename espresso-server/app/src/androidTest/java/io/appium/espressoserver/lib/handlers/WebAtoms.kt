@@ -29,16 +29,16 @@ import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import io.appium.espressoserver.lib.viewmatcher.withView
 
-class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
+class WebAtoms : RequestHandler<WebAtomsParams, Any?> {
 
     @Throws(AppiumException::class)
-    override fun handleInternal(params: WebAtomsParams): Void? {
-        var webViewInteraction:WebInteraction<*>
+    override fun handleInternal(params: WebAtomsParams): Any? {
+        var webViewInteraction: WebInteraction<*>
 
         // TODO: Add a 'waitForDocument' feature to wait for HTML DOCUMENT to be ready
 
         // Initialize onWebView with web view matcher (if webviewEl provided)
-        params.webviewElement.let{ webviewElement ->
+        params.webviewElement.let { webviewElement ->
             AndroidLogger.info("Initializing webView interaction on webview with el: '$webviewElement'")
             val viewState = EspressoElement.getCachedViewStateById(webviewElement)
             val matcher = withView(viewState.view)
@@ -53,18 +53,22 @@ class WebAtoms : RequestHandler<WebAtomsParams, Void?> {
         // Iterate through methodsChain and call the atoms
         params.methodChain.forEach { method ->
             val atom = invokeStaticMethod(DriverAtoms::class.java, method.atom.name, *method.atom.args) as? Atom<*>
-                    ?: throw InvalidArgumentException("'${method.atom.name}' did not return a valid " +
-                            "'${Atom::class.qualifiedName}' object")
+                ?: throw InvalidArgumentException(
+                    "'${method.atom.name}' did not return a valid '${Atom::class.qualifiedName}' object",
+                )
 
             AndroidLogger.info("Calling interaction '${method.name}' with the atom '${method.atom}'")
 
             val res = invokeInstanceMethod(webViewInteraction, method.name, atom) as? WebInteraction<*>
-                    ?: throw InvalidArgumentException("'${method.name}' does not return a valid " +
-                            "'${WebInteraction::class.qualifiedName}' object")
+                ?: throw InvalidArgumentException(
+                    "'${method.name}' does not return a valid '${WebInteraction::class.qualifiedName}' object",
+                )
 
             webViewInteraction = res
         }
-
-        return null
+        // if you don't pass any action to perform `webViewInteraction.get()` will throw error
+        // java.lang.IllegalStateException: Perform or Check never called on this WebInteraction!
+        // when you just want to just check element existence call with `selectActiveElement` as action
+        return webViewInteraction.get()
     }
 }

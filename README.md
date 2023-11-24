@@ -114,6 +114,7 @@ appium:buildToolsVersion | The version of Android build tools to use. By default
 appium:skipLogcatCapture | Being set to `true` disables automatic logcat output collection during the test run. `false` by default
 appium:suppressKillServer | Being set to `true` prevents the driver from ever killing the ADB server explicitly. Could be useful if ADB is connected wirelessly. `false` by default
 appium:ignoreHiddenApiPolicyError | Being set to `true` ignores a failure while changing hidden API access policies. Could be useful on some devices, where access to these policies has been locked by its vendor. `false` by default.
+pium:hideKeyboard | Being set to `true` hides the on-screen keyboard while the session is running. Use it instead of the legacy `appium:unicodeKeyboard` one (which will be dropped in the future). This effect is achieved by assigning a custom "artificial" [input method](https://developer.android.com/develop/ui/views/touch-and-input/creating-input-method). Only use this feature for special/exploratory cases as it violates the way your application under test is normally interacted with by a human. Setting this capability explicitly to `false` enforces `adb shell ime reset` call on session startup, which resets the currently selected/enabled IMEs to the default ones as if the device is initially booted with the current locale. `undefined` by default.
 appium:mockLocationApp | Sets the package identifier of the app, which is used as a system mock location provider since Appium 1.18.0+. This capability has no effect on emulators. If the value is set to `null` or an empty string, then Appium will skip the mocked location provider setup procedure. Defaults to Appium Setting package identifier (`io.appium.settings`).
 appium:logcatFormat | The log print format, where `format` is one of: `brief` `process` `tag` `thread` `raw` `time` `threadtime` `long`. `threadtime` is the default value.
 appium:logcatFilterSpecs | Series of `tag[:priority]` where `tag` is a log component tag (or * for all) and priority is: `V    Verbose`, `D    Debug`, `I    Info`, `W    Warn`, `E    Error`, `F    Fatal`, `S    Silent (supress all output)`. '*' means '*:d' and `tag` by itself means `tag:v`. If not specified on the commandline, filterspec is set from ANDROID_LOG_TAGS. If no filterspec is found, filter defaults to '*:I'.
@@ -400,7 +401,49 @@ xpath | For elements lookup Xpath strategy the driver uses the same XML tree tha
 
 ## Platform-Specific Extensions
 
-Beside of standard W3C APIs the driver provides the following custom command extensions to execute platform specific scenarios:
+Beside of standard W3C APIs the driver provides the below custom command extensions to execute platform specific scenarios. Use the following source code examples in order to invoke them from your client code:
+
+```java
+// Java 11+
+var result = driver.executeScript("mobile: <methodName>", Map.of(
+    "arg1", "value1",
+    "arg2", "value2"
+    // you may add more pairs if needed or skip providing the map completely
+    // if all arguments are defined as optional
+));
+```
+
+```js
+// WebdriverIO
+const result = await driver.executeScript('mobile: <methodName>', [{
+    arg1: "value1",
+    arg2: "value2",
+}]);
+```
+
+```python
+# Python
+result = driver.execute_script('mobile: <methodName>', {
+    'arg1': 'value1',
+    'arg2': 'value2',
+})
+```
+
+```ruby
+# Ruby
+result = @driver.execute_script 'mobile: <methodName>', {
+    arg1: 'value1',
+    arg2: 'value2',
+}
+```
+
+```csharp
+// Dotnet
+object result = driver.ExecuteScript("mobile: <methodName>", new Dictionary<string, object>() {
+    {"arg1", "value1"},
+    {"arg2", "value2"}
+});
+```
 
 ### mobile: shell
 
@@ -527,7 +570,7 @@ Perform swipe action. Invokes Espresso [swipe action](https://developer.android.
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | The UDID of the element to perform the swipe on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | The UDID of the element to perform the swipe on. | 123456-7890-3453-24234243
 direction | string | no | Swipe direction. Either this argument or `swiper` must be provided, but not both. The following values are supported: `up`, `down`, `left`, `right` | down
 swiper | string | no | Swipe speed. Either this argument or `direction` must be provided, but not both. Either `FAST` (Swipes quickly between the co-ordinates) or `SLOW` (Swipes deliberately slowly between the co-ordinates, to aid in visual debugging) | SLOW
 startCoordinates | string | no | The starting coordinates for the action. The following values are supported: `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER` (the default value), `BOTTOM_RIGHT`, `VISIBLE_CENTER` | CENTER_LEFT
@@ -557,7 +600,7 @@ Opens the DrawerLayout drawer with the gravity. This method blocks until the dra
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
 gravity | int | no | See [GravityCompat](https://developer.android.com/reference/kotlin/androidx/core/view/GravityCompat) and [Gravity](https://developer.android.com/reference/android/view/Gravity) classes documentation | `0x00800000 <bitwise_or> 0x00000003`
 
 ### mobile: closeDrawer
@@ -568,7 +611,7 @@ Closes the DrawerLayout drawer with the gravity. This method blocks until the dr
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
 gravity | int | no | See [GravityCompat](https://developer.android.com/reference/kotlin/androidx/core/view/GravityCompat) and [Gravity](https://developer.android.com/reference/android/view/Gravity) classes documentation | `0x00800000 <bitwise_or> 0x00000005`
 
 ### mobile: scrollToPage
@@ -579,7 +622,7 @@ Perform scrolling to the given page. Invokes one of the [ViewPagerActions](https
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
 scrollTo | string | no if `scrollToPage` is provided | Shifts ViewPager to the given page. Supported values are: `first`, `last`, `left`, `right` | last
 scrollToPage | int | no if `scrollTo` is provided | Moves ViewPager to a specific page number (numbering starts from zero). | 1
 smoothScroll | boolean | no | Whether to perform smooth (but slower) scrolling (`true`). The default value is `false` | true
@@ -592,7 +635,7 @@ Invokes [navigateTo](https://developer.android.com/reference/androidx/test/espre
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | UDID of the element to perform the action on. View constraints: View must be a child of a DrawerLayout; View must be of type NavigationView; View must be visible on screen; View must be displayed on screen | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | UDID of the element to perform the action on. View constraints: View must be a child of a DrawerLayout; View must be of type NavigationView; View must be visible on screen; View must be displayed on screen | 123456-7890-3453-24234243
 menuItemId | int | yes | The resource id of the destination menu item | 123
 
 ### mobile: clickAction
@@ -603,7 +646,7 @@ Perform [general click action](https://developer.android.com/reference/androidx/
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | The UDID of the element to perform the click on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | The UDID of the element to perform the click on. | 123456-7890-3453-24234243
 tapper | string | no | Tapper type. Supported types are: `SINGLE` (the default value), `LONG`, `DOUBLE` | `LONG`
 coordinatesProvider | string | no | The coordinates for the action. The following values are supported: `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER`, `BOTTOM_RIGHT`, `VISIBLE_CENTER` (the default value) | CENTER_LEFT
 precisionDescriber | string | no | Defines the actual click precision. The following values are supported: `PINPOINT` (1px), `FINGER` (average width of the index finger is 16 – 20 mm, the default value), `THUMB` (average width of an adult thumb is 25 mm or 1 inch) | PINPOINT
@@ -1027,7 +1070,7 @@ Highlights the given element in the UI by adding flashing to it
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-element | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
+elementId (element before v2.29) | string | yes | UDID of the element to perform the action on. | 123456-7890-3453-24234243
 durationMillis | int | no | Duration of single flashing sequence, 30 ms by default | 50
 repeatCount | int | no | Count of repeats, 15 times by default | 10
 
@@ -1552,6 +1595,28 @@ component | string | no | The name of the tile component. It is only required fo
 
 The actual downstream command output. It depends on the selected command and might be empty.
 
+### mobile: setUiMode
+
+Set the device UI appearance. A thin wrapper over `adb shell cmd uimode` CLI.
+Works on Android 10 and newer. Available since driver version 2.29
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+mode | string | yes | One of the supported UI mode names: `night` or `car`. | night
+value | string | yes | The actual mode value to set. Supported values for different UI modes are: `night`: yes,no,auto,custom_schedule,custom_bedtime, `car`: yes,no. For example, to switch the device UI to the dark mode you should set `mode` to `night` and `value` to `yes`, or to `no` in order to switch back to the light mode. | yes
+
+### mobile: getUiMode
+
+Gets the device UI appearance for the given mode. A thin wrapper over `adb shell cmd uimode` CLI. Works on Android 10 and newer. Available since driver version 2.29
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+mode | string | yes | One of the supported UI mode names: `night` or `car`. | night
+
 
 ## Backdoor Extension Usage
 
@@ -1579,7 +1644,6 @@ For example, in the following arguments map
 ```
 
 the `anotherMethod` will be called on the object returned by `someMethod`, which has no arguments and which was executed on the current activity instance. Also `anotherMethod` accepts to arguments of type `java.lang.CharSequence` and `int`. The result of `anotherMethod` will be serialized and returned to the client.
-
 
 ## Parallel Tests
 
