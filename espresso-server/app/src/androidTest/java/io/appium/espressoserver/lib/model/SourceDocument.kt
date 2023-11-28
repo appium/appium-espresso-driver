@@ -339,7 +339,7 @@ class SourceDocument constructor(
 //            e.g: "Reason: Expected exactly '1' node but found '2' nodes that satisfy: (isRoot)"
             val result: SelectionResult = SemanticsNodeInteraction::class.declaredMemberFunctions.find { it.name == "fetchSemanticsNodes" }?.let {
                 it.isAccessible = true
-                it.call(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true), true, null)
+                it.call(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true), true, null, true)
             } as SelectionResult
             result.selectedNodes
         }

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk = getIntProperty("appiumCompileSdk", 33)
+    compileSdk = getIntProperty("appiumCompileSdk", 34)
     buildToolsVersion = getStringProperty("appiumBuildTools", "33.0.2")
     defaultConfig {
         // <instrumentation android:targetPackage=""/>
@@ -171,7 +171,7 @@ object Version {
     const val mockito = "5.1.1"
     const val robolectric = "4.9.2"
     const val junit = "4.13.2"
-    const val compose = "1.1.1"
+    const val compose = "1.6.0-beta01"
 }
 
 fun Project.getStringProperty(name: String, default: String): String =
