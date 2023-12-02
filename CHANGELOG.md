@@ -1,3 +1,10 @@
+## [2.29.3](https://github.com/appium/appium-espresso-driver/compare/v2.29.2...v2.29.3) (2023-12-02)
+
+
+### Miscellaneous Chores
+
+* update publish.js.yml ([#957](https://github.com/appium/appium-espresso-driver/issues/957)) ([0c5936a](https://github.com/appium/appium-espresso-driver/commit/0c5936a5877a8601cf19c34b8af2c43196423220))
+
 ## [2.29.2](https://github.com/appium/appium-espresso-driver/compare/v2.29.1...v2.29.2) (2023-11-08)
 
 
