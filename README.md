@@ -655,7 +655,13 @@ buttonState | int | no | Button state id, `0` by default | 1
 
 ### mobile: getContexts
 
-Retrieves a webviews mapping based on CDP endpoints
+Retrieves a WebViews mapping based on CDP endpoints
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+waitForWebviewMs | number | no | Tells Espresso driver for how long (in milliseconds) to wait for web view(s) to appear since Espresso driver v2.30.0. If a Chrome process running on the device under test fails to create a connection to the devtools socket, then the chromedriver will rise an error similar to `failed to connect to socket 'localabstract:chrome_devtools_remote'` in Espresso driver. It could cause no WebViews found result, although a couple of retrials may fix it. This argument helps to keep trying to get WebView(s) up to the given time milliseconds as one command call. This issue tends to occur Chrome v115 and over so far. [issues#19251](https://github.com/appium/appium/issues/19251) contains more details. If set to `0`ms (the default value), then Espresso driver only checks the WebView(s) availability once. | 10000
 
 #### Returns
 
