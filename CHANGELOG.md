@@ -1,3 +1,10 @@
+## [2.30.0](https://github.com/appium/appium-espresso-driver/compare/v2.29.3...v2.30.0) (2023-12-19)
+
+
+### Features
+
+* let mobile: getContexts gives waitForWebviewMs ([#960](https://github.com/appium/appium-espresso-driver/issues/960)) ([cefd205](https://github.com/appium/appium-espresso-driver/commit/cefd205a184187fb5c03c90defbc6acf02ed6e6d))
+
 ## [2.29.3](https://github.com/appium/appium-espresso-driver/compare/v2.29.2...v2.29.3) (2023-12-02)
 
 
