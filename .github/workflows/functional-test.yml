@@ -58,7 +58,7 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
     - run: |
-        npm install -g appium@next
+        npm install -g appium
         npm install --chromedriver_version="${{ matrix.chromedriverVersion }}"
         npm install --no-save mjpeg-consumer
       name: Install dev dependencies
