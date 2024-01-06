@@ -37,6 +37,12 @@ On top of standard Appium requirements Espresso driver also expects the followin
 - Both the server package and the application under test must be signed with the same digital signature. Appium does sign them automatically upon session creation, so this could only be an issue if one wants to test an application, which is already installed on the device (using `noReset=true` capability).
 - The package under test must not have mangled class names (e.g. [Proguard](https://developer.android.com/studio/build/shrink-code) must not be enabled for it)
 
+### Doctor
+
+Since driver version 2.31.0 you can automate the validation for the most of the above
+requirements as well as various optional ones needed by driver extensions by running the
+`appium driver doctor espresso` server command.
+
 
 ## Scripts
 
