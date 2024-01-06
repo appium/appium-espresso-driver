@@ -1,3 +1,10 @@
+## [2.31.0](https://github.com/appium/appium-espresso-driver/compare/v2.30.0...v2.31.0) (2024-01-06)
+
+
+### Features
+
+* Add doctor checks ([#962](https://github.com/appium/appium-espresso-driver/issues/962)) ([bb153f4](https://github.com/appium/appium-espresso-driver/commit/bb153f413b5be3cb2f1a4f79032a5f50aefd377b))
+
 ## [2.30.0](https://github.com/appium/appium-espresso-driver/compare/v2.29.3...v2.30.0) (2023-12-19)
 
 
