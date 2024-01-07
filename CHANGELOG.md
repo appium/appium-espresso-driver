@@ -1,3 +1,10 @@
+## [2.32.1](https://github.com/appium/appium-espresso-driver/compare/v2.32.0...v2.32.1) (2024-01-07)
+
+
+### Bug Fixes
+
+* Import the proper support module ([#964](https://github.com/appium/appium-espresso-driver/issues/964)) ([e9afc21](https://github.com/appium/appium-espresso-driver/commit/e9afc21e1fbbedc43f43cc670c74724b9fe028a1))
+
 ## [2.32.0](https://github.com/appium/appium-espresso-driver/compare/v2.31.0...v2.32.0) (2024-01-07)
 
 
