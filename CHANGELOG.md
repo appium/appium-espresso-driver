@@ -1,3 +1,10 @@
+## [2.32.0](https://github.com/appium/appium-espresso-driver/compare/v2.31.0...v2.32.0) (2024-01-07)
+
+
+### Features
+
+* update io.appium.settings to use newer location deps ([#963](https://github.com/appium/appium-espresso-driver/issues/963)) ([b62aa1b](https://github.com/appium/appium-espresso-driver/commit/b62aa1b46c6d87423eb328ccc2b2b7a767ae9e53))
+
 ## [2.31.0](https://github.com/appium/appium-espresso-driver/compare/v2.30.0...v2.31.0) (2024-01-06)
 
 
