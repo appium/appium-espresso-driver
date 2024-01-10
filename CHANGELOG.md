@@ -1,3 +1,10 @@
+## [2.32.2](https://github.com/appium/appium-espresso-driver/compare/v2.32.1...v2.32.2) (2024-01-10)
+
+
+### Bug Fixes
+
+* io.appium.settings process check as the foreground service check ([#965](https://github.com/appium/appium-espresso-driver/issues/965)) ([9d4f07f](https://github.com/appium/appium-espresso-driver/commit/9d4f07fa621fad3c6222ec43564e91c64b450b2f)), closes [appium/appium-android-driver#895](https://github.com/appium/appium-android-driver/issues/895)
+
 ## [2.32.1](https://github.com/appium/appium-espresso-driver/compare/v2.32.0...v2.32.1) (2024-01-07)
 
 
