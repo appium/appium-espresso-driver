@@ -1,3 +1,10 @@
+## [2.33.0](https://github.com/appium/appium-espresso-driver/compare/v2.32.2...v2.33.0) (2024-01-12)
+
+
+### Features
+
+* Use APIs imported from the io.appium.settings package ([#966](https://github.com/appium/appium-espresso-driver/issues/966)) ([3f8a8e3](https://github.com/appium/appium-espresso-driver/commit/3f8a8e397acc527c263c4181a06ed16af117cf9d))
+
 ## [2.32.2](https://github.com/appium/appium-espresso-driver/compare/v2.32.1...v2.32.2) (2024-01-10)
 
 
