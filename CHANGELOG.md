@@ -1,3 +1,10 @@
+## [2.33.1](https://github.com/appium/appium-espresso-driver/compare/v2.33.0...v2.33.1) (2024-01-14)
+
+
+### Miscellaneous Chores
+
+* Bump appium-adb ([#967](https://github.com/appium/appium-espresso-driver/issues/967)) ([3386e9b](https://github.com/appium/appium-espresso-driver/commit/3386e9be5b2634a12f9f02b433ab6ab02bdb195e))
+
 ## [2.33.0](https://github.com/appium/appium-espresso-driver/compare/v2.32.2...v2.33.0) (2024-01-12)
 
 
