@@ -1,3 +1,10 @@
+## [2.34.1](https://github.com/appium/appium-espresso-driver/compare/v2.34.0...v2.34.1) (2024-01-26)
+
+
+### Bug Fixes
+
+* createADB ([#974](https://github.com/appium/appium-espresso-driver/issues/974)) ([5b5376e](https://github.com/appium/appium-espresso-driver/commit/5b5376ed0dd2e845953b189e5dbc0dc82709e7a2))
+
 ## [2.34.0](https://github.com/appium/appium-espresso-driver/compare/v2.33.2...v2.34.0) (2024-01-26)
 
 
