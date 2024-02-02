@@ -3,7 +3,6 @@ import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import { ADB } from 'appium-adb';
 import EspressoDriver from '../../lib/driver';
-import { androidHelpers } from 'appium-android-driver';
 
 
 chai.should();
@@ -49,10 +48,10 @@ describe('driver', function () {
         sandbox.stub(driver, 'initEspressoServer');
         sandbox.stub(driver, 'initAUT');
         sandbox.stub(driver, 'startEspressoSession');
-        sandbox.stub(androidHelpers, 'getDeviceInfoFromCaps').callsFake(function () {
+        sandbox.stub(driver, 'getDeviceInfoFromCaps').callsFake(function () {
           return {udid: 1, emPort: 8888};
         });
-        sandbox.stub(androidHelpers, 'createADB').callsFake(function () {
+        sandbox.stub(driver, 'createADB').callsFake(function () {
           return {
             getDevicesWithRetry: () => [{udid: 'emulator-1234'}],
             getPortFromEmulatorString: () => 1234,
