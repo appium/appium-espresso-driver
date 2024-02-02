@@ -1,3 +1,73 @@
+## [2.34.1](https://github.com/appium/appium-espresso-driver/compare/v2.34.0...v2.34.1) (2024-01-26)
+
+
+### Bug Fixes
+
+* createADB ([#974](https://github.com/appium/appium-espresso-driver/issues/974)) ([5b5376e](https://github.com/appium/appium-espresso-driver/commit/5b5376ed0dd2e845953b189e5dbc0dc82709e7a2))
+
+## [2.34.0](https://github.com/appium/appium-espresso-driver/compare/v2.33.2...v2.34.0) (2024-01-26)
+
+
+### Features
+
+* Bump appium-android-driver ([#973](https://github.com/appium/appium-espresso-driver/issues/973)) ([21a88cb](https://github.com/appium/appium-espresso-driver/commit/21a88cb2916beb72d023cbcfd227698982718f56))
+
+## [2.33.2](https://github.com/appium/appium-espresso-driver/compare/v2.33.1...v2.33.2) (2024-01-16)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump semantic-release from 22.0.12 to 23.0.0 ([#968](https://github.com/appium/appium-espresso-driver/issues/968)) ([40d0590](https://github.com/appium/appium-espresso-driver/commit/40d0590e4029b813152997d84ee98d4cb373573d))
+
+## [2.33.1](https://github.com/appium/appium-espresso-driver/compare/v2.33.0...v2.33.1) (2024-01-14)
+
+
+### Miscellaneous Chores
+
+* Bump appium-adb ([#967](https://github.com/appium/appium-espresso-driver/issues/967)) ([3386e9b](https://github.com/appium/appium-espresso-driver/commit/3386e9be5b2634a12f9f02b433ab6ab02bdb195e))
+
+## [2.33.0](https://github.com/appium/appium-espresso-driver/compare/v2.32.2...v2.33.0) (2024-01-12)
+
+
+### Features
+
+* Use APIs imported from the io.appium.settings package ([#966](https://github.com/appium/appium-espresso-driver/issues/966)) ([3f8a8e3](https://github.com/appium/appium-espresso-driver/commit/3f8a8e397acc527c263c4181a06ed16af117cf9d))
+
+## [2.32.2](https://github.com/appium/appium-espresso-driver/compare/v2.32.1...v2.32.2) (2024-01-10)
+
+
+### Bug Fixes
+
+* io.appium.settings process check as the foreground service check ([#965](https://github.com/appium/appium-espresso-driver/issues/965)) ([9d4f07f](https://github.com/appium/appium-espresso-driver/commit/9d4f07fa621fad3c6222ec43564e91c64b450b2f)), closes [appium/appium-android-driver#895](https://github.com/appium/appium-android-driver/issues/895)
+
+## [2.32.1](https://github.com/appium/appium-espresso-driver/compare/v2.32.0...v2.32.1) (2024-01-07)
+
+
+### Bug Fixes
+
+* Import the proper support module ([#964](https://github.com/appium/appium-espresso-driver/issues/964)) ([e9afc21](https://github.com/appium/appium-espresso-driver/commit/e9afc21e1fbbedc43f43cc670c74724b9fe028a1))
+
+## [2.32.0](https://github.com/appium/appium-espresso-driver/compare/v2.31.0...v2.32.0) (2024-01-07)
+
+
+### Features
+
+* update io.appium.settings to use newer location deps ([#963](https://github.com/appium/appium-espresso-driver/issues/963)) ([b62aa1b](https://github.com/appium/appium-espresso-driver/commit/b62aa1b46c6d87423eb328ccc2b2b7a767ae9e53))
+
+## [2.31.0](https://github.com/appium/appium-espresso-driver/compare/v2.30.0...v2.31.0) (2024-01-06)
+
+
+### Features
+
+* Add doctor checks ([#962](https://github.com/appium/appium-espresso-driver/issues/962)) ([bb153f4](https://github.com/appium/appium-espresso-driver/commit/bb153f413b5be3cb2f1a4f79032a5f50aefd377b))
+
+## [2.30.0](https://github.com/appium/appium-espresso-driver/compare/v2.29.3...v2.30.0) (2023-12-19)
+
+
+### Features
+
+* let mobile: getContexts gives waitForWebviewMs ([#960](https://github.com/appium/appium-espresso-driver/issues/960)) ([cefd205](https://github.com/appium/appium-espresso-driver/commit/cefd205a184187fb5c03c90defbc6acf02ed6e6d))
+
 ## [2.29.3](https://github.com/appium/appium-espresso-driver/compare/v2.29.2...v2.29.3) (2023-12-02)
 
 

@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const path = require('path');
-const { logger, fs } = require('@appium/support');
+const { logger, fs } = require('appium/support');
 const { ServerBuilder } = require('../build/lib/server-builder.js');
 
 const LOG = new logger.getLogger('EspressoBuild');
