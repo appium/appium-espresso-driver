@@ -1,3 +1,10 @@
+## [2.34.2](https://github.com/appium/appium-espresso-driver/compare/v2.34.1...v2.34.2) (2024-02-02)
+
+
+### Bug Fixes
+
+* add overload to fix type issue ([#976](https://github.com/appium/appium-espresso-driver/issues/976)) ([935be1e](https://github.com/appium/appium-espresso-driver/commit/935be1e27c4b0f9f32a6cf5165e9bd5d5e1472d5))
+
 ## [2.34.1](https://github.com/appium/appium-espresso-driver/compare/v2.34.0...v2.34.1) (2024-01-26)
 
 
