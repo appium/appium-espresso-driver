@@ -7,7 +7,7 @@
     "automated testing",
     "android"
   ],
-  "version": "2.29.2",
+  "version": "2.34.1",
   "author": "Appium Contributors",
   "license": "Apache-2.0",
   "repository": {
@@ -41,6 +41,12 @@
     "scripts": {
       "print-espresso-path": "./scripts/print-espresso-path.js",
       "build-espresso": "./scripts/build-espresso.js"
+    },
+    "doctor": {
+      "checks": [
+        "./build/lib/doctor/required-checks.js",
+        "./build/lib/doctor/optional-checks.js"
+      ]
     }
   },
   "main": "./build/index.js",
@@ -71,10 +77,11 @@
     "npm-shrinkwrap.json"
   ],
   "dependencies": {
-    "appium-adb": "^11.0.1",
-    "appium-android-driver": "^7.3.0",
+    "appium-adb": "^12.0.0",
+    "appium-android-driver": "^8.1.6",
     "asyncbox": "^3.0.0",
     "bluebird": "^3.5.0",
+    "io.appium.settings": "^5.7.2",
     "lodash": "^4.17.11",
     "portscanner": "^2.1.1",
     "source-map-support": "^0.x",
@@ -106,7 +113,7 @@
     "precommit-lint"
   ],
   "peerDependencies": {
-    "appium": "^2.0.0"
+    "appium": "^2.4.1"
   },
   "devDependencies": {
     "@appium/eslint-config-appium": "^8.0.4",
@@ -143,7 +150,7 @@
     "mocha": "^10.0.0",
     "pre-commit": "^1.2.2",
     "rimraf": "^5.0.0",
-    "semantic-release": "^22.0.5",
+    "semantic-release": "^23.0.0",
     "sinon": "^17.0.0",
     "ts-node": "^10.9.1",
     "typescript": "~5.2",

@@ -58,7 +58,7 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
     - run: |
-        npm install -g appium@next
+        npm install -g appium
         npm install --chromedriver_version="${{ matrix.chromedriverVersion }}"
         npm install --no-save mjpeg-consumer
       name: Install dev dependencies
@@ -72,6 +72,7 @@ jobs:
         pushd "$cwd"
         cd ~
         appium driver install --source=local "$cwd"
+        appium driver doctor espresso
         nohup appium server \
           --port=$APPIUM_TEST_SERVER_PORT \
           --address=$APPIUM_TEST_SERVER_HOST \
