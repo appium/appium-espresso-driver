@@ -704,7 +704,6 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   reset = appManagementCmds.reset;
   mobileBackgroundApp = appManagementCmds.mobileBackgroundApp;
   startActivity = appManagementCmds.startActivity;
-  // @ts-ignore Params there are ok
   mobileStartActivity = appManagementCmds.mobileStartActivity;
 
   mobileWebAtoms = contextCmds.mobileWebAtoms;
