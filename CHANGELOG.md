@@ -1,3 +1,10 @@
+## [2.34.3](https://github.com/appium/appium-espresso-driver/compare/v2.34.2...v2.34.3) (2024-02-04)
+
+
+### Miscellaneous Chores
+
+* remove precommit stuff as same as other repos ([#977](https://github.com/appium/appium-espresso-driver/issues/977)) ([01d18ab](https://github.com/appium/appium-espresso-driver/commit/01d18abb59ed1f1e1f0244c05e6cde7fe0e24b33))
+
 ## [2.34.2](https://github.com/appium/appium-espresso-driver/compare/v2.34.1...v2.34.2) (2024-02-02)
 
 
