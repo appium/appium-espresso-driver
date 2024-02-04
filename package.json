@@ -100,18 +100,12 @@
     "lint": "eslint .",
     "lint:server": "cd espresso-server && ./gradlew lint || cd ..",
     "lint:fix": "npm run lint -- --fix",
-    "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
-    "precommit-lint": "lint-staged",
     "prepare": "npm run rebuild",
     "test": "npm run test:node",
     "test:node": "mocha --exit --timeout 1m \"./test/unit/**/*-specs.js\"",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace || cd ..",
     "e2e-test": "mocha --exit --timeout 5m \"./test/functional/**/*-specs.js\""
   },
-  "pre-commit": [
-    "precommit-msg",
-    "precommit-lint"
-  ],
   "peerDependencies": {
     "appium": "^2.4.1"
   },
@@ -148,7 +142,6 @@
     "eslint-plugin-promise": "^6.1.1",
     "lint-staged": "^15.0.1",
     "mocha": "^10.0.0",
-    "pre-commit": "^1.2.2",
     "rimraf": "^5.0.0",
     "semantic-release": "^23.0.0",
     "sinon": "^17.0.0",
