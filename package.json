@@ -21,11 +21,6 @@
     "node": ">=14",
     "npm": ">=8"
   },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix"
-    ]
-  },
   "prettier": {
     "bracketSpacing": false,
     "printWidth": 100,
@@ -140,7 +135,6 @@
     "eslint-plugin-import": "^2.28.0",
     "eslint-plugin-mocha": "^10.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "lint-staged": "^15.0.1",
     "mocha": "^10.0.0",
     "rimraf": "^5.0.0",
     "semantic-release": "^23.0.0",
