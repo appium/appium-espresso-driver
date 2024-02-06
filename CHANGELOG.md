@@ -1,3 +1,10 @@
+## [2.34.4](https://github.com/appium/appium-espresso-driver/compare/v2.34.3...v2.34.4) (2024-02-06)
+
+
+### Bug Fixes
+
+* proxy request to the espresso server with nativeWebScreenshot ([#978](https://github.com/appium/appium-espresso-driver/issues/978)) ([172ce35](https://github.com/appium/appium-espresso-driver/commit/172ce3554e62f7927eac8fd62756299eb3057967))
+
 ## [2.34.3](https://github.com/appium/appium-espresso-driver/compare/v2.34.2...v2.34.3) (2024-02-04)
 
 
