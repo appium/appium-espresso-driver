@@ -735,6 +735,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   mobileStartService = servicesCmds.mobileStartService;
   mobileStopService = servicesCmds.mobileStopService;
 
+  getScreenshot = screenshotCmds.getScreenshot;
   mobileScreenshots = screenshotCmds.mobileScreenshots;
 
   mobileRegisterIdlingResources = idlingResourcesCmds.mobileRegisterIdlingResources;
