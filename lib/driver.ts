@@ -22,6 +22,7 @@ import * as miscCmds from './commands/misc';
 import * as servicesCmds from './commands/services';
 import * as screenshotCmds from './commands/screenshot';
 import * as idlingResourcesCmds from './commands/idling-resources';
+import * as actionsCmds from './commands/actions';
 import { DEFAULT_ADB_PORT } from 'appium-adb';
 import { AndroidDriver, utils } from 'appium-android-driver';
 import { SETTINGS_HELPER_ID } from 'io.appium.settings';
@@ -696,6 +697,8 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   get appOnDevice (): boolean {
     return !this.opts.app && this.helpers.isPackageOrBundle(this.opts.appPackage!);
   }
+
+  performActions = actionsCmds.performActions;
 
   executeMobile = executeCmds.executeMobile;
 
