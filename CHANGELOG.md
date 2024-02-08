@@ -1,3 +1,10 @@
+## [2.35.0](https://github.com/appium/appium-espresso-driver/compare/v2.34.4...v2.35.0) (2024-02-08)
+
+
+### Features
+
+* Improve the documentation on unlock ([#979](https://github.com/appium/appium-espresso-driver/issues/979)) ([15ae78b](https://github.com/appium/appium-espresso-driver/commit/15ae78b3dbe6e35b26d1374b3e1935b457d5014d))
+
 ## [2.34.4](https://github.com/appium/appium-espresso-driver/compare/v2.34.3...v2.34.4) (2024-02-06)
 
 
