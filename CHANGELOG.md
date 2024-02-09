@@ -1,3 +1,10 @@
+## [2.36.0](https://github.com/appium/appium-espresso-driver/compare/v2.35.0...v2.36.0) (2024-02-09)
+
+
+### Features
+
+* add checkVersion option for mobile:installApp ([#980](https://github.com/appium/appium-espresso-driver/issues/980)) ([a0438b8](https://github.com/appium/appium-espresso-driver/commit/a0438b8993524f0e216a2c661cae6dd66c21611c))
+
 ## [2.35.0](https://github.com/appium/appium-espresso-driver/compare/v2.34.4...v2.35.0) (2024-02-08)
 
 
