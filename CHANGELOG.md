@@ -1,3 +1,10 @@
+## [2.36.1](https://github.com/appium/appium-espresso-driver/compare/v2.36.0...v2.36.1) (2024-02-12)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump appium-android-driver from 8.4.0 to 9.0.0 ([#981](https://github.com/appium/appium-espresso-driver/issues/981)) ([ebc6220](https://github.com/appium/appium-espresso-driver/commit/ebc6220a1e34c171c7834941aee4725e056cc6e4))
+
 ## [2.36.0](https://github.com/appium/appium-espresso-driver/compare/v2.35.0...v2.36.0) (2024-02-09)
 
 
