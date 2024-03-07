@@ -1,3 +1,10 @@
+## [2.36.2](https://github.com/appium/appium-espresso-driver/compare/v2.36.1...v2.36.2) (2024-03-07)
+
+
+### Miscellaneous Chores
+
+* bump typescript ([eb5d06a](https://github.com/appium/appium-espresso-driver/commit/eb5d06acb735c115a006776e02416c0ceb00c28d))
+
 ## [2.36.1](https://github.com/appium/appium-espresso-driver/compare/v2.36.0...v2.36.1) (2024-02-12)
 
 
