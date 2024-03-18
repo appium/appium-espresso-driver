@@ -1,3 +1,10 @@
+## [2.37.0](https://github.com/appium/appium-espresso-driver/compare/v2.36.2...v2.37.0) (2024-03-18)
+
+
+### Features
+
+* add mobile:startLogsBroadcast and mobile:stopLogsBroadcast ([#988](https://github.com/appium/appium-espresso-driver/issues/988)) ([94db792](https://github.com/appium/appium-espresso-driver/commit/94db79260b6b764a7592ba486cc4055755af3600))
+
 ## [2.36.2](https://github.com/appium/appium-espresso-driver/compare/v2.36.1...v2.36.2) (2024-03-07)
 
 
