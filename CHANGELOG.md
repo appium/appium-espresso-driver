@@ -1,3 +1,10 @@
+## [2.37.2](https://github.com/appium/appium-espresso-driver/compare/v2.37.1...v2.37.2) (2024-04-09)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @typescript-eslint/parser from 6.21.0 to 7.6.0 ([#993](https://github.com/appium/appium-espresso-driver/issues/993)) ([6f06325](https://github.com/appium/appium-espresso-driver/commit/6f063255cf03b55f815e0a30c08e69a830bebe37))
+
 ## [2.37.1](https://github.com/appium/appium-espresso-driver/compare/v2.37.0...v2.37.1) (2024-03-19)
 
 
