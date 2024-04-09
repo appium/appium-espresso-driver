@@ -1,3 +1,10 @@
+## [2.37.3](https://github.com/appium/appium-espresso-driver/compare/v2.37.2...v2.37.3) (2024-04-09)
+
+
+### Miscellaneous Chores
+
+* Remove extra imports ([7390b9f](https://github.com/appium/appium-espresso-driver/commit/7390b9fbfff6973b2aff49f5881a7ae32f3623e1))
+
 ## [2.37.2](https://github.com/appium/appium-espresso-driver/compare/v2.37.1...v2.37.2) (2024-04-09)
 
 
