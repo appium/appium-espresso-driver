@@ -1,3 +1,10 @@
+## [2.38.0](https://github.com/appium/appium-espresso-driver/compare/v2.37.3...v2.38.0) (2024-04-10)
+
+
+### Features
+
+* Add the support of `timeZone` capability ([#994](https://github.com/appium/appium-espresso-driver/issues/994)) ([834fffe](https://github.com/appium/appium-espresso-driver/commit/834fffe6dac944a6955f0f5607c49c569a7363d2))
+
 ## [2.37.3](https://github.com/appium/appium-espresso-driver/compare/v2.37.2...v2.37.3) (2024-04-09)
 
 
