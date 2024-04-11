@@ -154,11 +154,10 @@ appium:noSign | Set it to `true` in order to skip application signing. By defaul
 
 Capability Name | Description
 --- | ---
-appium:skipUnlock | Whether to skip the check for lock screen presence (`true`). By default Espresso driver tries to detect if the device's screen is locked before starting the test and to unlock that (which sometimes might be unstable). Note, that this operation takes some time, so it is highly recommended to set this capability to `false` and disable screen locking on devices under test.
-appium:unlockType | Set one of the possible types of Android lock screens to unlock. Read the [Unlock tutorial](https://github.com/appium/appium-android-driver/blob/master/docs/UNLOCK.md) for more details.
-appium:unlockKey | Allows to set an unlock key. Read the [Unlock tutorial](https://github.com/appium/appium-android-driver/blob/master/docs/UNLOCK.md) for more details.
-appium:unlockStrategy | Either 'locksettings' (default) or 'uiautomator'. Setting it to 'uiautomator' will enforce the driver to avoid using special ADB shortcuts in order to speed up the unlock procedure.
-appium:unlockSuccessTimeout | Maximum number of milliseconds to wait until the device is unlocked. `2000` ms by default
+appium:skipUnlock | Whether to skip the check for lock screen presence (`true`). By default Espresso driver tries to detect if the device's screen is locked before starting the test and to unlock that (which sometimes might be unstable). Note, that this operation takes some time, so it is recommended to set this capability to `false` and disable screen locking on devices under test. Read the [Unlock tutorial](./docs/unlock/main.md) for more details.
+appium:unlockType | Set one of the possible types of Android lock screens to unlock. Read the [Unlock tutorial](./docs/unlock/main.md) for more details.
+appium:unlockKey | Allows to set an unlock key. Read the [Unlock tutorial](./docs/unlock/main.md) for more details.
+appium:unlockSuccessTimeout | Maximum number of milliseconds to wait until the device is unlocked. `2000` ms by default. Read the [Unlock tutorial](./docs/unlock/main.md) for more details.
 
 ### Web Context
 
@@ -190,6 +189,7 @@ Capability Name | Description
 --- | ---
 appium:disableSuppressAccessibilityService | Being set to `true` tells the instrumentation process to not suppress accessibility services during the automated test. This might be useful if your automated test needs these services. `false` by default
 appium:disableWindowAnimation | To avoid flakiness google [recommends](https://developer.android.com/training/testing/espresso/setup#set-up-environment) to disable the window animation of the Android device under test when running espresso test. `true` by default
+appium:timeZone | Overrides the current device's time zone since the driver version 2.38.0. This change is preserved until the next override. The time zone identifier must be a valid name from the list of [available time zone identifiers](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), for example `Europe/Kyiv`
 
 
 ## Settings API
@@ -919,6 +919,8 @@ The call is ignored if the app is not installed.
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 appId | string | yes | The identifier of the application package to be removed | `my.app.id`
+timeout | number | no | The count of milliseconds to wait until the app is terminated. 20000ms by default. | 1500, 0
+keepData | boolean | no | Set to true in order to keep the application data and cache folders after uninstall. | true
 
 #### Returned Result
 
@@ -947,6 +949,7 @@ True if the app has been successfully terminated.
 ### mobile: installApp
 
 Installs the given application package to the device under test.
+It might raise the `INSTALL_FAILED_VERSION_DOWNGRADE` error if the installation was a version downgrade.
 
 #### Arguments
 
@@ -958,6 +961,7 @@ allowTestPackages | boolean | no | Set to true in order to allow test packages i
 useSdcard | boolean | no | Set to true to install the app on sdcard instead of the device memory. false by default | true
 grantPermissions | boolean | no | Set to true in order to grant all the permissions requested in the application's manifest automatically after the installation is completed under Android 6+. The targetSdkVersion in the application manifest must be greater or equal to 23 and the Android version on the device under test must be greater or equal to Android 6 (API level 23) to grant permissions. Applications whose targetSdkVersion is lower than or equal to 22 must be reisntalled to grant permissions for Android 6+ devices. false by default | true
 replace | boolean | no | Set it to false if you don't want the application to be upgraded/reinstalled if it is already present on the device, but throw an error instead. true by default | false
+checkVersion | boolean | no | Set to true, in order to skip the application installation if the device under test has a greater or equal to the application version. It may help to avoid `INSTALL_FAILED_VERSION_DOWNGRADE` error and unnecessary installation. | true
 
 ### mobile: clearApp
 
@@ -1190,7 +1194,6 @@ Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 key | string | yes | The unlock key. See the documentation on [appium:unlockKey](#device-locking) capability for more details | 12345
 type | string | yes | The unlock type. See the documentation on [appium:unlockType](#device-locking) capability for more details | password
-strategy | string | no | Unlock strategy. See the documentation on [appium:unlockStrategy](#device-locking) capability for more details | uiautomator
 timeoutMs | number | no | Unlock timeout. See the documentation on [appium:unlockSuccessTimeout](#device-locking) capability for more details | 5000
 
 ### mobile: isLocked
@@ -1629,6 +1632,14 @@ Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 mode | string | yes | One of the supported UI mode names: `night` or `car`. | night
 
+
+### mobile: startLogsBroadcast
+
+Starts Android logcat broadcast websocket on the same host and port where Appium server is running at `/ws/session/:sessionId:/appium/logcat` endpoint. The method will return immediately if the web socket is already listening. Each connected webcoket listener will receive logcat log lines as soon as they are visible to Appium. Read [Using Mobile Execution Commands to Continuously Stream Device Logs with Appium](https://appiumpro.com/editions/55-using-mobile-execution-commands-to-continuously-stream-device-logs-with-appium) for more details.
+
+### mobile: stopLogsBroadcast
+
+Stops the previously started logcat broadcasting websocket server. This method will return immediately if no server is running. Read [Using Mobile Execution Commands to Continuously Stream Device Logs with Appium](https://appiumpro.com/editions/55-using-mobile-execution-commands-to-continuously-stream-device-logs-with-appium) for more details.
 
 ## Backdoor Extension Usage
 

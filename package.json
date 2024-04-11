@@ -7,7 +7,7 @@
     "automated testing",
     "android"
   ],
-  "version": "2.34.2",
+  "version": "2.38.0",
   "author": "Appium Contributors",
   "license": "Apache-2.0",
   "repository": {
@@ -20,11 +20,6 @@
   "engines": {
     "node": ">=14",
     "npm": ">=8"
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix"
-    ]
   },
   "prettier": {
     "bracketSpacing": false,
@@ -78,7 +73,7 @@
   ],
   "dependencies": {
     "appium-adb": "^12.0.0",
-    "appium-android-driver": "^8.1.6",
+    "appium-android-driver": "^9.1.0",
     "asyncbox": "^3.0.0",
     "bluebird": "^3.5.0",
     "io.appium.settings": "^5.7.2",
@@ -100,18 +95,12 @@
     "lint": "eslint .",
     "lint:server": "cd espresso-server && ./gradlew lint || cd ..",
     "lint:fix": "npm run lint -- --fix",
-    "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
-    "precommit-lint": "lint-staged",
     "prepare": "npm run rebuild",
     "test": "npm run test:node",
     "test:node": "mocha --exit --timeout 1m \"./test/unit/**/*-specs.js\"",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace || cd ..",
     "e2e-test": "mocha --exit --timeout 5m \"./test/functional/**/*-specs.js\""
   },
-  "pre-commit": [
-    "precommit-msg",
-    "precommit-lint"
-  ],
   "peerDependencies": {
     "appium": "^2.4.1"
   },
@@ -131,8 +120,6 @@
     "@types/sinon": "^17.0.0",
     "@types/sinon-chai": "^3.2.9",
     "@types/teen_process": "^2.0.2",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
     "@xmldom/xmldom": "^0.x",
     "android-apidemos": "^4.1.1",
     "appium-chromedriver": "^5.1.4",
@@ -146,14 +133,12 @@
     "eslint-plugin-import": "^2.28.0",
     "eslint-plugin-mocha": "^10.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "lint-staged": "^15.0.1",
     "mocha": "^10.0.0",
-    "pre-commit": "^1.2.2",
     "rimraf": "^5.0.0",
     "semantic-release": "^23.0.0",
     "sinon": "^17.0.0",
     "ts-node": "^10.9.1",
-    "typescript": "~5.2",
+    "typescript": "^5.4.2",
     "webdriverio": "^8.0.2",
     "xpath": "^0.x"
   }

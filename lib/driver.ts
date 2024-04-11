@@ -22,6 +22,7 @@ import * as miscCmds from './commands/misc';
 import * as servicesCmds from './commands/services';
 import * as screenshotCmds from './commands/screenshot';
 import * as idlingResourcesCmds from './commands/idling-resources';
+import * as actionsCmds from './commands/actions';
 import { DEFAULT_ADB_PORT } from 'appium-adb';
 import { AndroidDriver, utils } from 'appium-android-driver';
 import { SETTINGS_HELPER_ID } from 'io.appium.settings';
@@ -666,19 +667,19 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     // settings to the espresso server already
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   proxyActive (sessionId) {
     // we always have an active proxy to the espresso server
     return true;
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   canProxy (sessionId) {
     // we can always proxy to the espresso server
     return true;
   }
 
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   getProxyAvoidList (sessionId) {
     // we are maintaining two sets of NO_PROXY lists, one for chromedriver(CHROME_NO_PROXY)
     // and one for Espresso(NO_PROXY), based on current context will return related NO_PROXY list
@@ -697,11 +698,10 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     return !this.opts.app && this.helpers.isPackageOrBundle(this.opts.appPackage!);
   }
 
+  performActions = actionsCmds.performActions;
+
   executeMobile = executeCmds.executeMobile;
 
-  launchApp = appManagementCmds.launchApp;
-  closeApp = appManagementCmds.closeApp;
-  reset = appManagementCmds.reset;
   mobileBackgroundApp = appManagementCmds.mobileBackgroundApp;
   startActivity = appManagementCmds.startActivity;
   mobileStartActivity = appManagementCmds.mobileStartActivity;
@@ -735,6 +735,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   mobileStartService = servicesCmds.mobileStartService;
   mobileStopService = servicesCmds.mobileStopService;
 
+  getScreenshot = screenshotCmds.getScreenshot;
   mobileScreenshots = screenshotCmds.mobileScreenshots;
 
   mobileRegisterIdlingResources = idlingResourcesCmds.mobileRegisterIdlingResources;

@@ -1,3 +1,80 @@
+## [2.38.0](https://github.com/appium/appium-espresso-driver/compare/v2.37.3...v2.38.0) (2024-04-10)
+
+
+### Features
+
+* Add the support of `timeZone` capability ([#994](https://github.com/appium/appium-espresso-driver/issues/994)) ([834fffe](https://github.com/appium/appium-espresso-driver/commit/834fffe6dac944a6955f0f5607c49c569a7363d2))
+
+## [2.37.3](https://github.com/appium/appium-espresso-driver/compare/v2.37.2...v2.37.3) (2024-04-09)
+
+
+### Miscellaneous Chores
+
+* Remove extra imports ([7390b9f](https://github.com/appium/appium-espresso-driver/commit/7390b9fbfff6973b2aff49f5881a7ae32f3623e1))
+
+## [2.37.2](https://github.com/appium/appium-espresso-driver/compare/v2.37.1...v2.37.2) (2024-04-09)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @typescript-eslint/parser from 6.21.0 to 7.6.0 ([#993](https://github.com/appium/appium-espresso-driver/issues/993)) ([6f06325](https://github.com/appium/appium-espresso-driver/commit/6f063255cf03b55f815e0a30c08e69a830bebe37))
+
+## [2.37.1](https://github.com/appium/appium-espresso-driver/compare/v2.37.0...v2.37.1) (2024-03-19)
+
+
+### Miscellaneous Chores
+
+* bump android driver ([#989](https://github.com/appium/appium-espresso-driver/issues/989)) ([ea064aa](https://github.com/appium/appium-espresso-driver/commit/ea064aae085957a7e8024169ec9ad74907c285ba))
+
+## [2.37.0](https://github.com/appium/appium-espresso-driver/compare/v2.36.2...v2.37.0) (2024-03-18)
+
+
+### Features
+
+* add mobile:startLogsBroadcast and mobile:stopLogsBroadcast ([#988](https://github.com/appium/appium-espresso-driver/issues/988)) ([94db792](https://github.com/appium/appium-espresso-driver/commit/94db79260b6b764a7592ba486cc4055755af3600))
+
+## [2.36.2](https://github.com/appium/appium-espresso-driver/compare/v2.36.1...v2.36.2) (2024-03-07)
+
+
+### Miscellaneous Chores
+
+* bump typescript ([eb5d06a](https://github.com/appium/appium-espresso-driver/commit/eb5d06acb735c115a006776e02416c0ceb00c28d))
+
+## [2.36.1](https://github.com/appium/appium-espresso-driver/compare/v2.36.0...v2.36.1) (2024-02-12)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump appium-android-driver from 8.4.0 to 9.0.0 ([#981](https://github.com/appium/appium-espresso-driver/issues/981)) ([ebc6220](https://github.com/appium/appium-espresso-driver/commit/ebc6220a1e34c171c7834941aee4725e056cc6e4))
+
+## [2.36.0](https://github.com/appium/appium-espresso-driver/compare/v2.35.0...v2.36.0) (2024-02-09)
+
+
+### Features
+
+* add checkVersion option for mobile:installApp ([#980](https://github.com/appium/appium-espresso-driver/issues/980)) ([a0438b8](https://github.com/appium/appium-espresso-driver/commit/a0438b8993524f0e216a2c661cae6dd66c21611c))
+
+## [2.35.0](https://github.com/appium/appium-espresso-driver/compare/v2.34.4...v2.35.0) (2024-02-08)
+
+
+### Features
+
+* Improve the documentation on unlock ([#979](https://github.com/appium/appium-espresso-driver/issues/979)) ([15ae78b](https://github.com/appium/appium-espresso-driver/commit/15ae78b3dbe6e35b26d1374b3e1935b457d5014d))
+
+## [2.34.4](https://github.com/appium/appium-espresso-driver/compare/v2.34.3...v2.34.4) (2024-02-06)
+
+
+### Bug Fixes
+
+* proxy request to the espresso server with nativeWebScreenshot ([#978](https://github.com/appium/appium-espresso-driver/issues/978)) ([172ce35](https://github.com/appium/appium-espresso-driver/commit/172ce3554e62f7927eac8fd62756299eb3057967))
+
+## [2.34.3](https://github.com/appium/appium-espresso-driver/compare/v2.34.2...v2.34.3) (2024-02-04)
+
+
+### Miscellaneous Chores
+
+* remove precommit stuff as same as other repos ([#977](https://github.com/appium/appium-espresso-driver/issues/977)) ([01d18ab](https://github.com/appium/appium-espresso-driver/commit/01d18abb59ed1f1e1f0244c05e6cde7fe0e24b33))
+
 ## [2.34.2](https://github.com/appium/appium-espresso-driver/compare/v2.34.1...v2.34.2) (2024-02-02)
 
 
