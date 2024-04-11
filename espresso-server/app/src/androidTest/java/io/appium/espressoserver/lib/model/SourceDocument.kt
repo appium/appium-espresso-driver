@@ -339,7 +339,12 @@ class SourceDocument constructor(
 //            e.g: "Reason: Expected exactly '1' node but found '2' nodes that satisfy: (isRoot)"
             val result: SelectionResult = SemanticsNodeInteraction::class.declaredMemberFunctions.find { it.name == "fetchSemanticsNodes" }?.let {
                 it.isAccessible = true
-                it.call(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true), true, null)
+//                INFO: Compose API has added the method parameter in compose 1.6.x+
+                if (it.parameters.size == 4) {
+                    it.call(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true), true, null, true)
+                } else {
+                    it.call(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true), true, null)
+                }
             } as SelectionResult
             result.selectedNodes
         }
