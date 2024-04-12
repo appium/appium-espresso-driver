@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk = getIntProperty("appiumCompileSdk", 33)
+    compileSdk = getIntProperty("appiumCompileSdk", 34)
     buildToolsVersion = getStringProperty("appiumBuildTools", "33.0.2")
     defaultConfig {
         // <instrumentation android:targetPackage=""/>
