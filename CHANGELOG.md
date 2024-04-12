@@ -1,3 +1,10 @@
+## [2.38.1](https://github.com/appium/appium-espresso-driver/compare/v2.38.0...v2.38.1) (2024-04-12)
+
+
+### Bug Fixes
+
+* Fix compose driver for compose 1.6.x method signature change ([#995](https://github.com/appium/appium-espresso-driver/issues/995)) ([41f1b8d](https://github.com/appium/appium-espresso-driver/commit/41f1b8dc313f592316e37302ffc6ceb6f9b5a7d6))
+
 ## [2.38.0](https://github.com/appium/appium-espresso-driver/compare/v2.37.3...v2.38.0) (2024-04-10)
 
 
