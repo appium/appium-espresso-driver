@@ -1,3 +1,17 @@
+## [2.38.2](https://github.com/appium/appium-espresso-driver/compare/v2.38.1...v2.38.2) (2024-04-18)
+
+
+### Bug Fixes
+
+* Set `shell` option to true while running gradle script on Windows ([#997](https://github.com/appium/appium-espresso-driver/issues/997)) ([3159c21](https://github.com/appium/appium-espresso-driver/commit/3159c21fbed60719a1b63837c5f4f4205d3499d4))
+
+## [2.38.1](https://github.com/appium/appium-espresso-driver/compare/v2.38.0...v2.38.1) (2024-04-12)
+
+
+### Bug Fixes
+
+* Fix compose driver for compose 1.6.x method signature change ([#995](https://github.com/appium/appium-espresso-driver/issues/995)) ([41f1b8d](https://github.com/appium/appium-espresso-driver/commit/41f1b8dc313f592316e37302ffc6ceb6f9b5a7d6))
+
 ## [2.38.0](https://github.com/appium/appium-espresso-driver/compare/v2.37.3...v2.38.0) (2024-04-10)
 
 
