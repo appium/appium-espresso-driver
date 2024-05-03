@@ -64,6 +64,14 @@ jobs:
         sudo udevadm trigger --name-match=kvm
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
+    - name: AVD cache
+      uses: actions/cache@v3
+      id: avd-cache
+      with:
+        path: |
+          ~/.android/avd/*
+          ~/.android/adb*
+        key: avd-${{ matrix.apiLevel }}
     - run: |
         npm install -g appium
         npm install --chromedriver_version="${{ matrix.chromedriverVersion }}"
@@ -94,6 +102,7 @@ jobs:
       with:
         script: npx mocha --timeout 10m ./test/functional/driver-e2e-specs.js ./test/functional/commands/jetpack-compose-attributes-e2e-specs.js -g @skip-ci -i --exit
         avd-name: ${{ env.ANDROID_AVD }}
+        force-avd-creation: false
         api-level: ${{ matrix.apiLevel }}
         disable-spellchecker: true
         disable-animations: true
