@@ -46,7 +46,7 @@ jobs:
       _FORCE_LOGS: 1
     # No hardware acceleration is available for emulators on Ubuntu:
     # https://github.com/marketplace/actions/android-emulator-runner#can-i-use-this-action-on-linux-vms
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -56,7 +56,14 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '11'
+        java-version: '17'
+    - name: Enable KVM group perms
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
     - run: |
         npm install -g appium
         npm install --chromedriver_version="${{ matrix.chromedriverVersion }}"
@@ -87,13 +94,11 @@ jobs:
       with:
         script: npx mocha --timeout 10m ./test/functional/driver-e2e-specs.js ./test/functional/commands/jetpack-compose-attributes-e2e-specs.js -g @skip-ci -i --exit
         avd-name: ${{ env.ANDROID_AVD }}
-        sdcard-path-or-size: 1500M
         api-level: ${{ matrix.apiLevel }}
         disable-spellchecker: true
+        disable-animations: true
         target: ${{ matrix.emuTag }}
         arch: ${{ matrix.arch }}
-        ram-size: 4096M
-        heap-size: 1024M
     - name: Save logcat output
       if: ${{ always() }}
       uses: actions/upload-artifact@master
