@@ -1,3 +1,10 @@
+## [2.38.3](https://github.com/appium/appium-espresso-driver/compare/v2.38.2...v2.38.3) (2024-05-04)
+
+
+### Miscellaneous Chores
+
+* fix type and CI update ([#1000](https://github.com/appium/appium-espresso-driver/issues/1000)) ([20287b7](https://github.com/appium/appium-espresso-driver/commit/20287b709046601c24cfe9637cb04531010012a3))
+
 ## [2.38.2](https://github.com/appium/appium-espresso-driver/compare/v2.38.1...v2.38.2) (2024-04-18)
 
 
