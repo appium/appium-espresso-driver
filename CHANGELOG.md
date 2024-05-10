@@ -1,3 +1,10 @@
+## [2.39.0](https://github.com/appium/appium-espresso-driver/compare/v2.38.3...v2.39.0) (2024-05-10)
+
+
+### Features
+
+* add user option for mobile: isAppInstalled ([#1004](https://github.com/appium/appium-espresso-driver/issues/1004)) ([590788f](https://github.com/appium/appium-espresso-driver/commit/590788fbb3dda79b4b21479a0c9c492ae79c1148))
+
 ## [2.38.3](https://github.com/appium/appium-espresso-driver/compare/v2.38.2...v2.38.3) (2024-05-04)
 
 
