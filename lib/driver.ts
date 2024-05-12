@@ -700,7 +700,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
 
   performActions = actionsCmds.performActions;
 
-  executeMobile = executeCmds.executeMobile;
+  mobileCommandsMapping = executeCmds.mobileCommandsMapping;
 
   mobileBackgroundApp = appManagementCmds.mobileBackgroundApp;
   startActivity = appManagementCmds.startActivity;
