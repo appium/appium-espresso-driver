@@ -1,3 +1,10 @@
+## [2.40.0](https://github.com/appium/appium-espresso-driver/compare/v2.39.0...v2.40.0) (2024-05-12)
+
+
+### Features
+
+* Align execute methods implementation with other android drivers ([#1005](https://github.com/appium/appium-espresso-driver/issues/1005)) ([dcd49f3](https://github.com/appium/appium-espresso-driver/commit/dcd49f3c171932fc75126e2b2d72292d621e5664))
+
 ## [2.39.0](https://github.com/appium/appium-espresso-driver/compare/v2.38.3...v2.39.0) (2024-05-10)
 
 
