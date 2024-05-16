@@ -1,3 +1,10 @@
+## [2.40.1](https://github.com/appium/appium-espresso-driver/compare/v2.40.0...v2.40.1) (2024-05-16)
+
+
+### Miscellaneous Chores
+
+* Update dev dependencies ([72e6175](https://github.com/appium/appium-espresso-driver/commit/72e6175b01196261b5fd39482f0b6637e8099188))
+
 ## [2.40.0](https://github.com/appium/appium-espresso-driver/compare/v2.39.0...v2.40.0) (2024-05-12)
 
 
