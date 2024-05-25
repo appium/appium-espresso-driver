@@ -410,9 +410,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     await this.initDevice();
 
     // '--no-window-animation' instrument command can set always but it does not work for lower than Android OS 6.
-    if (await this.adb.getApiLevel() < 26) {
-      await this.setWindowAnimationState(this.caps.disableWindowAnimation === false);
-    }
+    await this.setWindowAnimationState(this.caps.disableWindowAnimation === false);
 
     // set actual device name, udid
     this.caps.deviceName = this.adb.curDeviceId;
@@ -480,6 +478,13 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     await this.addDeviceInfoToCaps();
   }
 
+  /**
+   * Turn on or off animation scale.
+   * '--no-window-animation' instrument argument for espresso disables window animation,
+   * but it did not bring back to animation on in espresso unlike uia2 driver.
+   * We should manage the animation status outside instrumentation process as possible.
+   * @param isEnabled
+   */
   async setWindowAnimationState(isEnabled: boolean): Promise<void> {
     const isAnimationOn = await this.adb.isAnimationOn();
     const shouldDisableAnimation = !isEnabled && isAnimationOn;
@@ -487,11 +492,15 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
 
     if (shouldDisableAnimation) {
       this.log.debug('Disabling window animation as "disableWindowAnimation" capability is set to true/fallback to default value "true"');
-      await this.settingsApp.setAnimationState(false);
+      await this.adb.getApiLevel() < 26
+        ? await this.settingsApp.setAnimationState(false)
+        : await this.adb.setAnimation(0);
       this.wasAnimationEnabled = true;
     } else if (shouldEnableAnimation) {
       this.log.debug('Enabling window animation as "disableWindowAnimation" capability is set to false');
-      await this.settingsApp.setAnimationState(true);
+      await this.adb.getApiLevel() < 26
+        ? await this.settingsApp.setAnimationState(true)
+        : await this.adb.setAnimation(1);
       this.wasAnimationEnabled = false;
     } else {
       this.log.debug(`Window animation is already ${isEnabled ? 'enabled' : 'disabled'}`);
@@ -625,10 +634,11 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
         })();
       }));
 
-      // can be true if the target device's api version is lower than 26.
       if (this.wasAnimationEnabled) {
         try {
-          await this.settingsApp.setAnimationState(true);
+          await this.adb.getApiLevel() < 26
+            ? await this.settingsApp.setAnimationState(true)
+            : await this.adb.setAnimation(1);
         } catch (err) {
           this.log.warn(`Unable to reset animation: ${err.message}`);
         }
