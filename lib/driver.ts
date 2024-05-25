@@ -409,7 +409,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     }
     await this.initDevice();
 
-    // Espresso needs to disable animation, but '--no-window-animation' instrument command does not work for lower than Android OS 6
+    // '--no-window-animation' instrument command can set always but it does not work for lower than Android OS 6.
     if (await this.adb.getApiLevel() < 26) {
       await this.setWindowAnimationState(this.caps.disableWindowAnimation === false);
     }
