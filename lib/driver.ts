@@ -409,9 +409,10 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     }
     await this.initDevice();
 
-    // https://github.com/appium/appium-espresso-driver/issues/72
-    // default state is window animation disabled
-    await this.setWindowAnimationState(this.caps.disableWindowAnimation === false);
+    // Espresso needs to disable animation, but '--no-window-animation' instrument command does not work for lower than Android OS 6
+    if (await this.adb.getApiLevel() < 26) {
+      await this.setWindowAnimationState(this.caps.disableWindowAnimation === false);
+    }
 
     // set actual device name, udid
     this.caps.deviceName = this.adb.curDeviceId;
@@ -623,6 +624,8 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
           } catch (ign) {}
         })();
       }));
+
+      // can be true if the target device's api version is lower than 26.
       if (this.wasAnimationEnabled) {
         try {
           await this.settingsApp.setAnimationState(true);
