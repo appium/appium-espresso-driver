@@ -481,8 +481,8 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   /**
    * Turn on or off animation scale.
    * '--no-window-animation' instrument argument for espresso disables window animation,
-   * but it did not bring back to animation on in espresso unlike uia2 driver.
-   * We should manage the animation status outside instrumentation process as possible.
+   * but it does not bring the animation scale back to pre-instrument process start state in espresso
+   * unlike uia2 driver. We should disable/enable the animation scale only in an appium session as possible.
    * @param isEnabled
    */
   async setWindowAnimationState(isEnabled: boolean): Promise<void> {
