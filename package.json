@@ -76,7 +76,7 @@
     "appium-android-driver": "^9.6.0",
     "asyncbox": "^3.0.0",
     "bluebird": "^3.5.0",
-    "io.appium.settings": "^5.7.2",
+    "io.appium.settings": "^5.10.0",
     "lodash": "^4.17.11",
     "portscanner": "^2.1.1",
     "source-map-support": "^0.x",

@@ -492,15 +492,11 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
 
     if (shouldDisableAnimation) {
       this.log.debug('Disabling window animation as "disableWindowAnimation" capability is set to true/fallback to default value "true"');
-      await this.adb.getApiLevel() < 26
-        ? await this.settingsApp.setAnimationState(false)
-        : await this.adb.setAnimationScale(0);
+      await this.settingsApp.setAnimationState(false);
       this.wasAnimationEnabled = true;
     } else if (shouldEnableAnimation) {
       this.log.debug('Enabling window animation as "disableWindowAnimation" capability is set to false');
-      await this.adb.getApiLevel() < 26
-        ? await this.settingsApp.setAnimationState(true)
-        : await this.adb.setAnimationScale(1);
+      await this.settingsApp.setAnimationState(true);
       this.wasAnimationEnabled = false;
     } else {
       this.log.debug(`Window animation is already ${isEnabled ? 'enabled' : 'disabled'}`);
@@ -635,9 +631,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
       }));
       if (this.wasAnimationEnabled) {
         try {
-          await this.adb.getApiLevel() < 26
-            ? await this.settingsApp.setAnimationState(true)
-            : await this.adb.setAnimationScale(1);
+          await this.settingsApp.setAnimationState(true);
         } catch (err) {
           this.log.warn(`Unable to reset animation: ${err.message}`);
         }
