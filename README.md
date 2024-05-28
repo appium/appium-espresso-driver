@@ -188,7 +188,7 @@ appium:chromeOptions | A mapping, that allows to customize chromedriver options.
 Capability Name | Description
 --- | ---
 appium:disableSuppressAccessibilityService | Being set to `true` tells the instrumentation process to not suppress accessibility services during the automated test. This might be useful if your automated test needs these services. `false` by default
-appium:disableWindowAnimation | To avoid flakiness google [recommends](https://developer.android.com/training/testing/espresso/setup#set-up-environment) to disable the window animation of the Android device under test when running espresso test. `true` by default
+appium:disableWindowAnimation | To avoid flakiness google [recommends](https://developer.android.com/training/testing/espresso/setup#set-up-environment) to disable the window animation of the Android device under test when running espresso test. Animation state is restored automatically after the session is stopped if it was enabled before it has started. The restore method may not work if the session ends unexpectedly. `true` by default
 appium:timeZone | Overrides the current device's time zone since the driver version 2.38.0. This change is preserved until the next override. The time zone identifier must be a valid name from the list of [available time zone identifiers](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), for example `Europe/Kyiv`
 
 
