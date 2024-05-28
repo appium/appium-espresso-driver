@@ -1,3 +1,10 @@
+## [2.40.2](https://github.com/appium/appium-espresso-driver/compare/v2.40.1...v2.40.2) (2024-05-28)
+
+
+### Miscellaneous Chores
+
+* set animation scale via settings for api level 26+ ([#1007](https://github.com/appium/appium-espresso-driver/issues/1007)) ([5dec6be](https://github.com/appium/appium-espresso-driver/commit/5dec6be6b8f8114d3b3cbda1d58e34633d12d232))
+
 ## [2.40.1](https://github.com/appium/appium-espresso-driver/compare/v2.40.0...v2.40.1) (2024-05-16)
 
 
