@@ -1,3 +1,9 @@
+## [2.40.3](https://github.com/appium/appium-espresso-driver/compare/v2.40.2...v2.40.3) (2024-06-04)
+
+### Miscellaneous Chores
+
+* bump semantic-release from 23.1.1 to 24.0.0 and conventional-changelog-conventionalcommits to 8.0.0 ([#1008](https://github.com/appium/appium-espresso-driver/issues/1008)) ([83ecab6](https://github.com/appium/appium-espresso-driver/commit/83ecab6cc56eca3da2ac05e07196ba0843a1bc01))
+
 ## [2.40.2](https://github.com/appium/appium-espresso-driver/compare/v2.40.1...v2.40.2) (2024-05-28)
 
 
