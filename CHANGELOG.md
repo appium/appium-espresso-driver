@@ -1,3 +1,9 @@
+## [2.40.4](https://github.com/appium/appium-espresso-driver/compare/v2.40.3...v2.40.4) (2024-06-10)
+
+### Miscellaneous Chores
+
+* use latest io.appium.settings ([#1010](https://github.com/appium/appium-espresso-driver/issues/1010)) ([ff816cf](https://github.com/appium/appium-espresso-driver/commit/ff816cf26645a1b8bc74001bc99d7577fc8c6fe3))
+
 ## [2.40.3](https://github.com/appium/appium-espresso-driver/compare/v2.40.2...v2.40.3) (2024-06-04)
 
 ### Miscellaneous Chores
