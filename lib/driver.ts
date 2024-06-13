@@ -686,7 +686,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   }
 
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  getProxyAvoidList (sessionId) {
+  getProxyAvoidList (sessionId): import('@appium/types').RouteMatcher[] {
     // we are maintaining two sets of NO_PROXY lists, one for chromedriver(CHROME_NO_PROXY)
     // and one for Espresso(NO_PROXY), based on current context will return related NO_PROXY list
     this.jwpProxyAvoid = _.isNil(this.chromedriver) ? NO_PROXY : CHROME_NO_PROXY;
