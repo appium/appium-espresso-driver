@@ -6,6 +6,7 @@ import type {
   InitialOpts,
   StringRecord,
   SingularSessionData,
+  RouteMatcher
 } from '@appium/types';
 import type { EspressoConstraints } from './constraints';
 import _ from 'lodash';
@@ -45,8 +46,8 @@ const DEVICE_PORT = 6791;
 // TODO:  Add the list of paths that we never want to proxy to espresso server.
 // TODO: Need to segregate the paths better way using regular expressions wherever applicable.
 // (Not segregating right away because more paths to be added in the NO_PROXY list)
-/** @type {import('@appium/types').RouteMatcher[]} */
-const NO_PROXY: import('@appium/types').RouteMatcher[] = [
+/** @type {RouteMatcher[]} */
+const NO_PROXY: RouteMatcher[] = [
   ['GET', new RegExp('^/session/(?!.*/)')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/current_activity')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/current_package')],
@@ -111,8 +112,8 @@ const NO_PROXY: import('@appium/types').RouteMatcher[] = [
 ];
 
 // This is a set of methods and paths that we never want to proxy to Chromedriver.
-/** @type {import('@appium/types').RouteMatcher[]} */
-const CHROME_NO_PROXY: import('@appium/types').RouteMatcher[] = [
+/** @type {RouteMatcher[]} */
+const CHROME_NO_PROXY: RouteMatcher[] = [
   ['GET', new RegExp('^/session/[^/]+/appium')],
   ['GET', new RegExp('^/session/[^/]+/context')],
   ['GET', new RegExp('^/session/[^/]+/element/[^/]+/rect')],
@@ -686,12 +687,12 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   }
 
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  getProxyAvoidList (sessionId): import('@appium/types').RouteMatcher[] {
+  getProxyAvoidList (sessionId): RouteMatcher[] {
     // we are maintaining two sets of NO_PROXY lists, one for chromedriver(CHROME_NO_PROXY)
     // and one for Espresso(NO_PROXY), based on current context will return related NO_PROXY list
     this.jwpProxyAvoid = _.isNil(this.chromedriver) ? NO_PROXY : CHROME_NO_PROXY;
     if (this.opts.nativeWebScreenshot) {
-      this.jwpProxyAvoid = /**@type {import('@appium/types').RouteMatcher[]} */([
+      this.jwpProxyAvoid = /**@type {RouteMatcher[]} */([
         ...this.jwpProxyAvoid,
         ['GET', new RegExp('^/session/[^/]+/screenshot')]
       ]);
