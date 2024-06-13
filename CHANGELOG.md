@@ -1,3 +1,9 @@
+## [2.40.5](https://github.com/appium/appium-espresso-driver/compare/v2.40.4...v2.40.5) (2024-06-13)
+
+### Bug Fixes
+
+* type error in the build ([#1011](https://github.com/appium/appium-espresso-driver/issues/1011)) ([38d7854](https://github.com/appium/appium-espresso-driver/commit/38d7854ab21128a9d5b6792846413d420c75534e))
+
 ## [2.40.4](https://github.com/appium/appium-espresso-driver/compare/v2.40.3...v2.40.4) (2024-06-10)
 
 ### Miscellaneous Chores
