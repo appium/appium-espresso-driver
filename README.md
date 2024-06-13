@@ -119,7 +119,7 @@ appium:clearDeviceLogsOnStart | If set to `true` then Espresso deletes all the e
 appium:buildToolsVersion | The version of Android build tools to use. By default Espresso driver uses the most recent version of build tools installed on the machine, but sometimes it might be necessary to give it a hint (let say if there is a known bug in the most recent tools version). Example: `28.0.3`
 appium:skipLogcatCapture | Being set to `true` disables automatic logcat output collection during the test run. `false` by default
 appium:suppressKillServer | Being set to `true` prevents the driver from ever killing the ADB server explicitly. Could be useful if ADB is connected wirelessly. `false` by default
-appium:ignoreHiddenApiPolicyError | Being set to `true` ignores a failure while changing hidden API access policies. Could be useful on some devices, where access to these policies has been locked by its vendor. `false` by default.
+appium:ignoreHiddenApiPolicyError | Being set to `true` ignores a failure while changing hidden API access policies to [enable access to non-SDK interfaces](https://developer.android.com/guide/app-compatibility/restrictions-non-sdk-interfaces#how_can_i_enable_access_to_non-sdk_interfaces). Could be useful on some devices, where access to these policies has been locked by its vendor. `false` by default.
 pium:hideKeyboard | Being set to `true` hides the on-screen keyboard while the session is running. Use it instead of the legacy `appium:unicodeKeyboard` one (which will be dropped in the future). This effect is achieved by assigning a custom "artificial" [input method](https://developer.android.com/develop/ui/views/touch-and-input/creating-input-method). Only use this feature for special/exploratory cases as it violates the way your application under test is normally interacted with by a human. Setting this capability explicitly to `false` enforces `adb shell ime reset` call on session startup, which resets the currently selected/enabled IMEs to the default ones as if the device is initially booted with the current locale. `undefined` by default.
 appium:mockLocationApp | Sets the package identifier of the app, which is used as a system mock location provider since Appium 1.18.0+. This capability has no effect on emulators. If the value is set to `null` or an empty string, then Appium will skip the mocked location provider setup procedure. Defaults to Appium Setting package identifier (`io.appium.settings`).
 appium:logcatFormat | The log print format, where `format` is one of: `brief` `process` `tag` `thread` `raw` `time` `threadtime` `long`. `threadtime` is the default value.
@@ -188,7 +188,7 @@ appium:chromeOptions | A mapping, that allows to customize chromedriver options.
 Capability Name | Description
 --- | ---
 appium:disableSuppressAccessibilityService | Being set to `true` tells the instrumentation process to not suppress accessibility services during the automated test. This might be useful if your automated test needs these services. `false` by default
-appium:disableWindowAnimation | To avoid flakiness google [recommends](https://developer.android.com/training/testing/espresso/setup#set-up-environment) to disable the window animation of the Android device under test when running espresso test. `true` by default
+appium:disableWindowAnimation | To avoid flakiness google [recommends](https://developer.android.com/training/testing/espresso/setup#set-up-environment) to disable the window animation of the Android device under test when running espresso test. Animation state is restored automatically after the session is stopped if it was enabled before it has started. The restore method may not work if the session ends unexpectedly. `true` by default
 appium:timeZone | Overrides the current device's time zone since the driver version 2.38.0. This change is preserved until the next override. The time zone identifier must be a valid name from the list of [available time zone identifiers](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), for example `Europe/Kyiv`
 
 
@@ -874,6 +874,7 @@ Verify whether an application is installed on the device under test.
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 appId | string | yes | The identifier of the application package to be checked | `my.app.id`
+user | number or string | no | The user ID for which the package is installed.. The `current` user is used by default | 1006
 
 #### Returned Result
 

@@ -409,8 +409,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     }
     await this.initDevice();
 
-    // https://github.com/appium/appium-espresso-driver/issues/72
-    // default state is window animation disabled
+    // Default state is window animation disabled.
     await this.setWindowAnimationState(this.caps.disableWindowAnimation === false);
 
     // set actual device name, udid
@@ -479,6 +478,13 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     await this.addDeviceInfoToCaps();
   }
 
+  /**
+   * Turn on or off animation scale.
+   * '--no-window-animation' instrument argument for Espresso disables window animations,
+   * but it does not bring the animation scale back to the pre-instrument process start state in Espresso
+   * unlike Appium UIA2 driver case. We want to disable/enable the animation scale only in an appium espresso session as possible.
+   * @param isEnabled
+   */
   async setWindowAnimationState(isEnabled: boolean): Promise<void> {
     const isAnimationOn = await this.adb.isAnimationOn();
     const shouldDisableAnimation = !isEnabled && isAnimationOn;
@@ -700,7 +706,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
 
   performActions = actionsCmds.performActions;
 
-  executeMobile = executeCmds.executeMobile;
+  mobileCommandsMapping = executeCmds.mobileCommandsMapping;
 
   mobileBackgroundApp = appManagementCmds.mobileBackgroundApp;
   startActivity = appManagementCmds.startActivity;

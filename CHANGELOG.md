@@ -1,3 +1,50 @@
+## [2.40.4](https://github.com/appium/appium-espresso-driver/compare/v2.40.3...v2.40.4) (2024-06-10)
+
+### Miscellaneous Chores
+
+* use latest io.appium.settings ([#1010](https://github.com/appium/appium-espresso-driver/issues/1010)) ([ff816cf](https://github.com/appium/appium-espresso-driver/commit/ff816cf26645a1b8bc74001bc99d7577fc8c6fe3))
+
+## [2.40.3](https://github.com/appium/appium-espresso-driver/compare/v2.40.2...v2.40.3) (2024-06-04)
+
+### Miscellaneous Chores
+
+* bump semantic-release from 23.1.1 to 24.0.0 and conventional-changelog-conventionalcommits to 8.0.0 ([#1008](https://github.com/appium/appium-espresso-driver/issues/1008)) ([83ecab6](https://github.com/appium/appium-espresso-driver/commit/83ecab6cc56eca3da2ac05e07196ba0843a1bc01))
+
+## [2.40.2](https://github.com/appium/appium-espresso-driver/compare/v2.40.1...v2.40.2) (2024-05-28)
+
+
+### Miscellaneous Chores
+
+* set animation scale via settings for api level 26+ ([#1007](https://github.com/appium/appium-espresso-driver/issues/1007)) ([5dec6be](https://github.com/appium/appium-espresso-driver/commit/5dec6be6b8f8114d3b3cbda1d58e34633d12d232))
+
+## [2.40.1](https://github.com/appium/appium-espresso-driver/compare/v2.40.0...v2.40.1) (2024-05-16)
+
+
+### Miscellaneous Chores
+
+* Update dev dependencies ([72e6175](https://github.com/appium/appium-espresso-driver/commit/72e6175b01196261b5fd39482f0b6637e8099188))
+
+## [2.40.0](https://github.com/appium/appium-espresso-driver/compare/v2.39.0...v2.40.0) (2024-05-12)
+
+
+### Features
+
+* Align execute methods implementation with other android drivers ([#1005](https://github.com/appium/appium-espresso-driver/issues/1005)) ([dcd49f3](https://github.com/appium/appium-espresso-driver/commit/dcd49f3c171932fc75126e2b2d72292d621e5664))
+
+## [2.39.0](https://github.com/appium/appium-espresso-driver/compare/v2.38.3...v2.39.0) (2024-05-10)
+
+
+### Features
+
+* add user option for mobile: isAppInstalled ([#1004](https://github.com/appium/appium-espresso-driver/issues/1004)) ([590788f](https://github.com/appium/appium-espresso-driver/commit/590788fbb3dda79b4b21479a0c9c492ae79c1148))
+
+## [2.38.3](https://github.com/appium/appium-espresso-driver/compare/v2.38.2...v2.38.3) (2024-05-04)
+
+
+### Miscellaneous Chores
+
+* fix type and CI update ([#1000](https://github.com/appium/appium-espresso-driver/issues/1000)) ([20287b7](https://github.com/appium/appium-espresso-driver/commit/20287b709046601c24cfe9637cb04531010012a3))
+
 ## [2.38.2](https://github.com/appium/appium-espresso-driver/compare/v2.38.1...v2.38.2) (2024-04-18)
 
 
