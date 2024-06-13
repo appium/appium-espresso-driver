@@ -46,7 +46,6 @@ const DEVICE_PORT = 6791;
 // TODO:  Add the list of paths that we never want to proxy to espresso server.
 // TODO: Need to segregate the paths better way using regular expressions wherever applicable.
 // (Not segregating right away because more paths to be added in the NO_PROXY list)
-/** @type {RouteMatcher[]} */
 const NO_PROXY: RouteMatcher[] = [
   ['GET', new RegExp('^/session/(?!.*/)')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/current_activity')],
@@ -112,7 +111,6 @@ const NO_PROXY: RouteMatcher[] = [
 ];
 
 // This is a set of methods and paths that we never want to proxy to Chromedriver.
-/** @type {RouteMatcher[]} */
 const CHROME_NO_PROXY: RouteMatcher[] = [
   ['GET', new RegExp('^/session/[^/]+/appium')],
   ['GET', new RegExp('^/session/[^/]+/context')],
@@ -692,7 +690,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     // and one for Espresso(NO_PROXY), based on current context will return related NO_PROXY list
     this.jwpProxyAvoid = _.isNil(this.chromedriver) ? NO_PROXY : CHROME_NO_PROXY;
     if (this.opts.nativeWebScreenshot) {
-      this.jwpProxyAvoid = /**@type {RouteMatcher[]} */([
+      this.jwpProxyAvoid = ([
         ...this.jwpProxyAvoid,
         ['GET', new RegExp('^/session/[^/]+/screenshot')]
       ]);
