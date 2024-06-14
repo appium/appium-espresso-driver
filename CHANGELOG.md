@@ -1,3 +1,9 @@
+## [2.40.6](https://github.com/appium/appium-espresso-driver/compare/v2.40.5...v2.40.6) (2024-06-14)
+
+### Bug Fixes
+
+* Add a workaround for wrong adb exit code on service stop ([#1012](https://github.com/appium/appium-espresso-driver/issues/1012)) ([98499bc](https://github.com/appium/appium-espresso-driver/commit/98499bcb148ca2f6298f421d6cd4f9a4c04ab30f))
+
 ## [2.40.5](https://github.com/appium/appium-espresso-driver/compare/v2.40.4...v2.40.5) (2024-06-13)
 
 ### Bug Fixes
