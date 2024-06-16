@@ -5,7 +5,7 @@ buildscript {
         set("appiumKotlin", properties.getOrDefault("appiumKotlin", "1.8.10"))
         set(
             "appiumAndroidGradlePlugin",
-            properties.getOrDefault("appiumAndroidGradlePlugin", "8.0.0")
+            properties.getOrDefault("appiumAndroidGradlePlugin", "8.5.0")
         )
     }
 

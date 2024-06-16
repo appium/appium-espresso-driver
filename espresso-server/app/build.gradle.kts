@@ -14,7 +14,7 @@ android {
         testHandleProfiling = false
         testFunctionalTest = false
         minSdk = getIntProperty("appiumMinSdk", 21)
-        targetSdk = getIntProperty("appiumTargetSdk", 30)
+        targetSdk = getIntProperty("appiumTargetSdk", 34)
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
