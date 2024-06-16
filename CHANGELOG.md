@@ -1,3 +1,9 @@
+## [2.41.0](https://github.com/appium/appium-espresso-driver/compare/v2.40.6...v2.41.0) (2024-06-16)
+
+### Features
+
+* bump default gradle wrapper to 8.7.0 and android plugin to 8.0.0 ([#1014](https://github.com/appium/appium-espresso-driver/issues/1014)) ([2faa66e](https://github.com/appium/appium-espresso-driver/commit/2faa66ea2a89b2f96b0dd7748e6a95bae4531aab))
+
 ## [2.40.6](https://github.com/appium/appium-espresso-driver/compare/v2.40.5...v2.40.6) (2024-06-14)
 
 ### Bug Fixes
