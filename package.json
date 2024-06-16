@@ -7,7 +7,7 @@
     "automated testing",
     "android"
   ],
-  "version": "2.40.4",
+  "version": "2.42.0",
   "author": "Appium Contributors",
   "license": "Apache-2.0",
   "repository": {
@@ -73,7 +73,7 @@
   ],
   "dependencies": {
     "appium-adb": "^12.4.0",
-    "appium-android-driver": "^9.6.0",
+    "appium-android-driver": "^9.6.5",
     "asyncbox": "^3.0.0",
     "bluebird": "^3.5.0",
     "io.appium.settings": "^5.12.0",

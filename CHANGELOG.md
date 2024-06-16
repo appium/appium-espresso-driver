@@ -1,3 +1,27 @@
+## [2.42.0](https://github.com/appium/appium-espresso-driver/compare/v2.41.0...v2.42.0) (2024-06-16)
+
+### Features
+
+* bump default gradle plugin to 8.5.0 and target sdk to 34 ([#1015](https://github.com/appium/appium-espresso-driver/issues/1015)) ([e3f6612](https://github.com/appium/appium-espresso-driver/commit/e3f6612e99d5a207dc31c76448397eda8621ab42))
+
+## [2.41.0](https://github.com/appium/appium-espresso-driver/compare/v2.40.6...v2.41.0) (2024-06-16)
+
+### Features
+
+* bump default gradle wrapper to 8.7.0 and android plugin to 8.0.0 ([#1014](https://github.com/appium/appium-espresso-driver/issues/1014)) ([2faa66e](https://github.com/appium/appium-espresso-driver/commit/2faa66ea2a89b2f96b0dd7748e6a95bae4531aab))
+
+## [2.40.6](https://github.com/appium/appium-espresso-driver/compare/v2.40.5...v2.40.6) (2024-06-14)
+
+### Bug Fixes
+
+* Add a workaround for wrong adb exit code on service stop ([#1012](https://github.com/appium/appium-espresso-driver/issues/1012)) ([98499bc](https://github.com/appium/appium-espresso-driver/commit/98499bcb148ca2f6298f421d6cd4f9a4c04ab30f))
+
+## [2.40.5](https://github.com/appium/appium-espresso-driver/compare/v2.40.4...v2.40.5) (2024-06-13)
+
+### Bug Fixes
+
+* type error in the build ([#1011](https://github.com/appium/appium-espresso-driver/issues/1011)) ([38d7854](https://github.com/appium/appium-espresso-driver/commit/38d7854ab21128a9d5b6792846413d420c75534e))
+
 ## [2.40.4](https://github.com/appium/appium-espresso-driver/compare/v2.40.3...v2.40.4) (2024-06-10)
 
 ### Miscellaneous Chores
