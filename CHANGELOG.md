@@ -1,3 +1,9 @@
+## [2.42.0](https://github.com/appium/appium-espresso-driver/compare/v2.41.0...v2.42.0) (2024-06-16)
+
+### Features
+
+* bump default gradle plugin to 8.5.0 and target sdk to 34 ([#1015](https://github.com/appium/appium-espresso-driver/issues/1015)) ([e3f6612](https://github.com/appium/appium-espresso-driver/commit/e3f6612e99d5a207dc31c76448397eda8621ab42))
+
 ## [2.41.0](https://github.com/appium/appium-espresso-driver/compare/v2.40.6...v2.41.0) (2024-06-16)
 
 ### Features
