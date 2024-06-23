@@ -6,7 +6,7 @@ let sandbox = sinon.createSandbox();
 describe('commands', function () {
   let chai;
 
-  before (async function () {
+  before(async function () {
     chai = await import('chai');
     const chaiAsPromised = await import('chai-as-promised');
 
