@@ -1,15 +1,12 @@
 import { fs, mkdirp, tempDir } from 'appium/support';
 import { copyGradleProjectRecursively } from '../../lib/utils';
 import path from 'path';
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
-chai.should();
-chai.use(chaiAsPromised);
 
 describe('copyGradleProjectRecursively', function () {
   let baseSrcDir;
   let baseDestDir;
+  let chai;
 
   async function expectNotExist (file) {
     await fs.access(file, fs.constants.F_OK).should.eventually.be.rejectedWith(/no such file/);
@@ -22,6 +19,14 @@ describe('copyGradleProjectRecursively', function () {
   async function createTestFile (filepath) {
     await fs.writeFile(filepath, 'foobar', 'utf8');
   }
+
+  before(async function () {
+    chai = await import('chai');
+    const chaiAsPromised = await import('chai-as-promised');
+
+    chai.should();
+    chai.use(chaiAsPromised.default);
+  });
 
   beforeEach(async function () {
     baseSrcDir = await tempDir.openDir();

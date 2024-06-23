@@ -1,14 +1,8 @@
 import path from 'path';
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import { remote } from 'webdriverio';
-// import axios from 'axios';
 import { HOST, PORT } from './helpers/session';
 import { APIDEMO_CAPS, amendCapabilities } from './desired';
 
-
-chai.should();
-chai.use(chaiAsPromised);
 
 const COMMON_REMOTE_OPTIONS = {
   hostname: HOST,
@@ -17,6 +11,16 @@ const COMMON_REMOTE_OPTIONS = {
 
 describe('EspressoDriver', function () {
   let driver;
+  let chai;
+
+  before(async function () {
+    chai = await import('chai');
+    const chaiAsPromised = await import('chai-as-promised');
+
+    chai.should();
+    chai.use(chaiAsPromised.default);
+  });
+
   describe('createSession', function () {
     describe('success', function () {
       afterEach(async function () {
