@@ -1,3 +1,9 @@
+## [2.42.1](https://github.com/appium/appium-espresso-driver/compare/v2.42.0...v2.42.1) (2024-06-23)
+
+### Miscellaneous Chores
+
+* Bump chai and chai-as-promised ([#1016](https://github.com/appium/appium-espresso-driver/issues/1016)) ([f3ed4f0](https://github.com/appium/appium-espresso-driver/commit/f3ed4f0a537c352c5805ff557106e9e58b01b49d))
+
 ## [2.42.0](https://github.com/appium/appium-espresso-driver/compare/v2.41.0...v2.42.0) (2024-06-16)
 
 ### Features
