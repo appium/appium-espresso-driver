@@ -1,6 +1,3 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-// import remote from 'webdriverio';
 import axios from 'axios';
 import B from 'bluebird';
 import _ from 'lodash';
@@ -10,15 +7,20 @@ import {
 import { APIDEMO_CAPS } from '../desired';
 
 
-chai.should();
-chai.use(chaiAsPromised);
-
 describe('touch actions -', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
   let sessionId;
+  let chai;
+
   before(async function () {
+    chai = await import('chai');
+    const chaiAsPromised = await import('chai-as-promised');
+
+    chai.should();
+    chai.use(chaiAsPromised.default);
+
     driver = await initSession(APIDEMO_CAPS);
     sessionId = await driver.getSessionId();
   });

@@ -1,5 +1,3 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import { system } from 'appium/support';
 import {
   GRADLE_URL_TEMPLATE, ServerBuilder, VERSION_KEYS
@@ -7,10 +5,18 @@ import {
 import { updateDependencyLines } from '../../lib/utils';
 import log from '../../lib/logger';
 
-chai.should();
-chai.use(chaiAsPromised);
 
 describe('server-builder', function () {
+  let chai;
+
+  before(async function() {
+    chai = await import('chai');
+    const chaiAsPromised = await import('chai-as-promised');
+
+    chai.should();
+    chai.use(chaiAsPromised.default);
+  });
+
   describe('getCommand', function () {
     const expectedCmd = system.isWindows() ? 'gradlew.bat' : '/path/to/project/gradlew';
 

@@ -1,12 +1,6 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import axios from 'axios';
 import { initSession, deleteSession, MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
-
-
-chai.should();
-chai.use(chaiAsPromised);
 
 
 describe('keyboard', function () {
@@ -34,7 +28,15 @@ describe('keyboard', function () {
   };
 
   let driver;
+  let chai;
+
   before(async function () {
+    chai = await import('chai');
+    const chaiAsPromised = await import('chai-as-promised');
+
+    chai.should();
+    chai.use(chaiAsPromised.default);
+
     let caps = Object.assign({
       appActivity: 'io.appium.android.apis.view.AutoComplete4',
       autoGrantPermissions: true,

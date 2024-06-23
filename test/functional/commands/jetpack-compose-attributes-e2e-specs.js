@@ -1,12 +1,7 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import { remote } from 'webdriverio';
 import { MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
 
-
-chai.should();
-chai.use(chaiAsPromised);
 
 const COMMON_REMOTE_OPTIONS = {
   hostname: HOST,
@@ -17,8 +12,15 @@ describe('compose node attributes', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
+  let chai;
 
-  before(function () {
+  before(async function () {
+    chai = await import('chai');
+    const chaiAsPromised = await import('chai-as-promised');
+
+    chai.should();
+    chai.use(chaiAsPromised.default);
+
     // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
     if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 23) {
       return this.skip();
