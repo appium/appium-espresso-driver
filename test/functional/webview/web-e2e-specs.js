@@ -14,7 +14,6 @@ describe('web', function () {
     chai.use(chaiAsPromised.default);
   });
 
-
   describe('WebView', function () {
     this.timeout(MOCHA_TIMEOUT);
 
