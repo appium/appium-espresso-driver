@@ -1,3 +1,9 @@
+## [2.43.0](https://github.com/appium/appium-espresso-driver/compare/v2.42.1...v2.43.0) (2024-06-23)
+
+### Features
+
+* Document injectedImageProperties capability ([#1017](https://github.com/appium/appium-espresso-driver/issues/1017)) ([fd6dc1c](https://github.com/appium/appium-espresso-driver/commit/fd6dc1c4cf9f481914701b33ad6d265888d976b7))
+
 ## [2.42.1](https://github.com/appium/appium-espresso-driver/compare/v2.42.0...v2.42.1) (2024-06-23)
 
 ### Miscellaneous Chores
