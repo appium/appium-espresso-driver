@@ -25,13 +25,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import androidx.compose.ui.semantics.SemanticsNode
-import androidx.compose.ui.test.SelectionResult
-import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.onRoot
-import io.appium.espressoserver.EspressoServerRunnerTest
-import io.appium.espressoserver.EspressoServerRunnerTest.Companion.context
-import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
@@ -44,12 +37,9 @@ import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import org.xmlpull.v1.XmlSerializer
 import java.io.*
-import java.lang.AssertionError
 import java.util.*
 import java.util.concurrent.Semaphore
 import javax.xml.xpath.*
-import kotlin.reflect.full.declaredMemberFunctions
-import kotlin.reflect.jvm.isAccessible
 
 const val NON_XML_CHAR_REPLACEMENT = "?"
 const val VIEW_INDEX = "viewIndex"
@@ -213,49 +203,6 @@ class SourceDocument constructor(
         serializer?.endTag(NAMESPACE, tagName)
     }
 
-    private fun serializeComposeNode(semanticsNode: SemanticsNode?, depth: Int) {
-        if (semanticsNode == null) {
-            return
-        }
-        val nodeElement = ComposeNodeElement(semanticsNode)
-        val className = nodeElement.className
-        val tagName = toXmlNodeName(className)
-        serializer?.startTag(NAMESPACE, tagName)
-
-        linkedMapOf(
-            AttributesEnum.CLASS to { className },
-            AttributesEnum.INDEX to { nodeElement.index },
-            AttributesEnum.CLICKABLE to { nodeElement.isClickable },
-            AttributesEnum.ENABLED to { nodeElement.isEnabled },
-            AttributesEnum.FOCUSED to { nodeElement.isFocused },
-            AttributesEnum.SCROLLABLE to { nodeElement.isScrollable },
-            AttributesEnum.SELECTED to { nodeElement.isSelected },
-            AttributesEnum.CHECKED to { nodeElement.isChecked },
-            AttributesEnum.VIEW_TAG to { nodeElement.viewTag },
-            AttributesEnum.CONTENT_DESC to { nodeElement.contentDescription },
-            AttributesEnum.BOUNDS to { nodeElement.bounds.toShortString() },
-            AttributesEnum.TEXT to { nodeElement.text },
-            AttributesEnum.PASSWORD to { nodeElement.isPassword },
-            AttributesEnum.RESOURCE_ID to { nodeElement.resourceId },
-        ).forEach {
-            setAttribute(it.key, it.value())
-        }
-
-        if (depth < MAX_TRAVERSAL_DEPTH) {
-            // Visit the children and build them too
-            for (index in 0 until semanticsNode.children.count()) {
-                serializeComposeNode(semanticsNode.children[index], depth + 1)
-            }
-        } else {
-            AndroidLogger.warn(
-                "Skipping traversal of ${semanticsNode.javaClass.name}'s children, since " +
-                        "the current depth has reached its maximum allowed value of $depth"
-            )
-        }
-
-        serializer?.endTag(NAMESPACE, tagName)
-    }
-
     private fun toStream(): InputStream {
         var lastError: Throwable? = null
         // Try to serialize the xml into the memory first, since it is fast
@@ -281,26 +228,8 @@ class SourceDocument constructor(
                         it.startDocument(XML_ENCODING, true)
                         it.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true)
                         val startTime = SystemClock.uptimeMillis()
-                        when (context.currentStrategyType) {
-                            DriverContext.StrategyType.COMPOSE -> {
-                                if (root != null) {
-                                    serializeComposeNode(root as SemanticsNode, 0)
-                                } else {
-                                    val rootNodes = rootSemanticNodes()
-                                    if (rootNodes.size == 1) {
-                                        serializeComposeNode(rootNodes.first(), 0)
-                                    } else {
-                                        serializer?.startTag(NAMESPACE, DEFAULT_TAG_NAME)
-                                        rootNodes.forEach { semanticsNode -> serializeComposeNode(semanticsNode, 0) }
-                                        serializer?.endTag(NAMESPACE, DEFAULT_TAG_NAME)
-                                    }
-                                }
-                            }
-                            DriverContext.StrategyType.ESPRESSO -> {
-                                val rootView = root ?: ViewGetter().rootView
-                                serializeView(rootView as View, 0)
-                            }
-                        }
+                        val rootView = root ?: ViewGetter().rootView
+                        serializeView(rootView as View, 0)
 
                         it.endDocument()
                         AndroidLogger.info(
@@ -329,26 +258,6 @@ class SourceDocument constructor(
         }
         throw AppiumException(lastError!!)
     }
-
-    private fun rootSemanticNodes(): List<SemanticsNode> =
-        try {
-            listOf(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true).fetchSemanticsNode())
-        } catch (e: AssertionError) {
-//            Ideally there should be on `root` node but on some cases e.g:overlays screen, there can be more than 1 root.
-//            Compose API not respecting such cases instead throws AssertionError, as a work around fetching all root nodes by relaying on internal API.
-//            e.g: "Reason: Expected exactly '1' node but found '2' nodes that satisfy: (isRoot)"
-            val result: SelectionResult = SemanticsNodeInteraction::class.declaredMemberFunctions.find { it.name == "fetchSemanticsNodes" }?.let {
-                it.isAccessible = true
-//                INFO: Compose API has added the method parameter in compose 1.6.x+
-//                https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/ui/ui-test/src/commonMain/kotlin/androidx/compose/ui/test/SemanticsNodeInteraction.kt;l=59;bpv=1;bpt=0;drc=78d5dc8c9b42c32b0c8518c72181c19620a71c05;dlc=7aed8c7ff9c9355d5dfeb28021f8725d58dc4c6f
-                if (it.parameters.size == 4) {
-                    it.call(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true), true, null, true)
-                } else {
-                    it.call(EspressoServerRunnerTest.composeTestRule.onRoot(useUnmergedTree = true), true, null)
-                }
-            } as SelectionResult
-            result.selectedNodes
-        }
 
     private fun performCleanup() {
         tmpXmlName?.let {

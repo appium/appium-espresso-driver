@@ -19,7 +19,6 @@ package io.appium.espressoserver.lib.handlers
 import io.appium.espressoserver.lib.handlers.exceptions.*
 import io.appium.espressoserver.lib.helpers.*
 import io.appium.espressoserver.lib.model.BaseElement
-import io.appium.espressoserver.lib.model.ComposeElement
 import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.Locator
 import io.appium.espressoserver.lib.viewaction.ViewGetter
@@ -45,16 +44,5 @@ class FindElement : RequestHandler<Locator, BaseElement> {
 
         // If we have a match, return success
         return EspressoElement(viewState)
-    }
-
-    override fun handleCompose(params: Locator): BaseElement {
-        val nodeInteractions = toNodeInteractionsCollection(params)
-        if (nodeInteractions.fetchSemanticsNodes(false).isEmpty()) throw NoSuchElementException(
-            String.format(
-                "Could not find a compose element with strategy '%s' and selector '%s'",
-                params.using, params.value
-            )
-        )
-        return ComposeElement(nodeInteractions[0])
     }
 }

@@ -16,17 +16,12 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.ViewElement
 import io.appium.espressoserver.lib.model.EspressoElement
-import io.appium.espressoserver.lib.model.ComposeNodeElement
 
 class GetEnabled : RequestHandler<AppiumParams, Boolean> {
 
     override fun handleEspresso(params: AppiumParams): Boolean =
         ViewElement(EspressoElement.getCachedViewStateById(params.elementId).view).isEnabled
-
-    override fun handleCompose(params: AppiumParams): Boolean =
-        ComposeNodeElement(getSemanticsNode(params.elementId!!)).isEnabled
 }
