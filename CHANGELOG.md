@@ -1,3 +1,9 @@
+## [2.44.0](https://github.com/appium/appium-espresso-driver/compare/v2.43.0...v2.44.0) (2024-06-28)
+
+### Features
+
+* Add mobile: wrappers to clipboard APIs ([#1018](https://github.com/appium/appium-espresso-driver/issues/1018)) ([13beafb](https://github.com/appium/appium-espresso-driver/commit/13beafb705ad1056fcf3ca8f4cad89fd7af6ca3b))
+
 ## [2.43.0](https://github.com/appium/appium-espresso-driver/compare/v2.42.1...v2.43.0) (2024-06-23)
 
 ### Features
