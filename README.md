@@ -1262,6 +1262,26 @@ formFields | Map&lt;string, string&gt; or Array&lt;Pair&gt; | no | Additional fo
 
 Base64-encoded content of the recorded media file if `remotePath` argument is falsy or an empty string.
 
+### mobile: getClipboard
+
+Retrieves the plaintext content of the device's clipboard. Available since driver version 2.44
+
+#### Returned Result
+
+Base64-encoded content of the clipboard or an empty string if the clipboard is empty.
+
+### mobile: setClipboard
+
+Allows to set the plain text content of the device's clipboard. Available since driver version 2.44
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+content | string | yes | Base64-encoded clipboard payload. | YXBwaXVt
+contentType | string | no | The only supported and the default value is `plaintext` | plaintext
+lable | string | no | Optinal label to identify the current clipboard payload. | yolo
+
 ### mobile: hideKeyboard
 
 Tries to hide the on-screen keyboard. Throws an exception if the keyboard cannot be hidden.

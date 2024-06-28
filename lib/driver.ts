@@ -24,6 +24,7 @@ import * as servicesCmds from './commands/services';
 import * as screenshotCmds from './commands/screenshot';
 import * as idlingResourcesCmds from './commands/idling-resources';
 import * as actionsCmds from './commands/actions';
+import * as clipboardCmds from './commands/clipboard';
 import { DEFAULT_ADB_PORT } from 'appium-adb';
 import { AndroidDriver, utils } from 'appium-android-driver';
 import { SETTINGS_HELPER_ID } from 'io.appium.settings';
@@ -726,7 +727,6 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   mobileClickAction = elementCmds.mobileClickAction;
   mobileDismissAutofill = elementCmds.mobileDismissAutofill;
 
-  getClipboard = miscCmds.getClipboard;
   mobilePressKey = miscCmds.mobilePressKey;
   mobileGetDeviceInfo = miscCmds.mobileGetDeviceInfo;
   mobileIsToastVisible = miscCmds.mobileIsToastVisible;
@@ -736,6 +736,10 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   mobileUiautomatorPageSource = miscCmds.mobileUiautomatorPageSource;
   updateSettings = miscCmds.updateSettings;
   getSettings = miscCmds.getSettings;
+
+  getClipboard = clipboardCmds.getClipboard;
+  mobileGetClipbard = clipboardCmds.getClipboard;
+  mobileSetClipbard = clipboardCmds.mobileSetClipboard;
 
   mobileStartService = servicesCmds.mobileStartService;
   mobileStopService = servicesCmds.mobileStopService;
