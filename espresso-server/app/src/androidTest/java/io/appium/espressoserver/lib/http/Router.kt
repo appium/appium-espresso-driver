@@ -31,7 +31,7 @@ import io.appium.espressoserver.lib.http.response.BaseResponse
 import io.appium.espressoserver.lib.model.*
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 
-internal class Router {
+internal class Router(server: Server) {
     private val routeMap: RouteMap
 
     init {
@@ -43,7 +43,7 @@ internal class Router {
         routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId", GetSession(), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/actions", PerformAction(), Actions::class.java))
         routeMap.addRoute(RouteDefinition(Method.DELETE, "/session/:sessionId/actions", ReleaseActions(), Actions::class.java))
-        routeMap.addRoute(RouteDefinition(Method.DELETE, "/session/:sessionId", DeleteSession(), AppiumParams::class.java))
+        routeMap.addRoute(RouteDefinition(Method.DELETE, "/session/:sessionId", DeleteSession(server), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/back", Back(), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/accept_alert", AcceptAlert(), AlertParams::class.java))
         // alias

@@ -19,7 +19,6 @@ package io.appium.espressoserver.lib.handlers
 import androidx.test.espresso.EspressoException
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.LayoutAssertions
-import io.appium.espressoserver.EspressoServerRunnerTest
 import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
@@ -39,7 +38,7 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
             throw AppiumException("Attribute name cannot be null or empty")
         }
 
-        return when (EspressoServerRunnerTest.context.currentStrategyType) {
+        return when (DriverContext.currentStrategyType) {
             DriverContext.StrategyType.COMPOSE -> getComposeAttribute(params.elementId!!, attributeName)
             DriverContext.StrategyType.ESPRESSO -> getEspressoAttribute(params.elementId!!, attributeName)
         }

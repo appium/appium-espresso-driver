@@ -20,31 +20,55 @@ import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.GsonBuilder
 import fi.iki.elonen.NanoHTTPD
+import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.CustomFailureHandler
 import io.appium.espressoserver.lib.helpers.StringHelpers
 import io.appium.espressoserver.lib.helpers.setAccessibilityServiceState
 import io.appium.espressoserver.lib.http.response.AppiumResponse
 import io.appium.espressoserver.lib.http.response.BaseResponse
+import org.junit.rules.TestRule
 import java.io.IOException
 import java.net.SocketException
 import java.util.*
 
 const val DEFAULT_PORT = 6791
 
-object Server : NanoHTTPD(DEFAULT_PORT) {
+class Server : NanoHTTPD(DEFAULT_PORT), TestRule by DriverContext.composeTestRule {
 
     private var router: Router? = null
 
     @Volatile
-    var isStopRequestReceived: Boolean = false
-        private set
+    private var isStopRequestReceived: Boolean = false
+
+    private val syncComposeClock = Thread {
+        while (!isStopRequestReceived) {
+            if (DriverContext.currentStrategyType == DriverContext.StrategyType.COMPOSE) {
+                DriverContext.composeTestRule.mainClock.advanceTimeByFrame()
+            }
+            // Let Android run measure, draw and in general any other async operations. AndroidComposeTestRule.android.kt:325
+            Thread.sleep(ANDROID_ASYNC_WAIT_TIME_MS)
+        }
+    }
 
     private fun buildFixedLengthResponse(response: BaseResponse): Response {
         val gsonBuilder = GsonBuilder()
                 .serializeNulls()
         return newFixedLengthResponse(response.httpStatus,
                 "application/json", gsonBuilder.create().toJson(response))
+    }
+
+    fun run() {
+        try {
+            start()
+            syncComposeClock.start()
+            while (!isStopRequestReceived) {
+                Thread.sleep(1000)
+            }
+        } finally {
+            stop()
+            syncComposeClock.join()
+        }
     }
 
     override fun serve(session: IHTTPSession): Response {
@@ -99,7 +123,7 @@ object Server : NanoHTTPD(DEFAULT_PORT) {
         }
 
         AndroidLogger.info("\nRunning Appium Espresso Server at port $DEFAULT_PORT\n")
-        router = Router()
+        router = Router(this)
     }
 
     private fun setCustomFailureHandler() =
@@ -114,5 +138,9 @@ object Server : NanoHTTPD(DEFAULT_PORT) {
 
     fun makeRequestForServerToStop() {
         isStopRequestReceived = true
+    }
+
+    private companion object {
+        const val ANDROID_ASYNC_WAIT_TIME_MS = 10L
     }
 }

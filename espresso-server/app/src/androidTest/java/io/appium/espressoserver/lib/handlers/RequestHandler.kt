@@ -16,21 +16,21 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.EspressoServerRunnerTest
+import io.appium.espressoserver.lib.drivers.DriverContext
+import io.appium.espressoserver.lib.drivers.DriverContext.StrategyType
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchDriverException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.GlobalSession
-import io.appium.espressoserver.lib.drivers.DriverContext.StrategyType
 
 interface RequestHandler<in T : AppiumParams, out R> {
     fun handleInternal(params: T): R = invokeStrategy(params)
 
     @Suppress("UNCHECKED_CAST")
     fun invokeStrategy(params: AppiumParams): R =
-        when (EspressoServerRunnerTest.context.currentStrategyType) {
+        when (DriverContext.currentStrategyType) {
             StrategyType.COMPOSE -> handleCompose(params as T)
             StrategyType.ESPRESSO -> handleEspresso(params as T)
         }

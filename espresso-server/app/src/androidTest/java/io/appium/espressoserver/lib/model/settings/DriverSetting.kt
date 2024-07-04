@@ -16,7 +16,6 @@
 
 package io.appium.espressoserver.lib.model.settings
 
-import io.appium.espressoserver.EspressoServerRunnerTest
 import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 
@@ -24,7 +23,7 @@ class DriverSetting : AbstractSetting() {
     override var name: String = "driver"
 
     override fun value(): String {
-        return EspressoServerRunnerTest.context.currentStrategyType.name.toString().lowercase()
+        return DriverContext.currentStrategyType.name.lowercase()
     }
 
     override fun apply(value: Any?) {
@@ -35,6 +34,6 @@ class DriverSetting : AbstractSetting() {
                         DriverContext.StrategyType.values().map { it.toString().lowercase() }
                     }"
                 )
-        EspressoServerRunnerTest.context.setDriverStrategy(driverStrategy)
+        DriverContext.setDriverStrategy(driverStrategy)
     }
 }
