@@ -3,27 +3,45 @@ plugins {
     kotlin("android")
 }
 
+val appiumCompileSdk: String by project
+val appiumMinSdk: String by project
+val appiumTargetSdk: String by project
+val appiumBuildTools: String by project
+val appiumTargetPackage: String by project
+val appiumSourceCompatibility: String by project
+val appiumTargetCompatibility: String by project
+val appiumJvmTarget: String by project
+val appiumAndroidGradlePlugin: String by project
+val appiumKotlin: String by project
+val appiumAndroidxTestVersion: String by project
+val appiumAnnotationVersion: String by project
+val appiumComposeVersion: String by project
+val appiumGsonVersion: String by project
+val appiumEspressoVersion: String by project
+val appiumMockitoVersion: String by project
+val appiumNanohttpdVersion: String by project
+val appiumRobolectricVersion: String by project
+val appiumJUnitVersion: String by project
+val appiumUiAutomatorVersion: String by project
+
 android {
-    compileSdk = getIntProperty("appiumCompileSdk", 34)
-    buildToolsVersion = getStringProperty("appiumBuildTools", "33.0.2")
+    compileSdk = appiumCompileSdk.toInt()
+    buildToolsVersion = appiumBuildTools
     defaultConfig {
         // <instrumentation android:targetPackage=""/>
-        applicationId = getStringProperty("appiumTargetPackage", "io.appium.espressoserver")
+        applicationId = appiumTargetPackage
         // <manifest package=""/>
         testApplicationId = "io.appium.espressoserver.test"
         testHandleProfiling = false
         testFunctionalTest = false
-        minSdk = getIntProperty("appiumMinSdk", 21)
-        targetSdk = getIntProperty("appiumTargetSdk", 34)
+        minSdk = appiumMinSdk.toInt()
+        targetSdk = appiumTargetSdk.toInt()
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        getByName("debug") {
-            isZipAlignEnabled = getBooleanProperty("appiumZipAlign", true)
-        }
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
@@ -61,86 +79,67 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.valueOf(
-            getStringProperty(
-                "appiumSourceCompatibility",
-                "VERSION_1_8"
-            ).toUpperCase()
-        )
-        targetCompatibility = JavaVersion.valueOf(
-            getStringProperty(
-                "appiumTargetCompatibility",
-                "VERSION_1_8"
-            ).toUpperCase()
-        )
+        sourceCompatibility = JavaVersion.valueOf(appiumSourceCompatibility.uppercase())
+        targetCompatibility = JavaVersion.valueOf(appiumTargetCompatibility.uppercase())
     }
 
     kotlinOptions {
-        jvmTarget = getStringProperty("appiumJvmTarget", JavaVersion.VERSION_1_8.toString())
+        jvmTarget = appiumJvmTarget
     }
 
-    packagingOptions {
+    packaging {
         resources.excludes.add("META-INF/**")
     }
 
     namespace = "io.appium.espressoserver"
 }
 
-val kotlinVersion = rootProject.extra["appiumKotlin"]
-val composeVersion = getStringProperty("appiumComposeVersion", Version.compose)
-val espressoVersion = getStringProperty("appiumEspressoVersion", Version.espresso)
-val annotationVersion = getStringProperty("appiumAnnotationVersion", Version.annotation)
-
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     // additionalAppDependencies placeholder (don't change or delete this line)
 
-    testImplementation("org.powermock:powermock-api-mockito2:${Version.mocklib}")
-    testImplementation("org.powermock:powermock-classloading-xstream:${Version.mocklib}")
-    testImplementation("org.powermock:powermock-module-junit4-rule:${Version.mocklib}")
-    testImplementation("org.powermock:powermock-module-junit4:${Version.mocklib}")
-    testImplementation("androidx.annotation:annotation:${annotationVersion}")
-    testImplementation("androidx.test.espresso:espresso-contrib:${espressoVersion}")
-    testImplementation("androidx.test.espresso:espresso-core:${espressoVersion}")
-    testImplementation("androidx.test.espresso:espresso-web:${espressoVersion}")
-    testImplementation("androidx.test.uiautomator:uiautomator:${Version.uia}")
-    testImplementation("androidx.test:core:${Version.testlib}")
-    testImplementation("androidx.test:runner:${Version.testlib}")
-    testImplementation("androidx.test:rules:${Version.testlib}")
-    testImplementation("com.google.code.gson:gson:${Version.gson}")
-    testImplementation("junit:junit:${Version.junit}")
-    testImplementation("org.mockito:mockito-core:${Version.mockito}")
-    testImplementation("org.nanohttpd:nanohttpd-webserver:${Version.nanohttpd}")
-    testImplementation("org.robolectric:robolectric:${Version.robolectric}")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
-    testImplementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
-    testImplementation("androidx.compose.ui:ui-test:${composeVersion}")
-    testImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}")
+    testImplementation("androidx.annotation:annotation:$appiumAnnotationVersion")
+    testImplementation("androidx.test.espresso:espresso-contrib:$appiumEspressoVersion")
+    testImplementation("androidx.test.espresso:espresso-core:$appiumEspressoVersion")
+    testImplementation("androidx.test.espresso:espresso-web:$appiumEspressoVersion")
+    testImplementation("androidx.test.uiautomator:uiautomator:$appiumUiAutomatorVersion")
+    testImplementation("androidx.test:core:$appiumAndroidxTestVersion")
+    testImplementation("androidx.test:runner:$appiumAndroidxTestVersion")
+    testImplementation("androidx.test:rules:$appiumAndroidxTestVersion")
+    testImplementation("com.google.code.gson:gson:$appiumGsonVersion")
+    testImplementation("junit:junit:$appiumJUnitVersion")
+    testImplementation("org.mockito:mockito-core:$appiumMockitoVersion")
+    testImplementation("org.nanohttpd:nanohttpd-webserver:$appiumNanohttpdVersion")
+    testImplementation("org.robolectric:robolectric:$appiumRobolectricVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$appiumKotlin")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$appiumKotlin")
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:$appiumKotlin")
+    testImplementation("androidx.compose.ui:ui-test:$appiumComposeVersion")
+    testImplementation("androidx.compose.ui:ui-test-junit4:$appiumComposeVersion")
 
-    androidTestImplementation("androidx.annotation:annotation:${annotationVersion}")
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:${espressoVersion}") {
+    androidTestImplementation("androidx.annotation:annotation:$appiumAnnotationVersion")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:$appiumEspressoVersion") {
         // Exclude transitive dependencies to limit conflicts with AndroidX libraries from AUT.
         // Link to PR with fix and discussion https://github.com/appium/appium-espresso-driver/pull/596
         isTransitive = false
     }
-    androidTestImplementation("androidx.test.espresso:espresso-web:${espressoVersion}") {
+    androidTestImplementation("androidx.test.espresso:espresso-web:$appiumEspressoVersion") {
         because("Espresso Web Atoms support (mobile: webAtoms)")
     }
-    androidTestImplementation("androidx.test.uiautomator:uiautomator:${Version.uia}") {
+    androidTestImplementation("androidx.test.uiautomator:uiautomator:$appiumUiAutomatorVersion") {
         because("UiAutomator support (mobile: uiautomator)")
     }
-    androidTestImplementation("androidx.test:core:${Version.testlib}")
-    androidTestImplementation("androidx.test:runner:${Version.testlib}")
-    androidTestImplementation("androidx.test:rules:${Version.testlib}")
-    androidTestImplementation("com.google.code.gson:gson:${Version.gson}")
-    androidTestImplementation("org.nanohttpd:nanohttpd-webserver:${Version.nanohttpd}")
-    androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
-    androidTestImplementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
-    androidTestImplementation("androidx.compose.ui:ui-test:${composeVersion}") {
+    androidTestImplementation("androidx.test:core:$appiumAndroidxTestVersion")
+    androidTestImplementation("androidx.test:runner:$appiumAndroidxTestVersion")
+    androidTestImplementation("androidx.test:rules:$appiumAndroidxTestVersion")
+    androidTestImplementation("com.google.code.gson:gson:$appiumGsonVersion")
+    androidTestImplementation("org.nanohttpd:nanohttpd-webserver:$appiumNanohttpdVersion")
+    androidTestImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$appiumKotlin")
+    androidTestImplementation("org.jetbrains.kotlin:kotlin-reflect:$appiumKotlin")
+    androidTestImplementation("androidx.compose.ui:ui-test:$appiumComposeVersion") {
         because("Android Compose support")
     }
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${composeVersion}") {
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$appiumComposeVersion") {
         because("Android Compose support")
     }
 
@@ -151,7 +150,7 @@ configurations.all {
     resolutionStrategy.eachDependency {
         // To avoid "androidx.annotation:annotation" version conflict.
         if (requested.group == "androidx.annotation" && !requested.name.contains("annotation")) {
-            useVersion(annotationVersion)
+            useVersion(appiumAnnotationVersion)
         }
     }
 }
@@ -159,26 +158,3 @@ configurations.all {
 tasks.withType<Test> {
     systemProperty("skipespressoserver", "true")
 }
-
-object Version {
-    const val espresso = "3.5.1"
-    const val testlib = "1.5.0"
-    const val mocklib = "2.0.9"
-    const val gson = "2.10.1"
-    const val uia = "2.2.0"
-    const val nanohttpd = "2.3.1"
-    const val annotation = "1.6.0"
-    const val mockito = "5.1.1"
-    const val robolectric = "4.9.2"
-    const val junit = "4.13.2"
-    const val compose = "1.1.1"
-}
-
-fun Project.getStringProperty(name: String, default: String): String =
-    properties.getOrDefault(name, default).toString()
-
-fun Project.getIntProperty(name: String, default: Int): Int =
-    this.getStringProperty(name, default.toString()).toInt()
-
-fun Project.getBooleanProperty(name: String, default: Boolean): Boolean =
-    this.getStringProperty(name, default.toString()).toBoolean()
