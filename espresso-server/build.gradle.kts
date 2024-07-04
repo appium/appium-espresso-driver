@@ -22,6 +22,8 @@ allprojects {
         google()
         mavenCentral()
     }
+
+    group = "io.appium.espressoserver"
 }
 
 tasks.register("clean", Delete::class) {

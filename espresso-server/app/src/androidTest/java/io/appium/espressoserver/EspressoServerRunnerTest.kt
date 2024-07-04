@@ -19,7 +19,6 @@ package io.appium.espressoserver
 import androidx.test.filters.LargeTest
 import io.appium.espressoserver.lib.http.Server
 import org.junit.Assert.assertEquals
-import org.junit.Assume
 import org.junit.Rule
 import org.junit.Test
 
@@ -36,10 +35,6 @@ class EspressoServerRunnerTest {
 
     @Test
     fun startEspressoServer() {
-        if (System.getProperty("skipespressoserver") != null) {
-            Assume.assumeTrue(true)
-            return
-        }
         server.run()
 
         assertEquals(true, true) // Keep Codacy happy
