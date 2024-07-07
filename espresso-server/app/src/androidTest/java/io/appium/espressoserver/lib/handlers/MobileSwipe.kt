@@ -16,17 +16,10 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import androidx.compose.ui.test.performGesture
-import androidx.compose.ui.test.swipeDown
-
-import androidx.compose.ui.test.swipeLeft
-import androidx.compose.ui.test.swipeRight
-import androidx.compose.ui.test.swipeUp
 import androidx.test.espresso.UiController
 import androidx.test.espresso.action.GeneralSwipeAction
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.MobileSwipeParams
 import io.appium.espressoserver.lib.model.MobileSwipeParams.Direction.*
@@ -75,24 +68,6 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
             UiControllerPerformer(runnable).run()
         }
 
-        return null
-    }
-
-    override fun handleCompose(params: MobileSwipeParams): Void? {
-        val nodeInteractions = getNodeInteractionById(params.elementId)
-
-        AndroidLogger.info("Performing swipe action with direction '${params.direction}'")
-        when (params.direction) {
-            UP -> nodeInteractions.performGesture { swipeUp() }
-            DOWN -> nodeInteractions.performGesture { swipeDown() }
-            LEFT -> nodeInteractions.performGesture { swipeLeft() }
-            RIGHT -> nodeInteractions.performGesture { swipeRight() }
-            else -> throw InvalidArgumentException(
-                "Unknown swipe direction '${params.direction}'. " +
-                        "Only the following values are supported: " +
-                        values().joinToString(",") { x -> x.name.lowercase() }
-            )
-        }
         return null
     }
 }

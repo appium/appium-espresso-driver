@@ -16,8 +16,6 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import androidx.compose.ui.test.assertIsDisplayed
-import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.ViewElement
@@ -26,13 +24,5 @@ class GetDisplayed : RequestHandler<AppiumParams, Boolean> {
 
     override fun handleEspresso(params: AppiumParams): Boolean =
         ViewElement(EspressoElement.getCachedViewStateById(params.elementId, false).view).isVisible
-
-    override fun handleCompose(params: AppiumParams): Boolean =
-        try {
-            getNodeInteractionById(params.elementId).assertIsDisplayed()
-            true
-        } catch (e: AssertionError) {
-            false
-        }
 }
 
