@@ -1,3 +1,27 @@
+## [2.44.1](https://github.com/appium/appium-espresso-driver/compare/v2.44.0...v2.44.1) (2024-07-04)
+
+### Miscellaneous Chores
+
+* Improve gradle log strings handling ([#1019](https://github.com/appium/appium-espresso-driver/issues/1019)) ([7ab3404](https://github.com/appium/appium-espresso-driver/commit/7ab3404809a4c1c4ffc4286bb318d4d3351b5365))
+
+## [2.44.0](https://github.com/appium/appium-espresso-driver/compare/v2.43.0...v2.44.0) (2024-06-28)
+
+### Features
+
+* Add mobile: wrappers to clipboard APIs ([#1018](https://github.com/appium/appium-espresso-driver/issues/1018)) ([13beafb](https://github.com/appium/appium-espresso-driver/commit/13beafb705ad1056fcf3ca8f4cad89fd7af6ca3b))
+
+## [2.43.0](https://github.com/appium/appium-espresso-driver/compare/v2.42.1...v2.43.0) (2024-06-23)
+
+### Features
+
+* Document injectedImageProperties capability ([#1017](https://github.com/appium/appium-espresso-driver/issues/1017)) ([fd6dc1c](https://github.com/appium/appium-espresso-driver/commit/fd6dc1c4cf9f481914701b33ad6d265888d976b7))
+
+## [2.42.1](https://github.com/appium/appium-espresso-driver/compare/v2.42.0...v2.42.1) (2024-06-23)
+
+### Miscellaneous Chores
+
+* Bump chai and chai-as-promised ([#1016](https://github.com/appium/appium-espresso-driver/issues/1016)) ([f3ed4f0](https://github.com/appium/appium-espresso-driver/commit/f3ed4f0a537c352c5805ff557106e9e58b01b49d))
+
 ## [2.42.0](https://github.com/appium/appium-espresso-driver/compare/v2.41.0...v2.42.0) (2024-06-16)
 
 ### Features

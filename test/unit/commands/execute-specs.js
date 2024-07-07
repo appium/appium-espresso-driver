@@ -1,13 +1,19 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import EspressoDriver from '../../../lib/driver';
 
-chai.should();
-chai.use(chaiAsPromised);
 let sandbox = sinon.createSandbox();
 
 describe('commands', function () {
+  let chai;
+
+  before(async function () {
+    chai = await import('chai');
+    const chaiAsPromised = await import('chai-as-promised');
+
+    chai.should();
+    chai.use(chaiAsPromised.default);
+  });
+
   describe('execute', function () {
     let driver;
     beforeEach(function () {

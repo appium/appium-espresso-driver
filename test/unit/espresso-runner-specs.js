@@ -1,16 +1,23 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import { EspressoRunner, REQUIRED_PARAMS } from '../../lib/espresso-runner';
 import { ADB } from 'appium-adb';
 import sinon from 'sinon';
 import log from '../../lib/logger';
 
-chai.should();
-chai.use(chaiAsPromised);
-const expect = chai.expect;
 let sandbox = sinon.createSandbox();
 
 describe('espresso-runner', function () {
+  let chai;
+  let expect;
+
+  before(async function () {
+    chai = await import('chai');
+    const chaiAsPromised = await import('chai-as-promised');
+
+    chai.should();
+    chai.use(chaiAsPromised.default);
+    expect = chai.expect;
+  });
+
   function getOpts (params) {
     let opts = {};
     for (let j = 0; j < params.length; j++) {

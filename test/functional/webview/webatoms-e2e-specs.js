@@ -1,17 +1,20 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 import B from 'bluebird';
 
-chai.should();
-chai.use(chaiAsPromised);
 
 describe('mobile web atoms', function () {
   this.timeout(MOCHA_TIMEOUT);
   let driver;
+  let chai;
 
   before(async function () {
+    chai = await import('chai');
+    const chaiAsPromised = await import('chai-as-promised');
+
+    chai.should();
+    chai.use(chaiAsPromised.default);
+
     driver = await initSession({
       ...APIDEMO_CAPS,
       appPackage: 'io.appium.android.apis',

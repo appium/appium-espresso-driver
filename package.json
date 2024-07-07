@@ -7,7 +7,7 @@
     "automated testing",
     "android"
   ],
-  "version": "2.42.0",
+  "version": "2.44.1",
   "author": "Appium Contributors",
   "license": "Apache-2.0",
   "repository": {
@@ -73,14 +73,14 @@
   ],
   "dependencies": {
     "appium-adb": "^12.4.0",
-    "appium-android-driver": "^9.6.5",
+    "appium-android-driver": "^9.7.0",
     "asyncbox": "^3.0.0",
     "bluebird": "^3.5.0",
     "io.appium.settings": "^5.12.0",
     "lodash": "^4.17.11",
     "portscanner": "^2.1.1",
     "source-map-support": "^0.x",
-    "teen_process": "^2.0.0"
+    "teen_process": "^2.2.0"
   },
   "scripts": {
     "build": "npm run build:node && npm run build:server",
@@ -112,8 +112,6 @@
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/bluebird": "^3.5.38",
-    "@types/chai": "^4.3.5",
-    "@types/chai-as-promised": "^7.1.5",
     "@types/lodash": "^4.14.196",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.4.7",
@@ -124,8 +122,8 @@
     "android-apidemos": "^4.1.1",
     "appium-chromedriver": "^5.1.4",
     "async-lock": "^1.0.0",
-    "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
+    "chai": "^5.1.1",
+    "chai-as-promised": "^8.0.0",
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "mocha": "^10.0.0",
     "rimraf": "^5.0.0",

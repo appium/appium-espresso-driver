@@ -1,11 +1,6 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
-
-chai.should();
-chai.use(chaiAsPromised);
 
 // TODO: what is this test supposed to do? finding an element in this driver
 // automatically scrolls to make it visible, so this test always fails
@@ -13,7 +8,15 @@ describe.skip('moveTo', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
+  let chai;
+
   before(async function () {
+    chai = await import('chai');
+    const chaiAsPromised = await import('chai-as-promised');
+
+    chai.should();
+    chai.use(chaiAsPromised.default);
+
     driver = await initSession(APIDEMO_CAPS);
   });
   after(async function () {
