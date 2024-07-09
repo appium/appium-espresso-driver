@@ -105,7 +105,6 @@
     "appium": "^2.4.1"
   },
   "devDependencies": {
-    "@appium/eslint-config-appium": "^8.0.4",
     "@appium/eslint-config-appium-ts": "^0.x",
     "@appium/tsconfig": "^0.x",
     "@appium/types": "^0.x",
