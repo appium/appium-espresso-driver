@@ -18,7 +18,7 @@ package io.appium.espressoserver.lib.helpers
 
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.*
-import io.appium.espressoserver.EspressoServerRunnerTest
+import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.model.Strategy
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
@@ -40,7 +40,7 @@ fun getNodeInteractionById(elementId: String?): SemanticsNodeInteraction =
 fun toNodeInteractionsCollection(params: Locator): SemanticsNodeInteractionCollection {
     val parentNodeInteraction = params.elementId?.let { getNodeInteractionById(it) }
     return parentNodeInteraction?.findDescendantNodeInteractions(params)
-        ?: EspressoServerRunnerTest.composeTestRule.onAllNodes(
+        ?: DriverContext.composeTestRule.onAllNodes(
             useUnmergedTree = true,
             matcher = semanticsMatcherForLocator(params)
         )

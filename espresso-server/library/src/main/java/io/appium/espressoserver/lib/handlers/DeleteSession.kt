@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.drivers
+package io.appium.espressoserver.lib.handlers
 
-class DriverContext {
-    var currentStrategyType: StrategyType = StrategyType.ESPRESSO
-        private set
+import io.appium.espressoserver.lib.helpers.NotificationListener
+import io.appium.espressoserver.lib.http.Server
+import io.appium.espressoserver.lib.http.response.AppiumResponse
+import io.appium.espressoserver.lib.model.AppiumParams
+import io.appium.espressoserver.lib.model.GlobalSession
 
-    fun setDriverStrategy(strategyType: StrategyType) {
-        currentStrategyType = strategyType
-    }
+class DeleteSession(private val server: Server) : RequestHandler<AppiumParams, AppiumResponse> {
 
-    enum class StrategyType {
-        ESPRESSO, COMPOSE
+    override fun handleInternal(params: AppiumParams): AppiumResponse {
+        NotificationListener.stop()
+        GlobalSession.delete()
+        server.makeRequestForServerToStop()
+        return AppiumResponse(null, null)
     }
 }

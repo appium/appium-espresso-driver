@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package io.appium.espressoserver.lib.handlers
+package io.appium.espressoserver.lib.drivers
 
-import io.appium.espressoserver.lib.helpers.NotificationListener
-import io.appium.espressoserver.lib.http.Server
-import io.appium.espressoserver.lib.http.response.AppiumResponse
-import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.GlobalSession
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
 
-class DeleteSession : RequestHandler<AppiumParams, AppiumResponse> {
+object DriverContext {
+    var currentStrategyType: StrategyType = StrategyType.ESPRESSO
+        private set
 
-    override fun handleInternal(params: AppiumParams): AppiumResponse {
-        NotificationListener.stop()
-        GlobalSession.delete()
-        Server.makeRequestForServerToStop()
-        return AppiumResponse(null, null)
+    val composeTestRule = createEmptyComposeRule()
+
+    fun setDriverStrategy(strategyType: StrategyType) {
+        currentStrategyType = strategyType
+    }
+
+    enum class StrategyType {
+        ESPRESSO, COMPOSE
     }
 }
