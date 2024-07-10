@@ -1,3 +1,13 @@
+## [3.0.0](https://github.com/appium/appium-espresso-driver/compare/v2.44.2...v3.0.0) (2024-07-10)
+
+### ⚠ BREAKING CHANGES
+
+* `appiumZipAlign` Gradle property has been removed as it didn't have any effect
+
+### Features
+
+* Make it possible to consume Espresso server as a library ([#1020](https://github.com/appium/appium-espresso-driver/issues/1020)) ([1bf4a92](https://github.com/appium/appium-espresso-driver/commit/1bf4a928a32501071ae88e7f16d2521b29859aa9))
+
 ## [2.44.2](https://github.com/appium/appium-espresso-driver/compare/v2.44.1...v2.44.2) (2024-07-09)
 
 ### Miscellaneous Chores
