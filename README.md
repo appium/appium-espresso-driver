@@ -261,7 +261,7 @@ annotationVersion | The target version of `androidx.annotation:annotation` pakag
 
 ### additionalAppDependencies
 
-The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `implementation` lines of `dependencies` category in the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
+The value of this entry must be a non empty array of dependent module names with their versions. The scripts adds all these items as `api` lines of `dependencies` category in the library [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/library/build.gradle.kts) script. Example: `["xerces.xercesImpl:2.8.0", "xerces.xmlParserAPIs:2.6.2"]`
 
 ### additionalAndroidTestDependencies
 
