@@ -1,3 +1,9 @@
+## [3.1.0](https://github.com/appium/appium-espresso-driver/compare/v3.0.0...v3.1.0) (2024-07-11)
+
+### Features
+
+* Publish Espresso server library to JitPack ([#1021](https://github.com/appium/appium-espresso-driver/issues/1021)) ([9445667](https://github.com/appium/appium-espresso-driver/commit/94456673880e591808e06db57da1d21ec823ec0c))
+
 ## [3.0.0](https://github.com/appium/appium-espresso-driver/compare/v2.44.2...v3.0.0) (2024-07-10)
 
 ### ⚠ BREAKING CHANGES
