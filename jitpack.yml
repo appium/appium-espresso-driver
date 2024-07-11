@@ -1,0 +1,5 @@
+jdk:
+  - openjdk17
+install:
+  - cd espresso-server
+  - ./gradlew :library:publishToMavenLocal
