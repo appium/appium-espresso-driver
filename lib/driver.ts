@@ -650,7 +650,6 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
         this.log.debug(`FULL_RESET set to 'true', Uninstalling '${this.opts.appPackage}'`);
         await this.adb.uninstallApk(this.opts.appPackage!);
       }
-      await this.adb.stopLogcat();
       if (await this.adb.getApiLevel() >= 28) { // Android P
         this.log.info('Restoring hidden api policy to the device default configuration');
         await this.adb.setDefaultHiddenApiPolicy(!!this.opts.ignoreHiddenApiPolicyError);
