@@ -16,12 +16,12 @@
 
 package io.appium.espressoserver.lib.model
 
-class Status(
+data class Status(
     val ready: Boolean,
     val message: String,
     val build: BuildInfo
-) : AppiumParams()
+)
 
-class BuildInfo(
+data class BuildInfo(
     val version: String
-): AppiumParams()
+)

@@ -19,4 +19,4 @@ package io.appium.espressoserver.lib.model
 data class WindowSize(
     val width: Int,
     val height: Int
-) : AppiumParams()
+)
