@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import androidx.test.platform.app.InstrumentationRegistry
 import io.appium.espressoserver.lib.helpers.getEspressoServerVersion
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.BuildInfo
@@ -28,7 +29,8 @@ class Status : RequestHandler<AppiumParams, io.appium.espressoserver.lib.model.S
             ready = true,
             message = "The server is ready to accept new connections",
             build = BuildInfo(
-                version = getEspressoServerVersion()
+                version = getEspressoServerVersion(),
+                packageName = InstrumentationRegistry.getInstrumentation().targetContext.packageName
             )
         )
     }

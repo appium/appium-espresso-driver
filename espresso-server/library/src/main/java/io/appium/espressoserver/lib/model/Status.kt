@@ -23,5 +23,6 @@ data class Status(
 )
 
 data class BuildInfo(
-    val version: String
+    val version: String,
+    val packageName: String
 )
