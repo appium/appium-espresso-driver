@@ -19,4 +19,4 @@ package io.appium.espressoserver.lib.model
 data class Size(
     val width: Int,
     val height: Int
-) : AppiumParams()
+)

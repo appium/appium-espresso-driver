@@ -16,6 +16,7 @@
 
 package io.appium.espressoserver.lib.model
 
+import com.google.gson.annotations.Expose
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 
 
@@ -23,7 +24,8 @@ const val SESSION_ID_PARAM_NAME = "sessionId"
 const val ELEMENT_ID_PARAM_NAME = "elementId"
 
 open class AppiumParams {
-    var uriParams:MutableMap<String, String>? = null
+    @Expose(serialize = false, deserialize = true)
+    private var uriParams: MutableMap<String, String>? = null
 
     val sessionId: String?
         get() = getUriParameterValue(SESSION_ID_PARAM_NAME)

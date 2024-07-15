@@ -21,4 +21,4 @@ data class WindowRect(
     val height: Int,
     val x: Int,
     val y: Int
-) : AppiumParams()
+)

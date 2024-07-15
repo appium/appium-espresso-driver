@@ -21,6 +21,7 @@ import com.google.gson.JsonParseException
 import fi.iki.elonen.NanoHTTPD.Method
 import io.appium.espressoserver.lib.handlers.*
 import io.appium.espressoserver.lib.handlers.PointerEventHandler.TouchType.*
+import io.appium.espressoserver.lib.handlers.Status
 import io.appium.espressoserver.lib.handlers.TouchAction
 import io.appium.espressoserver.lib.handlers.exceptions.*
 import io.appium.espressoserver.lib.helpers.AndroidLogger

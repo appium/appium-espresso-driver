@@ -16,21 +16,13 @@
 
 package io.appium.espressoserver.lib.model
 
-import android.graphics.Rect
+data class Status(
+    val ready: Boolean,
+    val message: String,
+    val build: BuildInfo
+)
 
-data class Rect(
-    var x: Int,
-    var y: Int,
-    var width: Int,
-    var height: Int
-) {
-    companion object {
-        fun fromBounds(bounds: Rect): io.appium.espressoserver.lib.model.Rect =
-            io.appium.espressoserver.lib.model.Rect(
-                bounds.left,
-                bounds.top,
-                bounds.width(),
-                bounds.height()
-            )
-    }
-}
+data class BuildInfo(
+    val version: String,
+    val packageName: String
+)
