@@ -1,3 +1,9 @@
+## [3.2.0](https://github.com/appium/appium-espresso-driver/compare/v3.1.0...v3.2.0) (2024-07-15)
+
+### Features
+
+* Add proper info to the /status API response ([#1022](https://github.com/appium/appium-espresso-driver/issues/1022)) ([4602a6f](https://github.com/appium/appium-espresso-driver/commit/4602a6fe4a03915a96db9f33dfa7f5b0d77e121d))
+
 ## [3.1.0](https://github.com/appium/appium-espresso-driver/compare/v3.0.0...v3.1.0) (2024-07-11)
 
 ### Features
