@@ -1,3 +1,9 @@
+## [3.3.0](https://github.com/appium/appium-espresso-driver/compare/v3.2.1...v3.3.0) (2024-07-16)
+
+### Features
+
+* Introduce server status validation ([#1024](https://github.com/appium/appium-espresso-driver/issues/1024)) ([392a5d4](https://github.com/appium/appium-espresso-driver/commit/392a5d46fb261e0e4232ef153c693f3f57d3b8ba))
+
 ## [3.2.1](https://github.com/appium/appium-espresso-driver/compare/v3.2.0...v3.2.1) (2024-07-15)
 
 ### Miscellaneous Chores
