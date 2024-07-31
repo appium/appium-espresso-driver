@@ -1,3 +1,9 @@
+## [3.3.1](https://github.com/appium/appium-espresso-driver/compare/v3.3.0...v3.3.1) (2024-07-31)
+
+### Bug Fixes
+
+* Cache children when traversing ([#1027](https://github.com/appium/appium-espresso-driver/issues/1027)) ([eaff37d](https://github.com/appium/appium-espresso-driver/commit/eaff37dd08150016be982a96e40c9ddb1b424639))
+
 ## [3.3.0](https://github.com/appium/appium-espresso-driver/compare/v3.2.1...v3.3.0) (2024-07-16)
 
 ### Features
