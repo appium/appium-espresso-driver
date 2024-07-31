@@ -240,8 +240,9 @@ class SourceDocument constructor(
 
         if (depth < MAX_TRAVERSAL_DEPTH) {
             // Visit the children and build them too
-            for (index in 0 until semanticsNode.children.count()) {
-                serializeComposeNode(semanticsNode.children[index], depth + 1)
+            val children = semanticsNode.children
+            for (index in 0 until children.count()) {
+                serializeComposeNode(children[index], depth + 1)
             }
         } else {
             AndroidLogger.warn(
