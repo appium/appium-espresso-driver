@@ -1,3 +1,9 @@
+## [3.4.0](https://github.com/appium/appium-espresso-driver/compare/v3.3.1...v3.4.0) (2024-09-17)
+
+### Features
+
+* Bump android driver ([#1028](https://github.com/appium/appium-espresso-driver/issues/1028)) ([0207af4](https://github.com/appium/appium-espresso-driver/commit/0207af4ce96b948b25969f612c57220ce8f5a5e1))
+
 ## [3.3.1](https://github.com/appium/appium-espresso-driver/compare/v3.3.0...v3.3.1) (2024-07-31)
 
 ### Bug Fixes
