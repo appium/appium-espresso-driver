@@ -40,7 +40,7 @@ know more about finding a matching Chromedriver executable.
 
 There are several ways to provide a customized Chromedriver to Espresso driver:
 
-#### When installing the driver
+#### When installing the driver (only in driver versions older than 3.4.0)
 
 Specify the Chromedriver version in the `CHROMEDRIVER_VERSION` environment variable:
 
@@ -103,23 +103,17 @@ There is a possibility to automatically download the necessary chromedriver(s) i
 
 ### Troubleshooting Chromedriver Download Issues
 
-When Espresso driver is installed it automatically downloads Chromedriver, so there is a possibility
-of network or other issues leading to an installation failure.
-
-By default, Chromedriver is retrieved from `https://chromedriver.storage.googleapis.com/`.
-To use a mirror of the above URL change the value of `CHROMEDRIVER_CDNURL` environemnt variable:
-
-```bash
-CHROMEDRIVER_CDNURL=https://npmmirror.com/mirrors/chromedriver appium driver install uiautomator2
-```
+Check the [Custom binaries url](https://github.com/appium/appium-chromedriver?tab=readme-ov-file#custom-binaries-url)
+section of appium-chromedriver README for more details on how to customize the download CDN.
 
 It may also be necessary to adjust network proxy and firewall settings for the above to work.
 
-In case you would like skip the download of Chromedriver entirely, do it by
+If you use Espresso driver below version 3.4.0, and you
+would like to skip the automated download of Chromedriver upon driver install, do it by
 defining the `APPIUM_SKIP_CHROMEDRIVER_INSTALL` environment variable:
 
 ```bash
-APPIUM_SKIP_CHROMEDRIVER_INSTALL=1 appium driver install uiautomator2
+APPIUM_SKIP_CHROMEDRIVER_INSTALL=1 appium driver install espresso
 ```
 
 ### W3C Support in Web Context
