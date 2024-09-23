@@ -1,3 +1,9 @@
+## [3.5.0](https://github.com/appium/appium-espresso-driver/compare/v3.4.0...v3.5.0) (2024-09-23)
+
+### Features
+
+* Document mobile geolocation APIs ([#1029](https://github.com/appium/appium-espresso-driver/issues/1029)) ([a288990](https://github.com/appium/appium-espresso-driver/commit/a288990f5d90720969d2be25c782e883b7a071c7))
+
 ## [3.4.0](https://github.com/appium/appium-espresso-driver/compare/v3.3.1...v3.4.0) (2024-09-17)
 
 ### Features
