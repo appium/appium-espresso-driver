@@ -817,6 +817,37 @@ Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 timeoutMs | number | no | The maximum number of milliseconds to block until GPS cache is refreshed. If the API call does not receive a confirmation about successful cache refresh within this timeout then an error is thrown. Providing zero or a negative value to it skips waiting completely and does not check for any errors. 20000 ms by default. | 60000
 
+### mobile: setGeolocation
+
+Sets emulated geolocation coordinates on the device under test.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+latitude | number | yes | [Latitude](https://en.wikipedia.org/wiki/Latitude) value | 32.456
+longitude | number | yes | [longitude](https://en.wikipedia.org/wiki/Longitude) value | 32.456
+altitude | number | no | [Altitude](https://en.wikipedia.org/wiki/Altitude) value. Zero by default | 5.678
+
+### mobile: getGeolocation
+
+Retrieves current geolocation coordinates from the device under test. If coordinates are mocked/emulated
+then these coordinates would be returned.
+
+#### Returned Result
+
+A map with the following entries:
+
+Name | Type | Description | Example
+--- | --- | --- | ---
+latitude | number | [Latitude](https://en.wikipedia.org/wiki/Latitude) value | 32.456
+longitude | number | [longitude](https://en.wikipedia.org/wiki/Longitude) value | 32.456
+altitude | number | [Altitude](https://en.wikipedia.org/wiki/Altitude) value | 5.678
+
+### mobile: resetGeolocation
+
+Resets mocked geolocation provider to the default/system one. Only works for real devices.
+
 ### mobile: pullFile
 
 Pulls a remote file from the device.
