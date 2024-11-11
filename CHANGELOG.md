@@ -1,3 +1,9 @@
+## [3.5.1](https://github.com/appium/appium-espresso-driver/compare/v3.5.0...v3.5.1) (2024-11-11)
+
+### Miscellaneous Chores
+
+* bump adb to include supporting activities with unicode chars ([#1032](https://github.com/appium/appium-espresso-driver/issues/1032)) ([c59abb7](https://github.com/appium/appium-espresso-driver/commit/c59abb75e2a629c040b96c385e74b55fd4e3d401))
+
 ## [3.5.0](https://github.com/appium/appium-espresso-driver/compare/v3.4.0...v3.5.0) (2024-09-23)
 
 ### Features
