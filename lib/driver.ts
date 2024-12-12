@@ -233,8 +233,10 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
           this.log.warn(`Chrome browser cannot be run in Espresso sessions because Espresso automation doesn't ` +
               `have permission to access Chrome`);
         } else {
-          this.log.errorAndThrow(`Chrome browser sessions cannot be run in Espresso because Espresso ` +
-            `automation doesn't have permission to access Chrome`);
+          throw this.log.errorWithException(
+            `Chrome browser sessions cannot be run in Espresso because Espresso ` +
+            `automation doesn't have permission to access Chrome`
+          );
         }
       }
 
@@ -262,8 +264,9 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
         this.log.info(`App file was not listed, instead we're going to run ` +
             `${this.opts.appPackage} directly on the device`);
         if (!await this.adb.isAppInstalled(this.opts.appPackage!)) {
-          this.log.errorAndThrow(`Could not find the package '${this.opts.appPackage}' ` +
-            `installed on the device`);
+          throw this.log.errorWithException(
+            `Could not find the package '${this.opts.appPackage}' installed on the device`
+          );
         }
       }
 
@@ -304,8 +307,11 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     })).sort((a, b) => a.split(path.sep).length - b.split(path.sep).length);
     if (sortedBundleItems.length === 0) {
       // no expected packages in the zip
-      throw this.log.errorAndThrow(`${this.opts.app} did not have any of '${SUPPORTED_EXTENSIONS.join(', ')}' ` +
-        `extension packages. Please make sure the provided .zip archive contains at least one valid application package.`);
+      throw this.log.errorWithException(
+        `${this.opts.app} did not have any of '${SUPPORTED_EXTENSIONS.join(', ')}' ` +
+        `extension packages. Please make sure the provided .zip archive contains at ` +
+        `least one valid application package.`
+      );
     }
     const unzippedAppPath = path.join(tmpRoot, _.first(sortedBundleItems)!);
     this.log.debug(`'${unzippedAppPath}' is the unzipped file from '${appPath}'`);
@@ -568,7 +574,9 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
 
     if (!this.opts.app) {
       if (this.opts.fullReset) {
-        this.log.errorAndThrow('Full reset requires an app capability, use fastReset if app is not provided');
+        throw this.log.errorWithException(
+          'Full reset requires an app capability, use fastReset if app is not provided'
+        );
       }
       this.log.debug('No app capability. Assuming it is already on the device');
       if (this.opts.fastReset) {
