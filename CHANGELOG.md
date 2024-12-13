@@ -1,3 +1,9 @@
+## [3.5.2](https://github.com/appium/appium-espresso-driver/compare/v3.5.1...v3.5.2) (2024-12-13)
+
+### Miscellaneous Chores
+
+* Replace occurrences of the deprecated errorAndThrow API ([#1035](https://github.com/appium/appium-espresso-driver/issues/1035)) ([3694dbc](https://github.com/appium/appium-espresso-driver/commit/3694dbce3c2054d7116144a3fb03169a9c6c9545))
+
 ## [3.5.1](https://github.com/appium/appium-espresso-driver/compare/v3.5.0...v3.5.1) (2024-11-11)
 
 ### Miscellaneous Chores
