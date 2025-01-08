@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import EspressoDriver from '../../../lib/driver';
+import { EspressoDriver } from '../../../lib/driver';
 
 let sandbox = sinon.createSandbox();
 

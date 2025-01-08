@@ -38,7 +38,7 @@ describe('compose node attributes', function () {
     afterEach(async function () {
       try {
         await driver.deleteSession();
-      } catch (ign) {}
+      } catch {}
       driver = null;
     });
 

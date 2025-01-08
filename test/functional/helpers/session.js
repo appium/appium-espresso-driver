@@ -1,4 +1,4 @@
-import remote from 'webdriverio';
+import { remote } from 'webdriverio';
 import AsyncLock from 'async-lock';
 
 const SESSION_GUARD = new AsyncLock();
@@ -23,7 +23,7 @@ async function deleteSession () {
   await SESSION_GUARD.acquire(HOST, async () => {
     try {
       await driver.quit();
-    } catch (ign) {}
+    } catch {}
     driver = null;
   });
 }

@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { ADB } from 'appium-adb';
-import EspressoDriver from '../../lib/driver';
+import { EspressoDriver } from '../../lib/driver';
 
 
 let sandbox = sinon.createSandbox();

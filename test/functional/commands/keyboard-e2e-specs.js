@@ -61,7 +61,7 @@ describe('keyboard', function () {
     await el.clear();
   });
 
-  it('should send keys to the correct element', async function () {
+  it('should send keys to the correct element with setImmediateValue', async function () {
     let el = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
     await el.setImmediateValue(['hello world']);
     await el.text().should.eventually.equal('hello world');

@@ -32,7 +32,7 @@ async function buildEspressoServer () {
       opts.buildConfiguration = JSON.parse(buildConfigurationStr);
       LOG.info(`The espresso build config is ${JSON.stringify(opts.buildConfiguration)}`);
     } catch (e) {
-      throw new Error(`Failed to parse the ${process.env.ESPRESSO_BUILD_CONFIG}. `
+      throw new Error(`Failed to parse the ${process.env.ESPRESSO_BUILD_CONFIG}. ` +
         `Please make sure that the JSON is valid format. Error: ${e}`);
     }
   }
@@ -41,7 +41,7 @@ async function buildEspressoServer () {
   try {
     await builder.build();
   } catch (e) {
-    throw new Error(`Failed to build the espresso server. `
+    throw new Error(`Failed to build the espresso server. ` +
       `SHOW_GRADLE_LOG=true environment variable helps to check the gradle log. Error: ${e}`);
   }
 
