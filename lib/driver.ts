@@ -634,7 +634,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
         (async () => {
           try {
             await task();
-          } catch (ign) {}
+          } catch {}
         })();
       }));
       if (this.wasAnimationEnabled) {
@@ -680,19 +680,19 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     // settings to the espresso server already
   }
 
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   proxyActive (sessionId) {
     // we always have an active proxy to the espresso server
     return true;
   }
 
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   canProxy (sessionId) {
     // we can always proxy to the espresso server
     return true;
   }
 
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getProxyAvoidList (sessionId): RouteMatcher[] {
     // we are maintaining two sets of NO_PROXY lists, one for chromedriver(CHROME_NO_PROXY)
     // and one for Espresso(NO_PROXY), based on current context will return related NO_PROXY list

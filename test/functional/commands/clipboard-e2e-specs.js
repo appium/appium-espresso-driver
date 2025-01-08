@@ -27,7 +27,7 @@ describe('clipboard', function () {
     const text = await driver.getClipboard('PLAINTEXT');
     try {
       text.should.eql('SGVsbG8=');
-    } catch (AssertionError) {
+    } catch (AssertionError) { // eslint-disable-line @typescript-eslint/no-unused-vars
       // API level 23 and 25 emulator has '\n'
       text.should.eql('SGVsbG8=\n');
     }

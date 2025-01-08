@@ -26,7 +26,7 @@ describe('EspressoDriver', function () {
       afterEach(async function () {
         try {
           await driver.deleteSession();
-        } catch (ign) {}
+        } catch {}
         driver = null;
       });
 
@@ -81,7 +81,7 @@ describe('EspressoDriver', function () {
     afterEach(async function () {
       try {
         await driver.deleteSession();
-      } catch (ign) {}
+      } catch {}
       driver = null;
     });
     it('should start activity by name', async function () {
@@ -122,7 +122,7 @@ describe('EspressoDriver', function () {
   //   afterEach(async function () {
   //     try {
   //       await driver.deleteSession();
-  //     } catch (ign) {}
+  //     } catch {}
   //     driver = null;
   //   });
   //   it('should send keys to focused-on element', async function () {

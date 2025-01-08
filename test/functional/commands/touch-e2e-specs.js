@@ -411,7 +411,7 @@ describe('touch actions -', function () {
     });
   });
 
-  describe('mjsonwp touch actions', function () {
+  describe('mjsonwp multi touch actions', function () {
     describe('multi touch actions', function () {
       // let nextEl;
 
