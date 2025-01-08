@@ -1,3 +1,9 @@
+## [3.5.3](https://github.com/appium/appium-espresso-driver/compare/v3.5.2...v3.5.3) (2025-01-08)
+
+### Miscellaneous Chores
+
+* bump eslint-config-appium-ts ([#1038](https://github.com/appium/appium-espresso-driver/issues/1038)) ([7873f54](https://github.com/appium/appium-espresso-driver/commit/7873f54924ee62ecf02f654dbfcb3b188ec0989d))
+
 ## [3.5.2](https://github.com/appium/appium-espresso-driver/compare/v3.5.1...v3.5.2) (2024-12-13)
 
 ### Miscellaneous Chores
