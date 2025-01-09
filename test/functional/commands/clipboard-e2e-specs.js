@@ -1,5 +1,6 @@
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
+import { AssertionError } from 'assert';
 
 
 describe('clipboard', function () {
@@ -27,9 +28,13 @@ describe('clipboard', function () {
     const text = await driver.getClipboard('PLAINTEXT');
     try {
       text.should.eql('SGVsbG8=');
-    } catch (AssertionError) { // eslint-disable-line @typescript-eslint/no-unused-vars
-      // API level 23 and 25 emulator has '\n'
-      text.should.eql('SGVsbG8=\n');
+    } catch (e) {
+      if (e instanceof AssertionError) {
+        // API level 23 and 25 emulator has '\n'
+        text.should.eql('SGVsbG8=\n');
+      } else {
+        throw e;
+      }
     }
     (Buffer.from(text, 'base64').toString()).should.eql('Hello');
   });
