@@ -1,3 +1,9 @@
+## [3.5.4](https://github.com/appium/appium-espresso-driver/compare/v3.5.3...v3.5.4) (2025-01-16)
+
+### Miscellaneous Chores
+
+* bump io.appium.settings to include the broad cast receiver update ([af47f59](https://github.com/appium/appium-espresso-driver/commit/af47f598c1925a527859ba518755a21b10904dce))
+
 ## [3.5.3](https://github.com/appium/appium-espresso-driver/compare/v3.5.2...v3.5.3) (2025-01-08)
 
 ### Miscellaneous Chores
