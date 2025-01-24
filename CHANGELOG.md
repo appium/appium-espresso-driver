@@ -1,3 +1,9 @@
+## [3.6.0](https://github.com/appium/appium-espresso-driver/compare/v3.5.4...v3.6.0) (2025-01-24)
+
+### Features
+
+* bump appium-adb to handle screenState=SCREEN_STATE_OFF as locked ([#1041](https://github.com/appium/appium-espresso-driver/issues/1041)) ([3a988d6](https://github.com/appium/appium-espresso-driver/commit/3a988d6082320c0b9f013ad8c9c3326d598ee611))
+
 ## [3.5.4](https://github.com/appium/appium-espresso-driver/compare/v3.5.3...v3.5.4) (2025-01-16)
 
 ### Miscellaneous Chores
