@@ -18,7 +18,6 @@ import { fs, tempDir, zip } from 'appium/support';
 import * as appManagementCmds from './commands/app-management';
 import * as contextCmds from './commands/context';
 import * as elementCmds from './commands/element';
-import * as executeCmds from './commands/execute';
 import * as miscCmds from './commands/misc';
 import * as servicesCmds from './commands/services';
 import * as screenshotCmds from './commands/screenshot';
@@ -34,6 +33,7 @@ import { retryInterval } from 'asyncbox';
 import { qualifyActivityName, getPackageInfo } from './utils';
 import { newMethodMap } from './method-map';
 import type { EspressoDriverCaps, EspressoDriverOpts, W3CEspressoDriverCaps } from './types';
+import { executeMethodMap } from './execute-method-map';
 
 // The range of ports we can use on the system for communicating to the
 // Espresso HTTP server on the device
@@ -155,6 +155,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   wasAnimationEnabled?: boolean;
 
   static newMethodMap = newMethodMap;
+  static executeMethodMap = executeMethodMap;
 
   override caps: EspressoDriverCaps;
 
@@ -217,7 +218,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
 
       this.caps = Object.assign(serverDetails, this.caps);
 
-      this.curContext = this.defaultContextName();
+      this.curContext = (this as unknown as AndroidDriver).defaultContextName();
 
       const defaultOpts = {
         fullReset: false,
@@ -244,13 +245,13 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
         || await findAPortNotInUse(SYSTEM_PORT_RANGE[0], SYSTEM_PORT_RANGE[1]);
       this.opts.adbPort = this.opts.adbPort || DEFAULT_ADB_PORT;
       // get device udid for this session
-      const {udid, emPort} = await this.getDeviceInfoFromCaps();
+      const {udid, emPort} = await (this as unknown as AndroidDriver).getDeviceInfoFromCaps();
       this.opts.udid = udid;
       // @ts-expect-error do not put random stuff on opts
       this.opts.emPort = emPort;
       // now that we know our java version and device info, we can create our
       // ADB instance
-      this.adb = await this.createADB();
+      this.adb = await (this as unknown as AndroidDriver).createADB();
 
       if (this.opts.app) {
         // find and copy, or download and unzip an app url or path
@@ -401,7 +402,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     }
 
     // get appPackage et al from manifest if necessary
-    let appInfo = await this.getLaunchInfo();
+    let appInfo = await (this as unknown as AndroidDriver).getLaunchInfo();
     if (appInfo) {
       // and get it onto our 'opts' object so we use it from now on
       Object.assign(this.opts, appInfo);
@@ -413,7 +414,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     if (this.opts.hideKeyboard) {
       this._originalIme = await this.adb.defaultIME();
     }
-    await this.initDevice();
+    await (this as unknown as AndroidDriver).initDevice();
 
     // Default state is window animation disabled.
     await this.setWindowAnimationState(this.caps.disableWindowAnimation === false);
@@ -510,7 +511,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   }
 
   async initWebview (): Promise<void> {
-    const viewName = this.defaultWebviewName();
+    const viewName = (this as unknown as AndroidDriver).defaultWebviewName();
     const timeout = this.opts.autoWebviewTimeout || 2000;
     this.log.info(`Setting webview to context '${viewName}' with timeout ${timeout}ms`);
     await retryInterval(timeout / 500, 500, this.setContext.bind(this), viewName);
@@ -566,7 +567,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   async initAUT (): Promise<void> {
     // Uninstall any uninstallOtherPackages which were specified in caps
     if (this.opts.uninstallOtherPackages) {
-      await this.uninstallOtherPackages(
+      await (this as unknown as AndroidDriver).uninstallOtherPackages(
         utils.parseArray(this.opts.uninstallOtherPackages),
         [SETTINGS_HELPER_ID, TEST_APK_PKG]
       );
@@ -580,7 +581,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
       }
       this.log.debug('No app capability. Assuming it is already on the device');
       if (this.opts.fastReset) {
-        await this.resetAUT();
+        await (this as unknown as AndroidDriver).resetAUT();
       }
     }
 
@@ -588,7 +589,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
       await this.adb.uninstallApk(this.opts.appPackage!);
     }
     if (this.opts.app) {
-      await this.installAUT();
+      await (this as unknown as AndroidDriver).installAUT();
     }
     if (this.opts.skipServerInstallation) {
       this.log.debug('skipServerInstallation capability is set. Not installig espresso-server ');
@@ -608,15 +609,15 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
 
     const screenRecordingStopTasks = [async () => {
       if (!_.isEmpty(this._screenRecordingProperties)) {
-        await this.stopRecordingScreen();
+        await (this as unknown as AndroidDriver).stopRecordingScreen();
       }
     }, async () => {
-      if (await this.mobileIsMediaProjectionRecordingRunning()) {
-        await this.mobileStopMediaProjectionRecording();
+      if (await (this as unknown as AndroidDriver).mobileIsMediaProjectionRecordingRunning()) {
+        await (this as unknown as AndroidDriver).mobileStopMediaProjectionRecording();
       }
     }, async () => {
       if (!_.isEmpty(this._screenStreamingProps)) {
-        await this.mobileStopScreenStreaming();
+        await (this as unknown as AndroidDriver).mobileStopScreenStreaming();
       }
     }];
 
@@ -711,17 +712,18 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     return !this.opts.app && this.helpers.isPackageOrBundle(this.opts.appPackage!);
   }
 
+  // @ts-ignore It's expected
   performActions = actionsCmds.performActions;
 
-  mobileCommandsMapping = executeCmds.mobileCommandsMapping;
-
-  mobileBackgroundApp = appManagementCmds.mobileBackgroundApp;
   startActivity = appManagementCmds.startActivity;
+  // @ts-ignore It's expected
   mobileStartActivity = appManagementCmds.mobileStartActivity;
 
   mobileWebAtoms = contextCmds.mobileWebAtoms;
+  // @ts-ignore It's expected
   suspendChromedriverProxy = contextCmds.suspendChromedriverProxy;
 
+  // @ts-ignore It's expected
   mobilePerformEditorAction = elementCmds.mobilePerformEditorAction;
   mobileSwipe = elementCmds.mobileSwipe;
   mobileOpenDrawer = elementCmds.mobileOpenDrawer;
@@ -737,6 +739,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   mobilePressKey = miscCmds.mobilePressKey;
   mobileGetDeviceInfo = miscCmds.mobileGetDeviceInfo;
   mobileIsToastVisible = miscCmds.mobileIsToastVisible;
+  // @ts-ignore It's expected
   getDisplayDensity = miscCmds.getDisplayDensity;
   mobileBackdoor = miscCmds.mobileBackdoor;
   mobileUiautomator = miscCmds.mobileUiautomator;
@@ -748,7 +751,9 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   mobileGetClipbard = clipboardCmds.getClipboard;
   mobileSetClipbard = clipboardCmds.mobileSetClipboard;
 
+  // @ts-ignore It's expected
   mobileStartService = servicesCmds.mobileStartService;
+  // @ts-ignore It's expected
   mobileStopService = servicesCmds.mobileStopService;
 
   getScreenshot = screenshotCmds.getScreenshot;
