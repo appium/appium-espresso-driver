@@ -712,18 +712,18 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     return !this.opts.app && this.helpers.isPackageOrBundle(this.opts.appPackage!);
   }
 
-  // @ts-ignore
+  // @ts-ignore It's expected
   performActions = actionsCmds.performActions;
 
-  mobileBackgroundApp = appManagementCmds.mobileBackgroundApp;
   startActivity = appManagementCmds.startActivity;
+  // @ts-ignore It's expected
   mobileStartActivity = appManagementCmds.mobileStartActivity;
 
   mobileWebAtoms = contextCmds.mobileWebAtoms;
-  // @ts-ignore
+  // @ts-ignore It's expected
   suspendChromedriverProxy = contextCmds.suspendChromedriverProxy;
 
-  // @ts-ignore
+  // @ts-ignore It's expected
   mobilePerformEditorAction = elementCmds.mobilePerformEditorAction;
   mobileSwipe = elementCmds.mobileSwipe;
   mobileOpenDrawer = elementCmds.mobileOpenDrawer;
@@ -739,7 +739,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   mobilePressKey = miscCmds.mobilePressKey;
   mobileGetDeviceInfo = miscCmds.mobileGetDeviceInfo;
   mobileIsToastVisible = miscCmds.mobileIsToastVisible;
-  // @ts-ignore
+  // @ts-ignore It's expected
   getDisplayDensity = miscCmds.getDisplayDensity;
   mobileBackdoor = miscCmds.mobileBackdoor;
   mobileUiautomator = miscCmds.mobileUiautomator;
@@ -751,9 +751,9 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   mobileGetClipbard = clipboardCmds.getClipboard;
   mobileSetClipbard = clipboardCmds.mobileSetClipboard;
 
-  // @ts-ignore
+  // @ts-ignore It's expected
   mobileStartService = servicesCmds.mobileStartService;
-  // @ts-ignore
+  // @ts-ignore It's expected
   mobileStopService = servicesCmds.mobileStopService;
 
   getScreenshot = screenshotCmds.getScreenshot;

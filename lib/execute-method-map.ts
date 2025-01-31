@@ -228,4 +228,16 @@ export const executeMethodMap = {
       optional: ['user']
     }
   },
+
+  'mobile: startActivity': {
+    command: 'mobileStartActivity',
+    params: {
+      required: ['appActivity'],
+      optional: [
+        'locale',
+        'optionalIntentArguments',
+        'optionalActivityArguments',
+      ]
+    }
+  },
 } as const satisfies ExecuteMethodMap<any>;
