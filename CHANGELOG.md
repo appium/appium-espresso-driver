@@ -1,3 +1,40 @@
+## [4.0.0](https://github.com/appium/appium-espresso-driver/compare/v3.6.0...v4.0.0) (2025-02-01)
+
+### ⚠ BREAKING CHANGES
+
+* The following methods and properties were **removed**:
+- mobileCommandsMapping
+- mobileBackgroundApp
+* The following methods signatures were **changed**:
+- mobileSwipe
+- mobileScrollToPage
+- mobileClickAction
+- mobileNavigateTo
+- mobileIsToastVisible
+- mobileOpenDrawer
+- mobileCloseDrawer
+- mobileSetDate
+- mobileSetTime
+- mobileBackdoor
+- mobileFlashElement
+- mobileUiautomator
+- mobileWebAtoms
+- mobileDismissAutofill
+- mobileRegisterIdlingResources
+- mobileUnregisterIdlingResources
+- mobilePressKey
+- mobileSetClipboard
+- mobileStartService
+- mobileStopService
+- mobileStartActivity
+- mobileScreenshots
+
+Based on https://github.com/appium/appium-android-driver/pull/982
+
+### Features
+
+* Add support of executeMethodMap ([#1042](https://github.com/appium/appium-espresso-driver/issues/1042)) ([00a38a2](https://github.com/appium/appium-espresso-driver/commit/00a38a2c095ed7aadb8fc7a277e148b8f723616e))
+
 ## [3.6.0](https://github.com/appium/appium-espresso-driver/compare/v3.5.4...v3.6.0) (2025-01-24)
 
 ### Features
