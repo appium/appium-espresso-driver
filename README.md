@@ -37,6 +37,17 @@ On top of standard Appium requirements Espresso driver also expects the followin
 - Both the server package and the application under test must be signed with the same digital signature. Appium does sign them automatically upon session creation, so this could only be an issue if one wants to test an application, which is already installed on the device (using `noReset=true` capability).
 - The package under test must not have mangled class names (e.g. [Proguard](https://developer.android.com/studio/build/shrink-code) must not be enabled for it)
 
+
+## Consuming Espresso Server as Library
+
+If you have access to the source code of the application under test then it is
+possible to integrate Espresso server into your application and make it to a library.
+This approach allows to simplify the dependency conflicts resolution
+as well as to optimize the session startup performance.
+Read the corresponding [article](./docs/as-library.md) from the driver
+documentation for more details.
+
+
 ### Doctor
 
 Since driver version 2.31.0 you can automate the validation for the most of the above
@@ -1776,17 +1787,6 @@ more details.
 > [!NOTE]
 > If you are _not_ going to run your tests in parallel then consider enabling the `--session-override` Appium server argument. It forces the server to close all pending sessions before a new one could be opened,
 > which allows you to avoid possible issues with such sessions silently running/expiring in the background.
-
-
-## Consuming Espresso Server as Library
-
-If you have access to the source code of the application under test then there is a
-possiblity to integrate Espresso server into your application and make it to a library.
-This approach allows to simplify the dependency conflicts resolution
-as well as to optimize the session startup performance.
-Read the corresponding [article](./docs/as-library.md) from the driver
-documentation for more details.
-
 
 ## Troubleshooting
 
