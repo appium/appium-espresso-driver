@@ -1,3 +1,10 @@
+## [4.0.3](https://github.com/appium/appium-espresso-driver/compare/v4.0.2...v4.0.3) (2025-02-14)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump webdriverio from 8.42.0 to 9.9.0 ([#1047](https://github.com/appium/appium-espresso-driver/issues/1047)) ([54e5039](https://github.com/appium/appium-espresso-driver/commit/54e5039090a51f76a22fd2cb7761d20a4c51aa98))
+* **deps-dev:** remove unused @types/sinon-chai ([#1044](https://github.com/appium/appium-espresso-driver/issues/1044)) ([c9124e1](https://github.com/appium/appium-espresso-driver/commit/c9124e1704fd55b1aa99e1b97527307ce1e36889))
+
 ## [4.0.2](https://github.com/appium/appium-espresso-driver/compare/v4.0.1...v4.0.2) (2025-02-14)
 
 ### Miscellaneous Chores
