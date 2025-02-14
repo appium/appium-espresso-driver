@@ -1,3 +1,9 @@
+## [4.0.2](https://github.com/appium/appium-espresso-driver/compare/v4.0.1...v4.0.2) (2025-02-14)
+
+### Miscellaneous Chores
+
+* Describe how to precompile the server into the AUT ([#1043](https://github.com/appium/appium-espresso-driver/issues/1043)) ([1a92717](https://github.com/appium/appium-espresso-driver/commit/1a92717510c5016bd1b795421805a47b54118a30))
+
 ## [4.0.1](https://github.com/appium/appium-espresso-driver/compare/v4.0.0...v4.0.1) (2025-02-14)
 
 ### Miscellaneous Chores
