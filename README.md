@@ -37,6 +37,17 @@ On top of standard Appium requirements Espresso driver also expects the followin
 - Both the server package and the application under test must be signed with the same digital signature. Appium does sign them automatically upon session creation, so this could only be an issue if one wants to test an application, which is already installed on the device (using `noReset=true` capability).
 - The package under test must not have mangled class names (e.g. [Proguard](https://developer.android.com/studio/build/shrink-code) must not be enabled for it)
 
+
+## Consuming Espresso Server as Library
+
+If you have access to the source code of the application under test then it is
+possible to integrate Espresso server into your application and make it to a library.
+This approach allows to simplify the dependency conflicts resolution
+as well as to optimize the session startup performance.
+Read the corresponding [article](./docs/as-library.md) from the driver
+documentation for more details.
+
+
 ### Doctor
 
 Since driver version 2.31.0 you can automate the validation for the most of the above
@@ -1773,14 +1784,14 @@ Appium allows to do this on per-process (multiple server processes running on di
 or per-request basis (single server process managing multiple sessions, more preferable, uses less resources and ensures better control over running sessions). Check [Parallel Android Tests](docs/parallel-tests.md) article for
 more details.
 
-> **Note**
+> [!NOTE]
 > If you are _not_ going to run your tests in parallel then consider enabling the `--session-override` Appium server argument. It forces the server to close all pending sessions before a new one could be opened,
 > which allows you to avoid possible issues with such sessions silently running/expiring in the background.
 
-
 ## Troubleshooting
 
-* If you observe Espresso server crash on startup and various exceptions about missing class/method in the logcat output then consider updating [appium:espressoBuildConfig](#espresso-build-config) capability with module versions that match your application under test. This might require some experimentation, as different apps have different module requirements. Check, for example, [issue #812](https://github.com/appium/appium-espresso-driver/issues/812)
+* If you observe Espresso server crash on startup and various exceptions about missing class/method in the logcat output then consider updating [appium:espressoBuildConfig](#espresso-build-config) capability with module versions that match your application under test. This might require some experimentation, as different apps have different module requirements. Check, for example, [issue #812](https://github.com/appium/appium-espresso-driver/issues/812). Another solution might be
+to [integrate](#consuming-espresso-server-as-library) Espresso Server with the application under test in form of a library.
 * If you experince issues with application activities being not found or not starting then consider checking [How To Troubleshoot Activities Startup](docs/activity-startup.md) article.
 * Espresso requires the debug APK and app-under-test APK (AUT) to have the same signature. It automatically signs the AUT with the `io.appium.espressoserver.test` signature. This may be problematic if you're using an outdated Android SDK tools and/or an outdated Java version.
 * If there are problems starting a session, set the capability `forceEspressoRebuild` to `true` and retry. This will force rebuilding of Espresso Server. If the following session startup is successfull, set it back to `false`, so the session startup performance is back to normal.
