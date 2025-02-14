@@ -1,3 +1,12 @@
+## [4.0.4](https://github.com/appium/appium-espresso-driver/compare/v4.0.3...v4.0.4) (2025-02-14)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @types/node from 20.17.19 to 22.13.4 ([#1048](https://github.com/appium/appium-espresso-driver/issues/1048)) ([3f5fd5e](https://github.com/appium/appium-espresso-driver/commit/3f5fd5ee0953d9c13b5270285bffca8a43865a95))
+* **deps-dev:** bump appium-chromedriver from 5.6.78 to 7.0.3 ([#1046](https://github.com/appium/appium-espresso-driver/issues/1046)) ([8c378ab](https://github.com/appium/appium-espresso-driver/commit/8c378ab605222b55d96c240efb147933d606b979))
+* **deps-dev:** bump mocha from 10.8.2 to 11.1.0 ([#1049](https://github.com/appium/appium-espresso-driver/issues/1049)) ([fd55f15](https://github.com/appium/appium-espresso-driver/commit/fd55f157026616399660fc654a2e670a82bd7bae))
+* **deps-dev:** bump sinon from 17.0.2 to 19.0.2 ([#1050](https://github.com/appium/appium-espresso-driver/issues/1050)) ([c7d29a1](https://github.com/appium/appium-espresso-driver/commit/c7d29a1c53263bdee6bed5a7b104a292587d8aab))
+
 ## [4.0.3](https://github.com/appium/appium-espresso-driver/compare/v4.0.2...v4.0.3) (2025-02-14)
 
 ### Miscellaneous Chores
