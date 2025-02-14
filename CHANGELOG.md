@@ -1,3 +1,9 @@
+## [4.0.1](https://github.com/appium/appium-espresso-driver/compare/v4.0.0...v4.0.1) (2025-02-14)
+
+### Miscellaneous Chores
+
+* add Versions.kt to commit in a release script ([e45d3a9](https://github.com/appium/appium-espresso-driver/commit/e45d3a9ec78018384701c35f652ec31a2b28056f))
+
 ## [4.0.0](https://github.com/appium/appium-espresso-driver/compare/v3.6.0...v4.0.0) (2025-02-01)
 
 ### ⚠ BREAKING CHANGES
