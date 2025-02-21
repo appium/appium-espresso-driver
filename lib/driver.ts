@@ -559,6 +559,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
       keyAlias: this.opts.keyAlias,
       keyPassword: this.opts.keyPassword,
       disableSuppressAccessibilityService: this.opts.disableSuppressAccessibilityService,
+      reqBasePath: this.basePath,
     });
     this.proxyReqRes = this.espresso.proxyReqRes.bind(this.espresso);
     this.proxyCommand = this.espresso.proxyCommand.bind(this.espresso);
