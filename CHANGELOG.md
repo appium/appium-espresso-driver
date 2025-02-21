@@ -1,3 +1,9 @@
+## [4.0.5](https://github.com/appium/appium-espresso-driver/compare/v4.0.4...v4.0.5) (2025-02-21)
+
+### Bug Fixes
+
+* Accept reqBasePath proxy option ([#1051](https://github.com/appium/appium-espresso-driver/issues/1051)) ([3f7bf30](https://github.com/appium/appium-espresso-driver/commit/3f7bf3088c73308e37cff081775447b4cc0dc698))
+
 ## [4.0.4](https://github.com/appium/appium-espresso-driver/compare/v4.0.3...v4.0.4) (2025-02-14)
 
 ### Miscellaneous Chores
