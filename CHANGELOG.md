@@ -1,3 +1,9 @@
+## [4.1.0](https://github.com/appium/appium-espresso-driver/compare/v4.0.5...v4.1.0) (2025-02-27)
+
+### Features
+
+* add more params in mobile: setGeolocation ([#1052](https://github.com/appium/appium-espresso-driver/issues/1052)) ([7c9a1a1](https://github.com/appium/appium-espresso-driver/commit/7c9a1a17bc5c63ff1c30b9e5f08d2d30b7d7a374))
+
 ## [4.0.5](https://github.com/appium/appium-espresso-driver/compare/v4.0.4...v4.0.5) (2025-02-21)
 
 ### Bug Fixes
