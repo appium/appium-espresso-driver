@@ -1,3 +1,9 @@
+## [4.1.1](https://github.com/appium/appium-espresso-driver/compare/v4.1.0...v4.1.1) (2025-03-10)
+
+### Miscellaneous Chores
+
+* bump io.appium.settings ([#1054](https://github.com/appium/appium-espresso-driver/issues/1054)) ([769d392](https://github.com/appium/appium-espresso-driver/commit/769d39201eedd5297c189b1cf1d641ed06cf050e))
+
 ## [4.1.0](https://github.com/appium/appium-espresso-driver/compare/v4.0.5...v4.1.0) (2025-02-27)
 
 ### Features
