@@ -1,3 +1,9 @@
+## [4.1.2](https://github.com/appium/appium-espresso-driver/compare/v4.1.1...v4.1.2) (2025-03-14)
+
+### Bug Fixes
+
+* the return value of getConnectivity to follow the description ([4283998](https://github.com/appium/appium-espresso-driver/commit/42839985a12d3e22241d98a444987eb358addc4a))
+
 ## [4.1.1](https://github.com/appium/appium-espresso-driver/compare/v4.1.0...v4.1.1) (2025-03-10)
 
 ### Miscellaneous Chores
