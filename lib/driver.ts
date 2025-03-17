@@ -749,8 +749,8 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   getSettings = miscCmds.getSettings;
 
   getClipboard = clipboardCmds.getClipboard;
-  mobileGetClipbard = clipboardCmds.getClipboard;
-  mobileSetClipbard = clipboardCmds.mobileSetClipboard;
+  mobileGetClipboard = clipboardCmds.getClipboard;
+  mobileSetClipboard = clipboardCmds.mobileSetClipboard;
 
   // @ts-ignore It's expected
   mobileStartService = servicesCmds.mobileStartService;
