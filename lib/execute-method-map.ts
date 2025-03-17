@@ -197,6 +197,13 @@ export const executeMethodMap = {
     }
   },
 
+  'mobile: backgroundApp': {
+    command: 'mobileBackgroundApp',
+    params: {
+      optional: ['seconds'],
+    }
+  },
+
   'mobile: setClipboard': {
     command: 'mobileSetClipboard',
     params: {
