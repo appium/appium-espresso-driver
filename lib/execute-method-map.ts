@@ -208,7 +208,7 @@ export const executeMethodMap = {
     }
   },
   'mobile: getClipboard': {
-    command: 'getClipboard',
+    command: 'mobileGetClipboard',
   },
 
   'mobile: startService': {
