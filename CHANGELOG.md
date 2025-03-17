@@ -1,3 +1,27 @@
+## [4.1.2](https://github.com/appium/appium-espresso-driver/compare/v4.1.1...v4.1.2) (2025-03-14)
+
+### Bug Fixes
+
+* the return value of getConnectivity to follow the description ([4283998](https://github.com/appium/appium-espresso-driver/commit/42839985a12d3e22241d98a444987eb358addc4a))
+
+## [4.1.1](https://github.com/appium/appium-espresso-driver/compare/v4.1.0...v4.1.1) (2025-03-10)
+
+### Miscellaneous Chores
+
+* bump io.appium.settings ([#1054](https://github.com/appium/appium-espresso-driver/issues/1054)) ([769d392](https://github.com/appium/appium-espresso-driver/commit/769d39201eedd5297c189b1cf1d641ed06cf050e))
+
+## [4.1.0](https://github.com/appium/appium-espresso-driver/compare/v4.0.5...v4.1.0) (2025-02-27)
+
+### Features
+
+* add more params in mobile: setGeolocation ([#1052](https://github.com/appium/appium-espresso-driver/issues/1052)) ([7c9a1a1](https://github.com/appium/appium-espresso-driver/commit/7c9a1a17bc5c63ff1c30b9e5f08d2d30b7d7a374))
+
+## [4.0.5](https://github.com/appium/appium-espresso-driver/compare/v4.0.4...v4.0.5) (2025-02-21)
+
+### Bug Fixes
+
+* Accept reqBasePath proxy option ([#1051](https://github.com/appium/appium-espresso-driver/issues/1051)) ([3f7bf30](https://github.com/appium/appium-espresso-driver/commit/3f7bf3088c73308e37cff081775447b4cc0dc698))
+
 ## [4.0.4](https://github.com/appium/appium-espresso-driver/compare/v4.0.3...v4.0.4) (2025-02-14)
 
 ### Miscellaneous Chores
