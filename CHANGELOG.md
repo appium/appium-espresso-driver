@@ -1,3 +1,9 @@
+## [4.1.3](https://github.com/appium/appium-espresso-driver/compare/v4.1.2...v4.1.3) (2025-03-17)
+
+### Bug Fixes
+
+* fix typo in mobile clipboard commands ([#1056](https://github.com/appium/appium-espresso-driver/issues/1056)) ([7f8a88e](https://github.com/appium/appium-espresso-driver/commit/7f8a88e54b5c36c3be795fd8b7e8bc054d8738a0))
+
 ## [4.1.2](https://github.com/appium/appium-espresso-driver/compare/v4.1.1...v4.1.2) (2025-03-14)
 
 ### Bug Fixes
