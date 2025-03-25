@@ -1,3 +1,9 @@
+## [4.1.4](https://github.com/appium/appium-espresso-driver/compare/v4.1.3...v4.1.4) (2025-03-25)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump sinon from 19.0.5 to 20.0.0 ([#1057](https://github.com/appium/appium-espresso-driver/issues/1057)) ([332b46f](https://github.com/appium/appium-espresso-driver/commit/332b46fcd2d01fe971e7ab9f30cd57b5356bafbe))
+
 ## [4.1.3](https://github.com/appium/appium-espresso-driver/compare/v4.1.2...v4.1.3) (2025-03-17)
 
 ### Bug Fixes
