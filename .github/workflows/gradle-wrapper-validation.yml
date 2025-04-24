@@ -24,10 +24,10 @@ jobs:
         cache: 'gradle'
 
     - name: Setup Gradle  # Starting with v4 the setup-gradle action will perform wrapper validation on each execution.
-      working-directory: espresso-server
       uses: gradle/actions/setup-gradle@v4
 
     - name: Submit Dependencies (main branch only)
-      working-directory: espresso-server
       if: github.ref == 'refs/heads/master'
       uses: gradle/actions/dependency-submission@v4
+      with:
+          build-root-directory: ./espresso-server
