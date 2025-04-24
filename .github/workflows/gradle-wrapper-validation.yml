@@ -1,0 +1,31 @@
+name: "Gradle Dependency Submission"
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: 'gradle'
+
+    - name: Setup Gradle  # Starting with v4 the setup-gradle action will perform wrapper validation on each execution.
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Submit Dependencies (main branch only)
+      if: github.ref == 'refs/heads/master'
+      uses: gradle/actions/dependency-submission@v4
