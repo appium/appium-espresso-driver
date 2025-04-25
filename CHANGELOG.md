@@ -1,3 +1,9 @@
+## [4.1.5](https://github.com/appium/appium-espresso-driver/compare/v4.1.4...v4.1.5) (2025-04-25)
+
+### Miscellaneous Chores
+
+* add deprecated: true for get clipboard ([#1060](https://github.com/appium/appium-espresso-driver/issues/1060)) ([6fdc4b5](https://github.com/appium/appium-espresso-driver/commit/6fdc4b5e6d96beacb3a16c51a2d1739bbfb760cf))
+
 ## [4.1.4](https://github.com/appium/appium-espresso-driver/compare/v4.1.3...v4.1.4) (2025-03-25)
 
 ### Miscellaneous Chores
