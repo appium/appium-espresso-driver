@@ -1,3 +1,9 @@
+## [4.1.8](https://github.com/appium/appium-espresso-driver/compare/v4.1.7...v4.1.8) (2025-05-30)
+
+### Miscellaneous Chores
+
+* remove unused import ([#1064](https://github.com/appium/appium-espresso-driver/issues/1064)) ([3bfc1be](https://github.com/appium/appium-espresso-driver/commit/3bfc1bec01d11e66f3c671443cd3185794643c3e))
+
 ## [4.1.7](https://github.com/appium/appium-espresso-driver/compare/v4.1.6...v4.1.7) (2025-05-30)
 
 ### Bug Fixes
