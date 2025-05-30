@@ -1,3 +1,9 @@
+## [4.1.9](https://github.com/appium/appium-espresso-driver/compare/v4.1.8...v4.1.9) (2025-05-30)
+
+### Bug Fixes
+
+* elementId is required in `mobile: clickAction` ([#1065](https://github.com/appium/appium-espresso-driver/issues/1065)) ([640065e](https://github.com/appium/appium-espresso-driver/commit/640065ef6a7078394bd3b1327b7917f45aac76b7))
+
 ## [4.1.8](https://github.com/appium/appium-espresso-driver/compare/v4.1.7...v4.1.8) (2025-05-30)
 
 ### Miscellaneous Chores
