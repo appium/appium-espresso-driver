@@ -46,8 +46,11 @@ export const executeMethodMap = {
     params: {
       optional: [
         'elementId',
-        'x',
-        'y',
+        'tapper',
+        'coordinatesProvider',
+        'precisionDescriber',
+        'inputDevice',
+        'buttonState',
       ],
     },
   },
