@@ -63,7 +63,7 @@ public class MobileBackdoorMethodTest {
         method.setArgs(args);
         try {
             method.getArgumentTypes();
-            fail("expected exception was not occured.");
+            fail("expected exception was not occurred.");
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("Class not found: java.lang.Lol"));
         }
@@ -81,7 +81,7 @@ public class MobileBackdoorMethodTest {
         method.setArgs(args);
         try {
             method.getArguments();
-            fail("expected exception was not occured.");
+            fail("expected exception was not occurred.");
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("For input string: \"lol\""));
         }

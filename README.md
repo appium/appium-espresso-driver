@@ -1151,7 +1151,7 @@ Gives a possibility to invoke methods from your application under test.
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 elementId | string | yes if `target` is set to `element` | UDID of the element to perform the action on. | 123456-7890-3453-24234243
-target | string | yes | Select a target for the backdoor mathod execution: `activity`, `application`, `element` | activity
+target | string | yes | Select a target for the backdoor method execution: `activity`, `application`, `element` | activity
 methods | `Array<Map>` | yes | Methods chain to execute | See [Backdoor Extension Usage](#backdoor-extension-usage)
 
 #### Returns
@@ -1326,7 +1326,7 @@ Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 content | string | yes | Base64-encoded clipboard payload. | YXBwaXVt
 contentType | string | no | The only supported and the default value is `plaintext` | plaintext
-lable | string | no | Optinal label to identify the current clipboard payload. | yolo
+label | string | no | Optional label to identify the current clipboard payload. | yolo
 
 ### mobile: hideKeyboard
 
@@ -1399,9 +1399,9 @@ Missing values tell the driver to not change the corresponding service's state.
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-wifi | booolean | no | Either to enable or disable Wi-Fi. | false
-data | booolean | no | Either to enable or disable mobile data. | false
-airplaneMode | booolean | no | Either to enable or disable Airplane Mode. | false
+wifi | boolean | no | Either to enable or disable Wi-Fi. | false
+data | boolean | no | Either to enable or disable mobile data. | false
+airplaneMode | boolean | no | Either to enable or disable Airplane Mode. | false
 
 ### mobile: getAppStrings
 
@@ -1573,7 +1573,7 @@ Returns `true` if GPS is enabled on the device under test. Available since drive
 
 ### mobile: getPerformanceDataTypes
 
-Fetches the list of supported perfomance data types that could be used as `dataType` argument value to [mobile: getPerformanceData](#mobile-getperformancedata) extension. Available since driver version 2.23
+Fetches the list of supported performance data types that could be used as `dataType` argument value to [mobile: getPerformanceData](#mobile-getperformancedata) extension. Available since driver version 2.23
 
 #### Returned Result
 
@@ -1643,11 +1643,11 @@ This functionality is only supported since Android 10.
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-displayId | number or string | no | Display identifier to take a screenshot for. If not provided then all display screenshots are going to be returned. If no matches were found then an error is thrown. Actual display identifiers could be retrived from the `adb shell dumpsys SurfaceFlinger --display-id` command output. | 1
+displayId | number or string | no | Display identifier to take a screenshot for. If not provided then all display screenshots are going to be returned. If no matches were found then an error is thrown. Actual display identifiers could be retrieved from the `adb shell dumpsys SurfaceFlinger --display-id` command output. | 1
 
 #### Returns
 
-A dictionary where each key is the diplay identifier and the value has the following keys:
+A dictionary where each key is the display identifier and the value has the following keys:
 - `id`: The same display identifier
 - `name`: Display name
 - `isDefault`: Whether this display is the default one
@@ -1732,7 +1732,7 @@ the [appium:injectedImageProperties capability](#emulator-android-virtual-device
 in order to prepare the emulator for image injection if this extension is used
 on a newly created or resetted device.
 
-There is also a possiblity to perform a manual configuration of the necessary preconditions
+There is also a possibility to perform a manual configuration of the necessary preconditions
 if you don't want to restart the emulator on session startup. For that replace the content
 of the `Toren1BD.posters` file located in `$ANDROID_HOME/emulator/resources` folder with the
 following text:
@@ -1796,9 +1796,9 @@ more details.
 
 * If you observe Espresso server crash on startup and various exceptions about missing class/method in the logcat output then consider updating [appium:espressoBuildConfig](#espresso-build-config) capability with module versions that match your application under test. This might require some experimentation, as different apps have different module requirements. Check, for example, [issue #812](https://github.com/appium/appium-espresso-driver/issues/812). Another solution might be
 to [integrate](#consuming-espresso-server-as-library) Espresso Server with the application under test in form of a library.
-* If you experince issues with application activities being not found or not starting then consider checking [How To Troubleshoot Activities Startup](docs/activity-startup.md) article.
+* If you experience issues with application activities being not found or not starting then consider checking [How To Troubleshoot Activities Startup](docs/activity-startup.md) article.
 * Espresso requires the debug APK and app-under-test APK (AUT) to have the same signature. It automatically signs the AUT with the `io.appium.espressoserver.test` signature. This may be problematic if you're using an outdated Android SDK tools and/or an outdated Java version.
-* If there are problems starting a session, set the capability `forceEspressoRebuild` to `true` and retry. This will force rebuilding of Espresso Server. If the following session startup is successfull, set it back to `false`, so the session startup performance is back to normal.
+* If there are problems starting a session, set the capability `forceEspressoRebuild` to `true` and retry. This will force rebuilding of Espresso Server. If the following session startup is successful, set it back to `false`, so the session startup performance is back to normal.
 * If you experience session startup failures due to exceptions similar to `Resources$NotFoundException` then try to adjust your ProGuard rules:
   ```
   -dontwarn com.google.android.material.**

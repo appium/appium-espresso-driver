@@ -44,7 +44,7 @@ fun makeActivityOptions(activityOptions: Map<String, Any?>?): ActivityOptions {
                     }
                 } catch (e: NumberFormatException) {
                     throw IllegalArgumentException(
-                            "Can't covert '$value' to Int", e)
+                            "Can't convert '$value' to Int", e)
                 }
             }
     )
