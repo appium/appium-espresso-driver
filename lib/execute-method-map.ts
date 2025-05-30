@@ -44,8 +44,10 @@ export const executeMethodMap = {
   'mobile: clickAction': {
     command: 'mobileClickAction',
     params: {
-      optional: [
+      required: [
         'elementId',
+      ],
+      optional: [
         'tapper',
         'coordinatesProvider',
         'precisionDescriber',
