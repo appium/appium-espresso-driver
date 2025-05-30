@@ -16,15 +16,10 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import android.util.Log
-import androidx.test.espresso.UiController
 import androidx.test.espresso.action.GeneralClickAction
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.helpers.TAG
 import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.MobileClickActionParams
-import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
-import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
 
 class MobileClickAction : RequestHandler<MobileClickActionParams, Void?> {
 
