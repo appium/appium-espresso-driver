@@ -20,7 +20,7 @@ class WebAtomTest {
     }
 
     @Test
-    fun `should parse JSON primtive as web atom with name and no args`() {
+    fun `should parse JSON primitive as web atom with name and no args`() {
         val jsonObject = JsonPrimitive("clearElement")
         val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "clearElement")

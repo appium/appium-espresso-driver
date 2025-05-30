@@ -266,7 +266,7 @@ describe('find elements', function () {
       });
 
       it('should be able to set a specific View as a root element when activity has multiple Views', async function () {
-        // Finding by withText equalTo 'COPY TEXT' should be ambiguous, because there are threee
+        // Finding by withText equalTo 'COPY TEXT' should be ambiguous, because there are three
         // items with the same matcher
 
         await driver.element('-android viewmatcher', JSON.stringify({

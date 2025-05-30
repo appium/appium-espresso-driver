@@ -42,7 +42,7 @@ class ProcessorTest {
         action.type = ActionType.POINTER_DOWN
         try {
             processNullAction(action, InputSourceType.NONE, "any1", 0)
-            fail("expected exception was not occured.")
+            fail("expected exception was not occurred.")
         } catch (ie: InvalidArgumentException) {
             assertTrue(ie.message!!.contains("must be type 'pause'"))
         }
@@ -65,7 +65,7 @@ class ProcessorTest {
         action.duration = -1f
         try {
             processPauseAction(action, InputSourceType.NONE, "any3", 0)
-            fail("expected exception was not occured.")
+            fail("expected exception was not occurred.")
         } catch (ie: InvalidArgumentException) {
             assertTrue(ie.message!!.contains("'duration' be greater than or equal to 0"))
         }
@@ -117,7 +117,7 @@ class ProcessorTest {
         action.duration = -1f
         try {
             processPointerMoveAction(action, InputSourceType.POINTER, "any", 0)
-            fail("expected exception was not occured.")
+            fail("expected exception was not occurred.")
         } catch (ie: InvalidArgumentException) {
             assertTrue(ie.message!!.contains("'duration' be greater than or equal to 0"))
         }
@@ -143,7 +143,7 @@ class ProcessorTest {
         action.button = -100
         try {
             processPointerUpOrDownAction(action, InputSourceType.POINTER, "any", 0)
-            fail("expected exception was not occured.")
+            fail("expected exception was not occurred.")
         } catch (ie: InvalidArgumentException) {
             assertTrue(ie.message!!.contains("property 'button' must be greater than or equal to 0"))
         }
@@ -156,7 +156,7 @@ class ProcessorTest {
         action.type = ActionType.POINTER_DOWN
         try {
             processKeyAction(action, InputSourceType.KEY, "any", 0)
-            fail("expected exception was not occured.")
+            fail("expected exception was not occurred.")
         } catch (ie: InvalidArgumentException) {
             assertTrue(ie.message!!.contains("has an invalid type"))
         }
@@ -182,7 +182,7 @@ class ProcessorTest {
         action.value = "asdfafsd"
         try {
             processKeyAction(action, InputSourceType.KEY, "any", 0)
-            fail("expected exception was not occured.")
+            fail("expected exception was not occurred.")
         } catch (ie: InvalidArgumentException) {
             assertTrue(ie.message!!.contains("Must be a unicode point"))
         }
@@ -208,7 +208,7 @@ class ProcessorTest {
         action.type = ActionType.KEY_DOWN
         try {
             processPointerAction(action, pointerInputSource!!, "any", 0)
-            fail("expected exception was not occured.")
+            fail("expected exception was not occurred.")
         } catch (ie: InvalidArgumentException) {
             assertTrue(ie.message!!.contains("has an invalid type"))
         }

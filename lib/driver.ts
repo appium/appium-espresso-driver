@@ -292,7 +292,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
    * in the archived file.
    *
    * @param {string} appPath The path to app file.
-   * @returns {Promise<string>} Retuns the path to an unzipped app file path.
+   * @returns {Promise<string>} Returns the path to an unzipped app file path.
    * @throws Raise an exception if the zip did not have any SUPPORTED_EXTENSIONS packages.
    */
   async unzipApp (appPath: string): Promise<string> {

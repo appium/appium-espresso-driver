@@ -32,7 +32,7 @@ private fun dispatchKeyEvent(dispatcherAdapter: W3CActionAdapter,
 
     // 6. Let charCode, keyCode and which be the implementation-specific values of the charCode,
     // keyCode and which properties.
-    // Omiting this for now until there's an implementation that needs it.
+    // Omitting this for now until there's an implementation that needs it.
 
     // 7-10: Set the alt, shift, ctrl meta key state
     dispatcherAdapter.logger.info(String.format(
