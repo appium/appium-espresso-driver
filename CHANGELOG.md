@@ -1,3 +1,9 @@
+## [4.1.7](https://github.com/appium/appium-espresso-driver/compare/v4.1.6...v4.1.7) (2025-05-30)
+
+### Bug Fixes
+
+* mobileClickAction ([#1063](https://github.com/appium/appium-espresso-driver/issues/1063)) ([4adff76](https://github.com/appium/appium-espresso-driver/commit/4adff76367be421cd999d887dd317e96a649d0b3))
+
 ## [4.1.6](https://github.com/appium/appium-espresso-driver/compare/v4.1.5...v4.1.6) (2025-05-21)
 
 ### Miscellaneous Chores
