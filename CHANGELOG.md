@@ -1,3 +1,9 @@
+## [4.1.10](https://github.com/appium/appium-espresso-driver/compare/v4.1.9...v4.1.10) (2025-05-30)
+
+### Miscellaneous Chores
+
+* fix typos ([#1066](https://github.com/appium/appium-espresso-driver/issues/1066)) ([a771933](https://github.com/appium/appium-espresso-driver/commit/a771933148a086d01a16eb7ba07d0d1112829e04))
+
 ## [4.1.9](https://github.com/appium/appium-espresso-driver/compare/v4.1.8...v4.1.9) (2025-05-30)
 
 ### Bug Fixes
