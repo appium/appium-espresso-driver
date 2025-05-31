@@ -1,3 +1,9 @@
+## [4.1.11](https://github.com/appium/appium-espresso-driver/compare/v4.1.10...v4.1.11) (2025-05-31)
+
+### Miscellaneous Chores
+
+* use for...of for better readability in test ([#1067](https://github.com/appium/appium-espresso-driver/issues/1067)) ([0b06f90](https://github.com/appium/appium-espresso-driver/commit/0b06f90f286f827507b85394f44b19a0b851a4ce))
+
 ## [4.1.10](https://github.com/appium/appium-espresso-driver/compare/v4.1.9...v4.1.10) (2025-05-30)
 
 ### Miscellaneous Chores
