@@ -15,9 +15,10 @@ describe('ElementValue', function () {
     chai.should();
     chai.use(chaiAsPromised.default);
 
-    let caps = Object.assign({
+    let caps = {
       appActivity: 'io.appium.android.apis.app.CustomTitle',
-    }, APIDEMO_CAPS);
+      ...APIDEMO_CAPS
+    };
     driver = await initSession(caps);
   });
   after(async function () {
