@@ -20,8 +20,8 @@ describe('espresso-runner', function () {
 
   function getOpts (params) {
     let opts = {};
-    for (let j = 0; j < params.length; j++) {
-      opts[params[j]] = 'value';
+    for (const param of params) {
+      opts[param] = 'value';
     }
     return opts;
   }
@@ -33,10 +33,10 @@ describe('espresso-runner', function () {
         }).to.throw(`Option '${missingParam}' is required!`);
       });
     }
-    for (let i = 0; i < REQUIRED_PARAMS.length; i++) {
-      let params = REQUIRED_PARAMS.filter((el) => el !== REQUIRED_PARAMS[i]);
+    for (const requiredParam of REQUIRED_PARAMS) {
+      let params = REQUIRED_PARAMS.filter((el) => el !== requiredParam);
       let opts = getOpts(params);
-      runConstructorTest(opts, REQUIRED_PARAMS[i]);
+      runConstructorTest(opts, requiredParam);
     }
   });
 
