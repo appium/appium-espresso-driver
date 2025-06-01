@@ -15,7 +15,8 @@ describe('mobile', function () {
     chai.should();
     chai.use(chaiAsPromised.default);
 
-    driver = await initSession({...APIDEMO_CAPS,
+    driver = await initSession({
+      ...APIDEMO_CAPS,
       espressoBuildConfig: JSON.stringify({
         additionalAndroidTestDependencies: ['com.google.android.material:material:1.2.1']
       })
