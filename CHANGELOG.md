@@ -1,3 +1,14 @@
+## [4.1.12](https://github.com/appium/appium-espresso-driver/compare/v4.1.11...v4.1.12) (2025-06-10)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @types/node from 22.15.31 to 24.0.0 ([#1070](https://github.com/appium/appium-espresso-driver/issues/1070)) ([fb88b77](https://github.com/appium/appium-espresso-driver/commit/fb88b778adf9efbc1d00ee293502c71c36507c63))
+
+### Code Refactoring
+
+* remove unused import in espresso-server ([#1069](https://github.com/appium/appium-espresso-driver/issues/1069)) ([4415a95](https://github.com/appium/appium-espresso-driver/commit/4415a95e82cfad38383365f96b6b66b58bb49457))
+* use an object spread instead of Object.assign ([#1068](https://github.com/appium/appium-espresso-driver/issues/1068)) ([94c0a2e](https://github.com/appium/appium-espresso-driver/commit/94c0a2e246915f7c130ef2939563d3f639d8957c))
+
 ## [4.1.11](https://github.com/appium/appium-espresso-driver/compare/v4.1.10...v4.1.11) (2025-05-31)
 
 ### Miscellaneous Chores
