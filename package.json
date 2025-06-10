@@ -119,7 +119,7 @@
     "@types/bluebird": "^3.5.38",
     "@types/lodash": "^4.14.196",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^22.13.4",
+    "@types/node": "^24.0.0",
     "@types/sinon": "^17.0.0",
     "@types/teen_process": "^2.0.2",
     "@xmldom/xmldom": "^0.x",
