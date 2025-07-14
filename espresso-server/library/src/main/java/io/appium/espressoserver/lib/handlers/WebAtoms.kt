@@ -38,9 +38,9 @@ class WebAtoms : RequestHandler<WebAtomsParams, Any?> {
         // TODO: Add a 'waitForDocument' feature to wait for HTML DOCUMENT to be ready
 
         // Initialize onWebView with web view matcher (if webviewEl provided)
-        params.webviewElement.let { webviewElement ->
-            AndroidLogger.info("Initializing webView interaction on webview with el: '$webviewElement'")
-            val viewState = EspressoElement.getCachedViewStateById(webviewElement)
+        params.webviewEl.let { webviewEl ->
+            AndroidLogger.info("Initializing webView interaction on webview with el: '$webviewEl'")
+            val viewState = EspressoElement.getCachedViewStateById(webviewEl)
             val matcher = withView(viewState.view)
             webViewInteraction = onWebView(matcher)
         }

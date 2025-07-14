@@ -44,7 +44,7 @@ class WebAtomsTest {
     @Test
     fun `should parse web atoms object`() {
         val json = """{
-           "webviewElement":"abc",
+           "webviewEl":"abc",
            "forceJavascriptEnabled":true,
            "methodChain":[
               {
@@ -71,7 +71,7 @@ class WebAtomsTest {
            ]
         }"""
         val webAtoms = g.fromJson(json, WebAtomsParams::class.java)
-        assertEquals(webAtoms.webviewElement, "abc")
+        assertEquals(webAtoms.webviewEl, "abc")
         assertEquals(webAtoms.forceJavascriptEnabled, true)
 
         webAtoms.methodChain[0].let {
