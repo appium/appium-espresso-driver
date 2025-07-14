@@ -16,9 +16,11 @@ describe('mobile web atoms', function () {
     chai.use(chaiAsPromised.default);
 
     driver = await initSession({
-      ...APIDEMO_CAPS,
-      appPackage: 'io.appium.android.apis',
-      appActivity: 'io.appium.android.apis.view.WebView1',
+      capabilities: {
+        ...APIDEMO_CAPS,
+        'appium:appPackage': 'io.appium.android.apis',
+        'appium:appActivity': 'io.appium.android.apis.view.WebView1',
+      }
     });
   });
   after(async function () {
