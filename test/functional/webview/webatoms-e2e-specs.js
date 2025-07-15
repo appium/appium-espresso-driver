@@ -29,7 +29,7 @@ describe('mobile web atoms', function () {
     const webviewEl = await driver.elementById('wv1');
     await B.delay(10000); // Wait for WebView to load
     await driver.execute(`mobile: webAtoms`, {
-      webviewElement: webviewEl.value,
+      webviewEl: webviewEl.value,
       forceJavascriptEnabled: true,
       methodChain: [
         {name: 'withElement', atom: {name: 'findElement', locator: {using: 'ID', value: 'i_am_a_textbox'}}},
