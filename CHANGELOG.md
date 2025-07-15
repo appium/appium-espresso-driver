@@ -1,3 +1,9 @@
+## [4.1.14](https://github.com/appium/appium-espresso-driver/compare/v4.1.13...v4.1.14) (2025-07-15)
+
+### Bug Fixes
+
+* handle webviewEl in mobile: webAtoms properly ([#1075](https://github.com/appium/appium-espresso-driver/issues/1075)) ([3bbd526](https://github.com/appium/appium-espresso-driver/commit/3bbd5266a16046546186f6197bcfb03ea2548fba))
+
 ## [4.1.13](https://github.com/appium/appium-espresso-driver/compare/v4.1.12...v4.1.13) (2025-06-13)
 
 ### Miscellaneous Chores
