@@ -1,3 +1,9 @@
+## [4.1.15](https://github.com/appium/appium-espresso-driver/compare/v4.1.14...v4.1.15) (2025-07-21)
+
+### Bug Fixes
+
+* do not proxy commands for retrieving session data ([#1076](https://github.com/appium/appium-espresso-driver/issues/1076)) ([f2f27cc](https://github.com/appium/appium-espresso-driver/commit/f2f27cc9e25c5cd777948b6f81571466035c6a1f))
+
 ## [4.1.14](https://github.com/appium/appium-espresso-driver/compare/v4.1.13...v4.1.14) (2025-07-15)
 
 ### Bug Fixes
