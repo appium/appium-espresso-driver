@@ -49,12 +49,15 @@ const DEVICE_PORT = 6791;
 // (Not segregating right away because more paths to be added in the NO_PROXY list)
 const NO_PROXY: RouteMatcher[] = [
   ['GET', new RegExp('^/session/(?!.*/)')],
+  ['GET', new RegExp('^/session/[^/]+/appium/capabilities')],
+  ['GET', new RegExp('^/session/[^/]+/appium/commands')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/current_activity')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/current_package')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/display_density')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/is_keyboard_shown')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/system_bars')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/system_time')],
+  ['GET', new RegExp('^/session/[^/]+/appium/extensions')],
   ['GET', new RegExp('^/session/[^/]+/appium/settings')],
   ['GET', new RegExp('^/session/[^/]+/context')],
   ['GET', new RegExp('^/session/[^/]+/contexts')],
