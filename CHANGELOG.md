@@ -1,3 +1,9 @@
+## [4.1.16](https://github.com/appium/appium-espresso-driver/compare/v4.1.15...v4.1.16) (2025-08-08)
+
+### Miscellaneous Chores
+
+* bump appium-android-driver to 10.3.11 ([#1077](https://github.com/appium/appium-espresso-driver/issues/1077)) ([2e5329c](https://github.com/appium/appium-espresso-driver/commit/2e5329cea38adc0f0fc70bb294474be7fa807a45))
+
 ## [4.1.15](https://github.com/appium/appium-espresso-driver/compare/v4.1.14...v4.1.15) (2025-07-21)
 
 ### Bug Fixes
