@@ -111,7 +111,7 @@ jobs:
     - uses: reactivecircus/android-emulator-runner@v2
       name: e2e_api${{ matrix.apiLevel }}
       with:
-        script: npx mocha --timeout 10m ./test/functional/driver-e2e-specs.js ./test/functional/utils-e2e-specs.js ./test/functional/commands/jetpack-compose-attributes-e2e-specs.js -g @skip-ci -i --exit
+        script: npx mocha --timeout 10m ./test/functional/*-specs.js ./test/functional/commands/jetpack-compose-attributes-e2e-specs.js -g @skip-ci -i --exit
         avd-name: ${{ env.ANDROID_AVD }}
         force-avd-creation: false
         api-level: ${{ matrix.apiLevel }}
