@@ -1,3 +1,4 @@
+import axios from 'axios';
 import path from 'path';
 import { remote } from 'webdriverio';
 import { HOST, PORT } from './helpers/session';
@@ -129,7 +130,7 @@ describe('EspressoDriver', function () {
       await driver.performActions([{
         type: 'key',
         id: 'keyboard',
-        actions: Array.from(text).flatMap(char => [
+        actions: Array.from(text).flatMap((char) => [
           { type: 'keyDown', value: char },
           { type: 'keyUp', value: char }
         ])
