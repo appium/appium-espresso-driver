@@ -1,4 +1,3 @@
-import axios from 'axios';
 import path from 'path';
 import { remote } from 'webdriverio';
 import { HOST, PORT } from './helpers/session';
@@ -143,20 +142,18 @@ describe('EspressoDriver', function () {
     it('should do long press keycode', async function () {
       const KEYCODE_G = 35;
       const META_SHIFT_MASK = 193;
-      let sessionId = driver.sessionId;
 
-      const endpoints = ['long_press_keycode', 'press_keycode'];
-      for (let endpoint of endpoints) {
-        await axios({
-          method: 'POST',
-          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/appium/device/${endpoint}`,
-          data: {
+      for (let isLongPress of [true, false]) {
+        await driver.execute(
+          'mobile: pressKey',
+          {
             keycode: KEYCODE_G,
             metastate: 0 | META_SHIFT_MASK,
-          },
-        });
+            isLongPress
+          }
+        );
         const editEl = await driver.$('//android.widget.AutoCompleteTextView');
-        await editEl.getText().should.eventually.equal(endpoint === 'press_keycode' ? 'G' : 'GG');
+        await editEl.getText().should.eventually.equal(isLongPress ? 'GG' : 'G');
         await editEl.clearValue();
       }
     });
