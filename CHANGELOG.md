@@ -1,3 +1,9 @@
+## [4.1.17](https://github.com/appium/appium-espresso-driver/compare/v4.1.16...v4.1.17) (2025-08-17)
+
+### Miscellaneous Chores
+
+* drop rimraf deps from dev deps as no references ([#1078](https://github.com/appium/appium-espresso-driver/issues/1078)) ([0c4d11d](https://github.com/appium/appium-espresso-driver/commit/0c4d11d45a99de68491c2054acda3419a5021ec0))
+
 ## [4.1.16](https://github.com/appium/appium-espresso-driver/compare/v4.1.15...v4.1.16) (2025-08-08)
 
 ### Miscellaneous Chores
