@@ -1,13 +1,8 @@
 import path from 'path';
 import { remote } from 'webdriverio';
-import { HOST, PORT } from './helpers/session';
+import { COMMON_REMOTE_OPTIONS } from './helpers/session';
 import { APIDEMO_CAPS, amendCapabilities } from './desired';
 
-
-const COMMON_REMOTE_OPTIONS = {
-  hostname: HOST,
-  port: PORT,
-};
 
 describe('EspressoDriver', function () {
   let driver;

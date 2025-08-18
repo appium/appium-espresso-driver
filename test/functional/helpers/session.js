@@ -6,6 +6,11 @@ const HOST = process.env.APPIUM_TEST_SERVER_HOST || '127.0.0.1';
 const PORT = parseInt(process.env.APPIUM_TEST_SERVER_PORT, 10) || 4567;
 const MOCHA_TIMEOUT = (process.env.CI ? 10 : 4) * 60 * 1000;
 
+const COMMON_REMOTE_OPTIONS = {
+  hostname: HOST,
+  port: PORT,
+};
+
 let driver;
 
 async function initSession (caps) {
@@ -14,7 +19,10 @@ async function initSession (caps) {
   }
 
   return await SESSION_GUARD.acquire(HOST, async () => {
-    driver = await remote(caps);
+    driver = await remote({
+      ...COMMON_REMOTE_OPTIONS,
+      capabilities: caps}
+    );
     return driver;
   });
 }
