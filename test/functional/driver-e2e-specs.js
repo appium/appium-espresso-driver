@@ -1,13 +1,8 @@
 import path from 'path';
 import { remote } from 'webdriverio';
-import { HOST, PORT } from './helpers/session';
+import { COMMON_REMOTE_OPTIONS } from './helpers/session';
 import { APIDEMO_CAPS, amendCapabilities } from './desired';
 
-
-const COMMON_REMOTE_OPTIONS = {
-  hostname: HOST,
-  port: PORT,
-};
 
 describe('EspressoDriver', function () {
   let driver;
@@ -108,49 +103,54 @@ describe('EspressoDriver', function () {
     });
   });
 
-  // TODO: Update tests for wdio compatibility
-  // describe('keys', function () {
-  //   beforeEach(async function () {
-  //     driver = await remote({
-  //       ...COMMON_REMOTE_OPTIONS,
-  //       capabilities: amendCapabilities(APIDEMO_CAPS, {
-  //         'appium:appActivity': 'io.appium.android.apis.view.AutoComplete1',
-  //         'appium:autoGrantPermissions': true,
-  //       })
-  //     });
-  //   });
-  //   afterEach(async function () {
-  //     try {
-  //       await driver.deleteSession();
-  //     } catch {}
-  //     driver = null;
-  //   });
-  //   it('should send keys to focused-on element', async function () {
-  //     await driver.keys('Hello World!'.split(''));
-  //     const editEl = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
-  //     await editEl.text().should.eventually.equal('Hello World!');
-  //     await editEl.clear();
-  //   });
+  describe('keys', function () {
+    beforeEach(async function () {
+      driver = await remote({
+        ...COMMON_REMOTE_OPTIONS,
+        capabilities: amendCapabilities(APIDEMO_CAPS, {
+          'appium:appActivity': 'io.appium.android.apis.view.AutoComplete1',
+          'appium:autoGrantPermissions': true,
+        })
+      });
+    });
+    afterEach(async function () {
+      try {
+        await driver.deleteSession();
+      } catch {}
+      driver = null;
+    });
+    it('should send keys to focused-on element', async function () {
+      const text = 'Hello World!';
+      await driver.performActions([{
+        type: 'key',
+        id: 'keyboard',
+        actions: Array.from(text).flatMap((char) => [
+          { type: 'keyDown', value: char },
+          { type: 'keyUp', value: char }
+        ])
+      }]);
+      const editEl = await driver.$('//android.widget.AutoCompleteTextView');
+      await editEl.getText().should.eventually.equal('Hello World!');
+      await editEl.clearValue();
+    });
 
-  //   it('should do long press keycode', async function () {
-  //     const KEYCODE_G = 35;
-  //     const META_SHIFT_MASK = 193;
-  //     let sessionId = await driver.getSessionId();
+    it('should do long press keycode', async function () {
+      const KEYCODE_G = 35;
+      const META_SHIFT_MASK = 193;
 
-  //     const endpoints = ['long_press_keycode', 'press_keycode'];
-  //     for (let endpoint of endpoints) {
-  //       await axios({
-  //         method: 'POST',
-  //         url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/appium/device/${endpoint}`,
-  //         data: {
-  //           keycode: KEYCODE_G,
-  //           metastate: 0 | META_SHIFT_MASK,
-  //         },
-  //       });
-  //       const editEl = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
-  //       await editEl.text().should.eventually.equal(endpoint === 'press_keycode' ? 'G' : 'GG');
-  //       await editEl.clear();
-  //     }
-  //   });
-  // });
+      for (let isLongPress of [true, false]) {
+        await driver.execute(
+          'mobile: pressKey',
+          {
+            keycode: KEYCODE_G,
+            metastate: 0 | META_SHIFT_MASK,
+            isLongPress
+          }
+        );
+        const editEl = await driver.$('//android.widget.AutoCompleteTextView');
+        await editEl.getText().should.eventually.equal(isLongPress ? 'GG' : 'G');
+        await editEl.clearValue();
+      }
+    });
+  });
 });
