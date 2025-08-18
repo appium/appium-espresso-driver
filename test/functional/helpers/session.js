@@ -36,4 +36,4 @@ async function deleteSession () {
   });
 }
 
-export { initSession, deleteSession, HOST, PORT, MOCHA_TIMEOUT };
+export { initSession, deleteSession, HOST, PORT, MOCHA_TIMEOUT, COMMON_REMOTE_OPTIONS };
