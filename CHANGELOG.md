@@ -1,3 +1,15 @@
+## [5.0.0](https://github.com/appium/appium-espresso-driver/compare/v4.1.17...v5.0.0) (2025-08-19)
+
+### ⚠ BREAKING CHANGES
+
+* Required Node.js version has been bumped to ^20.19.0 || ^22.12.0 || >=24.0.0
+* Required npm version has been bumped to >=10
+* Required Appium server version has been bumped to >=3.0.0-rc.2
+
+### Features
+
+* Update server compatibility for appium 3 ([#1080](https://github.com/appium/appium-espresso-driver/issues/1080)) ([86b0b68](https://github.com/appium/appium-espresso-driver/commit/86b0b682d8d8abe6f643ab437d384fb4231dee31))
+
 ## [4.1.17](https://github.com/appium/appium-espresso-driver/compare/v4.1.16...v4.1.17) (2025-08-17)
 
 ### Miscellaneous Chores
