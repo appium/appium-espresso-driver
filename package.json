@@ -18,8 +18,8 @@
     "url": "https://github.com/appium/appium-espresso-driver/issues"
   },
   "engines": {
-    "node": ">=14",
-    "npm": ">=8"
+    "node": "^20.19.0 || ^22.12.0 || >=24.0.0",
+    "npm": ">=10"
   },
   "prettier": {
     "bracketSpacing": false,
@@ -74,17 +74,17 @@
     "npm-shrinkwrap.json"
   ],
   "dependencies": {
-    "appium-adb": "^12.12.0",
-    "appium-android-driver": "^10.3.11",
+    "appium-adb": "^13.0.0",
+    "appium-android-driver": "^11.0.0",
     "asyncbox": "^3.0.0",
     "axios": "^1.7.2",
     "bluebird": "^3.5.0",
-    "io.appium.settings": "^5.14.3",
+    "io.appium.settings": "^6.0.0",
     "lodash": "^4.17.11",
     "portscanner": "^2.1.1",
     "semver": "^7.6.2",
     "source-map-support": "^0.x",
-    "teen_process": "^2.2.0"
+    "teen_process": "^3.0.0"
   },
   "scripts": {
     "build": "npm run build:node && npm run build:server",
@@ -108,12 +108,12 @@
     "e2e-test": "mocha --exit --timeout 5m \"./test/functional/**/*-specs.js\""
   },
   "peerDependencies": {
-    "appium": "^2.4.1"
+    "appium": "^3.0.0-rc.2"
   },
   "devDependencies": {
-    "@appium/eslint-config-appium-ts": "^1.0",
-    "@appium/tsconfig": "^0.x",
-    "@appium/types": "^0.x",
+    "@appium/eslint-config-appium-ts": "^2.0.0-rc.1",
+    "@appium/tsconfig": "^1.0.0-rc.1",
+    "@appium/types": "^1.0.0-rc.1",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/bluebird": "^3.5.38",
@@ -121,10 +121,9 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^24.0.0",
     "@types/sinon": "^17.0.0",
-    "@types/teen_process": "^2.0.2",
     "@xmldom/xmldom": "^0.x",
-    "android-apidemos": "^4.1.1",
-    "appium-chromedriver": "^7.0.3",
+    "android-apidemos": "^5.0.0",
+    "appium-chromedriver": "^8.0.0",
     "async-lock": "^1.0.0",
     "chai": "^5.1.1",
     "chai-as-promised": "^8.0.0",
