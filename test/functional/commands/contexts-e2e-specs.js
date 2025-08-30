@@ -15,10 +15,7 @@ describe('context', function () {
     chai.should();
     chai.use(chaiAsPromised.default);
 
-    driver = await initSession({
-      appActivity: 'io.appium.android.apis.view.WebView1',
-      ...APIDEMO_CAPS
-    });
+    driver = await initSession(APIDEMO_CAPS);
   });
   after(async function () {
     await deleteSession();
@@ -29,6 +26,8 @@ describe('context', function () {
       // Latest 23 emulator has chrome '44.0.2403' instead of '43.0.2357'
       return;
     }
+
+    await driver.execute('mobile: startActivity', {appActivity: 'io.appium.android.apis.view.WebView1'});
 
     const viewContexts = await driver.getContexts();
 

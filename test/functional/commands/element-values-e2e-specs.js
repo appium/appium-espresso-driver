@@ -15,23 +15,21 @@ describe('ElementValue', function () {
     chai.should();
     chai.use(chaiAsPromised.default);
 
-    driver = await initSession({
-      appActivity: 'io.appium.android.apis.app.CustomTitle',
-      ...APIDEMO_CAPS
-    });
+    driver = await initSession(APIDEMO_CAPS);
   });
   after(async function () {
     await deleteSession();
   });
 
   it('should set value and replace them', async function () {
-    let el = await driver.$('#io.appium.android.apis:id/left_text_edit');
+    await driver.$('~App').click();
+    await driver.$('~Activity').click();
+    await driver.$('~Custom Title').click();
+
+    const el = await driver.$(await driver.findElement('class name', 'android.widget.EditText'));
     await driver.setValueImmediate(el.elementId, 'hello');
-
-    let elValue = await driver.$('#io.appium.android.apis:id/left_text_edit');
-    await elValue.getText().should.eventually.equal('Left is besthello');
-
-    elValue.addValue('テスト');
-    await elValue.getText().should.eventually.equal('テスト');
+    await el.getText().should.eventually.equal('Left is besthello');
+    await el.setValue('テスト');
+    await el.getText().should.eventually.equal('テスト');
   });
 });
