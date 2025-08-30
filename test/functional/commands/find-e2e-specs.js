@@ -79,7 +79,7 @@ describe('find elements', function () {
 
         // Click on an element that is at the bottom of the list
         const moveToEl = await driver.$('~WebView');
-        await moveToEl.click();
+        await driver.elementClick(moveToEl.elementId);
         await driver.back();
         await driver.back();
       });
