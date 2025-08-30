@@ -23,7 +23,7 @@ describe('clipboard', function () {
   });
 
   it('should set and get clipboard', async function () {
-    await driver.setClipboard(new Buffer.from('Hello').toString('base64'), 'plaintext');
+    await driver.setClipboard(new Buffer.from('').toString('base64'), 'plaintext');
     // 'SGVsbG8=' is 'Hello' in base 64 encoding with a new line.
     const text = await driver.getClipboard('PLAINTEXT');
     try {

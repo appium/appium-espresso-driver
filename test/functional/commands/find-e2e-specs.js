@@ -17,9 +17,9 @@ describe('find elements', function () {
     chai.use(chaiAsPromised.default);
   });
 
-  describe('elementByXPath', function () {
+  describe('element by xpath', function () {
 
-    describe('ElementByXpath - Dependent Test - Set 1', function () {
+    describe('element by xpath - Dependent Test - Set 1', function () {
       before(async function () {
         driver = await initSession(APIDEMO_CAPS);
       });
@@ -29,33 +29,33 @@ describe('find elements', function () {
       });
 
       it(`should find an element by it's xpath`, async function () {
-        let el = await driver.elementByXPath("//*[@text='Animation']");
+        let el = await driver.$("//*[@text='Animation']");
         el.should.exist;
         await el.click();
         await driver.back();
       });
       it('should find multiple elements that match one xpath', async function () {
-        let els = await driver.elementsByXPath('//android.widget.TextView');
+        let els = await driver.$('//android.widget.TextView');
         els.length.should.be.above(1);
         await els[0].click();
         await driver.back();
       });
       it('should get the first element of an xpath that matches more than one element', async function () {
-        let el = await driver.elementByXPath('//android.widget.TextView');
+        let el = await driver.$('//android.widget.TextView');
         el.should.exist;
         await el.click();
         await driver.back();
       });
       it('should throw a stale element exception if clicking on element that does not exist', async function () {
-        let el = await driver.elementByXPath("//*[@content-desc='Animation']");
+        let el = await driver.$("//*[@content-desc='Animation']");
         await el.click();
         await retryInterval(5, 1000, async () => await el.click().should.eventually.be.rejectedWith(/no longer exists /));
         await driver.back();
       });
-      it('should get the isDisplayed attribute on the same element twice', async function () {
-        let el = await driver.elementByXPath("//*[@content-desc='Animation']");
-        await el.isDisplayed().should.eventually.be.true;
-        await el.isDisplayed().should.eventually.be.true;
+      it('should get the isElementDisplayed attribute on the same element twice', async function () {
+        let el = await driver.$("//*[@content-desc='Animation']");
+        await driver.isElementDisplayed(el.elementId).should.eventually.be.true;
+        await driver.isElementDisplayed(el.elementId).should.eventually.be.true;
         await el.click();
         await driver.back();
       });
@@ -71,19 +71,19 @@ describe('find elements', function () {
       });
 
       it('should match an element if the element is off-screen but has an accessibility id', async function () {
-        let el = await driver.elementByAccessibilityId('Views');
+        let el = await driver.$('~Views');
         await el.click();
 
         // Click on an element that is at the bottom of the list
-        let moveToEl = await driver.elementByAccessibilityId('WebView');
+        let moveToEl = await driver.$('~WebView');
         await moveToEl.click();
         await driver.back();
         await driver.back();
       });
       it('should test element equality', async function () {
-        let el = await driver.elementByAccessibilityId('Views');
-        let elAgain = await driver.elementByXPath("//*[@content-desc='Views']");
-        let elNonMatch = await driver.elementByAccessibilityId('Preference');
+        let el = await driver.$('~Views');
+        let elAgain = await driver.$("//*[@content-desc='Views']");
+        let elNonMatch = await driver.$('~Preference');
         await el.equals(elAgain).should.eventually.be.true;
         await el.equals(elNonMatch).should.eventually.be.false;
       });
@@ -91,9 +91,9 @@ describe('find elements', function () {
       it.skip('should scroll element back into view if was scrolled out of view (regression test for https://github.com/appium/appium-espresso-driver/issues/276)', async function () {
         // If we find an element by 'contentDescription', scroll out of view of that element, we should be able to scroll it back into view, as long
         // as that element has a content description associated with an adapter item
-        let el = await driver.elementByAccessibilityId('Views');
+        let el = await driver.$('~Views');
         await el.click();
-        el = await driver.elementByAccessibilityId('Custom');
+        el = await driver.$('~Custom');
         await el.text().should.eventually.equal('Custom');
         let {value: element} = await driver.elementById('android:id/list');
         await driver.execute('mobile: swipe', {direction: 'up', element});
@@ -115,37 +115,37 @@ describe('find elements', function () {
         await deleteSession();
       });
       it('should fail to find elements with helpful error messages', async function () {
-        await driver.element('-android datamatcher', JSON.stringify({
+        await driver.findElement('-android datamatcher', JSON.stringify({
           name: 'hasEntry', args: ['title', 'A Fake Item']
         })).should.eventually.be.rejectedWith(/NoSuchElement/);
       });
       it('should fail with invalid selector with helpful error messages', async function () {
-        await driver.element('-android datamatcher', JSON.stringify({
+        await driver.findElement('-android datamatcher', JSON.stringify({
           name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item']
         })).should.eventually.be.rejectedWith(/InvalidSelector/);
       });
       it('should allow "class" property with fully qualified className', async function () {
-        await driver.element('-android datamatcher', JSON.stringify({
+        await driver.findElement('-android datamatcher', JSON.stringify({
           name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item'], class: 'org.hamcrest.Matchers',
         })).should.eventually.be.rejectedWith(/InvalidSelector/);
       });
       it('should find an element using a data matcher', async function () {
-        let el = await driver.element('-android datamatcher', JSON.stringify({
+        let el = await driver.findElement('-android datamatcher', JSON.stringify({
           name: 'hasEntry', args: ['title', 'Animation']
         }));
         await el.click();
-        await driver.elementByAccessibilityId('Bouncing Balls').should.eventually.exist;
+        await driver.$('~Bouncing Balls').should.eventually.exist;
         await driver.back();
       });
       it('should find an offscreen element using a data matcher', async function () {
-        let viewsEl = await driver.elementByAccessibilityId('Views');
+        let viewsEl = await driver.$('~Views');
         await viewsEl.click();
-        let el = await driver.element('-android datamatcher', JSON.stringify({
+        let el = await driver.findElement('-android datamatcher', JSON.stringify({
           name: 'hasEntry', args: ['title', 'WebView3']
         }));
         await el.click();
         await driver.back();
-        await driver.elementByAccessibilityId('Controls').should.eventually.exist;
+        await driver.$('~Controls').should.eventually.exist;
         await driver.back();
       });
     });
@@ -165,18 +165,18 @@ describe('find elements', function () {
       it('should be able to set a specific AdapterView as a root element when activity has multiple AdapterViews', async function () {
         // Finding by adapter equalTo 'Zamorano' should be ambiguous, because there are two
         // adapter items with the same matcher
-        await driver.element('-android datamatcher', JSON.stringify({
+        await driver.findElement('-android datamatcher', JSON.stringify({
           name: 'equalTo', args: 'Zamorano'
         })).should.eventually.be.rejectedWith(/AmbiguousViewMatcherException/);
 
         // Narrow them down by making the root an adapter view
         const listOneEl = await driver.elementById('list1');
-        await listOneEl.element('-android datamatcher', JSON.stringify({
+        await listOneEl.findElement('-android datamatcher', JSON.stringify({
           name: 'equalTo', args: 'Zamorano'
         })).should.eventually.exist;
 
         const listTwoEl = await driver.elementById('list2');
-        await listTwoEl.element('-android datamatcher', JSON.stringify({
+        await listTwoEl.findElement('-android datamatcher', JSON.stringify({
           name: 'equalTo', args: 'Zamorano'
         })).should.eventually.exist;
       });
@@ -195,19 +195,19 @@ describe('find elements', function () {
       });
 
       it('should fail to find elements with helpful error messages', async function () {
-        await driver.element('-android viewmatcher', JSON.stringify({
+        await driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'hasEntry', args: ['title', 'A Fake Item']
         })).should.eventually.be.rejectedWith(/NoMatchingView/);
       });
 
       it('should fail with invalid selector with helpful error messages', async function () {
-        await driver.element('-android viewmatcher', JSON.stringify({
+        await driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item']
         })).should.eventually.be.rejectedWith(/InvalidSelector/);
       });
 
       it('should allow "class" property with fully qualified className', async function () {
-        await driver.element('-android viewmatcher', JSON.stringify({
+        await driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item'], class: 'org.hamcrest.Matchers',
         })).should.eventually.be.rejectedWith(/InvalidSelector/);
       });
@@ -228,7 +228,7 @@ describe('find elements', function () {
       });
 
       it('should find an element using view matcher', async function () {
-        await driver.element('-android viewmatcher', JSON.stringify({
+        await driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'withText',
           args: 'Picture getExternalFilesDir',
           class: 'androidx.test.espresso.matcher.ViewMatchers'
@@ -236,7 +236,7 @@ describe('find elements', function () {
       });
       it('should allow multiple view matchers to be passed as args', async function () {
 
-        await driver.element('-android viewmatcher', JSON.stringify({
+        await driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'withText',
           args: [
             {
@@ -269,17 +269,17 @@ describe('find elements', function () {
         // Finding by withText equalTo 'COPY TEXT' should be ambiguous, because there are three
         // items with the same matcher
 
-        await driver.element('-android viewmatcher', JSON.stringify({
+        await driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'withText', args: 'Copy Text', class: 'androidx.test.espresso.matcher.ViewMatchers'
         })).should.eventually.be.rejectedWith(/AmbiguousViewMatcherException/);
 
-        const listTwoEl = await driver.elementByXPath("//android.widget.LinearLayout[@index='2']");
-        await listTwoEl.element('-android viewmatcher', JSON.stringify({
+        const listTwoEl = await driver.$("//android.widget.LinearLayout[@index='2']");
+        await listTwoEl.findElement('-android viewmatcher', JSON.stringify({
           name: 'withText', args: 'Copy Text', class: 'androidx.test.espresso.matcher.ViewMatchers'
         })).should.eventually.exist;
 
-        const listOneEl = await driver.elementByXPath("//android.widget.LinearLayout[@index='1']");
-        await listOneEl.element('-android viewmatcher', JSON.stringify({
+        const listOneEl = await driver.$("//android.widget.LinearLayout[@index='1']");
+        await listOneEl.findElement('-android viewmatcher', JSON.stringify({
           name: 'withText', args: 'Copy Text', class: 'androidx.test.espresso.matcher.ViewMatchers'
         })).should.eventually.exist;
       });
