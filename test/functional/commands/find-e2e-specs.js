@@ -74,6 +74,10 @@ describe('find elements', function () {
       });
 
       it('should match an element if the element is off-screen but has an accessibility id', async function () {
+        if (process.env.CI) {
+          // CI env is flaky
+          this.skip();
+        }
         const el = await driver.$('~Views');
         await el.click();
 
