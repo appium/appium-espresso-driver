@@ -15,11 +15,10 @@ describe('context', function () {
     chai.should();
     chai.use(chaiAsPromised.default);
 
-    let caps = {
+    driver = await initSession({
       appActivity: 'io.appium.android.apis.view.WebView1',
       ...APIDEMO_CAPS
-    };
-    driver = await initSession(caps);
+    });
   });
   after(async function () {
     await deleteSession();
@@ -31,14 +30,14 @@ describe('context', function () {
       return;
     }
 
-    const viewContexts = await driver.contexts();
+    const viewContexts = await driver.getContexts();
 
-    await driver.currentContext().should.eventually.eql(viewContexts[0]);
+    await driver.getContext().should.eventually.eql(viewContexts[0]);
 
-    await driver.context(viewContexts[1]);
-    await driver.currentContext().should.eventually.eql(viewContexts[1]);
+    await driver.switchContext(viewContexts[1]);
+    await driver.getContext().should.eventually.eql(viewContexts[1]);
 
-    await driver.context(viewContexts[0]);
-    await driver.currentContext().should.eventually.eql(viewContexts[0]);
+    await driver.switchContext(viewContexts[0]);
+    await driver.getContext().should.eventually.eql(viewContexts[0]);
   });
 });
