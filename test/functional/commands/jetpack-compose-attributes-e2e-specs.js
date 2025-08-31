@@ -1,12 +1,5 @@
-import { remote } from 'webdriverio';
-import { MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
+import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
-
-
-const COMMON_REMOTE_OPTIONS = {
-  hostname: HOST,
-  port: PORT,
-};
 
 describe('compose node attributes', function () {
   this.timeout(MOCHA_TIMEOUT);
@@ -29,17 +22,11 @@ describe('compose node attributes', function () {
 
   describe('compose getAttribute', function () {
     beforeEach(async function () {
-      driver = await remote({
-        ...COMMON_REMOTE_OPTIONS,
-        capabilities: COMPOSE_CAPS,
-      });
+      driver = await initSession(COMPOSE_CAPS);
     });
 
     afterEach(async function () {
-      try {
-        await driver.deleteSession();
-      } catch {}
-      driver = null;
+      await deleteSession();
     });
 
     it(`should get attributes of a View`, async function () {
