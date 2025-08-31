@@ -29,11 +29,10 @@ describe('source commands', function () {
     });
 
     it('should get jetpack-compose sourceXML, parse it, and find a node by xpath', async function () {
-      let el = await driver.elementByXPath("//*[@text='Display Text']");
-      await driver.moveTo(el);
+      let el = await driver.$("//*[@text='Display Text']");
       await el.click();
       await driver.updateSettings({ driver: 'compose' });
-      const sourceXML = await driver.source();
+      const sourceXML = await driver.getPageSource();
       sourceXML.should.be.a.string;
       const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
       const node = xpath.select("//*[text='This is the Learn Jetpack Compose By Example tutorial']", doc);
