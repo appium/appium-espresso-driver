@@ -32,21 +32,23 @@ describe('Jetpack Compose', function () {
 
   it('should find element by tag and text and click it', async function () {
     const windowRect = await driver.getWindowRect();
-    await driver.performActions([
-      {
-        type: 'pointer',
-        id: 'touch',
-        actions: [
-          { type: 'pointerMove', duration: 50, x: windowRect.width / 2.0, y: windowRect.height / 2.0, origin: 'viewport' },
-          { type: 'pointerDown', button: 0 },
-          { type: 'pause', duration: 500 },
-          { type: 'pointerMove', duration: 2000, x: windowRect.width / 2.0, y: windowRect.height / 8.0, origin: 'viewport' },
-          { type: 'pointerUp', button: 0 },
-        ]
-      }
-    ]);
-    const el = await driver.$("//*[@text='Text Input Components']");
-    await retryInterval(10, 10_000, async () => await driver.elementClick(el.elementId));
+    await retryInterval(10, 10_000, async () => {
+      await driver.performActions([
+        {
+          type: 'pointer',
+          id: 'touch',
+          actions: [
+            { type: 'pointerMove', duration: 50, x: windowRect.width / 2.0, y: windowRect.height / 2.0, origin: 'viewport' },
+            { type: 'pointerDown', button: 0 },
+            { type: 'pause', duration: 500 },
+            { type: 'pointerMove', duration: 500, x: windowRect.width / 2.0, y: windowRect.height / 8.0, origin: 'viewport' },
+            { type: 'pointerUp', button: 0 },
+          ]
+        }
+      ]);
+      const el = await driver.$("//*[@text='Text Input Components']");
+      await driver.elementClick(el.elementId);
+    });
 
     await driver.updateSettings({ driver: 'compose' });
 
