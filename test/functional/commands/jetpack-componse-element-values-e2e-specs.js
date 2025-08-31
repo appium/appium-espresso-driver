@@ -40,7 +40,7 @@ describe('Jetpack Compose', function () {
           { type: 'pointerMove', duration: 50, x: windowRect.width / 2.0, y: windowRect.height / 2.0, origin: 'viewport' },
           { type: 'pointerDown', button: 0 },
           { type: 'pause', duration: 500 },
-          { type: 'pointerMove', duration: 500, x: windowRect.width / 2.0, y: windowRect.height / 8.0, origin: 'viewport' },
+          { type: 'pointerMove', duration: 2000, x: windowRect.width / 2.0, y: windowRect.height / 8.0, origin: 'viewport' },
           { type: 'pointerUp', button: 0 },
         ]
       }
