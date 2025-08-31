@@ -30,19 +30,19 @@ describe('Jetpack Compose', function () {
   });
 
   it('should find element by tag and text and click it', async function () {
-    let el = await driver.$("//*[@text='Clickable Component']");
+    const el = await driver.$("//*[@text='Clickable Component']");
     await el.click();
 
     await driver.updateSettings({ driver: 'compose' });
 
-    let e = await driver.$(await driver.findElement('tag name', 'lol'));
+    const e = await driver.$(await driver.findElement('tag name', 'lol'));
     await driver.isElementDisplayed(e.elementId).should.eventually.be.true;
 
-    let elementWithDescription = await driver.$('~desc');
+    const elementWithDescription = await driver.$('~desc');
     await elementWithDescription.getText().should.eventually.equal('Click to see dialog');
     await driver.isElementDisplayed(elementWithDescription.elementId).should.eventually.be.true;
 
-    let clickableText = await driver.$('=Click to see dialog');
+    const clickableText = await driver.$('=Click to see dialog');
     await clickableText.click();
 
     await driver.$('=Congratulations! You just clicked the text successfully');
@@ -52,23 +52,23 @@ describe('Jetpack Compose', function () {
 
   it('should find element by xpath', async function () {
     await driver.updateSettings({ driver: 'espresso' });
-    let el = await driver.$("//*[@text='Clickable Component']");
+    const el = await driver.$("//*[@text='Clickable Component']");
     await el.click();
 
     await driver.updateSettings({ driver: 'compose' });
 
-    let e = await driver.$("//*[@view-tag='lol']//*[@content-desc='desc']");
+    const e = await driver.$("//*[@view-tag='lol']//*[@content-desc='desc']");
     await e.getText().should.eventually.equal('Click to see dialog');
   });
 
   it('should find elements', async function () {
     await driver.updateSettings({ driver: 'espresso' });
-    let el = await driver.$("//*[@text='Horizontal Carousel']");
+    const el = await driver.$("//*[@text='Horizontal Carousel']");
     await el.click();
 
     await driver.updateSettings({ driver: 'compose' });
 
-    let e = await driver.$$('=Grace Hopper');
+    const e = await driver.$$('=Grace Hopper');
     e.length.should.be.eql(2);
     await e[0].getText().should.eventually.equal('Grace Hopper');
   });

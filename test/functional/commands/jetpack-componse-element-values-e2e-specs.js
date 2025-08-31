@@ -1,5 +1,6 @@
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
+import { retryInterval } from 'asyncbox';
 
 
 describe('Jetpack Compose', function () {
@@ -45,7 +46,7 @@ describe('Jetpack Compose', function () {
       }
     ]);
     const el = await driver.$("//*[@text='Text Input Components']");
-    await el.click();
+    await retryInterval(10, 10_000, async () => await driver.elementClick(el.elementId));
 
     await driver.updateSettings({ driver: 'compose' });
 
