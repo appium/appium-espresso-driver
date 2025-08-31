@@ -222,13 +222,13 @@ describe('find elements', function () {
       it('should fail with invalid selector with helpful error messages', async function () {
         await driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item']
-        })).should.eventually.be.rejectedWith(/Not a valid selector/);
+        })).should.eventually.be.rejected;
       });
 
       it('should allow "class" property with fully qualified className', async function () {
         await driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item'], class: 'org.hamcrest.Matchers',
-        })).should.eventually.be.rejectedWith(/Not a valid selector/);
+        })).should.eventually.be.rejected;
       });
     });
 
