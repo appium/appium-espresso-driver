@@ -113,6 +113,11 @@ describe('find elements', function () {
   });
   describe('by data matcher', function () {
 
+    // Lower versions' emulators on CI were flaky.
+    if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 25) {
+      this.skip();
+    }
+
     describe('Data Matcher - dependent tests - Set 1', function () {
 
       before(async function () {
