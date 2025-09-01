@@ -49,30 +49,30 @@ describe('keyboard', function () {
   });
 
   it('should send keys to the correct element', async function () {
-    let el = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
+    const el = await driver.$('//android.widget.AutoCompleteTextView');
     await el.click();
-    await el.sendKeys('hello');
+    await driver.elementSendKeys(el.elementId, 'hello');
     await el.clear();
   });
 
   it('should send keys to the correct element as replace text', async function () {
-    let el = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
+    const el = await driver.$('//android.widget.AutoCompleteTextView');
     await el.click();
-    await el.sendKeys('ハロー');
+    await driver.elementSendKeys(el.elementId, 'ハロー');
     await el.clear();
   });
 
   it('should send keys to the correct element with setImmediateValue', async function () {
-    let el = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
-    await el.setImmediateValue(['hello world']);
-    await el.text().should.eventually.equal('hello world');
-    await el.setImmediateValue(['!!!']);
-    await el.text().should.eventually.equal('hello world!!!');
+    const el = await driver.$('//android.widget.AutoCompleteTextView');
+    await driver.setValueImmediate(el.elementId, 'hello world');
+    await el.getText().should.eventually.equal('hello world');
+    await driver.setValueImmediate(el.elementId, '!!!');
+    await el.getText().should.eventually.equal('hello world!!!');
     await el.clear();
   });
 
   it('should perform key events', async function () {
-    let autocompleteEl = await driver.elementByXPath('//android.widget.AutoCompleteTextView');
+    let autocompleteEl = await driver.$('//android.widget.AutoCompleteTextView');
     await autocompleteEl.click();
     const keyActions = [
       {'type': 'keyDown', 'value': '\uE008'},
@@ -88,7 +88,7 @@ describe('keyboard', function () {
       {'type': 'keyUp', 'value': 'S'},
     ];
     await performActions(keyActions);
-    await autocompleteEl.text().should.eventually.equal('HAtS');
+    await autocompleteEl.getText().should.eventually.equal('HAtS');
     await autocompleteEl.clear();
   });
 });

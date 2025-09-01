@@ -25,7 +25,7 @@ describe('source commands', function () {
     });
 
     it('should get sourceXML, parse it, and find a node by xpath', async function () {
-      const sourceXML = await driver.source();
+      const sourceXML = await driver.getPageSource();
       sourceXML.should.be.a.string;
       const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
       const node = xpath.select('//*[content-desc=Animation]', doc);
