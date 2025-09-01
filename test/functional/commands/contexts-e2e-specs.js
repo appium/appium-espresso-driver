@@ -22,9 +22,9 @@ describe('context', function () {
   });
 
   it('should get contexts and set them without errors', async function () {
-    if (process.env.ANDROID_SDK_VERSION === '23') {
-      // Latest 23 emulator has chrome '44.0.2403' instead of '43.0.2357'
-      return;
+    if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 25) {
+      // Latest 25 and lower has no good chromedriver to automate.
+      this.skip();
     }
 
     await driver.execute('mobile: startActivity', {appActivity: 'io.appium.android.apis.view.WebView1'});
