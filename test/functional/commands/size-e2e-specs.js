@@ -38,7 +38,8 @@ describe('Size', function () {
     } = await driver.getElementRect(el.elementId);
     width.should.be.above(0);
     height.should.be.above(0);
-    x.should.be.above(0);
+    // the element start from the edge of left.
+    x.should.eq(0);
     y.should.be.above(0);
   });
 });

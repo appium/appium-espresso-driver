@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { initSession, deleteSession, MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
-import { APIDEMO_CAPS } from '../desired';
+import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 
 
 describe('keyboard', function () {
@@ -19,10 +19,10 @@ describe('keyboard', function () {
       });
     }
 
-    const sessionId = await driver.getSessionId();
+    const sessionId = await driver.sessionId;
     return (await axios({
       method: 'POST',
-      url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/actions`,
+      url: `http://${HOST}:${PORT}/session/${sessionId}/actions`,
       data: {actions: actionsRoot},
     })).data;
   };
@@ -37,12 +37,13 @@ describe('keyboard', function () {
     chai.should();
     chai.use(chaiAsPromised.default);
 
-    let caps = {
-      appActivity: 'io.appium.android.apis.view.AutoComplete4',
-      autoGrantPermissions: true,
-      ...APIDEMO_CAPS
-    };
-    driver = await initSession(caps);
+    driver = await initSession(amendCapabilities(
+      APIDEMO_CAPS,
+      {
+        'appium:autoGrantPermissions': true,
+        'appium:appActivity': 'io.appium.android.apis.view.AutoComplete4'
+      }
+    ));
   });
   after(async function () {
     await deleteSession();
@@ -52,14 +53,14 @@ describe('keyboard', function () {
     const el = await driver.$('//android.widget.AutoCompleteTextView');
     await el.click();
     await driver.elementSendKeys(el.elementId, 'hello');
-    await el.clear();
+    await driver.elementClear(el.elementId);
   });
 
   it('should send keys to the correct element as replace text', async function () {
     const el = await driver.$('//android.widget.AutoCompleteTextView');
     await el.click();
     await driver.elementSendKeys(el.elementId, 'ハロー');
-    await el.clear();
+    await driver.elementClear(el.elementId);
   });
 
   it('should send keys to the correct element with setImmediateValue', async function () {
@@ -68,7 +69,7 @@ describe('keyboard', function () {
     await el.getText().should.eventually.equal('hello world');
     await driver.setValueImmediate(el.elementId, '!!!');
     await el.getText().should.eventually.equal('hello world!!!');
-    await el.clear();
+    await driver.elementClear(el.elementId);
   });
 
   it('should perform key events', async function () {
@@ -89,6 +90,6 @@ describe('keyboard', function () {
     ];
     await performActions(keyActions);
     await autocompleteEl.getText().should.eventually.equal('HAtS');
-    await autocompleteEl.clear();
+    await driver.elementClear(autocompleteEl.elementId);
   });
 });
