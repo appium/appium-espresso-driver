@@ -30,49 +30,46 @@ describe('Jetpack Compose', function () {
   });
 
   it('should find element by tag and text and click it', async function () {
-    let el = await driver.elementByXPath("//*[@text='Clickable Component']");
-    await driver.moveTo(el);
+    const el = await driver.$("//*[@text='Clickable Component']");
     await el.click();
 
     await driver.updateSettings({ driver: 'compose' });
 
-    let e = await driver.elementByTagName('lol');
-    await e.isDisplayed().should.eventually.be.true;
+    const e = await driver.$(await driver.findElement('tag name', 'lol'));
+    await driver.isElementDisplayed(e.elementId).should.eventually.be.true;
 
-    let elementWithDescription = await driver.elementByAccessibilityId('desc');
-    await elementWithDescription.text().should.eventually.equal('Click to see dialog');
-    await elementWithDescription.isDisplayed().should.eventually.be.true;
+    const elementWithDescription = await driver.$('~desc');
+    await elementWithDescription.getText().should.eventually.equal('Click to see dialog');
+    await driver.isElementDisplayed(elementWithDescription.elementId).should.eventually.be.true;
 
-    let clickableText = await driver.elementByLinkText('Click to see dialog');
+    const clickableText = await driver.$('=Click to see dialog');
     await clickableText.click();
 
-    await driver.elementByLinkText('Congratulations! You just clicked the text successfully');
-    await driver.settings().should.eventually.eql({ driver: 'compose' });
+    await driver.$('=Congratulations! You just clicked the text successfully');
+    await driver.getSettings().should.eventually.eql({ driver: 'compose' });
 
   });
 
   it('should find element by xpath', async function () {
     await driver.updateSettings({ driver: 'espresso' });
-    let el = await driver.elementByXPath("//*[@text='Clickable Component']");
-    await driver.moveTo(el);
+    const el = await driver.$("//*[@text='Clickable Component']");
     await el.click();
 
     await driver.updateSettings({ driver: 'compose' });
 
-    let e = await driver.elementByXPath("//*[@view-tag='lol']//*[@content-desc='desc']");
-    await e.text().should.eventually.equal('Click to see dialog');
+    const e = await driver.$("//*[@view-tag='lol']//*[@content-desc='desc']");
+    await e.getText().should.eventually.equal('Click to see dialog');
   });
 
   it('should find elements', async function () {
     await driver.updateSettings({ driver: 'espresso' });
-    let el = await driver.elementByXPath("//*[@text='Horizontal Carousel']");
-    await driver.moveTo(el);
+    const el = await driver.$("//*[@text='Horizontal Carousel']");
     await el.click();
 
     await driver.updateSettings({ driver: 'compose' });
 
-    let e = await driver.elementsByLinkText('Grace Hopper');
+    const e = await driver.$$('=Grace Hopper');
     e.length.should.be.eql(2);
-    await e[0].text().should.eventually.equal('Grace Hopper');
+    await e[0].getText().should.eventually.equal('Grace Hopper');
   });
 });

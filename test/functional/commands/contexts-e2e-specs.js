@@ -15,30 +15,28 @@ describe('context', function () {
     chai.should();
     chai.use(chaiAsPromised.default);
 
-    let caps = {
-      appActivity: 'io.appium.android.apis.view.WebView1',
-      ...APIDEMO_CAPS
-    };
-    driver = await initSession(caps);
+    driver = await initSession(APIDEMO_CAPS);
   });
   after(async function () {
     await deleteSession();
   });
 
   it('should get contexts and set them without errors', async function () {
-    if (process.env.ANDROID_SDK_VERSION === '23') {
-      // Latest 23 emulator has chrome '44.0.2403' instead of '43.0.2357'
-      return;
+    if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 25) {
+      // Latest 25 and lower has no good chromedriver to automate.
+      this.skip();
     }
 
-    const viewContexts = await driver.contexts();
+    await driver.execute('mobile: startActivity', {appActivity: 'io.appium.android.apis.view.WebView1'});
 
-    await driver.currentContext().should.eventually.eql(viewContexts[0]);
+    const viewContexts = await driver.getContexts();
 
-    await driver.context(viewContexts[1]);
-    await driver.currentContext().should.eventually.eql(viewContexts[1]);
+    await driver.getContext().should.eventually.eql(viewContexts[0]);
 
-    await driver.context(viewContexts[0]);
-    await driver.currentContext().should.eventually.eql(viewContexts[0]);
+    await driver.switchContext(viewContexts[1]);
+    await driver.getContext().should.eventually.eql(viewContexts[1]);
+
+    await driver.switchContext(viewContexts[0]);
+    await driver.getContext().should.eventually.eql(viewContexts[0]);
   });
 });
