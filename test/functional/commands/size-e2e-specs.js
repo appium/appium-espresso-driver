@@ -20,9 +20,26 @@ describe('Size', function () {
     await deleteSession();
   });
 
-  it('should find size of window', async function () {
-    const {width, height} = await driver.getWindowSize();
+  it('should find rect of window', async function () {
+    const {width, height, x, y} = await driver.getWindowRect();
     width.should.be.above(0);
     height.should.be.above(0);
+    x.should.eq(0);
+    y.should.eq(0);
+  });
+
+  it('should find rect of an element', async function () {
+    const el = await driver.$('~App');
+    const {
+      width,
+      height,
+      x,
+      y
+    } = await driver.getElementRect(el.elementId);
+    width.should.be.above(0);
+    height.should.be.above(0);
+    // the element start from the edge of left.
+    x.should.eq(0);
+    y.should.be.above(0);
   });
 });

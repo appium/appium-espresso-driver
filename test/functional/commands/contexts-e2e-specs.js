@@ -1,5 +1,5 @@
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { APIDEMO_CAPS } from '../desired';
+import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 
 
 describe('context', function () {
@@ -15,7 +15,12 @@ describe('context', function () {
     chai.should();
     chai.use(chaiAsPromised.default);
 
-    driver = await initSession(APIDEMO_CAPS);
+    driver = await initSession(amendCapabilities(
+      APIDEMO_CAPS,
+      {
+        'appium:appActivity': 'io.appium.android.apis.view.WebView1'
+      }
+    ));
   });
   after(async function () {
     await deleteSession();
@@ -26,8 +31,6 @@ describe('context', function () {
       // Latest 25 and lower has no good chromedriver to automate.
       this.skip();
     }
-
-    await driver.execute('mobile: startActivity', {appActivity: 'io.appium.android.apis.view.WebView1'});
 
     const viewContexts = await driver.getContexts();
 

@@ -30,7 +30,7 @@ async function initSession (caps) {
 async function deleteSession () {
   await SESSION_GUARD.acquire(HOST, async () => {
     try {
-      await driver.quit();
+      await driver.deleteSession();
     } catch {}
     driver = null;
   });
