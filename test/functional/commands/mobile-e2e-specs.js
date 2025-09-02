@@ -33,8 +33,12 @@ describe('mobile', function () {
   describe('mobile:swipe', function () {
     describe('with direction', function () {
       it('should swipe up and swipe down', async function () {
-        const el = await driver.$('~Views');
-        await el.click();
+        await retryInterval(
+          10, 10_000, async () => {
+            const el = await driver.$('~Views');
+            await el.click();
+          }
+        );
         await driver.getPageSource().should.eventually.contain('Animation');
         const element = await driver.$(
           await driver.findElement('id', 'android:id/list')
@@ -47,10 +51,13 @@ describe('mobile', function () {
       });
     });
     describe('with GeneralSwipeAction', function () {
-      let viewEl;
       beforeEach(async function () {
-        viewEl = await driver.$('~Views');
-        await viewEl.click();
+        await retryInterval(
+          10, 10_000, async () => {
+            const viewEl = await driver.$('~Views');
+            await viewEl.click();
+          }
+        );
       });
       afterEach(async function () {
         await driver.back();
@@ -60,10 +67,10 @@ describe('mobile', function () {
           await driver.findElement('class name', 'android.widget.ListView')
         );
         await driver.execute('mobile: swipe', {elementId: element.elementId, swiper: 'slow'});
-        // the swipe action shows up the app history, so should go back to the app view to proceed the test.
+        // The swipe action shows up the app history, so should go back to the app view to proceed the test.
         // Android doesn't accept incoming actions on the espresso server with the app history.
         await driver.execute('mobile: shell', {command: 'input', args: ['keyevent', 4]});
-        await retryInterval(10, 10_000, async () => await driver.getPageSource().should.eventually.contain('Animation'));
+        await driver.getPageSource().should.eventually.contain('Animation');
       });
       it('should call GeneralSwipeAction with provided parameters', async function () {
         const element = await driver.$(
@@ -79,7 +86,7 @@ describe('mobile', function () {
         // the swipe action shows up the app history, so should go back to the app view to proceed the test.
         // Android doesn't accept incoming actions on the espresso server with the app history.
         await driver.execute('mobile: shell', {command: 'input', args: ['keyevent', 4]});
-        await retryInterval(10, 10_000, async () => await driver.getPageSource().should.eventually.contain('Animation'));
+        await driver.getPageSource().should.eventually.contain('Animation');
       });
       describe('failing swipe tests', function () {
         it('should not accept "direction" and "swiper". Must be one or the other', async function () {
@@ -136,11 +143,14 @@ describe('mobile', function () {
   describe('mobile: setDate, mobile: setTime', function () {
     it('should set the date on a DatePicker', async function () {
       await driver.execute('mobile:startActivity', {
-        appPackage: 'io.appium.android.apis',
         appActivity: 'io.appium.android.apis.view.DateWidgets1',
       });
-      const dateEl = await driver.$('~change the date');
-      await dateEl.click();
+      await retryInterval(
+        10, 10_000, async () => {
+          const dateEl = await driver.$('~change the date');
+          await dateEl.click();
+        }
+      );
       const datePicker = await driver.$(await driver.findElement('id', 'android:id/datePicker'));
       await driver.execute('mobile: setDate', {year: 2020, monthOfYear: 10, dayOfMonth: 25, elementId: datePicker.elementId});
       const okButton = await driver.$(await driver.findElement('id', 'android:id/button1'));
@@ -151,9 +161,14 @@ describe('mobile', function () {
     });
     it('should set the time on a timepicker', async function () {
       await driver.execute('mobile:startActivity', {
-        appPackage: 'io.appium.android.apis',
         appActivity: 'io.appium.android.apis.view.DateWidgets2',
       });
+      await retryInterval(
+        10, 10_000, async () => {
+          const timeEl = await driver.$('//android.widget.TimePicker');
+          await driver.isElementDisplayed(timeEl.elementId).should.eventually.be.true;
+        }
+      );
       const timeEl = await driver.$('//android.widget.TimePicker');
       await driver.execute('mobile: setTime', {hours: 10, minutes: 58, elementId: timeEl.elementId});
       const source = await driver.getPageSource();
