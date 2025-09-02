@@ -31,6 +31,13 @@ describe('mobile', function () {
 
   describe('mobile:swipe', function () {
     describe('with direction', function () {
+      before(function () {
+        if (process.env.CI) {
+          // CI env is flaky because of the bad emulator performance
+          this.skip();
+        };
+      });
+
       it('should swipe up and swipe down', async function () {
         const el = await driver.$('~Views');
         await el.click();
@@ -47,12 +54,7 @@ describe('mobile', function () {
     });
     describe('with GeneralSwipeAction', function () {
       beforeEach(async function () {
-      if (process.env.CI) {
-        // CI env is flaky because of the bad emulator performance
-        this.skip();
-      }
-
-      const viewEl = await driver.$('~Views');
+        const viewEl = await driver.$('~Views');
         await viewEl.click();
       });
       afterEach(async function () {
@@ -128,12 +130,14 @@ describe('mobile', function () {
   });
 
   describe('mobile: openDrawer, mobile: closeDrawer', function () {
-    it('should call these two commands but fail because element is not a drawer', async function () {
+    before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
         this.skip();
       }
+    });
 
+    it('should call these two commands but fail because element is not a drawer', async function () {
       // Testing for failures because ApiDemos app does not have a drawer to test on
       const el = await driver.$('~Views');
       await driver.execute('mobile: openDrawer', {elementId: el.elementId, gravity: 1}).should.eventually.be.rejectedWith(/open drawer with gravity/);
@@ -142,12 +146,14 @@ describe('mobile', function () {
   });
 
   describe('mobile: setDate, mobile: setTime', function () {
-    it('should set the date on a DatePicker', async function () {
+    before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
         this.skip();
       }
+    });
 
+    it('should set the date on a DatePicker', async function () {
       await driver.execute('mobile:startActivity', {
         appActivity: 'io.appium.android.apis.view.DateWidgets1',
       });
@@ -174,12 +180,14 @@ describe('mobile', function () {
   });
 
   describe('mobile: navigateTo', function () {
-    it('should validate params', async function () {
+    before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
         this.skip();
       }
+    });
 
+    it('should validate params', async function () {
       const element = await driver.$('~Views');
       await driver.execute('mobile: navigateTo', {elementId: element.elementId, menuItemId: -100}).should.eventually.be.rejectedWith(/'menuItemId' must be a non-negative number/);
       await driver.execute('mobile: navigateTo', {elementId: element.elementId, menuItemId: 'fake'}).should.eventually.be.rejectedWith(/'menuItemId' must be a non-negative number/);
@@ -194,11 +202,14 @@ describe('mobile', function () {
   });
 
   describe('mobile: scrollToPage', function () {
-    it('should validate the parameters', async function () {
+    before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
         this.skip();
       }
+    });
+
+    it('should validate the parameters', async function () {
 
       const el = await driver.$('~Views');
       await driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollTo: 'SOMETHING DIFF'}).should.eventually.be.rejectedWith(/must be one of /);
@@ -206,11 +217,6 @@ describe('mobile', function () {
       await driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollToPage: 'NOT A NUMBER'}).should.eventually.be.rejectedWith(/java.lang.NumberFormatException/);
     });
     it('should call the scrollToPage method', async function () {
-      if (process.env.CI) {
-        // CI env is flaky because of the bad emulator performance
-        this.skip();
-      }
-
       // Testing for failures because ApiDemos app does not have a view pager to test on
       const el = await driver.$('~Views');
       await driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollToPage: 1}).should.eventually.be.rejectedWith(/Could not perform scroll to on element/);
@@ -220,33 +226,34 @@ describe('mobile', function () {
   });
 
   describe('mobile:uiautomator', function () {
-    it('should be able to find and take action on all uiObjects', async function () {
+    before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
         this.skip();
       }
+    });
+
+    it('should be able to find and take action on all uiObjects', async function () {
 
       const text = await driver.execute('mobile: uiautomator', {strategy: 'clazz', locator: 'android.widget.TextView', action: 'getText'});
       text.should.include('Views');
     });
     it('should be able to find and take action on uiObject with given index', async function () {
-      if (process.env.CI) {
-        // CI env is flaky because of the bad emulator performance
-        this.skip();
-      }
-
       const text = await driver.execute('mobile: uiautomator', {strategy: 'textContains', locator: 'Views', index: 0, action: 'getText'});
       text.should.eql(['Views']);
     });
   });
   describe('mobile: clickAction', function () {
     let viewEl;
-    beforeEach(async function () {
+
+    before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
         this.skip();
       }
+    });
 
+    beforeEach(async function () {
       viewEl = await driver.$('~Views');
     });
 
@@ -287,11 +294,14 @@ describe('mobile', function () {
   });
 
   describe('mobile: backdoor', function () {
-    it('should get element type face', async function () {
+    before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
         this.skip();
       }
+    });
+
+    it('should get element type face', async function () {
 
       const element = await driver.$('~Views');
       // Below returns like: {"mStyle"=>0, "mSupportedAxes"=>nil, "mWeight"=>400, "native_instance"=>131438067610240}
