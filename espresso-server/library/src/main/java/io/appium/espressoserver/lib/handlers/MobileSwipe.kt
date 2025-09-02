@@ -54,25 +54,19 @@ class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
                 )
             }
         } else if (params.swiper != null) {
-            val runnable = object : UiControllerRunnable<Void?> {
-                override fun run(uiController: UiController): Void? {
-                    val swipeAction = GeneralSwipeAction(
-                        params.swiper,
-                        params.startCoordinates,
-                        params.endCoordinates,
-                        params.precisionDescriber
-                    )
-                    AndroidLogger.info("""
-                    Performing general swipe action with parameters
-                    swiper=[${params.swiper}] startCoordinates=[${params.startCoordinates}]
-                    endCoordinates=[${params.endCoordinates}] precisionDescriber=[${params.precisionDescriber}]
-                    """.trimIndent()
-                    )
-                    swipeAction.perform(uiController, ViewGetter().getView(viewInteraction))
-                    return null
-                }
-            }
-            UiControllerPerformer(runnable).run()
+            val swipeAction = GeneralSwipeAction(
+                params.swiper,
+                params.startCoordinates,
+                params.endCoordinates,
+                params.precisionDescriber
+            )
+            AndroidLogger.info("""
+            Performing general swipe action with parameters
+            swiper=[${params.swiper}] startCoordinates=[${params.startCoordinates}]
+            endCoordinates=[${params.endCoordinates}] precisionDescriber=[${params.precisionDescriber}]
+            """.trimIndent()
+            )
+            viewInteraction.perform(swipeAction)
         }
 
         return null
