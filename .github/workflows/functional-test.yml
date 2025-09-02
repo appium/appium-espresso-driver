@@ -79,7 +79,7 @@ jobs:
         api-level: ${{ matrix.apiLevel }}
         disable-spellchecker: true
         target: ${{ matrix.emuTag }}
-        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -accel auto
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
         arch: ${{ matrix.arch }}
         disable-animations: true
         script: echo "Generated AVD snapshot for caching."
@@ -123,7 +123,7 @@ jobs:
         api-level: ${{ matrix.apiLevel }}
         disable-spellchecker: true
         disable-animations: true
-        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -accel auto
+        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
         target: ${{ matrix.emuTag }}
         arch: ${{ matrix.arch }}
     - name: Save logcat output
