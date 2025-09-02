@@ -34,7 +34,7 @@ describe('mobile', function () {
       before(function () {
         if (process.env.CI) {
           // CI env is flaky because of the bad emulator performance
-          this.skip();
+          // this.skip();
         };
       });
 
@@ -56,7 +56,7 @@ describe('mobile', function () {
       before(function () {
         if (process.env.CI) {
           // CI env is flaky because of the bad emulator performance
-          this.skip();
+          // this.skip();
         };
       });
 
@@ -140,7 +140,7 @@ describe('mobile', function () {
     before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        // this.skip();
       }
     });
 
@@ -156,7 +156,7 @@ describe('mobile', function () {
     before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        // this.skip();
       }
     });
 
@@ -190,7 +190,7 @@ describe('mobile', function () {
     before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        // this.skip();
       }
     });
 
@@ -212,7 +212,7 @@ describe('mobile', function () {
     before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        // this.skip();
       }
     });
 
@@ -236,7 +236,7 @@ describe('mobile', function () {
     before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        // this.skip();
       }
     });
 
@@ -256,7 +256,7 @@ describe('mobile', function () {
     before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        // this.skip();
       }
     });
 
@@ -304,7 +304,7 @@ describe('mobile', function () {
     before(function () {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        // this.skip();
       }
     });
 
