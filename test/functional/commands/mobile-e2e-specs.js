@@ -1,5 +1,6 @@
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
+import { retryInterval } from 'asyncbox';
 
 
 describe('mobile', function () {
@@ -62,7 +63,7 @@ describe('mobile', function () {
         // the swipe action shows up the app history, so should go back to the app view to proceed the test.
         // Android doesn't accept incoming actions on the espresso server with the app history.
         await driver.execute('mobile: shell', {command: 'input', args: ['keyevent', 4]});
-        await driver.getPageSource().should.eventually.contain('Animation');
+        await retryInterval(10, 10_000, async () => await driver.getPageSource().should.eventually.contain('Animation'));
       });
       it('should call GeneralSwipeAction with provided parameters', async function () {
         const element = await driver.$(
@@ -78,7 +79,7 @@ describe('mobile', function () {
         // the swipe action shows up the app history, so should go back to the app view to proceed the test.
         // Android doesn't accept incoming actions on the espresso server with the app history.
         await driver.execute('mobile: shell', {command: 'input', args: ['keyevent', 4]});
-        await driver.getPageSource().should.eventually.contain('Animation');
+        await retryInterval(10, 10_000, async () => await driver.getPageSource().should.eventually.contain('Animation'));
       });
       describe('failing swipe tests', function () {
         it('should not accept "direction" and "swiper". Must be one or the other', async function () {
