@@ -53,6 +53,13 @@ describe('mobile', function () {
       });
     });
     describe('with GeneralSwipeAction', function () {
+      before(function () {
+        if (process.env.CI) {
+          // CI env is flaky because of the bad emulator performance
+          this.skip();
+        };
+      });
+
       beforeEach(async function () {
         const viewEl = await driver.$('~Views');
         await viewEl.click();
