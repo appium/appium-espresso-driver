@@ -1,3 +1,9 @@
+## [5.0.2](https://github.com/appium/appium-espresso-driver/compare/v5.0.1...v5.0.2) (2025-09-03)
+
+### Bug Fixes
+
+* fix regression of scroll gesture in mobile ([#1086](https://github.com/appium/appium-espresso-driver/issues/1086)) ([d377c7e](https://github.com/appium/appium-espresso-driver/commit/d377c7e7e7c0041fa3cac31cdd840efd0ba3fdfe))
+
 ## [5.0.1](https://github.com/appium/appium-espresso-driver/compare/v5.0.0...v5.0.1) (2025-08-23)
 
 ### Miscellaneous Chores
