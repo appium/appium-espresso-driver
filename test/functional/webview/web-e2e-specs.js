@@ -36,7 +36,7 @@ describe('web', function () {
       await driver.getTitle().should.eventually.equal('I am a page title');
     });
     it('should find one native and one web context', async function () {
-      let contexts = await driver.getContexts();
+      const contexts = await driver.getContexts();
       contexts.length.should.equal(2);
       contexts[0].should.match(/^native/i);
       contexts[1].should.match(/^webview/i);
