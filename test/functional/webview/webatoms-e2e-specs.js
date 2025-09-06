@@ -1,5 +1,5 @@
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { APIDEMO_CAPS } from '../desired';
+import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 import B from 'bluebird';
 
 
@@ -15,21 +15,23 @@ describe('mobile web atoms', function () {
     chai.should();
     chai.use(chaiAsPromised.default);
 
-    driver = await initSession({
-      ...APIDEMO_CAPS,
-      appPackage: 'io.appium.android.apis',
-      appActivity: 'io.appium.android.apis.view.WebView1',
-    });
+    driver = await initSession(amendCapabilities(
+      APIDEMO_CAPS,
+      {
+        'appium:appPackage': 'io.appium.android.apis',
+        'appium:appActivity': 'io.appium.android.apis.view.WebView1',
+      }
+    ));
   });
   after(async function () {
     await deleteSession();
   });
 
   it('should input text into textbox and click links', async function () {
-    const webviewEl = await driver.elementById('wv1');
+    const webviewEl = await driver.$(await driver.findElement('id', 'wv1'));
     await B.delay(10000); // Wait for WebView to load
     await driver.execute(`mobile: webAtoms`, {
-      webviewEl: webviewEl.value,
+      webviewEl: webviewEl.elementId,
       forceJavascriptEnabled: true,
       methodChain: [
         {name: 'withElement', atom: {name: 'findElement', locator: {using: 'ID', value: 'i_am_a_textbox'}}},
