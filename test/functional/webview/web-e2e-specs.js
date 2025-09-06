@@ -12,6 +12,11 @@ describe('web', function () {
 
     chai.should();
     chai.use(chaiAsPromised.default);
+
+    // No proper chromedrivers are available, or very flaky to run on CI.
+    if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 26) {
+      this.skip();
+    }
   });
 
   describe('WebView', function () {
@@ -42,7 +47,12 @@ describe('web', function () {
       contexts[1].should.match(/^webview/i);
     });
     it('should send text to html text inputs', async function () {
-      // Browser or device side behavior was weird on an emulator
+      if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION, 10) > 31) {
+        // chromedriver or engine side issue on emulators.
+        // Please relax the condition if newer ones work.
+        this.skip();
+      }
+
       const html = await driver.getPageSource();
       html.should.match(/Selenium/);
       // Chrome 83 must be W3C
