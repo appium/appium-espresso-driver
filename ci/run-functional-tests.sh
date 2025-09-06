@@ -15,5 +15,7 @@ npx mocha --timeout 10m \
     ./test/functional/commands/size-e2e-specs.js \
     ./test/functional/commands/source-e2e-specs.js \
     ./test/functional/commands/mobile-e2e-specs.js \
+    ./test/functional/webview/web-e2e-specs.js \
+    ./test/functional/webview/webatoms-e2e-specs.js \
     ./test/functional/*-specs.js \
     -g @skip-ci -i --exit
