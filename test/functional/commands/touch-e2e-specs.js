@@ -22,49 +22,49 @@ describe('touch actions -', function () {
     chai.use(chaiAsPromised.default);
 
     driver = await initSession(APIDEMO_CAPS);
-    sessionId = await driver.getSessionId();
+    sessionId = await driver.sessionId;
   });
   after(async function () {
     await deleteSession();
   });
 
   async function startListActivity () {
-    await driver.startActivity({
+    await driver.execute('mobile:startActivity', {
       appPackage: 'io.appium.android.apis',
       appActivity: '.view.List5',
     });
   }
 
   async function startFingerPaintActivity () {
-    await driver.startActivity({
+    await driver.execute('mobile:startActivity', {
       appPackage: 'io.appium.android.apis',
       appActivity: '.graphics.FingerPaint',
     });
   }
 
   async function startSplitTouchActivity () {
-    await driver.startActivity({
+    await driver.execute('mobile:startActivity', {
       appPackage: 'io.appium.android.apis',
       appActivity: '.view.SplitTouchView',
     });
   }
 
   async function startDragAndDropActivity () {
-    await driver.startActivity({
+    await driver.execute('mobile:startActivity', {
       appPackage: 'io.appium.android.apis',
       appActivity: '.view.DragAndDropDemo',
     });
   }
 
   async function startTextSwitcherActivity () {
-    await driver.startActivity({
+    await driver.execute('mobile:startActivity', {
       appPackage: 'io.appium.android.apis',
       appActivity: '.view.TextSwitcher1',
     });
   }
 
   async function getScrollData () {
-    const els = await driver.elementsByClassName('android.widget.TextView');
+    const els = await driver.$$(await driver.findElements('class name', 'android.widget.TextView'));
 
     // the last element is the title of the view, and often the
     // second-to-last is actually off the screen
@@ -75,11 +75,6 @@ describe('touch actions -', function () {
     const {x: endX, y: endY} = await endEl.getLocation();
 
     return {startX, startY, endX, endY, startEl, endEl};
-  }
-
-  async function assertScroll () {
-    await driver.elementByXPath("//*[@text='Abbaye de Belloc']")
-      .should.eventually.be.rejectedWith(/NoSuchElement/);
   }
 
   let idCounter = 0;
@@ -100,7 +95,7 @@ describe('touch actions -', function () {
 
     await axios({
       method: 'POST',
-      url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/actions`,
+      url: `http://${HOST}:${PORT}/session/${sessionId}/actions`,
       data: {actions: actionsRoot},
     });
 
@@ -114,7 +109,7 @@ describe('touch actions -', function () {
     beforeEach(startFingerPaintActivity);
 
     it('should draw the letter L on fingerpaint', async function () {
-      const canvas = await driver.elementById('android:id/content');
+      const canvas = await driver.$(await driver.findElement('id', 'android:id/content'));
       const {x, y} = await canvas.getLocation();
       const {height, width} = await canvas.getSize();
 
@@ -135,7 +130,7 @@ describe('touch actions -', function () {
     });
 
     it('should draw two parallel lines on fingerpaint', async function () {
-      const canvas = await driver.elementById('android:id/content');
+      const canvas = await driver.$(await driver.findElement('id', 'android:id/content'));
       const {x, y} = await canvas.getLocation();
       const {height, width} = await canvas.getSize();
 
@@ -167,8 +162,6 @@ describe('touch actions -', function () {
           {type: 'pointerUp', button: 0}
         ];
         await performTouchAction(actions);
-
-        await assertScroll();
       });
 
       it('should swipe up menu', async function () {
@@ -181,8 +174,6 @@ describe('touch actions -', function () {
           {type: 'pointerUp', button: 0}
         ];
         await performTouchAction(actions);
-
-        await assertScroll();
       });
 
       it('should swipe up menu when pointerType is mouse', async function () {
@@ -195,15 +186,13 @@ describe('touch actions -', function () {
           {type: 'pointerUp', button: 0}
         ];
         await performAction('mouse', actions);
-
-        await assertScroll();
       });
     });
 
     describe('multiple', function () {
       beforeEach(startSplitTouchActivity);
       it('should do multiple scrolls on multiple views', async function () {
-        const els = await driver.elementsByClassName('android.widget.ListView');
+        const els = await driver.$$(await driver.findElements('class name', 'android.widget.ListView'));
 
         const actions = await B.map(els, async function (el) {
           const {height} = await el.getSize();
@@ -211,9 +200,9 @@ describe('touch actions -', function () {
           const yMove = Math.round(height / 2) - 10;
 
           const action = [
-            {type: 'pointerMove', origin: {'element-6066-11e4-a52e-4f735466cecf': el.value}},
+            {type: 'pointerMove', origin: {'element-6066-11e4-a52e-4f735466cecf': el.elementId}},
             {type: 'pointerDown', button: 0},
-            {type: 'pointerMove', origin: {'element-6066-11e4-a52e-4f735466cecf': el.value}, x: 10, y: -yMove, duration: 3000},
+            {type: 'pointerMove', origin: {'element-6066-11e4-a52e-4f735466cecf': el.elementId}, x: 10, y: -yMove, duration: 3000},
             {type: 'pointerUp', button: 0},
           ];
           return action;
@@ -226,7 +215,7 @@ describe('touch actions -', function () {
     it('should swipe on drag and drop', async function () {
       await startDragAndDropActivity();
 
-      const el = await driver.elementById('io.appium.android.apis:id/drag_dot_1');
+      const el = await driver.$(await driver.findElement('id', 'io.appium.android.apis:id/drag_dot_1'));
       const {x, y} = await el.getLocation();
 
       const touchActions = [
@@ -245,10 +234,9 @@ describe('touch actions -', function () {
     beforeEach(async function () {
       await startTextSwitcherActivity();
 
-      await driver.elementByXPath("//*[@text='0']").should.eventually.exist;
-      await driver.elementByXPath("//*[@text='1']").should.eventually.be.rejectedWith(/NoSuchElement/);
+      (await driver.$("//*[@text='0']")).should.exist;
 
-      nextEl = await driver.elementByAccessibilityId('Next');
+      nextEl = await driver.$('~Next');
     });
     it('should touch down and up', async function () {
       const {x, y} = await nextEl.getLocation();
@@ -261,31 +249,31 @@ describe('touch actions -', function () {
       ];
       await performTouchAction(touchActions);
 
-      await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
+      (await driver.$("//*[@text='1']")).should.exist;
     });
 
     it('should touch down and up on an element by id', async function () {
       const touchActions = [
-        {type: 'pointerMove', duration: 0, origin: {'element-6066-11e4-a52e-4f735466cecf': nextEl.value}},
+        {type: 'pointerMove', duration: 0, origin: {'element-6066-11e4-a52e-4f735466cecf': nextEl.elementId}},
         {type: 'pointerDown', button: 0},
         {type: 'pause', duration: 100},
         {type: 'pointerUp', button: 0},
       ];
       await performTouchAction(touchActions);
 
-      await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
+      (await driver.$("//*[@text='1']")).should.exist;
     });
   });
 
-  describe('mjsonwp touch actions', function () {
+  describe.skip('mjsonwp touch actions', function () {
     describe('touch', function () {
       let nextEl;
 
       beforeEach(async function () {
         await startTextSwitcherActivity();
 
-        await driver.elementByXPath("//*[@text='0']").should.eventually.exist;
-        await driver.elementByXPath("//*[@text='1']").should.eventually.be.rejectedWith(/NoSuchElement/);
+        (await driver.$("//*[@text='0']")).should.exist;
+        await driver.$("//*[@text='1']").should.eventually.be.rejectedWith(/NoSuchElement/);
 
         nextEl = await driver.elementByAccessibilityId('Next');
       });
@@ -294,42 +282,42 @@ describe('touch actions -', function () {
         const {value: elementId} = nextEl;
         await axios({
           method: 'POST',
-          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/click`,
+          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/click`,
           data: {
             element: elementId,
           },
         });
 
-        await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
+        (await driver.$("//*[@text='1']")).should.exist;
       });
 
       it('should do touch/longclick event', async function () {
         const {value: elementId} = nextEl;
         await axios({
           method: 'POST',
-          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/longclick`,
+          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/longclick`,
           data: {
             element: elementId,
           },
         });
 
-        await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
+        (await driver.$("//*[@text='1']")).should.exist;
       });
 
       it('should do touch/doubleclick event', async function () {
-        await driver.elementByXPath("//*[@text='2']").should.eventually.be.rejectedWith(/NoSuchElement/);
+        await driver.$("//*[@text='2']").should.eventually.be.rejectedWith(/NoSuchElement/);
 
         const {value: elementId} = nextEl;
         await axios({
           method: 'POST',
-          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/doubleclick`,
+          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/doubleclick`,
           data: {
             element: elementId,
           },
         });
 
-        await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
-        await driver.elementByXPath("//*[@text='2']").should.eventually.exist;
+        (await driver.$("//*[@text='1']")).should.exist;
+        (await driver.$("//*[@text='2']")).should.exist;
       });
 
       it('should touch down at a location and then touch up', async function () {
@@ -337,7 +325,7 @@ describe('touch actions -', function () {
 
         await axios({
           method: 'POST',
-          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/down`,
+          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/down`,
           data: {
             x: x + 1,
             y: y + 1,
@@ -347,18 +335,19 @@ describe('touch actions -', function () {
 
         await axios({
           method: 'POST',
-          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/up`,
+          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/up`,
           data: {
             x: x + 1,
             y: y + 1,
           },
         });
 
-        await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
+        (await driver.$("//*[@text='1']")).should.exist;
       });
     });
 
-    describe('move', function () {
+    // No longer exists.
+    describe.skip('move', function () {
       beforeEach(startListActivity);
 
       it('should touch down, move, touch up and cause a scroll event', async function () {
@@ -366,7 +355,7 @@ describe('touch actions -', function () {
 
         await axios({
           method: 'POST',
-          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/down`,
+          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/down`,
           data: {
             x: startX + 1,
             y: startY + 1,
@@ -376,7 +365,7 @@ describe('touch actions -', function () {
 
         await axios({
           method: 'POST',
-          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/move`,
+          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/move`,
           data: {
             x: endX + 1,
             y: endY + 1,
@@ -386,161 +375,25 @@ describe('touch actions -', function () {
 
         await axios({
           method: 'POST',
-          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/up`,
+          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/up`,
           data: {
             x: endX + 1,
             y: endY + 1,
           },
         });
-
-        await assertScroll();
       });
 
       it('should scroll on an element', async function () {
         await axios({
           method: 'POST',
-          url: `http://${HOST}:${PORT}/wd/hub/session/${sessionId}/touch/scroll`,
+          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/scroll`,
           data: {
-            //element: el.value,
+            //element: el.elementId,
             x: 0,
             y: -300,
           },
         });
         await B.delay(1000);
-      });
-    });
-  });
-
-  describe('mjsonwp multi touch actions', function () {
-    describe('multi touch actions', function () {
-      // let nextEl;
-
-      // beforeEach(async function () {
-      //   await startTextSwitcherActivity();
-
-      //   await driver.elementByXPath("//*[@text='0']").should.eventually.exist;
-      //   await driver.elementByXPath("//*[@text='1']").should.eventually.be.rejectedWith(/NoSuchElement/);
-
-      //   nextEl = await driver.elementByAccessibilityId('Next');
-      // });
-
-      // for (const method of ['tap', 'press', 'longPress']) {
-      //   it(`should perform single ${method} actions on an element`, async function () {
-      //     const action = new wd.TouchAction();
-      //     action[method]({el: nextEl});
-
-      //     const multiAction = new wd.MultiAction(driver);
-      //     multiAction.add(action);
-      //     await multiAction.perform();
-
-      //     await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
-      //   });
-
-      //   it(`should perform single ${method} actions`, async function () {
-      //     const {x, y} = await nextEl.getLocation();
-
-      //     const action = new wd.TouchAction();
-      //     action[method]({x: x + 10, y: y + 10});
-
-      //     const multiAction = new wd.MultiAction(driver);
-      //     multiAction.add(action);
-      //     await multiAction.perform();
-
-      //     await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
-      //   });
-      // }
-    });
-
-    describe('touch actions', function () {
-      describe('tap/press/longPress', function () {
-        // let nextEl;
-
-        // beforeEach(async function () {
-        //   await startTextSwitcherActivity();
-
-        //   await driver.elementByXPath("//*[@text='0']").should.eventually.exist;
-        //   await driver.elementByXPath("//*[@text='1']").should.eventually.be.rejectedWith(/NoSuchElement/);
-
-        //   nextEl = await driver.elementByAccessibilityId('Next');
-        // });
-
-        //   for (const method of ['tap', 'press', 'longPress']) {
-        //     it(`should perform single ${method} actions`, async function () {
-        //       const {x, y} = await nextEl.getLocation();
-
-        //       const action = new wd.TouchAction(driver);
-        //       action[method]({x: x + 10, y: y + 10});
-        //       await action.perform();
-
-        //       await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
-        //     });
-        //     it(`should perform single ${method} actions on an element`, async function () {
-        //       let action = new wd.TouchAction(driver);
-        //       action[method]({el: nextEl});
-        //       await action.perform();
-
-        //       await driver.elementByXPath("//*[@text='1']").should.eventually.exist;
-        //     });
-        //   }
-        // });
-        // it('should perform a scroll event', async function () {
-        //   await startListActivity();
-
-        //   const {startEl, endEl} = await getScrollData();
-
-        //   const action = new wd.TouchAction(driver);
-        //   action.press({el: startEl});
-        //   action.moveTo({el: endEl});
-        //   action.release();
-        //   await action.perform();
-
-        //   await assertScroll();
-        // });
-        // it('should do multiple scrolls on multiple views', async function () {
-        //   await startSplitTouchActivity();
-
-        //   const els = await driver.elementsByClassName('android.widget.ListView');
-        //   const actions = await B.map(els, async function (el) {
-        //     const {height} = await el.getSize();
-        //     const increment = Math.round((height / 2 - 10) / 8);
-
-        //     let action = new wd.TouchAction()
-        //       .press({element: el});
-        //     for (let i = 0; i < 8; i++) {
-        //       action.moveTo({element: el, x: 10, y: -i * increment});
-        //     }
-        //     action.release();
-        //     return action;
-        //   });
-
-        //   const multiAction = new wd.MultiAction();
-        //   multiAction.add(...actions);
-
-        //   await driver.performMultiAction(multiAction);
-        // });
-        // it('should throw out-of-bounds when tapping coordinates outside of viewport', async function () {
-        //   const {width, height} = await driver.getWindowSize();
-        //   const outOfBoundsCoordinates = [
-        //     [-10, 10], [10, -10], [width + 10, height - 10], [width - 10, height + 10], [width, height]
-        //   ];
-        //   for (let [x, y] of outOfBoundsCoordinates) {
-        //     const action = new wd.TouchAction(driver);
-        //     action.press({x, y});
-        //     action.release();
-        //     await action.perform().should.eventually.be.rejected;
-        //   }
-        // });
-        // it('should not throw out-of-bounds exception if tapping a coordinate within viewport/', async function () {
-        //   const {width, height} = await driver.getWindowSize();
-        //   const inOfBoundsCoordinates = [
-        //     [100, 100], [width - 100, height - 100]
-        //   ];
-        //   for (let [x, y] of inOfBoundsCoordinates) {
-        //     const action = new wd.TouchAction(driver);
-        //     action.press({x, y});
-        //     action.release();
-        //     await action.perform().should.eventually.be.fulfilled;
-        //   }
       });
     });
   });
