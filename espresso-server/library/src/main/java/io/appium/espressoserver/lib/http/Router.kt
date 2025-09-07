@@ -102,7 +102,7 @@ internal class Router(server: Server) {
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/appium/device/open_notifications", OpenNotifications(), AppiumParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.GET, "/session/:sessionId/appium/device/display_density", GetDisplayDensity(), AppiumParams::class.java))
 
-        // touch events: Perhaps can be removed as no caller (because they are not w3c spec)
+        // touch events: Perhaps these routes can be removed as no callers (because they are not in the w3c spec)
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/click", PointerEventHandler(CLICK), MotionEventParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/longclick", PointerEventHandler(LONG_CLICK), MotionEventParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/doubleclick", PointerEventHandler(DOUBLE_CLICK), MotionEventParams::class.java))
@@ -111,7 +111,7 @@ internal class Router(server: Server) {
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/move", PointerEventHandler(TOUCH_MOVE), MotionEventParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/touch/scroll", PointerEventHandler(TOUCH_SCROLL), MotionEventParams::class.java))
 
-        // mouse events:  Perhaps can be removed as no caller (because they are not w3c spec)
+        // mouse events:  Perhaps these routes can be removed as no callers (because they are not in the w3c spec)
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/buttondown", PointerEventHandler(MOUSE_DOWN), MotionEventParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/buttonup", PointerEventHandler(MOUSE_UP), MotionEventParams::class.java))
         routeMap.addRoute(RouteDefinition(Method.POST, "/session/:sessionId/moveto", MoveTo(), MoveToParams::class.java))
