@@ -313,4 +313,27 @@ describe('find elements', function () {
       });
     });
   });
+
+  describe('Move element outside of screen into visible area', function () {
+    before(async function () {
+      driver = await initSession(APIDEMO_CAPS);
+    });
+
+    after(async function () {
+      await deleteSession();
+    });
+
+    it('should move an element outside. the screen into the screen with find element', async function () {
+      if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION, 10) < 34) {
+        // Unstable on CI with lower version emulators
+        this.skip();
+      }
+
+      // Espresso specific behavior.
+      const el = await driver.$('~Views');
+      await el.click();
+      const imageEl = await driver.$('~ImageView');
+      imageEl.should.exist;
+    });
+  });
 });
