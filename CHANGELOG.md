@@ -1,3 +1,13 @@
+## [5.0.3](https://github.com/appium/appium-espresso-driver/compare/v5.0.2...v5.0.3) (2025-09-15)
+
+### Bug Fixes
+
+* typecheck ([#1091](https://github.com/appium/appium-espresso-driver/issues/1091)) ([70a82fd](https://github.com/appium/appium-espresso-driver/commit/70a82fda6ddbbf470079d65f5f89c31b7037b630))
+
+### Miscellaneous Chores
+
+* fix typos ([#1089](https://github.com/appium/appium-espresso-driver/issues/1089)) ([1c07fa8](https://github.com/appium/appium-espresso-driver/commit/1c07fa8d863029bb0db6e73b618aefcb96eebb23))
+
 ## [5.0.2](https://github.com/appium/appium-espresso-driver/compare/v5.0.1...v5.0.2) (2025-09-03)
 
 ### Bug Fixes
