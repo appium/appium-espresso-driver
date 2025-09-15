@@ -389,7 +389,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   }
 
   get driverData () {
-    // TODO fille out resource info here
+    // TODO fill out resource info here
     return {};
   }
 
@@ -398,7 +398,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     const {manifestPayload} = await getPackageInfo();
     this.log.info(`EspressoDriver version: ${manifestPayload.version}`);
 
-    // Read https://github.com/appium/appium-android-driver/pull/461 what happens if ther is no setHiddenApiPolicy for Android P+
+    // Read https://github.com/appium/appium-android-driver/pull/461 what happens if there is no setHiddenApiPolicy for Android P+
     if (await this.adb.getApiLevel() >= 28) { // Android P
       this.log.warn('Relaxing hidden api policy');
       await this.adb.setHiddenApiPolicy('1', !!this.opts.ignoreHiddenApiPolicyError);

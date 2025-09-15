@@ -134,7 +134,7 @@ appium:ignoreHiddenApiPolicyError | Being set to `true` ignores a failure while 
 appium:hideKeyboard | Being set to `true` hides the on-screen keyboard while the session is running. Use it instead of the legacy `appium:unicodeKeyboard` one (which will be dropped in the future). This effect is achieved by assigning a custom "artificial" [input method](https://developer.android.com/develop/ui/views/touch-and-input/creating-input-method). Only use this feature for special/exploratory cases as it violates the way your application under test is normally interacted with by a human. Setting this capability explicitly to `false` enforces `adb shell ime reset` call on session startup, which resets the currently selected/enabled IMEs to the default ones as if the device is initially booted with the current locale. `undefined` by default.
 appium:mockLocationApp | Sets the package identifier of the app, which is used as a system mock location provider since Appium 1.18.0+. This capability has no effect on emulators. If the value is set to `null` or an empty string, then Appium will skip the mocked location provider setup procedure. Defaults to Appium Setting package identifier (`io.appium.settings`).
 appium:logcatFormat | The log print format, where `format` is one of: `brief` `process` `tag` `thread` `raw` `time` `threadtime` `long`. `threadtime` is the default value.
-appium:logcatFilterSpecs | Series of `tag[:priority]` where `tag` is a log component tag (or * for all) and priority is: `V    Verbose`, `D    Debug`, `I    Info`, `W    Warn`, `E    Error`, `F    Fatal`, `S    Silent (supress all output)`. '*' means '*:d' and `tag` by itself means `tag:v`. If not specified on the commandline, filterspec is set from ANDROID_LOG_TAGS. If no filterspec is found, filter defaults to '*:I'.
+appium:logcatFilterSpecs | Series of `tag[:priority]` where `tag` is a log component tag (or * for all) and priority is: `V    Verbose`, `D    Debug`, `I    Info`, `W    Warn`, `E    Error`, `F    Fatal`, `S    Silent (suppress all output)`. '*' means '*:d' and `tag` by itself means `tag:v`. If not specified on the commandline, filterspec is set from ANDROID_LOG_TAGS. If no filterspec is found, filter defaults to '*:I'.
 appium:allowDelayAdb | Being set to `false` prevents emulator to use `-delay-adb` feature to detect its startup. See https://github.com/appium/appium/issues/14773 for more details.
 
 ### Emulator (Android Virtual Device)
@@ -268,7 +268,7 @@ espressoVersion | The version for the Espresso dependencies to use for Espresso 
 sourceCompatibility | The minimum version of JVM the project sources are compatible with. The default value is `VERSION_1_8` | VERSION_12
 targetCompatibility | The target version of JVM the project sources are compatible with. The default value is `VERSION_1_8` | VERSION_12
 jvmTarget | Target version of the generated JVM bytecode as a string. The default value is `1_8` | `1_10`
-annotationVersion | The target version of `androidx.annotation:annotation` pakage. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | '1.2.0'
+annotationVersion | The target version of `androidx.annotation:annotation` package. By default the version from the app [build.gradle.kts](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/build.gradle.kts) is used | '1.2.0'
 
 ### additionalAppDependencies
 
@@ -502,7 +502,7 @@ The actual command output. An error is thrown if command execution fails.
 
 Performs IME action on the _currently focused_ edit element.
 
-Very often Android developers use [onEditorAction](https://developer.android.com/reference/android/widget/TextView.OnEditorActionListener.html#onEditorAction(android.widget.TextView,%20int,%20android.view.KeyEvent)) callback with `actionId` argument to implement actions handling, for example, when `Search` or `Done` button is pressed on the on-screen keyboard. This mobile extension is supposed to emulate the invokation of such callback on the focused element.
+Very often Android developers use [onEditorAction](https://developer.android.com/reference/android/widget/TextView.OnEditorActionListener.html#onEditorAction(android.widget.TextView,%20int,%20android.view.KeyEvent)) callback with `actionId` argument to implement actions handling, for example, when `Search` or `Done` button is pressed on the on-screen keyboard. This mobile extension is supposed to emulate the invocation of such callback on the focused element.
 
 #### Arguments
 
@@ -1035,7 +1035,7 @@ Starts the given activity with intent options, activity options and locale. Acti
 
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
-appActivity | string | yes | Applicaiton acitivity identifier to start | `com.myapp.myacitivty`
+appActivity | string | yes | Application activity identifier to start | `com.myapp.myacitivty`
 locale | object | no | Sets the locale for the app under test. It only uses public APIs for its purpose. See https://github.com/libyal/libfwnt/wiki/Language-Code-identifiers to get the list of available language abbreviations. | `{"language": "zh", "country": "CN", "variant": "Hans"}`
 optionalIntentArguments | object | no | The mapping of custom options for the intent that is going to be passed to the main app activity. Check [Intent Options](#intent-options) for more details. | `{ 'flags': 'ACTIVITY_NEW_TASK', 'action': '<intent_action>', 'className': '<fullyQualifiedAppActivity>', 'es': {'foo': 'bar'} }`
 optionalActivityArguments | object | no | The mapping of custom options for the main app activity that is going to be started. Check [Activity Options](#activity-options) for more details. | `{ 'launchDisplayId': 1 }`
