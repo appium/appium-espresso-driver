@@ -6,7 +6,8 @@ import type {
   InitialOpts,
   StringRecord,
   SingularSessionData,
-  RouteMatcher
+  RouteMatcher,
+  SessionCapabilities
 } from '@appium/types';
 import type { EspressoConstraints } from './constraints';
 import _ from 'lodash';
@@ -190,6 +191,11 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
 
   override async getSession(): Promise<SingularSessionData<EspressoConstraints>> {
     return await BaseDriver.prototype.getSession.call(this);
+  }
+
+  // needed to make the typechecker happy
+  async getAppiumSessionCapabilities(): Promise<SessionCapabilities<EspressoConstraints>> {
+    return (await super.getAppiumSessionCapabilities()) as SessionCapabilities<EspressoConstraints>;
   }
 
   async createSession (
