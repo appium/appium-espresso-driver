@@ -16,8 +16,6 @@
 
 package io.appium.espressoserver.lib.model
 
-import kotlin.IllegalArgumentException
-
 val SUPPORTED_Z_VALUES = listOf(0, 90, 180, 270)
 
 data class RotationParams(

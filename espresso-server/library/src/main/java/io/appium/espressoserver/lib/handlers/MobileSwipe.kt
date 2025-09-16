@@ -22,7 +22,6 @@ import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
 import androidx.compose.ui.test.swipeUp
-import androidx.test.espresso.UiController
 import androidx.test.espresso.action.GeneralSwipeAction
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
@@ -30,9 +29,6 @@ import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.MobileSwipeParams
 import io.appium.espressoserver.lib.model.MobileSwipeParams.Direction.*
-import io.appium.espressoserver.lib.viewaction.UiControllerPerformer
-import io.appium.espressoserver.lib.viewaction.UiControllerRunnable
-import io.appium.espressoserver.lib.viewaction.ViewGetter
 
 class MobileSwipe : RequestHandler<MobileSwipeParams, Void?> {
 
