@@ -1,3 +1,14 @@
+## [5.0.4](https://github.com/appium/appium-espresso-driver/compare/v5.0.3...v5.0.4) (2025-10-17)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump semantic-release from 24.2.9 to 25.0.0 ([#1093](https://github.com/appium/appium-espresso-driver/issues/1093)) ([b993d7a](https://github.com/appium/appium-espresso-driver/commit/b993d7ac126a6302e8519cbc4a1e995055a1085b))
+
+### Code Refactoring
+
+* remove unused import ([#1090](https://github.com/appium/appium-espresso-driver/issues/1090)) ([05163b3](https://github.com/appium/appium-espresso-driver/commit/05163b396c36162899bba51f3ca560f6a84ffc64))
+* use optional chain for better readability ([#1092](https://github.com/appium/appium-espresso-driver/issues/1092)) ([c4c10ce](https://github.com/appium/appium-espresso-driver/commit/c4c10ce02d8da91d4d0f5c942ec0c853bdca11ee))
+
 ## [5.0.3](https://github.com/appium/appium-espresso-driver/compare/v5.0.2...v5.0.3) (2025-09-15)
 
 ### Bug Fixes
