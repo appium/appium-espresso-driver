@@ -32,7 +32,7 @@ On top of standard Appium requirements Espresso driver also expects the followin
 - Java JDK must be installed and [JAVA_HOME](https://www.baeldung.com/java-home-on-windows-7-8-10-mac-os-x-linux) environment variable must be set. Java major version must be 11 or newer.
 - [Emulator](https://developer.android.com/studio/run/managing-avds) platform image must be installed if you plan to run your tests on it. [Android Studio IDE](https://developer.android.com/studio) also provides a convenient UI to install and manage emulators.
 - Real Android devices must have [USB debugging enabled](https://developer.android.com/studio/debug/dev-options) and should be visible as `online` in `adb devices -l` output.
-- The minimum version of Android API must be 5.0 (API level 21) (6.0 is recommended as version 5 has some known compatibility issues).
+- Since driver version 6.0.0 the minimum supported version of Android API must be 8.0 (API level 26). Older driver versions support Android API 5/level 21 (6.0 is recommended as version 5 has some known compatibility issues).
 - [Gradle](https://gradle.org/) must be installed in order to build Espresso server.
 - Both the server package and the application under test must be signed with the same digital signature. Appium does sign them automatically upon session creation, so this could only be an issue if one wants to test an application, which is already installed on the device (using `noReset=true` capability).
 - The package under test must not have mangled class names (e.g. [Proguard](https://developer.android.com/studio/build/shrink-code) must not be enabled for it)
