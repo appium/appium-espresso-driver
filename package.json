@@ -74,7 +74,7 @@
     "npm-shrinkwrap.json"
   ],
   "dependencies": {
-    "appium-adb": "^13.0.0",
+    "appium-adb": "^14.0.0",
     "appium-android-driver": "^11.0.0",
     "asyncbox": "^3.0.0",
     "axios": "^1.7.2",
