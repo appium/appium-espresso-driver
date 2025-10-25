@@ -1,3 +1,13 @@
+## [6.0.0](https://github.com/appium/appium-espresso-driver/compare/v5.0.4...v6.0.0) (2025-10-25)
+
+### ⚠ BREAKING CHANGES
+
+* Dropped support of older Android API levels below 26 (Oreo)
+
+### Features
+
+* Set the minimum supported Android API version to 8/level 26  ([#1094](https://github.com/appium/appium-espresso-driver/issues/1094)) ([76695d5](https://github.com/appium/appium-espresso-driver/commit/76695d5b902d7434225ea3ef664e265a6fb8b7aa))
+
 ## [5.0.4](https://github.com/appium/appium-espresso-driver/compare/v5.0.3...v5.0.4) (2025-10-17)
 
 ### Miscellaneous Chores
