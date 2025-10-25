@@ -22,16 +22,10 @@ jobs:
         - apiLevel: 32
           emuTag: google_apis
           arch: x86_64
-        - apiLevel: 30
+        - apiLevel: 29
           emuTag: google_apis
           arch: x86
-        - apiLevel: 29
-          emuTag: default
-          arch: x86
-        - apiLevel: 25
-          emuTag: default
-          arch: x86
-        - apiLevel: 23
+        - apiLevel: 26
           emuTag: default
           arch: x86
 

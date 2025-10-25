@@ -74,14 +74,14 @@
     "npm-shrinkwrap.json"
   ],
   "dependencies": {
-    "appium-adb": "^13.0.0",
-    "appium-android-driver": "^11.0.0",
+    "appium-adb": "^14.0.0",
+    "appium-android-driver": "^11.0.9",
     "asyncbox": "^3.0.0",
-    "axios": "^1.7.2",
+    "axios": "^1.12.2",
     "bluebird": "^3.5.0",
-    "io.appium.settings": "^6.0.0",
+    "io.appium.settings": "^6.0.8",
     "lodash": "^4.17.11",
-    "portscanner": "^2.1.1",
+    "portscanner": "^2.2.0",
     "semver": "^7.6.2",
     "source-map-support": "^0.x",
     "teen_process": "^3.0.0"
