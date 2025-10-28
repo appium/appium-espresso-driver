@@ -1,3 +1,9 @@
+## [6.0.2](https://github.com/appium/appium-espresso-driver/compare/v6.0.1...v6.0.2) (2025-10-28)
+
+### Miscellaneous Chores
+
+* bump io.appium.settings to 7.0.1 basis ([#1097](https://github.com/appium/appium-espresso-driver/issues/1097)) ([231712c](https://github.com/appium/appium-espresso-driver/commit/231712c608498358c86758e1a7a329b83b74983c))
+
 ## [6.0.1](https://github.com/appium/appium-espresso-driver/compare/v6.0.0...v6.0.1) (2025-10-28)
 
 ### Miscellaneous Chores
