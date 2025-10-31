@@ -1,3 +1,12 @@
+## [6.0.4](https://github.com/appium/appium-espresso-driver/compare/v6.0.3...v6.0.4) (2025-10-31)
+
+### Miscellaneous Chores
+
+* **deps:** bump actions/cache from 3 to 4 ([#1100](https://github.com/appium/appium-espresso-driver/issues/1100)) ([b801f1b](https://github.com/appium/appium-espresso-driver/commit/b801f1ba8d4f6aece052fc396f1ceb45fdf74f98))
+* **deps:** bump actions/setup-java from 4 to 5 ([#1102](https://github.com/appium/appium-espresso-driver/issues/1102)) ([41f8baf](https://github.com/appium/appium-espresso-driver/commit/41f8baf9688d7bfeaadc8f3516f6458102c31083))
+* **deps:** bump actions/setup-node from 4 to 6 ([#1103](https://github.com/appium/appium-espresso-driver/issues/1103)) ([9fb79e4](https://github.com/appium/appium-espresso-driver/commit/9fb79e400bcc7e82b0d89f716f8f3e96f24f5846))
+* **deps:** bump gradle/actions from 4 to 5 ([#1104](https://github.com/appium/appium-espresso-driver/issues/1104)) ([55baef9](https://github.com/appium/appium-espresso-driver/commit/55baef929fc8ae315d91e7005f0045137641f282))
+
 ## [6.0.3](https://github.com/appium/appium-espresso-driver/compare/v6.0.2...v6.0.3) (2025-10-31)
 
 ### Miscellaneous Chores
