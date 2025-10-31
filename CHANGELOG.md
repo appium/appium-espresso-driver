@@ -1,3 +1,9 @@
+## [6.0.3](https://github.com/appium/appium-espresso-driver/compare/v6.0.2...v6.0.3) (2025-10-31)
+
+### Miscellaneous Chores
+
+* Bump gradle to 8.13 ([#1098](https://github.com/appium/appium-espresso-driver/issues/1098)) ([a4cbbfb](https://github.com/appium/appium-espresso-driver/commit/a4cbbfb754c4de1443b865f21c900e2c1c799391))
+
 ## [6.0.2](https://github.com/appium/appium-espresso-driver/compare/v6.0.1...v6.0.2) (2025-10-28)
 
 ### Miscellaneous Chores
