@@ -1,3 +1,9 @@
+## [6.0.6](https://github.com/appium/appium-espresso-driver/compare/v6.0.5...v6.0.6) (2025-11-15)
+
+### Miscellaneous Chores
+
+* publish via trusted publisher ([#1106](https://github.com/appium/appium-espresso-driver/issues/1106)) ([755cc5b](https://github.com/appium/appium-espresso-driver/commit/755cc5b51cfcdb25fe6ef1b4a25c87eb42a6c963))
+
 ## [6.0.5](https://github.com/appium/appium-espresso-driver/compare/v6.0.4...v6.0.5) (2025-10-31)
 
 ### Miscellaneous Chores
