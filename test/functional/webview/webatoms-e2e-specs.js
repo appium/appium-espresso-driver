@@ -15,6 +15,11 @@ describe('mobile web atoms', function () {
     chai.should();
     chai.use(chaiAsPromised.default);
 
+    // API level 26 emulators don't have WebView installed by default.
+    if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 26) {
+      this.skip();
+    }
+
     driver = await initSession(amendCapabilities(
       APIDEMO_CAPS,
       {
