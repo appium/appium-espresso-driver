@@ -1,3 +1,9 @@
+## [6.0.7](https://github.com/appium/appium-espresso-driver/compare/v6.0.6...v6.0.7) (2025-11-19)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @types/sinon from 17.0.4 to 21.0.0 ([#1107](https://github.com/appium/appium-espresso-driver/issues/1107)) ([f687919](https://github.com/appium/appium-espresso-driver/commit/f687919a407ae691d2504b7c6fce56367d764005))
+
 ## [6.0.6](https://github.com/appium/appium-espresso-driver/compare/v6.0.5...v6.0.6) (2025-11-15)
 
 ### Miscellaneous Chores
