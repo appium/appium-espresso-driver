@@ -15,6 +15,11 @@ describe('context', function () {
     chai.should();
     chai.use(chaiAsPromised.default);
 
+    // API level 26 emulators don't have WebView installed by default.
+    if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 26) {
+      this.skip();
+    }
+
     driver = await initSession(amendCapabilities(
       APIDEMO_CAPS,
       {
@@ -27,11 +32,6 @@ describe('context', function () {
   });
 
   it('should get contexts and set them without errors', async function () {
-    if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 25) {
-      // Latest 25 and lower has no good chromedriver to automate.
-      this.skip();
-    }
-
     const viewContexts = await driver.getContexts();
 
     await driver.getContext().should.eventually.eql(viewContexts[0]);

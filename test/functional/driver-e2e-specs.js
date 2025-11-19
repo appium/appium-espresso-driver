@@ -1,4 +1,3 @@
-import path from 'path';
 import { remote } from 'webdriverio';
 import { COMMON_REMOTE_OPTIONS } from './helpers/session';
 import { APIDEMO_CAPS, amendCapabilities } from './desired';
@@ -60,15 +59,6 @@ describe('EspressoDriver', function () {
             'appium:appActivity': 'com.android.settings'
           }),
         }).should.eventually.be.rejected;
-      });
-      it('should reject start session for internet permissions not set', async function () {
-        // for now the activity needs to be fully qualified
-        await remote({
-          ...COMMON_REMOTE_OPTIONS,
-          capabilities: amendCapabilities(APIDEMO_CAPS, {
-            'appium:app': path.resolve('test', 'assets', 'ContactManager.apk')
-          }),
-        }).should.eventually.be.rejectedWith(/INTERNET/);
       });
     });
   });

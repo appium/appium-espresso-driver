@@ -122,7 +122,6 @@
     "@types/node": "^24.0.0",
     "@types/sinon": "^17.0.0",
     "@xmldom/xmldom": "^0.x",
-    "android-apidemos": "^5.0.0",
     "appium-chromedriver": "^8.0.0",
     "async-lock": "^1.0.0",
     "chai": "^6.0.0",
