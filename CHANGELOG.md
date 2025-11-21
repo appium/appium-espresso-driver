@@ -1,3 +1,9 @@
+## [6.1.0](https://github.com/appium/appium-espresso-driver/compare/v6.0.8...v6.1.0) (2025-11-21)
+
+### Features
+
+* add context for BiDi - log.entryAdded event ([#1110](https://github.com/appium/appium-espresso-driver/issues/1110)) ([074654b](https://github.com/appium/appium-espresso-driver/commit/074654ba142e2a10095117fd7b42fe28d5789046))
+
 ## [6.0.8](https://github.com/appium/appium-espresso-driver/compare/v6.0.7...v6.0.8) (2025-11-21)
 
 ### Miscellaneous Chores
