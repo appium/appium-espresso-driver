@@ -31,7 +31,7 @@ jobs:
         node-version: ${{ fromJSON(needs.prepare_matrix.outputs.versions) }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
@@ -49,7 +49,7 @@ jobs:
   kotlin_test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: actions/setup-node@v6
       with:
         node-version: lts/*
