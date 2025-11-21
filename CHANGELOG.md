@@ -1,3 +1,9 @@
+## [6.0.8](https://github.com/appium/appium-espresso-driver/compare/v6.0.7...v6.0.8) (2025-11-21)
+
+### Miscellaneous Chores
+
+* **deps:** bump actions/checkout from 5 to 6 ([#1109](https://github.com/appium/appium-espresso-driver/issues/1109)) ([82bf71a](https://github.com/appium/appium-espresso-driver/commit/82bf71a2a308a25982d9c8ee44df67c03129cf82))
+
 ## [6.0.7](https://github.com/appium/appium-espresso-driver/compare/v6.0.6...v6.0.7) (2025-11-19)
 
 ### Miscellaneous Chores
