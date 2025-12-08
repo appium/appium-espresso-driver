@@ -102,7 +102,7 @@
     "prepare": "npm run rebuild",
     "sync-version": "node ./scripts/sync-version.js --package-version=${npm_package_version}",
     "test": "npm run test:node",
-    "test:node": "mocha --exit --timeout 1m \"./test/unit/**/*-specs.js\"",
+    "test:node": "mocha --exit --timeout 1m \"./test/unit/**/*-specs.ts\"",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace || cd ..",
     "version": "npm run sync-version && npm run build:server",
     "e2e-test": "mocha --exit --timeout 5m \"./test/functional/**/*-specs.js\""
