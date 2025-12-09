@@ -1,3 +1,9 @@
+## [6.2.0](https://github.com/appium/appium-espresso-driver/compare/v6.1.0...v6.2.0) (2025-12-09)
+
+### Features
+
+* add appium:adbListenAllNetwork with espresso:adb_listen_all_network flag to add -a option for adb ([#1114](https://github.com/appium/appium-espresso-driver/issues/1114)) ([ba48baa](https://github.com/appium/appium-espresso-driver/commit/ba48baac72a78cfbafe410f27b651e76431b3d53))
+
 ## [6.1.0](https://github.com/appium/appium-espresso-driver/compare/v6.0.8...v6.1.0) (2025-11-21)
 
 ### Features
