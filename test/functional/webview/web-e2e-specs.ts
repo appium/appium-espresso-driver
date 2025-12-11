@@ -3,6 +3,7 @@ import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
+import { retryInterval } from 'asyncbox';
 
 chai.use(chaiAsPromised);
 
@@ -64,7 +65,13 @@ describe('web', function () {
       const anchorLink = await driver.$('[id="i am a link"]');
       await anchorLink.click();
       const bodyEl = await driver.$(await driver.findElement('tag name', 'body'));
-      await expect(bodyEl.getAttribute('value')).to.eventually.equal(/I am some other page content/);
+      const text = 'I am some other page content';
+      await retryInterval(5, 1000, async () => {
+        const value = await bodyEl.getAttribute('value');
+        if (!value?.includes(text)) {
+          throw new Error(`Body element "${value}" does not contain "${text}"`);
+        }
+      });
       await driver.back();
       const el = await driver.$('[id="i am a link"]');
       expect(el).to.exist;
