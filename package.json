@@ -75,7 +75,7 @@
   ],
   "dependencies": {
     "appium-adb": "^14.0.0",
-    "appium-android-driver": "^12.4.0",
+    "appium-android-driver": "^12.4.4",
     "asyncbox": "^3.0.0",
     "axios": "^1.12.2",
     "bluebird": "^3.5.0",
@@ -119,7 +119,7 @@
     "@types/bluebird": "^3.5.38",
     "@types/lodash": "^4.14.196",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.0",
     "@types/sinon": "^21.0.0",
     "@xmldom/xmldom": "^0.x",
     "appium-chromedriver": "^8.0.0",
