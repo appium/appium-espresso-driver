@@ -1,9 +1,10 @@
-import chai from 'chai';
+import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { retryInterval } from 'asyncbox';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
 
+chai.use(chaiAsPromised);
 
 describe('Jetpack Compose', function () {
   this.timeout(MOCHA_TIMEOUT);
@@ -11,9 +12,6 @@ describe('Jetpack Compose', function () {
   let driver: any;
 
   before(async function () {
-    chai.should();
-    chai.use(chaiAsPromised);
-
     // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
     if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 23) {
       this.skip();
@@ -52,18 +50,18 @@ describe('Jetpack Compose', function () {
 
     const textElement = await driver.$(await driver.findElement('tag name', 'text_input'));
     // verify default text
-    await textElement.getText().should.eventually.equal('Enter your text here');
+    await expect(textElement.getText()).to.eventually.equal('Enter your text here');
 
     await driver.setValueImmediate(textElement.elementId, 'hello');
     // should append to the exiting text
-    await driver.$(await driver.findElement('tag name', 'text_input')).getText().should.eventually.equal('Enter your text herehello');
+    await expect(driver.$(await driver.findElement('tag name', 'text_input')).getText()).to.eventually.equal('Enter your text herehello');
 
     await textElement.setValue('テスト');
     //  should replace existing text
-    await textElement.getText().should.eventually.equal('テスト');
+    await expect(textElement.getText()).to.eventually.equal('テスト');
 
     await textElement.clearValue();
     //  should clear existing text
-    await textElement.getText().should.eventually.equal('');
+    await expect(textElement.getText()).to.eventually.equal('');
   });
 });

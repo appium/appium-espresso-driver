@@ -1,9 +1,10 @@
 import axios from 'axios';
-import chai from 'chai';
+import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 
+chai.use(chaiAsPromised);
 
 describe('keyboard', function () {
   this.timeout(MOCHA_TIMEOUT);
@@ -32,9 +33,6 @@ describe('keyboard', function () {
   let driver: any;
 
   before(async function () {
-    chai.should();
-    chai.use(chaiAsPromised);
-
     driver = await initSession(amendCapabilities(
       APIDEMO_CAPS,
       {
@@ -64,9 +62,9 @@ describe('keyboard', function () {
   it('should send keys to the correct element with setImmediateValue', async function () {
     const el = await driver.$('//android.widget.AutoCompleteTextView');
     await driver.setValueImmediate(el.elementId, 'hello world');
-    await el.getText().should.eventually.equal('hello world');
+    await expect(el.getText()).to.eventually.equal('hello world');
     await driver.setValueImmediate(el.elementId, '!!!');
-    await el.getText().should.eventually.equal('hello world!!!');
+    await expect(el.getText()).to.eventually.equal('hello world!!!');
     await driver.elementClear(el.elementId);
   });
 
@@ -87,7 +85,7 @@ describe('keyboard', function () {
       {'type': 'keyUp', 'value': 'S'},
     ];
     await performActions(keyActions);
-    await autocompleteEl.getText().should.eventually.equal('HAtS');
+    await expect(autocompleteEl.getText()).to.eventually.equal('HAtS');
     await driver.elementClear(autocompleteEl.elementId);
   });
 });

@@ -1,10 +1,11 @@
-import chai from 'chai';
+import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { DOMParser } from '@xmldom/xmldom';
 import xpath from 'xpath';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
 
+chai.use(chaiAsPromised);
 
 describe('source commands', function () {
   this.timeout(MOCHA_TIMEOUT);
@@ -13,9 +14,6 @@ describe('source commands', function () {
 
   describe('jetpack-compose app', function () {
     before(async function () {
-      chai.should();
-      chai.use(chaiAsPromised);
-
       // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
       if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 23) {
         return this.skip();
@@ -31,10 +29,10 @@ describe('source commands', function () {
       await el.click();
       await driver.updateSettings({ driver: 'compose' });
       const sourceXML = await driver.getPageSource();
-      sourceXML.should.be.a.string;
+      expect(sourceXML).to.be.a.string;
       const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
       const nodes = xpath.select("//*[text='This is the Learn Jetpack Compose By Example tutorial']", doc) as Node[];
-      nodes.length.should.be.greaterThan(0);
+      expect(nodes.length).to.be.greaterThan(0);
     });
   });
 });

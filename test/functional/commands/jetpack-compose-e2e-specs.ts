@@ -1,8 +1,9 @@
-import chai from 'chai';
+import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
 
+chai.use(chaiAsPromised);
 
 describe('Jetpack Compose', function () {
   this.timeout(MOCHA_TIMEOUT);
@@ -10,9 +11,6 @@ describe('Jetpack Compose', function () {
   let driver: any;
 
   before(async function () {
-    chai.should();
-    chai.use(chaiAsPromised);
-
     // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
     if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 23) {
       this.skip();
@@ -34,17 +32,17 @@ describe('Jetpack Compose', function () {
     await driver.updateSettings({ driver: 'compose' });
 
     const e = await driver.$(await driver.findElement('tag name', 'lol'));
-    await driver.isElementDisplayed(e.elementId).should.eventually.be.true;
+    await expect(driver.isElementDisplayed(e.elementId)).to.eventually.be.true;
 
     const elementWithDescription = await driver.$('~desc');
-    await elementWithDescription.getText().should.eventually.equal('Click to see dialog');
-    await driver.isElementDisplayed(elementWithDescription.elementId).should.eventually.be.true;
+    await expect(elementWithDescription.getText()).to.eventually.equal('Click to see dialog');
+    await expect(driver.isElementDisplayed(elementWithDescription.elementId)).to.eventually.be.true;
 
     const clickableText = await driver.$('=Click to see dialog');
     await clickableText.click();
 
     await driver.$('=Congratulations! You just clicked the text successfully');
-    await driver.getSettings().should.eventually.eql({ driver: 'compose' });
+    await expect(driver.getSettings()).to.eventually.eql({ driver: 'compose' });
 
   });
 
@@ -56,7 +54,7 @@ describe('Jetpack Compose', function () {
     await driver.updateSettings({ driver: 'compose' });
 
     const e = await driver.$("//*[@view-tag='lol']//*[@content-desc='desc']");
-    await e.getText().should.eventually.equal('Click to see dialog');
+    await expect(e.getText()).to.eventually.equal('Click to see dialog');
   });
 
   it('should find elements', async function () {
@@ -67,7 +65,7 @@ describe('Jetpack Compose', function () {
     await driver.updateSettings({ driver: 'compose' });
 
     const e = await driver.$$('=Grace Hopper');
-    e.length.should.be.eql(2);
-    await e[0].getText().should.eventually.equal('Grace Hopper');
+    expect(e.length).to.eql(2);
+    await expect(e[0].getText()).to.eventually.equal('Grace Hopper');
   });
 });

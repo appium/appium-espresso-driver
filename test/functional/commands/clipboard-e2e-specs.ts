@@ -1,10 +1,11 @@
 import type { Browser } from 'webdriverio';
 import { AssertionError } from 'assert';
-import chai from 'chai';
+import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
+chai.use(chaiAsPromised);
 
 describe('clipboard', function () {
   this.timeout(MOCHA_TIMEOUT);
@@ -12,9 +13,6 @@ describe('clipboard', function () {
   let driver: Browser;
 
   before(async function () {
-    chai.should();
-    chai.use(chaiAsPromised);
-
     driver = await initSession(APIDEMO_CAPS);
   });
   after(async function () {
@@ -28,15 +26,15 @@ describe('clipboard', function () {
     // 'SGVsbG8=' is 'Hello' in base 64 encoding with a new line.
     const text = String(await driver.execute('mobile:getClipboard'));
     try {
-      text.should.eql('SGVsbG8=');
+      expect(text).to.eql('SGVsbG8=');
     } catch (e) {
       if (e instanceof AssertionError) {
         // API level 23 and 25 emulator has '\n'
-        text.should.eql('SGVsbG8=\n');
+        expect(text).to.eql('SGVsbG8=\n');
       } else {
         throw e;
       }
     }
-    (Buffer.from(text, 'base64').toString()).should.eql('Hello');
+    expect(Buffer.from(text, 'base64').toString()).to.eql('Hello');
   });
 });

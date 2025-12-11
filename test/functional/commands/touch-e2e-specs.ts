@@ -1,13 +1,14 @@
 import axios from 'axios';
 import B from 'bluebird';
 import _ from 'lodash';
-import chai from 'chai';
+import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {
   initSession, deleteSession, HOST, PORT,
   MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
+chai.use(chaiAsPromised);
 
 describe('touch actions -', function () {
   this.timeout(MOCHA_TIMEOUT);
@@ -16,9 +17,6 @@ describe('touch actions -', function () {
   let sessionId: string;
 
   before(async function () {
-    chai.should();
-    chai.use(chaiAsPromised);
-
     driver = await initSession(APIDEMO_CAPS);
     sessionId = await driver.sessionId;
   });
@@ -232,7 +230,7 @@ describe('touch actions -', function () {
     beforeEach(async function () {
       await startTextSwitcherActivity();
 
-      (await driver.$("//*[@text='0']")).should.exist;
+      expect(await driver.$("//*[@text='0']")).to.exist;
 
       nextEl = await driver.$('~Next');
     });
@@ -247,7 +245,7 @@ describe('touch actions -', function () {
       ];
       await performTouchAction(touchActions as any);
 
-      (await driver.$("//*[@text='1']")).should.exist;
+      expect(await driver.$("//*[@text='1']")).to.exist;
     });
 
     it('should touch down and up on an element by id', async function () {
@@ -259,7 +257,7 @@ describe('touch actions -', function () {
       ];
       await performTouchAction(touchActions);
 
-      (await driver.$("//*[@text='1']")).should.exist;
+      expect(await driver.$("//*[@text='1']")).to.exist;
     });
   });
 
@@ -270,8 +268,8 @@ describe('touch actions -', function () {
       beforeEach(async function () {
         await startTextSwitcherActivity();
 
-        (await driver.$("//*[@text='0']")).should.exist;
-        await driver.$("//*[@text='1']").should.eventually.be.rejectedWith(/NoSuchElement/);
+        expect(await driver.$("//*[@text='0']")).to.exist;
+        await expect(driver.$("//*[@text='1']")).to.be.rejectedWith(/NoSuchElement/);
 
         nextEl = await driver.elementByAccessibilityId('Next');
       });
@@ -286,7 +284,7 @@ describe('touch actions -', function () {
           },
         });
 
-        (await driver.$("//*[@text='1']")).should.exist;
+        expect(await driver.$("//*[@text='1']")).to.exist;
       });
 
       it('should do touch/longclick event', async function () {
@@ -299,11 +297,11 @@ describe('touch actions -', function () {
           },
         });
 
-        (await driver.$("//*[@text='1']")).should.exist;
+        expect(await driver.$("//*[@text='1']")).to.exist;
       });
 
       it('should do touch/doubleclick event', async function () {
-        await driver.$("//*[@text='2']").should.eventually.be.rejectedWith(/NoSuchElement/);
+        await expect(driver.$("//*[@text='2']")).to.be.rejectedWith(/NoSuchElement/);
 
         const {value: elementId} = nextEl;
         await axios({
@@ -314,8 +312,8 @@ describe('touch actions -', function () {
           },
         });
 
-        (await driver.$("//*[@text='1']")).should.exist;
-        (await driver.$("//*[@text='2']")).should.exist;
+        expect(await driver.$("//*[@text='1']")).to.exist;
+        expect(await driver.$("//*[@text='2']")).to.exist;
       });
 
       it('should touch down at a location and then touch up', async function () {
@@ -340,7 +338,7 @@ describe('touch actions -', function () {
           },
         });
 
-        (await driver.$("//*[@text='1']")).should.exist;
+        expect(await driver.$("//*[@text='1']")).to.exist;
       });
     });
 

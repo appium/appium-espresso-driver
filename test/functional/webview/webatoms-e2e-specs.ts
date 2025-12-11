@@ -5,15 +5,13 @@ import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 
+chai.use(chaiAsPromised);
 
 describe('mobile web atoms', function () {
   this.timeout(MOCHA_TIMEOUT);
   let driver: Browser;
 
   before(async function () {
-    chai.should();
-    chai.use(chaiAsPromised);
-
     // API level 26 emulators don't have WebView installed by default.
     if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 26) {
       this.skip();

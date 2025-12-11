@@ -1,20 +1,21 @@
-import chai from 'chai';
+import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import path from 'path';
 import { fs, mkdirp, tempDir } from 'appium/support';
 import { copyGradleProjectRecursively } from '../../lib/utils';
 
+chai.use(chaiAsPromised);
 
 describe('copyGradleProjectRecursively', function () {
   let baseSrcDir;
   let baseDestDir;
 
   async function expectNotExist (file) {
-    await fs.access(file, fs.constants.F_OK).should.eventually.be.rejectedWith(/no such file/);
+    await expect(fs.access(file, fs.constants.F_OK)).to.be.rejectedWith(/no such file/);
   }
 
   async function expectCorrectFileContentIn (filepath) {
-    await fs.readFile(filepath, 'utf8').should.eventually.eql('foobar');
+    await expect(fs.readFile(filepath, 'utf8')).to.eventually.eql('foobar');
   }
 
   async function createTestFile (filepath) {
@@ -22,8 +23,7 @@ describe('copyGradleProjectRecursively', function () {
   }
 
   before(async function () {
-    chai.should();
-    chai.use(chaiAsPromised);
+    // chai initialized
   });
 
   beforeEach(async function () {
