@@ -1,22 +1,20 @@
+import type { Browser } from 'webdriverio';
+import chai, {expect} from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 
+chai.use(chaiAsPromised);
 
 describe('context', function () {
   this.timeout(MOCHA_TIMEOUT);
 
-  let driver;
-  let chai;
+  let driver: Browser;
 
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
-    chai.should();
-    chai.use(chaiAsPromised.default);
-
     // API level 26 emulators don't have WebView installed by default.
-    if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 26) {
+    const sdkVersion = parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10);
+    if (process.env.CI && sdkVersion <= 26) {
       this.skip();
     }
 
@@ -34,12 +32,12 @@ describe('context', function () {
   it('should get contexts and set them without errors', async function () {
     const viewContexts = await driver.getContexts();
 
-    await driver.getContext().should.eventually.eql(viewContexts[0]);
+    await expect(driver.getContext()).to.eventually.eql(viewContexts[0]);
 
     await driver.switchContext(viewContexts[1]);
-    await driver.getContext().should.eventually.eql(viewContexts[1]);
+    await expect(driver.getContext()).to.eventually.eql(viewContexts[1]);
 
     await driver.switchContext(viewContexts[0]);
-    await driver.getContext().should.eventually.eql(viewContexts[0]);
+    await expect(driver.getContext()).to.eventually.eql(viewContexts[0]);
   });
 });

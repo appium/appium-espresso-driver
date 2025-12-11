@@ -105,7 +105,7 @@
     "test:node": "mocha --exit --timeout 1m \"./test/unit/**/*-specs.ts\"",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace || cd ..",
     "version": "npm run sync-version && npm run build:server",
-    "e2e-test": "mocha --exit --timeout 5m \"./test/functional/**/*-specs.js\""
+    "e2e-test": "mocha --exit --timeout 5m \"./test/functional/**/*-specs.ts\""
   },
   "peerDependencies": {
     "appium": "^3.0.0-rc.2"
@@ -117,6 +117,8 @@
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/bluebird": "^3.5.38",
+    "@types/chai": "^4.3.14",
+    "@types/chai-as-promised": "^7.1.8",
     "@types/lodash": "^4.14.196",
     "@types/mocha": "^10.0.1",
     "@types/node": "^25.0.0",

@@ -1,20 +1,16 @@
+import chai, {expect} from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
+chai.use(chaiAsPromised);
 
 describe('ElementValue', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
-  let chai;
 
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
-    chai.should();
-    chai.use(chaiAsPromised.default);
-
     driver = await initSession(APIDEMO_CAPS);
   });
   after(async function () {
@@ -28,8 +24,8 @@ describe('ElementValue', function () {
 
     const el = await driver.$(await driver.findElement('class name', 'android.widget.EditText'));
     await driver.setValueImmediate(el.elementId, 'hello');
-    await el.getText().should.eventually.equal('Left is besthello');
+    await expect(el.getText()).to.eventually.equal('Left is besthello');
     await el.setValue('テスト');
-    await el.getText().should.eventually.equal('テスト');
+    await expect(el.getText()).to.eventually.equal('テスト');
   });
 });

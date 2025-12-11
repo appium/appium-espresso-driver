@@ -1,20 +1,14 @@
+import chai, {expect} from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
+chai.use(chaiAsPromised);
 
 describe('find elements', function () {
   this.timeout(MOCHA_TIMEOUT);
 
-  let driver;
-  let chai;
-
-  before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
-    chai.should();
-    chai.use(chaiAsPromised.default);
-  });
+  let driver: any;
 
   describe('element by xpath', function () {
 
@@ -29,19 +23,19 @@ describe('find elements', function () {
 
       it(`should find an element by it's xpath`, async function () {
         const el = await driver.$("//*[@text='Animation']");
-        el.should.exist;
+        expect(el).to.exist;
         await el.click();
         await driver.back();
       });
       it('should find multiple elements that match one xpath', async function () {
         const els = await driver.$$('//android.widget.TextView');
-        els.length.should.be.above(1);
+        expect(els.length).to.be.above(1);
         await els[0].click();
         await driver.back();
       });
       it('should get the first element of an xpath that matches more than one element', async function () {
         const el = await driver.$('//android.widget.TextView');
-        el.should.exist;
+        expect(el).to.exist;
         await el.click();
         await driver.back();
       });
@@ -52,13 +46,13 @@ describe('find elements', function () {
           await driver.elementClick(el.elementId);
           throw Error('Should raise an error before this line.');
         } catch (err) {
-          err.name.should.eq('stale element reference');
+          expect(err.name).to.eq('stale element reference');
         }
         await driver.back();
       });
       it('should get the isElementDisplayed attribute on the same element twice', async function () {
         const el = await driver.$("//*[@content-desc='Animation']");
-        await driver.isElementDisplayed(el.elementId).should.eventually.be.true;
+        await expect(driver.isElementDisplayed(el.elementId)).to.eventually.be.true;
         await el.click();
         await driver.back();
       });
@@ -92,8 +86,8 @@ describe('find elements', function () {
         const el = await driver.$('~Views');
         const elAgain = await driver.$("//*[@content-desc='Views']");
         const elNonMatch = await driver.$('~Preference');
-        await el.isEqual(elAgain).should.eventually.be.true;
-        await el.isEqual(elNonMatch).should.eventually.be.false;
+        await expect(el.isEqual(elAgain)).to.eventually.be.true;
+        await expect(el.isEqual(elNonMatch)).to.eventually.be.false;
       });
       // TODO: This test is very flakey. Need to inspect this.
       it.skip('should scroll element back into view if was scrolled out of view (regression test for https://github.com/appium/appium-espresso-driver/issues/276)', async function () {
@@ -102,10 +96,10 @@ describe('find elements', function () {
         let el = await driver.$('~Views');
         await el.click();
         el = await driver.$('~Custom');
-        await el.text().should.eventually.equal('Custom');
-        let {value: element} = await driver.elementById('android:id/list');
+        await expect(el.text()).to.eventually.equal('Custom');
+        const {value: element} = await driver.elementById('android:id/list');
         await driver.execute('mobile: swipe', {direction: 'up', element});
-        await el.text().should.eventually.equal('Custom');
+        await expect(el.text()).to.eventually.equal('Custom');
         await driver.back();
       });
     });
@@ -115,7 +109,7 @@ describe('find elements', function () {
 
     before(function () {
       // Lower versions' emulators on CI were flaky.
-      if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 25) {
+      if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 25) {
         this.skip();
       }
     });
@@ -133,18 +127,17 @@ describe('find elements', function () {
         const err = await driver.findElement('-android datamatcher', JSON.stringify({
           name: 'hasEntry', args: ['title', 'A Fake Item']
         }));
-        // webdriverio didn't raise exception for no such element here.
-        err.error.should.eq('no such element');
+        expect(err.error).to.eq('no such element');
       });
       it('should fail with invalid selector with helpful error messages', async function () {
-        await driver.findElement('-android datamatcher', JSON.stringify({
+        await expect(driver.findElement('-android datamatcher', JSON.stringify({
           name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item']
-        })).should.eventually.be.rejectedWith(/Not a valid selector/);
+        }))).to.be.rejectedWith(/Not a valid selector/);
       });
       it('should allow "class" property with fully qualified className', async function () {
-        await driver.findElement('-android datamatcher', JSON.stringify({
+        await expect(driver.findElement('-android datamatcher', JSON.stringify({
           name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item'], class: 'org.hamcrest.Matchers',
-        })).should.eventually.be.rejectedWith(/Not a valid selector/);
+        }))).to.be.rejectedWith(/Not a valid selector/);
       });
       it('should find an element using a data matcher', async function () {
         const el = await driver.$(
@@ -157,7 +150,7 @@ describe('find elements', function () {
         await driver.back();
       });
       it('should find an offscreen element using a data matcher', async function () {
-        let viewsEl = await driver.$('~Views');
+        const viewsEl = await driver.$('~Views');
         await viewsEl.click();
         const el = await driver.$(
           await driver.findElement('-android datamatcher', JSON.stringify({
@@ -195,14 +188,14 @@ describe('find elements', function () {
 
         // Narrow them down by making the root an adapter view
         const listOneEl = await driver.$(await driver.findElement('id', 'io.appium.android.apis:id/list1'));
-        await listOneEl.findElement('-android datamatcher', JSON.stringify({
+        await expect(listOneEl.findElement('-android datamatcher', JSON.stringify({
           name: 'equalTo', args: 'Zamorano'
-        })).should.eventually.exist;
+        }))).to.eventually.exist;
 
         const listTwoEl = await driver.$(await driver.findElement('id', 'list2'));
-        await listTwoEl.findElement('-android datamatcher', JSON.stringify({
+        await expect(listTwoEl.findElement('-android datamatcher', JSON.stringify({
           name: 'equalTo', args: 'Zamorano'
-        })).should.eventually.exist;
+        }))).to.eventually.exist;
       });
     });
   });
@@ -222,20 +215,19 @@ describe('find elements', function () {
         const err = await driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'hasEntry', args: ['title', 'A Fake Item']
         }));
-        // webdriverio didn't raise exception for no such element here.
-        err.error.should.eq('no such element');
+        expect(err.error).to.eq('no such element');
       });
 
       it('should fail with invalid selector with helpful error messages', async function () {
-        await driver.findElement('-android viewmatcher', JSON.stringify({
+        await expect(driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item']
-        })).should.eventually.be.rejected;
+        }))).to.be.rejected;
       });
 
       it('should allow "class" property with fully qualified className', async function () {
-        await driver.findElement('-android viewmatcher', JSON.stringify({
+        await expect(driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item'], class: 'org.hamcrest.Matchers',
-        })).should.eventually.be.rejected;
+        }))).to.be.rejected;
       });
     });
 
@@ -254,15 +246,15 @@ describe('find elements', function () {
       });
 
       it('should find an element using view matcher', async function () {
-        await driver.findElement('-android viewmatcher', JSON.stringify({
+        await expect(driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'withText',
           args: 'Picture getExternalFilesDir',
           class: 'androidx.test.espresso.matcher.ViewMatchers'
-        })).should.eventually.exist;
+        }))).to.eventually.exist;
       });
       it('should allow multiple view matchers to be passed as args', async function () {
 
-        await driver.findElement('-android viewmatcher', JSON.stringify({
+        await expect(driver.findElement('-android viewmatcher', JSON.stringify({
           name: 'withText',
           args: [
             {
@@ -272,7 +264,7 @@ describe('find elements', function () {
             }
           ],
           class: 'androidx.test.espresso.matcher.ViewMatchers'
-        })).should.eventually.exist;
+        }))).to.eventually.exist;
       });
 
     });
@@ -302,14 +294,14 @@ describe('find elements', function () {
         // })).should.eventually.be.rejectedWith(/AmbiguousViewMatcherException/);
 
         const listTwoEl = await driver.$("//android.widget.LinearLayout[@index='2']");
-        await listTwoEl.findElement('-android viewmatcher', JSON.stringify({
+        await expect(listTwoEl.findElement('-android viewmatcher', JSON.stringify({
           name: 'withText', args: 'Copy Text', class: 'androidx.test.espresso.matcher.ViewMatchers'
-        })).should.eventually.exist;
+        }))).to.eventually.exist;
 
         const listOneEl = await driver.$("//android.widget.LinearLayout[@index='1']");
-        await listOneEl.findElement('-android viewmatcher', JSON.stringify({
+        await expect(listOneEl.findElement('-android viewmatcher', JSON.stringify({
           name: 'withText', args: 'Copy Text', class: 'androidx.test.espresso.matcher.ViewMatchers'
-        })).should.eventually.exist;
+        }))).to.eventually.exist;
       });
     });
   });
@@ -324,7 +316,7 @@ describe('find elements', function () {
     });
 
     it('should move an element outside. the screen into the screen with find element', async function () {
-      if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION, 10) < 34) {
+      if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) < 34) {
         // Unstable on CI with lower version emulators
         this.skip();
       }
@@ -333,7 +325,7 @@ describe('find elements', function () {
       const el = await driver.$('~Views');
       await el.click();
       const imageEl = await driver.$('~ImageView');
-      imageEl.should.exist;
+      expect(imageEl).to.exist;
     });
   });
 });

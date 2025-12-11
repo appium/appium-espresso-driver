@@ -1,18 +1,15 @@
+import chai, {expect} from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { remote } from 'webdriverio';
 import { COMMON_REMOTE_OPTIONS } from './helpers/session';
 import { APIDEMO_CAPS, amendCapabilities } from './desired';
 
+chai.use(chaiAsPromised);
 
 describe('EspressoDriver', function () {
   let driver;
-  let chai;
 
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
-    chai.should();
-    chai.use(chaiAsPromised.default);
   });
 
   describe('createSession', function () {
@@ -29,7 +26,7 @@ describe('EspressoDriver', function () {
           ...COMMON_REMOTE_OPTIONS,
           capabilities: APIDEMO_CAPS,
         });
-        await driver.getCurrentActivity().should.eventually.equal('.ApiDemos');
+        await expect(driver.getCurrentActivity()).to.eventually.equal('.ApiDemos');
       });
       it('should start android session focusing on specified activity', async function () {
         // for now the activity needs to be fully qualified
@@ -39,26 +36,26 @@ describe('EspressoDriver', function () {
             'appium:appActivity': 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity'
           }),
         });
-        await driver.getCurrentActivity().should.eventually.equal('.accessibility.AccessibilityNodeProviderActivity');
+        await expect(driver.getCurrentActivity()).to.eventually.equal('.accessibility.AccessibilityNodeProviderActivity');
       });
     });
     describe('failure', function () {
       it('should reject start session for non-existent activity', async function () {
         // for now the activity needs to be fully qualified
-        await remote({
+        await expect(remote({
           ...COMMON_REMOTE_OPTIONS,
           capabilities: amendCapabilities(APIDEMO_CAPS, {
             'appium:appActivity': 'io.appium.android.apis.some.fake.Activity'
           }),
-        }).should.eventually.be.rejected;
+        })).to.be.rejected;
       });
       it('should reject opening of appPackage with incorrect signature', async function () {
-        await remote({
+        await expect(remote({
           ...COMMON_REMOTE_OPTIONS,
           capabilities: amendCapabilities(APIDEMO_CAPS, {
             'appium:appActivity': 'com.android.settings'
           }),
-        }).should.eventually.be.rejected;
+        })).to.be.rejected;
       });
     });
   });
@@ -78,7 +75,7 @@ describe('EspressoDriver', function () {
         'io.appium.android.apis',
         '.accessibility.AccessibilityNodeProviderActivity',
       );
-      await driver.getCurrentActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
+      await expect(driver.getCurrentActivity()).to.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
     });
     it('should start activity by fully-qualified name', async function () {
       driver = await remote({
@@ -89,7 +86,7 @@ describe('EspressoDriver', function () {
         'io.appium.android.apis',
         'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
       );
-      await driver.getCurrentActivity().should.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
+      await expect(driver.getCurrentActivity()).to.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
     });
   });
 
@@ -120,7 +117,7 @@ describe('EspressoDriver', function () {
         ])
       }]);
       const editEl = await driver.$('//android.widget.AutoCompleteTextView');
-      await editEl.getText().should.eventually.equal('Hello World!');
+      await expect(editEl.getText()).to.eventually.equal('Hello World!');
       await editEl.clearValue();
     });
 
@@ -128,7 +125,7 @@ describe('EspressoDriver', function () {
       const KEYCODE_G = 35;
       const META_SHIFT_MASK = 193;
 
-      for (let isLongPress of [true, false]) {
+      for (const isLongPress of [true, false]) {
         await driver.execute(
           'mobile: pressKey',
           {
@@ -138,7 +135,7 @@ describe('EspressoDriver', function () {
           }
         );
         const editEl = await driver.$('//android.widget.AutoCompleteTextView');
-        await editEl.getText().should.eventually.equal(isLongPress ? 'GG' : 'G');
+        await expect(editEl.getText()).to.eventually.equal(isLongPress ? 'GG' : 'G');
         await editEl.clearValue();
       }
     });

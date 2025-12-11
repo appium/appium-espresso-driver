@@ -1,14 +1,16 @@
 import path from 'node:path';
 import _ from 'lodash';
 import { node } from 'appium/support';
+// Using broad typing to keep test helper concise
+type W3CCapabilities = any;
 
 const APIDEMOS_APK_URL = 'https://github.com/appium/android-apidemos/releases/download/v6.0.2/ApiDemos-debug.apk';
 
-export function amendCapabilities (baseCaps, ...newCaps) {
+export function amendCapabilities (baseCaps: W3CCapabilities, ...newCaps: Array<Record<string, any>>) {
   return node.deepFreeze({
     alwaysMatch: _.cloneDeep(Object.assign({}, baseCaps.alwaysMatch, ...newCaps)),
     firstMatch: [{}],
-  });
+  }) as W3CCapabilities;
 }
 
 export const GENERIC_CAPS = node.deepFreeze({

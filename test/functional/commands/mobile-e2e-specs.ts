@@ -1,20 +1,16 @@
+import chai, {expect} from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 
+chai.use(chaiAsPromised);
 
 describe('mobile', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
-  let chai;
 
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
-    chai.should();
-    chai.use(chaiAsPromised.default);
-
     driver = await initSession(amendCapabilities(
       APIDEMO_CAPS,
       {
@@ -41,14 +37,14 @@ describe('mobile', function () {
       it('should swipe up and swipe down', async function () {
         const el = await driver.$('~Views');
         await el.click();
-        await driver.getPageSource().should.eventually.contain('Animation');
+        await expect(driver.getPageSource()).to.eventually.contain('Animation');
         const element = await driver.$(
           await driver.findElement('id', 'android:id/list')
         );
         await driver.execute('mobile: swipe', {direction: 'up', elementId: element.elementId});
-        await driver.getPageSource().should.eventually.contain('Spinner');
+        await expect(driver.getPageSource()).to.eventually.contain('Spinner');
         await driver.execute('mobile: swipe', {direction: 'down', elementId: element.elementId});
-        await driver.getPageSource().should.eventually.contain('Animation');
+        await expect(driver.getPageSource()).to.eventually.contain('Animation');
         await driver.back();
       });
     });
@@ -75,7 +71,7 @@ describe('mobile', function () {
         // The swipe action shows up the app history, so should go back to the app view to proceed the test.
         // Android doesn't accept incoming actions on the espresso server with the app history.
         await driver.execute('mobile: shell', {command: 'input', args: ['keyevent', 4]});
-        await driver.getPageSource().should.eventually.contain('Animation');
+        await expect(driver.getPageSource()).to.eventually.contain('Animation');
       });
       it('should call GeneralSwipeAction with provided parameters', async function () {
         const element = await driver.$(
@@ -91,27 +87,27 @@ describe('mobile', function () {
         // the swipe action shows up the app history, so should go back to the app view to proceed the test.
         // Android doesn't accept incoming actions on the espresso server with the app history.
         await driver.execute('mobile: shell', {command: 'input', args: ['keyevent', 4]});
-        await driver.getPageSource().should.eventually.contain('Animation');
+        await expect(driver.getPageSource()).to.eventually.contain('Animation');
       });
       describe('failing swipe tests', function () {
         it('should not accept "direction" and "swiper". Must be one or the other', async function () {
           const element = await driver.$(
             await driver.findElement('class name', 'android.widget.ListView')
           );
-          await driver.execute('mobile: swipe', {elementId: element.elementId, swiper: 'slow', direction: 'down'})
-            .should.eventually.be.rejectedWith(/Cannot set both 'direction' and 'swiper' for swipe action/);
+          await expect(driver.execute('mobile: swipe', {elementId: element.elementId, swiper: 'slow', direction: 'down'}))
+            .to.be.rejectedWith(/Cannot set both 'direction' and 'swiper' for swipe action/);
         });
         it('should not accept if "direction" and "swiper" both are not set', async function () {
           const element = await driver.$(
             await driver.findElement('class name', 'android.widget.ListView')
           );
-          await driver.execute('mobile: swipe', {elementId: element.elementId})
-            .should.eventually.be.rejectedWith(/Must set one of 'direction' or 'swiper'/);
+          await expect(driver.execute('mobile: swipe', {elementId: element.elementId}))
+            .to.be.rejectedWith(/Must set one of 'direction' or 'swiper'/);
 
         });
 
         // Iterate through a list of bad params
-        for (let badParams of [
+        for (const badParams of [
           {swiper: 'BAD'},
           {direction: 'sideWays'},
           {startCoordinates: {not: 'valid'}},
@@ -122,14 +118,14 @@ describe('mobile', function () {
             const element = await driver.$(
               await driver.findElement('class name', 'android.widget.ListView')
             );
-            await driver.execute('mobile: swipe', {
+            await expect(driver.execute('mobile: swipe', {
               elementId: element.elementId,
               swiper: 'slow',
               startCoordinates: 'BOTTOM_RIGHT',
               endCoordinates: 'TOP_RIGHT',
               precisionDescriber: 'FINGER',
               ...badParams,
-            }).should.eventually.be.rejected;
+            })).to.be.rejected;
           });
         }
       });
@@ -147,8 +143,8 @@ describe('mobile', function () {
     it('should call these two commands but fail because element is not a drawer', async function () {
       // Testing for failures because ApiDemos app does not have a drawer to test on
       const el = await driver.$('~Views');
-      await driver.execute('mobile: openDrawer', {elementId: el.elementId, gravity: 1}).should.eventually.be.rejectedWith(/open drawer with gravity/);
-      await driver.execute('mobile: closeDrawer', {elementId: el.elementId, gravity: 1}).should.eventually.be.rejectedWith(/close drawer with gravity/);
+      await expect(driver.execute('mobile: openDrawer', {elementId: el.elementId, gravity: 1})).to.be.rejectedWith(/open drawer with gravity/);
+      await expect(driver.execute('mobile: closeDrawer', {elementId: el.elementId, gravity: 1})).to.be.rejectedWith(/close drawer with gravity/);
     });
   });
 
@@ -171,7 +167,7 @@ describe('mobile', function () {
       const okButton = await driver.$(await driver.findElement('id', 'android:id/button1'));
       await okButton.click();
       const source = await driver.getPageSource();
-      source.includes('10-25-2020').should.be.true;
+      expect(source.includes('10-25-2020')).to.be.true;
       await driver.back();
     });
     it('should set the time on a timepicker', async function () {
@@ -181,7 +177,7 @@ describe('mobile', function () {
       const timeEl = await driver.$('//android.widget.TimePicker');
       await driver.execute('mobile: setTime', {hours: 10, minutes: 58, elementId: timeEl.elementId});
       const source = await driver.getPageSource();
-      source.includes('10:58').should.be.true;
+      expect(source.includes('10:58')).to.be.true;
       await driver.back();
     });
   });
@@ -196,15 +192,15 @@ describe('mobile', function () {
 
     it('should validate params', async function () {
       const element = await driver.$('~Views');
-      await driver.execute('mobile: navigateTo', {elementId: element.elementId, menuItemId: -100}).should.eventually.be.rejectedWith(/'menuItemId' must be a non-negative number/);
-      await driver.execute('mobile: navigateTo', {elementId: element.elementId, menuItemId: 'fake'}).should.eventually.be.rejectedWith(/'menuItemId' must be a non-negative number/);
-      await driver.execute('mobile: navigateTo', {elementId: element.elementId}).should.eventually.be.rejectedWith(/required/);
+      await expect(driver.execute('mobile: navigateTo', {elementId: element.elementId, menuItemId: -100})).to.be.rejectedWith(/'menuItemId' must be a non-negative number/);
+      await expect(driver.execute('mobile: navigateTo', {elementId: element.elementId, menuItemId: 'fake'})).to.be.rejectedWith(/'menuItemId' must be a non-negative number/);
+      await expect(driver.execute('mobile: navigateTo', {elementId: element.elementId})).to.be.rejectedWith(/required/);
     });
     // dependency issue
     it.skip('should call the navigateTo method', async function () {
       // Testing for failures because ApiDemos app does not have a navigator view to test on
       const element = await driver.$('~Views');
-      await driver.execute('mobile: navigateTo', {elementId: element.elementId, menuItemId: 10}).should.eventually.be.rejectedWith(/Could not navigate to menu item 10/);
+      await expect(driver.execute('mobile: navigateTo', {elementId: element.elementId, menuItemId: 10})).to.be.rejectedWith(/Could not navigate to menu item 10/);
     });
   });
 
@@ -219,16 +215,16 @@ describe('mobile', function () {
     it('should validate the parameters', async function () {
 
       const el = await driver.$('~Views');
-      await driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollTo: 'SOMETHING DIFF'}).should.eventually.be.rejectedWith(/must be one of /);
-      await driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollToPage: -5}).should.eventually.be.rejectedWith(/must be a non-negative integer/);
-      await driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollToPage: 'NOT A NUMBER'}).should.eventually.be.rejectedWith(/java.lang.NumberFormatException/);
+      await expect(driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollTo: 'SOMETHING DIFF'})).to.be.rejectedWith(/must be one of /);
+      await expect(driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollToPage: -5})).to.be.rejectedWith(/must be a non-negative integer/);
+      await expect(driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollToPage: 'NOT A NUMBER'})).to.be.rejectedWith(/java.lang.NumberFormatException/);
     });
     it('should call the scrollToPage method', async function () {
       // Testing for failures because ApiDemos app does not have a view pager to test on
       const el = await driver.$('~Views');
-      await driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollToPage: 1}).should.eventually.be.rejectedWith(/Could not perform scroll to on element/);
-      await driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollTo: 'left'}).should.eventually.be.rejectedWith(/Could not perform scroll to on element/);
-      await driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollTo: 'left', smoothScroll: true}).should.eventually.be.rejectedWith(/Could not perform scroll to on element/);
+      await expect(driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollToPage: 1})).to.be.rejectedWith(/Could not perform scroll to on element/);
+      await expect(driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollTo: 'left'})).to.be.rejectedWith(/Could not perform scroll to on element/);
+      await expect(driver.execute('mobile: scrollToPage', {elementId: el.elementId, scrollTo: 'left', smoothScroll: true})).to.be.rejectedWith(/Could not perform scroll to on element/);
     });
   });
 
@@ -243,11 +239,11 @@ describe('mobile', function () {
     it('should be able to find and take action on all uiObjects', async function () {
 
       const text = await driver.execute('mobile: uiautomator', {strategy: 'clazz', locator: 'android.widget.TextView', action: 'getText'});
-      text.should.include('Views');
+      expect(text).to.include('Views');
     });
     it('should be able to find and take action on uiObject with given index', async function () {
       const text = await driver.execute('mobile: uiautomator', {strategy: 'textContains', locator: 'Views', index: 0, action: 'getText'});
-      text.should.eql(['Views']);
+      expect(text).to.eql(['Views']);
     });
   });
   describe('mobile: clickAction', function () {
@@ -266,7 +262,7 @@ describe('mobile', function () {
 
     it('should click on an element and use default parameters', async function () {
       await driver.execute('mobile: clickAction', {elementId: viewEl.elementId});
-      await driver.getPageSource().should.eventually.contain('Animation');
+      await expect(driver.getPageSource()).to.eventually.contain('Animation');
       await driver.back();
     });
     it('should click on an element and accept parameters', async function () {
@@ -278,11 +274,11 @@ describe('mobile', function () {
         inputDevice: 0,
         buttonState: 0,
       });
-      await driver.getPageSource().should.eventually.contain('Animation');
+      await expect(driver.getPageSource()).to.eventually.contain('Animation');
       await driver.back();
     });
 
-    const badParams = [
+    const badParams: Array<[string, unknown, RegExp]> = [
       ['tapper', 'BaD TAPPER', /is not a valid 'tapper' type/],
       ['coordinatesProvider', 'BAD_COORDINATES_prOVIDER', /is not a valid 'coordinatesProvider' type/],
       ['precisionDescriber', 'BaD PrEcIsIoN DeScRiBeR', /is not a valid 'precisionDescriber' type/],
@@ -292,10 +288,10 @@ describe('mobile', function () {
 
     for (const [name, value, error] of badParams) {
       it(`should fail properly if provide an invalid parameter: '${name}'`, async function () {
-        await driver.execute('mobile: clickAction', {
+        await expect(driver.execute('mobile: clickAction', {
           elementId: viewEl.elementId,
-          ...{[name]: [value]}
-        }).should.eventually.be.rejectedWith(error);
+          ...({[name]: [value]} as Record<string, unknown>)
+        })).to.be.rejectedWith(error);
       });
     }
   });
@@ -312,10 +308,10 @@ describe('mobile', function () {
 
       const element = await driver.$('~Views');
       // Below returns like: {"mStyle"=>0, "mSupportedAxes"=>nil, "mWeight"=>400, "native_instance"=>131438067610240}
-      await driver.execute('mobile: backdoor', {
+      await expect(driver.execute('mobile: backdoor', {
         target: 'element', elementId: element.elementId, methods: [{ name: 'getTypeface' }, { name: 'getStyle' }]
       }
-      ).should.eventually.eql(0);
+      )).to.eventually.equal(0);
     });
   });
 });
