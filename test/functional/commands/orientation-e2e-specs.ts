@@ -1,4 +1,5 @@
-// @ts-nocheck
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
@@ -7,16 +8,11 @@ describe('orientation', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
-  let chai;
 
   before(async function () {
     driver = await initSession(APIDEMO_CAPS);
-
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
     chai.should();
-    chai.use(chaiAsPromised.default);
+    chai.use(chaiAsPromised);
   });
   after(async function () {
     await deleteSession();

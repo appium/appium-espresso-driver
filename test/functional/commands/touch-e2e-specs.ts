@@ -1,7 +1,8 @@
-// @ts-nocheck
 import axios from 'axios';
 import B from 'bluebird';
 import _ from 'lodash';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import {
   initSession, deleteSession, HOST, PORT,
   MOCHA_TIMEOUT } from '../helpers/session';
@@ -11,16 +12,12 @@ import { APIDEMO_CAPS } from '../desired';
 describe('touch actions -', function () {
   this.timeout(MOCHA_TIMEOUT);
 
-  let driver;
-  let sessionId;
-  let chai;
+  let driver: any;
+  let sessionId: string;
 
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
     chai.should();
-    chai.use(chaiAsPromised.default);
+    chai.use(chaiAsPromised);
 
     driver = await initSession(APIDEMO_CAPS);
     sessionId = await driver.sessionId;
@@ -65,14 +62,14 @@ describe('touch actions -', function () {
   }
 
   async function getScrollData () {
-    const els = await driver.$$(await driver.findElements('class name', 'android.widget.TextView'));
+    const els = await driver.$$(await driver.findElements('class name', 'android.widget.TextView')) as unknown as any[];
 
     // the last element is the title of the view, and often the
     // second-to-last is actually off the screen
     const startEl = els[els.length - 3];
     const {x: startX, y: startY} = await startEl.getLocation();
 
-    const endEl = _.first(els);
+    const endEl = _.first(els)!;
     const {x: endX, y: endY} = await endEl.getLocation();
 
     return {startX, startY, endX, endY, startEl, endEl};
@@ -80,8 +77,8 @@ describe('touch actions -', function () {
 
   let idCounter = 0;
 
-  const performAction = async function (pointerType, ...actionsArrays) {
-    const actionsRoot = [];
+  const performAction = async function (pointerType: string, ...actionsArrays: any[]) {
+    const actionsRoot: any[] = [];
 
     for (const actions of actionsArrays) {
       actionsRoot.push({
@@ -102,7 +99,7 @@ describe('touch actions -', function () {
 
   };
 
-  const performTouchAction = async function (...actionsArrays) {
+  const performTouchAction = async function (...actionsArrays: any[]) {
     return await performAction('touch', ...actionsArrays);
   };
 
@@ -127,7 +124,7 @@ describe('touch actions -', function () {
         {type: 'pointerMove', duration: 1000, x: endX, y: endY},
         {type: 'pointerCancel', button: 0},
       ];
-      await performTouchAction(touchActions);
+      await performTouchAction(touchActions as any);
     });
 
     it('should draw two parallel lines on fingerpaint', async function () {
@@ -135,7 +132,7 @@ describe('touch actions -', function () {
       const {x, y} = await canvas.getLocation();
       const {height, width} = await canvas.getSize();
 
-      const touchActions = [10, width - 10].reduce(function (touchActions, xOffset) {
+      const touchActions = [10, width - 10].reduce<any[]>(function (touchActions, xOffset) {
         touchActions.push([
           {type: 'pointerMove', x: x + xOffset, y: y + 10},
           {type: 'pointerDown', button: 0},
@@ -144,7 +141,7 @@ describe('touch actions -', function () {
         ]);
         return touchActions;
       }, []);
-      await performTouchAction(...touchActions);
+      await performTouchAction(...touchActions as any);
     });
   });
 
@@ -162,7 +159,7 @@ describe('touch actions -', function () {
           {type: 'pointerMove', duration: 200, x: endX + 5, y: endY + 5},
           {type: 'pointerUp', button: 0}
         ];
-        await performTouchAction(actions);
+        await performTouchAction(actions as any);
       });
 
       it('should swipe up menu', async function () {
@@ -174,7 +171,7 @@ describe('touch actions -', function () {
           {type: 'pointerMove', duration: 100, x: endX + 5, y: endY + 5},
           {type: 'pointerUp', button: 0}
         ];
-        await performTouchAction(actions);
+        await performTouchAction(actions as any);
       });
 
       it('should swipe up menu when pointerType is mouse', async function () {
@@ -193,9 +190,9 @@ describe('touch actions -', function () {
     describe('multiple', function () {
       beforeEach(startSplitTouchActivity);
       it('should do multiple scrolls on multiple views', async function () {
-        const els = await driver.$$(await driver.findElements('class name', 'android.widget.ListView'));
+        const els = await driver.$$(await driver.findElements('class name', 'android.widget.ListView')) as unknown as any[];
 
-        const actions = await B.map(els, async function (el) {
+        const actions = await B.map(els, async function (el: any) {
           const {height} = await el.getSize();
 
           const yMove = Math.round(height / 2) - 10;
@@ -209,7 +206,7 @@ describe('touch actions -', function () {
           return action;
         });
 
-        await performTouchAction(...actions);
+        await performTouchAction(...actions as any);
       });
     });
 
@@ -225,7 +222,7 @@ describe('touch actions -', function () {
         {type: 'pointerMove', duration: 100, x: x + 10, y: y + 10},
         {type: 'pointerUp', button: 0},
       ];
-      await performTouchAction(touchActions);
+      await performTouchAction(touchActions as any);
     });
   });
 
@@ -248,7 +245,7 @@ describe('touch actions -', function () {
         {type: 'pause', duration: 3000},
         {type: 'pointerUp', button: 0},
       ];
-      await performTouchAction(touchActions);
+      await performTouchAction(touchActions as any);
 
       (await driver.$("//*[@text='1']")).should.exist;
     });

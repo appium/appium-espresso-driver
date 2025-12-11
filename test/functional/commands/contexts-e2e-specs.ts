@@ -1,4 +1,6 @@
-// @ts-nocheck
+import type { Browser } from 'webdriverio';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 
@@ -6,18 +8,15 @@ import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 describe('context', function () {
   this.timeout(MOCHA_TIMEOUT);
 
-  let driver;
-  let chai;
+  let driver: Browser;
 
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
     chai.should();
-    chai.use(chaiAsPromised.default);
+    chai.use(chaiAsPromised);
 
     // API level 26 emulators don't have WebView installed by default.
-    if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 26) {
+    const sdkVersion = parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10);
+    if (process.env.CI && sdkVersion <= 26) {
       this.skip();
     }
 

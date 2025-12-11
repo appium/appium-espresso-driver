@@ -1,5 +1,6 @@
-// @ts-nocheck
 import axios from 'axios';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 
@@ -9,8 +10,8 @@ describe('keyboard', function () {
 
   let idCounter = 0;
 
-  const performActions = async function (...actionsArrays) {
-    const actionsRoot = [];
+  const performActions = async function (...actionsArrays: any[]) {
+    const actionsRoot: any[] = [];
 
     for (const actions of actionsArrays) {
       actionsRoot.push({
@@ -28,15 +29,11 @@ describe('keyboard', function () {
     })).data;
   };
 
-  let driver;
-  let chai;
+  let driver: any;
 
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
     chai.should();
-    chai.use(chaiAsPromised.default);
+    chai.use(chaiAsPromised);
 
     driver = await initSession(amendCapabilities(
       APIDEMO_CAPS,

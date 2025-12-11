@@ -1,13 +1,13 @@
-// @ts-nocheck
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import path from 'path';
 import { fs, mkdirp, tempDir } from 'appium/support';
 import { copyGradleProjectRecursively } from '../../lib/utils';
-import path from 'path';
 
 
 describe('copyGradleProjectRecursively', function () {
   let baseSrcDir;
   let baseDestDir;
-  let chai;
 
   async function expectNotExist (file) {
     await fs.access(file, fs.constants.F_OK).should.eventually.be.rejectedWith(/no such file/);
@@ -22,11 +22,8 @@ describe('copyGradleProjectRecursively', function () {
   }
 
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
     chai.should();
-    chai.use(chaiAsPromised.default);
+    chai.use(chaiAsPromised);
   });
 
   beforeEach(async function () {

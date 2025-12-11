@@ -1,24 +1,21 @@
-// @ts-nocheck
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import { retryInterval } from 'asyncbox';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
-import { retryInterval } from 'asyncbox';
 
 
 describe('Jetpack Compose', function () {
   this.timeout(MOCHA_TIMEOUT);
 
-  let driver;
-  let chai;
+  let driver: any;
 
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
     chai.should();
-    chai.use(chaiAsPromised.default);
+    chai.use(chaiAsPromised);
 
     // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
-    if (parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 23) {
+    if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 23) {
       this.skip();
     }
   });

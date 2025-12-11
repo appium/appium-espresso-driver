@@ -1,4 +1,5 @@
-// @ts-nocheck
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 
@@ -7,14 +8,10 @@ describe('mobile', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver;
-  let chai;
 
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
     chai.should();
-    chai.use(chaiAsPromised.default);
+    chai.use(chaiAsPromised);
 
     driver = await initSession(amendCapabilities(
       APIDEMO_CAPS,
@@ -283,7 +280,7 @@ describe('mobile', function () {
       await driver.back();
     });
 
-    const badParams = [
+    const badParams: Array<[string, unknown, RegExp]> = [
       ['tapper', 'BaD TAPPER', /is not a valid 'tapper' type/],
       ['coordinatesProvider', 'BAD_COORDINATES_prOVIDER', /is not a valid 'coordinatesProvider' type/],
       ['precisionDescriber', 'BaD PrEcIsIoN DeScRiBeR', /is not a valid 'precisionDescriber' type/],
@@ -295,7 +292,7 @@ describe('mobile', function () {
       it(`should fail properly if provide an invalid parameter: '${name}'`, async function () {
         await driver.execute('mobile: clickAction', {
           elementId: viewEl.elementId,
-          ...{[name]: [value]}
+          ...({[name]: [value]} as Record<string, unknown>)
         }).should.eventually.be.rejectedWith(error);
       });
     }

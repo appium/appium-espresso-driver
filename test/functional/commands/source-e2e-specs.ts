@@ -1,4 +1,6 @@
-// @ts-nocheck
+import type { Browser } from 'webdriverio';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { DOMParser } from '@xmldom/xmldom';
 import xpath from 'xpath';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
@@ -8,18 +10,14 @@ import { APIDEMO_CAPS } from '../desired';
 describe('source commands', function () {
   this.timeout(MOCHA_TIMEOUT);
 
-  let driver;
-  let chai;
+  let driver: Browser;
 
   describe('regular app', function () {
     before(async function () {
       driver = await initSession(APIDEMO_CAPS);
 
-      chai = await import('chai');
-      const chaiAsPromised = await import('chai-as-promised');
-
       chai.should();
-      chai.use(chaiAsPromised.default);
+      chai.use(chaiAsPromised);
     });
     after(async function () {
       await deleteSession();
@@ -29,8 +27,8 @@ describe('source commands', function () {
       const sourceXML = await driver.getPageSource();
       sourceXML.should.be.a.string;
       const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
-      const node = xpath.select('//*[content-desc=Animation]', doc);
-      node.should.exist;
+      const nodes = xpath.select('//*[content-desc=Animation]', doc) as Node[];
+      nodes.length.should.be.greaterThan(0);
     });
   });
 });

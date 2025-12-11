@@ -1,22 +1,19 @@
-// @ts-nocheck
+import type { Browser } from 'webdriverio';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 
 
 describe('web', function () {
 
-  let chai;
-
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
     chai.should();
-    chai.use(chaiAsPromised.default);
+    chai.use(chaiAsPromised);
 
     // No proper chromedrivers are available, or very flaky to run on CI.
     // Also, API level 26 emulators don't have WebView installed by default.
-    if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION, 10) <= 26) {
+    if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 26) {
       this.skip();
     }
   });
@@ -24,7 +21,7 @@ describe('web', function () {
   describe('WebView', function () {
     this.timeout(MOCHA_TIMEOUT);
 
-    let driver;
+    let driver: Browser;
     before(async function () {
 
       driver = await initSession(amendCapabilities(
@@ -49,7 +46,7 @@ describe('web', function () {
       contexts[1].should.match(/^webview/i);
     });
     it('should send text to html text inputs', async function () {
-      if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION, 10) > 31) {
+      if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) > 31) {
         // chromedriver or engine side issue on emulators.
         // Please relax the condition if newer ones work.
         this.skip();

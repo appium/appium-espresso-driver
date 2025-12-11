@@ -1,4 +1,5 @@
-// @ts-nocheck
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { remote } from 'webdriverio';
 import { COMMON_REMOTE_OPTIONS } from './helpers/session';
 import { APIDEMO_CAPS, amendCapabilities } from './desired';
@@ -6,14 +7,10 @@ import { APIDEMO_CAPS, amendCapabilities } from './desired';
 
 describe('EspressoDriver', function () {
   let driver;
-  let chai;
 
   before(async function () {
-    chai = await import('chai');
-    const chaiAsPromised = await import('chai-as-promised');
-
     chai.should();
-    chai.use(chaiAsPromised.default);
+    chai.use(chaiAsPromised);
   });
 
   describe('createSession', function () {
