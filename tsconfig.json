@@ -11,6 +11,6 @@
   "include": [
     "index.js",
     "lib",
-    "test/unit"
+    "test"
   ]
 }

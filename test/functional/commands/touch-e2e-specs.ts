@@ -1,3 +1,4 @@
+// @ts-nocheck
 import axios from 'axios';
 import B from 'bluebird';
 import _ from 'lodash';
@@ -82,7 +83,7 @@ describe('touch actions -', function () {
   const performAction = async function (pointerType, ...actionsArrays) {
     const actionsRoot = [];
 
-    for (let actions of actionsArrays) {
+    for (const actions of actionsArrays) {
       actionsRoot.push({
         type: 'pointer',
         id: `id_${idCounter++}`,

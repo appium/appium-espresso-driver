@@ -1,3 +1,4 @@
+// @ts-nocheck
 import path from 'node:path';
 import _ from 'lodash';
 import { node } from 'appium/support';

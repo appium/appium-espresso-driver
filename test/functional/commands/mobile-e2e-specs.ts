@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 
@@ -111,7 +112,7 @@ describe('mobile', function () {
         });
 
         // Iterate through a list of bad params
-        for (let badParams of [
+        for (const badParams of [
           {swiper: 'BAD'},
           {direction: 'sideWays'},
           {startCoordinates: {not: 'valid'}},

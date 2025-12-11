@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DOMParser } from '@xmldom/xmldom';
 import xpath from 'xpath';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';

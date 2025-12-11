@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
@@ -103,7 +104,7 @@ describe('find elements', function () {
         await el.click();
         el = await driver.$('~Custom');
         await el.text().should.eventually.equal('Custom');
-        let {value: element} = await driver.elementById('android:id/list');
+        const {value: element} = await driver.elementById('android:id/list');
         await driver.execute('mobile: swipe', {direction: 'up', element});
         await el.text().should.eventually.equal('Custom');
         await driver.back();
@@ -157,7 +158,7 @@ describe('find elements', function () {
         await driver.back();
       });
       it('should find an offscreen element using a data matcher', async function () {
-        let viewsEl = await driver.$('~Views');
+        const viewsEl = await driver.$('~Views');
         await viewsEl.click();
         const el = await driver.$(
           await driver.findElement('-android datamatcher', JSON.stringify({

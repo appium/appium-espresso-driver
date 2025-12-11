@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 import { AssertionError } from 'assert';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
 import B from 'bluebird';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import axios from 'axios';
 import { initSession, deleteSession, MOCHA_TIMEOUT, HOST, PORT } from '../helpers/session';
 import { amendCapabilities, APIDEMO_CAPS } from '../desired';
@@ -11,7 +12,7 @@ describe('keyboard', function () {
   const performActions = async function (...actionsArrays) {
     const actionsRoot = [];
 
-    for (let actions of actionsArrays) {
+    for (const actions of actionsArrays) {
       actionsRoot.push({
         type: 'key',
         id: `id_${idCounter++}`,
@@ -73,7 +74,7 @@ describe('keyboard', function () {
   });
 
   it('should perform key events', async function () {
-    let autocompleteEl = await driver.$('//android.widget.AutoCompleteTextView');
+    const autocompleteEl = await driver.$('//android.widget.AutoCompleteTextView');
     await autocompleteEl.click();
     const keyActions = [
       {'type': 'keyDown', 'value': '\uE008'},

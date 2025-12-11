@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { COMPOSE_CAPS } from '../desired';
 import { retryInterval } from 'asyncbox';
@@ -52,7 +53,7 @@ describe('Jetpack Compose', function () {
 
     await driver.updateSettings({ driver: 'compose' });
 
-    let textElement = await driver.$(await driver.findElement('tag name', 'text_input'));
+    const textElement = await driver.$(await driver.findElement('tag name', 'text_input'));
     // verify default text
     await textElement.getText().should.eventually.equal('Enter your text here');
 

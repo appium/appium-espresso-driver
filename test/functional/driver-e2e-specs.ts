@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { remote } from 'webdriverio';
 import { COMMON_REMOTE_OPTIONS } from './helpers/session';
 import { APIDEMO_CAPS, amendCapabilities } from './desired';
@@ -128,7 +129,7 @@ describe('EspressoDriver', function () {
       const KEYCODE_G = 35;
       const META_SHIFT_MASK = 193;
 
-      for (let isLongPress of [true, false]) {
+      for (const isLongPress of [true, false]) {
         await driver.execute(
           'mobile: pressKey',
           {

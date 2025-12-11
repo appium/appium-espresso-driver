@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
 import { APIDEMO_CAPS } from '../desired';
 
@@ -21,15 +22,15 @@ describe('element attributes', function () {
   });
   describe('getAttribute', function () {
     it(`should get the 'content-desc' of a View`, async function () {
-      let el = await driver.$("//*[@text='Animation']");
+      const el = await driver.$("//*[@text='Animation']");
       await el.getAttribute('content-desc').should.eventually.equal('Animation');
     });
     it(`should get the 'text' of a View`, async function () {
-      let el = await driver.$("//*[@text='Animation']");
+      const el = await driver.$("//*[@text='Animation']");
       await el.getAttribute('text').should.eventually.equal('Animation');
     });
     it('should not work if getting an attribute that does not exist', async function () {
-      let el = await driver.$("//*[@text='Animation']");
+      const el = await driver.$("//*[@text='Animation']");
       await el.getAttribute('some-fake-property').should.eventually.be.rejectedWith(/Attribute name should be one of/);
     });
   });

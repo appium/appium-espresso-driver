@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DOMParser } from '@xmldom/xmldom';
 import xpath from 'xpath';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
@@ -29,7 +30,7 @@ describe('source commands', function () {
     });
 
     it('should get jetpack-compose sourceXML, parse it, and find a node by xpath', async function () {
-      let el = await driver.$("//*[@text='Display Text']");
+      const el = await driver.$("//*[@text='Display Text']");
       await el.click();
       await driver.updateSettings({ driver: 'compose' });
       const sourceXML = await driver.getPageSource();

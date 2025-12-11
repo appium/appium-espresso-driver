@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { remote } from 'webdriverio';
 import AsyncLock from 'async-lock';
 
