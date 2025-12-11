@@ -1,3 +1,9 @@
+## [6.2.1](https://github.com/appium/appium-espresso-driver/compare/v6.2.0...v6.2.1) (2025-12-11)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @types/node from 24.10.3 to 25.0.0 ([#1115](https://github.com/appium/appium-espresso-driver/issues/1115)) ([fb4f355](https://github.com/appium/appium-espresso-driver/commit/fb4f35519fb516b29a92780117c28f95818bc2e9))
+
 ## [6.2.0](https://github.com/appium/appium-espresso-driver/compare/v6.1.0...v6.2.0) (2025-12-09)
 
 ### Features
