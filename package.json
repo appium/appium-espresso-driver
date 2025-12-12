@@ -117,7 +117,7 @@
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/bluebird": "^3.5.38",
-    "@types/chai": "^4.3.14",
+    "@types/chai": "^5.2.3",
     "@types/chai-as-promised": "^7.1.8",
     "@types/lodash": "^4.14.196",
     "@types/mocha": "^10.0.1",
