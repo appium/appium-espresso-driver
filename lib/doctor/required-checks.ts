@@ -2,14 +2,15 @@ import { doctor as doctorCommon } from 'appium-android-driver';
 import { exec } from 'teen_process';
 import { fs, system, doctor } from 'appium/support';
 import path from 'node:path';
+import type { AppiumLogger, IDoctorCheck } from '@appium/types';
 
 export const androidHomeCheck = doctorCommon.androidHomeCheck;
 export const javaHomeCheck = doctorCommon.javaHomeCheck;
 export const javaHomeValueCheck = doctorCommon.javaHomeValueCheck;
 export const androidSdkCheck = doctorCommon.androidSdkCheck;
 
-/** @satisfies {import('@appium/types').IDoctorCheck} */
-export class JavaVersionCheck {
+export class JavaVersionCheck implements IDoctorCheck {
+  log!: AppiumLogger;
   MIN_JAVA_VERSION = 11;
   JAVA_VERSION_PATTERN = /^\s*java\.version\s*=\s*([\d.]+)/m;
 
@@ -19,11 +20,11 @@ export class JavaVersionCheck {
     if (!javaHome || !await fs.exists(fullJavaPath)) {
       return doctor.nok(`Cannot retrieve Java version. Is Java installed and JAVA_HOME set to a proper path?`);
     }
-    let javaVerMatch;
+    let javaVerMatch: RegExpExecArray | null = null;
     try {
       const {stderr} = await exec(fullJavaPath, ['-XshowSettings:properties', '-version']);
       javaVerMatch = this.JAVA_VERSION_PATTERN.exec(stderr);
-    } catch (e) {
+    } catch (e: any) {
       return doctor.nok(`Cannot retrieve Java version: ${e.stderr || e.message}`);
     }
     if (!javaVerMatch) {

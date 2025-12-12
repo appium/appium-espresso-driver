@@ -3,7 +3,7 @@ import {
   GRADLE_URL_TEMPLATE, ServerBuilder, VERSION_KEYS
 } from '../../lib/server-builder';
 import { updateDependencyLines } from '../../lib/utils';
-import log from '../../lib/logger';
+import { log } from '../../lib/logger';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 

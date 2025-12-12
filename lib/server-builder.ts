@@ -4,11 +4,12 @@ import _ from 'lodash';
 import path from 'path';
 import { EOL } from 'os';
 import { updateDependencyLines } from './utils';
+import type { AppiumLogger } from '@appium/types';
 
 const GRADLE_VERSION_KEY = 'gradle';
 const GRADLE_URL_PREFIX = 'distributionUrl=';
 const GRADLE_URL_TEMPLATE = 'https\\://services.gradle.org/distributions/gradle-VERSION-all.zip';
-const DEPENDENCY_PROP_NAMES = ['additionalAppDependencies', 'additionalAndroidTestDependencies'];
+const DEPENDENCY_PROP_NAMES = ['additionalAppDependencies', 'additionalAndroidTestDependencies'] as const;
 
 const VERSION_KEYS = [
   GRADLE_VERSION_KEY,
@@ -24,9 +25,24 @@ const VERSION_KEYS = [
   'composeVersion',
   'espressoVersion',
   'annotationVersion'
-];
+] as const;
 
-function buildServerSigningConfig (args) {
+export interface ServerSigningConfig {
+  zipAlign: boolean;
+  keystoreFile: string;
+  keystorePassword: string;
+  keyAlias: string;
+  keyPassword: string;
+}
+
+export interface BuildServerSigningConfigArgs {
+  keystoreFile: string;
+  keystorePassword: string;
+  keyAlias: string;
+  keyPassword: string;
+}
+
+export function buildServerSigningConfig (args: BuildServerSigningConfigArgs): ServerSigningConfig {
   return {
     zipAlign: true,
     keystoreFile: args.keystoreFile,
@@ -36,8 +52,31 @@ function buildServerSigningConfig (args) {
   };
 }
 
-class ServerBuilder {
-  constructor (log, args = {}) {
+interface BuildConfiguration {
+  toolsVersions?: Record<string, string>;
+  additionalAppDependencies?: string[];
+  additionalAndroidTestDependencies?: string[];
+}
+
+export interface ServerBuilderOptions {
+  serverPath: string;
+  showGradleLog?: boolean;
+  buildConfiguration?: BuildConfiguration;
+  testAppPackage?: string;
+  signingConfig?: ServerSigningConfig | null;
+}
+
+export class ServerBuilder {
+  private readonly log: AppiumLogger;
+  private readonly serverPath: string;
+  private readonly showGradleLog?: boolean;
+  private readonly serverVersions: Partial<Record<typeof VERSION_KEYS[number], string>>;
+  private readonly testAppPackage?: string;
+  private readonly signingConfig?: ServerSigningConfig | null;
+  private readonly additionalAppDependencies: string[];
+  private readonly additionalAndroidTestDependencies: string[];
+
+  constructor (log: AppiumLogger, args: ServerBuilderOptions) {
     this.log = log;
     this.serverPath = args.serverPath;
     this.showGradleLog = args.showGradleLog;
@@ -46,25 +85,25 @@ class ServerBuilder {
 
     const versionConfiguration = buildConfiguration.toolsVersions || {};
     this.serverVersions = _.reduce(versionConfiguration, (acc, value, key) => {
-      if (VERSION_KEYS.includes(key)) {
-        acc[key] = value;
+      if (VERSION_KEYS.includes(key as typeof VERSION_KEYS[number])) {
+        acc[key as typeof VERSION_KEYS[number]] = value;
       } else {
         log.warn(`Got unexpected '${key}' in toolsVersion block of the build configuration`);
       }
       return acc;
-    }, {});
+    }, {} as Partial<Record<typeof VERSION_KEYS[number], string>>);
 
     this.testAppPackage = args.testAppPackage;
     this.signingConfig = args.signingConfig;
 
-    for (const propName of DEPENDENCY_PROP_NAMES) {
-      this[propName] = buildConfiguration[propName] || [];
-    }
+    this.additionalAppDependencies = buildConfiguration.additionalAppDependencies || [];
+    this.additionalAndroidTestDependencies = buildConfiguration.additionalAndroidTestDependencies || [];
   }
 
-  async build () {
-    if (this.serverVersions[GRADLE_VERSION_KEY]) {
-      await this.setGradleWrapperVersion(this.serverVersions[GRADLE_VERSION_KEY]);
+  async build (): Promise<void> {
+    const gradleVersion = this.serverVersions[GRADLE_VERSION_KEY];
+    if (gradleVersion) {
+      await this.setGradleWrapperVersion(gradleVersion);
     }
 
     await this.insertAdditionalDependencies();
@@ -75,64 +114,70 @@ class ServerBuilder {
   /**
    * @returns {{cmd: string, args: string[]}}
    */
-  getCommand () {
+  getCommand (): {cmd: string; args: string[]} {
     const cmd = system.isWindows() ? 'gradlew.bat' : path.resolve(this.serverPath, 'gradlew');
-    const buildProperty = (key, value) => value ? `-P${key}=${value}` : null;
-    /** @type {string[]} */
-    // @ts-ignore Typescript does not understand filter(Boolean)
-    const args = VERSION_KEYS
+    const buildProperty = (key: string, value?: string): string | null => value ? `-P${key}=${value}` : null;
+    const args: string[] = VERSION_KEYS
       .filter((key) => key !== GRADLE_VERSION_KEY)
       .map((key) => {
         const serverVersion = this.serverVersions[key];
         const gradleProperty = `appium${key.charAt(0).toUpperCase()}${key.slice(1)}`;
         return buildProperty(gradleProperty, serverVersion);
       })
-      .filter(Boolean);
+      .filter((arg): arg is string => arg !== null);
 
     if (this.signingConfig) {
-      // @ts-ignore Typescript does not understand filter(Boolean)
+      const signingConfig = this.signingConfig;
       args.push(...(
-        _.keys(this.signingConfig)
-        .map((key) => [`appium${_.upperFirst(key)}`, this.signingConfig[key]])
-        .map(([k, v]) => buildProperty(k, v))
-        .filter(Boolean)
+        _.keys(signingConfig)
+        .map((key) => {
+          const propKey = key as keyof ServerSigningConfig;
+          const propValue = signingConfig[propKey];
+          const k = `appium${_.upperFirst(key)}`;
+          const v: string | undefined = propValue != null ? String(propValue) : undefined;
+          return buildProperty(k, v);
+        })
+        .filter((arg): arg is string => arg !== null)
       ));
     }
 
     if (this.testAppPackage) {
-      // @ts-ignore Typescript does not understand filter(Boolean)
-      args.push(buildProperty('appiumTargetPackage', this.testAppPackage));
+      const targetPackageArg = buildProperty('appiumTargetPackage', this.testAppPackage);
+      if (targetPackageArg) {
+        args.push(targetPackageArg);
+      }
     }
     args.push('app:assembleAndroidTest');
 
     return {cmd, args};
   }
 
-  async setGradleWrapperVersion (version) {
+  async setGradleWrapperVersion (version: string): Promise<void> {
     const propertiesPath = path.resolve(this.serverPath, 'gradle', 'wrapper', 'gradle-wrapper.properties');
     const originalProperties = await fs.readFile(propertiesPath, 'utf8');
     const newProperties = this.updateGradleDistUrl(originalProperties, version);
     await fs.writeFile(propertiesPath, newProperties, 'utf8');
   }
 
-  updateGradleDistUrl (propertiesContent, version) {
+  updateGradleDistUrl (propertiesContent: string, version: string): string {
     return propertiesContent.replace(
       new RegExp(`^(${_.escapeRegExp(GRADLE_URL_PREFIX)}).+$`, 'gm'),
       `$1${GRADLE_URL_TEMPLATE.replace('VERSION', version)}`
     );
   }
 
-  async insertAdditionalDependencies () {
+  async insertAdditionalDependencies (): Promise<void> {
     let hasAdditionalDeps = false;
     for (const propName of DEPENDENCY_PROP_NAMES) {
-      if (!_.isArray(this[propName])) {
+      const deps = this[propName];
+      if (!_.isArray(deps)) {
         throw new Error(`'${propName}' must be an array`);
       }
-      if (_.isEmpty(this[propName].filter((line) => _.trim(line)))) {
+      if (_.isEmpty(deps.filter((line) => _.trim(line)))) {
         continue;
       }
 
-      for (const dep of this[propName]) {
+      for (const dep of deps) {
         if (/[\s'\\$]/.test(dep)) {
           throw new Error('Single quotes, dollar characters and whitespace characters' +
             ` are disallowed in additional dependencies: ${dep}`);
@@ -163,7 +208,7 @@ class ServerBuilder {
     await fs.writeFile(buildPath, configuration, 'utf8');
   }
 
-  async runBuildProcess () {
+  async runBuildProcess (): Promise<void> {
     const {cmd, args} = this.getCommand();
     this.log.debug(`Beginning build with command '${cmd} ${args.join(' ')}' ` +
       `in directory '${this.serverPath}'`);
@@ -174,21 +219,20 @@ class ServerBuilder {
       shell: system.isWindows(),
       windowsVerbatimArguments: true
     });
-    /** @type {string[]} */
-    let gradleError = [];
+    const gradleError: string[] = [];
 
     const logMsg = `Output from Gradle ${this.showGradleLog ? 'will' : 'will not'} be logged`;
     this.log.debug(`${logMsg}. To change this, use 'showGradleLog' desired capability`);
-    gradlebuild.on('line-stderr', (line) => {
+    gradlebuild.on('line-stderr', (line: string) => {
       this.log.warn(`[Gradle] ${line}`);
       gradleError.push(line);
     });
-    gradlebuild.on('line-stdout', (line) => this.log.info(`[Gradle] ${line}`));
+    gradlebuild.on('line-stdout', (line: string) => this.log.info(`[Gradle] ${line}`));
 
     try {
       await gradlebuild.start();
       await gradlebuild.join();
-    } catch (err) {
+    } catch (err: any) {
       const msg = `Unable to build Espresso server - ${err.message}\n` +
         `Gradle error message:${EOL}${gradleError.join('\n')}`;
       throw this.log.errorWithException(msg);
@@ -198,5 +242,5 @@ class ServerBuilder {
   }
 }
 
-export { ServerBuilder, VERSION_KEYS, GRADLE_URL_TEMPLATE, buildServerSigningConfig };
+export { VERSION_KEYS, GRADLE_URL_TEMPLATE };
 export default ServerBuilder;
