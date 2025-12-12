@@ -118,7 +118,7 @@
     "@semantic-release/git": "^10.0.1",
     "@types/bluebird": "^3.5.38",
     "@types/chai": "^5.2.3",
-    "@types/chai-as-promised": "^7.1.8",
+    "@types/chai-as-promised": "^8.0.2",
     "@types/lodash": "^4.14.196",
     "@types/mocha": "^10.0.1",
     "@types/node": "^25.0.0",
