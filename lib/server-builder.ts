@@ -8,10 +8,10 @@ import type { AppiumLogger } from '@appium/types';
 
 const GRADLE_VERSION_KEY = 'gradle';
 const GRADLE_URL_PREFIX = 'distributionUrl=';
-const GRADLE_URL_TEMPLATE = 'https\\://services.gradle.org/distributions/gradle-VERSION-all.zip';
+export const GRADLE_URL_TEMPLATE = 'https\\://services.gradle.org/distributions/gradle-VERSION-all.zip';
 const DEPENDENCY_PROP_NAMES = ['additionalAppDependencies', 'additionalAndroidTestDependencies'] as const;
 
-const VERSION_KEYS = [
+export const VERSION_KEYS = [
   GRADLE_VERSION_KEY,
   'androidGradlePlugin',
   'compileSdk',
@@ -96,8 +96,9 @@ export class ServerBuilder {
     this.testAppPackage = args.testAppPackage;
     this.signingConfig = args.signingConfig;
 
-    this.additionalAppDependencies = buildConfiguration.additionalAppDependencies || [];
-    this.additionalAndroidTestDependencies = buildConfiguration.additionalAndroidTestDependencies || [];
+    for (const propName of DEPENDENCY_PROP_NAMES) {
+      this[propName] = buildConfiguration[propName] || [];
+    }
   }
 
   async build (): Promise<void> {
@@ -111,10 +112,7 @@ export class ServerBuilder {
     await this.runBuildProcess();
   }
 
-  /**
-   * @returns {{cmd: string, args: string[]}}
-   */
-  getCommand (): {cmd: string; args: string[]} {
+  private getCommand (): {cmd: string; args: string[]} {
     const cmd = system.isWindows() ? 'gradlew.bat' : path.resolve(this.serverPath, 'gradlew');
     const buildProperty = (key: string, value?: string): string | null => value ? `-P${key}=${value}` : null;
     const args: string[] = VERSION_KEYS
@@ -124,20 +122,20 @@ export class ServerBuilder {
         const gradleProperty = `appium${key.charAt(0).toUpperCase()}${key.slice(1)}`;
         return buildProperty(gradleProperty, serverVersion);
       })
-      .filter((arg): arg is string => arg !== null);
+      .filter((arg): arg is string => typeof arg === 'string' && Boolean(arg));
 
-    if (this.signingConfig) {
-      const signingConfig = this.signingConfig;
+    const signingConfig = this.signingConfig;
+    if (signingConfig) {
       args.push(...(
         _.keys(signingConfig)
         .map((key) => {
           const propKey = key as keyof ServerSigningConfig;
           const propValue = signingConfig[propKey];
           const k = `appium${_.upperFirst(key)}`;
-          const v: string | undefined = propValue != null ? String(propValue) : undefined;
+          const v: string | undefined = !_.isNil(propValue) ? String(propValue) : undefined;
           return buildProperty(k, v);
         })
-        .filter((arg): arg is string => arg !== null)
+        .filter((arg): arg is string => typeof arg === 'string' && Boolean(arg))
       ));
     }
 
@@ -152,21 +150,21 @@ export class ServerBuilder {
     return {cmd, args};
   }
 
-  async setGradleWrapperVersion (version: string): Promise<void> {
+  private async setGradleWrapperVersion (version: string): Promise<void> {
     const propertiesPath = path.resolve(this.serverPath, 'gradle', 'wrapper', 'gradle-wrapper.properties');
     const originalProperties = await fs.readFile(propertiesPath, 'utf8');
     const newProperties = this.updateGradleDistUrl(originalProperties, version);
     await fs.writeFile(propertiesPath, newProperties, 'utf8');
   }
 
-  updateGradleDistUrl (propertiesContent: string, version: string): string {
+  private updateGradleDistUrl (propertiesContent: string, version: string): string {
     return propertiesContent.replace(
       new RegExp(`^(${_.escapeRegExp(GRADLE_URL_PREFIX)}).+$`, 'gm'),
       `$1${GRADLE_URL_TEMPLATE.replace('VERSION', version)}`
     );
   }
 
-  async insertAdditionalDependencies (): Promise<void> {
+  private async insertAdditionalDependencies (): Promise<void> {
     let hasAdditionalDeps = false;
     for (const propName of DEPENDENCY_PROP_NAMES) {
       const deps = this[propName];
@@ -208,7 +206,7 @@ export class ServerBuilder {
     await fs.writeFile(buildPath, configuration, 'utf8');
   }
 
-  async runBuildProcess (): Promise<void> {
+  private async runBuildProcess (): Promise<void> {
     const {cmd, args} = this.getCommand();
     this.log.debug(`Beginning build with command '${cmd} ${args.join(' ')}' ` +
       `in directory '${this.serverPath}'`);
@@ -241,6 +239,3 @@ export class ServerBuilder {
     }
   }
 }
-
-export { VERSION_KEYS, GRADLE_URL_TEMPLATE };
-export default ServerBuilder;

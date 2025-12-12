@@ -20,44 +20,6 @@ export const TEST_APK_PKG = 'io.appium.espressoserver.test';
 const ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS = 45000;
 const TARGET_PACKAGE_CONTAINER = '/data/local/tmp/espresso.apppackage';
 
-interface InstrumentationState {
-  crashed: boolean;
-  exited: boolean;
-}
-
-class EspressoProxy extends JWProxy {
-  instrumentationState: InstrumentationState;
-
-  override async proxyCommand(
-    url: string,
-    method: HTTPMethod,
-    body: HTTPBody = null,
-  ): Promise<[ProxyResponse, HTTPBody]> {
-    const {crashed, exited} = this.instrumentationState;
-    if (exited) {
-      throw new errors.InvalidContextError(`'${method} ${url}' cannot be proxied to Espresso server because ` +
-        `the instrumentation process has ${crashed ? 'crashed' : 'been unexpectedly terminated'}. ` +
-        `Check the Appium server log and the logcat output for more details`);
-    }
-    return await super.proxyCommand(url, method, body);
-  }
-}
-
-interface ServerStatus {
-  build: {
-    version: string;
-    packageName?: string;
-  };
-}
-
-interface SessionInfo {
-  id: string;
-}
-
-interface SessionsResponse {
-  value: SessionInfo[];
-}
-
 export interface EspressoRunnerOptions {
   adb: ADB;
   tmpDir: string;
@@ -77,13 +39,6 @@ export interface EspressoRunnerOptions {
   keystorePassword?: string;
   keyAlias?: string;
   keyPassword?: string;
-}
-
-function requireOption(opts: EspressoRunnerOptions, key: string): any {
-  if (!util.hasValue(opts[key])) {
-    throw new Error(`Option '${key}' is required!`);
-  }
-  return opts[key];
 }
 
 export class EspressoRunner {
@@ -273,87 +228,6 @@ export class EspressoRunner {
     await fs.copyFile(apkPath, this.modServerPath);
   }
 
-  async cleanupSessionLeftovers (): Promise<void> {
-    this.log.debug('Performing cleanup of automation leftovers');
-
-    try {
-      const {value} = (await axios({
-        url: `http://${this.host}:${this.systemPort}/sessions`,
-        timeout: 500,
-      })).data as SessionsResponse;
-      const activeSessionIds = value.map((sess) => sess.id);
-      if (activeSessionIds.length) {
-        this.log.debug(`The following obsolete sessions are still running: ${JSON.stringify(activeSessionIds)}`);
-        this.log.debug('Cleaning up the obsolete sessions');
-        await B.all(activeSessionIds.map((id) =>
-          axios({
-            url: `http://${this.host}:${this.systemPort}/session/${id}`,
-            method: 'DELETE',
-          })
-        ));
-        // Let all sessions to be properly terminated before continuing
-        await B.delay(1000);
-      } else {
-        this.log.debug('No obsolete sessions have been detected');
-      }
-    } catch (e: any) {
-      this.log.debug(`No obsolete sessions have been detected (${e.message})`);
-    }
-  }
-
-  /**
-   * @param {string} driverVersion
-   * @param {import('@appium/types').StringRecord} serverStatus
-   * @returns {Promise<boolean>}
-   */
-  async _verifyServerStatus(driverVersion: string, serverStatus: StringRecord): Promise<boolean> {
-    if (!_.isPlainObject(serverStatus) || !_.isPlainObject(serverStatus.build)) {
-      throw this.log.errorWithException(
-        `The Espresso server version integrated with the application under test is not compatible ` +
-        `with the current driver version '${driverVersion}'.`
-      );
-    }
-    const status = serverStatus as unknown as ServerStatus;
-    const {
-      build: {
-        version: serverVersion,
-        packageName: serverPackageName,
-      }
-    } = status;
-    const appLabel = serverPackageName ? `'${serverPackageName}' application` : 'application under test';
-    const parsedServerVersion = semver.coerce(serverVersion);
-    const parsedDriverVersion = semver.coerce(driverVersion);
-    if (parsedServerVersion && parsedDriverVersion) {
-      if (parsedServerVersion.major !== parsedDriverVersion.major) {
-        throw this.log.errorWithException(
-          `The Espresso server version '${serverVersion}' integrated with the ${appLabel} is not compatible ` +
-          `with the current driver version '${driverVersion}'.`
-        );
-      } else if (parsedServerVersion.minor < parsedDriverVersion.minor) {
-        this.log.warn(
-          `The Espresso server version integrated with the ${appLabel} might not be compatible ` +
-          `with the current driver version (${serverVersion} < ${driverVersion})'.`
-        );
-      }
-    } else {
-      const warnMessage = parsedServerVersion
-        ? `The Espresso driver version '${driverVersion}' ` +
-        `cannot be parsed. It might be incompatible with the current server '${serverVersion}' ` +
-        `integrated with the ${appLabel}.`
-        : `The Espresso server version '${serverVersion}' integrated with the ${appLabel} ` +
-        `cannot be parsed. It might be incompatible with the current driver ` +
-        `version '${driverVersion}'.`;
-      this.log.warn(warnMessage);
-    }
-    if (this.appPackage && serverPackageName && this.appPackage !== serverPackageName) {
-      throw this.log.errorWithException(
-        `The Espresso server that is listening on the device under tests is built for a different ` +
-        `application package (${serverPackageName} !== ${this.appPackage}).`
-      );
-    }
-    return true;
-  }
-
   async startSession (caps: StringRecord): Promise<void> {
     await this.cleanupSessionLeftovers();
 
@@ -419,9 +293,9 @@ export class EspressoRunner {
             `Check the Appium server log and the logcat output for more details`
           );
         }
-        let serverStatus: StringRecord;
+        let serverStatus: ServerStatus;
         try {
-          serverStatus = await this.jwproxy.command('/status', 'GET') as StringRecord;
+          serverStatus = await this.jwproxy.command('/status', 'GET') as ServerStatus;
         } catch {
           return false;
         }
@@ -453,11 +327,6 @@ export class EspressoRunner {
     await this.recordTargetAppPackage();
   }
 
-  async recordTargetAppPackage (): Promise<void> {
-    await this.adb.shell([`echo "${this.appPackage}" > "${TARGET_PACKAGE_CONTAINER}"`]);
-    this.log.info(`Recorded the target application package '${this.appPackage}' to ${TARGET_PACKAGE_CONTAINER}`);
-  }
-
   async deleteSession (): Promise<void> {
     this.log.debug('Deleting Espresso server session');
     // rely on jwproxy's intelligence to know what we're talking about and
@@ -473,4 +342,129 @@ export class EspressoRunner {
       await this.instProcess.stop();
     }
   }
+
+  private async cleanupSessionLeftovers (): Promise<void> {
+    this.log.debug('Performing cleanup of automation leftovers');
+
+    try {
+      const {value} = (await axios({
+        url: `http://${this.host}:${this.systemPort}/sessions`,
+        timeout: 500,
+      })).data as SessionsResponse;
+      const activeSessionIds = value.map((sess) => sess.id);
+      if (activeSessionIds.length) {
+        this.log.debug(`The following obsolete sessions are still running: ${JSON.stringify(activeSessionIds)}`);
+        this.log.debug('Cleaning up the obsolete sessions');
+        await B.all(activeSessionIds.map((id) =>
+          axios({
+            url: `http://${this.host}:${this.systemPort}/session/${id}`,
+            method: 'DELETE',
+          })
+        ));
+        // Let all sessions to be properly terminated before continuing
+        await B.delay(1000);
+      } else {
+        this.log.debug('No obsolete sessions have been detected');
+      }
+    } catch (e: any) {
+      this.log.debug(`No obsolete sessions have been detected (${e.message})`);
+    }
+  }
+
+  private async recordTargetAppPackage (): Promise<void> {
+    await this.adb.shell([`echo "${this.appPackage}" > "${TARGET_PACKAGE_CONTAINER}"`]);
+    this.log.info(`Recorded the target application package '${this.appPackage}' to ${TARGET_PACKAGE_CONTAINER}`);
+  }
+
+  private async _verifyServerStatus(driverVersion: string, serverStatus: ServerStatus): Promise<boolean> {
+    if (!_.isPlainObject(serverStatus) || !_.isPlainObject(serverStatus.build)) {
+      throw this.log.errorWithException(
+        `The Espresso server version integrated with the application under test is not compatible ` +
+        `with the current driver version '${driverVersion}'.`
+      );
+    }
+    const {
+      build: {
+        version: serverVersion,
+        packageName: serverPackageName,
+      }
+    } = serverStatus;
+    const appLabel = serverPackageName ? `'${serverPackageName}' application` : 'application under test';
+    const parsedServerVersion = semver.coerce(serverVersion);
+    const parsedDriverVersion = semver.coerce(driverVersion);
+    if (parsedServerVersion && parsedDriverVersion) {
+      if (parsedServerVersion.major !== parsedDriverVersion.major) {
+        throw this.log.errorWithException(
+          `The Espresso server version '${serverVersion}' integrated with the ${appLabel} is not compatible ` +
+          `with the current driver version '${driverVersion}'.`
+        );
+      } else if (parsedServerVersion.minor < parsedDriverVersion.minor) {
+        this.log.warn(
+          `The Espresso server version integrated with the ${appLabel} might not be compatible ` +
+          `with the current driver version (${serverVersion} < ${driverVersion})'.`
+        );
+      }
+    } else {
+      const warnMessage = parsedServerVersion
+        ? `The Espresso driver version '${driverVersion}' ` +
+        `cannot be parsed. It might be incompatible with the current server '${serverVersion}' ` +
+        `integrated with the ${appLabel}.`
+        : `The Espresso server version '${serverVersion}' integrated with the ${appLabel} ` +
+        `cannot be parsed. It might be incompatible with the current driver ` +
+        `version '${driverVersion}'.`;
+      this.log.warn(warnMessage);
+    }
+    if (this.appPackage && serverPackageName && this.appPackage !== serverPackageName) {
+      throw this.log.errorWithException(
+        `The Espresso server that is listening on the device under tests is built for a different ` +
+        `application package (${serverPackageName} !== ${this.appPackage}).`
+      );
+    }
+    return true;
+  }
+}
+
+class EspressoProxy extends JWProxy {
+  instrumentationState: InstrumentationState;
+
+  override async proxyCommand(
+    url: string,
+    method: HTTPMethod,
+    body: HTTPBody = null,
+  ): Promise<[ProxyResponse, HTTPBody]> {
+    const {crashed, exited} = this.instrumentationState;
+    if (exited) {
+      throw new errors.InvalidContextError(`'${method} ${url}' cannot be proxied to Espresso server because ` +
+        `the instrumentation process has ${crashed ? 'crashed' : 'been unexpectedly terminated'}. ` +
+        `Check the Appium server log and the logcat output for more details`);
+    }
+    return await super.proxyCommand(url, method, body);
+  }
+}
+
+function requireOption(opts: EspressoRunnerOptions, key: string): any {
+  if (!util.hasValue(opts[key])) {
+    throw new Error(`Option '${key}' is required!`);
+  }
+  return opts[key];
+}
+
+interface InstrumentationState {
+  crashed: boolean;
+  exited: boolean;
+}
+
+interface ServerStatus {
+  build: {
+    version: string;
+    packageName?: string;
+  };
+}
+
+interface SessionInfo {
+  id: string;
+}
+
+interface SessionsResponse {
+  value: SessionInfo[];
 }

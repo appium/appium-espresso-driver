@@ -16,7 +16,7 @@ describe('server-builder', function () {
 
     it('should not pass properties when no versions are specified', function () {
       const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
-      expect(new ServerBuilder(log, {serverPath: '/path/to/project'}).getCommand()).to.eql(expected);
+      expect((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand()).to.eql(expected);
     });
 
     it('should pass only specified versions as properties and pass them correctly', function () {
@@ -29,7 +29,7 @@ describe('server-builder', function () {
         },
         serverPath: '/path/to/project'
       });
-      expect(serverBuilder.getCommand()).to.eql(expected);
+      expect((serverBuilder as any).getCommand()).to.eql(expected);
     });
 
     it('should skip unknown version keys', function () {
@@ -45,7 +45,7 @@ describe('server-builder', function () {
         },
         serverPath: '/path/to/project'
       });
-      expect(serverBuilder.getCommand()).to.eql(expected);
+      expect((serverBuilder as any).getCommand()).to.eql(expected);
     });
 
     it('should not pass gradle_version as property', function () {
@@ -58,7 +58,7 @@ describe('server-builder', function () {
         },
         serverPath: '/path/to/project'
       });
-      expect(serverBuilder.getCommand()).to.eql(expected);
+      expect((serverBuilder as any).getCommand()).to.eql(expected);
     });
   });
 
@@ -67,7 +67,7 @@ describe('server-builder', function () {
     it('should set correct URL in gradle.properties', function () {
       const readFileResult = 'foo=1\ndistributionUrl=abc\nbar=2';
       const serverBuilder = new ServerBuilder(log, {serverPath});
-      const actualFileContent = serverBuilder.updateGradleDistUrl(readFileResult, '1.2.3');
+      const actualFileContent = (serverBuilder as any).updateGradleDistUrl(readFileResult, '1.2.3');
 
       expect(actualFileContent).to.eql(
         `foo=1\ndistributionUrl=${GRADLE_URL_TEMPLATE.replace('VERSION', '1.2.3')}\nbar=2`
@@ -78,7 +78,7 @@ describe('server-builder', function () {
     it('should keep other lines not affected', function () {
       const readFileResult = 'foo=1\ndistributionUrl=abc\nbar=2';
       const serverBuilder = new ServerBuilder(log, {serverPath});
-      const actualFileContent = serverBuilder.updateGradleDistUrl(readFileResult, '1.2.3');
+      const actualFileContent = (serverBuilder as any).updateGradleDistUrl(readFileResult, '1.2.3');
 
       expect(actualFileContent).to.match(/^foo=1$/m);
       expect(actualFileContent).to.match(/^bar=2$/m);
@@ -148,7 +148,7 @@ describe('server-builder', function () {
       const serverBuilder = new ServerBuilder(log, {serverPath});
       (serverBuilder as any).additionalAppDependencies = ['foo.\':1.2.3'];
 
-      await expect(serverBuilder.insertAdditionalDependencies()).to.be.rejectedWith(
+      await expect((serverBuilder as any).insertAdditionalDependencies()).to.be.rejectedWith(
         /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
     });
 
@@ -156,7 +156,7 @@ describe('server-builder', function () {
       const serverBuilder = new ServerBuilder(log, {serverPath});
       (serverBuilder as any).additionalAndroidTestDependencies = ['foo.\':1.2.3'];
 
-      await expect(serverBuilder.insertAdditionalDependencies()).to.be.rejectedWith(
+      await expect((serverBuilder as any).insertAdditionalDependencies()).to.be.rejectedWith(
         /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
     });
 
@@ -164,7 +164,7 @@ describe('server-builder', function () {
       const serverBuilder = new ServerBuilder(log, {serverPath});
       (serverBuilder as any).additionalAppDependencies = ['foo.\n:1.2.3'];
 
-      await expect(serverBuilder.insertAdditionalDependencies()).to.be.rejectedWith(
+      await expect((serverBuilder as any).insertAdditionalDependencies()).to.be.rejectedWith(
         /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
     });
   });
