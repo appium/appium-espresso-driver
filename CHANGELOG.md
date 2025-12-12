@@ -1,3 +1,9 @@
+## [6.2.2](https://github.com/appium/appium-espresso-driver/compare/v6.2.1...v6.2.2) (2025-12-12)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @types/chai from 4.3.20 to 5.2.3 ([#1119](https://github.com/appium/appium-espresso-driver/issues/1119)) ([9716974](https://github.com/appium/appium-espresso-driver/commit/971697447164da71f24a56f9b544e0acafd03699))
+
 ## [6.2.1](https://github.com/appium/appium-espresso-driver/compare/v6.2.0...v6.2.1) (2025-12-11)
 
 ### Miscellaneous Chores
