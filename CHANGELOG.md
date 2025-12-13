@@ -1,3 +1,9 @@
+## [6.3.0](https://github.com/appium/appium-espresso-driver/compare/v6.2.4...v6.3.0) (2025-12-13)
+
+### Features
+
+* Migrate parts of the codebase to typescript ([#1121](https://github.com/appium/appium-espresso-driver/issues/1121)) ([7a1cf15](https://github.com/appium/appium-espresso-driver/commit/7a1cf152cf8113a5687e463126850662c44348ac))
+
 ## [6.2.4](https://github.com/appium/appium-espresso-driver/compare/v6.2.3...v6.2.4) (2025-12-13)
 
 ### Miscellaneous Chores
