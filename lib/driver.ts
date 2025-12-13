@@ -547,21 +547,17 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     // now that we have package and activity, we can create an instance of
     // espresso with the appropriate data
     this.espresso = new EspressoRunner(this.log, {
-      // @ts-ignore TODO: Is .host a legacy property?
-      host: this.opts.remoteAdbHost || this.opts.host || '127.0.0.1',
-      systemPort: this.opts.systemPort,
+      host: this.opts.remoteAdbHost || '127.0.0.1',
+      systemPort: this.opts.systemPort!,
       devicePort: DEVICE_PORT,
       adb: this.adb,
-      apk: this.opts.app,
-      tmpDir: this.opts.tmpDir,
-      appPackage: this.opts.appPackage,
-      appActivity: this.opts.appActivity,
+      tmpDir: this.opts.tmpDir!,
+      appPackage: this.opts.appPackage!,
       forceEspressoRebuild: !!this.opts.forceEspressoRebuild,
       espressoBuildConfig: this.opts.espressoBuildConfig,
       showGradleLog: !!this.opts.showGradleLog,
       serverLaunchTimeout: this.opts.espressoServerLaunchTimeout,
       androidInstallTimeout: this.opts.androidInstallTimeout,
-      skipServerInstallation: this.opts.skipServerInstallation,
       useKeystore: this.opts.useKeystore,
       keystorePath: this.opts.keystorePath,
       keystorePassword: this.opts.keystorePassword,

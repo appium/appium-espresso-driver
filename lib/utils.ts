@@ -3,7 +3,10 @@ import _ from 'lodash';
 import path from 'path';
 import _fs from 'fs';
 
-let PACKAGE_INFO = null;
+// @ts-ignore - __filename is available at runtime in CommonJS
+declare const __filename: string;
+
+let PACKAGE_INFO: { manifestPath: string; manifestPayload: Record<string, any> } | null = null;
 const MODULE_NAME = 'appium-espresso-driver';
 
 /**
@@ -13,7 +16,7 @@ const MODULE_NAME = 'appium-espresso-driver';
  * @param {string} packageName
  * @returns {string} The qualified activity name
  */
-export function qualifyActivityName (activityName, packageName) {
+export function qualifyActivityName (activityName: string, packageName: string): string {
   // if either activity or package name is not set
   // or any of these contain wildcards then there is
   // no point in qualifying the activity name
@@ -34,9 +37,9 @@ export function qualifyActivityName (activityName, packageName) {
  * @param {string} targetBaseDir directory to copy files to
  * @returns {Promise<void>}
  */
-export async function copyGradleProjectRecursively (sourceBaseDir, targetBaseDir) {
+export async function copyGradleProjectRecursively (sourceBaseDir: string, targetBaseDir: string): Promise<void> {
   // @ts-ignore it is ok to have the async callback
-  await fs.walkDir(sourceBaseDir, true, async (itemPath, isDirectory) => {
+  await fs.walkDir(sourceBaseDir, true, async (itemPath: string, isDirectory: boolean) => {
     const relativePath = path.relative(sourceBaseDir, itemPath);
     const targetPath = path.resolve(targetBaseDir, relativePath);
 
@@ -54,7 +57,7 @@ export async function copyGradleProjectRecursively (sourceBaseDir, targetBaseDir
   });
 }
 
-export function updateDependencyLines (originalContent, dependencyPlaceholder, dependencyLines) {
+export function updateDependencyLines (originalContent: string, dependencyPlaceholder: string, dependencyLines: string[]): string {
   const configurationLines = originalContent.split('\n');
   const searchRe = new RegExp(`^\\s*//\\s*\\b${_.escapeRegExp(dependencyPlaceholder)}\\b`, 'm');
   const placeholderIndex = configurationLines.findIndex((line) => searchRe.test(line));
@@ -75,7 +78,7 @@ export function updateDependencyLines (originalContent, dependencyPlaceholder, d
  * @returns {Promise<Record<string, any>>} The full path to module's package.json and its payload
  * @throws {Error} If package.json cannot be found
  */
-export async function getPackageInfo () {
+export async function getPackageInfo (): Promise<{ manifestPath: string; manifestPayload: Record<string, any> }> {
   if (PACKAGE_INFO) {
     return PACKAGE_INFO;
   }
@@ -108,7 +111,7 @@ export async function getPackageInfo () {
  * @returns {Record<string, any>} The full path to module's package.json and its payload
  * @throws {Error} If package.json cannot be found
  */
-export function getPackageInfoSync () {
+export function getPackageInfoSync (): { manifestPath: string; manifestPayload: Record<string, any> } {
   if (PACKAGE_INFO) {
     return PACKAGE_INFO;
   }

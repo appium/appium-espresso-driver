@@ -1,12 +1,22 @@
-import { EspressoRunner, REQUIRED_PARAMS } from '../../lib/espresso-runner';
+import { EspressoRunner } from '../../lib/espresso-runner';
 import { ADB } from 'appium-adb';
 import sinon from 'sinon';
-import log from '../../lib/logger';
+import { log } from '../../lib/logger';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
 const {expect} = chai;
 chai.use(chaiAsPromised);
+
+const REQUIRED_PARAMS = [
+  'adb',
+  'tmpDir',
+  'host',
+  'systemPort',
+  'devicePort',
+  'appPackage',
+  'forceEspressoRebuild',
+] as const;
 
 const sandbox = sinon.createSandbox();
 

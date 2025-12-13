@@ -1,6 +1,6 @@
 import { JWProxy, errors } from 'appium/driver';
 import { waitForCondition } from 'asyncbox';
-import { ServerBuilder, buildServerSigningConfig } from './server-builder';
+import { ServerBuilder, buildServerSigningConfig, type ServerSigningConfig } from './server-builder';
 import path from 'path';
 import { fs, util, mkdirp, timing } from 'appium/support';
 import B from 'bluebird';
@@ -8,74 +8,70 @@ import _ from 'lodash';
 import { copyGradleProjectRecursively, getPackageInfoSync, getPackageInfo } from './utils';
 import axios from 'axios';
 import * as semver from 'semver';
+import type { AppiumLogger, StringRecord, HTTPMethod, HTTPBody, ProxyResponse, ProxyOptions } from '@appium/types';
+import type { ADB } from 'appium-adb';
+import type { SubProcess } from 'teen_process';
 
+// @ts-ignore - __dirname is available at runtime in CommonJS
+declare const __dirname: string;
 
 const TEST_SERVER_ROOT = path.resolve(__dirname, '..', '..', 'espresso-server');
-const TEST_APK_PKG = 'io.appium.espressoserver.test';
-const REQUIRED_PARAMS = [
-  'adb',
-  'tmpDir',
-  'host',
-  'systemPort',
-  'devicePort',
-  'appPackage',
-  'forceEspressoRebuild',
-];
+export const TEST_APK_PKG = 'io.appium.espressoserver.test';
 const ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS = 45000;
 const TARGET_PACKAGE_CONTAINER = '/data/local/tmp/espresso.apppackage';
 
-class EspressoProxy extends JWProxy {
-
-  /**
-   * @type {{crashed: boolean, exited: boolean}}
-   */
-  instrumentationState;
-
-  async proxyCommand (url, method, body = null) {
-    const {crashed, exited} = this.instrumentationState;
-    if (exited) {
-      throw new errors.InvalidContextError(`'${method} ${url}' cannot be proxied to Espresso server because ` +
-        `the instrumentation process has ${crashed ? 'crashed' : 'been unexpectedly terminated'}. ` +
-        `Check the Appium server log and the logcat output for more details`);
-    }
-    return await super.proxyCommand(url, method, body);
-  }
+export interface EspressoRunnerOptions {
+  adb: ADB;
+  tmpDir: string;
+  host: string;
+  systemPort: number;
+  devicePort: number;
+  appPackage: string;
+  forceEspressoRebuild: boolean;
+  reqBasePath?: string;
+  showGradleLog?: boolean;
+  espressoBuildConfig?: string;
+  serverLaunchTimeout?: number;
+  androidInstallTimeout?: number;
+  disableSuppressAccessibilityService?: boolean;
+  useKeystore?: boolean;
+  keystorePath?: string;
+  keystorePassword?: string;
+  keyAlias?: string;
+  keyPassword?: string;
 }
 
-class EspressoRunner {
+export class EspressoRunner {
+  public readonly host: string;
+  public readonly systemPort: number;
+  public readonly appPackage: string;
+  public readonly adb: ADB;
+  public readonly tmpDir: string;
+  public readonly forceEspressoRebuild: boolean;
+  public readonly devicePort: number;
+  public readonly jwproxy: EspressoProxy;
+  public readonly proxyReqRes: typeof EspressoProxy.prototype.proxyReqRes;
+  public readonly proxyCommand: typeof EspressoProxy.prototype.command;
+  public readonly modServerPath: string;
+  public readonly showGradleLog?: boolean;
+  public readonly espressoBuildConfig?: string;
+  public readonly serverLaunchTimeout: number;
+  public readonly androidInstallTimeout?: number;
+  public readonly disableSuppressAccessibilityService?: boolean;
+  public readonly signingConfig: ServerSigningConfig | null;
+  private readonly log: AppiumLogger;
+  public instProcess: SubProcess | null = null;
 
-  /** @type {string} */
-  host;
-
-  /** @type {number} */
-  systemPort;
-
-  /** @type {string} */
-  appPackage;
-
-  /** @type {import('appium-adb').ADB} */
-  adb;
-
-  /** @type {string} */
-  tmpDir;
-
-  /**@type {boolean} */
-  forceEspressoRebuild;
-
-  /**
-   *
-   * @param {import('@appium/types').AppiumLogger} log
-   * @param {import('@appium/types').StringRecord} opts
-   */
-  constructor (log, opts = {}) {
-    for (const req of REQUIRED_PARAMS) {
-      if (!opts || !util.hasValue(opts[req])) {
-        throw new Error(`Option '${req}' is required!`);
-      }
-      this[req] = opts[req];
-    }
+  constructor (log: AppiumLogger, opts: EspressoRunnerOptions) {
+    this.adb = requireOption(opts, 'adb');
+    this.tmpDir = requireOption(opts, 'tmpDir');
+    this.host = requireOption(opts, 'host');
+    this.systemPort = requireOption(opts, 'systemPort');
+    this.devicePort = requireOption(opts, 'devicePort');
+    this.appPackage = requireOption(opts, 'appPackage');
+    this.forceEspressoRebuild = requireOption(opts, 'forceEspressoRebuild');
     this.log = log;
-    const proxyOpts = {
+    const proxyOpts: ProxyOptions = {
       log,
       server: this.host,
       port: this.systemPort,
@@ -119,7 +115,7 @@ class EspressoRunner {
     }
   }
 
-  async isAppPackageChanged () {
+  async isAppPackageChanged (): Promise<boolean> {
     if (!await this.adb.fileExists(TARGET_PACKAGE_CONTAINER)) {
       this.log.debug('The previous target application package is unknown');
       return true;
@@ -134,7 +130,7 @@ class EspressoRunner {
    * Installs Espresso server apk on to the device or emulator.
    * Each adb command uses default timeout by them.
    */
-  async installServer () {
+  async installServer (): Promise<void> {
     const appState = await this.adb.getApplicationInstallState(this.modServerPath, TEST_APK_PKG);
 
     const shouldUninstallApp = [
@@ -149,7 +145,7 @@ class EspressoRunner {
       this.log.info(`Uninstalling Espresso Test Server apk from the target device (pkg: '${TEST_APK_PKG}')`);
       try {
         await this.adb.uninstallApk(TEST_APK_PKG);
-      } catch (err) {
+      } catch (err: any) {
         this.log.warn(`Error uninstalling '${TEST_APK_PKG}': ${err.message}`);
       }
     }
@@ -159,13 +155,13 @@ class EspressoRunner {
       try {
         await this.adb.install(this.modServerPath, { replace: false, timeout: this.androidInstallTimeout });
         this.log.info(`Installed Espresso Test Server apk '${this.modServerPath}' (pkg: '${TEST_APK_PKG}')`);
-      } catch (err) {
+      } catch (err: any) {
         throw this.log.errorWithException(`Cannot install '${this.modServerPath}' because of '${err.message}'`);
       }
     }
   }
 
-  async installTestApk () {
+  async installTestApk (): Promise<void> {
     let rebuild = this.forceEspressoRebuild;
     if (rebuild) {
       this.log.debug(`'forceEspressoRebuild' capability is enabled`);
@@ -192,10 +188,10 @@ class EspressoRunner {
     await this.installServer();
   }
 
-  async buildNewModServer () {
-    let buildConfiguration = {};
+  async buildNewModServer (): Promise<void> {
+    let buildConfiguration: Record<string, any> = {};
     if (this.espressoBuildConfig) {
-      let buildConfigurationStr;
+      let buildConfigurationStr: string;
       if (await fs.exists(this.espressoBuildConfig)) {
         this.log.info(`Loading the build configuration from '${this.espressoBuildConfig}'`);
         buildConfigurationStr = await fs.readFile(this.espressoBuildConfig, 'utf8');
@@ -205,7 +201,7 @@ class EspressoRunner {
       }
       try {
         buildConfiguration = JSON.parse(buildConfigurationStr);
-      } catch (e) {
+      } catch (e: any) {
         this.log.error('Cannot parse the build configuration JSON', e);
         throw e;
       }
@@ -232,14 +228,129 @@ class EspressoRunner {
     await fs.copyFile(apkPath, this.modServerPath);
   }
 
-  async cleanupSessionLeftovers () {
+  async startSession (caps: StringRecord): Promise<void> {
+    await this.cleanupSessionLeftovers();
+
+    const cmd: string[] = [
+      'shell',
+      'am', 'instrument',
+      '-w',
+      '-e', 'debug', String(process.env.ESPRESSO_JAVA_DEBUG === 'true'),
+      '-e', 'disableAnalytics', 'true', // To avoid unexpected error by google analytics
+    ];
+
+    if (_.isBoolean(this.disableSuppressAccessibilityService)) {
+      cmd.push('-e', 'DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES', String(this.disableSuppressAccessibilityService));
+    }
+
+    cmd.push(`${TEST_APK_PKG}/androidx.test.runner.AndroidJUnitRunner`);
+
+    const {manifestPayload} = await getPackageInfo();
+    this.log.info(`Starting Espresso Server v${manifestPayload.version} with cmd: adb ${cmd.join(' ')}`);
+
+    let hasSocketError = false;
+    // start the instrumentation process
+    this.jwproxy.instrumentationState = {
+      exited: false,
+      crashed: false,
+    };
+    this.instProcess = this.adb.createSubProcess(cmd);
+    this.instProcess.on('exit', (code: number | null, signal: string | null) => {
+      this.log.info(`Instrumentation process exited with code ${code} from signal ${signal}`);
+      this.jwproxy.instrumentationState.exited = true;
+    });
+    this.instProcess.on('output', (stdout: string, stderr: string) => {
+      const line = stdout || stderr;
+      if (_.isEmpty(line.trim())) {
+        // Do not print empty lines into the system log
+        return;
+      }
+
+      this.log.debug(`[Instrumentation] ${line.trim()}`);
+      // A 'SocketException' indicates that we couldn't connect to the Espresso server,
+      // because the INTERNET permission is not set
+      if (line.toLowerCase().includes('java.net.socketexception')) {
+        hasSocketError = true;
+      } else if (line.includes('Process crashed')) {
+        this.jwproxy.instrumentationState.crashed = true;
+      }
+    });
+
+    const timer = new timing.Timer().start();
+    await this.instProcess.start(0);
+    this.log.info(`Waiting up to ${this.serverLaunchTimeout}ms for Espresso server to be online`);
+    try {
+      await waitForCondition(async () => {
+        if (hasSocketError) {
+          throw this.log.errorWithException(
+            `Espresso server has failed to start due to an unexpected exception. ` +
+            `Make sure the 'INTERNET' permission is requested in the Android manifest of your ` +
+            `application under test (<uses-permission android:name="android.permission.INTERNET" />)`
+          );
+        } else if (this.jwproxy.instrumentationState.exited) {
+          throw this.log.errorWithException(
+            `Espresso server process has been unexpectedly terminated. ` +
+            `Check the Appium server log and the logcat output for more details`
+          );
+        }
+        let serverStatus: ServerStatus;
+        try {
+          serverStatus = await this.jwproxy.command('/status', 'GET') as ServerStatus;
+        } catch {
+          return false;
+        }
+        return await this._verifyServerStatus(manifestPayload.version, serverStatus);
+      }, {
+        waitMs: this.serverLaunchTimeout,
+        intervalMs: 500,
+      });
+    } catch (e: any) {
+      if (/Condition unmet/.test(e.message)) {
+        throw this.log.errorWithException(
+          `Timed out waiting for Espresso server to be ` +
+          `online within ${this.serverLaunchTimeout}ms. The timeout value could be ` +
+          `customized using 'espressoServerLaunchTimeout' capability`
+        );
+      }
+      throw e;
+    }
+    this.log.info(`Espresso server is online. ` +
+      `The initialization process took ${timer.getDuration().asMilliSeconds.toFixed(0)}ms`);
+    this.log.info('Starting the session');
+
+    await this.jwproxy.command('/session', 'POST', {
+      capabilities: {
+        firstMatch: [caps],
+        alwaysMatch: {}
+      }
+    });
+    await this.recordTargetAppPackage();
+  }
+
+  async deleteSession (): Promise<void> {
+    this.log.debug('Deleting Espresso server session');
+    // rely on jwproxy's intelligence to know what we're talking about and
+    // delete the current session
+    try {
+      await this.jwproxy.command('/', 'DELETE');
+    } catch (err: any) {
+      this.log.warn(`Did not get confirmation Espresso deleteSession worked; ` +
+          `Error was: ${err}`);
+    }
+
+    if (this.instProcess?.isRunning) {
+      await this.instProcess.stop();
+    }
+  }
+
+  private async cleanupSessionLeftovers (): Promise<void> {
     this.log.debug('Performing cleanup of automation leftovers');
 
     try {
       const {value} = (await axios({
         url: `http://${this.host}:${this.systemPort}/sessions`,
         timeout: 500,
-      })).data;
+      })).data as SessionsResponse;
       const activeSessionIds = value.map((sess) => sess.id);
       if (activeSessionIds.length) {
         this.log.debug(`The following obsolete sessions are still running: ${JSON.stringify(activeSessionIds)}`);
@@ -255,17 +366,17 @@ class EspressoRunner {
       } else {
         this.log.debug('No obsolete sessions have been detected');
       }
-    } catch (e) {
+    } catch (e: any) {
       this.log.debug(`No obsolete sessions have been detected (${e.message})`);
     }
   }
 
-  /**
-   * @param {string} driverVersion
-   * @param {import('@appium/types').StringRecord} serverStatus
-   * @returns {Promise<boolean>}
-   */
-  async _verifyServerStatus(driverVersion, serverStatus) {
+  private async recordTargetAppPackage (): Promise<void> {
+    await this.adb.shell([`echo "${this.appPackage}" > "${TARGET_PACKAGE_CONTAINER}"`]);
+    this.log.info(`Recorded the target application package '${this.appPackage}' to ${TARGET_PACKAGE_CONTAINER}`);
+  }
+
+  private async _verifyServerStatus(driverVersion: string, serverStatus: ServerStatus): Promise<boolean> {
     if (!_.isPlainObject(serverStatus) || !_.isPlainObject(serverStatus.build)) {
       throw this.log.errorWithException(
         `The Espresso server version integrated with the application under test is not compatible ` +
@@ -311,130 +422,49 @@ class EspressoRunner {
     }
     return true;
   }
+}
 
-  async startSession (caps) {
-    await this.cleanupSessionLeftovers();
+class EspressoProxy extends JWProxy {
+  instrumentationState: InstrumentationState;
 
-    /** @type {string[]} */
-    const cmd = [
-      'shell',
-      'am', 'instrument',
-      '-w',
-      '-e', 'debug', String(process.env.ESPRESSO_JAVA_DEBUG === 'true'),
-      '-e', 'disableAnalytics', 'true', // To avoid unexpected error by google analytics
-    ];
-
-    if (_.isBoolean(this.disableSuppressAccessibilityService)) {
-      cmd.push('-e', 'DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES', String(this.disableSuppressAccessibilityService));
+  override async proxyCommand(
+    url: string,
+    method: HTTPMethod,
+    body: HTTPBody = null,
+  ): Promise<[ProxyResponse, HTTPBody]> {
+    const {crashed, exited} = this.instrumentationState;
+    if (exited) {
+      throw new errors.InvalidContextError(`'${method} ${url}' cannot be proxied to Espresso server because ` +
+        `the instrumentation process has ${crashed ? 'crashed' : 'been unexpectedly terminated'}. ` +
+        `Check the Appium server log and the logcat output for more details`);
     }
-
-    cmd.push(`${TEST_APK_PKG}/androidx.test.runner.AndroidJUnitRunner`);
-
-    const {manifestPayload} = await getPackageInfo();
-    this.log.info(`Starting Espresso Server v${manifestPayload.version} with cmd: adb ${cmd.join(' ')}`);
-
-    let hasSocketError = false;
-    // start the instrumentation process
-    this.jwproxy.instrumentationState = {
-      exited: false,
-      crashed: false,
-    };
-    this.instProcess = this.adb.createSubProcess(cmd);
-    this.instProcess.on('exit', (code, signal) => {
-      this.log.info(`Instrumentation process exited with code ${code} from signal ${signal}`);
-      this.jwproxy.instrumentationState.exited = true;
-    });
-    this.instProcess.on('output', (stdout, stderr) => {
-      const line = stdout || stderr;
-      if (_.isEmpty(line.trim())) {
-        // Do not print empty lines into the system log
-        return;
-      }
-
-      this.log.debug(`[Instrumentation] ${line.trim()}`);
-      // A 'SocketException' indicates that we couldn't connect to the Espresso server,
-      // because the INTERNET permission is not set
-      if (line.toLowerCase().includes('java.net.socketexception')) {
-        hasSocketError = true;
-      } else if (line.includes('Process crashed')) {
-        this.jwproxy.instrumentationState.crashed = true;
-      }
-    });
-
-    const timer = new timing.Timer().start();
-    await this.instProcess.start(0);
-    this.log.info(`Waiting up to ${this.serverLaunchTimeout}ms for Espresso server to be online`);
-    try {
-      await waitForCondition(async () => {
-        if (hasSocketError) {
-          throw this.log.errorWithException(
-            `Espresso server has failed to start due to an unexpected exception. ` +
-            `Make sure the 'INTERNET' permission is requested in the Android manifest of your ` +
-            `application under test (<uses-permission android:name="android.permission.INTERNET" />)`
-          );
-        } else if (this.jwproxy.instrumentationState.exited) {
-          throw this.log.errorWithException(
-            `Espresso server process has been unexpectedly terminated. ` +
-            `Check the Appium server log and the logcat output for more details`
-          );
-        }
-        let serverStatus;
-        try {
-          (serverStatus = /** @type {import('@appium/types').StringRecord} */ (
-            await this.jwproxy.command('/status', 'GET')
-          ));
-        } catch {
-          return false;
-        }
-        return await this._verifyServerStatus(manifestPayload.version, serverStatus);
-      }, {
-        waitMs: this.serverLaunchTimeout,
-        intervalMs: 500,
-      });
-    } catch (e) {
-      if (/Condition unmet/.test(e.message)) {
-        throw this.log.errorWithException(
-          `Timed out waiting for Espresso server to be ` +
-          `online within ${this.serverLaunchTimeout}ms. The timeout value could be ` +
-          `customized using 'espressoServerLaunchTimeout' capability`
-        );
-      }
-      throw e;
-    }
-    this.log.info(`Espresso server is online. ` +
-      `The initialization process took ${timer.getDuration().asMilliSeconds.toFixed(0)}ms`);
-    this.log.info('Starting the session');
-
-    await this.jwproxy.command('/session', 'POST', {
-      capabilities: {
-        firstMatch: [caps],
-        alwaysMatch: {}
-      }
-    });
-    await this.recordTargetAppPackage();
-  }
-
-  async recordTargetAppPackage () {
-    await this.adb.shell([`echo "${this.appPackage}" > "${TARGET_PACKAGE_CONTAINER}"`]);
-    this.log.info(`Recorded the target application package '${this.appPackage}' to ${TARGET_PACKAGE_CONTAINER}`);
-  }
-
-  async deleteSession () {
-    this.log.debug('Deleting Espresso server session');
-    // rely on jwproxy's intelligence to know what we're talking about and
-    // delete the current session
-    try {
-      await this.jwproxy.command('/', 'DELETE');
-    } catch (err) {
-      this.log.warn(`Did not get confirmation Espresso deleteSession worked; ` +
-          `Error was: ${err}`);
-    }
-
-    if (this.instProcess?.isRunning) {
-      await this.instProcess.stop();
-    }
+    return await super.proxyCommand(url, method, body);
   }
 }
 
-export { EspressoRunner, REQUIRED_PARAMS, TEST_APK_PKG };
-export default EspressoRunner;
+function requireOption(opts: EspressoRunnerOptions, key: string): any {
+  if (!util.hasValue(opts[key])) {
+    throw new Error(`Option '${key}' is required!`);
+  }
+  return opts[key];
+}
+
+interface InstrumentationState {
+  crashed: boolean;
+  exited: boolean;
+}
+
+interface ServerStatus {
+  build: {
+    version: string;
+    packageName?: string;
+  };
+}
+
+interface SessionInfo {
+  id: string;
+}
+
+interface SessionsResponse {
+  value: SessionInfo[];
+}

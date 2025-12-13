@@ -1,6 +1,7 @@
 import { AndroidDriver } from 'appium-android-driver';
+import type { MethodMap } from '@appium/types';
 
-export const newMethodMap = /** @type {const} */ ({
+export const newMethodMap = {
   ...AndroidDriver.newMethodMap,
   '/session/:sessionId/appium/device/get_clipboard': {
     POST: {
@@ -9,4 +10,4 @@ export const newMethodMap = /** @type {const} */ ({
       deprecated: true
     }
   }
-});
+} as const satisfies MethodMap<any>;
