@@ -1,3 +1,9 @@
+## [6.2.3](https://github.com/appium/appium-espresso-driver/compare/v6.2.2...v6.2.3) (2025-12-13)
+
+### Miscellaneous Chores
+
+* **deps:** bump actions/cache from 4 to 5 ([#1120](https://github.com/appium/appium-espresso-driver/issues/1120)) ([4ca970f](https://github.com/appium/appium-espresso-driver/commit/4ca970f87851e31a869afd56c052cc58b341e81a))
+
 ## [6.2.2](https://github.com/appium/appium-espresso-driver/compare/v6.2.1...v6.2.2) (2025-12-12)
 
 ### Miscellaneous Chores
