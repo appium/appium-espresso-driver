@@ -1,3 +1,9 @@
+## [6.2.4](https://github.com/appium/appium-espresso-driver/compare/v6.2.3...v6.2.4) (2025-12-13)
+
+### Miscellaneous Chores
+
+* **deps:** remove source-map-support ([#1117](https://github.com/appium/appium-espresso-driver/issues/1117)) ([7bde87a](https://github.com/appium/appium-espresso-driver/commit/7bde87aa5d1f9cc388b1bb675cd4c4c2ed911354))
+
 ## [6.2.3](https://github.com/appium/appium-espresso-driver/compare/v6.2.2...v6.2.3) (2025-12-13)
 
 ### Miscellaneous Chores
