@@ -1,3 +1,9 @@
+## [6.3.1](https://github.com/appium/appium-espresso-driver/compare/v6.3.0...v6.3.1) (2025-12-18)
+
+### Miscellaneous Chores
+
+* **deps:** bump asyncbox from 3.0.0 to 4.0.1 ([#1122](https://github.com/appium/appium-espresso-driver/issues/1122)) ([af0a7a3](https://github.com/appium/appium-espresso-driver/commit/af0a7a389c92ae645b291537b9741a623a58a396))
+
 ## [6.3.0](https://github.com/appium/appium-espresso-driver/compare/v6.2.4...v6.3.0) (2025-12-13)
 
 ### Features
