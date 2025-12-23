@@ -1,3 +1,9 @@
+## [6.3.2](https://github.com/appium/appium-espresso-driver/compare/v6.3.1...v6.3.2) (2025-12-23)
+
+### Miscellaneous Chores
+
+* **deps:** bump teen_process from 3.0.6 to 4.0.6 ([#1123](https://github.com/appium/appium-espresso-driver/issues/1123)) ([242df8a](https://github.com/appium/appium-espresso-driver/commit/242df8ab1e4611d95aa0e2f0882b8970d78b150c))
+
 ## [6.3.1](https://github.com/appium/appium-espresso-driver/compare/v6.3.0...v6.3.1) (2025-12-18)
 
 ### Miscellaneous Chores
