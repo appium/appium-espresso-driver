@@ -6,9 +6,9 @@ import type { EspressoDriver } from '../driver';
  * or an empty string if the clipboard is empty.
  */
 export async function getClipboard (this: EspressoDriver): Promise<string> {
-  return ((await this.adb.getApiLevel() < 29)
+  return await this.adb.getApiLevel() < 29
     ? (await this.espresso.jwproxy.command('/appium/device/get_clipboard', 'POST', {})) as string
-    : (await this.settingsApp.getClipboard()));
+    : await this.settingsApp.getClipboard();
 }
 
 /**
