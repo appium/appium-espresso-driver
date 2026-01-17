@@ -1,3 +1,9 @@
+## [6.3.4](https://github.com/appium/appium-espresso-driver/compare/v6.3.3...v6.3.4) (2026-01-17)
+
+### Miscellaneous Chores
+
+* Migrate various commands to typescript (part 1) ([#1124](https://github.com/appium/appium-espresso-driver/issues/1124)) ([ed66c3b](https://github.com/appium/appium-espresso-driver/commit/ed66c3bcec7bf19dd6eceb69080ccbfd56771705))
+
 ## [6.3.3](https://github.com/appium/appium-espresso-driver/compare/v6.3.2...v6.3.3) (2026-01-16)
 
 ### Miscellaneous Chores
