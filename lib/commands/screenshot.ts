@@ -1,33 +1,28 @@
 import _ from 'lodash';
 import B from 'bluebird';
+import type { EspressoDriver } from '../driver';
+import type { ScreenshotsInfo } from './types';
 
 // Display 4619827259835644672 (HWC display 0): port=0 pnpId=GGL displayName="EMU_display_0"
 const DISPLAY_PATTERN = /^Display\s+(\d+)\s+\(.+display\s+(\d+)\).+displayName="([^"]*)/gm;
 
 /**
- * @typedef {Object} ScreenshotsInfo
- *
- * A dictionary where each key contains a unique display identifier
- * and values are dictionaries with following items:
- * - id: Display identifier
- * - name: Display name, could be empty
- * - isDefault: Whether this display is the default one
- * - payload: The actual PNG screenshot data encoded to base64 string
- */
-
-/**
  * Retrieves screenshots of each display available to Android.
  * This functionality is only supported since Android 10.
  *
- * @this {import('../driver').EspressoDriver}
- * @param {number|string} [displayId] Android display identifier to take a screenshot for.
+ * @param displayId - Optional Android display identifier to take a screenshot for.
  * If not provided then screenshots of all displays are going to be returned.
- * If no matches were found then an error is thrown.
- * @returns {Promise<ScreenshotsInfo>}
+ * If provided but no matches were found then an error is thrown.
+ * @returns Promise that resolves to a dictionary of display screenshots, where keys are display IDs
+ * and values contain display information and base64-encoded PNG screenshot data
+ * @throws {Error} If display information cannot be determined or if a provided displayId is not found
  */
-export async function mobileScreenshots (displayId) {
+export async function mobileScreenshots (
+  this: EspressoDriver,
+  displayId?: number | string
+): Promise<ScreenshotsInfo> {
   const displaysInfo = await this.adb.shell(['dumpsys', 'SurfaceFlinger', '--display-id']);
-  const infos = {};
+  const infos: Record<string, { id: string; isDefault: boolean; name: string }> = {};
   let match;
   while ((match = DISPLAY_PATTERN.exec(displaysInfo))) {
     infos[match[1]] = {
@@ -42,11 +37,10 @@ export async function mobileScreenshots (displayId) {
   }
   this.log.info(`Parsed Android display infos: ${JSON.stringify(infos)}`);
 
-  const toB64Screenshot = async (dispId) => (await this.adb.takeScreenshot(dispId))
+  const toB64Screenshot = async (dispId: string): Promise<string> => (await this.adb.takeScreenshot(dispId))
     .toString('base64');
 
-  // @ts-ignore isNaN works properly there
-  const displayIdStr = isNaN(displayId) ? null : `${displayId}`;
+  const displayIdStr = isNaN(Number(displayId)) ? null : `${displayId}`;
   if (displayIdStr) {
     if (!infos[displayIdStr]) {
       throw new Error(
@@ -64,10 +58,16 @@ export async function mobileScreenshots (displayId) {
 
   const allInfos = _.values(infos);
   const screenshots = await B.all(allInfos.map(({id}) => toB64Screenshot(id)));
+  const result: ScreenshotsInfo = {};
   for (const [info, payload] of _.zip(allInfos, screenshots)) {
-    info.payload = payload;
+    if (info && payload) {
+      result[info.id] = {
+        ...info,
+        payload,
+      };
+    }
   }
-  return infos;
+  return result;
 }
 
 /**
@@ -77,13 +77,10 @@ export async function mobileScreenshots (displayId) {
  * Without `appium:nativeWebScreenshot` or disabled, espresso driver
  * proxies screenshot endpoint requests to the espresso server directly.
  *
- * @this {import('../driver').EspressoDriver}
- * @returns {Promise<String>}
+ * @returns {Promise<string>}
  */
-export async function getScreenshot() {
+export async function getScreenshot(this: EspressoDriver): Promise<string> {
   return String(
-    await /** @type {import('../espresso-runner').EspressoRunner} */ (
-      this.espresso
-    ).jwproxy.command('/screenshot', 'GET')
+    await this.espresso.jwproxy.command('/screenshot', 'GET')
   );
 }

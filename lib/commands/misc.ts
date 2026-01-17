@@ -1,44 +1,50 @@
 import { util } from 'appium/support';
 import { errors } from 'appium/driver';
+import type { StringRecord } from '@appium/types';
+import type { EspressoDriver } from '../driver';
+import type { DeviceInfo } from '../types';
 
 /**
  * Emulates key press event.
  *
- * @this {import('../driver').EspressoDriver}
- * @param {number} keycode A valid Android key code. See https://developer.android.com/reference/android/view/KeyEvent
+ * @param keycode A valid Android key code. See https://developer.android.com/reference/android/view/KeyEvent
  * for the list of available key codes
- * @param {number} [metastate] An integer in which each bit set to 1 represents a pressed meta key. See
+ * @param metastate An integer in which each bit set to 1 represents a pressed meta key. See
  * https://developer.android.com/reference/android/view/KeyEvent for more details.
- * @param {number} [flags] Flags for the particular key event. See
+ * @param flags Flags for the particular key event. See
  * https://developer.android.com/reference/android/view/KeyEvent for more details.
- * @param {boolean} [isLongPress=false] Whether to emulate long key press
+ * @param isLongPress Whether to emulate long key press
  */
 export async function mobilePressKey (
-  keycode,
-  metastate,
-  flags,
-  isLongPress = false,
-) {
+  this: EspressoDriver,
+  keycode: number,
+  metastate?: number,
+  flags?: number,
+  isLongPress: boolean = false,
+): Promise<void> {
   await this.espresso.jwproxy.command(`/appium/device/${isLongPress ? 'long_' : ''}press_keycode`, 'POST', {
     keycode, metastate, flags
   });
 }
 
 /**
- * @this {import('../driver').EspressoDriver}
- * @returns {Promise<import('../types').DeviceInfo>}
+ * Retrieves information about the connected Android device.
+ * @returns Promise that resolves to device information including API version, platform version, manufacturer,
+ * model, display size, and density
  */
-export async function mobileGetDeviceInfo () {
-  return /** @type {import('../types').DeviceInfo} */ (await this.espresso.jwproxy.command('/appium/device/info', 'GET'));
+export async function mobileGetDeviceInfo (this: EspressoDriver): Promise<DeviceInfo> {
+  return await this.espresso.jwproxy.command('/appium/device/info', 'GET') as DeviceInfo;
 }
 
 /**
- * @this {import('../driver').EspressoDriver}
+ * Checks if a toast message with the given text is currently visible on the screen.
  * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-istoastvisible
- * @param {string} text
- * @param {boolean} [isRegexp]
+ * @param text - The text to search for in the toast message
+ * @param isRegexp - Optional flag indicating if the text should be treated as a regular expression
+ * @returns Promise that resolves to true if the toast is visible, false otherwise
+ * @throws {errors.InvalidArgumentError} If text is not provided
  */
-export async function mobileIsToastVisible (text, isRegexp) {
+export async function mobileIsToastVisible (this: EspressoDriver, text: string, isRegexp?: boolean): Promise<any> {
   if (!util.hasValue(text)) {
     throw new errors.InvalidArgumentError(`'text' argument is mandatory`);
   }
@@ -49,13 +55,12 @@ export async function mobileIsToastVisible (text, isRegexp) {
 }
 
 /**
- * @this {import('../driver').EspressoDriver}
- * @returns {Promise<number>}
+ * Gets the display density (DPI) of the connected Android device.
+ * @returns Promise that resolves to the display density value
  */
-export async function getDisplayDensity () {
-  return /** @type {number} */ (await this.espresso.jwproxy.command(
-    '/appium/device/display_density', 'GET', {})
-  );
+export async function getDisplayDensity (this: EspressoDriver): Promise<number> {
+  return (await this.espresso.jwproxy.command(
+    '/appium/device/display_density', 'GET', {})) as number;
 }
 /**
  *  API to invoke methods defined in Android app.
@@ -95,19 +100,22 @@ export async function getDisplayDensity () {
  *
  * @throws {Error} if target is not 'activity' or 'application'
  * @throws {Error} if a method is not found with given argument types
- * @this {import('../driver').EspressoDriver}
  * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-backdoor
- * @param {string} target
- * @param {import('@appium/types').StringRecord[]} methods
- * @param {string} [elementId]
- * @return {Promise<any>} the result of the last method in the invocation chain.
+ * @param target - The target object to invoke methods on: 'activity', 'application', or 'element'
+ * @param methods - Array of method definitions to invoke in sequence. Each method can have a name and optional args array
+ * @param elementId - Required if target is 'element', the ID of the element to invoke methods on
+ * @returns Promise that resolves to the result of the last method in the invocation chain.
  * If method return type is void, then "<VOID>" will be returned
+ * @throws {errors.InvalidArgumentError} If target is 'element' but elementId is not provided
+ * @throws {Error} If target is not 'activity', 'application', or 'element'
+ * @throws {Error} If a method is not found with the given argument types
  */
 export async function mobileBackdoor (
-  target,
-  methods,
-  elementId,
-) {
+  this: EspressoDriver,
+  target: string,
+  methods: StringRecord[],
+  elementId?: string,
+): Promise<any> {
   if (target === 'element' && !elementId) {
     throw new errors.InvalidArgumentError(`'elementId' is required if 'target' equals to 'element'`);
   }
@@ -125,19 +133,20 @@ export async function mobileBackdoor (
  *                        "getResourceName", "getVisibleBounds", "getVisibleCenter", "getApplicationPackage",
  *                        "getChildCount", "clear", "isCheckable", "isChecked", "isClickable", "isEnabled",
  *                        "isFocusable", "isFocused", "isLongClickable", "isScrollable", "isSelected"
- * @this {import('../driver').EspressoDriver}
  * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-uiautomator
- * @param {string} strategy
- * @param {string} locator
- * @param {string} action
- * @param {number} [index]
+ * @param strategy - The locator strategy to use (e.g., "clazz", "res", "text", "desc", "pkg", etc.)
+ * @param locator - The locator value to match elements
+ * @param action - The action to perform on the matched element
+ * @param index - Optional zero-based index if multiple elements match the locator
+ * @returns Promise that resolves to the result of the action (varies by action type)
  */
 export async function mobileUiautomator (
-  strategy,
-  locator,
-  action,
-  index
-) {
+  this: EspressoDriver,
+  strategy: string,
+  locator: string,
+  action: string,
+  index?: number
+): Promise<any> {
   return await this.espresso.jwproxy.command(`/appium/execute_mobile/uiautomator`, 'POST', {
     strategy, locator, index, action
   });
@@ -145,46 +154,47 @@ export async function mobileUiautomator (
 
 /**
  * Execute UiAutomator2 command to return the UI dump when AUT is in background.
- * @this {import('../driver').EspressoDriver}
  * @throws  {Error} if uiautomator view dump is unsuccessful
  * @returns {Promise<string>} uiautomator DOM xml as string
  */
-export async function mobileUiautomatorPageSource () {
-  return /** @type {string} */ (await this.espresso.jwproxy.command(
+export async function mobileUiautomatorPageSource (this: EspressoDriver): Promise<string> {
+  return await this.espresso.jwproxy.command(
     `/appium/execute_mobile/uiautomator_page_source`, 'GET'
-  ));
+  ) as string;
 }
 
 /**
- * @typedef {Object} SettingsOptions
- * @property {!string|number|boolean} Object Settings parameters that is available in
+ * Settings parameters that is available in
  * https://github.com/appium/appium-espresso-driver#settings-api or enabled plugins.
  */
+export interface SettingsOptions {
+  [key: string]: string | number | boolean;
+}
 
 /**
  * Apply the given settings to the espresso driver and the espresso server.
  * Errors by the espresso server will be printed as log, but it does not return an error message.
- * @param {SettingsOptions} settings
- * @this {import('../driver').EspressoDriver}
+ * @param settings - Settings object containing key-value pairs of settings to apply
+ * @returns Promise that resolves when settings are updated
  */
-export async function updateSettings (settings) {
+export async function updateSettings (this: EspressoDriver, settings: SettingsOptions): Promise<void> {
   await this.settings.update(settings);
   try {
     await this.espresso.jwproxy.command(`/appium/settings`, 'POST', { settings });
-  } catch (err) {
+  } catch (err: any) {
     this.log.warn(`The espresso driver responded an error. Original error: ${err.message}`);
   }
 }
 
 /**
- * @this {import('../driver').EspressoDriver}
+ * Retrieves the current settings from both the driver and the espresso server.
+ * @returns Promise that resolves to a merged object containing all current settings from both driver and server
  */
-export async function getSettings () {
+export async function getSettings (this: EspressoDriver): Promise<Record<string, any>> {
   const driverSettings = this.settings.getSettings();
-  const serverSettings = /** @type {Record<String, any>} */ (await this.espresso.jwproxy.command(
+  const serverSettings = await this.espresso.jwproxy.command(
     `/appium/settings`, 'GET'
-  ));
+  ) as Record<string, any>;
   return {...driverSettings, ...serverSettings};
 }
-
 
