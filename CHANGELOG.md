@@ -1,3 +1,9 @@
+## [6.3.6](https://github.com/appium/appium-espresso-driver/compare/v6.3.5...v6.3.6) (2026-01-23)
+
+### Miscellaneous Chores
+
+* Migrate index to typescript ([#1128](https://github.com/appium/appium-espresso-driver/issues/1128)) ([e99c476](https://github.com/appium/appium-espresso-driver/commit/e99c47641318e75d9d07988b1cb688c287ebdf01))
+
 ## [6.3.5](https://github.com/appium/appium-espresso-driver/compare/v6.3.4...v6.3.5) (2026-01-17)
 
 ### Miscellaneous Chores
