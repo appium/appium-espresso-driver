@@ -44,15 +44,14 @@
       ]
     }
   },
-  "main": "./build/index.js",
+  "main": "./build/lib/index.js",
+  "types": "./build/lib/index.d.ts",
   "bin": {},
   "directories": {
     "lib": "lib"
   },
   "files": [
-    "index.js",
     "lib",
-    "build/index.js",
     "build/lib",
     "espresso-server/app/src",
     "espresso-server/app/build/outputs/apk",
