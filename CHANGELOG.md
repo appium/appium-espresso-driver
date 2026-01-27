@@ -1,3 +1,9 @@
+## [6.3.7](https://github.com/appium/appium-espresso-driver/compare/v6.3.6...v6.3.7) (2026-01-27)
+
+### Miscellaneous Chores
+
+* use gradle 8.14 ([#1132](https://github.com/appium/appium-espresso-driver/issues/1132)) ([41b2c11](https://github.com/appium/appium-espresso-driver/commit/41b2c11677dd779234688ceaaf737e35ec5b48e9))
+
 ## [6.3.6](https://github.com/appium/appium-espresso-driver/compare/v6.3.5...v6.3.6) (2026-01-23)
 
 ### Miscellaneous Chores
