@@ -11,7 +11,7 @@ import type {
 } from '@appium/types';
 import type { EspressoConstraints } from './constraints';
 import _ from 'lodash';
-import path from 'path';
+import path from 'node:path';
 import B from 'bluebird';
 import { errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver';
 import { EspressoRunner, TEST_APK_PKG } from './espresso-runner';
@@ -152,7 +152,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
   string,
   StringRecord
 > {
-  _originalIme: string|null;
+  _originalIme: string | null;
 
   espresso: EspressoRunner;
 

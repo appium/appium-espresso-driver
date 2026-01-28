@@ -1,8 +1,8 @@
 import { SubProcess } from 'teen_process';
 import { fs, system } from 'appium/support';
 import _ from 'lodash';
-import path from 'path';
-import { EOL } from 'os';
+import path from 'node:path';
+import { EOL } from 'node:os';
 import { updateDependencyLines } from './utils';
 import type { AppiumLogger } from '@appium/types';
 
