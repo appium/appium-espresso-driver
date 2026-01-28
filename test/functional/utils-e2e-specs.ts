@@ -1,6 +1,6 @@
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import path from 'path';
+import path from 'node:path';
 import { fs, mkdirp, tempDir } from 'appium/support';
 import { copyGradleProjectRecursively } from '../../lib/utils';
 

@@ -1,7 +1,7 @@
 import { JWProxy, errors } from 'appium/driver';
 import { waitForCondition } from 'asyncbox';
 import { ServerBuilder, buildServerSigningConfig, type ServerSigningConfig } from './server-builder';
-import path from 'path';
+import path from 'node:path';
 import { fs, util, mkdirp, timing } from 'appium/support';
 import B from 'bluebird';
 import _ from 'lodash';

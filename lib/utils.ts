@@ -1,7 +1,7 @@
 import { fs, mkdirp } from 'appium/support';
 import _ from 'lodash';
-import path from 'path';
-import _fs from 'fs';
+import path from 'node:path';
+import _fs from 'node:fs';
 
 // @ts-ignore - __filename is available at runtime in CommonJS
 declare const __filename: string;

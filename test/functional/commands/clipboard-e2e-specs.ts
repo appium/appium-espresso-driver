@@ -1,5 +1,5 @@
 import type { Browser } from 'webdriverio';
-import { AssertionError } from 'assert';
+import { AssertionError } from 'node:assert';
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';

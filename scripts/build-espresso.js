@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const path = require('path');
+const path = require('node:path');
 const { logger, fs } = require('appium/support');
 const { ServerBuilder } = require('../build/lib/server-builder.js');
 

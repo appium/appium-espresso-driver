@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('node:path');
 
 function printEspressoServerPath () {
   const dstPath = path.resolve(__dirname, '..', 'espresso-server');
