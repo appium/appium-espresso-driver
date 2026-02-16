@@ -1,6 +1,6 @@
-import type { EspressoDriver } from '../driver';
-import { errors } from 'appium/driver';
-import { qualifyActivityName } from '../utils';
+import type {EspressoDriver} from '../driver';
+import {errors} from 'appium/driver';
+import {qualifyActivityName} from '../utils';
 
 /**
  * Starts the given activity with intent options, activity options and locale.
@@ -12,12 +12,12 @@ import { qualifyActivityName } from '../utils';
  * @param optionalActivityArguments - Optional activity arguments as a string
  * @returns Promise that resolves to a string when the activity is started
  */
-export async function mobileStartActivity (
+export async function mobileStartActivity(
   this: EspressoDriver,
   appActivity: string,
   locale?: string,
   optionalIntentArguments?: string,
-  optionalActivityArguments?: string
+  optionalActivityArguments?: string,
 ): Promise<string> {
   const appPackage = this.caps.appPackage;
   return (await this.espresso.jwproxy.command(`/appium/device/start_activity`, 'POST', {
@@ -25,7 +25,7 @@ export async function mobileStartActivity (
     appActivity,
     locale,
     optionalIntentArguments,
-    optionalActivityArguments
+    optionalActivityArguments,
   })) as string;
 }
 
@@ -39,12 +39,12 @@ export async function mobileStartActivity (
  * @param appWaitActivity - Optional activity name to wait for (defaults to appActivity)
  * @returns Promise that resolves when the activity is started and ready
  */
-export async function startActivity (
+export async function startActivity(
   this: EspressoDriver,
   appPackage?: string,
   appActivity?: string,
   appWaitPackage?: string,
-  appWaitActivity?: string
+  appWaitActivity?: string,
 ): Promise<void> {
   // intentAction, intentCategory, intentFlags, optionalIntentArguments, dontStopAppOnReset
   // parameters are not supported by Espresso

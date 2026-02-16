@@ -1,7 +1,7 @@
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { COMPOSE_CAPS } from '../desired';
+import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
+import {COMPOSE_CAPS} from '../desired';
 
 chai.use(chaiAsPromised);
 describe('compose node attributes', function () {
@@ -29,7 +29,7 @@ describe('compose node attributes', function () {
       const el = await driver.$("//*[@text='Clickable Component']");
       await el.click();
 
-      await driver.updateSettings({ driver: 'compose' });
+      await driver.updateSettings({driver: 'compose'});
 
       const taggedElement = await driver.$('<lol>');
       await expect(taggedElement.getAttribute('view-tag')).to.eventually.equal('lol');

@@ -1,9 +1,9 @@
-import type { Browser } from 'webdriverio';
+import type {Browser} from 'webdriverio';
 import B from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { amendCapabilities, APIDEMO_CAPS } from '../desired';
+import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
+import {amendCapabilities, APIDEMO_CAPS} from '../desired';
 
 chai.use(chaiAsPromised);
 
@@ -17,13 +17,12 @@ describe('mobile web atoms', function () {
       this.skip();
     }
 
-    driver = await initSession(amendCapabilities(
-      APIDEMO_CAPS,
-      {
+    driver = await initSession(
+      amendCapabilities(APIDEMO_CAPS, {
         'appium:appPackage': 'io.appium.android.apis',
         'appium:appActivity': 'io.appium.android.apis.view.WebView1',
-      }
-    ));
+      }),
+    );
   });
   after(async function () {
     await deleteSession();
@@ -36,11 +35,17 @@ describe('mobile web atoms', function () {
       webviewEl: webviewEl.elementId,
       forceJavascriptEnabled: true,
       methodChain: [
-        {name: 'withElement', atom: {name: 'findElement', locator: {using: 'ID', value: 'i_am_a_textbox'}}},
+        {
+          name: 'withElement',
+          atom: {name: 'findElement', locator: {using: 'ID', value: 'i_am_a_textbox'}},
+        },
         {name: 'perform', atom: {name: 'webKeys', args: 'Hello world'}},
-        {name: 'withElement', atom: {name: 'findElement', locator: {using: 'ID', value: 'i am a link'}}},
+        {
+          name: 'withElement',
+          atom: {name: 'findElement', locator: {using: 'ID', value: 'i am a link'}},
+        },
         {name: 'perform', atom: 'webClick'},
-      ]
+      ],
     });
   });
 });

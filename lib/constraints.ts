@@ -3,34 +3,34 @@ import {commonCapConstraints} from 'appium-android-driver';
 
 export const ESPRESSO_CONSTRAINTS = {
   systemPort: {
-    isNumber: true
+    isNumber: true,
   },
   launchTimeout: {
-    isNumber: true
+    isNumber: true,
   },
   forceEspressoRebuild: {
-    isBoolean: true
+    isBoolean: true,
   },
   espressoServerLaunchTimeout: {
-    isNumber: true
+    isNumber: true,
   },
   espressoBuildConfig: {
-    isString: true
+    isString: true,
   },
   showGradleLog: {
-    isBoolean: true
+    isBoolean: true,
   },
   skipServerInstallation: {
-    isBoolean: true
+    isBoolean: true,
   },
   intentOptions: {
-    isObject: true
+    isObject: true,
   },
   disableSuppressAccessibilityService: {
-    isBoolean: true
+    isBoolean: true,
   },
   activityOptions: {
-    isObject: true
+    isObject: true,
   },
   appLocale: {
     isObject: true,

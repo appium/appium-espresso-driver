@@ -1,4 +1,4 @@
-import { EspressoDriver } from './driver';
+import {EspressoDriver} from './driver';
 
-export { EspressoDriver };
+export {EspressoDriver};
 export default EspressoDriver;

@@ -1,8 +1,8 @@
-import type { Browser } from 'webdriverio';
+import type {Browser} from 'webdriverio';
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { amendCapabilities, APIDEMO_CAPS } from '../desired';
+import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
+import {amendCapabilities, APIDEMO_CAPS} from '../desired';
 
 chai.use(chaiAsPromised);
 
@@ -18,12 +18,11 @@ describe('context', function () {
       this.skip();
     }
 
-    driver = await initSession(amendCapabilities(
-      APIDEMO_CAPS,
-      {
-        'appium:appActivity': 'io.appium.android.apis.view.WebView1'
-      }
-    ));
+    driver = await initSession(
+      amendCapabilities(APIDEMO_CAPS, {
+        'appium:appActivity': 'io.appium.android.apis.view.WebView1',
+      }),
+    );
   });
   after(async function () {
     await deleteSession();

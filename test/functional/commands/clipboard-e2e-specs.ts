@@ -1,9 +1,9 @@
-import type { Browser } from 'webdriverio';
-import { AssertionError } from 'node:assert';
+import type {Browser} from 'webdriverio';
+import {AssertionError} from 'node:assert';
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { APIDEMO_CAPS } from '../desired';
+import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
+import {APIDEMO_CAPS} from '../desired';
 
 chai.use(chaiAsPromised);
 
@@ -21,7 +21,8 @@ describe('clipboard', function () {
 
   it('should set and get clipboard', async function () {
     await driver.execute('mobile: setClipboard', {
-      content: Buffer.from('Hello').toString('base64'), contentType: 'plaintext'
+      content: Buffer.from('Hello').toString('base64'),
+      contentType: 'plaintext',
     } as any);
     // 'SGVsbG8=' is 'Hello' in base 64 encoding with a new line.
     const text = String(await driver.execute('mobile:getClipboard'));

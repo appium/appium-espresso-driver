@@ -1,7 +1,7 @@
-import { EspressoRunner } from '../../lib/espresso-runner';
-import { ADB } from 'appium-adb';
+import {EspressoRunner} from '../../lib/espresso-runner';
+import {ADB} from 'appium-adb';
 import sinon from 'sinon';
-import { log } from '../../lib/logger';
+import {log} from '../../lib/logger';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
@@ -25,7 +25,7 @@ describe('espresso-runner', function () {
     sandbox.restore();
   });
 
-  function getOpts (params: string[]) {
+  function getOpts(params: string[]) {
     const opts: any = {};
     for (const param of params) {
       opts[param] = 'value';
@@ -33,7 +33,7 @@ describe('espresso-runner', function () {
     return opts;
   }
   describe('constructor', function () {
-    function runConstructorTest (opts: any, missingParam: string) {
+    function runConstructorTest(opts: any, missingParam: string) {
       it(`should error out if missing '${missingParam}' parameter`, function () {
         expect(function () {
           new EspressoRunner(log, opts);
@@ -64,26 +64,29 @@ describe('espresso-runner', function () {
       install: () => {
         installCount += 1;
         return installCount;
-      }
+      },
     };
 
     it('should install newer server', async function () {
       sandbox.stub(ADB, 'createADB').callsFake(function () {
         uninstallCount = -1;
         installCount = -1;
-        return Promise.resolve(Object.assign(
-          commonStub,
-          {
+        return Promise.resolve(
+          Object.assign(commonStub, {
             getApplicationInstallState: () => adbCmd.APP_INSTALL_STATE.NEWER_VERSION_INSTALLED,
-          }
-        ) as any);
+          }) as any,
+        );
       });
 
       const adb = await ADB.createADB();
       const espresso = new EspressoRunner(log, {
-        adb, tmpDir: 'tmp', host: 'localhost',
-        systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
-        forceEspressoRebuild: false
+        adb,
+        tmpDir: 'tmp',
+        host: 'localhost',
+        systemPort: 4724,
+        devicePort: 6790,
+        appPackage: 'io.appium.example',
+        forceEspressoRebuild: false,
       });
 
       await espresso.installServer();
@@ -95,19 +98,22 @@ describe('espresso-runner', function () {
       sandbox.stub(ADB, 'createADB').callsFake(function () {
         uninstallCount = -1;
         installCount = -1;
-        return Promise.resolve(Object.assign(
-          commonStub,
-          {
+        return Promise.resolve(
+          Object.assign(commonStub, {
             getApplicationInstallState: () => adbCmd.APP_INSTALL_STATE.OLDER_VERSION_INSTALLED,
-          }
-        ) as any);
+          }) as any,
+        );
       });
 
       const adb = await ADB.createADB();
       const espresso = new EspressoRunner(log, {
-        adb, tmpDir: 'tmp', host: 'localhost',
-        systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
-        forceEspressoRebuild: false
+        adb,
+        tmpDir: 'tmp',
+        host: 'localhost',
+        systemPort: 4724,
+        devicePort: 6790,
+        appPackage: 'io.appium.example',
+        forceEspressoRebuild: false,
       });
 
       await espresso.installServer();
@@ -119,19 +125,22 @@ describe('espresso-runner', function () {
       sandbox.stub(ADB, 'createADB').callsFake(function () {
         uninstallCount = -1;
         installCount = -1;
-        return Promise.resolve(Object.assign(
-          commonStub,
-          {
-            getApplicationInstallState: () => adbCmd.APP_INSTALL_STATE.NOT_INSTALLED
-          }
-        ) as any);
+        return Promise.resolve(
+          Object.assign(commonStub, {
+            getApplicationInstallState: () => adbCmd.APP_INSTALL_STATE.NOT_INSTALLED,
+          }) as any,
+        );
       });
 
       const adb = await ADB.createADB();
       const espresso = new EspressoRunner(log, {
-        adb, tmpDir: 'tmp', host: 'localhost',
-        systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
-        forceEspressoRebuild: false
+        adb,
+        tmpDir: 'tmp',
+        host: 'localhost',
+        systemPort: 4724,
+        devicePort: 6790,
+        appPackage: 'io.appium.example',
+        forceEspressoRebuild: false,
       });
 
       await espresso.installServer();
@@ -143,22 +152,25 @@ describe('espresso-runner', function () {
       sandbox.stub(ADB, 'createADB').callsFake(function () {
         uninstallCount = -1;
         installCount = -1;
-        return Promise.resolve(Object.assign(
-          commonStub,
-          {
+        return Promise.resolve(
+          Object.assign(commonStub, {
             getApplicationInstallState: () => adbCmd.APP_INSTALL_STATE.NOT_INSTALLED,
             install: () => {
               throw new Error('error happened');
-            }
-          }
-        ) as any);
+            },
+          }) as any,
+        );
       });
 
       const adb = await ADB.createADB();
       const espresso = new EspressoRunner(log, {
-        adb, tmpDir: 'tmp', host: 'localhost',
-        systemPort: 4724, devicePort: 6790, appPackage: 'io.appium.example',
-        forceEspressoRebuild: false
+        adb,
+        tmpDir: 'tmp',
+        host: 'localhost',
+        systemPort: 4724,
+        devicePort: 6790,
+        appPackage: 'io.appium.example',
+        forceEspressoRebuild: false,
       });
 
       await expect(espresso.installServer()).to.be.rejectedWith(/error happened/i);
@@ -166,4 +178,3 @@ describe('espresso-runner', function () {
     });
   });
 });
-

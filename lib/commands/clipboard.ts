@@ -1,13 +1,13 @@
-import type { EspressoDriver } from '../driver';
+import type {EspressoDriver} from '../driver';
 
 /**
  * Gets the clipboard content from the device.
  * @returns Promise that resolves to base64-encoded content of the clipboard
  * or an empty string if the clipboard is empty.
  */
-export async function getClipboard (this: EspressoDriver): Promise<string> {
-  return await this.adb.getApiLevel() < 29
-    ? (await this.espresso.jwproxy.command('/appium/device/get_clipboard', 'POST', {})) as string
+export async function getClipboard(this: EspressoDriver): Promise<string> {
+  return (await this.adb.getApiLevel()) < 29
+    ? ((await this.espresso.jwproxy.command('/appium/device/get_clipboard', 'POST', {})) as string)
     : await this.settingsApp.getClipboard();
 }
 
@@ -22,11 +22,11 @@ export async function mobileSetClipboard(
   this: EspressoDriver,
   content: string,
   contentType?: 'plaintext',
-  label?: string
+  label?: string,
 ): Promise<void> {
-  await this.espresso.jwproxy.command(
-    '/appium/device/set_clipboard',
-    'POST',
-    {content, contentType, label}
-  );
+  await this.espresso.jwproxy.command('/appium/device/set_clipboard', 'POST', {
+    content,
+    contentType,
+    label,
+  });
 }

@@ -1,13 +1,12 @@
-import type { Browser } from 'webdriverio';
+import type {Browser} from 'webdriverio';
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { amendCapabilities, APIDEMO_CAPS } from '../desired';
+import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
+import {amendCapabilities, APIDEMO_CAPS} from '../desired';
 
 chai.use(chaiAsPromised);
 
 describe('web', function () {
-
   before(async function () {
     // No proper chromedrivers are available, or very flaky to run on CI.
     // Also, API level 26 emulators don't have WebView installed by default.
@@ -21,15 +20,13 @@ describe('web', function () {
 
     let driver: Browser;
     before(async function () {
-
-      driver = await initSession(amendCapabilities(
-        APIDEMO_CAPS,
-        {
+      driver = await initSession(
+        amendCapabilities(APIDEMO_CAPS, {
           'appium:appPackage': 'io.appium.android.apis',
           'appium:appActivity': 'io.appium.android.apis.view.WebView1',
-          'appium:autoWebview': true
-        }
-      ));
+          'appium:autoWebview': true,
+        }),
+      );
     });
     after(async function () {
       await deleteSession();

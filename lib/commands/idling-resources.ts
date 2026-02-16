@@ -1,4 +1,4 @@
-import type { EspressoDriver } from '../driver';
+import type {EspressoDriver} from '../driver';
 
 /**
  * Registers one or more idling resources
@@ -16,13 +16,17 @@ import type { EspressoDriver } from '../driver';
  * @throws {Error} If there was a failure while parsing options or registering
  * the actual instances
  */
-export async function mobileRegisterIdlingResources (
+export async function mobileRegisterIdlingResources(
   this: EspressoDriver,
-  classNames: string
+  classNames: string,
 ): Promise<any> {
-  return await this.espresso.jwproxy.command('/appium/execute_mobile/register_idling_resources', 'POST', {
-    classNames,
-  });
+  return await this.espresso.jwproxy.command(
+    '/appium/execute_mobile/register_idling_resources',
+    'POST',
+    {
+      classNames,
+    },
+  );
 }
 
 /**
@@ -40,13 +44,17 @@ export async function mobileRegisterIdlingResources (
  * @throws {Error} If there was a failure while parsing options or unregistering
  * the actual instances
  */
-export async function mobileUnregisterIdlingResources (
+export async function mobileUnregisterIdlingResources(
   this: EspressoDriver,
-  classNames: string
+  classNames: string,
 ): Promise<any> {
-  return await this.espresso.jwproxy.command('/appium/execute_mobile/unregister_idling_resources', 'POST', {
-    classNames
-  });
+  return await this.espresso.jwproxy.command(
+    '/appium/execute_mobile/unregister_idling_resources',
+    'POST',
+    {
+      classNames,
+    },
+  );
 }
 
 /**
@@ -55,9 +63,10 @@ export async function mobileUnregisterIdlingResources (
  *
  * @returns Promise that resolves to the list of fully qualified class names
  */
-export async function mobileListIdlingResources (this: EspressoDriver): Promise<string[]> {
+export async function mobileListIdlingResources(this: EspressoDriver): Promise<string[]> {
   return (await this.espresso.jwproxy.command(
-    '/appium/execute_mobile/list_idling_resources', 'GET'
+    '/appium/execute_mobile/list_idling_resources',
+    'GET',
   )) as string[];
 }
 
@@ -65,6 +74,6 @@ export async function mobileListIdlingResources (this: EspressoDriver): Promise<
  * Wait for UI thread to be idle.
  * @returns Promise that resolves when the UI thread is idle
  */
-export async function mobileWaitForUIThread (this: EspressoDriver): Promise<any> {
+export async function mobileWaitForUIThread(this: EspressoDriver): Promise<any> {
   return await this.espresso.jwproxy.command('/appium/execute_mobile/ui_thread_sync', 'POST');
 }

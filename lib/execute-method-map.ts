@@ -1,5 +1,5 @@
-import { ExecuteMethodMap } from '@appium/types';
-import { AndroidDriver } from 'appium-android-driver';
+import {ExecuteMethodMap} from '@appium/types';
+import {AndroidDriver} from 'appium-android-driver';
 
 export const executeMethodMap = {
   ...AndroidDriver.executeMethodMap,
@@ -7,46 +7,27 @@ export const executeMethodMap = {
   'mobile: swipe': {
     command: 'mobileSwipe',
     params: {
-      required: [
-        'elementId',
-      ],
-      optional: [
-        'direction',
-        'swiper',
-        'startCoordinates',
-        'endCoordinates',
-        'precisionDescriber',
-      ],
+      required: ['elementId'],
+      optional: ['direction', 'swiper', 'startCoordinates', 'endCoordinates', 'precisionDescriber'],
     },
   },
   'mobile: scrollToPage': {
     command: 'mobileScrollToPage',
     params: {
-      required: [
-        'elementId',
-      ],
-      optional: [
-        'scrollTo',
-        'scrollToPage',
-        'smoothScroll',
-      ],
+      required: ['elementId'],
+      optional: ['scrollTo', 'scrollToPage', 'smoothScroll'],
     },
   },
   'mobile: navigateTo': {
     command: 'mobileNavigateTo',
     params: {
-      required: [
-        'elementId',
-        'menuItemId',
-      ],
+      required: ['elementId', 'menuItemId'],
     },
   },
   'mobile: clickAction': {
     command: 'mobileClickAction',
     params: {
-      required: [
-        'elementId',
-      ],
+      required: ['elementId'],
       optional: [
         'tapper',
         'coordinatesProvider',
@@ -64,13 +45,9 @@ export const executeMethodMap = {
   'mobile: isToastVisible': {
     command: 'mobileIsToastVisible',
     params: {
-      required: [
-        'text',
-      ],
-      optional: [
-        'isRegexp',
-      ],
-    }
+      required: ['text'],
+      optional: ['isRegexp'],
+    },
   },
 
   'mobile: openDrawer': {
@@ -78,76 +55,51 @@ export const executeMethodMap = {
     params: {
       required: ['elementId'],
       optional: ['gravity'],
-    }
+    },
   },
   'mobile: closeDrawer': {
     command: 'mobileCloseDrawer',
     params: {
       required: ['elementId'],
       optional: ['gravity'],
-    }
+    },
   },
 
   'mobile: setDate': {
     command: 'mobileSetDate',
     params: {
-      required: [
-        'elementId',
-        'year',
-        'monthOfYear',
-        'dayOfMonth',
-      ],
-    }
+      required: ['elementId', 'year', 'monthOfYear', 'dayOfMonth'],
+    },
   },
   'mobile: setTime': {
     command: 'mobileSetTime',
     params: {
-      required: [
-        'elementId',
-        'hours',
-        'minutes',
-      ],
-    }
+      required: ['elementId', 'hours', 'minutes'],
+    },
   },
 
   'mobile: backdoor': {
     command: 'mobileBackdoor',
     params: {
-      required: [
-        'target',
-        'methods',
-      ],
-      optional: [
-        'elementId',
-      ],
-    }
+      required: ['target', 'methods'],
+      optional: ['elementId'],
+    },
   },
 
   'mobile: flashElement': {
     command: 'mobileFlashElement',
     params: {
-      required: [
-        'elementId',
-      ],
-      optional: [
-        'durationMillis',
-        'repeatCount',
-      ]
-    }
+      required: ['elementId'],
+      optional: ['durationMillis', 'repeatCount'],
+    },
   },
 
   'mobile: uiautomator': {
     command: 'mobileUiautomator',
     params: {
-      required: [
-        'strategy',
-        'locator',
-        'action',
-      ],
-      optional: [
-        'index',
-      ]
-    }
+      required: ['strategy', 'locator', 'action'],
+      optional: ['index'],
+    },
   },
   'mobile: uiautomatorPageSource': {
     command: 'mobileUiautomatorPageSource',
@@ -156,32 +108,28 @@ export const executeMethodMap = {
   'mobile: webAtoms': {
     command: 'mobileWebAtoms',
     params: {
-      required: [
-        'webviewEl',
-        'forceJavascriptEnabled',
-        'methodChain',
-      ],
-    }
+      required: ['webviewEl', 'forceJavascriptEnabled', 'methodChain'],
+    },
   },
 
   'mobile: dismissAutofill': {
     command: 'mobileDismissAutofill',
     params: {
       required: ['elementId'],
-    }
+    },
   },
 
   'mobile: registerIdlingResources': {
     command: 'mobileRegisterIdlingResources',
     params: {
       required: ['classNames'],
-    }
+    },
   },
   'mobile: unregisterIdlingResources': {
     command: 'mobileUnregisterIdlingResources',
     params: {
       required: ['classNames'],
-    }
+    },
   },
   'mobile: listIdlingResources': {
     command: 'mobileListIdlingResources',
@@ -194,23 +142,16 @@ export const executeMethodMap = {
     command: 'mobilePressKey',
     params: {
       required: ['keycode'],
-      optional: [
-        'metastate',
-        'flags',
-        'isLongPress',
-      ]
-    }
+      optional: ['metastate', 'flags', 'isLongPress'],
+    },
   },
 
   'mobile: setClipboard': {
     command: 'mobileSetClipboard',
     params: {
       required: ['content'],
-      optional: [
-        'contentType',
-        'label',
-      ]
-    }
+      optional: ['contentType', 'label'],
+    },
   },
   'mobile: getClipboard': {
     command: 'mobileGetClipboard',
@@ -220,29 +161,22 @@ export const executeMethodMap = {
     command: 'mobileStartService',
     params: {
       required: ['intent'],
-      optional: [
-        'user',
-        'foreground',
-      ]
-    }
+      optional: ['user', 'foreground'],
+    },
   },
   'mobile: stopService': {
     command: 'mobileStopService',
     params: {
       required: ['intent'],
-      optional: ['user']
-    }
+      optional: ['user'],
+    },
   },
 
   'mobile: startActivity': {
     command: 'mobileStartActivity',
     params: {
       required: ['appActivity'],
-      optional: [
-        'locale',
-        'optionalIntentArguments',
-        'optionalActivityArguments',
-      ]
-    }
+      optional: ['locale', 'optionalIntentArguments', 'optionalActivityArguments'],
+    },
   },
 } as const satisfies ExecuteMethodMap<any>;

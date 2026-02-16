@@ -1,6 +1,6 @@
 import sinon from 'sinon';
-import { ADB } from 'appium-adb';
-import { EspressoDriver } from '../../lib/driver';
+import {ADB} from 'appium-adb';
+import {EspressoDriver} from '../../lib/driver';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
@@ -40,11 +40,12 @@ describe('driver', function () {
     let driver: EspressoDriver;
     describe('nativeWebScreenshot', function () {
       let proxyAvoidList: Array<[string, RegExp]>;
-      const nativeWebScreenshotFilter = (item: [string, RegExp]) => item[0] === 'GET' && item[1].test('/session/xxx/screenshot/');
+      const nativeWebScreenshotFilter = (item: [string, RegExp]) =>
+        item[0] === 'GET' && item[1].test('/session/xxx/screenshot/');
       beforeEach(function () {
         driver = new EspressoDriver({} as any, false);
-        driver.caps = { appPackage: 'io.appium.package', appActivity: '.MainActivity' } as any;
-        driver.opts = { autoLaunch: false, skipUnlock: true, systemPort: 30000 } as any;
+        driver.caps = {appPackage: 'io.appium.package', appActivity: '.MainActivity'} as any;
+        driver.opts = {autoLaunch: false, skipUnlock: true, systemPort: 30000} as any;
         driver.chromedriver = true as any;
         sandbox.stub(driver, 'initEspressoServer');
         sandbox.stub(driver, 'initAUT');
@@ -74,10 +75,12 @@ describe('driver', function () {
             platformName: 'Android',
             'appium:deviceName': 'device',
             'appium:appPackage': driver.caps.appPackage,
-            'appium:nativeWebScreenshot': false
-          }
+            'appium:nativeWebScreenshot': false,
+          },
         } as any);
-        proxyAvoidList = driver.getProxyAvoidList(driver.sessionId).filter(nativeWebScreenshotFilter);
+        proxyAvoidList = driver
+          .getProxyAvoidList(driver.sessionId)
+          .filter(nativeWebScreenshotFilter);
         expect(proxyAvoidList).to.be.empty;
       });
       it('should not proxy screenshot if nativeWebScreenshot is on on chromedriver mode', async function () {
@@ -87,13 +90,14 @@ describe('driver', function () {
             platformName: 'Android',
             'appium:deviceName': 'device',
             'appium:appPackage': driver.caps.appPackage,
-            'appium:nativeWebScreenshot': true
-          }
+            'appium:nativeWebScreenshot': true,
+          },
         } as any);
-        proxyAvoidList = driver.getProxyAvoidList(driver.sessionId).filter(nativeWebScreenshotFilter);
+        proxyAvoidList = driver
+          .getProxyAvoidList(driver.sessionId)
+          .filter(nativeWebScreenshotFilter);
         expect(proxyAvoidList).to.not.be.empty;
       });
     });
   });
 });
-

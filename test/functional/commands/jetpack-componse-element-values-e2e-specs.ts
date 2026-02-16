@@ -1,8 +1,8 @@
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { retryInterval } from 'asyncbox';
-import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { COMPOSE_CAPS } from '../desired';
+import {retryInterval} from 'asyncbox';
+import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
+import {COMPOSE_CAPS} from '../desired';
 
 chai.use(chaiAsPromised);
 
@@ -34,19 +34,31 @@ describe('Jetpack Compose', function () {
           type: 'pointer',
           id: 'touch',
           actions: [
-            { type: 'pointerMove', duration: 50, x: windowRect.width / 2.0, y: windowRect.height / 2.0, origin: 'viewport' },
-            { type: 'pointerDown', button: 0 },
-            { type: 'pause', duration: 500 },
-            { type: 'pointerMove', duration: 500, x: windowRect.width / 2.0, y: windowRect.height / 8.0, origin: 'viewport' },
-            { type: 'pointerUp', button: 0 },
-          ]
-        }
+            {
+              type: 'pointerMove',
+              duration: 50,
+              x: windowRect.width / 2.0,
+              y: windowRect.height / 2.0,
+              origin: 'viewport',
+            },
+            {type: 'pointerDown', button: 0},
+            {type: 'pause', duration: 500},
+            {
+              type: 'pointerMove',
+              duration: 500,
+              x: windowRect.width / 2.0,
+              y: windowRect.height / 8.0,
+              origin: 'viewport',
+            },
+            {type: 'pointerUp', button: 0},
+          ],
+        },
       ]);
       const el = await driver.$("//*[@text='Text Input Components']");
       await driver.elementClick(el.elementId);
     });
 
-    await driver.updateSettings({ driver: 'compose' });
+    await driver.updateSettings({driver: 'compose'});
 
     const textElement = await driver.$(await driver.findElement('tag name', 'text_input'));
     // verify default text
@@ -54,7 +66,9 @@ describe('Jetpack Compose', function () {
 
     await driver.setValueImmediate(textElement.elementId, 'hello');
     // should append to the exiting text
-    await expect(driver.$(await driver.findElement('tag name', 'text_input')).getText()).to.eventually.equal('Enter your text herehello');
+    await expect(
+      driver.$(await driver.findElement('tag name', 'text_input')).getText(),
+    ).to.eventually.equal('Enter your text herehello');
 
     await textElement.setValue('テスト');
     //  should replace existing text

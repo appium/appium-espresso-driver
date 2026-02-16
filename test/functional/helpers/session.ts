@@ -1,4 +1,4 @@
-import { remote } from 'webdriverio';
+import {remote} from 'webdriverio';
 import AsyncLock from 'async-lock';
 
 const SESSION_GUARD = new AsyncLock();
@@ -13,7 +13,7 @@ const COMMON_REMOTE_OPTIONS = {
 
 let driver: any = null;
 
-async function initSession (caps: any): Promise<any> {
+async function initSession(caps: any): Promise<any> {
   if (driver) {
     await deleteSession();
   }
@@ -21,14 +21,14 @@ async function initSession (caps: any): Promise<any> {
   return await SESSION_GUARD.acquire(HOST, async () => {
     const options: any = {
       ...COMMON_REMOTE_OPTIONS,
-      capabilities: caps
+      capabilities: caps,
     };
     driver = await remote(options);
     return driver;
   });
 }
 
-async function deleteSession (): Promise<void> {
+async function deleteSession(): Promise<void> {
   await SESSION_GUARD.acquire(HOST, async () => {
     try {
       await driver?.deleteSession();
@@ -37,4 +37,4 @@ async function deleteSession (): Promise<void> {
   });
 }
 
-export { initSession, deleteSession, HOST, PORT, MOCHA_TIMEOUT, COMMON_REMOTE_OPTIONS };
+export {initSession, deleteSession, HOST, PORT, MOCHA_TIMEOUT, COMMON_REMOTE_OPTIONS};

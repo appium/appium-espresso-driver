@@ -1,12 +1,16 @@
 import path from 'node:path';
 import _ from 'lodash';
-import { node } from 'appium/support';
+import {node} from 'appium/support';
 // Using broad typing to keep test helper concise
 type W3CCapabilities = any;
 
-const APIDEMOS_APK_URL = 'https://github.com/appium/android-apidemos/releases/download/v6.0.2/ApiDemos-debug.apk';
+const APIDEMOS_APK_URL =
+  'https://github.com/appium/android-apidemos/releases/download/v6.0.2/ApiDemos-debug.apk';
 
-export function amendCapabilities (baseCaps: W3CCapabilities, ...newCaps: Array<Record<string, any>>) {
+export function amendCapabilities(
+  baseCaps: W3CCapabilities,
+  ...newCaps: Array<Record<string, any>>
+) {
   return node.deepFreeze({
     alwaysMatch: _.cloneDeep(Object.assign({}, baseCaps.alwaysMatch, ...newCaps)),
     firstMatch: [{}],
@@ -24,7 +28,7 @@ export const GENERIC_CAPS = node.deepFreeze({
     'appium:espressoServerLaunchTimeout': process.env.CI ? 120000 : 30000,
     'appium:printPageSourceOnFindFailure': true,
   },
-  firstMatch: [{}]
+  firstMatch: [{}],
 });
 
 export const APIDEMO_CAPS = amendCapabilities(GENERIC_CAPS, {
@@ -33,8 +37,9 @@ export const APIDEMO_CAPS = amendCapabilities(GENERIC_CAPS, {
 
 export const COMPOSE_CAPS = amendCapabilities(GENERIC_CAPS, {
   'appium:app': path.resolve(__dirname, '..', 'assets', 'compose_playground.apk'),
-  'appium:espressoBuildConfig': '{"additionalAndroidTestDependencies": ' +
+  'appium:espressoBuildConfig':
+    '{"additionalAndroidTestDependencies": ' +
     '["androidx.lifecycle:lifecycle-extensions:2.2.0", ' +
     '"androidx.activity:activity:1.3.1", ' +
-    '"androidx.fragment:fragment:1.3.4"]}'
+    '"androidx.fragment:fragment:1.3.4"]}',
 });

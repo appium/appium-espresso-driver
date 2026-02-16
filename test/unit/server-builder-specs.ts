@@ -1,9 +1,7 @@
-import { system } from 'appium/support';
-import {
-  GRADLE_URL_TEMPLATE, ServerBuilder, VERSION_KEYS
-} from '../../lib/server-builder';
-import { updateDependencyLines } from '../../lib/utils';
-import { log } from '../../lib/logger';
+import {system} from 'appium/support';
+import {GRADLE_URL_TEMPLATE, ServerBuilder, VERSION_KEYS} from '../../lib/server-builder';
+import {updateDependencyLines} from '../../lib/utils';
+import {log} from '../../lib/logger';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
@@ -16,18 +14,23 @@ describe('server-builder', function () {
 
     it('should not pass properties when no versions are specified', function () {
       const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
-      expect((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand()).to.eql(expected);
+      expect((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand()).to.eql(
+        expected,
+      );
     });
 
     it('should pass only specified versions as properties and pass them correctly', function () {
-      const expected = {cmd: expectedCmd, args: ['-PappiumAndroidGradlePlugin=1.2.3', 'app:assembleAndroidTest']};
+      const expected = {
+        cmd: expectedCmd,
+        args: ['-PappiumAndroidGradlePlugin=1.2.3', 'app:assembleAndroidTest'],
+      };
       const serverBuilder = new ServerBuilder(log, {
         buildConfiguration: {
           toolsVersions: {
-            androidGradlePlugin: '1.2.3'
-          }
+            androidGradlePlugin: '1.2.3',
+          },
         },
-        serverPath: '/path/to/project'
+        serverPath: '/path/to/project',
       });
       expect((serverBuilder as any).getCommand()).to.eql(expected);
     });
@@ -40,10 +43,10 @@ describe('server-builder', function () {
       const serverBuilder = new ServerBuilder(log, {
         buildConfiguration: {
           toolsVersions: {
-            [unknownKey]: '1.2.3'
-          }
+            [unknownKey]: '1.2.3',
+          },
         },
-        serverPath: '/path/to/project'
+        serverPath: '/path/to/project',
       });
       expect((serverBuilder as any).getCommand()).to.eql(expected);
     });
@@ -53,10 +56,10 @@ describe('server-builder', function () {
       const serverBuilder = new ServerBuilder(log, {
         buildConfiguration: {
           toolsVersions: {
-            gradle_version: '1.2.3'
-          }
+            gradle_version: '1.2.3',
+          },
         },
-        serverPath: '/path/to/project'
+        serverPath: '/path/to/project',
       });
       expect((serverBuilder as any).getCommand()).to.eql(expected);
     });
@@ -70,7 +73,7 @@ describe('server-builder', function () {
       const actualFileContent = (serverBuilder as any).updateGradleDistUrl(readFileResult, '1.2.3');
 
       expect(actualFileContent).to.eql(
-        `foo=1\ndistributionUrl=${GRADLE_URL_TEMPLATE.replace('VERSION', '1.2.3')}\nbar=2`
+        `foo=1\ndistributionUrl=${GRADLE_URL_TEMPLATE.replace('VERSION', '1.2.3')}\nbar=2`,
       );
       expect(actualFileContent).to.contain('gradle-1.2.3-all.zip');
     });
@@ -103,7 +106,7 @@ describe('server-builder', function () {
 }`;
       const replacedContent = updateDependencyLines(gradleContent, 'additionalAppDependencies', [
         'a.b.c:1.2.3',
-        'foo.bar.foobar:4.5.6'
+        'foo.bar.foobar:4.5.6',
       ]);
       expect(replacedContent).to.eql(`dependencies {
   ext.annotation_version = '1.1.0'
@@ -121,10 +124,11 @@ describe('server-builder', function () {
   // additionalAndroidTestDependencies placeholder (don't change or delete this line)
 }`);
 
-      const replacedContent2 = updateDependencyLines(replacedContent, 'additionalAndroidTestDependencies', [
-        'a.b.c:1.2.3',
-        'foo.bar.foobar:4.5.6'
-      ]);
+      const replacedContent2 = updateDependencyLines(
+        replacedContent,
+        'additionalAndroidTestDependencies',
+        ['a.b.c:1.2.3', 'foo.bar.foobar:4.5.6'],
+      );
       expect(replacedContent2).to.eql(`dependencies {
   ext.annotation_version = '1.1.0'
 
@@ -146,18 +150,20 @@ describe('server-builder', function () {
 
     it('should throw on single quotes in additional dependencies', async function () {
       const serverBuilder = new ServerBuilder(log, {serverPath});
-      (serverBuilder as any).additionalAppDependencies = ['foo.\':1.2.3'];
+      (serverBuilder as any).additionalAppDependencies = ["foo.':1.2.3"];
 
       await expect((serverBuilder as any).insertAdditionalDependencies()).to.be.rejectedWith(
-        /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
+        /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/,
+      );
     });
 
     it('should throw on dollar characters in additional dependencies', async function () {
       const serverBuilder = new ServerBuilder(log, {serverPath});
-      (serverBuilder as any).additionalAndroidTestDependencies = ['foo.\':1.2.3'];
+      (serverBuilder as any).additionalAndroidTestDependencies = ["foo.':1.2.3"];
 
       await expect((serverBuilder as any).insertAdditionalDependencies()).to.be.rejectedWith(
-        /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
+        /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/,
+      );
     });
 
     it('should throw on new lines in additional dependencies', async function () {
@@ -165,8 +171,8 @@ describe('server-builder', function () {
       (serverBuilder as any).additionalAppDependencies = ['foo.\n:1.2.3'];
 
       await expect((serverBuilder as any).insertAdditionalDependencies()).to.be.rejectedWith(
-        /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/);
+        /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/,
+      );
     });
   });
 });
-

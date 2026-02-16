@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { errors } from 'appium/driver';
-import { util } from 'appium/support';
-import type { EspressoDriver } from '../driver';
+import {errors} from 'appium/driver';
+import {util} from 'appium/support';
+import type {EspressoDriver} from '../driver';
 
 /**
  * Flash the element with given id.
@@ -12,19 +12,16 @@ import type { EspressoDriver } from '../driver';
  * @param repeatCount - Optional number of times to repeat the flash
  * @returns Promise that resolves when the flash command is executed
  */
-export async function mobileFlashElement (
+export async function mobileFlashElement(
   this: EspressoDriver,
   elementId: string,
   durationMillis?: number,
-  repeatCount?: number
+  repeatCount?: number,
 ): Promise<any> {
-  return await this.espresso.jwproxy.command(
-    `/appium/execute_mobile/${elementId}/flash`,
-    'POST', {
-      durationMillis,
-      repeatCount
-    }
-  );
+  return await this.espresso.jwproxy.command(`/appium/execute_mobile/${elementId}/flash`, 'POST', {
+    durationMillis,
+    repeatCount,
+  });
 }
 
 /**
@@ -33,11 +30,14 @@ export async function mobileFlashElement (
  * @param elementId - The ID of the element for which to dismiss autofill
  * @returns Promise that resolves when the autofill is dismissed
  */
-export async function mobileDismissAutofill (this: EspressoDriver, elementId: string): Promise<void> {
+export async function mobileDismissAutofill(
+  this: EspressoDriver,
+  elementId: string,
+): Promise<void> {
   await this.espresso.jwproxy.command(
     `/session/:sessionId/appium/execute_mobile/${elementId}/dismiss_autofill`,
     'POST',
-    {}
+    {},
   );
 }
 
@@ -52,29 +52,24 @@ export async function mobileDismissAutofill (this: EspressoDriver, elementId: st
  * @param precisionDescriber - Optional precision describer for the swipe action
  * @returns Promise that resolves when the swipe is completed
  */
-export async function mobileSwipe (
+export async function mobileSwipe(
   this: EspressoDriver,
   elementId: string,
   direction?: string,
   swiper?: string,
   startCoordinates?: string,
   endCoordinates?: string,
-  precisionDescriber?: string
+  precisionDescriber?: string,
 ): Promise<any> {
-  return await this.espresso.jwproxy.command(
-    `/appium/execute_mobile/${elementId}/swipe`,
-    'POST',
-    {
-      direction,
-      element: elementId,
-      swiper,
-      startCoordinates,
-      endCoordinates,
-      precisionDescriber,
-    }
-  );
+  return await this.espresso.jwproxy.command(`/appium/execute_mobile/${elementId}/swipe`, 'POST', {
+    direction,
+    element: elementId,
+    swiper,
+    startCoordinates,
+    endCoordinates,
+    precisionDescriber,
+  });
 }
-
 
 /**
  * Opens a drawer element (e.g., Navigation Drawer) with the specified gravity.
@@ -83,11 +78,15 @@ export async function mobileSwipe (
  * @param gravity - Optional gravity value for drawer positioning (e.g., Gravity.START, Gravity.END)
  * @returns Promise that resolves when the drawer is opened
  */
-export async function mobileOpenDrawer (this: EspressoDriver, elementId: string, gravity?: number): Promise<any> {
+export async function mobileOpenDrawer(
+  this: EspressoDriver,
+  elementId: string,
+  gravity?: number,
+): Promise<any> {
   return await this.espresso.jwproxy.command(
     `/appium/execute_mobile/${elementId}/open_drawer`,
     'POST',
-    {gravity}
+    {gravity},
   );
 }
 
@@ -98,11 +97,15 @@ export async function mobileOpenDrawer (this: EspressoDriver, elementId: string,
  * @param gravity - Optional gravity value for drawer positioning (e.g., Gravity.START, Gravity.END)
  * @returns Promise that resolves when the drawer is closed
  */
-export async function mobileCloseDrawer (this: EspressoDriver, elementId: string, gravity?: number): Promise<any> {
+export async function mobileCloseDrawer(
+  this: EspressoDriver,
+  elementId: string,
+  gravity?: number,
+): Promise<any> {
   return await this.espresso.jwproxy.command(
     `/appium/execute_mobile/${elementId}/close_drawer`,
     'POST',
-    {gravity}
+    {gravity},
   );
 }
 
@@ -115,20 +118,21 @@ export async function mobileCloseDrawer (this: EspressoDriver, elementId: string
  * @param dayOfMonth - The day of the month to set (1-31)
  * @returns Promise that resolves when the date is set
  */
-export async function mobileSetDate (
+export async function mobileSetDate(
   this: EspressoDriver,
   elementId: string,
   year: number,
   monthOfYear: number,
-  dayOfMonth: number
+  dayOfMonth: number,
 ): Promise<any> {
   return await this.espresso.jwproxy.command(
     `/appium/execute_mobile/${elementId}/set_date`,
-    'POST', {
+    'POST',
+    {
       year,
       monthOfYear,
       dayOfMonth,
-    }
+    },
   );
 }
 
@@ -140,18 +144,19 @@ export async function mobileSetDate (
  * @param minutes - The minute to set (0-59)
  * @returns Promise that resolves when the time is set
  */
-export async function mobileSetTime (
+export async function mobileSetTime(
   this: EspressoDriver,
   elementId: string,
   hours: number,
-  minutes: number
+  minutes: number,
 ): Promise<any> {
   return await this.espresso.jwproxy.command(
     `/appium/execute_mobile/${elementId}/set_time`,
-    'POST', {
+    'POST',
+    {
       hours,
       minutes,
-    }
+    },
   );
 }
 
@@ -163,17 +168,21 @@ export async function mobileSetTime (
  * @returns Promise that resolves when navigation is completed
  * @throws {errors.InvalidArgumentError} If menuItemId is not a non-negative number
  */
-export async function mobileNavigateTo (this: EspressoDriver, elementId: string, menuItemId: number | string): Promise<any> {
+export async function mobileNavigateTo(
+  this: EspressoDriver,
+  elementId: string,
+  menuItemId: number | string,
+): Promise<any> {
   const menuItemIdAsNumber = parseInt(`${menuItemId}`, 10);
   if (_.isNaN(menuItemIdAsNumber) || menuItemIdAsNumber < 0) {
     throw new errors.InvalidArgumentError(
-      `'menuItemId' must be a non-negative number. Found ${menuItemId}`
+      `'menuItemId' must be a non-negative number. Found ${menuItemId}`,
     );
   }
   return await this.espresso.jwproxy.command(
     `/appium/execute_mobile/${elementId}/navigate_to`,
     'POST',
-    {menuItemId}
+    {menuItemId},
   );
 }
 
@@ -189,20 +198,25 @@ export async function mobileNavigateTo (this: EspressoDriver, elementId: string,
  * @param buttonState - Optional button state for the click action
  * @returns Promise that resolves when the click action is performed
  */
-export async function mobileClickAction (
+export async function mobileClickAction(
   this: EspressoDriver,
   elementId: string,
   tapper?: string,
   coordinatesProvider?: string,
   precisionDescriber?: string,
   inputDevice?: number,
-  buttonState?: number
+  buttonState?: number,
 ): Promise<any> {
   return await this.espresso.jwproxy.command(
     `/appium/execute_mobile/${elementId}/click_action`,
-    'POST', {
-      tapper, coordinatesProvider, precisionDescriber, inputDevice, buttonState
-    }
+    'POST',
+    {
+      tapper,
+      coordinatesProvider,
+      precisionDescriber,
+      inputDevice,
+      buttonState,
+    },
   );
 }
 
@@ -216,7 +230,7 @@ export async function mobileClickAction (
  * @returns Promise that resolves when scrolling is completed
  * @throws {errors.InvalidArgumentError} If scrollTo is not one of the valid values or scrollToPage is negative
  */
-export async function mobileScrollToPage (
+export async function mobileScrollToPage(
   this: EspressoDriver,
   elementId: string,
   scrollTo?: string,
@@ -226,12 +240,12 @@ export async function mobileScrollToPage (
   const scrollToTypes = ['first', 'last', 'left', 'right'];
   if (scrollTo && !_.includes(scrollToTypes, scrollTo)) {
     throw new errors.InvalidArgumentError(
-      `"scrollTo" must be one of "${scrollToTypes.join(', ')}" found '${scrollTo}'`
+      `"scrollTo" must be one of "${scrollToTypes.join(', ')}" found '${scrollTo}'`,
     );
   }
   if ((scrollToPage ?? 0) < 0) {
     throw new errors.InvalidArgumentError(
-      `"scrollToPage" must be a non-negative integer. Found '${scrollToPage}'`
+      `"scrollToPage" must be a non-negative integer. Found '${scrollToPage}'`,
     );
   }
   if (util.hasValue(scrollTo) && util.hasValue(scrollToPage)) {
@@ -240,11 +254,12 @@ export async function mobileScrollToPage (
 
   return await this.espresso.jwproxy.command(
     `/appium/execute_mobile/${elementId}/scroll_to_page`,
-    'POST', {
+    'POST',
+    {
       scrollTo,
       scrollToPage,
       smoothScroll,
-    }
+    },
   );
 }
 
@@ -253,6 +268,9 @@ export async function mobileScrollToPage (
  * @param action - The editor action to perform (can be a string or numeric action code)
  * @returns Promise that resolves when the editor action is performed
  */
-export async function mobilePerformEditorAction (this: EspressoDriver, action: string | number): Promise<void> {
+export async function mobilePerformEditorAction(
+  this: EspressoDriver,
+  action: string | number,
+): Promise<void> {
   await this.espresso.jwproxy.command('/appium/device/perform_editor_action', 'POST', {action});
 }

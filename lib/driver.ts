@@ -7,15 +7,15 @@ import type {
   StringRecord,
   SingularSessionData,
   RouteMatcher,
-  SessionCapabilities
+  SessionCapabilities,
 } from '@appium/types';
-import type { EspressoConstraints } from './constraints';
+import type {EspressoConstraints} from './constraints';
 import _ from 'lodash';
 import path from 'node:path';
 import B from 'bluebird';
-import { errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver';
-import { EspressoRunner, TEST_APK_PKG } from './espresso-runner';
-import { fs, tempDir, zip } from 'appium/support';
+import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver';
+import {EspressoRunner, TEST_APK_PKG} from './espresso-runner';
+import {fs, tempDir, zip} from 'appium/support';
 import * as appManagementCmds from './commands/app-management';
 import * as contextCmds from './commands/context';
 import * as elementCmds from './commands/element';
@@ -25,16 +25,16 @@ import * as screenshotCmds from './commands/screenshot';
 import * as idlingResourcesCmds from './commands/idling-resources';
 import * as actionsCmds from './commands/actions';
 import * as clipboardCmds from './commands/clipboard';
-import { DEFAULT_ADB_PORT } from 'appium-adb';
-import { AndroidDriver, utils } from 'appium-android-driver';
-import { SETTINGS_HELPER_ID } from 'io.appium.settings';
-import { ESPRESSO_CONSTRAINTS } from './constraints';
-import { findAPortNotInUse } from 'portscanner';
-import { retryInterval } from 'asyncbox';
-import { qualifyActivityName, getPackageInfo } from './utils';
-import { newMethodMap } from './method-map';
-import type { EspressoDriverCaps, EspressoDriverOpts, W3CEspressoDriverCaps } from './types';
-import { executeMethodMap } from './execute-method-map';
+import {DEFAULT_ADB_PORT} from 'appium-adb';
+import {AndroidDriver, utils} from 'appium-android-driver';
+import {SETTINGS_HELPER_ID} from 'io.appium.settings';
+import {ESPRESSO_CONSTRAINTS} from './constraints';
+import {findAPortNotInUse} from 'portscanner';
+import {retryInterval} from 'asyncbox';
+import {qualifyActivityName, getPackageInfo} from './utils';
+import {newMethodMap} from './method-map';
+import type {EspressoDriverCaps, EspressoDriverOpts, W3CEspressoDriverCaps} from './types';
+import {executeMethodMap} from './execute-method-map';
 
 // The range of ports we can use on the system for communicating to the
 // Espresso HTTP server on the device
@@ -142,16 +142,14 @@ const CHROME_NO_PROXY: RouteMatcher[] = [
   ['POST', new RegExp('^/session/[^/]+/se/log')],
 ];
 
-
 const APK_EXT = '.apk';
 const AAB_EXT = '.aab';
 const SUPPORTED_EXTENSIONS = [APK_EXT, AAB_EXT];
 
-export class EspressoDriver extends AndroidDriver implements ExternalDriver<
-  EspressoConstraints,
-  string,
-  StringRecord
-> {
+export class EspressoDriver
+  extends AndroidDriver
+  implements ExternalDriver<EspressoConstraints, string, StringRecord>
+{
   _originalIme: string | null;
 
   espresso: EspressoRunner;
@@ -167,17 +165,13 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
 
   override desiredCapConstraints: EspressoConstraints;
 
-  constructor (opts: InitialOpts = {} as InitialOpts, shouldValidateCaps = true) {
+  constructor(opts: InitialOpts = {} as InitialOpts, shouldValidateCaps = true) {
     // `shell` overwrites adb.shell, so remove
     // @ts-expect-error FIXME: what is this?
     delete opts.shell;
 
     super(opts, shouldValidateCaps);
-    this.locatorStrategies = [
-      'id',
-      'class name',
-      'accessibility id',
-    ];
+    this.locatorStrategies = ['id', 'class name', 'accessibility id'];
     this.desiredCapConstraints = ESPRESSO_CONSTRAINTS;
     this.jwpProxyAvoid = NO_PROXY;
     this._originalIme = null;
@@ -198,11 +192,11 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     return (await super.getAppiumSessionCapabilities()) as SessionCapabilities<EspressoConstraints>;
   }
 
-  async createSession (
+  async createSession(
     w3cCaps1: W3CEspressoDriverCaps,
     w3cCaps2?: W3CEspressoDriverCaps,
     w3cCaps3?: W3CEspressoDriverCaps,
-    driverData?: DriverData[]
+    driverData?: DriverData[],
   ): Promise<any> {
     try {
       const [sessionId, caps] = (await BaseDriver.prototype.createSession.call(
@@ -210,7 +204,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
         w3cCaps1,
         w3cCaps2,
         w3cCaps3,
-        driverData
+        driverData,
       )) as DefaultCreateSessionResult<EspressoConstraints>;
 
       const serverDetails = {
@@ -222,7 +216,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
         networkConnectionEnabled: true,
         locationContextEnabled: false,
         warnings: {},
-        desired: Object.assign({}, this.caps)
+        desired: Object.assign({}, this.caps),
       };
 
       this.caps = Object.assign(serverDetails, this.caps);
@@ -233,25 +227,28 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
         fullReset: false,
         autoLaunch: true,
         adbPort: DEFAULT_ADB_PORT,
-        androidInstallTimeout: 90000
+        androidInstallTimeout: 90000,
       };
       _.defaults(this.opts, defaultOpts);
 
       if (this.isChromeSession) {
         if (this.opts.app) {
           this.log.warn(`'browserName' capability will be ignored`);
-          this.log.warn(`Chrome browser cannot be run in Espresso sessions because Espresso automation doesn't ` +
-              `have permission to access Chrome`);
+          this.log.warn(
+            `Chrome browser cannot be run in Espresso sessions because Espresso automation doesn't ` +
+              `have permission to access Chrome`,
+          );
         } else {
           throw this.log.errorWithException(
             `Chrome browser sessions cannot be run in Espresso because Espresso ` +
-            `automation doesn't have permission to access Chrome`
+              `automation doesn't have permission to access Chrome`,
           );
         }
       }
 
-      this.opts.systemPort = this.opts.systemPort
-        || await findAPortNotInUse(SYSTEM_PORT_RANGE[0], SYSTEM_PORT_RANGE[1]);
+      this.opts.systemPort =
+        this.opts.systemPort ||
+        (await findAPortNotInUse(SYSTEM_PORT_RANGE[0], SYSTEM_PORT_RANGE[1]));
       this.opts.adbPort = this.opts.adbPort || DEFAULT_ADB_PORT;
       // get device udid for this session
       const {udid, emPort} = await (this as unknown as AndroidDriver).getDeviceInfoFromCaps();
@@ -266,16 +263,18 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
         // find and copy, or download and unzip an app url or path
         this.opts.app = await this.helpers.configureApp(this.opts.app, {
           onPostProcess: this.onPostConfigureApp.bind(this),
-          supportedExtensions: SUPPORTED_EXTENSIONS
+          supportedExtensions: SUPPORTED_EXTENSIONS,
         });
       } else if (this.appOnDevice) {
         // the app isn't an actual app file but rather something we want to
         // assume is on the device and just launch via the appPackage
-        this.log.info(`App file was not listed, instead we're going to run ` +
-            `${this.opts.appPackage} directly on the device`);
-        if (!await this.adb.isAppInstalled(this.opts.appPackage!)) {
+        this.log.info(
+          `App file was not listed, instead we're going to run ` +
+            `${this.opts.appPackage} directly on the device`,
+        );
+        if (!(await this.adb.isAppInstalled(this.opts.appPackage!))) {
           throw this.log.errorWithException(
-            `Could not find the package '${this.opts.appPackage}' installed on the device`
+            `Could not find the package '${this.opts.appPackage}' installed on the device`,
           );
         }
       }
@@ -284,7 +283,8 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
       return [sessionId, caps];
     } catch (e) {
       await this.deleteSession();
-      e.message += `${_.endsWith(e.message, '.') ? '' : '.'} Check ` +
+      e.message +=
+        `${_.endsWith(e.message, '.') ? '' : '.'} Check ` +
         'https://github.com/appium/appium-espresso-driver#troubleshooting ' +
         'regarding advanced session startup troubleshooting.';
       if (isErrorType(e, errors.SessionNotCreatedError)) {
@@ -304,23 +304,25 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
    * @returns {Promise<string>} Returns the path to an unzipped app file path.
    * @throws Raise an exception if the zip did not have any SUPPORTED_EXTENSIONS packages.
    */
-  async unzipApp (appPath: string): Promise<string> {
+  async unzipApp(appPath: string): Promise<string> {
     const useSystemUnzipEnv = process.env.APPIUM_PREFER_SYSTEM_UNZIP;
-    const useSystemUnzip = _.isEmpty(useSystemUnzipEnv)
-      || !['0', 'false'].includes(_.toLower(useSystemUnzipEnv));
+    const useSystemUnzip =
+      _.isEmpty(useSystemUnzipEnv) || !['0', 'false'].includes(_.toLower(useSystemUnzipEnv));
     const tmpRoot = await tempDir.openDir();
     await zip.extractAllTo(appPath, tmpRoot, {useSystemUnzip});
 
     const globPattern = `**/*.+(${SUPPORTED_EXTENSIONS.map((ext) => ext.replace(/^\./, '')).join('|')})`;
-    const sortedBundleItems = (await fs.glob(globPattern, {
-      cwd: tmpRoot,
-    })).sort((a, b) => a.split(path.sep).length - b.split(path.sep).length);
+    const sortedBundleItems = (
+      await fs.glob(globPattern, {
+        cwd: tmpRoot,
+      })
+    ).sort((a, b) => a.split(path.sep).length - b.split(path.sep).length);
     if (sortedBundleItems.length === 0) {
       // no expected packages in the zip
       throw this.log.errorWithException(
         `${this.opts.app} did not have any of '${SUPPORTED_EXTENSIONS.join(', ')}' ` +
-        `extension packages. Please make sure the provided .zip archive contains at ` +
-        `least one valid application package.`
+          `extension packages. Please make sure the provided .zip archive contains at ` +
+          `least one valid application package.`,
       );
     }
     const unzippedAppPath = path.join(tmpRoot, _.first(sortedBundleItems)!);
@@ -328,13 +330,15 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     return unzippedAppPath;
   }
 
-  async onPostConfigureApp ({cachedAppInfo, isUrl, appPath}) {
+  async onPostConfigureApp({cachedAppInfo, isUrl, appPath}) {
     const presignApp = async (appLocation) => {
       if (this.opts.noSign) {
-        this.log.info('Skipping application signing because noSign capability is set to true. ' +
-          'Having the application under test with improper signature/non-signed will cause ' +
-          'Espresso automation startup failure.');
-      } else if (!await this.adb.checkApkCert(appLocation, this.opts.appPackage!)) {
+        this.log.info(
+          'Skipping application signing because noSign capability is set to true. ' +
+            'Having the application under test with improper signature/non-signed will cause ' +
+            'Espresso automation startup failure.',
+        );
+      } else if (!(await this.adb.checkApkCert(appLocation, this.opts.appPackage!))) {
         await this.adb.sign(appLocation);
       }
     };
@@ -348,7 +352,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     let isResultAppPathAlreadyCached = false;
     if (_.isPlainObject(cachedAppInfo)) {
       const packageHash = await fs.hash(appPath);
-      if (packageHash === cachedAppInfo.packageHash && await fs.exists(cachedAppInfo.fullPath)) {
+      if (packageHash === cachedAppInfo.packageHash && (await fs.exists(cachedAppInfo.fullPath))) {
         this.log.info(`Using '${cachedAppInfo.fullPath}' which is cached from '${appPath}'`);
         isResultAppPathAlreadyCached = true;
         pathInCache = cachedAppInfo.fullPath;
@@ -382,7 +386,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
         }
         if (hasAabExt(unzippedAppPath)) {
           // Cleanup the local unzipped .aab file
-          await fs.rimraf(/** @type {string} */ (unzippedAppPath));
+          await fs.rimraf(/** @type {string} */ unzippedAppPath);
         }
         await presignApp(pathInCache);
       } else if (isApk) {
@@ -394,7 +398,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     return shouldResultAppPathBeCached ? {appPath: pathInCache} : false;
   }
 
-  get driverData () {
+  get driverData() {
     // TODO fill out resource info here
     return {};
   }
@@ -405,7 +409,8 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     this.log.info(`EspressoDriver version: ${manifestPayload.version}`);
 
     // Read https://github.com/appium/appium-android-driver/pull/461 what happens if there is no setHiddenApiPolicy for Android P+
-    if (await this.adb.getApiLevel() >= 28) { // Android P
+    if ((await this.adb.getApiLevel()) >= 28) {
+      // Android P
       this.log.warn('Relaxing hidden api policy');
       await this.adb.setHiddenApiPolicy('1', !!this.opts.ignoreHiddenApiPolicyError);
     }
@@ -455,30 +460,37 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
       this.caps.appPackage = appInfo.appPackage;
     }
     if (!this.caps.appWaitPackage) {
-      this.caps.appWaitPackage = appInfo.appWaitPackage || appInfo.appPackage || this.caps.appPackage;
+      this.caps.appWaitPackage =
+        appInfo.appWaitPackage || appInfo.appPackage || this.caps.appPackage;
     }
     if (this.caps.appActivity) {
-      this.caps.appActivity = qualifyActivityName(
-        this.caps.appActivity, this.caps.appPackage!
-      );
+      this.caps.appActivity = qualifyActivityName(this.caps.appActivity, this.caps.appPackage!);
     } else {
       this.caps.appActivity = qualifyActivityName(appInfo.appActivity!, this.caps.appPackage!);
     }
     if (this.caps.appWaitActivity) {
-      this.caps.appWaitActivity = qualifyActivityName(this.caps.appWaitActivity, this.caps.appWaitPackage!);
+      this.caps.appWaitActivity = qualifyActivityName(
+        this.caps.appWaitActivity,
+        this.caps.appWaitPackage!,
+      );
     } else {
       this.caps.appWaitActivity = qualifyActivityName(
-        appInfo.appWaitActivity || appInfo.appActivity || this.caps.appActivity, this.caps.appWaitPackage!
+        appInfo.appWaitActivity || appInfo.appActivity || this.caps.appActivity,
+        this.caps.appWaitPackage!,
       );
     }
 
     // launch espresso and wait till its online and we have a session
     await this.espresso.startSession(this.caps);
     if (this.caps.autoLaunch === false) {
-      this.log.info(`Not waiting for the application activity to start because 'autoLaunch' is disabled`);
+      this.log.info(
+        `Not waiting for the application activity to start because 'autoLaunch' is disabled`,
+      );
     } else {
       await this.adb.waitForActivity(
-        this.caps.appWaitPackage!, this.caps.appWaitActivity, this.opts.appWaitDuration
+        this.caps.appWaitPackage!,
+        this.caps.appWaitActivity,
+        this.opts.appWaitDuration,
       );
     }
     // if we want to immediately get into a webview, set our context
@@ -507,11 +519,15 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     const shouldEnableAnimation = isEnabled && !isAnimationOn;
 
     if (shouldDisableAnimation) {
-      this.log.debug('Disabling window animation as "disableWindowAnimation" capability is set to true/fallback to default value "true"');
+      this.log.debug(
+        'Disabling window animation as "disableWindowAnimation" capability is set to true/fallback to default value "true"',
+      );
       await this.settingsApp.setAnimationState(false);
       this.wasAnimationEnabled = true;
     } else if (shouldEnableAnimation) {
-      this.log.debug('Enabling window animation as "disableWindowAnimation" capability is set to false');
+      this.log.debug(
+        'Enabling window animation as "disableWindowAnimation" capability is set to false',
+      );
       await this.settingsApp.setAnimationState(true);
       this.wasAnimationEnabled = false;
     } else {
@@ -519,22 +535,16 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     }
   }
 
-  async initWebview (): Promise<void> {
+  async initWebview(): Promise<void> {
     const viewName = (this as unknown as AndroidDriver).defaultWebviewName();
     const timeout = this.opts.autoWebviewTimeout || 2000;
     this.log.info(`Setting webview to context '${viewName}' with timeout ${timeout}ms`);
     await retryInterval(timeout / 500, 500, this.setContext.bind(this), viewName);
   }
 
-  async addDeviceInfoToCaps (): Promise<void> {
-    const {
-      apiVersion,
-      platformVersion,
-      manufacturer,
-      model,
-      realDisplaySize,
-      displayDensity,
-    } = await this.mobileGetDeviceInfo();
+  async addDeviceInfoToCaps(): Promise<void> {
+    const {apiVersion, platformVersion, manufacturer, model, realDisplaySize, displayDensity} =
+      await this.mobileGetDeviceInfo();
     this.caps.deviceApiLevel = parseInt(apiVersion, 10);
     this.caps.platformVersion = platformVersion;
     this.caps.deviceScreenSize = realDisplaySize;
@@ -543,7 +553,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     this.caps.deviceManufacturer = manufacturer;
   }
 
-  initEspressoServer (): void {
+  initEspressoServer(): void {
     // now that we have package and activity, we can create an instance of
     // espresso with the appropriate data
     this.espresso = new EspressoRunner(this.log, {
@@ -570,19 +580,19 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     this.proxyCommand = this.espresso.proxyCommand.bind(this.espresso);
   }
 
-  async initAUT (): Promise<void> {
+  async initAUT(): Promise<void> {
     // Uninstall any uninstallOtherPackages which were specified in caps
     if (this.opts.uninstallOtherPackages) {
       await (this as unknown as AndroidDriver).uninstallOtherPackages(
         utils.parseArray(this.opts.uninstallOtherPackages),
-        [SETTINGS_HELPER_ID, TEST_APK_PKG]
+        [SETTINGS_HELPER_ID, TEST_APK_PKG],
       );
     }
 
     if (!this.opts.app) {
       if (this.opts.fullReset) {
         throw this.log.errorWithException(
-          'Full reset requires an app capability, use fastReset if app is not provided'
+          'Full reset requires an app capability, use fastReset if app is not provided',
         );
       }
       this.log.debug('No app capability. Assuming it is already on the device');
@@ -604,28 +614,34 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
       try {
         await this.adb.addToDeviceIdleWhitelist(SETTINGS_HELPER_ID, TEST_APK_PKG);
       } catch (e) {
-        this.log.warn(`Cannot add server packages to the Doze whitelist. Original error: ` +
-          (e.stderr || e.message));
+        this.log.warn(
+          `Cannot add server packages to the Doze whitelist. Original error: ` +
+            (e.stderr || e.message),
+        );
       }
     }
   }
 
-  override async deleteSession () {
+  override async deleteSession() {
     this.log.debug('Deleting espresso session');
 
-    const screenRecordingStopTasks = [async () => {
-      if (!_.isEmpty(this._screenRecordingProperties)) {
-        await (this as unknown as AndroidDriver).stopRecordingScreen();
-      }
-    }, async () => {
-      if (await (this as unknown as AndroidDriver).mobileIsMediaProjectionRecordingRunning()) {
-        await (this as unknown as AndroidDriver).mobileStopMediaProjectionRecording();
-      }
-    }, async () => {
-      if (!_.isEmpty(this._screenStreamingProps)) {
-        await (this as unknown as AndroidDriver).mobileStopScreenStreaming();
-      }
-    }];
+    const screenRecordingStopTasks = [
+      async () => {
+        if (!_.isEmpty(this._screenRecordingProperties)) {
+          await (this as unknown as AndroidDriver).stopRecordingScreen();
+        }
+      },
+      async () => {
+        if (await (this as unknown as AndroidDriver).mobileIsMediaProjectionRecordingRunning()) {
+          await (this as unknown as AndroidDriver).mobileStopMediaProjectionRecording();
+        }
+      },
+      async () => {
+        if (!_.isEmpty(this._screenStreamingProps)) {
+          await (this as unknown as AndroidDriver).mobileStopScreenStreaming();
+        }
+      },
+    ];
 
     if (this.espresso) {
       if (this.jwpProxyActive) {
@@ -637,13 +653,15 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     this.jwpProxyActive = false;
 
     if (this.adb) {
-      await B.all(screenRecordingStopTasks.map((task) => {
-        (async () => {
-          try {
-            await task();
-          } catch {}
-        })();
-      }));
+      await B.all(
+        screenRecordingStopTasks.map((task) => {
+          (async () => {
+            try {
+              await task();
+            } catch {}
+          })();
+        }),
+      );
       if (this.wasAnimationEnabled) {
         try {
           await this.settingsApp.setAnimationState(true);
@@ -665,7 +683,8 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
         this.log.debug(`FULL_RESET set to 'true', Uninstalling '${this.opts.appPackage}'`);
         await this.adb.uninstallApk(this.opts.appPackage!);
       }
-      if (await this.adb.getApiLevel() >= 28) { // Android P
+      if ((await this.adb.getApiLevel()) >= 28) {
+        // Android P
         this.log.info('Restoring hidden api policy to the device default configuration');
         await this.adb.setDefaultHiddenApiPolicy(!!this.opts.ignoreHiddenApiPolicyError);
       }
@@ -682,39 +701,39 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<
     }
   }
 
-  async onSettingsUpdate () {
+  async onSettingsUpdate() {
     // intentionally do nothing here, since commands.updateSettings proxies
     // settings to the espresso server already
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  proxyActive (sessionId) {
+  proxyActive(sessionId) {
     // we always have an active proxy to the espresso server
     return true;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  canProxy (sessionId) {
+  canProxy(sessionId) {
     // we can always proxy to the espresso server
     return true;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getProxyAvoidList (sessionId): RouteMatcher[] {
+  getProxyAvoidList(sessionId): RouteMatcher[] {
     // we are maintaining two sets of NO_PROXY lists, one for chromedriver(CHROME_NO_PROXY)
     // and one for Espresso(NO_PROXY), based on current context will return related NO_PROXY list
     this.jwpProxyAvoid = _.isNil(this.chromedriver) ? NO_PROXY : CHROME_NO_PROXY;
     if (this.opts.nativeWebScreenshot) {
-      this.jwpProxyAvoid = ([
+      this.jwpProxyAvoid = [
         ...this.jwpProxyAvoid,
-        ['GET', new RegExp('^/session/[^/]+/screenshot')]
-      ]);
+        ['GET', new RegExp('^/session/[^/]+/screenshot')],
+      ];
     }
 
     return this.jwpProxyAvoid;
   }
 
-  get appOnDevice (): boolean {
+  get appOnDevice(): boolean {
     return !this.opts.app && this.helpers.isPackageOrBundle(this.opts.appPackage!);
   }
 

@@ -3,10 +3,8 @@ import B from 'bluebird';
 import _ from 'lodash';
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {
-  initSession, deleteSession, HOST, PORT,
-  MOCHA_TIMEOUT } from '../helpers/session';
-import { APIDEMO_CAPS } from '../desired';
+import {initSession, deleteSession, HOST, PORT, MOCHA_TIMEOUT} from '../helpers/session';
+import {APIDEMO_CAPS} from '../desired';
 
 chai.use(chaiAsPromised);
 
@@ -24,43 +22,45 @@ describe('touch actions -', function () {
     await deleteSession();
   });
 
-  async function startListActivity () {
+  async function startListActivity() {
     await driver.execute('mobile:startActivity', {
       appPackage: 'io.appium.android.apis',
       appActivity: '.view.List5',
     });
   }
 
-  async function startFingerPaintActivity () {
+  async function startFingerPaintActivity() {
     await driver.execute('mobile:startActivity', {
       appPackage: 'io.appium.android.apis',
       appActivity: '.graphics.FingerPaint',
     });
   }
 
-  async function startSplitTouchActivity () {
+  async function startSplitTouchActivity() {
     await driver.execute('mobile:startActivity', {
       appPackage: 'io.appium.android.apis',
       appActivity: '.view.SplitTouchView',
     });
   }
 
-  async function startDragAndDropActivity () {
+  async function startDragAndDropActivity() {
     await driver.execute('mobile:startActivity', {
       appPackage: 'io.appium.android.apis',
       appActivity: '.view.DragAndDropDemo',
     });
   }
 
-  async function startTextSwitcherActivity () {
+  async function startTextSwitcherActivity() {
     await driver.execute('mobile:startActivity', {
       appPackage: 'io.appium.android.apis',
       appActivity: '.view.TextSwitcher1',
     });
   }
 
-  async function getScrollData () {
-    const els = await driver.$$(await driver.findElements('class name', 'android.widget.TextView')) as unknown as any[];
+  async function getScrollData() {
+    const els = (await driver.$$(
+      await driver.findElements('class name', 'android.widget.TextView'),
+    )) as unknown as any[];
 
     // the last element is the title of the view, and often the
     // second-to-last is actually off the screen
@@ -83,7 +83,7 @@ describe('touch actions -', function () {
         type: 'pointer',
         id: `id_${idCounter++}`,
         parameters: {
-          pointerType
+          pointerType,
         },
         actions,
       });
@@ -94,7 +94,6 @@ describe('touch actions -', function () {
       url: `http://${HOST}:${PORT}/session/${sessionId}/actions`,
       data: {actions: actionsRoot},
     });
-
   };
 
   const performTouchAction = async function (...actionsArrays: any[]) {
@@ -139,7 +138,7 @@ describe('touch actions -', function () {
         ]);
         return touchActions;
       }, []);
-      await performTouchAction(...touchActions as any);
+      await performTouchAction(...(touchActions as any));
     });
   });
 
@@ -155,7 +154,7 @@ describe('touch actions -', function () {
           {type: 'pointerMove', duration: 0, x: startX + 5, y: startY + 5},
           {type: 'pointerDown', button: 0},
           {type: 'pointerMove', duration: 200, x: endX + 5, y: endY + 5},
-          {type: 'pointerUp', button: 0}
+          {type: 'pointerUp', button: 0},
         ];
         await performTouchAction(actions as any);
       });
@@ -167,7 +166,7 @@ describe('touch actions -', function () {
           {type: 'pointerMove', duration: 0, x: startX + 5, y: startY + 5},
           {type: 'pointerDown', button: 0},
           {type: 'pointerMove', duration: 100, x: endX + 5, y: endY + 5},
-          {type: 'pointerUp', button: 0}
+          {type: 'pointerUp', button: 0},
         ];
         await performTouchAction(actions as any);
       });
@@ -179,7 +178,7 @@ describe('touch actions -', function () {
           {type: 'pointerMove', duration: 0, x: startX + 5, y: startY + 5},
           {type: 'pointerDown', button: 0},
           {type: 'pointerMove', duration: 100, x: endX + 5, y: endY + 5},
-          {type: 'pointerUp', button: 0}
+          {type: 'pointerUp', button: 0},
         ];
         await performAction('mouse', actions);
       });
@@ -188,7 +187,9 @@ describe('touch actions -', function () {
     describe('multiple', function () {
       beforeEach(startSplitTouchActivity);
       it('should do multiple scrolls on multiple views', async function () {
-        const els = await driver.$$(await driver.findElements('class name', 'android.widget.ListView')) as unknown as any[];
+        const els = (await driver.$$(
+          await driver.findElements('class name', 'android.widget.ListView'),
+        )) as unknown as any[];
 
         const actions = await B.map(els, async function (el: any) {
           const {height} = await el.getSize();
@@ -198,20 +199,28 @@ describe('touch actions -', function () {
           const action = [
             {type: 'pointerMove', origin: {'element-6066-11e4-a52e-4f735466cecf': el.elementId}},
             {type: 'pointerDown', button: 0},
-            {type: 'pointerMove', origin: {'element-6066-11e4-a52e-4f735466cecf': el.elementId}, x: 10, y: -yMove, duration: 3000},
+            {
+              type: 'pointerMove',
+              origin: {'element-6066-11e4-a52e-4f735466cecf': el.elementId},
+              x: 10,
+              y: -yMove,
+              duration: 3000,
+            },
             {type: 'pointerUp', button: 0},
           ];
           return action;
         });
 
-        await performTouchAction(...actions as any);
+        await performTouchAction(...(actions as any));
       });
     });
 
     it('should swipe on drag and drop', async function () {
       await startDragAndDropActivity();
 
-      const el = await driver.$(await driver.findElement('id', 'io.appium.android.apis:id/drag_dot_1'));
+      const el = await driver.$(
+        await driver.findElement('id', 'io.appium.android.apis:id/drag_dot_1'),
+      );
       const {x, y} = await el.getLocation();
 
       const touchActions = [
@@ -250,7 +259,11 @@ describe('touch actions -', function () {
 
     it('should touch down and up on an element by id', async function () {
       const touchActions = [
-        {type: 'pointerMove', duration: 0, origin: {'element-6066-11e4-a52e-4f735466cecf': nextEl.elementId}},
+        {
+          type: 'pointerMove',
+          duration: 0,
+          origin: {'element-6066-11e4-a52e-4f735466cecf': nextEl.elementId},
+        },
         {type: 'pointerDown', button: 0},
         {type: 'pause', duration: 100},
         {type: 'pointerUp', button: 0},

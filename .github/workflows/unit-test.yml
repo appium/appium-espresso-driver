@@ -41,6 +41,8 @@ jobs:
       name: Install dev dependencies
     - run: npm run lint
       name: Run js linter
+    - run: npm run format:check
+      name: Run Prettier check
     - run: npm run test:node
       name: Run js unit tests
 

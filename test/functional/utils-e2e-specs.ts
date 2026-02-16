@@ -1,8 +1,8 @@
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import path from 'node:path';
-import { fs, mkdirp, tempDir } from 'appium/support';
-import { copyGradleProjectRecursively } from '../../lib/utils';
+import {fs, mkdirp, tempDir} from 'appium/support';
+import {copyGradleProjectRecursively} from '../../lib/utils';
 
 chai.use(chaiAsPromised);
 
@@ -10,15 +10,15 @@ describe('copyGradleProjectRecursively', function () {
   let baseSrcDir;
   let baseDestDir;
 
-  async function expectNotExist (file) {
+  async function expectNotExist(file) {
     await expect(fs.access(file, fs.constants.F_OK)).to.be.rejectedWith(/no such file/);
   }
 
-  async function expectCorrectFileContentIn (filepath) {
+  async function expectCorrectFileContentIn(filepath) {
     await expect(fs.readFile(filepath, 'utf8')).to.eventually.eql('foobar');
   }
 
-  async function createTestFile (filepath) {
+  async function createTestFile(filepath) {
     await fs.writeFile(filepath, 'foobar', 'utf8');
   }
 
@@ -36,7 +36,7 @@ describe('copyGradleProjectRecursively', function () {
     await fs.rimraf(baseDestDir);
   });
 
-  it('doesn\'t copy any build directory', async function () {
+  it("doesn't copy any build directory", async function () {
     await mkdirp(path.join(baseSrcDir, 'build'));
     await mkdirp(path.join(baseSrcDir, 'dir', 'build'));
 

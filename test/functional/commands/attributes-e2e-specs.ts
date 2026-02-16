@@ -1,7 +1,7 @@
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { APIDEMO_CAPS } from '../desired';
+import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
+import {APIDEMO_CAPS} from '../desired';
 
 chai.use(chaiAsPromised);
 
@@ -27,7 +27,9 @@ describe('element attributes', function () {
     });
     it('should not work if getting an attribute that does not exist', async function () {
       const el = await driver.$("//*[@text='Animation']");
-      await expect(el.getAttribute('some-fake-property')).to.be.rejectedWith(/Attribute name should be one of/);
+      await expect(el.getAttribute('some-fake-property')).to.be.rejectedWith(
+        /Attribute name should be one of/,
+      );
     });
   });
 });

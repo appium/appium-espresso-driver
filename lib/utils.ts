@@ -1,4 +1,4 @@
-import { fs, mkdirp } from 'appium/support';
+import {fs, mkdirp} from 'appium/support';
 import _ from 'lodash';
 import path from 'node:path';
 import _fs from 'node:fs';
@@ -6,7 +6,7 @@ import _fs from 'node:fs';
 // @ts-ignore - __filename is available at runtime in CommonJS
 declare const __filename: string;
 
-let PACKAGE_INFO: { manifestPath: string; manifestPayload: Record<string, any> } | null = null;
+let PACKAGE_INFO: {manifestPath: string; manifestPayload: Record<string, any>} | null = null;
 const MODULE_NAME = 'appium-espresso-driver';
 
 /**
@@ -16,7 +16,7 @@ const MODULE_NAME = 'appium-espresso-driver';
  * @param {string} packageName
  * @returns {string} The qualified activity name
  */
-export function qualifyActivityName (activityName: string, packageName: string): string {
+export function qualifyActivityName(activityName: string, packageName: string): string {
   // if either activity or package name is not set
   // or any of these contain wildcards then there is
   // no point in qualifying the activity name
@@ -37,7 +37,10 @@ export function qualifyActivityName (activityName: string, packageName: string):
  * @param {string} targetBaseDir directory to copy files to
  * @returns {Promise<void>}
  */
-export async function copyGradleProjectRecursively (sourceBaseDir: string, targetBaseDir: string): Promise<void> {
+export async function copyGradleProjectRecursively(
+  sourceBaseDir: string,
+  targetBaseDir: string,
+): Promise<void> {
   // @ts-ignore it is ok to have the async callback
   await fs.walkDir(sourceBaseDir, true, async (itemPath: string, isDirectory: boolean) => {
     const relativePath = path.relative(sourceBaseDir, itemPath);
@@ -57,7 +60,11 @@ export async function copyGradleProjectRecursively (sourceBaseDir: string, targe
   });
 }
 
-export function updateDependencyLines (originalContent: string, dependencyPlaceholder: string, dependencyLines: string[]): string {
+export function updateDependencyLines(
+  originalContent: string,
+  dependencyPlaceholder: string,
+  dependencyLines: string[],
+): string {
   const configurationLines = originalContent.split('\n');
   const searchRe = new RegExp(`^\\s*//\\s*\\b${_.escapeRegExp(dependencyPlaceholder)}\\b`, 'm');
   const placeholderIndex = configurationLines.findIndex((line) => searchRe.test(line));
@@ -67,8 +74,11 @@ export function updateDependencyLines (originalContent: string, dependencyPlaceh
 
   const placeholderLine = configurationLines[placeholderIndex];
   const indentLen = placeholderLine.length - _.trimStart(placeholderLine).length;
-  configurationLines.splice(placeholderIndex + 1, 0, ...(dependencyLines
-    .map((line) => `${' '.repeat(indentLen)}${line}`)));
+  configurationLines.splice(
+    placeholderIndex + 1,
+    0,
+    ...dependencyLines.map((line) => `${' '.repeat(indentLen)}${line}`),
+  );
   return configurationLines.join('\n');
 }
 
@@ -78,7 +88,10 @@ export function updateDependencyLines (originalContent: string, dependencyPlaceh
  * @returns {Promise<Record<string, any>>} The full path to module's package.json and its payload
  * @throws {Error} If package.json cannot be found
  */
-export async function getPackageInfo (): Promise<{ manifestPath: string; manifestPayload: Record<string, any> }> {
+export async function getPackageInfo(): Promise<{
+  manifestPath: string;
+  manifestPayload: Record<string, any>;
+}> {
   if (PACKAGE_INFO) {
     return PACKAGE_INFO;
   }
@@ -93,7 +106,7 @@ export async function getPackageInfo (): Promise<{ manifestPath: string; manifes
         if (manifestPayload.name === MODULE_NAME) {
           PACKAGE_INFO = {
             manifestPath,
-            manifestPayload
+            manifestPayload,
           };
           return PACKAGE_INFO;
         }
@@ -111,7 +124,7 @@ export async function getPackageInfo (): Promise<{ manifestPath: string; manifes
  * @returns {Record<string, any>} The full path to module's package.json and its payload
  * @throws {Error} If package.json cannot be found
  */
-export function getPackageInfoSync (): { manifestPath: string; manifestPayload: Record<string, any> } {
+export function getPackageInfoSync(): {manifestPath: string; manifestPayload: Record<string, any>} {
   if (PACKAGE_INFO) {
     return PACKAGE_INFO;
   }
@@ -126,7 +139,7 @@ export function getPackageInfoSync (): { manifestPath: string; manifestPayload: 
         if (manifestPayload.name === MODULE_NAME) {
           PACKAGE_INFO = {
             manifestPath,
-            manifestPayload
+            manifestPayload,
           };
           return PACKAGE_INFO;
         }

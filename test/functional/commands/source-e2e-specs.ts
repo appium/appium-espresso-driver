@@ -1,10 +1,10 @@
-import type { Browser } from 'webdriverio';
+import type {Browser} from 'webdriverio';
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { DOMParser } from '@xmldom/xmldom';
+import {DOMParser} from '@xmldom/xmldom';
 import xpath from 'xpath';
-import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { APIDEMO_CAPS } from '../desired';
+import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
+import {APIDEMO_CAPS} from '../desired';
 
 chai.use(chaiAsPromised);
 

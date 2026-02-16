@@ -1,12 +1,12 @@
-import type { EspressoDriver } from '../driver';
-import type { StringRecord } from '@appium/types';
+import type {EspressoDriver} from '../driver';
+import type {StringRecord} from '@appium/types';
 
 /**
  * Stop proxying to any Chromedriver and redirect to Espresso
  *
  * @returns void
  */
-export function suspendChromedriverProxy (this: EspressoDriver): void {
+export function suspendChromedriverProxy(this: EspressoDriver): void {
   this.chromedriver = undefined;
   this.proxyReqRes = this.espresso.proxyReqRes.bind(this.espresso);
   this.proxyCommand = this.espresso.proxyCommand.bind(this.espresso);
@@ -32,11 +32,11 @@ export function suspendChromedriverProxy (this: EspressoDriver): void {
  * @param methodChain - Array of method chain objects, each containing a name and atom with name and args
  * @returns Promise that resolves to the result of executing the web atoms
  */
-export async function mobileWebAtoms (
+export async function mobileWebAtoms(
   this: EspressoDriver,
   webviewEl?: string,
   forceJavascriptEnabled?: boolean,
-  methodChain?: StringRecord[]
+  methodChain?: StringRecord[],
 ): Promise<any> {
   return await this.espresso.jwproxy.command(`/appium/execute_mobile/web_atoms`, 'POST', {
     webviewEl,

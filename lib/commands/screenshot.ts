@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import B from 'bluebird';
-import type { EspressoDriver } from '../driver';
-import type { ScreenshotsInfo } from './types';
+import type {EspressoDriver} from '../driver';
+import type {ScreenshotsInfo} from './types';
 
 // Display 4619827259835644672 (HWC display 0): port=0 pnpId=GGL displayName="EMU_display_0"
 const DISPLAY_PATTERN = /^Display\s+(\d+)\s+\(.+display\s+(\d+)\).+displayName="([^"]*)/gm;
@@ -17,12 +17,12 @@ const DISPLAY_PATTERN = /^Display\s+(\d+)\s+\(.+display\s+(\d+)\).+displayName="
  * and values contain display information and base64-encoded PNG screenshot data
  * @throws {Error} If display information cannot be determined or if a provided displayId is not found
  */
-export async function mobileScreenshots (
+export async function mobileScreenshots(
   this: EspressoDriver,
-  displayId?: number | string
+  displayId?: number | string,
 ): Promise<ScreenshotsInfo> {
   const displaysInfo = await this.adb.shell(['dumpsys', 'SurfaceFlinger', '--display-id']);
-  const infos: Record<string, { id: string; isDefault: boolean; name: string }> = {};
+  const infos: Record<string, {id: string; isDefault: boolean; name: string}> = {};
   let match;
   while ((match = DISPLAY_PATTERN.exec(displaysInfo))) {
     infos[match[1]] = {
@@ -37,22 +37,22 @@ export async function mobileScreenshots (
   }
   this.log.info(`Parsed Android display infos: ${JSON.stringify(infos)}`);
 
-  const toB64Screenshot = async (dispId: string): Promise<string> => (await this.adb.takeScreenshot(dispId))
-    .toString('base64');
+  const toB64Screenshot = async (dispId: string): Promise<string> =>
+    (await this.adb.takeScreenshot(dispId)).toString('base64');
 
   const displayIdStr = isNaN(Number(displayId)) ? null : `${displayId}`;
   if (displayIdStr) {
     if (!infos[displayIdStr]) {
       throw new Error(
         `The provided display identifier '${displayId}' is not known. ` +
-        `Only the following displays have been detected: ${JSON.stringify(infos)}`
+          `Only the following displays have been detected: ${JSON.stringify(infos)}`,
       );
     }
     return {
       [displayIdStr]: {
         ...infos[displayIdStr],
         payload: await toB64Screenshot(displayIdStr),
-      }
+      },
     };
   }
 
@@ -80,7 +80,5 @@ export async function mobileScreenshots (
  * @returns {Promise<string>}
  */
 export async function getScreenshot(this: EspressoDriver): Promise<string> {
-  return String(
-    await this.espresso.jwproxy.command('/screenshot', 'GET')
-  );
+  return String(await this.espresso.jwproxy.command('/screenshot', 'GET'));
 }

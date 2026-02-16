@@ -1,7 +1,7 @@
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { initSession, deleteSession, MOCHA_TIMEOUT } from '../helpers/session';
-import { APIDEMO_CAPS } from '../desired';
+import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
+import {APIDEMO_CAPS} from '../desired';
 
 chai.use(chaiAsPromised);
 
@@ -11,7 +11,6 @@ describe('find elements', function () {
   let driver: any;
 
   describe('element by xpath', function () {
-
     describe('element by xpath - Dependent Test - Set 1', function () {
       before(async function () {
         driver = await initSession(APIDEMO_CAPS);
@@ -103,10 +102,8 @@ describe('find elements', function () {
         await driver.back();
       });
     });
-
   });
   describe('by data matcher', function () {
-
     before(function () {
       // Lower versions' emulators on CI were flaky.
       if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 25) {
@@ -115,7 +112,6 @@ describe('find elements', function () {
     });
 
     describe('Data Matcher - dependent tests - Set 1', function () {
-
       before(async function () {
         driver = await initSession(APIDEMO_CAPS);
       });
@@ -124,26 +120,47 @@ describe('find elements', function () {
         await deleteSession();
       });
       it('should fail to find elements with helpful error messages', async function () {
-        const err = await driver.findElement('-android datamatcher', JSON.stringify({
-          name: 'hasEntry', args: ['title', 'A Fake Item']
-        }));
+        const err = await driver.findElement(
+          '-android datamatcher',
+          JSON.stringify({
+            name: 'hasEntry',
+            args: ['title', 'A Fake Item'],
+          }),
+        );
         expect(err.error).to.eq('no such element');
       });
       it('should fail with invalid selector with helpful error messages', async function () {
-        await expect(driver.findElement('-android datamatcher', JSON.stringify({
-          name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item']
-        }))).to.be.rejectedWith(/Not a valid selector/);
+        await expect(
+          driver.findElement(
+            '-android datamatcher',
+            JSON.stringify({
+              name: 'notARealHamcrestMatcherStrategy',
+              args: ['title', 'A Fake Item'],
+            }),
+          ),
+        ).to.be.rejectedWith(/Not a valid selector/);
       });
       it('should allow "class" property with fully qualified className', async function () {
-        await expect(driver.findElement('-android datamatcher', JSON.stringify({
-          name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item'], class: 'org.hamcrest.Matchers',
-        }))).to.be.rejectedWith(/Not a valid selector/);
+        await expect(
+          driver.findElement(
+            '-android datamatcher',
+            JSON.stringify({
+              name: 'notARealHamcrestMatcherStrategy',
+              args: ['title', 'A Fake Item'],
+              class: 'org.hamcrest.Matchers',
+            }),
+          ),
+        ).to.be.rejectedWith(/Not a valid selector/);
       });
       it('should find an element using a data matcher', async function () {
         const el = await driver.$(
-          await driver.findElement('-android datamatcher', JSON.stringify({
-            name: 'hasEntry', args: ['title', 'Animation']
-          }))
+          await driver.findElement(
+            '-android datamatcher',
+            JSON.stringify({
+              name: 'hasEntry',
+              args: ['title', 'Animation'],
+            }),
+          ),
         );
         await el.click();
         await driver.$('~Bouncing Balls');
@@ -153,9 +170,13 @@ describe('find elements', function () {
         const viewsEl = await driver.$('~Views');
         await viewsEl.click();
         const el = await driver.$(
-          await driver.findElement('-android datamatcher', JSON.stringify({
-            name: 'hasEntry', args: ['title', 'WebView3']
-          }))
+          await driver.findElement(
+            '-android datamatcher',
+            JSON.stringify({
+              name: 'hasEntry',
+              args: ['title', 'WebView3'],
+            }),
+          ),
         );
         await el.click();
         await driver.back();
@@ -167,8 +188,8 @@ describe('find elements', function () {
       before(async function () {
         driver = await initSession(APIDEMO_CAPS);
         await driver.execute('mobile:startActivity', {
-          'appPackage': 'io.appium.android.apis',
-          'appActivity': '.view.SplitTouchView'
+          appPackage: 'io.appium.android.apis',
+          appActivity: '.view.SplitTouchView',
         });
       });
 
@@ -187,22 +208,34 @@ describe('find elements', function () {
         // })).should.eventually.be.rejectedWith(/AmbiguousViewMatcherException/);
 
         // Narrow them down by making the root an adapter view
-        const listOneEl = await driver.$(await driver.findElement('id', 'io.appium.android.apis:id/list1'));
-        await expect(listOneEl.findElement('-android datamatcher', JSON.stringify({
-          name: 'equalTo', args: 'Zamorano'
-        }))).to.eventually.exist;
+        const listOneEl = await driver.$(
+          await driver.findElement('id', 'io.appium.android.apis:id/list1'),
+        );
+        await expect(
+          listOneEl.findElement(
+            '-android datamatcher',
+            JSON.stringify({
+              name: 'equalTo',
+              args: 'Zamorano',
+            }),
+          ),
+        ).to.eventually.exist;
 
         const listTwoEl = await driver.$(await driver.findElement('id', 'list2'));
-        await expect(listTwoEl.findElement('-android datamatcher', JSON.stringify({
-          name: 'equalTo', args: 'Zamorano'
-        }))).to.eventually.exist;
+        await expect(
+          listTwoEl.findElement(
+            '-android datamatcher',
+            JSON.stringify({
+              name: 'equalTo',
+              args: 'Zamorano',
+            }),
+          ),
+        ).to.eventually.exist;
       });
     });
   });
   describe('by view matcher', function () {
-
     describe('View Matcher - dependent tests - Set 1', function () {
-
       before(async function () {
         driver = await initSession(APIDEMO_CAPS);
       });
@@ -212,32 +245,48 @@ describe('find elements', function () {
       });
 
       it('should fail to find elements with helpful error messages', async function () {
-        const err = await driver.findElement('-android viewmatcher', JSON.stringify({
-          name: 'hasEntry', args: ['title', 'A Fake Item']
-        }));
+        const err = await driver.findElement(
+          '-android viewmatcher',
+          JSON.stringify({
+            name: 'hasEntry',
+            args: ['title', 'A Fake Item'],
+          }),
+        );
         expect(err.error).to.eq('no such element');
       });
 
       it('should fail with invalid selector with helpful error messages', async function () {
-        await expect(driver.findElement('-android viewmatcher', JSON.stringify({
-          name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item']
-        }))).to.be.rejected;
+        await expect(
+          driver.findElement(
+            '-android viewmatcher',
+            JSON.stringify({
+              name: 'notARealHamcrestMatcherStrategy',
+              args: ['title', 'A Fake Item'],
+            }),
+          ),
+        ).to.be.rejected;
       });
 
       it('should allow "class" property with fully qualified className', async function () {
-        await expect(driver.findElement('-android viewmatcher', JSON.stringify({
-          name: 'notARealHamcrestMatcherStrategy', args: ['title', 'A Fake Item'], class: 'org.hamcrest.Matchers',
-        }))).to.be.rejected;
+        await expect(
+          driver.findElement(
+            '-android viewmatcher',
+            JSON.stringify({
+              name: 'notARealHamcrestMatcherStrategy',
+              args: ['title', 'A Fake Item'],
+              class: 'org.hamcrest.Matchers',
+            }),
+          ),
+        ).to.be.rejected;
       });
     });
 
     describe('View Matcher - dependent tests - Set 2', function () {
-
       before(async function () {
         driver = await initSession(APIDEMO_CAPS);
         await driver.execute('mobile:startActivity', {
           appPackage: 'io.appium.android.apis',
-          appActivity: '.content.ExternalStorage'
+          appActivity: '.content.ExternalStorage',
         });
       });
 
@@ -246,36 +295,43 @@ describe('find elements', function () {
       });
 
       it('should find an element using view matcher', async function () {
-        await expect(driver.findElement('-android viewmatcher', JSON.stringify({
-          name: 'withText',
-          args: 'Picture getExternalFilesDir',
-          class: 'androidx.test.espresso.matcher.ViewMatchers'
-        }))).to.eventually.exist;
+        await expect(
+          driver.findElement(
+            '-android viewmatcher',
+            JSON.stringify({
+              name: 'withText',
+              args: 'Picture getExternalFilesDir',
+              class: 'androidx.test.espresso.matcher.ViewMatchers',
+            }),
+          ),
+        ).to.eventually.exist;
       });
       it('should allow multiple view matchers to be passed as args', async function () {
-
-        await expect(driver.findElement('-android viewmatcher', JSON.stringify({
-          name: 'withText',
-          args: [
-            {
-              name: 'containsString',
-              args: ' getExternalStoragePublicDirectory',
-              class: 'org.hamcrest.Matchers'
-            }
-          ],
-          class: 'androidx.test.espresso.matcher.ViewMatchers'
-        }))).to.eventually.exist;
+        await expect(
+          driver.findElement(
+            '-android viewmatcher',
+            JSON.stringify({
+              name: 'withText',
+              args: [
+                {
+                  name: 'containsString',
+                  args: ' getExternalStoragePublicDirectory',
+                  class: 'org.hamcrest.Matchers',
+                },
+              ],
+              class: 'androidx.test.espresso.matcher.ViewMatchers',
+            }),
+          ),
+        ).to.eventually.exist;
       });
-
     });
 
     describe('View Matcher - Dependent Tests - Set 3', function () {
-
       before(async function () {
         driver = await initSession(APIDEMO_CAPS);
         await driver.execute('mobile:startActivity', {
-          'appPackage': 'io.appium.android.apis',
-          'appActivity': '.content.ClipboardSample'
+          appPackage: 'io.appium.android.apis',
+          appActivity: '.content.ClipboardSample',
         });
       });
 
@@ -294,14 +350,28 @@ describe('find elements', function () {
         // })).should.eventually.be.rejectedWith(/AmbiguousViewMatcherException/);
 
         const listTwoEl = await driver.$("//android.widget.LinearLayout[@index='2']");
-        await expect(listTwoEl.findElement('-android viewmatcher', JSON.stringify({
-          name: 'withText', args: 'Copy Text', class: 'androidx.test.espresso.matcher.ViewMatchers'
-        }))).to.eventually.exist;
+        await expect(
+          listTwoEl.findElement(
+            '-android viewmatcher',
+            JSON.stringify({
+              name: 'withText',
+              args: 'Copy Text',
+              class: 'androidx.test.espresso.matcher.ViewMatchers',
+            }),
+          ),
+        ).to.eventually.exist;
 
         const listOneEl = await driver.$("//android.widget.LinearLayout[@index='1']");
-        await expect(listOneEl.findElement('-android viewmatcher', JSON.stringify({
-          name: 'withText', args: 'Copy Text', class: 'androidx.test.espresso.matcher.ViewMatchers'
-        }))).to.eventually.exist;
+        await expect(
+          listOneEl.findElement(
+            '-android viewmatcher',
+            JSON.stringify({
+              name: 'withText',
+              args: 'Copy Text',
+              class: 'androidx.test.espresso.matcher.ViewMatchers',
+            }),
+          ),
+        ).to.eventually.exist;
       });
     });
   });

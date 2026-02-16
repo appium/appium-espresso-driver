@@ -1,8 +1,8 @@
-import { doctor as doctorCommon } from 'appium-android-driver';
-import { exec } from 'teen_process';
-import { fs, system, doctor } from 'appium/support';
+import {doctor as doctorCommon} from 'appium-android-driver';
+import {exec} from 'teen_process';
+import {fs, system, doctor} from 'appium/support';
 import path from 'node:path';
-import type { AppiumLogger, IDoctorCheck } from '@appium/types';
+import type {AppiumLogger, IDoctorCheck} from '@appium/types';
 
 export const androidHomeCheck = doctorCommon.androidHomeCheck;
 export const javaHomeCheck = doctorCommon.javaHomeCheck;
@@ -16,9 +16,15 @@ export class JavaVersionCheck implements IDoctorCheck {
 
   async diagnose() {
     const javaHome = process.env.JAVA_HOME;
-    const fullJavaPath = path.join(javaHome ?? '', 'bin', `java${system.isWindows() ? '.exe' : ''}`);
-    if (!javaHome || !await fs.exists(fullJavaPath)) {
-      return doctor.nok(`Cannot retrieve Java version. Is Java installed and JAVA_HOME set to a proper path?`);
+    const fullJavaPath = path.join(
+      javaHome ?? '',
+      'bin',
+      `java${system.isWindows() ? '.exe' : ''}`,
+    );
+    if (!javaHome || !(await fs.exists(fullJavaPath))) {
+      return doctor.nok(
+        `Cannot retrieve Java version. Is Java installed and JAVA_HOME set to a proper path?`,
+      );
     }
     let javaVerMatch: RegExpExecArray | null = null;
     try {
@@ -37,8 +43,10 @@ export class JavaVersionCheck implements IDoctorCheck {
   }
 
   async fix() {
-    return `Upgrade to Java ${this.MIN_JAVA_VERSION}+ or update ` +
-      `the JAVA_HOME environment variable if it is already installed`;
+    return (
+      `Upgrade to Java ${this.MIN_JAVA_VERSION}+ or update ` +
+      `the JAVA_HOME environment variable if it is already installed`
+    );
   }
 
   hasAutofix() {
