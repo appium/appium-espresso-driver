@@ -922,11 +922,26 @@ Verify whether an application is installed on the device under test.
 Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 appId | string | yes | The identifier of the application package to be checked | `my.app.id`
-user | number or string | no | The user ID for which the package is installed.. The `current` user is used by default | 1006
+user | number or string | no | The user ID for which the package is installed. The `current` user is used by default | 1006
 
 #### Returned Result
 
 True or false
+
+### mobile: listApps
+
+Lists all installed packages on the Android device, optionally filtered by user.
+Lower than API Level 26 would raise an exception.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+user | number or string | no | The user ID for which the package is installed. The `current` user is used by default | 1006
+
+#### Returned Result
+
+List of installed package names.
 
 ### mobile: queryAppState
 
