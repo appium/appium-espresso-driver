@@ -931,7 +931,7 @@ True or false
 ### mobile: listApps
 
 Lists all installed packages on the Android device, optionally filtered by user.
-Lower than API Level 26 would raise an exception.
+An exception will be thrown on devices running Android API below level 26.
 
 #### Arguments
 
