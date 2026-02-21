@@ -941,7 +941,8 @@ user | number or string | no | The user ID for which the package is installed. T
 
 #### Returned Result
 
-List of installed package names.
+A map where keys are packageName and values are maps of platform-specific app properties since Espresso driver v7.0.0.
+Espresso driver v6.4.0 was a list of installed package names.
 
 ### mobile: queryAppState
 
