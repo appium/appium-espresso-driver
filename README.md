@@ -1741,6 +1741,20 @@ Name | Type | Required | Description | Example
 --- | --- | --- | --- | ---
 payload | string | yes | A valid base64-encoded .PNG image payload. Other image formats are not supported. This image will be shown on the virtual scene foreground as soon as you open a camera client app. | iVBORw0KGgoAAAANSUh...
 
+### mobile: setStylusHandwriting
+
+Allows to control the stylus handwriting feature on the device under test. Available since driver version 7.1.0.
+This extension requires the `espresso:set_stylus_handwriting` server command line feature to be enabled.
+
+Disabling the stylus handwriting will help to prevent blocking text input by the demo view.
+See [this ticket](https://github.com/appium/appium-uiautomator2-driver/issues/909) for more details.
+
+#### Arguments
+
+Name | Type | Required | Description | Example
+--- | --- | --- | --- | ---
+enabled | boolean | yes | Whether to enable or disable the stylus handwriting feature. | true
+
 #### Required Preconditions
 
 This feature only works on Android emulators.
