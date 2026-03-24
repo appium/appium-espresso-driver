@@ -1,3 +1,9 @@
+## [7.1.0](https://github.com/appium/appium-espresso-driver/compare/v7.0.0...v7.1.0) (2026-03-24)
+
+### Features
+
+* add mobile: setStylusHandwriting behind a security flag ([#1142](https://github.com/appium/appium-espresso-driver/issues/1142)) ([d063d0e](https://github.com/appium/appium-espresso-driver/commit/d063d0e3acd8f694e26cc08ae237506ed385f401))
+
 ## [7.0.0](https://github.com/appium/appium-espresso-driver/compare/v6.4.0...v7.0.0) (2026-02-21)
 
 ### ⚠ BREAKING CHANGES
