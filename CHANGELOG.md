@@ -1,3 +1,9 @@
+## [7.1.1](https://github.com/appium/appium-espresso-driver/compare/v7.1.0...v7.1.1) (2026-03-25)
+
+### Miscellaneous Chores
+
+* **deps:** bump gradle/actions from 5 to 6 ([#1146](https://github.com/appium/appium-espresso-driver/issues/1146)) ([0a74757](https://github.com/appium/appium-espresso-driver/commit/0a74757ea935d9621538465cdbcb25db95546950))
+
 ## [7.1.0](https://github.com/appium/appium-espresso-driver/compare/v7.0.0...v7.1.0) (2026-03-24)
 
 ### Features
