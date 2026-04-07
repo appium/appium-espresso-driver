@@ -90,8 +90,7 @@ describe('EspressoDriver', function () {
         capabilities: APIDEMO_CAPS,
       });
       await driver.execute('mobile:startActivity', {
-        appActivity:
-          'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
+        appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
       });
       await expect(driver.getCurrentActivity()).to.eventually.eql(
         '.accessibility.AccessibilityNodeProviderActivity',
