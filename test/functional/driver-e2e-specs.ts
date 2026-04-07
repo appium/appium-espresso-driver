@@ -1,13 +1,13 @@
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {remote} from 'webdriverio';
+import {remote, type Browser} from 'webdriverio';
 import {COMMON_REMOTE_OPTIONS} from './helpers/session';
 import {APIDEMO_CAPS, amendCapabilities} from './desired';
 
 chai.use(chaiAsPromised);
 
 describe('EspressoDriver', function () {
-  let driver;
+  let driver: Browser;
 
   before(async function () {});
 
@@ -15,9 +15,10 @@ describe('EspressoDriver', function () {
     describe('success', function () {
       afterEach(async function () {
         try {
-          await driver.deleteSession();
+          if (driver) {
+            await driver.deleteSession();
+          }
         } catch {}
-        driver = null;
       });
 
       it('should start android session focusing on default activity', async function () {
@@ -70,15 +71,13 @@ describe('EspressoDriver', function () {
       try {
         await driver.deleteSession();
       } catch {}
-      driver = null;
     });
     it('should start activity by name', async function () {
       driver = await remote({
         ...COMMON_REMOTE_OPTIONS,
         capabilities: APIDEMO_CAPS,
       });
-      await driver.startActivity({
-        appPackage: 'io.appium.android.apis',
+      await driver.execute('mobile:startActivity', {
         appActivity: '.accessibility.AccessibilityNodeProviderActivity',
       });
       await expect(driver.getCurrentActivity()).to.eventually.eql(
@@ -90,9 +89,9 @@ describe('EspressoDriver', function () {
         ...COMMON_REMOTE_OPTIONS,
         capabilities: APIDEMO_CAPS,
       });
-      await driver.startActivity({
-        appPackage: 'io.appium.android.apis',
-        appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
+      await driver.execute('mobile:startActivity', {
+        appActivity:
+          'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
       });
       await expect(driver.getCurrentActivity()).to.eventually.eql(
         '.accessibility.AccessibilityNodeProviderActivity',
@@ -114,7 +113,6 @@ describe('EspressoDriver', function () {
       try {
         await driver.deleteSession();
       } catch {}
-      driver = null;
     });
     it('should send keys to focused-on element', async function () {
       const text = 'Hello World!';

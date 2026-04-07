@@ -30,7 +30,7 @@ describe('source commands', function () {
       await driver.updateSettings({driver: 'compose'});
       const sourceXML = await driver.getPageSource();
       expect(sourceXML).to.be.a.string;
-      const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
+      const doc = new DOMParser().parseFromString(sourceXML, 'application/xml');
       const node = xpath.select('//*', doc as unknown as Node);
       expect(node).to.exist;
     });
