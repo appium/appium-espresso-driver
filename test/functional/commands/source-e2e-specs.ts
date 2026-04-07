@@ -25,7 +25,7 @@ describe('source commands', function () {
       const sourceXML = await driver.getPageSource();
       expect(sourceXML).to.be.a.string;
       const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
-      const node = xpath.select('//*', doc);
+      const node = xpath.select('//*', doc as unknown as Node);
       expect(node).to.exist;
     });
   });

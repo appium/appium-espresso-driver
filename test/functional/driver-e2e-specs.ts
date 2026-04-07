@@ -77,10 +77,10 @@ describe('EspressoDriver', function () {
         ...COMMON_REMOTE_OPTIONS,
         capabilities: APIDEMO_CAPS,
       });
-      await driver.startActivity(
-        'io.appium.android.apis',
-        '.accessibility.AccessibilityNodeProviderActivity',
-      );
+      await driver.startActivity({
+        appPackage: 'io.appium.android.apis',
+        appActivity: '.accessibility.AccessibilityNodeProviderActivity',
+      });
       await expect(driver.getCurrentActivity()).to.eventually.eql(
         '.accessibility.AccessibilityNodeProviderActivity',
       );
@@ -90,10 +90,10 @@ describe('EspressoDriver', function () {
         ...COMMON_REMOTE_OPTIONS,
         capabilities: APIDEMO_CAPS,
       });
-      await driver.startActivity(
-        'io.appium.android.apis',
-        'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
-      );
+      await driver.startActivity({
+        appPackage: 'io.appium.android.apis',
+        appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
+      });
       await expect(driver.getCurrentActivity()).to.eventually.eql(
         '.accessibility.AccessibilityNodeProviderActivity',
       );
