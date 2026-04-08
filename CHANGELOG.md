@@ -1,3 +1,9 @@
+## [7.1.2](https://github.com/appium/appium-espresso-driver/compare/v7.1.1...v7.1.2) (2026-04-08)
+
+### Miscellaneous Chores
+
+* Make wdio dependency more flexible ([e53646d](https://github.com/appium/appium-espresso-driver/commit/e53646d83a62e135fcca4a2287986ab94d55f5f8))
+
 ## [7.1.1](https://github.com/appium/appium-espresso-driver/compare/v7.1.0...v7.1.1) (2026-03-25)
 
 ### Miscellaneous Chores
