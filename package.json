@@ -34,8 +34,8 @@
     ],
     "mainClass": "EspressoDriver",
     "scripts": {
-      "print-espresso-path": "./scripts/print-espresso-path.js",
-      "build-espresso": "./scripts/build-espresso.js"
+      "print-espresso-path": "./scripts/print-espresso-path.mjs",
+      "build-espresso": "./scripts/build-espresso.mjs"
     },
     "doctor": {
       "checks": [
@@ -78,6 +78,7 @@
     "asyncbox": "^6.1.0",
     "axios": "^1.12.2",
     "bluebird": "^3.5.0",
+    "commander": "^14.0.1",
     "io.appium.settings": "^7.0.1",
     "lodash": "^4.17.11",
     "portscanner": "^2.2.0",
@@ -100,7 +101,7 @@
     "format": "prettier -w ./lib ./test",
     "format:check": "prettier --check ./lib ./test",
     "prepare": "npm run rebuild",
-    "sync-version": "node ./scripts/sync-version.js --package-version=${npm_package_version}",
+    "sync-version": "node ./scripts/sync-version.mjs --package-version=${npm_package_version}",
     "test": "npm run test:node",
     "test:node": "mocha --exit --timeout 1m \"./test/unit/**/*-specs.ts\"",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace || cd ..",
