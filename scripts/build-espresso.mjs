@@ -15,7 +15,7 @@ const ESPRESSO_SERVER_BUILD = path.join(ESPRESSO_SERVER_ROOT, 'app', 'build');
  * @param {BuildOptions} options
  */
 async function buildEspressoServer(options) {
-  LOG.info(`Building the espresso server in ${ESPRESSO_SERVER_BUILD}`);
+  LOG.info(`Building espresso server in '${ESPRESSO_SERVER_BUILD}'`);
 
   const opts = {
     serverPath: ESPRESSO_SERVER_ROOT,
@@ -38,8 +38,8 @@ async function buildEspressoServer(options) {
       LOG.info(`The espresso build config is ${JSON.stringify(opts.buildConfiguration)}`);
     } catch (e) {
       throw new Error(
-        `Failed to parse the ${options.buildConfig}. ` +
-          `Please make sure that the JSON is valid format. Error: ${e}`
+        `Failed to parse the build config at '${options.buildConfig}'. ` +
+          `Please make sure it is a valid JSON file.`, {cause: e}
       );
     }
   }
@@ -103,7 +103,7 @@ await main();
 
 /**
  * @typedef {Object} BuildOptions
- * @property {boolean} showGradleLog
+ * @property {boolean | undefined} showGradleLog
  * @property {string | undefined} testAppPackage
  * @property {string | undefined} buildConfig
  */
