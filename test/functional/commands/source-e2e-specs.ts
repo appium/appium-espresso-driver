@@ -24,8 +24,8 @@ describe('source commands', function () {
     it('should get sourceXML, parse it, and find a node by xpath', async function () {
       const sourceXML = await driver.getPageSource();
       expect(sourceXML).to.be.a.string;
-      const doc = new DOMParser().parseFromString(sourceXML, 'test/xml');
-      const node = xpath.select('//*', doc);
+      const doc = new DOMParser().parseFromString(sourceXML, 'application/xml');
+      const node = xpath.select('//*', doc as unknown as Node);
       expect(node).to.exist;
     });
   });
