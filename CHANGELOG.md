@@ -1,3 +1,9 @@
+## [7.2.0](https://github.com/appium/appium-espresso-driver/compare/v7.1.2...v7.2.0) (2026-04-08)
+
+### Features
+
+* Migrate scripts to mjs/ESM format ([#1149](https://github.com/appium/appium-espresso-driver/issues/1149)) ([cffd424](https://github.com/appium/appium-espresso-driver/commit/cffd424917938f83beaea2752ccd9fd73ab67d3f))
+
 ## [7.1.2](https://github.com/appium/appium-espresso-driver/compare/v7.1.1...v7.1.2) (2026-04-08)
 
 ### Miscellaneous Chores
