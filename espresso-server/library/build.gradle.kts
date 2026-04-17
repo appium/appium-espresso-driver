@@ -4,7 +4,7 @@ plugins {
     `maven-publish`
 }
 
-import io.appium.espressoserver.build.AppiumJvmTarget
+import io.appium.espressoserver.jvmtarget.AppiumJvmTarget
 import org.gradle.api.GradleException
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
