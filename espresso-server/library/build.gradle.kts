@@ -4,16 +4,9 @@ plugins {
     `maven-publish`
 }
 
+import io.appium.espressoserver.build.AppiumJvmTarget
+import org.gradle.api.GradleException
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
-fun jvmTargetFromAppium(value: String): JvmTarget =
-    when (value) {
-        "1.8" -> JvmTarget.JVM_1_8
-        "11" -> JvmTarget.JVM_11
-        "17" -> JvmTarget.JVM_17
-        "21" -> JvmTarget.JVM_21
-        else -> JvmTarget.JVM_1_8
-    }
 
 val appiumCompileSdk: String by project
 val appiumMinSdk: String by project
@@ -69,7 +62,14 @@ android {
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(jvmTargetFromAppium(appiumJvmTarget))
+        val normalized = AppiumJvmTarget.resolveNormalized(appiumJvmTarget)
+        jvmTarget.set(
+            JvmTarget.entries.firstOrNull { it.target == normalized }
+                ?: throw GradleException(
+                    "Unsupported appiumJvmTarget \"$appiumJvmTarget\" (normalized \"$normalized\"). " +
+                        "Use one of: ${JvmTarget.entries.joinToString { it.target }}",
+                ),
+        )
     }
 }
 
