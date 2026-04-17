@@ -7,6 +7,12 @@
     "types": ["node", "mocha", "chai"],
     "checkJs": true
   },
+  "ts-node": {
+    "transpileOnly": true,
+    "compilerOptions": {
+      "rootDir": "."
+    }
+  },
   "include": [
     "lib",
     "test"

@@ -1,3 +1,21 @@
+## [7.2.1](https://github.com/appium/appium-espresso-driver/compare/v7.2.0...v7.2.1) (2026-04-17)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump typescript from 5.9.3 to 6.0.3 ([#1150](https://github.com/appium/appium-espresso-driver/issues/1150)) ([3ca21c5](https://github.com/appium/appium-espresso-driver/commit/3ca21c5471830b7c7e8bb0d6cb7c9b00ca4f468a))
+
+## [7.2.0](https://github.com/appium/appium-espresso-driver/compare/v7.1.2...v7.2.0) (2026-04-08)
+
+### Features
+
+* Migrate scripts to mjs/ESM format ([#1149](https://github.com/appium/appium-espresso-driver/issues/1149)) ([cffd424](https://github.com/appium/appium-espresso-driver/commit/cffd424917938f83beaea2752ccd9fd73ab67d3f))
+
+## [7.1.2](https://github.com/appium/appium-espresso-driver/compare/v7.1.1...v7.1.2) (2026-04-08)
+
+### Miscellaneous Chores
+
+* Make wdio dependency more flexible ([e53646d](https://github.com/appium/appium-espresso-driver/commit/e53646d83a62e135fcca4a2287986ab94d55f5f8))
+
 ## [7.1.1](https://github.com/appium/appium-espresso-driver/compare/v7.1.0...v7.1.1) (2026-03-25)
 
 ### Miscellaneous Chores
