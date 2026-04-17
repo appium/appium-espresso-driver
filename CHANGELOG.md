@@ -1,3 +1,9 @@
+## [7.2.1](https://github.com/appium/appium-espresso-driver/compare/v7.2.0...v7.2.1) (2026-04-17)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump typescript from 5.9.3 to 6.0.3 ([#1150](https://github.com/appium/appium-espresso-driver/issues/1150)) ([3ca21c5](https://github.com/appium/appium-espresso-driver/commit/3ca21c5471830b7c7e8bb0d6cb7c9b00ca4f468a))
+
 ## [7.2.0](https://github.com/appium/appium-espresso-driver/compare/v7.1.2...v7.2.0) (2026-04-08)
 
 ### Features
