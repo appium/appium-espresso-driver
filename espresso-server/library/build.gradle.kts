@@ -4,6 +4,17 @@ plugins {
     `maven-publish`
 }
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+fun jvmTargetFromAppium(value: String): JvmTarget =
+    when (value) {
+        "1.8" -> JvmTarget.JVM_1_8
+        "11" -> JvmTarget.JVM_11
+        "17" -> JvmTarget.JVM_17
+        "21" -> JvmTarget.JVM_21
+        else -> JvmTarget.JVM_1_8
+    }
+
 val appiumCompileSdk: String by project
 val appiumMinSdk: String by project
 val appiumTargetSdk: String by project
@@ -40,10 +51,6 @@ android {
         resources.excludes.add("META-INF/**")
     }
 
-    kotlinOptions {
-        jvmTarget = appiumJvmTarget
-    }
-
     lint {
         targetSdk = appiumTargetSdk.toInt()
     }
@@ -57,6 +64,12 @@ android {
         singleVariant("release") {
             withSourcesJar()
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(jvmTargetFromAppium(appiumJvmTarget))
     }
 }
 
