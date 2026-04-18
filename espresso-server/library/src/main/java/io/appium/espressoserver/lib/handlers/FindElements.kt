@@ -18,9 +18,9 @@ package io.appium.espressoserver.lib.handlers
 
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
-import io.appium.espressoserver.lib.helpers.*
+import io.appium.espressoserver.lib.compose.ComposeHandlerBridge
+import io.appium.espressoserver.lib.helpers.ViewFinder
 import io.appium.espressoserver.lib.model.BaseElement
-import io.appium.espressoserver.lib.model.ComposeElement
 import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.Locator
 import io.appium.espressoserver.lib.viewaction.ViewGetter
@@ -40,9 +40,5 @@ class FindElements : RequestHandler<Locator, List<BaseElement>> {
         ).map { EspressoElement(it) }
     }
 
-    override fun handleCompose(params: Locator): List<BaseElement> {
-        val nodeInteractions = toNodeInteractionsCollection(params)
-        return List(nodeInteractions.fetchSemanticsNodes(false).size)
-            { index -> ComposeElement(nodeInteractions[index]) }
-    }
+    override fun handleCompose(params: Locator): List<BaseElement> = ComposeHandlerBridge.findElements(params)
 }

@@ -16,7 +16,9 @@
 
 package io.appium.espressoserver.lib.model.settings
 
+import io.appium.espressoserver.lib.BuildConfig
 import io.appium.espressoserver.lib.drivers.DriverContext
+import io.appium.espressoserver.lib.handlers.exceptions.ComposeNotSupportedException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 
 class DriverSetting : AbstractSetting() {
@@ -27,13 +29,22 @@ class DriverSetting : AbstractSetting() {
     }
 
     override fun apply(value: Any?) {
+        val requested = value?.toString()?.trim()?.lowercase()
+        if (requested == DriverContext.StrategyType.COMPOSE.name.lowercase() && !BuildConfig.COMPOSE_SUPPORT) {
+            throw ComposeNotSupportedException()
+        }
         val driverStrategy =
-            DriverContext.StrategyType.values().find { it.toString().lowercase() == value }
+            allowedStrategies().find { it.toString().lowercase() == value }
                 ?: throw InvalidArgumentException(
-                    "driver type must be one of ${
-                        DriverContext.StrategyType.values().map { it.toString().lowercase() }
-                    }"
+                    "driver type must be one of ${allowedStrategies().map { it.toString().lowercase() }}",
                 )
         DriverContext.setDriverStrategy(driverStrategy)
     }
+
+    private fun allowedStrategies(): List<DriverContext.StrategyType> =
+        if (BuildConfig.COMPOSE_SUPPORT) {
+            DriverContext.StrategyType.entries
+        } else {
+            listOf(DriverContext.StrategyType.ESPRESSO)
+        }
 }

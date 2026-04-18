@@ -16,6 +16,9 @@ val appiumSourceCompatibility: String by project
 val appiumTargetCompatibility: String by project
 val appiumJvmTarget: String by project
 
+val useComposeLibrary: Boolean =
+    (findProperty("appiumComposeSupport") as String?)?.equals("false", ignoreCase = true) != true
+
 // Align androidTest dependency versions with :library when Espresso driver passes -PappiumJUnitVersion / -PappiumAndroidxTestVersion.
 val junitVersion = resolveCapabilityVersion("appiumJUnitVersion", libs.versions.junit.get())
 val androidxTestVersion = resolveCapabilityVersion("appiumAndroidxTestVersion", libs.versions.androidxTest.get())
@@ -26,6 +29,14 @@ android {
     namespace = "io.appium.espressoserver"
 
     defaultConfig {
+        missingDimensionStrategy(
+            "composeSupport",
+            if (useComposeLibrary) {
+                "composeOn"
+            } else {
+                "composeOff"
+            },
+        )
         // <instrumentation android:targetPackage=""/>
         applicationId = appiumTargetPackage
         // <manifest package=""/>

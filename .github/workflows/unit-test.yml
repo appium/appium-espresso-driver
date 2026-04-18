@@ -66,3 +66,5 @@ jobs:
       name: Run server linter
     - run: npm run test:server
       name: Run server unit tests
+    - run: npm run assemble:server:compose-off
+      name: Assemble Espresso server without Jetpack Compose (smoke)

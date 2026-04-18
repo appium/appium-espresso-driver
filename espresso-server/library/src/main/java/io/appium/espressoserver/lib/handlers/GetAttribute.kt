@@ -19,11 +19,11 @@ package io.appium.espressoserver.lib.handlers
 import androidx.test.espresso.EspressoException
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.LayoutAssertions
+import io.appium.espressoserver.lib.compose.ComposeHandlerBridge
 import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
-import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.model.*
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
@@ -39,14 +39,10 @@ class GetAttribute : RequestHandler<AppiumParams, String?> {
         }
 
         return when (DriverContext.currentStrategyType) {
-            DriverContext.StrategyType.COMPOSE -> getComposeAttribute(params.elementId!!, attributeName)
+            DriverContext.StrategyType.COMPOSE ->
+                ComposeHandlerBridge.getAttribute(params.elementId!!, attributeName)
             DriverContext.StrategyType.ESPRESSO -> getEspressoAttribute(params.elementId!!, attributeName)
         }
-    }
-
-
-    private fun getComposeAttribute(elementId: String, attributeName: String): String? {
-        return ComposeNodeElement(getSemanticsNode(elementId)).getAttribute(attributeName)
     }
 
     private fun getEspressoAttribute(elementId: String, attributeName: String): String? {

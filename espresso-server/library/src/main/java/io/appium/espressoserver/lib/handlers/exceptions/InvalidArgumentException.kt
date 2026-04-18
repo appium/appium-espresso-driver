@@ -18,7 +18,7 @@ package io.appium.espressoserver.lib.handlers.exceptions
 
 import fi.iki.elonen.NanoHTTPD
 
-class InvalidArgumentException : AppiumException {
+open class InvalidArgumentException : AppiumException {
     constructor() : super("The arguments passed to the command are either invalid or malformed")
 
     constructor(reason: String) : super(reason) {}

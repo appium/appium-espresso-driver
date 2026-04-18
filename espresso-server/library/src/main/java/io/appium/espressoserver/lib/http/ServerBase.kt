@@ -20,42 +20,51 @@ import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.GsonBuilder
 import fi.iki.elonen.NanoHTTPD
-import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.CustomFailureHandler
 import io.appium.espressoserver.lib.helpers.StringHelpers
 import io.appium.espressoserver.lib.helpers.setAccessibilityServiceState
 import io.appium.espressoserver.lib.http.response.AppiumResponse
 import io.appium.espressoserver.lib.http.response.BaseResponse
-import org.junit.rules.TestRule
 import java.io.IOException
 import java.net.SocketException
-import java.util.*
+import java.util.LinkedHashMap
 
 const val DEFAULT_PORT = 6791
 
-class Server : NanoHTTPD(DEFAULT_PORT), TestRule by DriverContext.composeTestRule {
+/**
+ * Shared NanoHTTPD server logic; flavor modules supply [Server] subclasses that
+ * extend this type and optionally mix in JUnit [org.junit.rules.TestRule] for Compose.
+ */
+abstract class ServerBase : NanoHTTPD(DEFAULT_PORT) {
 
     private var router: Router? = null
 
     @Volatile
     private var isStopRequestReceived: Boolean = false
 
+    /**
+     * No-op when Compose is not present; on Compose builds advances the main clock when the
+     * driver strategy is Compose (see original Server implementation).
+     */
+    protected abstract fun advanceComposeMainClockIfNeeded()
+
     private val syncComposeClock = Thread {
         while (!isStopRequestReceived) {
-            if (DriverContext.currentStrategyType == DriverContext.StrategyType.COMPOSE) {
-                DriverContext.composeTestRule.mainClock.advanceTimeByFrame()
-            }
-            // Let Android run measure, draw and in general any other async operations. AndroidComposeTestRule.android.kt:325
+            advanceComposeMainClockIfNeeded()
+            // Let Android run measure, draw and in general any other async operations.
+            // AndroidComposeTestRule.android.kt:325
             Thread.sleep(ANDROID_ASYNC_WAIT_TIME_MS)
         }
     }
 
     private fun buildFixedLengthResponse(response: BaseResponse): Response {
-        val gsonBuilder = GsonBuilder()
-                .serializeNulls()
-        return newFixedLengthResponse(response.httpStatus,
-                "application/json", gsonBuilder.create().toJson(response))
+        val gsonBuilder = GsonBuilder().serializeNulls()
+        return newFixedLengthResponse(
+            response.httpStatus,
+            "application/json",
+            gsonBuilder.create().toJson(response),
+        )
     }
 
     fun run() {
@@ -86,8 +95,10 @@ class Server : NanoHTTPD(DEFAULT_PORT), TestRule by DriverContext.composeTestRul
 
         if (response is AppiumResponse) {
             if (response.httpStatus === Response.Status.OK) {
-                AndroidLogger.info("Responding to server with value: " +
-                        StringHelpers.abbreviate(response.value?.toString(), 300))
+                AndroidLogger.info(
+                    "Responding to server with value: " +
+                        StringHelpers.abbreviate(response.value?.toString(), 300),
+                )
             } else {
                 AndroidLogger.info("Responding to server with error: ${response.value}")
             }
@@ -98,17 +109,15 @@ class Server : NanoHTTPD(DEFAULT_PORT), TestRule by DriverContext.composeTestRul
         } catch (e: RuntimeException) {
             buildFixedLengthResponse(AppiumResponse(e))
         }
-
     }
 
     @Throws(IOException::class)
     override fun start() {
         if (super.isAlive()) {
-            //kill the server if its already running
             try {
                 super.stop()
             } catch (e: Exception) {
-                //ignore the exception
+                // ignore the exception
             }
         }
 
@@ -118,8 +127,11 @@ class Server : NanoHTTPD(DEFAULT_PORT), TestRule by DriverContext.composeTestRul
         try {
             super.start(SOCKET_READ_TIMEOUT, false)
         } catch (e: SocketException) {
-            throw IllegalStateException("The application under test must require android.permission.INTERNET " +
-                    "permission in its manifest", e)
+            throw IllegalStateException(
+                "The application under test must require android.permission.INTERNET " +
+                    "permission in its manifest",
+                e,
+            )
         }
 
         AndroidLogger.info("\nRunning Appium Espresso Server at port $DEFAULT_PORT\n")
@@ -128,7 +140,7 @@ class Server : NanoHTTPD(DEFAULT_PORT), TestRule by DriverContext.composeTestRul
 
     private fun setCustomFailureHandler() =
         Espresso.setFailureHandler(
-            CustomFailureHandler(InstrumentationRegistry.getInstrumentation().targetContext)
+            CustomFailureHandler(InstrumentationRegistry.getInstrumentation().targetContext),
         )
 
     override fun stop() {

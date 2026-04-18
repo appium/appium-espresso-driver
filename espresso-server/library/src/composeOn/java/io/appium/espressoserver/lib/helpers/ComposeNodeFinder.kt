@@ -19,6 +19,7 @@ package io.appium.espressoserver.lib.helpers
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.*
 import io.appium.espressoserver.lib.drivers.DriverContext
+import io.appium.espressoserver.lib.drivers.composeTestRule
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.model.Strategy
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException

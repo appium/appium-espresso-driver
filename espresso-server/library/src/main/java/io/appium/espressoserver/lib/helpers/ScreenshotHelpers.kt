@@ -19,10 +19,6 @@ package io.appium.espressoserver.lib.helpers
 import android.graphics.Bitmap
 import android.util.Base64
 import android.view.View
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.captureToImage
-
 import java.io.ByteArrayOutputStream
 import androidx.test.runner.screenshot.Screenshot
 import io.appium.espressoserver.lib.handlers.exceptions.ScreenCaptureException
@@ -47,13 +43,4 @@ fun takeEspressoViewScreenshot(view: View): String =
         encodeBitmap(Screenshot.capture(view).bitmap) { view.javaClass.name }
     } catch (e: RuntimeException) {
         throw ScreenCaptureException("Cannot take a screenshot of a view", e)
-    }
-
-fun takeComposeNodeScreenshot(nodeInteraction: SemanticsNodeInteraction): String =
-    try {
-        encodeBitmap(
-            nodeInteraction.captureToImage().asAndroidBitmap()
-        ) { nodeInteraction.fetchSemanticsNode().toString() }
-    } catch (e: RuntimeException) {
-        throw ScreenCaptureException("Cannot take a screenshot of a node", e)
     }

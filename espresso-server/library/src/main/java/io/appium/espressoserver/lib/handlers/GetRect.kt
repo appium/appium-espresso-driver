@@ -16,9 +16,8 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.helpers.getSemanticsNode
+import io.appium.espressoserver.lib.compose.ComposeHandlerBridge
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.ComposeNodeElement
 import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.model.Rect
 import io.appium.espressoserver.lib.model.ViewElement
@@ -28,6 +27,5 @@ class GetRect : RequestHandler<AppiumParams, Rect> {
     override fun handleEspresso(params: AppiumParams): Rect =
         ViewElement(EspressoElement.getCachedViewStateById(params.elementId).view).rect
 
-    override fun handleCompose(params: AppiumParams): Rect =
-        ComposeNodeElement(getSemanticsNode(params.elementId!!)).rect
+    override fun handleCompose(params: AppiumParams): Rect = ComposeHandlerBridge.getRect(params)
 }

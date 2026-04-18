@@ -16,8 +16,10 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import io.appium.espressoserver.lib.BuildConfig
 import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.drivers.DriverContext.StrategyType
+import io.appium.espressoserver.lib.handlers.exceptions.ComposeNotSupportedException
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.NoSuchDriverException
 import io.appium.espressoserver.lib.handlers.exceptions.NotYetImplementedException
@@ -31,7 +33,12 @@ interface RequestHandler<in T : AppiumParams, out R> {
     @Suppress("UNCHECKED_CAST")
     fun invokeStrategy(params: AppiumParams): R =
         when (DriverContext.currentStrategyType) {
-            StrategyType.COMPOSE -> handleCompose(params as T)
+            StrategyType.COMPOSE -> {
+                if (!BuildConfig.COMPOSE_SUPPORT) {
+                    throw ComposeNotSupportedException()
+                }
+                handleCompose(params as T)
+            }
             StrategyType.ESPRESSO -> handleEspresso(params as T)
         }
 
