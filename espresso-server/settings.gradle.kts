@@ -1,5 +1,3 @@
-import java.io.File
-
 pluginManagement {
     repositories {
         google()
@@ -7,21 +5,16 @@ pluginManagement {
         gradlePluginPortal()
     }
 
-    // Match [versions] androidGradlePlugin in gradle/libs.versions.toml (same key Dependabot updates).
-    // Espresso driver passes -PappiumAndroidGradlePlugin when espressoBuildConfig.toolsVersions.androidGradlePlugin is set.
-    val agpDefault =
-        Regex("""(?m)^androidGradlePlugin\s*=\s*"([^"]+)"""")
-            .find(File(rootDir, "gradle/libs.versions.toml").readText())
-            ?.groupValues
-            ?.get(1)
-            ?: error("androidGradlePlugin not found in gradle/libs.versions.toml")
-
+    // When Espresso driver passes -PappiumAndroidGradlePlugin, override the AGP version from the
+    // version catalog. Otherwise keep Gradle's catalog-resolved requested version (no regex/TOML parse).
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id == "com.android.application" || requested.id.id == "com.android.library") {
                 val fromCapability =
                     providers.gradleProperty("appiumAndroidGradlePlugin").orNull?.trim()?.takeIf { it.isNotEmpty() }
-                useVersion(fromCapability ?: agpDefault)
+                if (fromCapability != null) {
+                    useVersion(fromCapability)
+                }
             }
         }
     }
