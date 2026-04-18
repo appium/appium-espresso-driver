@@ -17,11 +17,12 @@
 package io.appium.espressoserver.lib.handlers.exceptions
 
 /**
- * Thrown when Compose was disabled for this server build (`composeSupport: false` in
- * `appium:espressoBuildConfig`) but a Compose-only action was requested.
+ * Thrown when this server was built with Compose omitted (e.g.
+ * `appium:espressoBuildConfig->composeSupport=false`) but a Compose-only action was requested.
  */
 class ComposeNotSupportedException :
     InvalidArgumentException(
-        "Jetpack Compose is off for this Espresso server build (driver: espressoBuildConfig " +
-            "composeSupport: false). Turn composeSupport on and rebuild the server to use Compose.",
+        "Jetpack Compose is not available in this Espresso server build: it was assembled with " +
+            "appium:espressoBuildConfig->composeSupport=false. " +
+            "Set appium:espressoBuildConfig->composeSupport=true and rebuild the server to use Compose.",
     )

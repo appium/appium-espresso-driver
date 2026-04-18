@@ -34,7 +34,7 @@ class DriverSetting : AbstractSetting() {
             throw ComposeNotSupportedException()
         }
         val driverStrategy =
-            allowedStrategies().find { it.toString().lowercase() == value }
+            allowedStrategies().find { it.toString().lowercase() == requested }
                 ?: throw InvalidArgumentException(
                     "driver type must be one of ${allowedStrategies().map { it.toString().lowercase() }}",
                 )
