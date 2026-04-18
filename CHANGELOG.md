@@ -1,3 +1,9 @@
+## [8.1.0](https://github.com/appium/appium-espresso-driver/compare/v8.0.0...v8.1.0) (2026-04-18)
+
+### Features
+
+* add version catalog for Dependabot ([#1152](https://github.com/appium/appium-espresso-driver/issues/1152)) ([16ce10e](https://github.com/appium/appium-espresso-driver/commit/16ce10ea5e32ece75d5e7e55307d2fe2ccc20bc7))
+
 ## [8.0.0](https://github.com/appium/appium-espresso-driver/compare/v7.2.1...v8.0.0) (2026-04-18)
 
 ### ⚠ BREAKING CHANGES
