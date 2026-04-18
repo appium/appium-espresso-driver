@@ -6,6 +6,7 @@ updates:
     interval: daily
     time: "11:00"
   open-pull-requests-limit: 10
+# Gradle: Dependabot updates gradle/libs.versions.toml (not arbitrary keys in gradle.properties).
 - package-ecosystem: "gradle"
   directory: "/espresso-server"
   schedule:

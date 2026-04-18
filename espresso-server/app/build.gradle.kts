@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
 }
 
 import io.appium.espressoserver.jvmtarget.AppiumJvmTarget
@@ -14,17 +14,6 @@ val appiumTargetPackage: String by project
 val appiumSourceCompatibility: String by project
 val appiumTargetCompatibility: String by project
 val appiumJvmTarget: String by project
-val appiumKotlin: String by project
-val appiumAndroidxTestVersion: String by project
-val appiumAnnotationVersion: String by project
-val appiumComposeVersion: String by project
-val appiumGsonVersion: String by project
-val appiumEspressoVersion: String by project
-val appiumMockitoVersion: String by project
-val appiumNanohttpdVersion: String by project
-val appiumRobolectricVersion: String by project
-val appiumJUnitVersion: String by project
-val appiumUiAutomatorVersion: String by project
 
 android {
     compileSdk = appiumCompileSdk.toInt()
@@ -97,9 +86,9 @@ kotlin {
 
 dependencies {
     androidTestImplementation(project(":library"))
-    androidTestImplementation("junit:junit:$appiumJUnitVersion")
-    androidTestImplementation("androidx.test:core:$appiumAndroidxTestVersion")
-    androidTestImplementation("androidx.test:runner:$appiumAndroidxTestVersion")
+    androidTestImplementation("junit:junit:${libs.versions.junit.get()}")
+    androidTestImplementation("androidx.test:core:${libs.versions.androidxTest.get()}")
+    androidTestImplementation("androidx.test:runner:${libs.versions.androidxTest.get()}")
 
     // additionalAndroidTestDependencies placeholder (don't change or delete this line)
 }

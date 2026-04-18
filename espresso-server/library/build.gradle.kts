@@ -1,8 +1,9 @@
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.library)
     `maven-publish`
 }
 
+import io.appium.espressoserver.gradle.resolveCapabilityVersion
 import io.appium.espressoserver.jvmtarget.AppiumJvmTarget
 import org.gradle.api.GradleException
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -14,16 +15,19 @@ val appiumBuildTools: String by project
 val appiumSourceCompatibility: String by project
 val appiumTargetCompatibility: String by project
 val appiumJvmTarget: String by project
-val appiumKotlin: String by project
-val appiumAndroidxTestVersion: String by project
-val appiumAnnotationVersion: String by project
-val appiumComposeVersion: String by project
-val appiumGsonVersion: String by project
-val appiumEspressoVersion: String by project
-val appiumNanohttpdVersion: String by project
-val appiumRobolectricVersion: String by project
-val appiumJUnitVersion: String by project
-val appiumUiAutomatorVersion: String by project
+
+// Versions: defaults from gradle/libs.versions.toml; -Pappium* overrides from Espresso driver (toolsVersions / capabilities).
+val kotlinVersion = resolveCapabilityVersion("appiumKotlin", libs.versions.kotlin.get())
+val annotationVersion = resolveCapabilityVersion("appiumAnnotationVersion", libs.versions.annotation.get())
+val composeUiTestVersion =
+    resolveCapabilityVersion("appiumComposeVersion", libs.versions.composeUiTest.get())
+val gsonVersion = resolveCapabilityVersion("appiumGsonVersion", libs.versions.gson.get())
+val espressoVersion = resolveCapabilityVersion("appiumEspressoVersion", libs.versions.espresso.get())
+val nanohttpdVersion = resolveCapabilityVersion("appiumNanohttpdVersion", libs.versions.nanohttpd.get())
+val androidxTestVersion = resolveCapabilityVersion("appiumAndroidxTestVersion", libs.versions.androidxTest.get())
+val robolectricVersion = resolveCapabilityVersion("appiumRobolectricVersion", libs.versions.robolectric.get())
+val junitVersion = resolveCapabilityVersion("appiumJUnitVersion", libs.versions.junit.get())
+val uiautomatorVersion = resolveCapabilityVersion("appiumUiAutomatorVersion", libs.versions.uiautomator.get())
 
 android {
     compileSdk = appiumCompileSdk.toInt()
@@ -85,39 +89,39 @@ publishing {
 dependencies {
     // additionalAppDependencies placeholder (don't change or delete this line)
 
-    api("androidx.annotation:annotation:$appiumAnnotationVersion")
-    api("androidx.test.espresso:espresso-contrib:$appiumEspressoVersion") {
+    api("androidx.annotation:annotation:$annotationVersion")
+    api("androidx.test.espresso:espresso-contrib:$espressoVersion") {
         // Exclude transitive dependencies to limit conflicts with AndroidX libraries from AUT.
         // Link to PR with fix and discussion https://github.com/appium/appium-espresso-driver/pull/596
         isTransitive = false
     }
-    api("androidx.test.espresso:espresso-web:$appiumEspressoVersion") {
+    api("androidx.test.espresso:espresso-web:$espressoVersion") {
         because("Espresso Web Atoms support (mobile: webAtoms)")
     }
-    api("androidx.test.uiautomator:uiautomator:$appiumUiAutomatorVersion") {
+    api("androidx.test.uiautomator:uiautomator:$uiautomatorVersion") {
         because("UiAutomator support (mobile: uiautomator)")
     }
-    api("androidx.test:core:$appiumAndroidxTestVersion")
-    api("androidx.test:runner:$appiumAndroidxTestVersion")
-    api("androidx.test:rules:$appiumAndroidxTestVersion")
-    api("com.google.code.gson:gson:$appiumGsonVersion")
-    api("org.nanohttpd:nanohttpd-webserver:$appiumNanohttpdVersion")
-    api("org.jetbrains.kotlin:kotlin-stdlib:$appiumKotlin")
-    api("org.jetbrains.kotlin:kotlin-reflect:$appiumKotlin")
-    api("androidx.compose.ui:ui-test:$appiumComposeVersion") {
+    api("androidx.test:core:$androidxTestVersion")
+    api("androidx.test:runner:$androidxTestVersion")
+    api("androidx.test:rules:$androidxTestVersion")
+    api("com.google.code.gson:gson:$gsonVersion")
+    api("org.nanohttpd:nanohttpd-webserver:$nanohttpdVersion")
+    api("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+    api("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+    api("androidx.compose.ui:ui-test:$composeUiTestVersion") {
         because("Android Compose support")
     }
-    api("androidx.compose.ui:ui-test-junit4:$appiumComposeVersion") {
+    api("androidx.compose.ui:ui-test-junit4:$composeUiTestVersion") {
         because("Android Compose support")
     }
 
-    testImplementation("androidx.test.espresso:espresso-contrib:$appiumEspressoVersion")
-    testImplementation("junit:junit:$appiumJUnitVersion")
-    testImplementation("org.robolectric:robolectric:$appiumRobolectricVersion")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:$appiumKotlin")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$appiumKotlin")
+    testImplementation("androidx.test.espresso:espresso-contrib:$espressoVersion")
+    testImplementation("junit:junit:$junitVersion")
+    testImplementation("org.robolectric:robolectric:$robolectricVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 
     constraints {
-        api("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$appiumKotlin")
+        api("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     }
 }
