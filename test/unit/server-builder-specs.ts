@@ -81,14 +81,16 @@ describe('server-builder', function () {
     it('should not pass compose support property when composeSupport is true or omitted', function () {
       const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
       expect(
-        (new ServerBuilder(log, {
-          buildConfiguration: {composeSupport: true},
-          serverPath: '/path/to/project',
-        }) as any).getCommand(),
+        (
+          new ServerBuilder(log, {
+            buildConfiguration: {composeSupport: true},
+            serverPath: '/path/to/project',
+          }) as any
+        ).getCommand(),
       ).to.eql(expected);
-      expect(
-        (new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand(),
-      ).to.eql(expected);
+      expect((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand()).to.eql(
+        expected,
+      );
     });
   });
 
