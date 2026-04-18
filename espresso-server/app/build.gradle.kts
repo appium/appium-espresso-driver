@@ -1,7 +1,10 @@
 plugins {
     id("com.android.application")
-    kotlin("android")
 }
+
+import io.appium.espressoserver.jvmtarget.AppiumJvmTarget
+import org.gradle.api.GradleException
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val appiumCompileSdk: String by project
 val appiumMinSdk: String by project
@@ -45,7 +48,7 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -74,12 +77,21 @@ android {
         targetCompatibility = JavaVersion.valueOf(appiumTargetCompatibility.uppercase())
     }
 
-    kotlinOptions {
-        jvmTarget = appiumJvmTarget
-    }
-
     packaging {
         resources.excludes.add("META-INF/**")
+    }
+}
+
+kotlin {
+    compilerOptions {
+        val normalized = AppiumJvmTarget.resolveNormalized(appiumJvmTarget)
+        jvmTarget.set(
+            JvmTarget.entries.firstOrNull { it.target == normalized }
+                ?: throw GradleException(
+                    "Unsupported appiumJvmTarget \"$appiumJvmTarget\" (normalized \"$normalized\"). " +
+                        "Use one of: ${JvmTarget.entries.joinToString { it.target }}",
+                ),
+        )
     }
 }
 

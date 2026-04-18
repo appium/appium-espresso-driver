@@ -24,7 +24,7 @@ class WebAtomsTest {
         }""".trimIndent(), WebAtomsMethod::class.java)
         assertEquals(webAtomsMethod.name, "withElement")
         assertEquals(webAtomsMethod.atom.name, "findElement")
-        assertTrue(webAtomsMethod.atom.args contentEquals  arrayOf(Locator.ID, "text_input"))
+        assertTrue(webAtomsMethod.atom.args contentEquals arrayOf<Any>(Locator.ID, "text_input"))
     }
 
     @Test
@@ -77,7 +77,7 @@ class WebAtomsTest {
         webAtoms.methodChain[0].let {
             assertEquals(it.name, "withElement")
             assertEquals(it.atom.name, "findElement")
-            assertTrue(it.atom.args contentEquals arrayOf(Locator.ID, "text_input"))
+            assertTrue(it.atom.args contentEquals arrayOf<Any>(Locator.ID, "text_input"))
         }
 
         webAtoms.methodChain[1].let {
@@ -89,7 +89,7 @@ class WebAtomsTest {
         webAtoms.methodChain[2].let {
             assertEquals(it.name, "perform")
             assertEquals(it.atom.name, "webKeys")
-            assertTrue(it.atom.args contentEquals  arrayOf("Foo"))
+            assertTrue(it.atom.args contentEquals arrayOf<Any>("Foo"))
         }
 
     }

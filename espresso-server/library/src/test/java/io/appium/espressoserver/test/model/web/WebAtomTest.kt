@@ -49,7 +49,7 @@ class WebAtomTest {
         jsonObject.add("args", argsArr)
         val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "someFakeAtom")
-        assertTrue(webAtom.args contentEquals arrayOf("hello", true, 100, 1.1))
+        assertTrue(webAtom.args contentEquals arrayOf<Any>("hello", true, 100, 1.1))
         assertEquals(webAtom.args.size, 4)
     }
 
@@ -63,6 +63,6 @@ class WebAtomTest {
         jsonObject.add("locator", locatorObject)
         val webAtom = WebAtomDeserializer().deserialize(jsonObject, null, null)
         assertEquals(webAtom.name, "findElement")
-        assertTrue(webAtom.args contentEquals arrayOf(Locator.ID, "some_html_id"))
+        assertTrue(webAtom.args contentEquals arrayOf<Any>(Locator.ID, "some_html_id"))
     }
 }

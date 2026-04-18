@@ -1,8 +1,11 @@
 plugins {
     id("com.android.library")
-    kotlin("android")
     `maven-publish`
 }
+
+import io.appium.espressoserver.jvmtarget.AppiumJvmTarget
+import org.gradle.api.GradleException
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val appiumCompileSdk: String by project
 val appiumMinSdk: String by project
@@ -40,10 +43,6 @@ android {
         resources.excludes.add("META-INF/**")
     }
 
-    kotlinOptions {
-        jvmTarget = appiumJvmTarget
-    }
-
     lint {
         targetSdk = appiumTargetSdk.toInt()
     }
@@ -57,6 +56,19 @@ android {
         singleVariant("release") {
             withSourcesJar()
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        val normalized = AppiumJvmTarget.resolveNormalized(appiumJvmTarget)
+        jvmTarget.set(
+            JvmTarget.entries.firstOrNull { it.target == normalized }
+                ?: throw GradleException(
+                    "Unsupported appiumJvmTarget \"$appiumJvmTarget\" (normalized \"$normalized\"). " +
+                        "Use one of: ${JvmTarget.entries.joinToString { it.target }}",
+                ),
+        )
     }
 }
 

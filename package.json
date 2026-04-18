@@ -64,6 +64,7 @@
     "espresso-server/gradlew.bat",
     "espresso-server/gradle.properties",
     "espresso-server/build.gradle.kts",
+    "espresso-server/buildSrc",
     "espresso-server/settings.gradle.kts",
     "espresso-server/lint.xml",
     "!.DS_Store",
