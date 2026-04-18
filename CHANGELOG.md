@@ -1,3 +1,15 @@
+## [8.0.0](https://github.com/appium/appium-espresso-driver/compare/v7.2.1...v8.0.0) (2026-04-18)
+
+### ⚠ BREAKING CHANGES
+
+* The default kotlin version is set to 2.3.20
+* The required build tools version is set to 36.0.0
+* Dropped AGP 8.x
+
+### Features
+
+* Bump Gradle version ([#1151](https://github.com/appium/appium-espresso-driver/issues/1151)) ([1ae46bd](https://github.com/appium/appium-espresso-driver/commit/1ae46bd5025674e74bbf298c2d70a70b91e4eb60))
+
 ## [7.2.1](https://github.com/appium/appium-espresso-driver/compare/v7.2.0...v7.2.1) (2026-04-17)
 
 ### Miscellaneous Chores
