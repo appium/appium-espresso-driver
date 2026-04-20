@@ -1,3 +1,13 @@
+## [8.2.0](https://github.com/appium/appium-espresso-driver/compare/v8.1.0...v8.2.0) (2026-04-20)
+
+### Features
+
+* Add a possibility to build espresso without compose support ([#1153](https://github.com/appium/appium-espresso-driver/issues/1153)) ([1753aaa](https://github.com/appium/appium-espresso-driver/commit/1753aaa2c425bea12eca13342d8b2a0e695ae761))
+
+### Bug Fixes
+
+* allow Java 17+ ([#1154](https://github.com/appium/appium-espresso-driver/issues/1154)) ([741954d](https://github.com/appium/appium-espresso-driver/commit/741954dfc830b2040417a06fda51d7b9f4cfcf84))
+
 ## [8.1.0](https://github.com/appium/appium-espresso-driver/compare/v8.0.0...v8.1.0) (2026-04-18)
 
 ### Features
