@@ -16,11 +16,10 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.helpers.getSemanticsNode
+import io.appium.espressoserver.lib.compose.ComposeHandlerBridge
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.ViewElement
 import io.appium.espressoserver.lib.model.EspressoElement
-import io.appium.espressoserver.lib.model.ComposeNodeElement
 
 class GetName : RequestHandler<AppiumParams, String?> {
 
@@ -29,8 +28,5 @@ class GetName : RequestHandler<AppiumParams, String?> {
         return ViewElement(viewState.view).contentDescription?.toString()
     }
 
-    override fun handleCompose(params: AppiumParams): String? {
-        val composeNodeElement = ComposeNodeElement(getSemanticsNode(params.elementId!!))
-        return composeNodeElement.contentDescription?.toString()
-    }
+    override fun handleCompose(params: AppiumParams): String? = ComposeHandlerBridge.getName(params)
 }

@@ -63,6 +63,35 @@ describe('server-builder', function () {
       });
       expect((serverBuilder as any).getCommand()).to.eql(expected);
     });
+
+    it('should pass appiumComposeSupport=false when composeSupport is false', function () {
+      const expected = {
+        cmd: expectedCmd,
+        args: ['-PappiumComposeSupport=false', 'app:assembleAndroidTest'],
+      };
+      const serverBuilder = new ServerBuilder(log, {
+        buildConfiguration: {
+          composeSupport: false,
+        },
+        serverPath: '/path/to/project',
+      });
+      expect((serverBuilder as any).getCommand()).to.eql(expected);
+    });
+
+    it('should not pass compose support property when composeSupport is true or omitted', function () {
+      const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
+      expect(
+        (
+          new ServerBuilder(log, {
+            buildConfiguration: {composeSupport: true},
+            serverPath: '/path/to/project',
+          }) as any
+        ).getCommand(),
+      ).to.eql(expected);
+      expect((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand()).to.eql(
+        expected,
+      );
+    });
   });
 
   describe('setGradleWrapperVersion', function () {

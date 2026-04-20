@@ -56,8 +56,13 @@ export function buildServerSigningConfig(args: BuildServerSigningConfigArgs): Se
   };
 }
 
-interface BuildConfiguration {
+export interface EspressoBuildConfiguration {
   toolsVersions?: Record<string, string>;
+  /**
+   * When false, the Espresso server is built without Jetpack Compose dependencies.
+   * Defaults to true when omitted.
+   */
+  composeSupport?: boolean;
   additionalAppDependencies?: string[];
   additionalAndroidTestDependencies?: string[];
 }
@@ -65,7 +70,7 @@ interface BuildConfiguration {
 export interface ServerBuilderOptions {
   serverPath: string;
   showGradleLog?: boolean;
-  buildConfiguration?: BuildConfiguration;
+  buildConfiguration?: EspressoBuildConfiguration;
   testAppPackage?: string;
   signingConfig?: ServerSigningConfig | null;
 }
@@ -79,6 +84,7 @@ export class ServerBuilder {
   private readonly signingConfig?: ServerSigningConfig | null;
   private readonly additionalAppDependencies: string[];
   private readonly additionalAndroidTestDependencies: string[];
+  private readonly composeSupport: boolean;
 
   constructor(log: AppiumLogger, args: ServerBuilderOptions) {
     this.log = log;
@@ -86,6 +92,7 @@ export class ServerBuilder {
     this.showGradleLog = args.showGradleLog;
 
     const buildConfiguration = args.buildConfiguration || {};
+    this.composeSupport = buildConfiguration.composeSupport !== false;
 
     const versionConfiguration = buildConfiguration.toolsVersions || {};
     this.serverVersions = _.reduce(
@@ -151,6 +158,12 @@ export class ServerBuilder {
       const targetPackageArg = buildProperty('appiumTargetPackage', this.testAppPackage);
       if (targetPackageArg) {
         args.push(targetPackageArg);
+      }
+    }
+    if (!this.composeSupport) {
+      const composeArg = buildProperty('appiumComposeSupport', 'false');
+      if (composeArg) {
+        args.push(composeArg);
       }
     }
     args.push('app:assembleAndroidTest');

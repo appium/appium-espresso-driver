@@ -32,7 +32,7 @@ import io.appium.espressoserver.lib.http.response.BaseResponse
 import io.appium.espressoserver.lib.model.*
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 
-internal class Router(server: Server) {
+internal class Router(server: ServerBase) {
     private val routeMap: RouteMap
 
     init {

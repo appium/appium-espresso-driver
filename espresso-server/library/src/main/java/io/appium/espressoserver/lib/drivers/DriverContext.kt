@@ -16,19 +16,16 @@
 
 package io.appium.espressoserver.lib.drivers
 
-import androidx.compose.ui.test.junit4.createEmptyComposeRule
-
 object DriverContext {
     var currentStrategyType: StrategyType = StrategyType.ESPRESSO
         private set
-
-    val composeTestRule = createEmptyComposeRule()
 
     fun setDriverStrategy(strategyType: StrategyType) {
         currentStrategyType = strategyType
     }
 
     enum class StrategyType {
-        ESPRESSO, COMPOSE
+        ESPRESSO,
+        COMPOSE,
     }
 }

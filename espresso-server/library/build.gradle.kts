@@ -34,6 +34,23 @@ android {
     buildToolsVersion = appiumBuildTools
     namespace = "io.appium.espressoserver.lib"
 
+    buildFeatures {
+        buildConfig = true
+    }
+
+    flavorDimensions += "composeSupport"
+    productFlavors {
+        create("composeOn") {
+            dimension = "composeSupport"
+            isDefault = true
+            buildConfigField("boolean", "COMPOSE_SUPPORT", "true")
+        }
+        create("composeOff") {
+            dimension = "composeSupport"
+            buildConfigField("boolean", "COMPOSE_SUPPORT", "false")
+        }
+    }
+
     defaultConfig {
         minSdk = appiumMinSdk.toInt()
     }
@@ -57,7 +74,7 @@ android {
     }
 
     publishing {
-        singleVariant("release") {
+        singleVariant("composeOnRelease") {
             withSourcesJar()
         }
     }
@@ -80,7 +97,7 @@ publishing {
     publications {
         register<MavenPublication>("release") {
             afterEvaluate {
-                from(components["release"])
+                from(components["composeOnRelease"])
             }
         }
     }
@@ -108,10 +125,10 @@ dependencies {
     api("org.nanohttpd:nanohttpd-webserver:$nanohttpdVersion")
     api("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     api("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-    api("androidx.compose.ui:ui-test:$composeUiTestVersion") {
+    add("composeOnApi", "androidx.compose.ui:ui-test:$composeUiTestVersion") {
         because("Android Compose support")
     }
-    api("androidx.compose.ui:ui-test-junit4:$composeUiTestVersion") {
+    add("composeOnApi", "androidx.compose.ui:ui-test-junit4:$composeUiTestVersion") {
         because("Android Compose support")
     }
 

@@ -16,8 +16,7 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.helpers.getNodeInteractionById
-import io.appium.espressoserver.lib.helpers.takeComposeNodeScreenshot
+import io.appium.espressoserver.lib.compose.ComposeHandlerBridge
 import io.appium.espressoserver.lib.helpers.takeEspressoViewScreenshot
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.EspressoElement
@@ -28,5 +27,5 @@ class ElementScreenshot : RequestHandler<AppiumParams, String> {
         takeEspressoViewScreenshot(EspressoElement.getCachedViewStateById(params.elementId).view)
 
     override fun handleCompose(params: AppiumParams): String =
-        takeComposeNodeScreenshot(getNodeInteractionById(params.elementId!!))
+        ComposeHandlerBridge.elementScreenshot(params.elementId!!)
 }

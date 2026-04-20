@@ -16,9 +16,8 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.helpers.getSemanticsNode
+import io.appium.espressoserver.lib.compose.ComposeHandlerBridge
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.ComposeNodeElement
 import io.appium.espressoserver.lib.model.EspressoElement
 
 import io.appium.espressoserver.lib.model.ViewElement
@@ -28,6 +27,5 @@ class GetSelected : RequestHandler<AppiumParams, Boolean> {
     override fun handleEspresso(params: AppiumParams): Boolean =
             ViewElement(EspressoElement.getCachedViewStateById(params.elementId).view).isSelected
 
-    override fun handleCompose(params: AppiumParams): Boolean =
-            ComposeNodeElement(getSemanticsNode(params.elementId!!)).isSelected
+    override fun handleCompose(params: AppiumParams): Boolean = ComposeHandlerBridge.getSelected(params)
 }

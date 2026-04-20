@@ -251,6 +251,10 @@ on the Compose usage in general:
 
 Espresso server is in tight connection with the application under test. That is why it is important that the server uses the same versions of common dependencies and there are no conflicts. Espresso driver allows to configure several build options via `espressoBuildConfig` capability. The configuration JSON supports the following entries:
 
+### composeSupport
+
+When set to `false`, the Espresso server is built **without** Jetpack Compose UI test dependencies (smaller test APK and no Compose on the classpath). The default is `true` when this key is omitted. If Compose support is disabled, setting the `driver` setting to `compose` or using Compose-only flows returns a clear server error; rebuild with `composeSupport` enabled (or remove the key) to use Compose.
+
 ### toolsVersions
 
 This entry allows to explicitly set the versions of different server components. The following map entries are supported:
@@ -283,6 +287,7 @@ The value of this entry must be a non empty array of dependent module names with
 
 ```json
 {
+  "composeSupport": false,
   "toolsVersions": {
     "androidGradlePlugin": "4.0.0"
   },

@@ -16,9 +16,8 @@
 
 package io.appium.espressoserver.lib.handlers
 
-import io.appium.espressoserver.lib.helpers.getSemanticsNode
+import io.appium.espressoserver.lib.compose.ComposeHandlerBridge
 import io.appium.espressoserver.lib.model.AppiumParams
-import io.appium.espressoserver.lib.model.ComposeNodeElement
 import io.appium.espressoserver.lib.model.EspressoElement
 import io.appium.espressoserver.lib.viewaction.ViewTextGetter
 
@@ -29,6 +28,5 @@ class Text : RequestHandler<AppiumParams, String> {
         return ViewTextGetter()[viewInteraction].rawText
     }
 
-    override fun handleCompose(params: AppiumParams): String =
-        ComposeNodeElement(getSemanticsNode(params.elementId!!)).text.toString()
+    override fun handleCompose(params: AppiumParams): String = ComposeHandlerBridge.text(params)
 }

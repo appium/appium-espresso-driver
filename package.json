@@ -106,6 +106,7 @@
     "test": "npm run test:node",
     "test:node": "mocha --exit --timeout 1m \"./test/unit/**/*-specs.ts\"",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace || cd ..",
+    "assemble:server:compose-off": "cd espresso-server && ./gradlew :app:assembleAndroidTest -PappiumComposeSupport=false --no-daemon",
     "version": "npm run sync-version && npm run build:server",
     "e2e-test": "mocha --exit --timeout 5m \"./test/functional/**/*-specs.ts\""
   },
