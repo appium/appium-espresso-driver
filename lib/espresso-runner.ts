@@ -1,9 +1,8 @@
 import {JWProxy, errors} from 'appium/driver';
-import {waitForCondition} from 'asyncbox';
+import {sleep, waitForCondition} from 'asyncbox';
 import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './server-builder';
 import path from 'node:path';
 import {fs, util, mkdirp, timing} from 'appium/support';
-import B from 'bluebird';
 import _ from 'lodash';
 import {copyGradleProjectRecursively, getPackageInfoSync, getPackageInfo} from './utils';
 import axios from 'axios';
@@ -48,6 +47,46 @@ export interface EspressoRunnerOptions {
   keyPassword?: string;
 }
 
+interface InstrumentationState {
+  crashed: boolean;
+  exited: boolean;
+}
+
+interface ServerStatus {
+  build: {
+    version: string;
+    packageName?: string;
+  };
+}
+
+interface SessionInfo {
+  id: string;
+}
+
+interface SessionsResponse {
+  value: SessionInfo[];
+}
+
+class EspressoProxy extends JWProxy {
+  instrumentationState: InstrumentationState;
+
+  override async proxyCommand(
+    url: string,
+    method: HTTPMethod,
+    body: HTTPBody = null,
+  ): Promise<[ProxyResponse, HTTPBody]> {
+    const {crashed, exited} = this.instrumentationState;
+    if (exited) {
+      throw new errors.InvalidContextError(
+        `'${method} ${url}' cannot be proxied to Espresso server because ` +
+          `the instrumentation process has ${crashed ? 'crashed' : 'been unexpectedly terminated'}. ` +
+          `Check the Appium server log and the logcat output for more details`,
+      );
+    }
+    return await super.proxyCommand(url, method, body);
+  }
+}
+
 export class EspressoRunner {
   public readonly host: string;
   public readonly systemPort: number;
@@ -66,8 +105,8 @@ export class EspressoRunner {
   public readonly androidInstallTimeout?: number;
   public readonly disableSuppressAccessibilityService?: boolean;
   public readonly signingConfig: ServerSigningConfig | null;
-  private readonly log: AppiumLogger;
   public instProcess: SubProcess | null = null;
+  private readonly log: AppiumLogger;
 
   constructor(log: AppiumLogger, opts: EspressoRunnerOptions) {
     this.adb = requireOption(opts, 'adb');
@@ -413,7 +452,7 @@ export class EspressoRunner {
           `The following obsolete sessions are still running: ${JSON.stringify(activeSessionIds)}`,
         );
         this.log.debug('Cleaning up the obsolete sessions');
-        await B.all(
+        await Promise.all(
           activeSessionIds.map((id) =>
             axios({
               url: `http://${this.host}:${this.systemPort}/session/${id}`,
@@ -422,7 +461,7 @@ export class EspressoRunner {
           ),
         );
         // Let all sessions to be properly terminated before continuing
-        await B.delay(1000);
+        await sleep(1000);
       } else {
         this.log.debug('No obsolete sessions have been detected');
       }
@@ -488,49 +527,9 @@ export class EspressoRunner {
   }
 }
 
-class EspressoProxy extends JWProxy {
-  instrumentationState: InstrumentationState;
-
-  override async proxyCommand(
-    url: string,
-    method: HTTPMethod,
-    body: HTTPBody = null,
-  ): Promise<[ProxyResponse, HTTPBody]> {
-    const {crashed, exited} = this.instrumentationState;
-    if (exited) {
-      throw new errors.InvalidContextError(
-        `'${method} ${url}' cannot be proxied to Espresso server because ` +
-          `the instrumentation process has ${crashed ? 'crashed' : 'been unexpectedly terminated'}. ` +
-          `Check the Appium server log and the logcat output for more details`,
-      );
-    }
-    return await super.proxyCommand(url, method, body);
-  }
-}
-
 function requireOption(opts: EspressoRunnerOptions, key: string): any {
   if (!util.hasValue(opts[key])) {
     throw new Error(`Option '${key}' is required!`);
   }
   return opts[key];
-}
-
-interface InstrumentationState {
-  crashed: boolean;
-  exited: boolean;
-}
-
-interface ServerStatus {
-  build: {
-    version: string;
-    packageName?: string;
-  };
-}
-
-interface SessionInfo {
-  id: string;
-}
-
-interface SessionsResponse {
-  value: SessionInfo[];
 }

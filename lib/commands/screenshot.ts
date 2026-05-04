@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import B from 'bluebird';
 import type {EspressoDriver} from '../driver';
 import type {ScreenshotsInfo} from './types';
 
@@ -57,7 +56,7 @@ export async function mobileScreenshots(
   }
 
   const allInfos = _.values(infos);
-  const screenshots = await B.all(allInfos.map(({id}) => toB64Screenshot(id)));
+  const screenshots = await Promise.all(allInfos.map(({id}) => toB64Screenshot(id)));
   const result: ScreenshotsInfo = {};
   for (const [info, payload] of _.zip(allInfos, screenshots)) {
     if (info && payload) {
