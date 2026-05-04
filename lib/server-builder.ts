@@ -46,16 +46,6 @@ export interface BuildServerSigningConfigArgs {
   keyPassword: string;
 }
 
-export function buildServerSigningConfig(args: BuildServerSigningConfigArgs): ServerSigningConfig {
-  return {
-    zipAlign: true,
-    keystoreFile: args.keystoreFile,
-    keystorePassword: args.keystorePassword,
-    keyAlias: args.keyAlias,
-    keyPassword: args.keyPassword,
-  };
-}
-
 export interface EspressoBuildConfiguration {
   toolsVersions?: Record<string, string>;
   /**
@@ -267,4 +257,20 @@ export class ServerBuilder {
       gradlebuild.removeAllListeners();
     }
   }
+}
+
+/**
+ * Build keystore options for signing the built Espresso server test APK.
+ *
+ * @param args - Paths and credentials for the keystore used when signing.
+ * @returns Configuration consumed by the Gradle signing step.
+ */
+export function buildServerSigningConfig(args: BuildServerSigningConfigArgs): ServerSigningConfig {
+  return {
+    zipAlign: true,
+    keystoreFile: args.keystoreFile,
+    keystorePassword: args.keystorePassword,
+    keyAlias: args.keyAlias,
+    keyPassword: args.keyPassword,
+  };
 }

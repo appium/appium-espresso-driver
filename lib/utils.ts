@@ -60,6 +60,14 @@ export async function copyGradleProjectRecursively(
   });
 }
 
+/**
+ * Insert Gradle dependency lines after a `// placeholder` marker in a Gradle file.
+ *
+ * @param originalContent - Full text of the Gradle configuration file.
+ * @param dependencyPlaceholder - Placeholder comment label to find (e.g. from build.gradle).
+ * @param dependencyLines - Dependency lines to insert (e.g. `implementation "..."`).
+ * @returns Updated file content, or the original string if the placeholder is missing.
+ */
 export function updateDependencyLines(
   originalContent: string,
   dependencyPlaceholder: string,

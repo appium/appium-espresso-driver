@@ -150,20 +150,72 @@ export class EspressoDriver
   extends AndroidDriver
   implements ExternalDriver<EspressoConstraints, string, StringRecord>
 {
+  static newMethodMap = newMethodMap;
+  static executeMethodMap = executeMethodMap;
+
   _originalIme: string | null;
 
   espresso: EspressoRunner;
 
   wasAnimationEnabled?: boolean;
 
-  static newMethodMap = newMethodMap;
-  static executeMethodMap = executeMethodMap;
-
   override caps: EspressoDriverCaps;
 
   override opts: EspressoDriverOpts;
 
   override desiredCapConstraints: EspressoConstraints;
+
+  // @ts-ignore It's expected
+  performActions = actionsCmds.performActions;
+
+  startActivity = appManagementCmds.startActivity;
+  // @ts-ignore It's expected
+  mobileStartActivity = appManagementCmds.mobileStartActivity;
+
+  mobileWebAtoms = contextCmds.mobileWebAtoms;
+  // @ts-ignore It's expected
+  suspendChromedriverProxy = contextCmds.suspendChromedriverProxy;
+
+  // @ts-ignore It's expected
+  mobilePerformEditorAction = elementCmds.mobilePerformEditorAction;
+  mobileSwipe = elementCmds.mobileSwipe;
+  mobileOpenDrawer = elementCmds.mobileOpenDrawer;
+  mobileCloseDrawer = elementCmds.mobileCloseDrawer;
+  mobileSetDate = elementCmds.mobileSetDate;
+  mobileSetTime = elementCmds.mobileSetTime;
+  mobileNavigateTo = elementCmds.mobileNavigateTo;
+  mobileScrollToPage = elementCmds.mobileScrollToPage;
+  mobileFlashElement = elementCmds.mobileFlashElement;
+  mobileClickAction = elementCmds.mobileClickAction;
+  mobileDismissAutofill = elementCmds.mobileDismissAutofill;
+
+  mobilePressKey = miscCmds.mobilePressKey;
+  mobileGetDeviceInfo = miscCmds.mobileGetDeviceInfo;
+  mobileIsToastVisible = miscCmds.mobileIsToastVisible;
+  // @ts-ignore It's expected
+  getDisplayDensity = miscCmds.getDisplayDensity;
+  mobileBackdoor = miscCmds.mobileBackdoor;
+  mobileUiautomator = miscCmds.mobileUiautomator;
+  mobileUiautomatorPageSource = miscCmds.mobileUiautomatorPageSource;
+  updateSettings = miscCmds.updateSettings;
+  getSettings = miscCmds.getSettings;
+
+  getClipboard = clipboardCmds.getClipboard;
+  mobileGetClipboard = clipboardCmds.getClipboard;
+  mobileSetClipboard = clipboardCmds.mobileSetClipboard;
+
+  // @ts-ignore It's expected
+  mobileStartService = servicesCmds.mobileStartService;
+  // @ts-ignore It's expected
+  mobileStopService = servicesCmds.mobileStopService;
+
+  getScreenshot = screenshotCmds.getScreenshot;
+  mobileScreenshots = screenshotCmds.mobileScreenshots;
+
+  mobileRegisterIdlingResources = idlingResourcesCmds.mobileRegisterIdlingResources;
+  mobileUnregisterIdlingResources = idlingResourcesCmds.mobileUnregisterIdlingResources;
+  mobileListIdlingResources = idlingResourcesCmds.mobileListIdlingResources;
+  mobileWaitForUIThread = idlingResourcesCmds.mobileWaitForUIThread;
 
   constructor(opts: InitialOpts = {} as InitialOpts, shouldValidateCaps = true) {
     // `shell` overwrites adb.shell, so remove
@@ -181,6 +233,15 @@ export class EspressoDriver
     this.settings = new DeviceSettings({}, this.onSettingsUpdate.bind(this));
 
     this.chromedriver = undefined;
+  }
+
+  get driverData() {
+    // TODO fill out resource info here
+    return {};
+  }
+
+  get appOnDevice(): boolean {
+    return !this.opts.app && this.helpers.isPackageOrBundle(this.opts.appPackage!);
   }
 
   override async getSession(): Promise<SingularSessionData<EspressoConstraints>> {
@@ -396,11 +457,6 @@ export class EspressoDriver
       }
     }
     return shouldResultAppPathBeCached ? {appPath: pathInCache} : false;
-  }
-
-  get driverData() {
-    // TODO fill out resource info here
-    return {};
   }
 
   // TODO much of this logic is duplicated from uiautomator2
@@ -654,13 +710,13 @@ export class EspressoDriver
 
     if (this.adb) {
       await B.all(
-        screenRecordingStopTasks.map((task) => {
+        screenRecordingStopTasks.map((task) =>
           (async () => {
             try {
               await task();
             } catch {}
-          })();
-        }),
+          })(),
+        ),
       );
       if (this.wasAnimationEnabled) {
         try {
@@ -732,62 +788,6 @@ export class EspressoDriver
 
     return this.jwpProxyAvoid;
   }
-
-  get appOnDevice(): boolean {
-    return !this.opts.app && this.helpers.isPackageOrBundle(this.opts.appPackage!);
-  }
-
-  // @ts-ignore It's expected
-  performActions = actionsCmds.performActions;
-
-  startActivity = appManagementCmds.startActivity;
-  // @ts-ignore It's expected
-  mobileStartActivity = appManagementCmds.mobileStartActivity;
-
-  mobileWebAtoms = contextCmds.mobileWebAtoms;
-  // @ts-ignore It's expected
-  suspendChromedriverProxy = contextCmds.suspendChromedriverProxy;
-
-  // @ts-ignore It's expected
-  mobilePerformEditorAction = elementCmds.mobilePerformEditorAction;
-  mobileSwipe = elementCmds.mobileSwipe;
-  mobileOpenDrawer = elementCmds.mobileOpenDrawer;
-  mobileCloseDrawer = elementCmds.mobileCloseDrawer;
-  mobileSetDate = elementCmds.mobileSetDate;
-  mobileSetTime = elementCmds.mobileSetTime;
-  mobileNavigateTo = elementCmds.mobileNavigateTo;
-  mobileScrollToPage = elementCmds.mobileScrollToPage;
-  mobileFlashElement = elementCmds.mobileFlashElement;
-  mobileClickAction = elementCmds.mobileClickAction;
-  mobileDismissAutofill = elementCmds.mobileDismissAutofill;
-
-  mobilePressKey = miscCmds.mobilePressKey;
-  mobileGetDeviceInfo = miscCmds.mobileGetDeviceInfo;
-  mobileIsToastVisible = miscCmds.mobileIsToastVisible;
-  // @ts-ignore It's expected
-  getDisplayDensity = miscCmds.getDisplayDensity;
-  mobileBackdoor = miscCmds.mobileBackdoor;
-  mobileUiautomator = miscCmds.mobileUiautomator;
-  mobileUiautomatorPageSource = miscCmds.mobileUiautomatorPageSource;
-  updateSettings = miscCmds.updateSettings;
-  getSettings = miscCmds.getSettings;
-
-  getClipboard = clipboardCmds.getClipboard;
-  mobileGetClipboard = clipboardCmds.getClipboard;
-  mobileSetClipboard = clipboardCmds.mobileSetClipboard;
-
-  // @ts-ignore It's expected
-  mobileStartService = servicesCmds.mobileStartService;
-  // @ts-ignore It's expected
-  mobileStopService = servicesCmds.mobileStopService;
-
-  getScreenshot = screenshotCmds.getScreenshot;
-  mobileScreenshots = screenshotCmds.mobileScreenshots;
-
-  mobileRegisterIdlingResources = idlingResourcesCmds.mobileRegisterIdlingResources;
-  mobileUnregisterIdlingResources = idlingResourcesCmds.mobileUnregisterIdlingResources;
-  mobileListIdlingResources = idlingResourcesCmds.mobileListIdlingResources;
-  mobileWaitForUIThread = idlingResourcesCmds.mobileWaitForUIThread;
 }
 
 export default EspressoDriver;

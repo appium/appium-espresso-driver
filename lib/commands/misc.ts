@@ -5,6 +5,14 @@ import type {EspressoDriver} from '../driver';
 import type {DeviceInfo} from '../types';
 
 /**
+ * Settings parameters that is available in
+ * https://github.com/appium/appium-espresso-driver#settings-api or enabled plugins.
+ */
+export interface SettingsOptions {
+  [key: string]: string | number | boolean;
+}
+
+/**
  * Emulates key press event.
  *
  * @param keycode A valid Android key code. See https://developer.android.com/reference/android/view/KeyEvent
@@ -63,7 +71,6 @@ export async function mobileIsToastVisible(
     isRegexp,
   });
 }
-
 /**
  * Gets the display density (DPI) of the connected Android device.
  * @returns Promise that resolves to the display density value
@@ -75,6 +82,7 @@ export async function getDisplayDensity(this: EspressoDriver): Promise<number> {
     {},
   )) as number;
 }
+
 /**
  *  API to invoke methods defined in Android app.
  *
@@ -182,14 +190,6 @@ export async function mobileUiautomatorPageSource(this: EspressoDriver): Promise
     `/appium/execute_mobile/uiautomator_page_source`,
     'GET',
   )) as string;
-}
-
-/**
- * Settings parameters that is available in
- * https://github.com/appium/appium-espresso-driver#settings-api or enabled plugins.
- */
-export interface SettingsOptions {
-  [key: string]: string | number | boolean;
 }
 
 /**

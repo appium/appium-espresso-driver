@@ -48,6 +48,46 @@ export interface EspressoRunnerOptions {
   keyPassword?: string;
 }
 
+interface InstrumentationState {
+  crashed: boolean;
+  exited: boolean;
+}
+
+interface ServerStatus {
+  build: {
+    version: string;
+    packageName?: string;
+  };
+}
+
+interface SessionInfo {
+  id: string;
+}
+
+interface SessionsResponse {
+  value: SessionInfo[];
+}
+
+class EspressoProxy extends JWProxy {
+  instrumentationState: InstrumentationState;
+
+  override async proxyCommand(
+    url: string,
+    method: HTTPMethod,
+    body: HTTPBody = null,
+  ): Promise<[ProxyResponse, HTTPBody]> {
+    const {crashed, exited} = this.instrumentationState;
+    if (exited) {
+      throw new errors.InvalidContextError(
+        `'${method} ${url}' cannot be proxied to Espresso server because ` +
+          `the instrumentation process has ${crashed ? 'crashed' : 'been unexpectedly terminated'}. ` +
+          `Check the Appium server log and the logcat output for more details`,
+      );
+    }
+    return await super.proxyCommand(url, method, body);
+  }
+}
+
 export class EspressoRunner {
   public readonly host: string;
   public readonly systemPort: number;
@@ -66,8 +106,8 @@ export class EspressoRunner {
   public readonly androidInstallTimeout?: number;
   public readonly disableSuppressAccessibilityService?: boolean;
   public readonly signingConfig: ServerSigningConfig | null;
-  private readonly log: AppiumLogger;
   public instProcess: SubProcess | null = null;
+  private readonly log: AppiumLogger;
 
   constructor(log: AppiumLogger, opts: EspressoRunnerOptions) {
     this.adb = requireOption(opts, 'adb');
@@ -488,49 +528,9 @@ export class EspressoRunner {
   }
 }
 
-class EspressoProxy extends JWProxy {
-  instrumentationState: InstrumentationState;
-
-  override async proxyCommand(
-    url: string,
-    method: HTTPMethod,
-    body: HTTPBody = null,
-  ): Promise<[ProxyResponse, HTTPBody]> {
-    const {crashed, exited} = this.instrumentationState;
-    if (exited) {
-      throw new errors.InvalidContextError(
-        `'${method} ${url}' cannot be proxied to Espresso server because ` +
-          `the instrumentation process has ${crashed ? 'crashed' : 'been unexpectedly terminated'}. ` +
-          `Check the Appium server log and the logcat output for more details`,
-      );
-    }
-    return await super.proxyCommand(url, method, body);
-  }
-}
-
 function requireOption(opts: EspressoRunnerOptions, key: string): any {
   if (!util.hasValue(opts[key])) {
     throw new Error(`Option '${key}' is required!`);
   }
   return opts[key];
-}
-
-interface InstrumentationState {
-  crashed: boolean;
-  exited: boolean;
-}
-
-interface ServerStatus {
-  build: {
-    version: string;
-    packageName?: string;
-  };
-}
-
-interface SessionInfo {
-  id: string;
-}
-
-interface SessionsResponse {
-  value: SessionInfo[];
 }
