@@ -5,7 +5,7 @@ import type {EspressoDriver} from '../driver';
 import type {DeviceInfo} from '../types';
 
 /**
- * Settings parameters that is available in
+ * Settings parameters that are available in
  * https://github.com/appium/appium-espresso-driver#settings-api or enabled plugins.
  */
 export interface SettingsOptions {
