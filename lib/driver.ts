@@ -150,7 +150,7 @@ export class EspressoDriver
   implements ExternalDriver<EspressoConstraints, string, StringRecord>
 {
   static newMethodMap = newMethodMap;
-  static executeMethodMap = executeMethodMap;
+  static executeMethodMap = executeMethodMap as unknown as typeof AndroidDriver.executeMethodMap;
 
   _originalIme: string | null;
 
@@ -164,19 +164,18 @@ export class EspressoDriver
 
   override desiredCapConstraints: EspressoConstraints;
 
-  // @ts-ignore It's expected
-  performActions = actionsCmds.performActions;
+  performActions = actionsCmds.performActions as unknown as AndroidDriver['performActions'];
 
   startActivity = appManagementCmds.startActivity;
-  // @ts-ignore It's expected
-  mobileStartActivity = appManagementCmds.mobileStartActivity;
+  mobileStartActivity =
+    appManagementCmds.mobileStartActivity as unknown as AndroidDriver['mobileStartActivity'];
 
   mobileWebAtoms = contextCmds.mobileWebAtoms;
-  // @ts-ignore It's expected
-  suspendChromedriverProxy = contextCmds.suspendChromedriverProxy;
+  suspendChromedriverProxy =
+    contextCmds.suspendChromedriverProxy as unknown as AndroidDriver['suspendChromedriverProxy'];
 
-  // @ts-ignore It's expected
-  mobilePerformEditorAction = elementCmds.mobilePerformEditorAction;
+  mobilePerformEditorAction =
+    elementCmds.mobilePerformEditorAction as unknown as AndroidDriver['mobilePerformEditorAction'];
   mobileSwipe = elementCmds.mobileSwipe;
   mobileOpenDrawer = elementCmds.mobileOpenDrawer;
   mobileCloseDrawer = elementCmds.mobileCloseDrawer;
@@ -191,8 +190,7 @@ export class EspressoDriver
   mobilePressKey = miscCmds.mobilePressKey;
   mobileGetDeviceInfo = miscCmds.mobileGetDeviceInfo;
   mobileIsToastVisible = miscCmds.mobileIsToastVisible;
-  // @ts-ignore It's expected
-  getDisplayDensity = miscCmds.getDisplayDensity;
+  getDisplayDensity = miscCmds.getDisplayDensity as unknown as AndroidDriver['getDisplayDensity'];
   mobileBackdoor = miscCmds.mobileBackdoor;
   mobileUiautomator = miscCmds.mobileUiautomator;
   mobileUiautomatorPageSource = miscCmds.mobileUiautomatorPageSource;
@@ -203,10 +201,10 @@ export class EspressoDriver
   mobileGetClipboard = clipboardCmds.getClipboard;
   mobileSetClipboard = clipboardCmds.mobileSetClipboard;
 
-  // @ts-ignore It's expected
-  mobileStartService = servicesCmds.mobileStartService;
-  // @ts-ignore It's expected
-  mobileStopService = servicesCmds.mobileStopService;
+  mobileStartService =
+    servicesCmds.mobileStartService as unknown as AndroidDriver['mobileStartService'];
+  mobileStopService =
+    servicesCmds.mobileStopService as unknown as AndroidDriver['mobileStopService'];
 
   getScreenshot = screenshotCmds.getScreenshot;
   mobileScreenshots = screenshotCmds.mobileScreenshots;
@@ -218,8 +216,9 @@ export class EspressoDriver
 
   constructor(opts: InitialOpts = {} as InitialOpts, shouldValidateCaps = true) {
     // `shell` overwrites adb.shell, so remove
-    // @ts-expect-error FIXME: what is this?
-    delete opts.shell;
+    if ('shell' in opts) {
+      delete (opts as {shell?: unknown}).shell;
+    }
 
     super(opts, shouldValidateCaps);
     this.locatorStrategies = ['id', 'class name', 'accessibility id'];
@@ -313,8 +312,7 @@ export class EspressoDriver
       // get device udid for this session
       const {udid, emPort} = await (this as unknown as AndroidDriver).getDeviceInfoFromCaps();
       this.opts.udid = udid;
-      // @ts-expect-error do not put random stuff on opts
-      this.opts.emPort = emPort;
+      (this.opts as EspressoDriverOpts & {emPort: typeof emPort}).emPort = emPort;
       // now that we know our java version and device info, we can create our
       // ADB instance
       this.adb = await (this as unknown as AndroidDriver).createADB();
@@ -500,8 +498,7 @@ export class EspressoDriver
 
     if (!this.opts.skipUnlock) {
       // unlock the device to prepare it for testing
-      // @ts-ignore This is ok
-      await this.unlock();
+      await (this as unknown as AndroidDriver).unlock();
     } else {
       this.log.debug(`'skipUnlock' capability set, so skipping device unlock`);
     }
@@ -702,8 +699,7 @@ export class EspressoDriver
       if (this.jwpProxyActive) {
         await this.espresso.deleteSession();
       }
-      // @ts-ignore This is ok
-      this.espresso = null;
+      (this as {espresso: EspressoRunner | null}).espresso = null;
     }
     this.jwpProxyActive = false;
 
