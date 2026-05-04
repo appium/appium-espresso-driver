@@ -12,7 +12,6 @@ import type {
 import type {EspressoConstraints} from './constraints';
 import _ from 'lodash';
 import path from 'node:path';
-import B from 'bluebird';
 import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver';
 import {EspressoRunner, TEST_APK_PKG} from './espresso-runner';
 import {fs, tempDir, zip} from 'appium/support';
@@ -709,7 +708,7 @@ export class EspressoDriver
     this.jwpProxyActive = false;
 
     if (this.adb) {
-      await B.all(
+      await Promise.all(
         screenRecordingStopTasks.map((task) =>
           (async () => {
             try {

@@ -1,5 +1,5 @@
 import type {Browser} from 'webdriverio';
-import B from 'bluebird';
+import {sleep} from 'asyncbox';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
@@ -30,7 +30,7 @@ describe('mobile web atoms', function () {
 
   it('should input text into textbox and click links', async function () {
     const webviewEl = await driver.$(await driver.findElement('id', 'wv1'));
-    await B.delay(10000); // Wait for WebView to load
+    await sleep(10000); // Wait for WebView to load
     await driver.execute(`mobile: webAtoms`, {
       webviewEl: webviewEl.elementId,
       forceJavascriptEnabled: true,

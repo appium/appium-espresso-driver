@@ -1,5 +1,5 @@
 import axios from 'axios';
-import B from 'bluebird';
+import {asyncmap, sleep} from 'asyncbox';
 import _ from 'lodash';
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -191,7 +191,7 @@ describe('touch actions -', function () {
           await driver.findElements('class name', 'android.widget.ListView'),
         )) as unknown as any[];
 
-        const actions = await B.map(els, async function (el: any) {
+        const actions = await asyncmap(els, async function (el: any) {
           const {height} = await el.getSize();
 
           const yMove = Math.round(height / 2) - 10;
@@ -340,7 +340,7 @@ describe('touch actions -', function () {
             y: y + 1,
           },
         });
-        await B.delay(1000);
+        await sleep(1000);
 
         await axios({
           method: 'POST',
@@ -370,7 +370,7 @@ describe('touch actions -', function () {
             y: startY + 1,
           },
         });
-        await B.delay(1000);
+        await sleep(1000);
 
         await axios({
           method: 'POST',
@@ -380,7 +380,7 @@ describe('touch actions -', function () {
             y: endY + 1,
           },
         });
-        await B.delay(1000);
+        await sleep(1000);
 
         await axios({
           method: 'POST',
@@ -402,7 +402,7 @@ describe('touch actions -', function () {
             y: -300,
           },
         });
-        await B.delay(1000);
+        await sleep(1000);
       });
     });
   });

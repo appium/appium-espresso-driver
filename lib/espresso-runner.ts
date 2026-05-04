@@ -1,9 +1,8 @@
 import {JWProxy, errors} from 'appium/driver';
-import {waitForCondition} from 'asyncbox';
+import {sleep, waitForCondition} from 'asyncbox';
 import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './server-builder';
 import path from 'node:path';
 import {fs, util, mkdirp, timing} from 'appium/support';
-import B from 'bluebird';
 import _ from 'lodash';
 import {copyGradleProjectRecursively, getPackageInfoSync, getPackageInfo} from './utils';
 import axios from 'axios';
@@ -453,7 +452,7 @@ export class EspressoRunner {
           `The following obsolete sessions are still running: ${JSON.stringify(activeSessionIds)}`,
         );
         this.log.debug('Cleaning up the obsolete sessions');
-        await B.all(
+        await Promise.all(
           activeSessionIds.map((id) =>
             axios({
               url: `http://${this.host}:${this.systemPort}/session/${id}`,
@@ -462,7 +461,7 @@ export class EspressoRunner {
           ),
         );
         // Let all sessions to be properly terminated before continuing
-        await B.delay(1000);
+        await sleep(1000);
       } else {
         this.log.debug('No obsolete sessions have been detected');
       }
