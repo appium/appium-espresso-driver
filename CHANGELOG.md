@@ -1,3 +1,9 @@
+## [8.3.0](https://github.com/appium/appium-espresso-driver/compare/v8.2.2...v8.3.0) (2026-05-04)
+
+### Features
+
+* Ditch bluebird ([#1157](https://github.com/appium/appium-espresso-driver/issues/1157)) ([2dddde9](https://github.com/appium/appium-espresso-driver/commit/2dddde93099756f4c74a6f533f73a793777a93d3))
+
 ## [8.2.2](https://github.com/appium/appium-espresso-driver/compare/v8.2.1...v8.2.2) (2026-05-04)
 
 ### Miscellaneous Chores
