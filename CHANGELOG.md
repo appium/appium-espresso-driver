@@ -1,3 +1,10 @@
+## [8.3.1](https://github.com/appium/appium-espresso-driver/compare/v8.3.0...v8.3.1) (2026-05-06)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump sinon from 21.1.2 to 22.0.0 ([#1158](https://github.com/appium/appium-espresso-driver/issues/1158)) ([c8ee136](https://github.com/appium/appium-espresso-driver/commit/c8ee1362b4b60ab8a8711ecfec2c5d639ad1e8f8))
+* **deps:** bump androidGradlePlugin in /espresso-server ([#1159](https://github.com/appium/appium-espresso-driver/issues/1159)) ([b31ce92](https://github.com/appium/appium-espresso-driver/commit/b31ce92461cfeafb76cf159c41a0e1da49858419))
+
 ## [8.3.0](https://github.com/appium/appium-espresso-driver/compare/v8.2.2...v8.3.0) (2026-05-04)
 
 ### Features
