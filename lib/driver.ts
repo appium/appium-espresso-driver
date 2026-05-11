@@ -675,12 +675,16 @@ export class EspressoDriver
         await this.adb.addToDeviceIdleWhitelist(SETTINGS_HELPER_ID, TEST_APK_PKG);
       } catch (e: unknown) {
         const stderr =
-          typeof e === 'object' && e !== null && 'stderr' in e && typeof (e as {stderr: unknown}).stderr === 'string'
+          typeof e === 'object' &&
+          e !== null &&
+          'stderr' in e &&
+          typeof (e as {stderr: unknown}).stderr === 'string'
             ? (e as {stderr: string}).stderr
             : undefined;
         const message = e instanceof Error ? e.message : String(e);
         this.log.warn(
-          `Cannot add server packages to the Doze whitelist. Original error: ` + (stderr || message),
+          `Cannot add server packages to the Doze whitelist. Original error: ` +
+            (stderr || message),
         );
       }
     }

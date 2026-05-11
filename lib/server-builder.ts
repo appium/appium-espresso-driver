@@ -2,7 +2,7 @@ import {SubProcess} from 'teen_process';
 import {fs, system} from 'appium/support';
 import path from 'node:path';
 import {EOL} from 'node:os';
-import {updateDependencyLines} from './utils';
+import {escapeRegExp, updateDependencyLines} from './utils';
 import type {AppiumLogger} from '@appium/types';
 
 const GRADLE_VERSION_KEY = 'gradle';
@@ -268,8 +268,4 @@ export function buildServerSigningConfig(args: BuildServerSigningConfigArgs): Se
     keyAlias: args.keyAlias,
     keyPassword: args.keyPassword,
   };
-}
-
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
