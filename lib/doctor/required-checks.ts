@@ -26,7 +26,7 @@ export class JavaVersionCheck implements IDoctorCheck {
         `Cannot retrieve Java version. Is Java installed and JAVA_HOME set to a proper path?`,
       );
     }
-    let javaVerMatch: RegExpExecArray | null = null;
+    let javaVerMatch: RegExpExecArray | null;
     try {
       const {stderr} = await exec(fullJavaPath, ['-XshowSettings:properties', '-version']);
       javaVerMatch = this.JAVA_VERSION_PATTERN.exec(stderr);

@@ -1,5 +1,6 @@
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import type {Browser} from 'webdriverio';
 import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
 import {APIDEMO_CAPS} from '../desired';
 
@@ -8,7 +9,7 @@ chai.use(chaiAsPromised);
 describe('element attributes', function () {
   this.timeout(MOCHA_TIMEOUT);
 
-  let driver;
+  let driver: Browser;
 
   before(async function () {
     driver = await initSession(APIDEMO_CAPS);

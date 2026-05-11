@@ -72,7 +72,7 @@ interface SessionsResponse {
 }
 
 class EspressoProxy extends JWProxy {
-  instrumentationState: InstrumentationState;
+  instrumentationState!: InstrumentationState;
 
   override async proxyCommand(
     url: string,
@@ -531,9 +531,12 @@ export class EspressoRunner {
   }
 }
 
-function requireOption(opts: EspressoRunnerOptions, key: string): any {
+function requireOption<K extends keyof EspressoRunnerOptions>(
+  opts: EspressoRunnerOptions,
+  key: K,
+): NonNullable<EspressoRunnerOptions[K]> {
   if (!util.hasValue(opts[key])) {
     throw new Error(`Option '${key}' is required!`);
   }
-  return opts[key];
+  return opts[key] as NonNullable<EspressoRunnerOptions[K]>;
 }

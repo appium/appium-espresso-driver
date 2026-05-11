@@ -71,8 +71,8 @@ export class ServerBuilder {
   private readonly serverVersions: Partial<Record<(typeof VERSION_KEYS)[number], string>>;
   private readonly testAppPackage?: string;
   private readonly signingConfig?: ServerSigningConfig | null;
-  private readonly additionalAppDependencies: string[];
-  private readonly additionalAndroidTestDependencies: string[];
+  private readonly additionalAppDependencies: string[] = [];
+  private readonly additionalAndroidTestDependencies: string[] = [];
   private readonly composeSupport: boolean;
 
   constructor(log: AppiumLogger, args: ServerBuilderOptions) {

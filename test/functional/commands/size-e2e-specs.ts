@@ -1,5 +1,6 @@
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import type {Browser} from 'webdriverio';
 import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
 import {APIDEMO_CAPS} from '../desired';
 
@@ -8,7 +9,7 @@ chai.use(chaiAsPromised);
 describe('Size', function () {
   this.timeout(MOCHA_TIMEOUT);
 
-  let driver;
+  let driver: Browser;
   before(async function () {
     driver = await initSession(APIDEMO_CAPS);
   });
@@ -26,7 +27,7 @@ describe('Size', function () {
 
   it('should find rect of an element', async function () {
     const el = await driver.$('~App');
-    const {width, height, x, y} = await driver.getElementRect(el.elementId);
+    const {width, height, x, y} = await driver.getElementRect(await el.elementId);
     expect(width).to.be.above(0);
     expect(height).to.be.above(0);
     // the element start from the edge of left.
