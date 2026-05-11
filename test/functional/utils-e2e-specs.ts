@@ -1,7 +1,7 @@
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import path from 'node:path';
-import {fs, mkdirp, tempDir} from 'appium/support';
+import {fs, tempDir} from 'appium/support';
 import {copyGradleProjectRecursively} from '../../lib/utils';
 
 chai.use(chaiAsPromised);
@@ -37,8 +37,8 @@ describe('copyGradleProjectRecursively', function () {
   });
 
   it("doesn't copy any build directory", async function () {
-    await mkdirp(path.join(baseSrcDir, 'build'));
-    await mkdirp(path.join(baseSrcDir, 'dir', 'build'));
+    await fs.mkdirp(path.join(baseSrcDir, 'build'));
+    await fs.mkdirp(path.join(baseSrcDir, 'dir', 'build'));
 
     await createTestFile(path.join(baseSrcDir, 'build', 'file'));
     await createTestFile(path.join(baseSrcDir, 'dir', 'build', 'file'));
@@ -50,8 +50,8 @@ describe('copyGradleProjectRecursively', function () {
   });
 
   it('copies all files not having "build" in their paths', async function () {
-    await mkdirp(path.join(baseSrcDir, 'foo'));
-    await mkdirp(path.join(baseSrcDir, 'dir', 'foo'));
+    await fs.mkdirp(path.join(baseSrcDir, 'foo'));
+    await fs.mkdirp(path.join(baseSrcDir, 'dir', 'foo'));
 
     await createTestFile(path.join(baseSrcDir, 'file'));
     await createTestFile(path.join(baseSrcDir, 'dir', 'file'));
@@ -67,8 +67,8 @@ describe('copyGradleProjectRecursively', function () {
   });
 
   it('copies files named "build"', async function () {
-    await mkdirp(path.join(baseSrcDir, 'foo'));
-    await mkdirp(path.join(baseSrcDir, 'dir', 'foo'));
+    await fs.mkdirp(path.join(baseSrcDir, 'foo'));
+    await fs.mkdirp(path.join(baseSrcDir, 'dir', 'foo'));
 
     await createTestFile(path.join(baseSrcDir, 'build'));
     await createTestFile(path.join(baseSrcDir, 'dir', 'build'));

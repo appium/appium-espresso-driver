@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import {errors} from 'appium/driver';
 import {util} from 'appium/support';
 import type {EspressoDriver} from '../driver';
@@ -174,7 +173,7 @@ export async function mobileNavigateTo(
   menuItemId: number | string,
 ): Promise<any> {
   const menuItemIdAsNumber = parseInt(`${menuItemId}`, 10);
-  if (_.isNaN(menuItemIdAsNumber) || menuItemIdAsNumber < 0) {
+  if (Number.isNaN(menuItemIdAsNumber) || menuItemIdAsNumber < 0) {
     throw new errors.InvalidArgumentError(
       `'menuItemId' must be a non-negative number. Found ${menuItemId}`,
     );
@@ -238,7 +237,7 @@ export async function mobileScrollToPage(
   smoothScroll?: boolean,
 ): Promise<any> {
   const scrollToTypes = ['first', 'last', 'left', 'right'];
-  if (scrollTo && !_.includes(scrollToTypes, scrollTo)) {
+  if (scrollTo && !scrollToTypes.includes(scrollTo)) {
     throw new errors.InvalidArgumentError(
       `"scrollTo" must be one of "${scrollToTypes.join(', ')}" found '${scrollTo}'`,
     );

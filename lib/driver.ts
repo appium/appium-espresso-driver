@@ -10,7 +10,6 @@ import type {
   SessionCapabilities,
 } from '@appium/types';
 import type {EspressoConstraints} from './constraints';
-import _ from 'lodash';
 import path from 'node:path';
 import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver';
 import {EspressoRunner, TEST_APK_PKG} from './espresso-runner';
@@ -30,7 +29,7 @@ import {SETTINGS_HELPER_ID} from 'io.appium.settings';
 import {ESPRESSO_CONSTRAINTS} from './constraints';
 import {findAPortNotInUse} from 'portscanner';
 import {retryInterval} from 'asyncbox';
-import {qualifyActivityName, getPackageInfo} from './utils';
+import {qualifyActivityName, getPackageInfo, isCachedAppInfo, isEmptyValue} from './utils';
 import {newMethodMap} from './method-map';
 import type {EspressoDriverCaps, EspressoDriverOpts, W3CEspressoDriverCaps} from './types';
 import {executeMethodMap} from './execute-method-map';
@@ -288,7 +287,7 @@ export class EspressoDriver
         adbPort: DEFAULT_ADB_PORT,
         androidInstallTimeout: 90000,
       };
-      _.defaults(this.opts, defaultOpts);
+      this.opts = Object.assign({}, defaultOpts, this.opts);
 
       if (this.isChromeSession) {
         if (this.opts.app) {
@@ -342,7 +341,7 @@ export class EspressoDriver
     } catch (e) {
       await this.deleteSession();
       e.message +=
-        `${_.endsWith(e.message, '.') ? '' : '.'} Check ` +
+        `${e.message?.endsWith('.') ? '' : '.'} Check ` +
         'https://github.com/appium/appium-espresso-driver#troubleshooting ' +
         'regarding advanced session startup troubleshooting.';
       if (isErrorType(e, errors.SessionNotCreatedError)) {
@@ -365,7 +364,7 @@ export class EspressoDriver
   async unzipApp(appPath: string): Promise<string> {
     const useSystemUnzipEnv = process.env.APPIUM_PREFER_SYSTEM_UNZIP;
     const useSystemUnzip =
-      _.isEmpty(useSystemUnzipEnv) || !['0', 'false'].includes(_.toLower(useSystemUnzipEnv));
+      !useSystemUnzipEnv || !['0', 'false'].includes(useSystemUnzipEnv.toLowerCase());
     const tmpRoot = await tempDir.openDir();
     await zip.extractAllTo(appPath, tmpRoot, {useSystemUnzip});
 
@@ -383,7 +382,7 @@ export class EspressoDriver
           `least one valid application package.`,
       );
     }
-    const unzippedAppPath = path.join(tmpRoot, _.first(sortedBundleItems)!);
+    const unzippedAppPath = path.join(tmpRoot, sortedBundleItems[0]!);
     this.log.debug(`'${unzippedAppPath}' is the unzipped file from '${appPath}'`);
     return unzippedAppPath;
   }
@@ -401,14 +400,14 @@ export class EspressoDriver
       }
     };
 
-    const hasApkExt = (appPath) => _.endsWith(_.toLower(appPath), APK_EXT);
-    const hasAabExt = (appPath) => _.endsWith(_.toLower(appPath), AAB_EXT);
+    const hasApkExt = (appPath) => appPath.toLowerCase().endsWith(APK_EXT);
+    const hasAabExt = (appPath) => appPath.toLowerCase().endsWith(AAB_EXT);
     const extractUniversalApk = async (shouldExtract, appPath) =>
       shouldExtract ? appPath : await this.adb.extractUniversalApk(appPath);
 
-    let pathInCache = null;
+    let pathInCache: string | null = null;
     let isResultAppPathAlreadyCached = false;
-    if (_.isPlainObject(cachedAppInfo)) {
+    if (isCachedAppInfo(cachedAppInfo)) {
       const packageHash = await fs.hash(appPath);
       if (packageHash === cachedAppInfo.packageHash && (await fs.exists(cachedAppInfo.fullPath))) {
         this.log.info(`Using '${cachedAppInfo.fullPath}' which is cached from '${appPath}'`);
@@ -679,7 +678,7 @@ export class EspressoDriver
 
     const screenRecordingStopTasks = [
       async () => {
-        if (!_.isEmpty(this._screenRecordingProperties)) {
+        if (!isEmptyValue(this._screenRecordingProperties)) {
           await (this as unknown as AndroidDriver).stopRecordingScreen();
         }
       },
@@ -689,7 +688,7 @@ export class EspressoDriver
         }
       },
       async () => {
-        if (!_.isEmpty(this._screenStreamingProps)) {
+        if (!isEmptyValue(this._screenStreamingProps)) {
           await (this as unknown as AndroidDriver).mobileStopScreenStreaming();
         }
       },
@@ -773,7 +772,7 @@ export class EspressoDriver
   getProxyAvoidList(sessionId): RouteMatcher[] {
     // we are maintaining two sets of NO_PROXY lists, one for chromedriver(CHROME_NO_PROXY)
     // and one for Espresso(NO_PROXY), based on current context will return related NO_PROXY list
-    this.jwpProxyAvoid = _.isNil(this.chromedriver) ? NO_PROXY : CHROME_NO_PROXY;
+    this.jwpProxyAvoid = this.chromedriver == null ? NO_PROXY : CHROME_NO_PROXY;
     if (this.opts.nativeWebScreenshot) {
       this.jwpProxyAvoid = [
         ...this.jwpProxyAvoid,

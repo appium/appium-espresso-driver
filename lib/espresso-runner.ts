@@ -2,9 +2,13 @@ import {JWProxy, errors} from 'appium/driver';
 import {sleep, waitForCondition} from 'asyncbox';
 import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './server-builder';
 import path from 'node:path';
-import {fs, util, mkdirp, timing} from 'appium/support';
-import _ from 'lodash';
-import {copyGradleProjectRecursively, getPackageInfoSync, getPackageInfo} from './utils';
+import {fs, util, timing} from 'appium/support';
+import {
+  copyGradleProjectRecursively,
+  getPackageInfoSync,
+  getPackageInfo,
+  isPlainObject,
+} from './utils';
 import axios from 'axios';
 import * as semver from 'semver';
 import type {
@@ -277,7 +281,7 @@ export class EspressoRunner {
     this.log.info(`Building espresso server in '${serverPath}'`);
     this.log.debug(`The build folder root could be customized by changing the 'tmpDir' capability`);
     await fs.rimraf(serverPath);
-    await mkdirp(serverPath);
+    await fs.mkdirp(serverPath);
     this.log.debug(
       `Copying espresso server template from ('${TEST_SERVER_ROOT}' to '${serverPath}')`,
     );
@@ -320,7 +324,7 @@ export class EspressoRunner {
       'true', // To avoid unexpected error by google analytics
     ];
 
-    if (_.isBoolean(this.disableSuppressAccessibilityService)) {
+    if (typeof this.disableSuppressAccessibilityService === 'boolean') {
       cmd.push(
         '-e',
         'DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES',
@@ -348,7 +352,7 @@ export class EspressoRunner {
     });
     this.instProcess.on('output', (stdout: string, stderr: string) => {
       const line = stdout || stderr;
-      if (_.isEmpty(line.trim())) {
+      if (!line.trim()) {
         // Do not print empty lines into the system log
         return;
       }
@@ -481,7 +485,7 @@ export class EspressoRunner {
     driverVersion: string,
     serverStatus: ServerStatus,
   ): Promise<boolean> {
-    if (!_.isPlainObject(serverStatus) || !_.isPlainObject(serverStatus.build)) {
+    if (!isPlainObject(serverStatus) || !isPlainObject(serverStatus.build)) {
       throw this.log.errorWithException(
         `The Espresso server version integrated with the application under test is not compatible ` +
           `with the current driver version '${driverVersion}'.`,

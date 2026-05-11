@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {asyncmap, sleep} from 'asyncbox';
-import _ from 'lodash';
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {initSession, deleteSession, HOST, PORT, MOCHA_TIMEOUT} from '../helpers/session';
@@ -67,7 +66,7 @@ describe('touch actions -', function () {
     const startEl = els[els.length - 3];
     const {x: startX, y: startY} = await startEl.getLocation();
 
-    const endEl = _.first(els)!;
+    const endEl = els[0]!;
     const {x: endX, y: endY} = await endEl.getLocation();
 
     return {startX, startY, endX, endY, startEl, endEl};
