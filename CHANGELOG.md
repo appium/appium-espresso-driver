@@ -1,3 +1,9 @@
+## [8.4.0](https://github.com/appium/appium-espresso-driver/compare/v8.3.1...v8.4.0) (2026-05-12)
+
+### Features
+
+* Ditch lodash ([#1160](https://github.com/appium/appium-espresso-driver/issues/1160)) ([1c3d3b4](https://github.com/appium/appium-espresso-driver/commit/1c3d3b48acb132cc06965188b92ae39b310a4c58))
+
 ## [8.3.1](https://github.com/appium/appium-espresso-driver/compare/v8.3.0...v8.3.1) (2026-05-06)
 
 ### Miscellaneous Chores
