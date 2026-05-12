@@ -1,3 +1,9 @@
+## [8.4.1](https://github.com/appium/appium-espresso-driver/compare/v8.4.0...v8.4.1) (2026-05-12)
+
+### Miscellaneous Chores
+
+* **deps:** bump gradle-wrapper from 9.5.0 to 9.5.1 in /espresso-server ([#1161](https://github.com/appium/appium-espresso-driver/issues/1161)) ([b6e0cfb](https://github.com/appium/appium-espresso-driver/commit/b6e0cfbf0c0daff6aa89ccc3a5c472ed79b94106))
+
 ## [8.4.0](https://github.com/appium/appium-espresso-driver/compare/v8.3.1...v8.4.0) (2026-05-12)
 
 ### Features
