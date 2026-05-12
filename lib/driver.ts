@@ -4,13 +4,14 @@ import type {
   DriverData,
   ExternalDriver,
   InitialOpts,
+  PostProcessOptions,
+  PostProcessResult,
   StringRecord,
   SingularSessionData,
   RouteMatcher,
   SessionCapabilities,
 } from '@appium/types';
 import type {EspressoConstraints} from './constraints';
-import _ from 'lodash';
 import path from 'node:path';
 import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver';
 import {EspressoRunner, TEST_APK_PKG} from './espresso-runner';
@@ -30,7 +31,7 @@ import {SETTINGS_HELPER_ID} from 'io.appium.settings';
 import {ESPRESSO_CONSTRAINTS} from './constraints';
 import {findAPortNotInUse} from 'portscanner';
 import {retryInterval} from 'asyncbox';
-import {qualifyActivityName, getPackageInfo} from './utils';
+import {qualifyActivityName, getPackageInfo, isCachedAppInfo, isEmptyValue} from './utils';
 import {newMethodMap} from './method-map';
 import type {EspressoDriverCaps, EspressoDriverOpts, W3CEspressoDriverCaps} from './types';
 import {executeMethodMap} from './execute-method-map';
@@ -154,7 +155,7 @@ export class EspressoDriver
 
   _originalIme: string | null;
 
-  espresso: EspressoRunner;
+  espresso!: EspressoRunner;
 
   wasAnimationEnabled?: boolean;
 
@@ -288,7 +289,7 @@ export class EspressoDriver
         adbPort: DEFAULT_ADB_PORT,
         androidInstallTimeout: 90000,
       };
-      _.defaults(this.opts, defaultOpts);
+      this.opts = Object.assign({}, defaultOpts, this.opts);
 
       if (this.isChromeSession) {
         if (this.opts.app) {
@@ -339,18 +340,17 @@ export class EspressoDriver
 
       await this.startEspressoSession();
       return [sessionId, caps];
-    } catch (e) {
+    } catch (e: unknown) {
       await this.deleteSession();
-      e.message +=
-        `${_.endsWith(e.message, '.') ? '' : '.'} Check ` +
+      const cause = e instanceof Error ? e : new Error(String(e));
+      cause.message +=
+        `${cause.message.endsWith('.') ? '' : '.'} Check ` +
         'https://github.com/appium/appium-espresso-driver#troubleshooting ' +
         'regarding advanced session startup troubleshooting.';
       if (isErrorType(e, errors.SessionNotCreatedError)) {
         throw e;
       }
-      const err = new errors.SessionNotCreatedError(e.message);
-      err.stack = e.stack;
-      throw err;
+      throw new errors.SessionNotCreatedError(cause.message, cause as Error);
     }
   }
 
@@ -365,7 +365,7 @@ export class EspressoDriver
   async unzipApp(appPath: string): Promise<string> {
     const useSystemUnzipEnv = process.env.APPIUM_PREFER_SYSTEM_UNZIP;
     const useSystemUnzip =
-      _.isEmpty(useSystemUnzipEnv) || !['0', 'false'].includes(_.toLower(useSystemUnzipEnv));
+      !useSystemUnzipEnv || !['0', 'false'].includes(useSystemUnzipEnv.toLowerCase());
     const tmpRoot = await tempDir.openDir();
     await zip.extractAllTo(appPath, tmpRoot, {useSystemUnzip});
 
@@ -383,13 +383,18 @@ export class EspressoDriver
           `least one valid application package.`,
       );
     }
-    const unzippedAppPath = path.join(tmpRoot, _.first(sortedBundleItems)!);
+    const unzippedAppPath = path.join(tmpRoot, sortedBundleItems[0]!);
     this.log.debug(`'${unzippedAppPath}' is the unzipped file from '${appPath}'`);
     return unzippedAppPath;
   }
 
-  async onPostConfigureApp({cachedAppInfo, isUrl, appPath}) {
-    const presignApp = async (appLocation) => {
+  async onPostConfigureApp(opts: PostProcessOptions): Promise<PostProcessResult | undefined> {
+    const {cachedAppInfo, isUrl, appPath} = opts;
+    if (!appPath) {
+      return undefined;
+    }
+
+    const presignApp = async (appLocation: string) => {
       if (this.opts.noSign) {
         this.log.info(
           'Skipping application signing because noSign capability is set to true. ' +
@@ -401,14 +406,14 @@ export class EspressoDriver
       }
     };
 
-    const hasApkExt = (appPath) => _.endsWith(_.toLower(appPath), APK_EXT);
-    const hasAabExt = (appPath) => _.endsWith(_.toLower(appPath), AAB_EXT);
-    const extractUniversalApk = async (shouldExtract, appPath) =>
-      shouldExtract ? appPath : await this.adb.extractUniversalApk(appPath);
+    const hasApkExt = (p: string) => p.toLowerCase().endsWith(APK_EXT);
+    const hasAabExt = (p: string) => p.toLowerCase().endsWith(AAB_EXT);
+    const extractUniversalApk = async (shouldExtract: boolean, p: string) =>
+      shouldExtract ? p : await this.adb.extractUniversalApk(p);
 
-    let pathInCache = null;
+    let pathInCache: string | null = null;
     let isResultAppPathAlreadyCached = false;
-    if (_.isPlainObject(cachedAppInfo)) {
+    if (isCachedAppInfo(cachedAppInfo)) {
       const packageHash = await fs.hash(appPath);
       if (packageHash === cachedAppInfo.packageHash && (await fs.exists(cachedAppInfo.fullPath))) {
         this.log.info(`Using '${cachedAppInfo.fullPath}' which is cached from '${appPath}'`);
@@ -426,7 +431,7 @@ export class EspressoDriver
       if (shouldResultAppPathBeCached) {
         // .zip, .aab or downloaded .apk
 
-        let unzippedAppPath;
+        let unzippedAppPath: string | undefined;
         let isUnzippedApk = false;
         if (!(hasApkExt(appPath) || hasAabExt(appPath))) {
           unzippedAppPath = await this.unzipApp(appPath);
@@ -442,9 +447,12 @@ export class EspressoDriver
           // Clean up the temporarily downloaded .aab or .zip package
           await fs.rimraf(appPath);
         }
-        if (hasAabExt(unzippedAppPath)) {
+        if (unzippedAppPath !== undefined && hasAabExt(unzippedAppPath)) {
           // Cleanup the local unzipped .aab file
-          await fs.rimraf(/** @type {string} */ unzippedAppPath);
+          await fs.rimraf(unzippedAppPath);
+        }
+        if (pathInCache == null) {
+          throw this.log.errorWithException('Expected a cached app path after post-processing');
         }
         await presignApp(pathInCache);
       } else if (isApk) {
@@ -453,7 +461,7 @@ export class EspressoDriver
         await presignApp(appPath);
       }
     }
-    return shouldResultAppPathBeCached ? {appPath: pathInCache} : false;
+    return shouldResultAppPathBeCached && pathInCache != null ? {appPath: pathInCache} : undefined;
   }
 
   // TODO much of this logic is duplicated from uiautomator2
@@ -665,10 +673,18 @@ export class EspressoDriver
       await this.espresso.installTestApk();
       try {
         await this.adb.addToDeviceIdleWhitelist(SETTINGS_HELPER_ID, TEST_APK_PKG);
-      } catch (e) {
+      } catch (e: unknown) {
+        const stderr =
+          typeof e === 'object' &&
+          e !== null &&
+          'stderr' in e &&
+          typeof (e as {stderr: unknown}).stderr === 'string'
+            ? (e as {stderr: string}).stderr
+            : undefined;
+        const message = e instanceof Error ? e.message : String(e);
         this.log.warn(
           `Cannot add server packages to the Doze whitelist. Original error: ` +
-            (e.stderr || e.message),
+            (stderr || message),
         );
       }
     }
@@ -679,7 +695,7 @@ export class EspressoDriver
 
     const screenRecordingStopTasks = [
       async () => {
-        if (!_.isEmpty(this._screenRecordingProperties)) {
+        if (!isEmptyValue(this._screenRecordingProperties)) {
           await (this as unknown as AndroidDriver).stopRecordingScreen();
         }
       },
@@ -689,7 +705,7 @@ export class EspressoDriver
         }
       },
       async () => {
-        if (!_.isEmpty(this._screenStreamingProps)) {
+        if (!isEmptyValue(this._screenStreamingProps)) {
           await (this as unknown as AndroidDriver).mobileStopScreenStreaming();
         }
       },
@@ -716,15 +732,17 @@ export class EspressoDriver
       if (this.wasAnimationEnabled) {
         try {
           await this.settingsApp.setAnimationState(true);
-        } catch (err) {
-          this.log.warn(`Unable to reset animation: ${err.message}`);
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : String(err);
+          this.log.warn(`Unable to reset animation: ${message}`);
         }
       }
       if (this._originalIme) {
         try {
           await this.adb.setIME(this._originalIme);
-        } catch (e) {
-          this.log.warn(`Cannot restore the original IME: ${e.message}`);
+        } catch (e: unknown) {
+          const message = e instanceof Error ? e.message : String(e);
+          this.log.warn(`Cannot restore the original IME: ${message}`);
         }
       }
       if (!this.isChromeSession && this.opts.appPackage && !this.opts.dontStopAppOnReset) {
@@ -744,8 +762,9 @@ export class EspressoDriver
     if (this.opts.systemPort) {
       try {
         await this.adb.removePortForward(this.opts.systemPort);
-      } catch (error) {
-        this.log.warn(`Unable to remove port forward '${error.message}'`);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        this.log.warn(`Unable to remove port forward '${message}'`);
         //Ignore, this block will also be called when we fall in catch block
         // and before even port forward.
       }
@@ -757,23 +776,23 @@ export class EspressoDriver
     // settings to the espresso server already
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  proxyActive(sessionId) {
+  override proxyActive(sessionId?: string | null) {
+    void sessionId;
     // we always have an active proxy to the espresso server
     return true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  canProxy(sessionId) {
+  override canProxy(sessionId?: string | null) {
+    void sessionId;
     // we can always proxy to the espresso server
     return true;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getProxyAvoidList(sessionId): RouteMatcher[] {
+  override getProxyAvoidList(sessionId?: string | null): RouteMatcher[] {
+    void sessionId;
     // we are maintaining two sets of NO_PROXY lists, one for chromedriver(CHROME_NO_PROXY)
     // and one for Espresso(NO_PROXY), based on current context will return related NO_PROXY list
-    this.jwpProxyAvoid = _.isNil(this.chromedriver) ? NO_PROXY : CHROME_NO_PROXY;
+    this.jwpProxyAvoid = this.chromedriver == null ? NO_PROXY : CHROME_NO_PROXY;
     if (this.opts.nativeWebScreenshot) {
       this.jwpProxyAvoid = [
         ...this.jwpProxyAvoid,

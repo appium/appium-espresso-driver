@@ -1,5 +1,6 @@
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import type {Browser, ChainablePromiseElement} from 'webdriverio';
 import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
 import {amendCapabilities, APIDEMO_CAPS} from '../desired';
 
@@ -8,7 +9,7 @@ chai.use(chaiAsPromised);
 describe('mobile', function () {
   this.timeout(MOCHA_TIMEOUT);
 
-  let driver;
+  let driver: Browser;
 
   before(async function () {
     driver = await initSession(
@@ -301,7 +302,7 @@ describe('mobile', function () {
     });
   });
   describe('mobile: clickAction', function () {
-    let viewEl;
+    let viewEl: ChainablePromiseElement;
 
     before(function () {
       if (process.env.CI) {

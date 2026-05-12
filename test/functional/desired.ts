@@ -1,5 +1,4 @@
 import path from 'node:path';
-import _ from 'lodash';
 import {node} from 'appium/support';
 // Using broad typing to keep test helper concise
 type W3CCapabilities = any;
@@ -12,7 +11,7 @@ export function amendCapabilities(
   ...newCaps: Array<Record<string, any>>
 ) {
   return node.deepFreeze({
-    alwaysMatch: _.cloneDeep(Object.assign({}, baseCaps.alwaysMatch, ...newCaps)),
+    alwaysMatch: structuredClone(Object.assign({}, baseCaps.alwaysMatch, ...newCaps)),
     firstMatch: [{}],
   }) as W3CCapabilities;
 }

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {asyncmap, sleep} from 'asyncbox';
-import _ from 'lodash';
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import type {Browser, ChainablePromiseElement} from 'webdriverio';
 import {initSession, deleteSession, HOST, PORT, MOCHA_TIMEOUT} from '../helpers/session';
 import {APIDEMO_CAPS} from '../desired';
 
@@ -11,7 +11,7 @@ chai.use(chaiAsPromised);
 describe('touch actions -', function () {
   this.timeout(MOCHA_TIMEOUT);
 
-  let driver: any;
+  let driver: Browser;
   let sessionId: string;
 
   before(async function () {
@@ -67,7 +67,7 @@ describe('touch actions -', function () {
     const startEl = els[els.length - 3];
     const {x: startX, y: startY} = await startEl.getLocation();
 
-    const endEl = _.first(els)!;
+    const endEl = els[0]!;
     const {x: endX, y: endY} = await endEl.getLocation();
 
     return {startX, startY, endX, endY, startEl, endEl};
@@ -234,7 +234,7 @@ describe('touch actions -', function () {
   });
 
   describe('touches', function () {
-    let nextEl;
+    let nextEl: ChainablePromiseElement;
 
     beforeEach(async function () {
       await startTextSwitcherActivity();
@@ -262,7 +262,7 @@ describe('touch actions -', function () {
         {
           type: 'pointerMove',
           duration: 0,
-          origin: {'element-6066-11e4-a52e-4f735466cecf': nextEl.elementId},
+          origin: {'element-6066-11e4-a52e-4f735466cecf': await nextEl.elementId},
         },
         {type: 'pointerDown', button: 0},
         {type: 'pause', duration: 100},
@@ -276,7 +276,7 @@ describe('touch actions -', function () {
 
   describe.skip('mjsonwp touch actions', function () {
     describe('touch', function () {
-      let nextEl;
+      let nextEl: any;
 
       beforeEach(async function () {
         await startTextSwitcherActivity();
@@ -284,7 +284,7 @@ describe('touch actions -', function () {
         expect(await driver.$("//*[@text='0']")).to.exist;
         await expect(driver.$("//*[@text='1']")).to.be.rejectedWith(/NoSuchElement/);
 
-        nextEl = await driver.elementByAccessibilityId('Next');
+        nextEl = await (driver as any).elementByAccessibilityId('Next');
       });
 
       it('should do touch/click event', async function () {

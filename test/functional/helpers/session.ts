@@ -1,5 +1,6 @@
-import {remote} from 'webdriverio';
+import {remote, type Browser} from 'webdriverio';
 import AsyncLock from 'async-lock';
+import type {Capabilities} from '@wdio/types';
 
 const SESSION_GUARD = new AsyncLock();
 const HOST = process.env.APPIUM_TEST_SERVER_HOST || '127.0.0.1';
@@ -11,15 +12,15 @@ const COMMON_REMOTE_OPTIONS = {
   port: PORT,
 };
 
-let driver: any = null;
+let driver: Browser | null = null;
 
-async function initSession(caps: any): Promise<any> {
+async function initSession(caps: Capabilities.RequestedStandaloneCapabilities): Promise<Browser> {
   if (driver) {
     await deleteSession();
   }
 
   return await SESSION_GUARD.acquire(HOST, async () => {
-    const options: any = {
+    const options: Capabilities.WebdriverIOConfig = {
       ...COMMON_REMOTE_OPTIONS,
       capabilities: caps,
     };

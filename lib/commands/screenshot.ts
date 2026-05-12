@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import type {EspressoDriver} from '../driver';
 import type {ScreenshotsInfo} from './types';
 
@@ -30,7 +29,7 @@ export async function mobileScreenshots(
       name: match[3],
     };
   }
-  if (_.isEmpty(infos)) {
+  if (Object.keys(infos).length === 0) {
     this.log.debug(displaysInfo);
     throw new Error('Cannot determine the information about connected Android displays');
   }
@@ -55,10 +54,12 @@ export async function mobileScreenshots(
     };
   }
 
-  const allInfos = _.values(infos);
+  const allInfos = Object.values(infos);
   const screenshots = await Promise.all(allInfos.map(({id}) => toB64Screenshot(id)));
   const result: ScreenshotsInfo = {};
-  for (const [info, payload] of _.zip(allInfos, screenshots)) {
+  for (let i = 0; i < allInfos.length; i++) {
+    const info = allInfos[i];
+    const payload = screenshots[i];
     if (info && payload) {
       result[info.id] = {
         ...info,

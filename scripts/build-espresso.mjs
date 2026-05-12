@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {Command} from 'commander';
@@ -75,8 +74,9 @@ async function buildEspressoServer(options) {
  * @returns {boolean}
  */
 function isGradleLogEnabled(options) {
+  const showGradleLogEnv = process.env.SHOW_GRADLE_LOG?.toLowerCase();
   return Boolean(options.showGradleLog ||
-    !_.isEmpty(process.env.SHOW_GRADLE_LOG) && ['1', 'true'].includes(_.toLower(process.env.SHOW_GRADLE_LOG))
+    (showGradleLogEnv && ['1', 'true'].includes(showGradleLogEnv))
   );
 }
 

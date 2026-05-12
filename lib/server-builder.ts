@@ -1,9 +1,8 @@
 import {SubProcess} from 'teen_process';
 import {fs, system} from 'appium/support';
-import _ from 'lodash';
 import path from 'node:path';
 import {EOL} from 'node:os';
-import {updateDependencyLines} from './utils';
+import {escapeRegExp, updateDependencyLines} from './utils';
 import type {AppiumLogger} from '@appium/types';
 
 const GRADLE_VERSION_KEY = 'gradle';
@@ -72,8 +71,8 @@ export class ServerBuilder {
   private readonly serverVersions: Partial<Record<(typeof VERSION_KEYS)[number], string>>;
   private readonly testAppPackage?: string;
   private readonly signingConfig?: ServerSigningConfig | null;
-  private readonly additionalAppDependencies: string[];
-  private readonly additionalAndroidTestDependencies: string[];
+  private readonly additionalAppDependencies: string[] = [];
+  private readonly additionalAndroidTestDependencies: string[] = [];
   private readonly composeSupport: boolean;
 
   constructor(log: AppiumLogger, args: ServerBuilderOptions) {
@@ -85,18 +84,14 @@ export class ServerBuilder {
     this.composeSupport = buildConfiguration.composeSupport !== false;
 
     const versionConfiguration = buildConfiguration.toolsVersions || {};
-    this.serverVersions = _.reduce(
-      versionConfiguration,
-      (acc, value, key) => {
-        if (VERSION_KEYS.includes(key as (typeof VERSION_KEYS)[number])) {
-          acc[key as (typeof VERSION_KEYS)[number]] = value;
-        } else {
-          log.warn(`Got unexpected '${key}' in toolsVersion block of the build configuration`);
-        }
-        return acc;
-      },
-      {} as Partial<Record<(typeof VERSION_KEYS)[number], string>>,
-    );
+    this.serverVersions = {} as Partial<Record<(typeof VERSION_KEYS)[number], string>>;
+    for (const [key, value] of Object.entries(versionConfiguration)) {
+      if (VERSION_KEYS.includes(key as (typeof VERSION_KEYS)[number])) {
+        this.serverVersions[key as (typeof VERSION_KEYS)[number]] = value;
+      } else {
+        log.warn(`Got unexpected '${key}' in toolsVersion block of the build configuration`);
+      }
+    }
 
     this.testAppPackage = args.testAppPackage;
     this.signingConfig = args.signingConfig;
@@ -132,12 +127,12 @@ export class ServerBuilder {
     const signingConfig = this.signingConfig;
     if (signingConfig) {
       args.push(
-        ..._.keys(signingConfig)
+        ...Object.keys(signingConfig)
           .map((key) => {
             const propKey = key as keyof ServerSigningConfig;
             const propValue = signingConfig[propKey];
-            const k = `appium${_.upperFirst(key)}`;
-            const v: string | undefined = !_.isNil(propValue) ? String(propValue) : undefined;
+            const k = `appium${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+            const v: string | undefined = propValue != null ? String(propValue) : undefined;
             return buildProperty(k, v);
           })
           .filter((arg): arg is string => typeof arg === 'string' && Boolean(arg)),
@@ -175,7 +170,7 @@ export class ServerBuilder {
 
   private updateGradleDistUrl(propertiesContent: string, version: string): string {
     return propertiesContent.replace(
-      new RegExp(`^(${_.escapeRegExp(GRADLE_URL_PREFIX)}).+$`, 'gm'),
+      new RegExp(`^(${escapeRegExp(GRADLE_URL_PREFIX)}).+$`, 'gm'),
       `$1${GRADLE_URL_TEMPLATE.replace('VERSION', version)}`,
     );
   }
@@ -184,10 +179,10 @@ export class ServerBuilder {
     let hasAdditionalDeps = false;
     for (const propName of DEPENDENCY_PROP_NAMES) {
       const deps = this[propName];
-      if (!_.isArray(deps)) {
+      if (!Array.isArray(deps)) {
         throw new Error(`'${propName}' must be an array`);
       }
-      if (_.isEmpty(deps.filter((line) => _.trim(line)))) {
+      if (deps.filter((line) => line.trim()).length === 0) {
         continue;
       }
 
@@ -210,9 +205,9 @@ export class ServerBuilder {
     for (const propName of DEPENDENCY_PROP_NAMES) {
       const prefix = propName === DEPENDENCY_PROP_NAMES[0] ? 'api' : 'androidTestImplementation';
       const deps = this[propName]
-        .filter((line) => _.trim(line))
+        .filter((line) => line.trim())
         .map((line) => `${prefix}("${line}")`);
-      if (_.isEmpty(deps)) {
+      if (deps.length === 0) {
         continue;
       }
 

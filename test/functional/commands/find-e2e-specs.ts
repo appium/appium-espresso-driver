@@ -42,16 +42,16 @@ describe('find elements', function () {
         const el = await driver.$("//*[@content-desc='Animation']");
         await el.click();
         try {
-          await driver.elementClick(el.elementId);
+          await driver.elementClick(await el.elementId);
           throw Error('Should raise an error before this line.');
-        } catch (err) {
-          expect(err.name).to.eq('stale element reference');
+        } catch (err: unknown) {
+          expect(err instanceof Error ? err.name : '').to.eq('stale element reference');
         }
         await driver.back();
       });
       it('should get the isElementDisplayed attribute on the same element twice', async function () {
         const el = await driver.$("//*[@content-desc='Animation']");
-        await expect(driver.isElementDisplayed(el.elementId)).to.eventually.be.true;
+        await expect(driver.isElementDisplayed(await el.elementId)).to.eventually.be.true;
         await el.click();
         await driver.back();
       });
@@ -76,7 +76,7 @@ describe('find elements', function () {
 
         // Click on an element that is at the bottom of the list
         const moveToEl = await driver.$('~WebView');
-        await driver.elementClick(moveToEl.elementId);
+        await driver.elementClick(await moveToEl.elementId);
         await driver.back();
         await driver.back();
       });
@@ -120,13 +120,13 @@ describe('find elements', function () {
         await deleteSession();
       });
       it('should fail to find elements with helpful error messages', async function () {
-        const err = await driver.findElement(
+        const err = (await driver.findElement(
           '-android datamatcher',
           JSON.stringify({
             name: 'hasEntry',
             args: ['title', 'A Fake Item'],
           }),
-        );
+        )) as {error: string};
         expect(err.error).to.eq('no such element');
       });
       it('should fail with invalid selector with helpful error messages', async function () {
@@ -245,13 +245,13 @@ describe('find elements', function () {
       });
 
       it('should fail to find elements with helpful error messages', async function () {
-        const err = await driver.findElement(
+        const err = (await driver.findElement(
           '-android viewmatcher',
           JSON.stringify({
             name: 'hasEntry',
             args: ['title', 'A Fake Item'],
           }),
-        );
+        )) as {error: string};
         expect(err.error).to.eq('no such element');
       });
 
