@@ -1,8 +1,3 @@
-import path from 'node:path';
-
-/** Root path of the bundled Espresso server Gradle project. */
-export const TEST_SERVER_ROOT = path.resolve(__dirname, '..', '..', '..', 'espresso-server');
-
 export const TEST_APK_PKG = 'io.appium.espressoserver.test';
 
 export const ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS = 45000;

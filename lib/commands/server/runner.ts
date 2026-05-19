@@ -1,7 +1,7 @@
 import {JWProxy, errors} from 'appium/driver';
 import {sleep, waitForCondition} from 'asyncbox';
 import path from 'node:path';
-import {fs, util, timing} from 'appium/support';
+import {fs, node, util, timing} from 'appium/support';
 import {
   copyGradleProjectRecursively,
   getPackageInfoSync,
@@ -13,7 +13,6 @@ import {
   ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS,
   TARGET_PACKAGE_CONTAINER,
   TEST_APK_PKG,
-  TEST_SERVER_ROOT,
 } from './constants';
 import axios from 'axios';
 import * as semver from 'semver';
@@ -281,9 +280,9 @@ export class EspressoRunner {
     await fs.rimraf(serverPath);
     await fs.mkdirp(serverPath);
     this.log.debug(
-      `Copying espresso server template from ('${TEST_SERVER_ROOT}' to '${serverPath}')`,
+      `Copying espresso server template from ('${getTestServerRoot()}' to '${serverPath}')`,
     );
-    await copyGradleProjectRecursively(TEST_SERVER_ROOT, serverPath);
+    await copyGradleProjectRecursively(getTestServerRoot(), serverPath);
     this.log.debug('Bulding espresso server');
     await new ServerBuilder(this.log, {
       serverPath,
@@ -537,4 +536,20 @@ function requireOption<K extends keyof EspressoRunnerOptions>(
     throw new Error(`Option '${key}' is required!`);
   }
   return opts[key] as NonNullable<EspressoRunnerOptions[K]>;
+}
+
+const MODULE_NAME = 'appium-espresso-driver';
+
+let testServerRoot: string | undefined;
+
+/** Root path of the bundled Espresso server Gradle project. */
+function getTestServerRoot(): string {
+  if (testServerRoot === undefined) {
+    const moduleRoot = node.getModuleRootSync(MODULE_NAME, __filename);
+    if (!moduleRoot) {
+      throw new Error(`Cannot find the root folder of the ${MODULE_NAME} Node.js module`);
+    }
+    testServerRoot = path.join(moduleRoot, 'espresso-server');
+  }
+  return testServerRoot;
 }
