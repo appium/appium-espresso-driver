@@ -1,10 +1,7 @@
-export * from './constants';
+export {SYSTEM_PORT_RANGE, TEST_APK_PKG} from './constants';
 export {
   ServerBuilder,
   buildServerSigningConfig,
-  updateDependencyLines,
-  GRADLE_URL_TEMPLATE,
-  VERSION_KEYS,
   type BuildServerSigningConfigArgs,
   type EspressoBuildConfiguration,
   type ServerBuilderOptions,

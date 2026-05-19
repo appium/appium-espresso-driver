@@ -1,10 +1,10 @@
 import {system} from 'appium/support';
+import {ServerBuilder} from '../../lib/commands/server';
 import {
   GRADLE_URL_TEMPLATE,
-  ServerBuilder,
   VERSION_KEYS,
   updateDependencyLines,
-} from '../../lib/commands/server';
+} from '../../lib/commands/server/builder';
 import {log} from '../../lib/logger';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
