@@ -31,7 +31,8 @@ import {SETTINGS_HELPER_ID} from 'io.appium.settings';
 import {ESPRESSO_CONSTRAINTS} from './constraints';
 import {findAPortNotInUse} from 'portscanner';
 import {retryInterval} from 'asyncbox';
-import {qualifyActivityName, getPackageInfo, isCachedAppInfo, isEmptyValue} from './utils';
+import {isCachedAppInfo} from './commands/app';
+import {qualifyActivityName, getPackageInfo, isEmptyValue} from './utils';
 import {newMethodMap} from './method-map';
 import type {EspressoDriverCaps, EspressoDriverOpts, W3CEspressoDriverCaps} from './types';
 import {executeMethodMap} from './execute-method-map';
@@ -252,7 +253,7 @@ export class EspressoDriver
     return (await super.getAppiumSessionCapabilities()) as SessionCapabilities<EspressoConstraints>;
   }
 
-  async createSession(
+  override async createSession(
     w3cCaps1: W3CEspressoDriverCaps,
     w3cCaps2?: W3CEspressoDriverCaps,
     w3cCaps3?: W3CEspressoDriverCaps,
