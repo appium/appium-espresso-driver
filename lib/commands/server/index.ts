@@ -2,6 +2,7 @@ export * from './constants';
 export {
   ServerBuilder,
   buildServerSigningConfig,
+  updateDependencyLines,
   GRADLE_URL_TEMPLATE,
   VERSION_KEYS,
   type BuildServerSigningConfigArgs,

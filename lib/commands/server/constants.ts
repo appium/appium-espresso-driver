@@ -1,8 +1,5 @@
 import path from 'node:path';
 
-// @ts-ignore - __dirname is available at runtime in CommonJS
-declare const __dirname: string;
-
 /** Root path of the bundled Espresso server Gradle project. */
 export const TEST_SERVER_ROOT = path.resolve(__dirname, '..', '..', '..', 'espresso-server');
 
