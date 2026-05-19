@@ -2,12 +2,7 @@ import {JWProxy, errors} from 'appium/driver';
 import {sleep, waitForCondition} from 'asyncbox';
 import path from 'node:path';
 import {fs, node, util, timing} from 'appium/support';
-import {
-  copyGradleProjectRecursively,
-  getPackageInfoSync,
-  getPackageInfo,
-  isPlainObject,
-} from '../../utils';
+import {getPackageInfoSync, getPackageInfo, isPlainObject} from '../../utils';
 import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './builder';
 import {
   ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS,
@@ -541,6 +536,34 @@ function requireOption<K extends keyof EspressoRunnerOptions>(
 const MODULE_NAME = 'appium-espresso-driver';
 
 let testServerRoot: string | undefined;
+
+/**
+ * Recursively copy all files except build directories contents
+ * @param sourceBaseDir directory to copy files from
+ * @param targetBaseDir directory to copy files to
+ */
+export async function copyGradleProjectRecursively(
+  sourceBaseDir: string,
+  targetBaseDir: string,
+): Promise<void> {
+  // @ts-ignore it is ok to have the async callback
+  await fs.walkDir(sourceBaseDir, true, async (itemPath: string, isDirectory: boolean) => {
+    const relativePath = path.relative(sourceBaseDir, itemPath);
+    const targetPath = path.resolve(targetBaseDir, relativePath);
+
+    const isInGradleBuildDir = `${path.sep}${itemPath}`.includes(`${path.sep}build${path.sep}`);
+    if (isInGradleBuildDir) {
+      return false;
+    }
+
+    if (isDirectory) {
+      await fs.mkdirp(targetPath);
+    } else {
+      await fs.copyFile(itemPath, targetPath);
+    }
+    return false;
+  });
+}
 
 /** Root path of the bundled Espresso server Gradle project. */
 function getTestServerRoot(): string {
