@@ -1,6 +1,5 @@
 import {JWProxy, errors} from 'appium/driver';
 import {sleep, waitForCondition} from 'asyncbox';
-import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './server-builder';
 import path from 'node:path';
 import {fs, util, timing} from 'appium/support';
 import {
@@ -8,7 +7,14 @@ import {
   getPackageInfoSync,
   getPackageInfo,
   isPlainObject,
-} from './utils';
+} from '../../utils';
+import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './builder';
+import {
+  ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS,
+  TARGET_PACKAGE_CONTAINER,
+  TEST_APK_PKG,
+  TEST_SERVER_ROOT,
+} from './constants';
 import axios from 'axios';
 import * as semver from 'semver';
 import type {
@@ -21,14 +27,6 @@ import type {
 } from '@appium/types';
 import type {ADB} from 'appium-adb';
 import type {SubProcess} from 'teen_process';
-
-// @ts-ignore - __dirname is available at runtime in CommonJS
-declare const __dirname: string;
-
-const TEST_SERVER_ROOT = path.resolve(__dirname, '..', '..', 'espresso-server');
-export const TEST_APK_PKG = 'io.appium.espressoserver.test';
-const ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS = 45000;
-const TARGET_PACKAGE_CONTAINER = '/data/local/tmp/espresso.apppackage';
 
 export interface EspressoRunnerOptions {
   adb: ADB;

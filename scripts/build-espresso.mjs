@@ -2,7 +2,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {Command} from 'commander';
 import {logger, fs} from 'appium/support.js';
-import {ServerBuilder} from '../build/lib/server-builder.js';
+import {ServerBuilder} from '../build/lib/commands/server/index.js';
 
 const LOG = logger.getLogger('EspressoBuild');
 

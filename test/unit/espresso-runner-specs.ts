@@ -1,4 +1,4 @@
-import {EspressoRunner} from '../../lib/espresso-runner';
+import {EspressoRunner} from '../../lib/commands/server';
 import {ADB} from 'appium-adb';
 import sinon from 'sinon';
 import {log} from '../../lib/logger';
