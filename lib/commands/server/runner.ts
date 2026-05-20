@@ -237,11 +237,11 @@ export class EspressoRunner {
     if (!(await fs.exists(this.modServerPath))) {
       await this.buildNewModServer();
     }
-    const isSigned = await this.adb.checkApkCert(this.modServerPath, TEST_APK_PKG);
-    if (!isSigned) {
+    const wasSigned = await this.adb.checkApkCert(this.modServerPath, '');
+    if (!wasSigned) {
       await this.adb.sign(this.modServerPath);
     }
-    if ((rebuild || !isSigned) && (await this.adb.uninstallApk(TEST_APK_PKG))) {
+    if ((rebuild || !wasSigned) && (await this.adb.uninstallApk(TEST_APK_PKG))) {
       this.log.info('Uninstalled the obsolete Espresso server package from the device under test');
     }
 

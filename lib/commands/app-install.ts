@@ -60,7 +60,6 @@ export async function onPostConfigureApp(
     return undefined;
   }
 
-  const appPackage = this.opts.appPackage;
   const presignApp = async (appLocation: string) => {
     if (this.opts.noSign) {
       this.log.info(
@@ -68,7 +67,7 @@ export async function onPostConfigureApp(
           'Having the application under test with improper signature/non-signed will cause ' +
           'Espresso automation startup failure.',
       );
-    } else if (appPackage && !(await this.adb.checkApkCert(appLocation, appPackage))) {
+    } else if (!(await this.adb.checkApkCert(appLocation, ''))) {
       await this.adb.sign(appLocation);
     }
   };
