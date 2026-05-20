@@ -1,9 +1,3 @@
-import type {CachedAppInfo} from '@appium/types';
-import {isPlainObject} from './predicates';
-
-/** Cached app entry with integrity path (narrower than {@link CachedAppInfo}). */
-export type StrictCachedAppInfo = CachedAppInfo & {fullPath: string};
-
 /**
  * https://android.googlesource.com/platform/frameworks/base/+/master/tools/aapt/Resource.cpp#755
  *
@@ -24,13 +18,4 @@ export function qualifyActivityName(activityName: string, packageName: string): 
     return activityName;
   }
   return `${packageName}${dotPos === 0 ? '' : '.'}${activityName}`;
-}
-
-/** Type guard for cached app metadata shape. */
-export function isCachedAppInfo(value: unknown): value is StrictCachedAppInfo {
-  return (
-    isPlainObject(value) &&
-    typeof value.packageHash === 'string' &&
-    typeof value.fullPath === 'string'
-  );
 }

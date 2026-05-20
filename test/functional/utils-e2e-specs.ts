@@ -2,7 +2,7 @@ import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import path from 'node:path';
 import {fs, tempDir} from 'appium/support';
-import {copyGradleProjectRecursively} from '../../lib/utils';
+import {copyGradleProjectRecursively} from '../../lib/commands/server/runner';
 
 chai.use(chaiAsPromised);
 

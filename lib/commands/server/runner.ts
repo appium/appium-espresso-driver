@@ -1,14 +1,14 @@
 import {JWProxy, errors} from 'appium/driver';
 import {sleep, waitForCondition} from 'asyncbox';
-import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './server-builder';
 import path from 'node:path';
-import {fs, util, timing} from 'appium/support';
+import {fs, node, util, timing} from 'appium/support';
+import {getPackageInfoSync, getPackageInfo, isPlainObject} from '../../utils';
+import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './builder';
 import {
-  copyGradleProjectRecursively,
-  getPackageInfoSync,
-  getPackageInfo,
-  isPlainObject,
-} from './utils';
+  ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS,
+  TARGET_PACKAGE_CONTAINER,
+  TEST_APK_PKG,
+} from './constants';
 import axios from 'axios';
 import * as semver from 'semver';
 import type {
@@ -21,14 +21,6 @@ import type {
 } from '@appium/types';
 import type {ADB} from 'appium-adb';
 import type {SubProcess} from 'teen_process';
-
-// @ts-ignore - __dirname is available at runtime in CommonJS
-declare const __dirname: string;
-
-const TEST_SERVER_ROOT = path.resolve(__dirname, '..', '..', 'espresso-server');
-export const TEST_APK_PKG = 'io.appium.espressoserver.test';
-const ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS = 45000;
-const TARGET_PACKAGE_CONTAINER = '/data/local/tmp/espresso.apppackage';
 
 export interface EspressoRunnerOptions {
   adb: ADB;
@@ -245,11 +237,11 @@ export class EspressoRunner {
     if (!(await fs.exists(this.modServerPath))) {
       await this.buildNewModServer();
     }
-    const isSigned = await this.adb.checkApkCert(this.modServerPath, TEST_APK_PKG);
-    if (!isSigned) {
+    const wasSigned = await this.adb.checkApkCert(this.modServerPath, '');
+    if (!wasSigned) {
       await this.adb.sign(this.modServerPath);
     }
-    if ((rebuild || !isSigned) && (await this.adb.uninstallApk(TEST_APK_PKG))) {
+    if ((rebuild || !wasSigned) && (await this.adb.uninstallApk(TEST_APK_PKG))) {
       this.log.info('Uninstalled the obsolete Espresso server package from the device under test');
     }
 
@@ -283,9 +275,9 @@ export class EspressoRunner {
     await fs.rimraf(serverPath);
     await fs.mkdirp(serverPath);
     this.log.debug(
-      `Copying espresso server template from ('${TEST_SERVER_ROOT}' to '${serverPath}')`,
+      `Copying espresso server template from ('${getTestServerRoot()}' to '${serverPath}')`,
     );
-    await copyGradleProjectRecursively(TEST_SERVER_ROOT, serverPath);
+    await copyGradleProjectRecursively(getTestServerRoot(), serverPath);
     this.log.debug('Bulding espresso server');
     await new ServerBuilder(this.log, {
       serverPath,
@@ -539,4 +531,48 @@ function requireOption<K extends keyof EspressoRunnerOptions>(
     throw new Error(`Option '${key}' is required!`);
   }
   return opts[key] as NonNullable<EspressoRunnerOptions[K]>;
+}
+
+const MODULE_NAME = 'appium-espresso-driver';
+
+let testServerRoot: string | undefined;
+
+/**
+ * Recursively copy all files except build directories contents
+ * @param sourceBaseDir directory to copy files from
+ * @param targetBaseDir directory to copy files to
+ */
+export async function copyGradleProjectRecursively(
+  sourceBaseDir: string,
+  targetBaseDir: string,
+): Promise<void> {
+  // @ts-ignore it is ok to have the async callback
+  await fs.walkDir(sourceBaseDir, true, async (itemPath: string, isDirectory: boolean) => {
+    const relativePath = path.relative(sourceBaseDir, itemPath);
+    const targetPath = path.resolve(targetBaseDir, relativePath);
+
+    const isInGradleBuildDir = `${path.sep}${itemPath}`.includes(`${path.sep}build${path.sep}`);
+    if (isInGradleBuildDir) {
+      return false;
+    }
+
+    if (isDirectory) {
+      await fs.mkdirp(targetPath);
+    } else {
+      await fs.copyFile(itemPath, targetPath);
+    }
+    return false;
+  });
+}
+
+/** Root path of the bundled Espresso server Gradle project. */
+function getTestServerRoot(): string {
+  if (testServerRoot === undefined) {
+    const moduleRoot = node.getModuleRootSync(MODULE_NAME, __filename);
+    if (!moduleRoot) {
+      throw new Error(`Cannot find the root folder of the ${MODULE_NAME} Node.js module`);
+    }
+    testServerRoot = path.join(moduleRoot, 'espresso-server');
+  }
+  return testServerRoot;
 }

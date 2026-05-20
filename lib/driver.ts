@@ -1,21 +1,17 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type {
   DefaultCreateSessionResult,
   DriverData,
   ExternalDriver,
   InitialOpts,
-  PostProcessOptions,
-  PostProcessResult,
+  RouteMatcher,
   StringRecord,
   SingularSessionData,
-  RouteMatcher,
   SessionCapabilities,
 } from '@appium/types';
 import type {EspressoConstraints} from './constraints';
-import path from 'node:path';
 import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver';
-import {EspressoRunner, TEST_APK_PKG} from './espresso-runner';
-import {fs, tempDir, zip} from 'appium/support';
+import * as serverCmds from './commands/server';
+import type {EspressoRunner} from './commands/server';
 import * as appManagementCmds from './commands/app-management';
 import * as contextCmds from './commands/context';
 import * as elementCmds from './commands/element';
@@ -25,24 +21,16 @@ import * as screenshotCmds from './commands/screenshot';
 import * as idlingResourcesCmds from './commands/idling-resources';
 import * as actionsCmds from './commands/actions';
 import * as clipboardCmds from './commands/clipboard';
+import * as appInstallCmds from './commands/app-install';
 import {DEFAULT_ADB_PORT} from 'appium-adb';
-import {AndroidDriver, utils} from 'appium-android-driver';
-import {SETTINGS_HELPER_ID} from 'io.appium.settings';
+import {AndroidDriver} from 'appium-android-driver';
 import {ESPRESSO_CONSTRAINTS} from './constraints';
 import {findAPortNotInUse} from 'portscanner';
 import {retryInterval} from 'asyncbox';
-import {qualifyActivityName, getPackageInfo, isCachedAppInfo, isEmptyValue} from './utils';
+import {isEmptyValue} from './utils';
 import {newMethodMap} from './method-map';
 import type {EspressoDriverCaps, EspressoDriverOpts, W3CEspressoDriverCaps} from './types';
 import {executeMethodMap} from './execute-method-map';
-
-// The range of ports we can use on the system for communicating to the
-// Espresso HTTP server on the device
-const SYSTEM_PORT_RANGE = [8300, 8399];
-
-// This is the port that the espresso server listens to on the device. We will
-// forward one of the ports above on the system to this port on the device.
-const DEVICE_PORT = 6791;
 
 // NO_PROXY contains the paths that we never want to proxy to espresso server.
 // TODO:  Add the list of paths that we never want to proxy to espresso server.
@@ -142,10 +130,6 @@ const CHROME_NO_PROXY: RouteMatcher[] = [
   ['POST', new RegExp('^/session/[^/]+/se/log')],
 ];
 
-const APK_EXT = '.apk';
-const AAB_EXT = '.aab';
-const SUPPORTED_EXTENSIONS = [APK_EXT, AAB_EXT];
-
 export class EspressoDriver
   extends AndroidDriver
   implements ExternalDriver<EspressoConstraints, string, StringRecord>
@@ -165,7 +149,7 @@ export class EspressoDriver
 
   override desiredCapConstraints: EspressoConstraints;
 
-  performActions = actionsCmds.performActions as unknown as AndroidDriver['performActions'];
+  performActions = actionsCmds.performActions as AndroidDriver['performActions'];
 
   startActivity = appManagementCmds.startActivity;
   mobileStartActivity =
@@ -173,10 +157,10 @@ export class EspressoDriver
 
   mobileWebAtoms = contextCmds.mobileWebAtoms;
   suspendChromedriverProxy =
-    contextCmds.suspendChromedriverProxy as unknown as AndroidDriver['suspendChromedriverProxy'];
+    contextCmds.suspendChromedriverProxy as AndroidDriver['suspendChromedriverProxy'];
 
   mobilePerformEditorAction =
-    elementCmds.mobilePerformEditorAction as unknown as AndroidDriver['mobilePerformEditorAction'];
+    elementCmds.mobilePerformEditorAction as AndroidDriver['mobilePerformEditorAction'];
   mobileSwipe = elementCmds.mobileSwipe;
   mobileOpenDrawer = elementCmds.mobileOpenDrawer;
   mobileCloseDrawer = elementCmds.mobileCloseDrawer;
@@ -191,7 +175,7 @@ export class EspressoDriver
   mobilePressKey = miscCmds.mobilePressKey;
   mobileGetDeviceInfo = miscCmds.mobileGetDeviceInfo;
   mobileIsToastVisible = miscCmds.mobileIsToastVisible;
-  getDisplayDensity = miscCmds.getDisplayDensity as unknown as AndroidDriver['getDisplayDensity'];
+  getDisplayDensity = miscCmds.getDisplayDensity as AndroidDriver['getDisplayDensity'];
   mobileBackdoor = miscCmds.mobileBackdoor;
   mobileUiautomator = miscCmds.mobileUiautomator;
   mobileUiautomatorPageSource = miscCmds.mobileUiautomatorPageSource;
@@ -215,6 +199,13 @@ export class EspressoDriver
   mobileListIdlingResources = idlingResourcesCmds.mobileListIdlingResources;
   mobileWaitForUIThread = idlingResourcesCmds.mobileWaitForUIThread;
 
+  startEspressoSession = serverCmds.startSession;
+  initEspressoServer = serverCmds.initServer;
+
+  unzipApp = appInstallCmds.unzipApp;
+  onPostConfigureApp = appInstallCmds.onPostConfigureApp;
+  initAUT = appInstallCmds.initAUT;
+
   constructor(opts: InitialOpts = {} as InitialOpts, shouldValidateCaps = true) {
     // `shell` overwrites adb.shell, so remove
     if ('shell' in opts) {
@@ -235,12 +226,11 @@ export class EspressoDriver
   }
 
   get driverData() {
-    // TODO fill out resource info here
     return {};
   }
 
   get appOnDevice(): boolean {
-    return !this.opts.app && this.helpers.isPackageOrBundle(this.opts.appPackage!);
+    return appInstallCmds.isAppOnDevice(this);
   }
 
   override async getSession(): Promise<SingularSessionData<EspressoConstraints>> {
@@ -252,7 +242,7 @@ export class EspressoDriver
     return (await super.getAppiumSessionCapabilities()) as SessionCapabilities<EspressoConstraints>;
   }
 
-  async createSession(
+  override async createSession(
     w3cCaps1: W3CEspressoDriverCaps,
     w3cCaps2?: W3CEspressoDriverCaps,
     w3cCaps3?: W3CEspressoDriverCaps,
@@ -281,7 +271,7 @@ export class EspressoDriver
 
       this.caps = Object.assign(serverDetails, this.caps);
 
-      this.curContext = (this as unknown as AndroidDriver).defaultContextName();
+      this.curContext = this.defaultContextName();
 
       const defaultOpts = {
         fullReset: false,
@@ -308,21 +298,21 @@ export class EspressoDriver
 
       this.opts.systemPort =
         this.opts.systemPort ||
-        (await findAPortNotInUse(SYSTEM_PORT_RANGE[0], SYSTEM_PORT_RANGE[1]));
+        (await findAPortNotInUse(serverCmds.SYSTEM_PORT_RANGE[0], serverCmds.SYSTEM_PORT_RANGE[1]));
       this.opts.adbPort = this.opts.adbPort || DEFAULT_ADB_PORT;
       // get device udid for this session
-      const {udid, emPort} = await (this as unknown as AndroidDriver).getDeviceInfoFromCaps();
+      const {udid, emPort} = await this.getDeviceInfoFromCaps();
       this.opts.udid = udid;
       (this.opts as EspressoDriverOpts & {emPort: typeof emPort}).emPort = emPort;
       // now that we know our java version and device info, we can create our
       // ADB instance
-      this.adb = await (this as unknown as AndroidDriver).createADB();
+      this.adb = await this.createADB();
 
       if (this.opts.app) {
         // find and copy, or download and unzip an app url or path
         this.opts.app = await this.helpers.configureApp(this.opts.app, {
           onPostProcess: this.onPostConfigureApp.bind(this),
-          supportedExtensions: SUPPORTED_EXTENSIONS,
+          supportedExtensions: appInstallCmds.SUPPORTED_EXTENSIONS,
         });
       } else if (this.appOnDevice) {
         // the app isn't an actual app file but rather something we want to
@@ -331,7 +321,7 @@ export class EspressoDriver
           `App file was not listed, instead we're going to run ` +
             `${this.opts.appPackage} directly on the device`,
         );
-        if (!(await this.adb.isAppInstalled(this.opts.appPackage!))) {
+        if (!(await this.adb.isAppInstalled(this.opts.appPackage as string))) {
           throw this.log.errorWithException(
             `Could not find the package '${this.opts.appPackage}' installed on the device`,
           );
@@ -354,370 +344,28 @@ export class EspressoDriver
     }
   }
 
-  /**
-   * Unzip the given app path and return the first package that has SUPPORTED_EXTENSIONS
-   * in the archived file.
-   *
-   * @param {string} appPath The path to app file.
-   * @returns {Promise<string>} Returns the path to an unzipped app file path.
-   * @throws Raise an exception if the zip did not have any SUPPORTED_EXTENSIONS packages.
-   */
-  async unzipApp(appPath: string): Promise<string> {
-    const useSystemUnzipEnv = process.env.APPIUM_PREFER_SYSTEM_UNZIP;
-    const useSystemUnzip =
-      !useSystemUnzipEnv || !['0', 'false'].includes(useSystemUnzipEnv.toLowerCase());
-    const tmpRoot = await tempDir.openDir();
-    await zip.extractAllTo(appPath, tmpRoot, {useSystemUnzip});
-
-    const globPattern = `**/*.+(${SUPPORTED_EXTENSIONS.map((ext) => ext.replace(/^\./, '')).join('|')})`;
-    const sortedBundleItems = (
-      await fs.glob(globPattern, {
-        cwd: tmpRoot,
-      })
-    ).sort((a, b) => a.split(path.sep).length - b.split(path.sep).length);
-    if (sortedBundleItems.length === 0) {
-      // no expected packages in the zip
-      throw this.log.errorWithException(
-        `${this.opts.app} did not have any of '${SUPPORTED_EXTENSIONS.join(', ')}' ` +
-          `extension packages. Please make sure the provided .zip archive contains at ` +
-          `least one valid application package.`,
-      );
-    }
-    const unzippedAppPath = path.join(tmpRoot, sortedBundleItems[0]!);
-    this.log.debug(`'${unzippedAppPath}' is the unzipped file from '${appPath}'`);
-    return unzippedAppPath;
-  }
-
-  async onPostConfigureApp(opts: PostProcessOptions): Promise<PostProcessResult | undefined> {
-    const {cachedAppInfo, isUrl, appPath} = opts;
-    if (!appPath) {
-      return undefined;
-    }
-
-    const presignApp = async (appLocation: string) => {
-      if (this.opts.noSign) {
-        this.log.info(
-          'Skipping application signing because noSign capability is set to true. ' +
-            'Having the application under test with improper signature/non-signed will cause ' +
-            'Espresso automation startup failure.',
-        );
-      } else if (!(await this.adb.checkApkCert(appLocation, this.opts.appPackage!))) {
-        await this.adb.sign(appLocation);
-      }
-    };
-
-    const hasApkExt = (p: string) => p.toLowerCase().endsWith(APK_EXT);
-    const hasAabExt = (p: string) => p.toLowerCase().endsWith(AAB_EXT);
-    const extractUniversalApk = async (shouldExtract: boolean, p: string) =>
-      shouldExtract ? p : await this.adb.extractUniversalApk(p);
-
-    let pathInCache: string | null = null;
-    let isResultAppPathAlreadyCached = false;
-    if (isCachedAppInfo(cachedAppInfo)) {
-      const packageHash = await fs.hash(appPath);
-      if (packageHash === cachedAppInfo.packageHash && (await fs.exists(cachedAppInfo.fullPath))) {
-        this.log.info(`Using '${cachedAppInfo.fullPath}' which is cached from '${appPath}'`);
-        isResultAppPathAlreadyCached = true;
-        pathInCache = cachedAppInfo.fullPath;
-      }
-    }
-
-    // appPath can be .zip, .apk or .aab
-    const isApk = hasApkExt(appPath);
-    // Only local .apk files that are available in-place should not be cached
-    const shouldResultAppPathBeCached = !isApk || (isApk && isUrl);
-
-    if (!isResultAppPathAlreadyCached) {
-      if (shouldResultAppPathBeCached) {
-        // .zip, .aab or downloaded .apk
-
-        let unzippedAppPath: string | undefined;
-        let isUnzippedApk = false;
-        if (!(hasApkExt(appPath) || hasAabExt(appPath))) {
-          unzippedAppPath = await this.unzipApp(appPath);
-          isUnzippedApk = hasApkExt(unzippedAppPath);
-        }
-
-        // unzippedAppPath or appPath has SUPPORTED_EXTENSIONS.
-        pathInCache = unzippedAppPath
-          ? await extractUniversalApk(isUnzippedApk, unzippedAppPath)
-          : await extractUniversalApk(isApk, appPath);
-
-        if (!isApk && isUrl) {
-          // Clean up the temporarily downloaded .aab or .zip package
-          await fs.rimraf(appPath);
-        }
-        if (unzippedAppPath !== undefined && hasAabExt(unzippedAppPath)) {
-          // Cleanup the local unzipped .aab file
-          await fs.rimraf(unzippedAppPath);
-        }
-        if (pathInCache == null) {
-          throw this.log.errorWithException('Expected a cached app path after post-processing');
-        }
-        await presignApp(pathInCache);
-      } else if (isApk) {
-        // It is probably not the best idea to modify the provided app in-place,
-        // but this is how it was always working
-        await presignApp(appPath);
-      }
-    }
-    return shouldResultAppPathBeCached && pathInCache != null ? {appPath: pathInCache} : undefined;
-  }
-
-  // TODO much of this logic is duplicated from uiautomator2
-  async startEspressoSession(): Promise<void> {
-    const {manifestPayload} = await getPackageInfo();
-    this.log.info(`EspressoDriver version: ${manifestPayload.version}`);
-
-    // Read https://github.com/appium/appium-android-driver/pull/461 what happens if there is no setHiddenApiPolicy for Android P+
-    if ((await this.adb.getApiLevel()) >= 28) {
-      // Android P
-      this.log.warn('Relaxing hidden api policy');
-      await this.adb.setHiddenApiPolicy('1', !!this.opts.ignoreHiddenApiPolicyError);
-    }
-
-    // get appPackage et al from manifest if necessary
-    let appInfo = await (this as unknown as AndroidDriver).getLaunchInfo();
-    if (appInfo) {
-      // and get it onto our 'opts' object so we use it from now on
-      Object.assign(this.opts, appInfo);
-    } else {
-      appInfo = this.opts;
-    }
-
-    // start an avd, set the language/locale, pick an emulator, etc...
-    if (this.opts.hideKeyboard) {
-      this._originalIme = await this.adb.defaultIME();
-    }
-    await (this as unknown as AndroidDriver).initDevice();
-
-    // Default state is window animation disabled.
-    await this.setWindowAnimationState(this.caps.disableWindowAnimation === false);
-
-    // set actual device name, udid
-    this.caps.deviceName = this.adb.curDeviceId;
-    this.caps.deviceUDID = this.opts.udid!;
-
-    // set up the modified espresso server etc
-    this.initEspressoServer();
-    // Further prepare the device by forwarding the espresso port
-    this.log.debug(`Forwarding Espresso Server port ${DEVICE_PORT} to ${this.opts.systemPort}`);
-    await this.adb.forwardPort(this.opts.systemPort!, DEVICE_PORT);
-
-    if (!this.opts.skipUnlock) {
-      // unlock the device to prepare it for testing
-      await (this as unknown as AndroidDriver).unlock();
-    } else {
-      this.log.debug(`'skipUnlock' capability set, so skipping device unlock`);
-    }
-
-    // set up app under test
-    // prepare our actual AUT, get it on the device, etc...
-    await this.initAUT();
-
-    //Adding AUT package name in the capabilities if package name not exist in caps
-    if (!this.caps.appPackage) {
-      this.caps.appPackage = appInfo.appPackage;
-    }
-    if (!this.caps.appWaitPackage) {
-      this.caps.appWaitPackage =
-        appInfo.appWaitPackage || appInfo.appPackage || this.caps.appPackage;
-    }
-    if (this.caps.appActivity) {
-      this.caps.appActivity = qualifyActivityName(this.caps.appActivity, this.caps.appPackage!);
-    } else {
-      this.caps.appActivity = qualifyActivityName(appInfo.appActivity!, this.caps.appPackage!);
-    }
-    if (this.caps.appWaitActivity) {
-      this.caps.appWaitActivity = qualifyActivityName(
-        this.caps.appWaitActivity,
-        this.caps.appWaitPackage!,
-      );
-    } else {
-      this.caps.appWaitActivity = qualifyActivityName(
-        appInfo.appWaitActivity || appInfo.appActivity || this.caps.appActivity,
-        this.caps.appWaitPackage!,
-      );
-    }
-
-    // launch espresso and wait till its online and we have a session
-    await this.espresso.startSession(this.caps);
-    if (this.caps.autoLaunch === false) {
-      this.log.info(
-        `Not waiting for the application activity to start because 'autoLaunch' is disabled`,
-      );
-    } else {
-      await this.adb.waitForActivity(
-        this.caps.appWaitPackage!,
-        this.caps.appWaitActivity,
-        this.opts.appWaitDuration,
-      );
-    }
-    // if we want to immediately get into a webview, set our context
-    // appropriately
-    if (this.opts.autoWebview) {
-      await this.initWebview();
-    }
-
-    // now that everything has started successfully, turn on proxying so all
-    // subsequent session requests go straight to/from espresso
-    this.jwpProxyActive = true;
-
-    await this.addDeviceInfoToCaps();
-  }
-
-  /**
-   * Turn on or off animation scale.
-   * '--no-window-animation' instrument argument for Espresso disables window animations,
-   * but it does not bring the animation scale back to the pre-instrument process start state in Espresso
-   * unlike Appium UIA2 driver case. We want to disable/enable the animation scale only in an appium espresso session as possible.
-   * @param isEnabled
-   */
-  async setWindowAnimationState(isEnabled: boolean): Promise<void> {
-    const isAnimationOn = await this.adb.isAnimationOn();
-    const shouldDisableAnimation = !isEnabled && isAnimationOn;
-    const shouldEnableAnimation = isEnabled && !isAnimationOn;
-
-    if (shouldDisableAnimation) {
-      this.log.debug(
-        'Disabling window animation as "disableWindowAnimation" capability is set to true/fallback to default value "true"',
-      );
-      await this.settingsApp.setAnimationState(false);
-      this.wasAnimationEnabled = true;
-    } else if (shouldEnableAnimation) {
-      this.log.debug(
-        'Enabling window animation as "disableWindowAnimation" capability is set to false',
-      );
-      await this.settingsApp.setAnimationState(true);
-      this.wasAnimationEnabled = false;
-    } else {
-      this.log.debug(`Window animation is already ${isEnabled ? 'enabled' : 'disabled'}`);
-    }
-  }
-
-  async initWebview(): Promise<void> {
-    const viewName = (this as unknown as AndroidDriver).defaultWebviewName();
-    const timeout = this.opts.autoWebviewTimeout || 2000;
-    this.log.info(`Setting webview to context '${viewName}' with timeout ${timeout}ms`);
-    await retryInterval(timeout / 500, 500, this.setContext.bind(this), viewName);
-  }
-
-  async addDeviceInfoToCaps(): Promise<void> {
-    const {apiVersion, platformVersion, manufacturer, model, realDisplaySize, displayDensity} =
-      await this.mobileGetDeviceInfo();
-    this.caps.deviceApiLevel = parseInt(apiVersion, 10);
-    this.caps.platformVersion = platformVersion;
-    this.caps.deviceScreenSize = realDisplaySize;
-    this.caps.deviceScreenDensity = displayDensity;
-    this.caps.deviceModel = model;
-    this.caps.deviceManufacturer = manufacturer;
-  }
-
-  initEspressoServer(): void {
-    // now that we have package and activity, we can create an instance of
-    // espresso with the appropriate data
-    this.espresso = new EspressoRunner(this.log, {
-      host: this.opts.remoteAdbHost || '127.0.0.1',
-      systemPort: this.opts.systemPort!,
-      devicePort: DEVICE_PORT,
-      adb: this.adb,
-      tmpDir: this.opts.tmpDir!,
-      appPackage: this.opts.appPackage!,
-      forceEspressoRebuild: !!this.opts.forceEspressoRebuild,
-      espressoBuildConfig: this.opts.espressoBuildConfig,
-      showGradleLog: !!this.opts.showGradleLog,
-      serverLaunchTimeout: this.opts.espressoServerLaunchTimeout,
-      androidInstallTimeout: this.opts.androidInstallTimeout,
-      useKeystore: this.opts.useKeystore,
-      keystorePath: this.opts.keystorePath,
-      keystorePassword: this.opts.keystorePassword,
-      keyAlias: this.opts.keyAlias,
-      keyPassword: this.opts.keyPassword,
-      disableSuppressAccessibilityService: this.opts.disableSuppressAccessibilityService,
-      reqBasePath: this.basePath,
-    });
-    this.proxyReqRes = this.espresso.proxyReqRes.bind(this.espresso);
-    this.proxyCommand = this.espresso.proxyCommand.bind(this.espresso);
-  }
-
-  async initAUT(): Promise<void> {
-    // Uninstall any uninstallOtherPackages which were specified in caps
-    if (this.opts.uninstallOtherPackages) {
-      await (this as unknown as AndroidDriver).uninstallOtherPackages(
-        utils.parseArray(this.opts.uninstallOtherPackages),
-        [SETTINGS_HELPER_ID, TEST_APK_PKG],
-      );
-    }
-
-    if (!this.opts.app) {
-      if (this.opts.fullReset) {
-        throw this.log.errorWithException(
-          'Full reset requires an app capability, use fastReset if app is not provided',
-        );
-      }
-      this.log.debug('No app capability. Assuming it is already on the device');
-      if (this.opts.fastReset) {
-        await (this as unknown as AndroidDriver).resetAUT();
-      }
-    }
-
-    if (!this.opts.skipUninstall) {
-      await this.adb.uninstallApk(this.opts.appPackage!);
-    }
-    if (this.opts.app) {
-      await (this as unknown as AndroidDriver).installAUT();
-    }
-    if (this.opts.skipServerInstallation) {
-      this.log.debug('skipServerInstallation capability is set. Not installig espresso-server ');
-    } else {
-      await this.espresso.installTestApk();
-      try {
-        await this.adb.addToDeviceIdleWhitelist(SETTINGS_HELPER_ID, TEST_APK_PKG);
-      } catch (e: unknown) {
-        const stderr =
-          typeof e === 'object' &&
-          e !== null &&
-          'stderr' in e &&
-          typeof (e as {stderr: unknown}).stderr === 'string'
-            ? (e as {stderr: string}).stderr
-            : undefined;
-        const message = e instanceof Error ? e.message : String(e);
-        this.log.warn(
-          `Cannot add server packages to the Doze whitelist. Original error: ` +
-            (stderr || message),
-        );
-      }
-    }
-  }
-
   override async deleteSession() {
     this.log.debug('Deleting espresso session');
 
     const screenRecordingStopTasks = [
       async () => {
         if (!isEmptyValue(this._screenRecordingProperties)) {
-          await (this as unknown as AndroidDriver).stopRecordingScreen();
+          await this.stopRecordingScreen();
         }
       },
       async () => {
-        if (await (this as unknown as AndroidDriver).mobileIsMediaProjectionRecordingRunning()) {
-          await (this as unknown as AndroidDriver).mobileStopMediaProjectionRecording();
+        if (await this.mobileIsMediaProjectionRecordingRunning()) {
+          await this.mobileStopMediaProjectionRecording();
         }
       },
       async () => {
         if (!isEmptyValue(this._screenStreamingProps)) {
-          await (this as unknown as AndroidDriver).mobileStopScreenStreaming();
+          await this.mobileStopScreenStreaming();
         }
       },
     ];
 
-    if (this.espresso) {
-      if (this.jwpProxyActive) {
-        await this.espresso.deleteSession();
-      }
-      (this as {espresso: EspressoRunner | null}).espresso = null;
-    }
-    this.jwpProxyActive = false;
+    await serverCmds.teardown(this);
 
     if (this.adb) {
       await Promise.all(
@@ -750,7 +398,7 @@ export class EspressoDriver
       }
       if (this.opts.fullReset && !this.opts.skipUninstall && !this.appOnDevice) {
         this.log.debug(`FULL_RESET set to 'true', Uninstalling '${this.opts.appPackage}'`);
-        await this.adb.uninstallApk(this.opts.appPackage!);
+        await this.adb.uninstallApk(this.opts.appPackage as string);
       }
       if ((await this.adb.getApiLevel()) >= 28) {
         // Android P
@@ -759,16 +407,54 @@ export class EspressoDriver
       }
     }
     await super.deleteSession();
-    if (this.opts.systemPort) {
-      try {
-        await this.adb.removePortForward(this.opts.systemPort);
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : String(error);
-        this.log.warn(`Unable to remove port forward '${message}'`);
-        //Ignore, this block will also be called when we fall in catch block
-        // and before even port forward.
-      }
+    await serverCmds.removePortForward(this);
+  }
+
+  /**
+   * Turn on or off animation scale.
+   * '--no-window-animation' instrument argument for Espresso disables window animations,
+   * but it does not bring the animation scale back to the pre-instrument process start state in Espresso
+   * unlike Appium UIA2 driver case. We want to disable/enable the animation scale only in an appium espresso session as possible.
+   * @param isEnabled
+   */
+  async setWindowAnimationState(isEnabled: boolean): Promise<void> {
+    const isAnimationOn = await this.adb.isAnimationOn();
+    const shouldDisableAnimation = !isEnabled && isAnimationOn;
+    const shouldEnableAnimation = isEnabled && !isAnimationOn;
+
+    if (shouldDisableAnimation) {
+      this.log.debug(
+        'Disabling window animation as "disableWindowAnimation" capability is set to true/fallback to default value "true"',
+      );
+      await this.settingsApp.setAnimationState(false);
+      this.wasAnimationEnabled = true;
+    } else if (shouldEnableAnimation) {
+      this.log.debug(
+        'Enabling window animation as "disableWindowAnimation" capability is set to false',
+      );
+      await this.settingsApp.setAnimationState(true);
+      this.wasAnimationEnabled = false;
+    } else {
+      this.log.debug(`Window animation is already ${isEnabled ? 'enabled' : 'disabled'}`);
     }
+  }
+
+  async initWebview(): Promise<void> {
+    const viewName = this.defaultWebviewName();
+    const timeout = this.opts.autoWebviewTimeout || 2000;
+    this.log.info(`Setting webview to context '${viewName}' with timeout ${timeout}ms`);
+    await retryInterval(timeout / 500, 500, this.setContext.bind(this), viewName);
+  }
+
+  async addDeviceInfoToCaps(): Promise<void> {
+    const {apiVersion, platformVersion, manufacturer, model, realDisplaySize, displayDensity} =
+      await this.mobileGetDeviceInfo();
+    this.caps.deviceApiLevel = parseInt(apiVersion, 10);
+    this.caps.platformVersion = platformVersion;
+    this.caps.deviceScreenSize = realDisplaySize;
+    this.caps.deviceScreenDensity = displayDensity;
+    this.caps.deviceModel = model;
+    this.caps.deviceManufacturer = manufacturer;
   }
 
   async onSettingsUpdate() {
