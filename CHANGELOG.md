@@ -1,3 +1,9 @@
+## [8.5.0](https://github.com/appium/appium-espresso-driver/compare/v8.4.1...v8.5.0) (2026-05-20)
+
+### Features
+
+* Refactor driver methods into focused domain modules ([#1162](https://github.com/appium/appium-espresso-driver/issues/1162)) ([aa74a0d](https://github.com/appium/appium-espresso-driver/commit/aa74a0d06b181472387bfd42c3a32f23b5f68988))
+
 ## [8.4.1](https://github.com/appium/appium-espresso-driver/compare/v8.4.0...v8.4.1) (2026-05-12)
 
 ### Miscellaneous Chores
