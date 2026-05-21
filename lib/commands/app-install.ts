@@ -67,7 +67,7 @@ export async function onPostConfigureApp(
           'Having the application under test with improper signature/non-signed will cause ' +
           'Espresso automation startup failure.',
       );
-    } else if (!(await this.adb.checkApkCert(appLocation, ''))) {
+    } else if (!(await this.adb.checkApkCert(appLocation))) {
       await this.adb.sign(appLocation);
     }
   };

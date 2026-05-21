@@ -237,7 +237,7 @@ export class EspressoRunner {
     if (!(await fs.exists(this.modServerPath))) {
       await this.buildNewModServer();
     }
-    const wasSigned = await this.adb.checkApkCert(this.modServerPath, '');
+    const wasSigned = await this.adb.checkApkCert(this.modServerPath);
     if (!wasSigned) {
       await this.adb.sign(this.modServerPath);
     }
