@@ -1,3 +1,9 @@
+## [8.5.1](https://github.com/appium/appium-espresso-driver/compare/v8.5.0...v8.5.1) (2026-05-21)
+
+### Miscellaneous Chores
+
+* Bump appium-adb to version 15 ([#1164](https://github.com/appium/appium-espresso-driver/issues/1164)) ([1b3215b](https://github.com/appium/appium-espresso-driver/commit/1b3215b567b789acb0c822080b3daac821d0192d))
+
 ## [8.5.0](https://github.com/appium/appium-espresso-driver/compare/v8.4.1...v8.5.0) (2026-05-20)
 
 ### Features
