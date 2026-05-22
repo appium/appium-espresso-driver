@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
-import io.appium.espressoserver.gradle.resolveCapabilityVersion
+import io.appium.espressoserver.gradle.withCapabilityVersion
 import io.appium.espressoserver.jvmtarget.AppiumJvmTarget
 import org.gradle.api.GradleException
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -18,10 +18,6 @@ val appiumJvmTarget: String by project
 
 val useComposeLibrary: Boolean =
     (findProperty("appiumComposeSupport") as String?)?.equals("false", ignoreCase = true) != true
-
-// Align androidTest dependency versions with :library when Espresso driver passes -PappiumJUnitVersion / -PappiumAndroidxTestVersion.
-val junitVersion = resolveCapabilityVersion("appiumJUnitVersion", libs.versions.junit.get())
-val androidxTestVersion = resolveCapabilityVersion("appiumAndroidxTestVersion", libs.versions.androidxTest.get())
 
 android {
     compileSdk = appiumCompileSdk.toInt()
@@ -102,9 +98,15 @@ kotlin {
 
 dependencies {
     androidTestImplementation(project(":library"))
-    androidTestImplementation("junit:junit:$junitVersion")
-    androidTestImplementation("androidx.test:core:$androidxTestVersion")
-    androidTestImplementation("androidx.test:runner:$androidxTestVersion")
+    androidTestImplementation(libs.junit) {
+        withCapabilityVersion(project, "appiumJUnitVersion", libs.versions.junit.get())
+    }
+    androidTestImplementation(libs.androidx.test.core) {
+        withCapabilityVersion(project, "appiumAndroidxTestVersion", libs.versions.androidxTest.get())
+    }
+    androidTestImplementation(libs.androidx.test.runner) {
+        withCapabilityVersion(project, "appiumAndroidxTestVersion", libs.versions.androidxTest.get())
+    }
 
     // additionalAndroidTestDependencies placeholder (don't change or delete this line)
 }
