@@ -8,8 +8,8 @@ import {
   mergeMetaInfEmbeddedVersions,
   parseKotlinMetadataVersionsFromDexdump,
   parseVersionsToml,
-} from '../../scripts/lib/dependency-versions.mjs';
-import {runDiagnosis} from '../../scripts/lib/diagnose-app-lib.mjs';
+} from '../../scripts/lib/dependency-versions/index.mjs';
+import {runDiagnosis} from '../../scripts/lib/diagnose/index.mjs';
 
 describe('diagnose-app', function () {
   it('parseVersionsToml', function () {

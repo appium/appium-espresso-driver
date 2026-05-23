@@ -10,7 +10,7 @@ import {
   formatDiagnosisReport,
   loadEspressoServerDefaults,
   runDiagnosis,
-} from './lib/diagnose-app-lib.mjs';
+} from './lib/diagnose/index.mjs';
 
 const LOG = logger.getLogger('EspressoDiagnose');
 
