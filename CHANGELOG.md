@@ -1,3 +1,9 @@
+## [8.5.2](https://github.com/appium/appium-espresso-driver/compare/v8.5.1...v8.5.2) (2026-05-23)
+
+### Bug Fixes
+
+* Kotlin dependencies resolution by dependabot ([#1165](https://github.com/appium/appium-espresso-driver/issues/1165)) ([b109b3d](https://github.com/appium/appium-espresso-driver/commit/b109b3d3bcf7b533adcb94331aeb4e4cd01d9621))
+
 ## [8.5.1](https://github.com/appium/appium-espresso-driver/compare/v8.5.0...v8.5.1) (2026-05-21)
 
 ### Miscellaneous Chores
