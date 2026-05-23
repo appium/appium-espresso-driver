@@ -1,7 +1,12 @@
+import path from 'node:path';
 import {expect} from 'chai';
+import {fs, tempDir} from 'appium/support.js';
 import {
   buildComparisonReport,
   compareModuleVersions,
+  mapMetaInfVersionBaseToModule,
+  mergeMetaInfEmbeddedVersions,
+  parseKotlinMetadataVersionsFromDexdump,
   parseVersionsToml,
 } from '../../scripts/lib/dependency-versions.mjs';
 import {runDiagnosis} from '../../scripts/lib/diagnose-app-lib.mjs';
@@ -72,6 +77,38 @@ espresso = "3.7.0"
     const composeDep = report.checks.find((c) => c.id === 'dependency-compose');
     expect(composeDep?.status).to.equal('pass');
     expect(report.ready).to.be.true;
+  });
+
+  it('mapMetaInfVersionBaseToModule maps Compose artifacts', function () {
+    expect(mapMetaInfVersionBaseToModule('androidx.compose.ui_ui')).to.equal('compose');
+    expect(mapMetaInfVersionBaseToModule('androidx.annotation_annotation-experimental')).to.be.null;
+    expect(mapMetaInfVersionBaseToModule('androidx.test.espresso.espresso-core')).to.equal(
+      'espresso',
+    );
+  });
+
+  it('parseKotlinMetadataVersionsFromDexdump reads @Metadata mv', function () {
+    const versions = parseKotlinMetadataVersionsFromDexdump(
+      'VISIBILITY_RUNTIME Lkotlin/Metadata; k=3 mv={ 2 3 0 } xi=48',
+    );
+    expect(versions).to.eql(['2.3.0']);
+  });
+
+  it('mergeMetaInfEmbeddedVersions reads AGP META-INF version files', async function () {
+    const root = await tempDir.openDir();
+    const metaDir = path.join(root, 'META-INF');
+    await fs.mkdir(metaDir);
+    await fs.writeFile(path.join(metaDir, 'androidx.compose.ui_ui.version'), '1.11.2\n', 'utf8');
+    await fs.writeFile(
+      path.join(metaDir, 'androidx.compose.material3_material3.version'),
+      '1.4.0\n',
+      'utf8',
+    );
+    /** @type {Record<string, Set<string>>} */
+    const found = {compose: new Set<string>()};
+    await mergeMetaInfEmbeddedVersions(root, found);
+    expect([...found.compose].sort()).to.eql(['1.11.2', '1.4.0']);
+    await fs.rimraf(root);
   });
 
   it('buildComparisonReport suggests toolsVersions on minor drift', function () {

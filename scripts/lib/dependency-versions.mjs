@@ -1,6 +1,8 @@
 import {fs, tempDir, zip} from 'appium/support.js';
+import {ADB} from 'appium-adb';
 import path from 'node:path';
 import semver from 'semver';
+import {exec} from 'teen_process';
 
 /** @typedef {'equal' | 'patch' | 'minor' | 'major' | 'unknown'} VersionDiffKind */
 
@@ -112,6 +114,7 @@ export const TRACKED_MODULES = [
     patterns: [
       /\bkotlin\s*=\s*["']([^"']+)["']/gi,
       /org\.jetbrains\.kotlin:[\w-]+:([\d.]+)/gi,
+      /mv=\{\s*(\d+)\s+(\d+)\s+(\d+)\s*\}/gi,
     ],
   },
 ];
@@ -239,13 +242,17 @@ export async function collectAppVersionsFromApk(apkPath) {
         pattern.lastIndex = 0;
         let match;
         while ((match = pattern.exec(corpus)) !== null) {
-          const version = normalizeVersion(match[1]);
+          const raw =
+            match[3] !== undefined ? `${match[1]}.${match[2]}.${match[3]}` : match[1];
+          const version = normalizeVersion(raw);
           if (version) {
             found[mod.id].add(version);
           }
         }
       }
     }
+    await mergeMetaInfEmbeddedVersions(extractDir, found);
+    await mergeKotlinMetadataVersionsFromDex(extractDir, found);
 
     const proguardLikely = detectProguardLikely(dexStrings, corpus);
 
@@ -257,7 +264,7 @@ export async function collectAppVersionsFromApk(apkPath) {
     return {
       versions,
       proguardLikely,
-      sources: ['APK DEX/META-INF scan'],
+      sources: ['APK DEX/META-INF scan (incl. embedded *.version metadata)'],
     };
   } finally {
     await fs.rimraf(extractDir);
@@ -439,10 +446,17 @@ function buildRecommendation(mod, diff, appVersion, serverVersion, ctx) {
       });
     }
     if (ctx.detectionSource === 'apk') {
+      if (mod.id === 'espresso' || mod.id === 'androidxTest' || mod.id === 'uiautomator') {
+        return /** @type {Recommendation} */ ({
+          level: 'info',
+          message:
+            'Not present in the app APK (expected for a main application — Espresso/AndroidX Test libraries are usually in androidTest).',
+        });
+      }
       return /** @type {Recommendation} */ ({
         level: 'info',
         message:
-          'Not detected in APK bytecode scan. Prefer `--app` with the Gradle project root for accurate Compose/Espresso versions.',
+          'Not detected in APK scan. If the app uses this library, pass the Gradle project root or ensure AGP embedded META-INF/*.version files are present.',
       });
     }
     return /** @type {Recommendation} */ ({level: 'ok', message: 'Not detected in the app; no action needed.'});
@@ -563,7 +577,7 @@ async function extractApk(apkPath, destDir) {
   try {
     await zip.extractAllTo(apkPath, destDir);
   } catch (err) {
-    throw new Error(`Failed to extract APK. Use --app with a Gradle project instead.`, {cause: err});
+    throw new Error(`Failed to extract APK.`, {cause: err});
   }
 }
 
@@ -592,6 +606,142 @@ async function readAllDexStrings(extractRoot) {
     }
   }
   return chunks.join('\n');
+}
+
+/** @type {ReadonlyArray<{moduleId: string, matches: (base: string) => boolean}>} */
+const META_INF_VERSION_MODULE_RULES = [
+  {moduleId: 'compose', matches: (base) => base.startsWith('androidx.compose.')},
+  {moduleId: 'kotlin', matches: (base) => base.startsWith('org.jetbrains.kotlin_')},
+  {moduleId: 'espresso', matches: (base) => base.startsWith('androidx.test.espresso')},
+  {
+    moduleId: 'annotation',
+    matches: (base) =>
+      base.startsWith('androidx.annotation_annotation') && !base.includes('experimental'),
+  },
+  {moduleId: 'uiautomator', matches: (base) => base.startsWith('androidx.test.uiautomator')},
+  {
+    moduleId: 'androidxTest',
+    matches: (base) =>
+      base.startsWith('androidx.test.') &&
+      !base.startsWith('androidx.test.espresso') &&
+      !base.startsWith('androidx.test.uiautomator'),
+  },
+];
+
+/**
+ * Maps an AGP META-INF `*.version` file basename to a tracked module id.
+ * @param {string} base Basename without `.version` (e.g. `androidx.compose.ui_ui`)
+ * @returns {string | null}
+ */
+export function mapMetaInfVersionBaseToModule(base) {
+  for (const {moduleId, matches} of META_INF_VERSION_MODULE_RULES) {
+    if (matches(base)) {
+      return moduleId;
+    }
+  }
+  return null;
+}
+
+/**
+ * Reads Android Gradle Plugin embedded library versions from META-INF/*.version files.
+ * @param {string} extractRoot APK extract directory
+ * @param {Record<string, Set<string>>} found Module id → version set (mutated)
+ */
+export async function mergeMetaInfEmbeddedVersions(extractRoot, found) {
+  const metaDir = path.join(extractRoot, 'META-INF');
+  let versionFiles;
+  try {
+    versionFiles = await fs.glob('**/*.version', {cwd: metaDir, absolute: true});
+  } catch {
+    return;
+  }
+  for (const filePath of versionFiles) {
+    const base = path.basename(filePath, '.version');
+    let raw;
+    try {
+      raw = (await fs.readFile(filePath, 'utf8')).trim();
+    } catch {
+      continue;
+    }
+    if (!raw || /writeVersionFile|^\s*task\s*:/i.test(raw)) {
+      continue;
+    }
+    const version = normalizeVersion(raw);
+    if (!version) {
+      continue;
+    }
+    const moduleId = mapMetaInfVersionBaseToModule(base);
+    if (moduleId && found[moduleId]) {
+      found[moduleId].add(version);
+    }
+  }
+}
+
+/**
+ * Parses Kotlin `@Metadata` mv values from `dexdump -a` output.
+ * @param {string} dexdumpOutput
+ * @returns {string[]}
+ */
+export function parseKotlinMetadataVersionsFromDexdump(dexdumpOutput) {
+  /** @type {Set<string>} */
+  const versions = new Set();
+  const mvPattern = /mv=\{\s*(\d+)\s+(\d+)\s+(\d+)\s*\}/g;
+  let match;
+  while ((match = mvPattern.exec(dexdumpOutput)) !== null) {
+    const version = normalizeVersion(`${match[1]}.${match[2]}.${match[3]}`);
+    if (version) {
+      versions.add(version);
+    }
+  }
+  return [...versions];
+}
+
+/**
+ * Collects Kotlin compiler metadata versions (`@Metadata.mv`) from DEX via SDK dexdump.
+ * @param {string} extractRoot APK extract directory
+ * @param {Record<string, Set<string>>} found Module id → version set (mutated)
+ */
+export async function mergeKotlinMetadataVersionsFromDex(extractRoot, found) {
+  if (!found.kotlin) {
+    return;
+  }
+  let dexdump;
+  try {
+    const adb = await getSdkAdb();
+    dexdump = await adb.getSdkBinaryPath('dexdump');
+  } catch {
+    return;
+  }
+  let entries;
+  try {
+    entries = await fs.readdir(extractRoot);
+  } catch {
+    return;
+  }
+  for (const name of entries) {
+    if (!/^classes\d*\.dex$/i.test(name)) {
+      continue;
+    }
+    try {
+      const {stdout} = await exec(dexdump, ['-a', path.join(extractRoot, name)]);
+      for (const version of parseKotlinMetadataVersionsFromDexdump(stdout)) {
+        found.kotlin.add(version);
+      }
+    } catch {
+      // try next dex file
+    }
+  }
+}
+
+/** @type {Promise<import('appium-adb').ADB> | undefined} */
+let sdkAdbPromise;
+
+/** @returns {Promise<import('appium-adb').ADB>} */
+async function getSdkAdb() {
+  if (!sdkAdbPromise) {
+    sdkAdbPromise = ADB.createADB({suppressKillServer: true});
+  }
+  return sdkAdbPromise;
 }
 
 /**

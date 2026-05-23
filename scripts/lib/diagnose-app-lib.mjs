@@ -1,4 +1,4 @@
-import {fs} from 'appium/support.js';
+import {fs, util} from 'appium/support.js';
 import {ADB} from 'appium-adb';
 import path from 'node:path';
 import semver from 'semver';
@@ -86,26 +86,25 @@ export async function runDiagnosis(appInput, serverDefaults) {
   checks.push(...checkInitializationProvider(appInput));
   checks.push(...checkCompileSdk(appInput, serverDefaults, dependencyReport));
   checks.push(...checkLifecycleExtensionsPin(appInput));
-  checks.push(...checkEspressoServerEmbedding(appInput));
   checks.push(...mapDependencyChecks(dependencyReport, appInput));
 
   const failCount = checks.filter((c) => c.status === 'fail').length;
   const warnCount = checks.filter((c) => c.status === 'warn').length;
-  const ready = failCount === 0 && appInput.kind === 'project';
+  const ready = failCount === 0;
 
   let summary;
   if (appInput.kind === 'apk') {
     summary =
       failCount > 0
-        ? `APK scan found ${failCount} blocking issue(s). Precompile readiness requires a Gradle project path.`
-        : 'APK scan only — re-run with the Gradle project root to confirm precompile readiness.';
+        ? `APK scan found ${util.pluralize('blocking issue', failCount, true)}.`
+        : 'APK scan complete — no blocking issues found in the built artifact.';
   } else if (ready) {
     summary =
       warnCount > 0
-        ? `Ready for precompile with ${warnCount} warning(s) to review.`
+        ? `Ready for precompile with ${util.pluralize('warning', warnCount, true)} to review.`
         : 'Ready for precompile into the Espresso driver (library / androidTest module).';
   } else {
-    summary = `Not ready for precompile (${failCount} blocking issue(s), ${warnCount} warning(s)).`;
+    summary = `Not ready for precompile (${util.pluralize('blocking issue', failCount, true)}, ${util.pluralize('warning', warnCount, true)}).`;
   }
 
   return {
@@ -129,7 +128,7 @@ export function formatDiagnosisReport(report) {
   lines.push('Espresso precompile readiness diagnosis');
   lines.push('========================================');
   lines.push('');
-  const verdict = report.ready ? 'READY' : report.input.kind === 'apk' ? 'INCOMPLETE' : 'NOT READY';
+  const verdict = report.ready ? 'READY' : 'NOT READY';
   lines.push(`Verdict: ${verdict} — ${report.summary}`);
   lines.push('');
 
@@ -164,8 +163,7 @@ export function formatDiagnosisReport(report) {
   }
 
   if (report.ready) {
-    lines.push('Next: embed io.appium.espressoserver:library, build :app:assembleDebug :<testModule>:assembleDebug,');
-    lines.push('then run sessions with appium:skipServerInstallation=true (see docs/as-library.md).');
+    lines.push('Next: build and install the AUT with an Espresso server version compatible with this driver.');
   }
 
   return lines.join('\n');
@@ -255,18 +253,17 @@ function checkPrecompileInputKind(appInput) {
   if (appInput.kind === 'project') {
     return {
       id: 'input-gradle-project',
-      title: 'Gradle project',
+      title: 'App input',
       status: 'pass',
-      message: 'Gradle sources detected — static checks can inspect manifests and build files.',
+      message: 'Gradle project root — static checks can inspect manifests and build files.',
     };
   }
   return {
     id: 'input-gradle-project',
-    title: 'Gradle project',
-    status: 'warn',
+    title: 'App input',
+    status: 'info',
     message:
-      'APK-only input: precompile requires a Gradle module with io.appium.espressoserver:library. Re-run with the Android project root for full diagnosis.',
-    docRef: 'docs/as-library.md',
+      'APK input: scans the built artifact (permissions, dependencies, obfuscation hints). Gradle sources are optional for extra manifest and build-file checks.',
   };
 }
 
@@ -304,7 +301,7 @@ async function checkInternetPermission(appInput) {
         title: 'INTERNET permission',
         status: 'info',
         message:
-          'Could not verify INTERNET on the APK (install Android build-tools for aapt/aapt2, or use a Gradle project path).',
+          'Could not verify INTERNET on the APK (set ANDROID_SDK_ROOT and install Android build-tools so aapt2 is available).',
       },
     ];
   }
@@ -364,7 +361,7 @@ function checkObfuscation(appInput, serverDefaults) {
       title: 'Code shrinking (R8/ProGuard)',
       status: 'fail',
       message:
-        'APK appears obfuscated/minified. Dependency alignment cannot be verified from the APK; use a debug APK or Gradle project. See slackhq/keeper for shrinker rules when precompiling against release builds.',
+        'APK appears obfuscated/minified. Dependency alignment cannot be verified from the APK; use an unobfuscated debug APK if possible. See slackhq/keeper for shrinker rules when testing against release builds.',
       docRef: 'docs/as-library.md',
     });
     results.push({
@@ -539,49 +536,6 @@ function checkLifecycleExtensionsPin(appInput) {
       message:
         'lifecycle-extensions detected. Avoid pinning it in additionalAndroidTestDependencies — it often causes ProcessLifecycleOwner / lifecycle NoSuchMethodError with modern Compose.',
       docRef: 'docs/compose-troubleshooting.md',
-    },
-  ];
-}
-
-/**
- * @param {AppInput} appInput
- * @returns {DiagnosticCheck[]}
- */
-function checkEspressoServerEmbedding(appInput) {
-  if (appInput.kind === 'apk') {
-    return [
-      {
-        id: 'espresso-server-embed',
-        title: 'Espresso server library',
-        status: 'info',
-        message:
-          'Precompile embeds io.appium.espressoserver:library in an androidTest module — verify manually per docs/as-library.md.',
-        docRef: 'docs/as-library.md',
-      },
-    ];
-  }
-  const corpus = appInput.gradleCorpus ?? '';
-  const embedded =
-    /io\.appium\.espressoserver/.test(corpus) || /espressoserver:library/.test(corpus);
-  if (embedded) {
-    return [
-      {
-        id: 'espresso-server-embed',
-        title: 'Espresso server library',
-        status: 'pass',
-        message: 'io.appium.espressoserver dependency reference found in Gradle files.',
-        docRef: 'docs/as-library.md',
-      },
-    ];
-  }
-  return [
-    {
-      id: 'espresso-server-embed',
-      title: 'Espresso server library',
-      status: 'info',
-      message:
-        'No io.appium.espressoserver:library reference yet. Add an androidTest (or com.android.test) module per docs/as-library.md before using skipServerInstallation.',
-      docRef: 'docs/as-library.md',
     },
   ];
 }
