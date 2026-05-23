@@ -1,3 +1,9 @@
+## [8.5.6](https://github.com/appium/appium-espresso-driver/compare/v8.5.5...v8.5.6) (2026-05-23)
+
+### Miscellaneous Chores
+
+* **deps:** bump composeUiTest from 1.1.1 to 1.11.2 in /espresso-server ([#1170](https://github.com/appium/appium-espresso-driver/issues/1170)) ([417a42a](https://github.com/appium/appium-espresso-driver/commit/417a42a05e1dedcef3c56babd0ca21d492da0b38))
+
 ## [8.5.5](https://github.com/appium/appium-espresso-driver/compare/v8.5.4...v8.5.5) (2026-05-23)
 
 ### Miscellaneous Chores
