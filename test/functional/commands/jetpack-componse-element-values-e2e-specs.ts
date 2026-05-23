@@ -2,7 +2,7 @@ import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {retryInterval} from 'asyncbox';
 import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {COMPOSE_CAPS} from '../desired';
+import {type ComposeCaps, getComposeCaps} from '../desired';
 
 chai.use(chaiAsPromised);
 
@@ -10,16 +10,18 @@ describe('Jetpack Compose', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver: any;
+  let composeCaps: ComposeCaps;
 
   before(async function () {
     // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
     if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 23) {
       this.skip();
     }
+    composeCaps = await getComposeCaps();
   });
 
   beforeEach(async function () {
-    driver = await initSession(COMPOSE_CAPS);
+    driver = await initSession(composeCaps);
   });
 
   afterEach(async function () {

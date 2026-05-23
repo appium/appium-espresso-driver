@@ -3,7 +3,7 @@ import chaiAsPromised from 'chai-as-promised';
 import {DOMParser} from '@xmldom/xmldom';
 import xpath from 'xpath';
 import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {COMPOSE_CAPS} from '../desired';
+import {type ComposeCaps, getComposeCaps} from '../desired';
 
 chai.use(chaiAsPromised);
 
@@ -11,6 +11,7 @@ describe('source commands', function () {
   this.timeout(MOCHA_TIMEOUT);
 
   let driver: any;
+  let composeCaps: ComposeCaps;
 
   describe('jetpack-compose app', function () {
     before(async function () {
@@ -18,7 +19,8 @@ describe('source commands', function () {
       if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 23) {
         return this.skip();
       }
-      driver = await initSession(COMPOSE_CAPS);
+      composeCaps = await getComposeCaps();
+      driver = await initSession(composeCaps);
     });
     after(async function () {
       await deleteSession();
