@@ -1830,6 +1830,7 @@ more details.
 
 ## Troubleshooting
 
+* Run `appium driver run espresso diagnose-app --app /path/to/your/android-project` (or `--app /path/to/debug.apk`) before [embedding the Espresso server as a library](#consuming-espresso-server-as-library). The script checks manifest permissions, obfuscation, AndroidX/Compose dependency alignment, and other static preconditions for precompile. Exit code is non-zero when the app is not ready for precompile.
 * If you observe Espresso server crash on startup and various exceptions about missing class/method in the logcat output then consider updating [appium:espressoBuildConfig](#espresso-build-config) capability with module versions that match your application under test. This might require some experimentation, as different apps have different module requirements. Check, for example, [issue #812](https://github.com/appium/appium-espresso-driver/issues/812). Another solution might be
 to [integrate](#consuming-espresso-server-as-library) Espresso Server with the application under test in form of a library.
 * If you experience issues with application activities being not found or not starting then consider checking [How To Troubleshoot Activities Startup](docs/activity-startup.md) article.

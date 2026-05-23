@@ -16,6 +16,7 @@
   },
   "include": [
     "lib",
-    "test"
+    "test",
+    "scripts/**/*.mjs"
   ]
 }

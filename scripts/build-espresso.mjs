@@ -1,12 +1,14 @@
 import path from 'node:path';
-import {fileURLToPath} from 'node:url';
+import {fileURLToPath, pathToFileURL} from 'node:url';
 import {Command} from 'commander';
 import {logger, fs} from 'appium/support.js';
-import {ServerBuilder} from '../build/lib/commands/server/index.js';
 
 const LOG = logger.getLogger('EspressoBuild');
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const SERVER_BUILDER_MODULE = pathToFileURL(
+  path.join(ROOT_DIR, 'build/lib/commands/server/index.js'),
+).href;
 const ESPRESSO_SERVER_ROOT = path.join(ROOT_DIR, 'espresso-server');
 const ESPRESSO_SERVER_BUILD = path.join(ESPRESSO_SERVER_ROOT, 'app', 'build');
 
@@ -16,6 +18,7 @@ const ESPRESSO_SERVER_BUILD = path.join(ESPRESSO_SERVER_ROOT, 'app', 'build');
 async function buildEspressoServer(options) {
   LOG.info(`Building espresso server in '${ESPRESSO_SERVER_BUILD}'`);
 
+  /** @type {import('../lib/commands/server/builder.js').ServerBuilderOptions} */
   const opts = {
     serverPath: ESPRESSO_SERVER_ROOT,
     showGradleLog: options.showGradleLog,
@@ -43,6 +46,7 @@ async function buildEspressoServer(options) {
     }
   }
 
+  const {ServerBuilder} = await import(SERVER_BUILDER_MODULE);
   const builder = new ServerBuilder(LOG, opts);
   try {
     await builder.build();
