@@ -1,3 +1,11 @@
+## [8.5.3](https://github.com/appium/appium-espresso-driver/compare/v8.5.2...v8.5.3) (2026-05-23)
+
+### Miscellaneous Chores
+
+* **deps:** bump androidx.annotation:annotation in /espresso-server ([#1169](https://github.com/appium/appium-espresso-driver/issues/1169)) ([6e32876](https://github.com/appium/appium-espresso-driver/commit/6e3287673525f791bd6b135fb6ccb5c96afd5dea))
+* **deps:** bump kotlin from 2.3.20 to 2.3.21 in /espresso-server ([#1166](https://github.com/appium/appium-espresso-driver/issues/1166)) ([40ea9e1](https://github.com/appium/appium-espresso-driver/commit/40ea9e15fda07fe7ffc37615999fdac00594031d))
+* **deps:** bump org.robolectric:robolectric in /espresso-server ([#1168](https://github.com/appium/appium-espresso-driver/issues/1168)) ([0aeb67a](https://github.com/appium/appium-espresso-driver/commit/0aeb67a2f060fa67254af9a3c427a7260aabc661))
+
 ## [8.5.2](https://github.com/appium/appium-espresso-driver/compare/v8.5.1...v8.5.2) (2026-05-23)
 
 ### Bug Fixes
