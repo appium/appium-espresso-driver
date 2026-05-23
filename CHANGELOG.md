@@ -1,3 +1,10 @@
+## [8.5.4](https://github.com/appium/appium-espresso-driver/compare/v8.5.3...v8.5.4) (2026-05-23)
+
+### Miscellaneous Chores
+
+* **deps:** bump androidxTest from 1.5.0 to 1.7.0 in /espresso-server ([#1167](https://github.com/appium/appium-espresso-driver/issues/1167)) ([d22a5f9](https://github.com/appium/appium-espresso-driver/commit/d22a5f95ef702900fdf4e104d9169611acebc906))
+* **deps:** bump espresso from 3.5.1 to 3.7.0 in /espresso-server ([#1172](https://github.com/appium/appium-espresso-driver/issues/1172)) ([b4a0b8b](https://github.com/appium/appium-espresso-driver/commit/b4a0b8b062aff1f146b2dcaefbd6b22dd0a74332))
+
 ## [8.5.3](https://github.com/appium/appium-espresso-driver/compare/v8.5.2...v8.5.3) (2026-05-23)
 
 ### Miscellaneous Chores
