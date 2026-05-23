@@ -8,9 +8,8 @@ chai.use(chaiAsPromised);
 
 describe('web', function () {
   before(async function () {
-    // No proper chromedrivers are available, or very flaky to run on CI.
-    // Also, API level 26 emulators don't have WebView installed by default.
-    if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 26) {
+    // We are getting rate limited by the API when running on CI.
+    if (process.env.CI) {
       this.skip();
     }
   });

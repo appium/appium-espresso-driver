@@ -1,15 +1,18 @@
-import type {PostProcessOptions, PostProcessResult} from '@appium/types';
+import type {PostProcessOptions, PostProcessResult, CachedAppInfo} from '@appium/types';
 import {utils} from 'appium-android-driver';
 import {fs, tempDir, zip} from 'appium/support';
 import {SETTINGS_HELPER_ID} from 'io.appium.settings';
 import path from 'node:path';
 import type {EspressoDriver} from '../driver';
-import {isCachedAppInfo} from './app';
 import {TEST_APK_PKG} from './server';
+import {isPlainObject} from '../utils';
 
 export const APK_EXT = '.apk';
 export const AAB_EXT = '.aab';
 export const SUPPORTED_EXTENSIONS = [APK_EXT, AAB_EXT];
+
+/** Cached app entry with integrity path (narrower than {@link CachedAppInfo}). */
+export type StrictCachedAppInfo = CachedAppInfo & {fullPath: string};
 
 /** Whether the session targets an app already installed on the device (no app path). */
 export function isAppOnDevice(driver: EspressoDriver): boolean {
@@ -174,4 +177,13 @@ export async function initAUT(this: EspressoDriver): Promise<void> {
       `Cannot add server packages to the Doze whitelist. Original error: ` + (stderr || message),
     );
   }
+}
+
+/** Type guard for cached app metadata shape. */
+function isCachedAppInfo(value: unknown): value is StrictCachedAppInfo {
+  return (
+    isPlainObject(value) &&
+    typeof value.packageHash === 'string' &&
+    typeof value.fullPath === 'string'
+  );
 }
