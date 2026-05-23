@@ -1,19 +1,20 @@
-import path from 'node:path';
+import type {Capabilities} from '@wdio/types';
 import {node} from 'appium/support';
-// Using broad typing to keep test helper concise
-type W3CCapabilities = any;
+import {getComposePlaygroundPath} from '../setup';
+
+export type ComposeCaps = Capabilities.W3CCapabilities;
 
 const APIDEMOS_APK_URL =
   'https://github.com/appium/android-apidemos/releases/download/v6.0.2/ApiDemos-debug.apk';
 
 export function amendCapabilities(
-  baseCaps: W3CCapabilities,
+  baseCaps: ComposeCaps,
   ...newCaps: Array<Record<string, any>>
 ) {
   return node.deepFreeze({
     alwaysMatch: structuredClone(Object.assign({}, baseCaps.alwaysMatch, ...newCaps)),
     firstMatch: [{}],
-  }) as W3CCapabilities;
+  }) as ComposeCaps;
 }
 
 export const GENERIC_CAPS = node.deepFreeze({
@@ -34,11 +35,9 @@ export const APIDEMO_CAPS = amendCapabilities(GENERIC_CAPS, {
   'appium:app': APIDEMOS_APK_URL,
 });
 
-export const COMPOSE_CAPS = amendCapabilities(GENERIC_CAPS, {
-  'appium:app': path.resolve(__dirname, '..', 'assets', 'compose_playground.apk'),
-  'appium:espressoBuildConfig':
-    '{"additionalAndroidTestDependencies": ' +
-    '["androidx.lifecycle:lifecycle-extensions:2.2.0", ' +
-    '"androidx.activity:activity:1.3.1", ' +
-    '"androidx.fragment:fragment:1.3.4"]}',
-});
+export async function getComposeCaps(): Promise<ComposeCaps> {
+  const composeApp = await getComposePlaygroundPath();
+  return amendCapabilities(GENERIC_CAPS, {
+    'appium:app': composeApp,
+  });
+}
