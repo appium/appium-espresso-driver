@@ -7,10 +7,7 @@ export type ComposeCaps = Capabilities.W3CCapabilities;
 const APIDEMOS_APK_URL =
   'https://github.com/appium/android-apidemos/releases/download/v6.0.2/ApiDemos-debug.apk';
 
-export function amendCapabilities(
-  baseCaps: ComposeCaps,
-  ...newCaps: Array<Record<string, any>>
-) {
+export function amendCapabilities(baseCaps: ComposeCaps, ...newCaps: Array<Record<string, any>>) {
   return node.deepFreeze({
     alwaysMatch: structuredClone(Object.assign({}, baseCaps.alwaysMatch, ...newCaps)),
     firstMatch: [{}],
