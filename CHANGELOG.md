@@ -1,3 +1,10 @@
+## [8.5.5](https://github.com/appium/appium-espresso-driver/compare/v8.5.4...v8.5.5) (2026-05-23)
+
+### Miscellaneous Chores
+
+* **deps:** bump androidx.test.uiautomator:uiautomator ([#1173](https://github.com/appium/appium-espresso-driver/issues/1173)) ([9981439](https://github.com/appium/appium-espresso-driver/commit/99814395985774912efb8b07b83fa3969cca488d))
+* **deps:** bump com.google.code.gson:gson in /espresso-server ([#1171](https://github.com/appium/appium-espresso-driver/issues/1171)) ([87f3a11](https://github.com/appium/appium-espresso-driver/commit/87f3a1133cb45141268b517b9ca91d563b550ca9))
+
 ## [8.5.4](https://github.com/appium/appium-espresso-driver/compare/v8.5.3...v8.5.4) (2026-05-23)
 
 ### Miscellaneous Chores
