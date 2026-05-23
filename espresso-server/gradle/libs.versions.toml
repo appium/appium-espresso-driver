@@ -7,7 +7,7 @@ composeUiTest = "1.1.1"
 gson = "2.10.1"
 espresso = "3.5.1"
 nanohttpd = "2.3.1"
-robolectric = "4.9.2"
+robolectric = "4.16.1"
 junit = "4.13.2"
 uiautomator = "2.2.0"
 
