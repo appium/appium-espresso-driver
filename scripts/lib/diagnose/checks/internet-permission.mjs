@@ -60,7 +60,7 @@ export async function checkInternetPermission(appInput) {
       title: 'INTERNET permission',
       status: 'fail',
       message:
-        'No android.permission.INTERNET found under app/src/main/AndroidManifest.xml (or module manifests). Add it to the AUT manifest and bump versionCode before reinstalling.',
+        'No android.permission.INTERNET found in scanned src/main/AndroidManifest.xml files. Add it to the AUT manifest and bump versionCode before reinstalling.',
       docRef: 'README.md#troubleshooting',
     },
   ];

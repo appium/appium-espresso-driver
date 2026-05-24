@@ -1,20 +1,20 @@
 import {fs} from 'appium/support.js';
-import path from 'node:path';
 
 /**
- * @param {string} root
- * @returns {Promise<string[]>}
+ * @param {string} root Gradle project root
+ * @returns {Promise<string[]>} Main-manifest file contents (one entry per module)
  */
 export async function findManifestTexts(root) {
-  /** @type {string[]} */
-  const manifests = [];
-  const candidates = ['app/src/main/AndroidManifest.xml', 'src/main/AndroidManifest.xml'];
-  for (const rel of candidates) {
-    try {
-      manifests.push(await fs.readFile(path.join(root, rel), 'utf8'));
-    } catch {
-      // continue
-    }
+  const manifestPaths = await fs.glob('**/src/main/AndroidManifest.xml', {
+    cwd: root,
+    absolute: true,
+    ignore: ['**/node_modules/**', '**/.git/**', '**/build/**', '**/.gradle/**'],
+  });
+  if (!manifestPaths.length) {
+    return [];
   }
-  return manifests;
+  const contents = await Promise.all(
+    manifestPaths.map((manifestPath) => fs.readFile(manifestPath, 'utf8').catch(() => '')),
+  );
+  return contents.filter(Boolean);
 }
