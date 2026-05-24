@@ -165,12 +165,16 @@ Espresso requires the AUT and `androidTest` APK to be signed compatibly. Reinsta
 
 **Fix**
 
+1. Remove the mismatched pair and let Appium reinstall both APKs with a matching signature:
+
 ```bash
 adb uninstall io.appium.espressoserver.test
 adb uninstall <your.aut.package>
 ```
 
 Create a new session with `appium:forceEspressoRebuild: true` so Appium rebuilds and reinstalls the server against the current AUT.
+
+2. If the AUT is already signed with your own keystore (release build, `appium:noReset: true`, or a manually installed APK), configure [App Signing](../README.md#app-signing) so **both** the application under test and the Espresso server are signed the same way. Set `appium:useKeystore: true` plus `appium:keystorePath`, `appium:keystorePassword`, `appium:keyAlias`, and `appium:keyPassword` to the keystore that matches the AUT. The driver then signs the rebuilt `io.appium.espressoserver.test` APK with that keystore as well. Do not use `appium:noSign: true` unless the server APK is already signed with the same certificate as the AUT.
 
 ---
 
