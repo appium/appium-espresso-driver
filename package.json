@@ -35,7 +35,8 @@
     "mainClass": "EspressoDriver",
     "scripts": {
       "print-espresso-path": "./scripts/print-espresso-path.mjs",
-      "build-espresso": "./scripts/build-espresso.mjs"
+      "build-espresso": "./scripts/build-espresso.mjs",
+      "diagnose-app": "./scripts/diagnose-app.mjs"
     },
     "doctor": {
       "checks": [
