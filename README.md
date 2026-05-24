@@ -239,6 +239,8 @@ The `swiper` argument is not supported in Compose mode. Available since driver v
 
 Calling other driver element-specific APIs not listed above would most likely throw an exception as Compose and Espresso elements are being stored in completely separated internal caches and must not be mixed.
 
+If session startup or Compose interactions fail, see [How To Troubleshoot Jetpack Compose Apps](docs/compose-troubleshooting.md).
+
 You could also check end-to-end tests for more examples on how to setup test capabilities and
 on the Compose usage in general:
 - https://github.com/appium/appium-espresso-driver/blob/master/test/functional/commands/jetpack-componse-element-values-e2e-specs.js
@@ -1830,7 +1832,8 @@ more details.
 
 ## Troubleshooting
 
-* Run `appium driver run espresso diagnose-app --app /path/to/your/android-project` (or `--app /path/to/debug.apk`) before [embedding the Espresso server as a library](#consuming-espresso-server-as-library). The script checks manifest permissions, obfuscation, AndroidX/Compose dependency alignment, and other static preconditions for precompile. Exit code is non-zero when the app is not ready for precompile.
+* Run `appium driver run espresso diagnose-app --app /path/to/your/android-project` or `--app /path/to/debug.apk`. The script checks manifest permissions, obfuscation, AndroidX/Compose dependency alignment, and other static preconditions for precompile. Exit code is non-zero when the app is not ready for precompile.
+* If you test **Jetpack Compose** apps (or hybrid View + Compose UIs) and see server startup failures, `NoSuchMethodError` in `androidx.compose.*`, misleading `INTERNET` permission errors, `InitializationProvider` / `Resources$NotFoundException`, or locator issues in `compose` subdriver mode, read [How To Troubleshoot Jetpack Compose Apps](docs/compose-troubleshooting.md).
 * If you observe Espresso server crash on startup and various exceptions about missing class/method in the logcat output then consider updating [appium:espressoBuildConfig](#espresso-build-config) capability with module versions that match your application under test. This might require some experimentation, as different apps have different module requirements. Check, for example, [issue #812](https://github.com/appium/appium-espresso-driver/issues/812). Another solution might be
 to [integrate](#consuming-espresso-server-as-library) Espresso Server with the application under test in form of a library.
 * If you experience issues with application activities being not found or not starting then consider checking [How To Troubleshoot Activities Startup](docs/activity-startup.md) article.
@@ -1852,8 +1855,6 @@ to [integrate](#consuming-espresso-server-as-library) Espresso Server with the a
   -keep class android.support.v7.** { *; }
   ```
   Please read [#449](https://github.com/appium/appium-espresso-driver/issues/449#issuecomment-537833139) for more details on this topic.
-* When you want to build without compose dependencies
-    * Espresso driver has Jetpack Compose dependencies to [support Jetpack Compose](#jetpack-compose-support). It could break the application under test's dependencies. The typical case is when the application under test does not have the Jetpack Compose dependencies. Then, you can try out [no compose dependencies branch](https://github.com/appium/appium-espresso-driver/pull/879)). In Appium 2.0, the branch is available as `appium driver install --source=local /path/to/the/appium-espress-driver` with the `no-compose-deps` branch instead of npm installation.
 
 
 ## Contributing
