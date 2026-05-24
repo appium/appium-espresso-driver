@@ -1,3 +1,9 @@
+## [8.6.0](https://github.com/appium/appium-espresso-driver/compare/v8.5.6...v8.6.0) (2026-05-24)
+
+### Features
+
+* Add a script for app diagnosis ([#1175](https://github.com/appium/appium-espresso-driver/issues/1175)) ([c2b48e8](https://github.com/appium/appium-espresso-driver/commit/c2b48e828d8595c90cba4e5222e21485f99b686d))
+
 ## [8.5.6](https://github.com/appium/appium-espresso-driver/compare/v8.5.5...v8.5.6) (2026-05-23)
 
 ### Miscellaneous Chores
