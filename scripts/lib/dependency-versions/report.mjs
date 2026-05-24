@@ -26,7 +26,7 @@ export function mergeEspressoBuildConfigSuggestions(modules) {
 
 /**
  * @param {import('./types.mjs').ComparisonReport} report
- * @param {{json?: boolean, compact?: boolean}} [opts]
+ * @param {{json?: boolean, compact?: boolean, includeMergedConfig?: boolean}} [opts]
  */
 export function formatReport(report, opts = {}) {
   if (opts.json) {
@@ -65,11 +65,12 @@ export function formatReport(report, opts = {}) {
     lines.push(`${mod.label} (${mod.id})`);
     lines.push(`  Server: ${mod.serverVersion ?? 'n/a'}`);
     if (mod.appVersions.length) {
-      lines.push(`  App:    ${mod.appVersions.join(', ')} (using ${mod.appVersion} for comparison)`);
+      const suffix = mod.testOnly ? '' : ` (using ${mod.appVersion} for comparison)`;
+      lines.push(`  App:    ${mod.appVersions.join(', ')}${suffix}`);
     } else {
       lines.push('  App:    not detected');
     }
-    lines.push(`  Diff:   ${mod.diff}`);
+    lines.push(`  Status: ${mod.diff}`);
     lines.push(`  → ${mod.recommendation.message}`);
     if (mod.recommendation.espressoBuildConfig) {
       lines.push(
@@ -82,8 +83,10 @@ export function formatReport(report, opts = {}) {
     lines.push('');
   }
 
+  const includeMerged =
+    opts.includeMergedConfig !== false && !opts.compact;
   const mergedConfig = mergeEspressoBuildConfigSuggestions(report.modules);
-  if (Object.keys(mergedConfig).length) {
+  if (includeMerged && Object.keys(mergedConfig).length) {
     lines.push('Merged espressoBuildConfig suggestion (combine with your existing config):');
     lines.push(JSON.stringify(mergedConfig, null, 2));
     lines.push('');

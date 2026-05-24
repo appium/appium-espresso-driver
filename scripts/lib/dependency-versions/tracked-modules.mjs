@@ -19,6 +19,7 @@ export const TRACKED_MODULES = [
   {
     id: 'espresso',
     label: 'Espresso',
+    testOnly: true,
     toolsVersionKey: 'espressoVersion',
     catalogKey: 'espresso',
     gradleProperty: 'appiumEspressoVersion',
@@ -42,6 +43,7 @@ export const TRACKED_MODULES = [
   {
     id: 'androidxTest',
     label: 'AndroidX Test',
+    testOnly: true,
     toolsVersionKey: null,
     catalogKey: 'androidxTest',
     gradleProperty: 'appiumAndroidxTestVersion',
@@ -53,6 +55,7 @@ export const TRACKED_MODULES = [
   {
     id: 'uiautomator',
     label: 'UiAutomator',
+    testOnly: true,
     toolsVersionKey: null,
     catalogKey: 'uiautomator',
     gradleProperty: 'appiumUiAutomatorVersion',

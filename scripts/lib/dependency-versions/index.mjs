@@ -7,7 +7,11 @@ export {
   versionFromPatternMatch,
   versionSetsToSortedRecords,
 } from './version-utils.mjs';
-export {collectAppVersionsFromProject, findGradleFiles} from './gradle-scan.mjs';
+export {
+  collectAppVersionsFromProject,
+  extractMainAppDependencyScopes,
+  findGradleFiles,
+} from './gradle-scan.mjs';
 export {collectAppVersionsFromApk} from './apk-scan.mjs';
 export {mapMetaInfVersionBaseToModule, mergeMetaInfEmbeddedVersions} from './apk-meta-inf.mjs';
 export {

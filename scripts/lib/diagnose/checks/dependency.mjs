@@ -22,7 +22,7 @@ export function mapDependencyChecks(dependencyReport, appInput) {
 
       return /** @type {import('../types.mjs').DiagnosticCheck} */ ({
         id: `dependency-${mod.id}`,
-        title: `${mod.label} version`,
+        title: mod.testOnly ? `${mod.label} in app` : `${mod.label} version`,
         status,
         message: mod.recommendation.message,
         espressoBuildConfig: mod.recommendation.espressoBuildConfig,
