@@ -13,6 +13,8 @@ The Espresso package consists of two main parts:
 - The driver part (written in Node.js) ensures the communication between the Espresso server and Appium. Also includes several handlers that directly use ADB and/or other system tools without a need to talk to the server.
 - The server part (written in Kotlin with some parts of Java), which is running on the device under test and transforms REST API calls into low-level Espresso commands.
 
+See the [end-to-end architecture diagram](./docs/architecture.md).
+
 > [!IMPORTANT]
 > Since major version *5.0.0*, this driver is only compatible with Appium 3. Use the `appium driver install espresso`
 > command to add it to your distribution.
