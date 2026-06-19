@@ -1,3 +1,10 @@
+## [8.6.2](https://github.com/appium/appium-espresso-driver/compare/v8.6.1...v8.6.2) (2026-06-19)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump @types/node from 25.9.4 to 26.0.0 ([#1181](https://github.com/appium/appium-espresso-driver/issues/1181)) ([357ec3c](https://github.com/appium/appium-espresso-driver/commit/357ec3cbf5ec36b93b777e027230c23a5ba0c193))
+* **deps:** bump gradle-wrapper from 9.5.1 to 9.6.0 in /espresso-server ([#1182](https://github.com/appium/appium-espresso-driver/issues/1182)) ([b28e5d5](https://github.com/appium/appium-espresso-driver/commit/b28e5d597b37c2705fa5228adfaf883dc4c1020f))
+
 ## [8.6.1](https://github.com/appium/appium-espresso-driver/compare/v8.6.0...v8.6.1) (2026-06-19)
 
 ### Miscellaneous Chores
