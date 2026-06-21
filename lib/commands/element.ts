@@ -1,6 +1,6 @@
-import {errors} from 'appium/driver';
-import {util} from 'appium/support';
-import type {EspressoDriver} from '../driver';
+import {errors} from 'appium/driver.js';
+import {util} from 'appium/support.js';
+import type {EspressoDriver} from '../driver.js';
 
 /**
  * Flash the element with given id.

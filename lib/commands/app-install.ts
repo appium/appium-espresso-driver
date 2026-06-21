@@ -1,11 +1,11 @@
 import type {PostProcessOptions, PostProcessResult, CachedAppInfo} from '@appium/types';
 import {utils} from 'appium-android-driver';
-import {fs, tempDir, zip} from 'appium/support';
+import {fs, tempDir, zip} from 'appium/support.js';
 import {SETTINGS_HELPER_ID} from 'io.appium.settings';
 import path from 'node:path';
-import type {EspressoDriver} from '../driver';
-import {TEST_APK_PKG} from './server';
-import {isPlainObject} from '../utils';
+import type {EspressoDriver} from '../driver.js';
+import {TEST_APK_PKG} from './server/index.js';
+import {isPlainObject} from '../utils/index.js';
 
 export const APK_EXT = '.apk';
 export const AAB_EXT = '.aab';

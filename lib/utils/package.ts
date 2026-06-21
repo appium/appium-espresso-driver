@@ -1,9 +1,11 @@
-import {fs} from 'appium/support';
+import {fs} from 'appium/support.js';
 import path from 'node:path';
 import _fs from 'node:fs';
+import {fileURLToPath} from 'node:url';
 
 let PACKAGE_INFO: {manifestPath: string; manifestPayload: Record<string, any>} | null = null;
 const MODULE_NAME = 'appium-espresso-driver';
+const FILENAME = fileURLToPath(import.meta.url);
 
 /**
  * Fetches the module info from package.json
@@ -19,7 +21,7 @@ export async function getPackageInfo(): Promise<{
     return PACKAGE_INFO;
   }
 
-  let currentDir = path.dirname(path.resolve(__filename));
+  let currentDir = path.dirname(FILENAME);
   let isAtFsRoot = false;
   while (!isAtFsRoot) {
     const manifestPath = path.join(currentDir, 'package.json');
@@ -52,7 +54,7 @@ export function getPackageInfoSync(): {manifestPath: string; manifestPayload: Re
     return PACKAGE_INFO;
   }
 
-  let currentDir = path.dirname(path.resolve(__filename));
+  let currentDir = path.dirname(FILENAME);
   let isAtFsRoot = false;
   while (!isAtFsRoot) {
     const manifestPath = path.join(currentDir, 'package.json');

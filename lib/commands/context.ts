@@ -1,4 +1,4 @@
-import type {EspressoDriver} from '../driver';
+import type {EspressoDriver} from '../driver.js';
 import type {StringRecord} from '@appium/types';
 
 /**

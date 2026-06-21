@@ -1,6 +1,6 @@
 import {doctor as doctorCommon} from 'appium-android-driver';
 import {exec} from 'teen_process';
-import {fs, system, doctor} from 'appium/support';
+import {fs, system, doctor} from 'appium/support.js';
 import path from 'node:path';
 import type {AppiumLogger, IDoctorCheck} from '@appium/types';
 

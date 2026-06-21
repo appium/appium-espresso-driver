@@ -1,7 +1,7 @@
-import type {EspressoDriver} from '../../driver';
-import {qualifyActivityName, getPackageInfo} from '../../utils';
-import {DEVICE_PORT} from './constants';
-import {EspressoRunner} from './runner';
+import type {EspressoDriver} from '../../driver.js';
+import {qualifyActivityName, getPackageInfo} from '../../utils/index.js';
+import {DEVICE_PORT} from './constants.js';
+import {EspressoRunner} from './runner.js';
 
 /**
  * Start an Espresso session: device setup, server install, and session launch.

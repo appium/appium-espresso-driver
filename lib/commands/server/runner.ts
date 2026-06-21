@@ -1,14 +1,15 @@
-import {JWProxy, errors} from 'appium/driver';
+import {JWProxy, errors} from 'appium/driver.js';
 import {sleep, waitForCondition} from 'asyncbox';
 import path from 'node:path';
-import {fs, node, util, timing} from 'appium/support';
-import {getPackageInfoSync, getPackageInfo, isPlainObject} from '../../utils';
-import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './builder';
+import {fileURLToPath} from 'node:url';
+import {fs, node, util, timing} from 'appium/support.js';
+import {getPackageInfoSync, getPackageInfo, isPlainObject} from '../../utils/index.js';
+import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './builder.js';
 import {
   ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS,
   TARGET_PACKAGE_CONTAINER,
   TEST_APK_PKG,
-} from './constants';
+} from './constants.js';
 import axios from 'axios';
 import * as semver from 'semver';
 import type {
@@ -534,6 +535,7 @@ function requireOption<K extends keyof EspressoRunnerOptions>(
 }
 
 const MODULE_NAME = 'appium-espresso-driver';
+const FILENAME = fileURLToPath(import.meta.url);
 
 let testServerRoot: string | undefined;
 
@@ -568,7 +570,7 @@ export async function copyGradleProjectRecursively(
 /** Root path of the bundled Espresso server Gradle project. */
 function getTestServerRoot(): string {
   if (testServerRoot === undefined) {
-    const moduleRoot = node.getModuleRootSync(MODULE_NAME, __filename);
+    const moduleRoot = node.getModuleRootSync(MODULE_NAME, FILENAME);
     if (!moduleRoot) {
       throw new Error(`Cannot find the root folder of the ${MODULE_NAME} Node.js module`);
     }

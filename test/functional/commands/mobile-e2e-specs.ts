@@ -1,13 +1,13 @@
-import chai, {expect} from 'chai';
+import {describe, it, before, after, beforeEach, afterEach} from 'node:test';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import type {Browser, ChainablePromiseElement} from 'webdriverio';
-import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {amendCapabilities, APIDEMO_CAPS} from '../desired';
+import {initSession, deleteSession} from '../helpers/session.js';
+import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
 describe('mobile', function () {
-  this.timeout(MOCHA_TIMEOUT);
 
   let driver: Browser;
 
@@ -27,10 +27,10 @@ describe('mobile', function () {
 
   describe('mobile:swipe', function () {
     describe('with direction', function () {
-      before(function () {
+      before(function (t) {
         if (process.env.CI) {
           // CI env is flaky because of the bad emulator performance
-          this.skip();
+          (t as any).skip();
         }
       });
 
@@ -47,10 +47,10 @@ describe('mobile', function () {
       });
     });
     describe('with GeneralSwipeAction', function () {
-      before(function () {
+      before(function (t) {
         if (process.env.CI) {
           // CI env is flaky because of the bad emulator performance
-          this.skip();
+          (t as any).skip();
         }
       });
 
@@ -138,10 +138,10 @@ describe('mobile', function () {
   });
 
   describe('mobile: openDrawer, mobile: closeDrawer', function () {
-    before(function () {
+    before(function (t) {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        (t as any).skip();
       }
     });
 
@@ -158,10 +158,10 @@ describe('mobile', function () {
   });
 
   describe('mobile: setDate, mobile: setTime', function () {
-    before(function () {
+    before(function (t) {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        (t as any).skip();
       }
     });
 
@@ -201,10 +201,10 @@ describe('mobile', function () {
   });
 
   describe('mobile: navigateTo', function () {
-    before(function () {
+    before(function (t) {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        (t as any).skip();
       }
     });
 
@@ -231,10 +231,10 @@ describe('mobile', function () {
   });
 
   describe('mobile: scrollToPage', function () {
-    before(function () {
+    before(function (t) {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        (t as any).skip();
       }
     });
 
@@ -276,10 +276,10 @@ describe('mobile', function () {
   });
 
   describe('mobile:uiautomator', function () {
-    before(function () {
+    before(function (t) {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        (t as any).skip();
       }
     });
 
@@ -304,10 +304,10 @@ describe('mobile', function () {
   describe('mobile: clickAction', function () {
     let viewEl: ChainablePromiseElement;
 
-    before(function () {
+    before(function (t) {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        (t as any).skip();
       }
     });
 
@@ -358,10 +358,10 @@ describe('mobile', function () {
   });
 
   describe('mobile: backdoor', function () {
-    before(function () {
+    before(function (t) {
       if (process.env.CI) {
         // CI env is flaky because of the bad emulator performance
-        this.skip();
+        (t as any).skip();
       }
     });
 

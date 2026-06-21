@@ -4,15 +4,15 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "outDir": "build",
-    "types": ["node", "mocha", "chai"],
+    "types": [
+      "node",
+      "chai"
+    ],
     "checkJs": true,
-    "strict": true
-  },
-  "ts-node": {
-    "transpileOnly": true,
-    "compilerOptions": {
-      "rootDir": "."
-    }
+    "strict": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "."
   },
   "include": [
     "lib",

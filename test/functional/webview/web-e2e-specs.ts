@@ -1,21 +1,21 @@
+import {describe, it, before, after} from 'node:test';
 import type {Browser} from 'webdriverio';
-import chai, {expect} from 'chai';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {amendCapabilities, APIDEMO_CAPS} from '../desired';
+import {initSession, deleteSession} from '../helpers/session.js';
+import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
 describe('web', function () {
-  before(async function () {
+  before(async function (t) {
     // We are getting rate limited by the API when running on CI.
     if (process.env.CI) {
-      this.skip();
+      (t as any).skip();
     }
   });
 
   describe('WebView', function () {
-    this.timeout(MOCHA_TIMEOUT);
 
     let driver: Browser;
     before(async function () {
@@ -39,11 +39,11 @@ describe('web', function () {
       expect(contexts[0]).to.match(/^native/i);
       expect(contexts[1]).to.match(/^webview/i);
     });
-    it('should send text to html text inputs', async function () {
+    it('should send text to html text inputs', async function (t) {
       if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) > 31) {
         // chromedriver or engine side issue on emulators.
         // Please relax the condition if newer ones work.
-        this.skip();
+        (t as any).skip();
       }
 
       const html = await driver.getPageSource();

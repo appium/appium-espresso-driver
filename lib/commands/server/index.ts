@@ -1,4 +1,4 @@
-export {SYSTEM_PORT_RANGE, TEST_APK_PKG} from './constants';
+export {SYSTEM_PORT_RANGE, TEST_APK_PKG} from './constants.js';
 export {
   ServerBuilder,
   buildServerSigningConfig,
@@ -6,6 +6,6 @@ export {
   type EspressoBuildConfiguration,
   type ServerBuilderOptions,
   type ServerSigningConfig,
-} from './builder';
-export {EspressoRunner, type EspressoRunnerOptions} from './runner';
-export {initServer, removePortForward, startSession, teardown} from './startup';
+} from './builder.js';
+export {EspressoRunner, type EspressoRunnerOptions} from './runner.js';
+export {initServer, removePortForward, startSession, teardown} from './startup.js';

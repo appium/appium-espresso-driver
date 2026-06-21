@@ -1,13 +1,13 @@
+import {describe, it, before, after} from 'node:test';
 import axios from 'axios';
-import chai, {expect} from 'chai';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession, MOCHA_TIMEOUT, HOST, PORT} from '../helpers/session';
-import {amendCapabilities, APIDEMO_CAPS} from '../desired';
+import {initSession, deleteSession, HOST, PORT} from '../helpers/session.js';
+import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
 describe('keyboard', function () {
-  this.timeout(MOCHA_TIMEOUT);
 
   let idCounter = 0;
 

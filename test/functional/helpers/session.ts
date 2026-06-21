@@ -5,7 +5,6 @@ import type {Capabilities} from '@wdio/types';
 const SESSION_GUARD = new AsyncLock();
 const HOST = process.env.APPIUM_TEST_SERVER_HOST || '127.0.0.1';
 const PORT = parseInt(process.env.APPIUM_TEST_SERVER_PORT ?? '', 10) || 4567;
-const MOCHA_TIMEOUT = (process.env.CI ? 10 : 4) * 60 * 1000;
 
 const COMMON_REMOTE_OPTIONS = {
   hostname: HOST,
@@ -38,4 +37,4 @@ async function deleteSession(): Promise<void> {
   });
 }
 
-export {initSession, deleteSession, HOST, PORT, MOCHA_TIMEOUT, COMMON_REMOTE_OPTIONS};
+export {initSession, deleteSession, HOST, PORT, COMMON_REMOTE_OPTIONS};

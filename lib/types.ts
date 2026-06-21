@@ -1,5 +1,5 @@
 import type {DriverCaps, DriverOpts, W3CDriverCaps} from '@appium/types';
-import type {EspressoConstraints} from './constraints';
+import type {EspressoConstraints} from './constraints.js';
 
 export type EspressoDriverOpts = DriverOpts<EspressoConstraints>;
 

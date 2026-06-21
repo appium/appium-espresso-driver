@@ -1,10 +1,12 @@
 import path from 'node:path';
-import {fs, net, tempDir} from 'appium/support';
+import {fileURLToPath} from 'node:url';
+import {fs, net, tempDir} from 'appium/support.js';
 
+const DIRNAME = path.dirname(fileURLToPath(import.meta.url));
 const COMPOSE_PLAYGROUND_URL =
   'https://github.com/appium/compose-playground/releases/download/v1.1.0/ComposePlayground-debug.apk';
 const COMPOSE_PLAYGROUND_CACHE_PATH = path.resolve(
-  __dirname,
+  DIRNAME,
   'fixtures',
   'ComposePlayground-debug.apk',
 );

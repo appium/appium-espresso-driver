@@ -1,12 +1,12 @@
-import {EspressoRunner} from '../../lib/commands/server';
+import {describe, it, afterEach} from 'node:test';
+import {EspressoRunner} from '../../lib/commands/server/index.js';
 import {ADB} from 'appium-adb';
 import sinon from 'sinon';
-import {log} from '../../lib/logger';
-import chai from 'chai';
+import {log} from '../../lib/logger.js';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-const {expect} = chai;
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
 const REQUIRED_PARAMS = [
   'adb',
@@ -21,7 +21,7 @@ const REQUIRED_PARAMS = [
 const sandbox = sinon.createSandbox();
 
 describe('espresso-runner', function () {
-  this.afterEach(function () {
+  afterEach(function () {
     sandbox.restore();
   });
 

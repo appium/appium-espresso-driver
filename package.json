@@ -26,6 +26,7 @@
     "printWidth": 100,
     "singleQuote": true
   },
+  "type": "module",
   "appium": {
     "driverName": "espresso",
     "automationName": "Espresso",
@@ -103,11 +104,11 @@
     "prepare": "npm run rebuild",
     "sync-version": "node ./scripts/sync-version.mjs --package-version=${npm_package_version}",
     "test": "npm run test:node",
-    "test:node": "mocha --exit --timeout 1m \"./test/unit/**/*-specs.ts\"",
+    "test:node": "npm run build:node && node --test --test-timeout=60000 \"build/test/unit/**/*-specs.js\"",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace || cd ..",
     "assemble:server:compose-off": "cd espresso-server && ./gradlew :app:assembleAndroidTest -PappiumComposeSupport=false --no-daemon",
     "version": "npm run sync-version && npm run build:server",
-    "e2e-test": "mocha --exit --timeout 5m \"./test/functional/**/*-specs.ts\""
+    "e2e-test": "npm run build:node && node --test --test-concurrency=1 --test-timeout=300000 \"build/test/functional/**/*-specs.js\""
   },
   "peerDependencies": {
     "appium": "^3.0.0-rc.2"
@@ -121,7 +122,6 @@
     "@types/async-lock": "^1.4.2",
     "@types/chai": "^5.2.3",
     "@types/chai-as-promised": "^8.0.2",
-    "@types/mocha": "^10.0.1",
     "@types/node": "^26.0.0",
     "@types/portscanner": "^2.1.4",
     "@types/semver": "^7.7.1",
@@ -132,14 +132,19 @@
     "chai": "^6.0.0",
     "chai-as-promised": "^8.0.0",
     "conventional-changelog-conventionalcommits": "^9.0.0",
-    "mocha": "^11.1.0",
     "prettier": "^3.0.0",
     "semantic-release": "^25.0.2",
     "semver": "^7.3.7",
     "sinon": "^22.0.0",
-    "ts-node": "^10.9.1",
     "typescript": "^6.0.3",
     "webdriverio": "^9.26.0",
     "xpath": "^0.x"
+  },
+  "exports": {
+    ".": {
+      "types": "./build/lib/index.d.ts",
+      "import": "./build/lib/index.js"
+    },
+    "./package.json": "./package.json"
   }
 }

@@ -1,12 +1,12 @@
-import chai, {expect} from 'chai';
+import {describe, it, before, after} from 'node:test';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {APIDEMO_CAPS} from '../desired';
+import {initSession, deleteSession} from '../helpers/session.js';
+import {APIDEMO_CAPS} from '../desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
 describe('find elements', function () {
-  this.timeout(MOCHA_TIMEOUT);
 
   let driver: any;
 
@@ -66,10 +66,10 @@ describe('find elements', function () {
         await deleteSession();
       });
 
-      it('should match an element if the element is off-screen but has an accessibility id', async function () {
+      it('should match an element if the element is off-screen but has an accessibility id', async function (t) {
         if (process.env.CI) {
           // CI env is flaky
-          this.skip();
+          (t as any).skip();
         }
         const el = await driver.$('~Views');
         await el.click();
@@ -104,10 +104,10 @@ describe('find elements', function () {
     });
   });
   describe('by data matcher', function () {
-    before(function () {
+    before(function (t) {
       // Lower versions' emulators on CI were flaky.
       if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 25) {
-        this.skip();
+        (t as any).skip();
       }
     });
 
@@ -385,10 +385,10 @@ describe('find elements', function () {
       await deleteSession();
     });
 
-    it('should move an element outside. the screen into the screen with find element', async function () {
+    it('should move an element outside. the screen into the screen with find element', async function (t) {
       if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) < 34) {
         // Unstable on CI with lower version emulators
-        this.skip();
+        (t as any).skip();
       }
 
       // Espresso specific behavior.

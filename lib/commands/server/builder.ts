@@ -1,8 +1,8 @@
 import {SubProcess} from 'teen_process';
-import {fs, system} from 'appium/support';
+import {fs, system} from 'appium/support.js';
 import path from 'node:path';
 import {EOL} from 'node:os';
-import {escapeRegExp} from '../../utils';
+import {escapeRegExp} from '../../utils/index.js';
 import type {AppiumLogger} from '@appium/types';
 
 const GRADLE_VERSION_KEY = 'gradle';

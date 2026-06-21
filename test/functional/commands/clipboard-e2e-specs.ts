@@ -1,14 +1,14 @@
+import {describe, it, before, after} from 'node:test';
 import type {Browser} from 'webdriverio';
 import {AssertionError} from 'node:assert';
-import chai, {expect} from 'chai';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {APIDEMO_CAPS} from '../desired';
+import {initSession, deleteSession} from '../helpers/session.js';
+import {APIDEMO_CAPS} from '../desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
 describe('clipboard', function () {
-  this.timeout(MOCHA_TIMEOUT);
 
   let driver: Browser;
 

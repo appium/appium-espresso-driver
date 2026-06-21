@@ -1,8 +1,8 @@
-import {util} from 'appium/support';
-import {errors} from 'appium/driver';
+import {util} from 'appium/support.js';
+import {errors} from 'appium/driver.js';
 import type {StringRecord} from '@appium/types';
-import type {EspressoDriver} from '../driver';
-import type {DeviceInfo} from '../types';
+import type {EspressoDriver} from '../driver.js';
+import type {DeviceInfo} from '../types.js';
 
 /**
  * Settings parameters that are available in
