@@ -68,7 +68,7 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
       it('should match an element if the element is off-screen but has an accessibility id', async function (t) {
         if (process.env.CI) {
           // CI env is flaky
-          t.skip();
+          return t.skip();
         }
         const el = await driver.$('~Views');
         await el.click();
@@ -384,7 +384,7 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
     it('should move an element outside. the screen into the screen with find element', async function (t) {
       if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) < 34) {
         // Unstable on CI with lower version emulators
-        t.skip();
+        return t.skip();
       }
 
       // Espresso specific behavior.

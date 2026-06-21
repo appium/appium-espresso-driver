@@ -37,7 +37,7 @@ describe('web', {skip: SKIP_WEB_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
       if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) > 31) {
         // chromedriver or engine side issue on emulators.
         // Please relax the condition if newer ones work.
-        t.skip();
+        return t.skip();
       }
 
       const html = await driver.getPageSource();
