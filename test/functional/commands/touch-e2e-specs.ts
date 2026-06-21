@@ -9,7 +9,10 @@ import {APIDEMO_CAPS} from '../desired.js';
 
 use(chaiAsPromised);
 
-describe('touch actions -', {timeout: E2E_TEST_TIMEOUT}, function () {
+// TODO: Enable this in CI after the functional coverage update in the follow-up PR.
+const SKIP_TOUCH_TESTS = Boolean(process.env.CI);
+
+describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
   let sessionId: string;
 

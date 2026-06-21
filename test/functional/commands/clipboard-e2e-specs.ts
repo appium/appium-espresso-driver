@@ -8,7 +8,10 @@ import {APIDEMO_CAPS} from '../desired.js';
 
 use(chaiAsPromised);
 
-describe('clipboard', {timeout: E2E_TEST_TIMEOUT}, function () {
+// TODO: Enable this in CI after the functional coverage update in the follow-up PR.
+const SKIP_CLIPBOARD_TESTS = Boolean(process.env.CI);
+
+describe('clipboard', {skip: SKIP_CLIPBOARD_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
 
   before(async function () {

@@ -111,7 +111,7 @@ jobs:
     - uses: reactivecircus/android-emulator-runner@v2
       name: e2e_api${{ matrix.apiLevel }}
       with:
-        script: ./ci/run-functional-tests.sh
+        script: npm run e2e-test
         avd-name: ${{ env.ANDROID_AVD }}
         force-avd-creation: false
         api-level: ${{ matrix.apiLevel }}
