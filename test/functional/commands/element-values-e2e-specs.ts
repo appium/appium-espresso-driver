@@ -8,7 +8,6 @@ import {APIDEMO_CAPS} from '../desired.js';
 use(chaiAsPromised);
 
 describe('ElementValue', function () {
-
   let driver: Browser;
 
   before(async function () {

@@ -10,7 +10,6 @@ import {APIDEMO_CAPS} from '../desired.js';
 use(chaiAsPromised);
 
 describe('source commands', function () {
-
   let driver: Browser;
 
   describe('regular app', function () {

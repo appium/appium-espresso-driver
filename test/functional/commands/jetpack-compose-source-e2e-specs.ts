@@ -9,7 +9,6 @@ import {type ComposeCaps, getComposeCaps} from '../desired.js';
 use(chaiAsPromised);
 
 describe('source commands', function () {
-
   let driver: any;
   let composeCaps: ComposeCaps;
 

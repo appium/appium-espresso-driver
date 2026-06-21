@@ -8,7 +8,6 @@ import {type ComposeCaps, getComposeCaps} from '../desired.js';
 use(chaiAsPromised);
 
 describe('Jetpack Compose', function () {
-
   let driver: any;
   let composeCaps: ComposeCaps;
 

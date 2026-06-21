@@ -8,7 +8,6 @@ import {APIDEMO_CAPS} from '../desired.js';
 use(chaiAsPromised);
 
 describe('Size', function () {
-
   let driver: Browser;
   before(async function () {
     driver = await initSession(APIDEMO_CAPS);

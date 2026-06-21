@@ -9,7 +9,6 @@ import {APIDEMO_CAPS} from '../desired.js';
 use(chaiAsPromised);
 
 describe('clipboard', function () {
-
   let driver: Browser;
 
   before(async function () {

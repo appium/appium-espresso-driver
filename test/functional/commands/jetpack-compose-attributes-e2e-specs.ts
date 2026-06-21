@@ -6,7 +6,6 @@ import {type ComposeCaps, getComposeCaps} from '../desired.js';
 
 use(chaiAsPromised);
 describe('compose node attributes', function () {
-
   let driver: any;
   let composeCaps: ComposeCaps;
 

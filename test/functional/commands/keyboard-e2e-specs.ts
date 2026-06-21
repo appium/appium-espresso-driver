@@ -8,7 +8,6 @@ import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 use(chaiAsPromised);
 
 describe('keyboard', function () {
-
   let idCounter = 0;
 
   const performActions = async function (...actionsArrays: any[]) {

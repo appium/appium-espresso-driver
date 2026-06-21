@@ -10,7 +10,6 @@ import {APIDEMO_CAPS} from '../desired.js';
 use(chaiAsPromised);
 
 describe('touch actions -', function () {
-
   let driver: Browser;
   let sessionId: string;
 

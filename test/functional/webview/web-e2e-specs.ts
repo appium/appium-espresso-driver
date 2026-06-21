@@ -16,7 +16,6 @@ describe('web', function () {
   });
 
   describe('WebView', function () {
-
     let driver: Browser;
     before(async function () {
       driver = await initSession(

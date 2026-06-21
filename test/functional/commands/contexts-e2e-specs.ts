@@ -8,7 +8,6 @@ import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 use(chaiAsPromised);
 
 describe('context', function () {
-
   let driver: Browser;
 
   before(async function (t) {

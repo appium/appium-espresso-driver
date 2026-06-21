@@ -7,7 +7,6 @@ import {APIDEMO_CAPS} from '../desired.js';
 use(chaiAsPromised);
 
 describe('find elements', function () {
-
   let driver: any;
 
   describe('element by xpath', function () {
