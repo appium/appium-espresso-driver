@@ -8,13 +8,11 @@ import {type ComposeCaps, getComposeCaps} from '../desired.js';
 
 use(chaiAsPromised);
 
-const SKIP_COMPOSE_TESTS = parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 23;
-
 describe('source commands', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: any;
   let composeCaps: ComposeCaps;
 
-  describe('jetpack-compose app', {skip: SKIP_COMPOSE_TESTS}, function () {
+  describe('jetpack-compose app', function () {
     before(async function () {
       composeCaps = await getComposeCaps();
       driver = await initSession(composeCaps);

@@ -7,9 +7,7 @@ import {type ComposeCaps, getComposeCaps} from '../desired.js';
 
 use(chaiAsPromised);
 
-const SKIP_COMPOSE_TESTS = parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 23;
-
-describe('Jetpack Compose', {skip: SKIP_COMPOSE_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
+describe('Jetpack Compose', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: any;
   let composeCaps: ComposeCaps;
 
