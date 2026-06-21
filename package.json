@@ -103,12 +103,14 @@
     "format:check": "prettier --check ./lib ./test",
     "prepare": "npm run rebuild",
     "sync-version": "node ./scripts/sync-version.mjs --package-version=${npm_package_version}",
-    "test": "npm run test:node",
-    "test:node": "npm run build:node && node --test --test-timeout=60000 \"build/test/unit/**/*-specs.js\"",
+    "pretest": "npm run build:node",
+    "test": "node --test --test-timeout=60000 \"build/test/unit/**/*-specs.js\"",
+    "test:node": "npm test",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace || cd ..",
     "assemble:server:compose-off": "cd espresso-server && ./gradlew :app:assembleAndroidTest -PappiumComposeSupport=false --no-daemon",
     "version": "npm run sync-version && npm run build:server",
-    "e2e-test": "npm run build:node && node --test --test-concurrency=1 --test-timeout=300000 \"build/test/functional/**/*-specs.js\""
+    "pree2e-test": "npm run build:node",
+    "e2e-test": "node --test --test-concurrency=1 --test-timeout=300000 \"build/test/functional/**/*-specs.js\""
   },
   "peerDependencies": {
     "appium": "^3.0.0-rc.2"
