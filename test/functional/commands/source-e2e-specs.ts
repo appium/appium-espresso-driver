@@ -4,12 +4,12 @@ import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {DOMParser} from '@xmldom/xmldom';
 import xpath from 'xpath';
-import {initSession, deleteSession} from '../helpers/session.js';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 import {APIDEMO_CAPS} from '../desired.js';
 
 use(chaiAsPromised);
 
-describe('source commands', function () {
+describe('source commands', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
 
   describe('regular app', function () {

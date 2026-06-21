@@ -2,19 +2,14 @@ import {describe, it, before, after} from 'node:test';
 import type {Browser} from 'webdriverio';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession} from '../helpers/session.js';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 
 use(chaiAsPromised);
 
-describe('web', function () {
-  before(async function (t) {
-    // We are getting rate limited by the API when running on CI.
-    if (process.env.CI) {
-      (t as any).skip();
-    }
-  });
+const SKIP_WEB_TESTS = Boolean(process.env.CI);
 
+describe('web', {skip: SKIP_WEB_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
   describe('WebView', function () {
     let driver: Browser;
     before(async function () {
@@ -42,7 +37,7 @@ describe('web', function () {
       if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) > 31) {
         // chromedriver or engine side issue on emulators.
         // Please relax the condition if newer ones work.
-        (t as any).skip();
+        t.skip();
       }
 
       const html = await driver.getPageSource();

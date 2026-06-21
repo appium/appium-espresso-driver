@@ -3,12 +3,12 @@ import type {Browser} from 'webdriverio';
 import {AssertionError} from 'node:assert';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession} from '../helpers/session.js';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 import {APIDEMO_CAPS} from '../desired.js';
 
 use(chaiAsPromised);
 
-describe('clipboard', function () {
+describe('clipboard', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
 
   before(async function () {

@@ -4,12 +4,12 @@ import {asyncmap, sleep} from 'asyncbox';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import type {Browser, ChainablePromiseElement} from 'webdriverio';
-import {initSession, deleteSession, HOST, PORT} from '../helpers/session.js';
+import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 import {APIDEMO_CAPS} from '../desired.js';
 
 use(chaiAsPromised);
 
-describe('touch actions -', function () {
+describe('touch actions -', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
   let sessionId: string;
 

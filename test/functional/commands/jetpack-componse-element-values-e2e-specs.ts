@@ -2,20 +2,18 @@ import {describe, it, before, beforeEach, afterEach} from 'node:test';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {retryInterval} from 'asyncbox';
-import {initSession, deleteSession} from '../helpers/session.js';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 import {type ComposeCaps, getComposeCaps} from '../desired.js';
 
 use(chaiAsPromised);
 
-describe('Jetpack Compose', function () {
+const SKIP_COMPOSE_TESTS = parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 23;
+
+describe('Jetpack Compose', {skip: SKIP_COMPOSE_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: any;
   let composeCaps: ComposeCaps;
 
-  before(async function (t) {
-    // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
-    if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 23) {
-      (t as any).skip();
-    }
+  before(async function () {
     composeCaps = await getComposeCaps();
   });
 

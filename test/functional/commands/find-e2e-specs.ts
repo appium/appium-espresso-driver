@@ -1,12 +1,12 @@
 import {describe, it, before, after} from 'node:test';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession} from '../helpers/session.js';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 import {APIDEMO_CAPS} from '../desired.js';
 
 use(chaiAsPromised);
 
-describe('find elements', function () {
+describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: any;
 
   describe('element by xpath', function () {
@@ -68,7 +68,7 @@ describe('find elements', function () {
       it('should match an element if the element is off-screen but has an accessibility id', async function (t) {
         if (process.env.CI) {
           // CI env is flaky
-          (t as any).skip();
+          t.skip();
         }
         const el = await driver.$('~Views');
         await el.click();
@@ -102,137 +102,134 @@ describe('find elements', function () {
       });
     });
   });
-  describe('by data matcher', function () {
-    before(function (t) {
-      // Lower versions' emulators on CI were flaky.
-      if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 25) {
-        (t as any).skip();
-      }
-    });
+  describe(
+    'by data matcher',
+    {skip: parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 25},
+    function () {
+      describe('Data Matcher - dependent tests - Set 1', function () {
+        before(async function () {
+          driver = await initSession(APIDEMO_CAPS);
+        });
 
-    describe('Data Matcher - dependent tests - Set 1', function () {
-      before(async function () {
-        driver = await initSession(APIDEMO_CAPS);
-      });
-
-      after(async function () {
-        await deleteSession();
-      });
-      it('should fail to find elements with helpful error messages', async function () {
-        const err = (await driver.findElement(
-          '-android datamatcher',
-          JSON.stringify({
-            name: 'hasEntry',
-            args: ['title', 'A Fake Item'],
-          }),
-        )) as {error: string};
-        expect(err.error).to.eq('no such element');
-      });
-      it('should fail with invalid selector with helpful error messages', async function () {
-        await expect(
-          driver.findElement(
-            '-android datamatcher',
-            JSON.stringify({
-              name: 'notARealHamcrestMatcherStrategy',
-              args: ['title', 'A Fake Item'],
-            }),
-          ),
-        ).to.be.rejectedWith(/Not a valid selector/);
-      });
-      it('should allow "class" property with fully qualified className', async function () {
-        await expect(
-          driver.findElement(
-            '-android datamatcher',
-            JSON.stringify({
-              name: 'notARealHamcrestMatcherStrategy',
-              args: ['title', 'A Fake Item'],
-              class: 'org.hamcrest.Matchers',
-            }),
-          ),
-        ).to.be.rejectedWith(/Not a valid selector/);
-      });
-      it('should find an element using a data matcher', async function () {
-        const el = await driver.$(
-          await driver.findElement(
+        after(async function () {
+          await deleteSession();
+        });
+        it('should fail to find elements with helpful error messages', async function () {
+          const err = (await driver.findElement(
             '-android datamatcher',
             JSON.stringify({
               name: 'hasEntry',
-              args: ['title', 'Animation'],
+              args: ['title', 'A Fake Item'],
             }),
-          ),
-        );
-        await el.click();
-        await driver.$('~Bouncing Balls');
-        await driver.back();
-      });
-      it('should find an offscreen element using a data matcher', async function () {
-        const viewsEl = await driver.$('~Views');
-        await viewsEl.click();
-        const el = await driver.$(
-          await driver.findElement(
-            '-android datamatcher',
-            JSON.stringify({
-              name: 'hasEntry',
-              args: ['title', 'WebView3'],
-            }),
-          ),
-        );
-        await el.click();
-        await driver.back();
-        await driver.$('~Controls');
-        await driver.back();
-      });
-    });
-    describe('Data Matcher - dependent tests - Set 2', function () {
-      before(async function () {
-        driver = await initSession(APIDEMO_CAPS);
-        await driver.execute('mobile:startActivity', {
-          appPackage: 'io.appium.android.apis',
-          appActivity: '.view.SplitTouchView',
+          )) as {error: string};
+          expect(err.error).to.eq('no such element');
+        });
+        it('should fail with invalid selector with helpful error messages', async function () {
+          await expect(
+            driver.findElement(
+              '-android datamatcher',
+              JSON.stringify({
+                name: 'notARealHamcrestMatcherStrategy',
+                args: ['title', 'A Fake Item'],
+              }),
+            ),
+          ).to.be.rejectedWith(/Not a valid selector/);
+        });
+        it('should allow "class" property with fully qualified className', async function () {
+          await expect(
+            driver.findElement(
+              '-android datamatcher',
+              JSON.stringify({
+                name: 'notARealHamcrestMatcherStrategy',
+                args: ['title', 'A Fake Item'],
+                class: 'org.hamcrest.Matchers',
+              }),
+            ),
+          ).to.be.rejectedWith(/Not a valid selector/);
+        });
+        it('should find an element using a data matcher', async function () {
+          const el = await driver.$(
+            await driver.findElement(
+              '-android datamatcher',
+              JSON.stringify({
+                name: 'hasEntry',
+                args: ['title', 'Animation'],
+              }),
+            ),
+          );
+          await el.click();
+          await driver.$('~Bouncing Balls');
+          await driver.back();
+        });
+        it('should find an offscreen element using a data matcher', async function () {
+          const viewsEl = await driver.$('~Views');
+          await viewsEl.click();
+          const el = await driver.$(
+            await driver.findElement(
+              '-android datamatcher',
+              JSON.stringify({
+                name: 'hasEntry',
+                args: ['title', 'WebView3'],
+              }),
+            ),
+          );
+          await el.click();
+          await driver.back();
+          await driver.$('~Controls');
+          await driver.back();
         });
       });
+      describe('Data Matcher - dependent tests - Set 2', function () {
+        before(async function () {
+          driver = await initSession(APIDEMO_CAPS);
+          await driver.execute('mobile:startActivity', {
+            appPackage: 'io.appium.android.apis',
+            appActivity: '.view.SplitTouchView',
+          });
+        });
 
-      after(async function () {
-        await deleteSession();
+        after(async function () {
+          await deleteSession();
+        });
+
+        it('should be able to set a specific AdapterView as a root element when activity has multiple AdapterViews', async function () {
+          // Finding by adapter equalTo 'Zamorano' should be ambiguous, because there are two
+          // adapter items with the same matcher
+
+          // TODO: maybe need to update the test since this didn't occur.
+          // This error comes from Espresso framework itself, so possibly they changed this behavior.
+          // await driver.findElement('-android datamatcher', JSON.stringify({
+          //   name: 'equalTo', args: 'Zamorano'
+          // })).should.eventually.be.rejectedWith(/AmbiguousViewMatcherException/);
+
+          // Narrow them down by making the root an adapter view
+          const listOneEl = await driver.$(
+            await driver.findElement('id', 'io.appium.android.apis:id/list1'),
+          );
+          await expect(
+            listOneEl.findElement(
+              '-android datamatcher',
+              JSON.stringify({
+                name: 'equalTo',
+                args: 'Zamorano',
+              }),
+            ),
+          ).to.eventually.exist;
+
+          const listTwoEl = await driver.$(await driver.findElement('id', 'list2'));
+          await expect(
+            listTwoEl.findElement(
+              '-android datamatcher',
+              JSON.stringify({
+                name: 'equalTo',
+                args: 'Zamorano',
+              }),
+            ),
+          ).to.eventually.exist;
+        });
       });
-
-      it('should be able to set a specific AdapterView as a root element when activity has multiple AdapterViews', async function () {
-        // Finding by adapter equalTo 'Zamorano' should be ambiguous, because there are two
-        // adapter items with the same matcher
-
-        // TODO: maybe need to update the test since this didn't occur.
-        // This error comes from Espresso framework itself, so possibly they changed this behavior.
-        // await driver.findElement('-android datamatcher', JSON.stringify({
-        //   name: 'equalTo', args: 'Zamorano'
-        // })).should.eventually.be.rejectedWith(/AmbiguousViewMatcherException/);
-
-        // Narrow them down by making the root an adapter view
-        const listOneEl = await driver.$(
-          await driver.findElement('id', 'io.appium.android.apis:id/list1'),
-        );
-        await expect(
-          listOneEl.findElement(
-            '-android datamatcher',
-            JSON.stringify({
-              name: 'equalTo',
-              args: 'Zamorano',
-            }),
-          ),
-        ).to.eventually.exist;
-
-        const listTwoEl = await driver.$(await driver.findElement('id', 'list2'));
-        await expect(
-          listTwoEl.findElement(
-            '-android datamatcher',
-            JSON.stringify({
-              name: 'equalTo',
-              args: 'Zamorano',
-            }),
-          ),
-        ).to.eventually.exist;
-      });
-    });
-  });
+    },
+  );
   describe('by view matcher', function () {
     describe('View Matcher - dependent tests - Set 1', function () {
       before(async function () {
@@ -387,7 +384,7 @@ describe('find elements', function () {
     it('should move an element outside. the screen into the screen with find element', async function (t) {
       if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) < 34) {
         // Unstable on CI with lower version emulators
-        (t as any).skip();
+        t.skip();
       }
 
       // Espresso specific behavior.

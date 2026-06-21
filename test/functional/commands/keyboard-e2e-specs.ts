@@ -2,12 +2,12 @@ import {describe, it, before, after} from 'node:test';
 import axios from 'axios';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession, HOST, PORT} from '../helpers/session.js';
+import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 
 use(chaiAsPromised);
 
-describe('keyboard', function () {
+describe('keyboard', {timeout: E2E_TEST_TIMEOUT}, function () {
   let idCounter = 0;
 
   const performActions = async function (...actionsArrays: any[]) {
