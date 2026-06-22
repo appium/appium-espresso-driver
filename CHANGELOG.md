@@ -1,3 +1,13 @@
+## [9.0.0](https://github.com/appium/appium-espresso-driver/compare/v8.6.2...v9.0.0) (2026-06-22)
+
+### ⚠ BREAKING CHANGES
+
+* This package now publishes as ESM only. CommonJS require('appium-espresso-driver') consumers must migrate to ESM import.
+
+### Features
+
+* Migrate package to ESM ([#1183](https://github.com/appium/appium-espresso-driver/issues/1183)) ([983ee70](https://github.com/appium/appium-espresso-driver/commit/983ee70ed4662b586c9b80e09d1d7aff4a8cdb5f))
+
 ## [8.6.2](https://github.com/appium/appium-espresso-driver/compare/v8.6.1...v8.6.2) (2026-06-19)
 
 ### Miscellaneous Chores
