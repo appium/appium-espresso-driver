@@ -1,16 +1,15 @@
+import {describe, it, before, after} from 'node:test';
 import type {Browser} from 'webdriverio';
-import chai, {expect} from 'chai';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {DOMParser} from '@xmldom/xmldom';
 import xpath from 'xpath';
-import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {APIDEMO_CAPS} from '../desired';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+import {APIDEMO_CAPS} from '../desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
-describe('source commands', function () {
-  this.timeout(MOCHA_TIMEOUT);
-
+describe('source commands', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
 
   describe('regular app', function () {

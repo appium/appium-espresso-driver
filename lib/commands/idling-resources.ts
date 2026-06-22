@@ -1,4 +1,4 @@
-import type {EspressoDriver} from '../driver';
+import type {EspressoDriver} from '../driver.js';
 
 /**
  * Registers one or more idling resources

@@ -1,16 +1,16 @@
-import {system} from 'appium/support';
-import {ServerBuilder} from '../../lib/commands/server';
+import {describe, it} from 'node:test';
+import {system} from 'appium/support.js';
+import {ServerBuilder} from '../../lib/commands/server/index.js';
 import {
   GRADLE_URL_TEMPLATE,
   VERSION_KEYS,
   updateDependencyLines,
-} from '../../lib/commands/server/builder';
-import {log} from '../../lib/logger';
-import chai from 'chai';
+} from '../../lib/commands/server/builder.js';
+import {log} from '../../lib/logger.js';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-const {expect} = chai;
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
 describe('server-builder', function () {
   describe('getCommand', function () {

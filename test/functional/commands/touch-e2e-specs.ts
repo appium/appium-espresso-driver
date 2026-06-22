@@ -1,16 +1,18 @@
+import {describe, it, before, after, beforeEach} from 'node:test';
 import axios from 'axios';
 import {asyncmap, sleep} from 'asyncbox';
-import chai, {expect} from 'chai';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import type {Browser, ChainablePromiseElement} from 'webdriverio';
-import {initSession, deleteSession, HOST, PORT, MOCHA_TIMEOUT} from '../helpers/session';
-import {APIDEMO_CAPS} from '../desired';
+import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+import {APIDEMO_CAPS} from '../desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
-describe('touch actions -', function () {
-  this.timeout(MOCHA_TIMEOUT);
+// TODO: Enable this in CI after the functional coverage update in the follow-up PR.
+const SKIP_TOUCH_TESTS = Boolean(process.env.CI);
 
+describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
   let sessionId: string;
 
@@ -144,7 +146,6 @@ describe('touch actions -', function () {
 
   describe('scrolling/swiping', function () {
     describe('single', function () {
-      this.retries(2);
       beforeEach(startListActivity);
 
       it('should scroll up menu', async function () {

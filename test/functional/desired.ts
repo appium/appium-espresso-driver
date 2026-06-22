@@ -1,6 +1,6 @@
 import type {Capabilities} from '@wdio/types';
-import {node} from 'appium/support';
-import {getComposePlaygroundPath} from '../setup';
+import {node} from 'appium/support.js';
+import {getComposePlaygroundPath} from '../setup.js';
 
 export type ComposeCaps = Capabilities.W3CCapabilities;
 

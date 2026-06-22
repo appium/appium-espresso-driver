@@ -1,10 +1,11 @@
-import chai, {expect} from 'chai';
+import {describe, it, before, beforeEach, afterEach} from 'node:test';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {remote, type Browser} from 'webdriverio';
-import {COMMON_REMOTE_OPTIONS} from './helpers/session';
-import {APIDEMO_CAPS, amendCapabilities} from './desired';
+import {COMMON_REMOTE_OPTIONS} from './helpers/session.js';
+import {APIDEMO_CAPS, amendCapabilities} from './desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
 describe('EspressoDriver', function () {
   let driver: Browser;

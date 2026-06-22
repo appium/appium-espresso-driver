@@ -1,20 +1,16 @@
-import chai, {expect} from 'chai';
+import {describe, it, before, beforeEach, afterEach} from 'node:test';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {type ComposeCaps, getComposeCaps} from '../desired';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+import {type ComposeCaps, getComposeCaps} from '../desired.js';
 
-chai.use(chaiAsPromised);
-describe('compose node attributes', function () {
-  this.timeout(MOCHA_TIMEOUT);
+use(chaiAsPromised);
 
+describe('compose node attributes', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: any;
   let composeCaps: ComposeCaps;
 
   before(async function () {
-    // For SDK 23 and below Jetpack compose app crashes while running under instrumentation.
-    if (parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 23) {
-      return this.skip();
-    }
     composeCaps = await getComposeCaps();
   });
 

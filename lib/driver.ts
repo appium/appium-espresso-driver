@@ -8,29 +8,29 @@ import type {
   SingularSessionData,
   SessionCapabilities,
 } from '@appium/types';
-import type {EspressoConstraints} from './constraints';
-import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver';
-import * as serverCmds from './commands/server';
-import type {EspressoRunner} from './commands/server';
-import * as appManagementCmds from './commands/app-management';
-import * as contextCmds from './commands/context';
-import * as elementCmds from './commands/element';
-import * as miscCmds from './commands/misc';
-import * as servicesCmds from './commands/services';
-import * as screenshotCmds from './commands/screenshot';
-import * as idlingResourcesCmds from './commands/idling-resources';
-import * as actionsCmds from './commands/actions';
-import * as clipboardCmds from './commands/clipboard';
-import * as appInstallCmds from './commands/app-install';
+import type {EspressoConstraints} from './constraints.js';
+import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver.js';
+import * as serverCmds from './commands/server/index.js';
+import type {EspressoRunner} from './commands/server/index.js';
+import * as appManagementCmds from './commands/app-management.js';
+import * as contextCmds from './commands/context.js';
+import * as elementCmds from './commands/element.js';
+import * as miscCmds from './commands/misc.js';
+import * as servicesCmds from './commands/services.js';
+import * as screenshotCmds from './commands/screenshot.js';
+import * as idlingResourcesCmds from './commands/idling-resources.js';
+import * as actionsCmds from './commands/actions.js';
+import * as clipboardCmds from './commands/clipboard.js';
+import * as appInstallCmds from './commands/app-install.js';
 import {DEFAULT_ADB_PORT} from 'appium-adb';
 import {AndroidDriver} from 'appium-android-driver';
-import {ESPRESSO_CONSTRAINTS} from './constraints';
+import {ESPRESSO_CONSTRAINTS} from './constraints.js';
 import {findAPortNotInUse} from 'portscanner';
 import {retryInterval} from 'asyncbox';
-import {isEmptyValue} from './utils';
-import {newMethodMap} from './method-map';
-import type {EspressoDriverCaps, EspressoDriverOpts, W3CEspressoDriverCaps} from './types';
-import {executeMethodMap} from './execute-method-map';
+import {isEmptyValue} from './utils/index.js';
+import {newMethodMap} from './method-map.js';
+import type {EspressoDriverCaps, EspressoDriverOpts, W3CEspressoDriverCaps} from './types.js';
+import {executeMethodMap} from './execute-method-map.js';
 
 // NO_PROXY contains the paths that we never want to proxy to espresso server.
 // TODO:  Add the list of paths that we never want to proxy to espresso server.

@@ -1,14 +1,13 @@
-import chai, {expect} from 'chai';
+import {describe, it, before, after, beforeEach, afterEach} from 'node:test';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import type {Browser, ChainablePromiseElement} from 'webdriverio';
-import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {amendCapabilities, APIDEMO_CAPS} from '../desired';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
-describe('mobile', function () {
-  this.timeout(MOCHA_TIMEOUT);
-
+describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
 
   before(async function () {
@@ -26,14 +25,7 @@ describe('mobile', function () {
   });
 
   describe('mobile:swipe', function () {
-    describe('with direction', function () {
-      before(function () {
-        if (process.env.CI) {
-          // CI env is flaky because of the bad emulator performance
-          this.skip();
-        }
-      });
-
+    describe('with direction', {skip: Boolean(process.env.CI)}, function () {
       it('should swipe up and swipe down', async function () {
         const el = await driver.$('~Views');
         await el.click();
@@ -46,14 +38,7 @@ describe('mobile', function () {
         await driver.back();
       });
     });
-    describe('with GeneralSwipeAction', function () {
-      before(function () {
-        if (process.env.CI) {
-          // CI env is flaky because of the bad emulator performance
-          this.skip();
-        }
-      });
-
+    describe('with GeneralSwipeAction', {skip: Boolean(process.env.CI)}, function () {
       beforeEach(async function () {
         const viewEl = await driver.$('~Views');
         await viewEl.click();
@@ -137,14 +122,7 @@ describe('mobile', function () {
     });
   });
 
-  describe('mobile: openDrawer, mobile: closeDrawer', function () {
-    before(function () {
-      if (process.env.CI) {
-        // CI env is flaky because of the bad emulator performance
-        this.skip();
-      }
-    });
-
+  describe('mobile: openDrawer, mobile: closeDrawer', {skip: Boolean(process.env.CI)}, function () {
     it('should call these two commands but fail because element is not a drawer', async function () {
       // Testing for failures because ApiDemos app does not have a drawer to test on
       const el = await driver.$('~Views');
@@ -157,14 +135,7 @@ describe('mobile', function () {
     });
   });
 
-  describe('mobile: setDate, mobile: setTime', function () {
-    before(function () {
-      if (process.env.CI) {
-        // CI env is flaky because of the bad emulator performance
-        this.skip();
-      }
-    });
-
+  describe('mobile: setDate, mobile: setTime', {skip: Boolean(process.env.CI)}, function () {
     it('should set the date on a DatePicker', async function () {
       await driver.execute('mobile:startActivity', {
         appActivity: 'io.appium.android.apis.view.DateWidgets1',
@@ -200,14 +171,7 @@ describe('mobile', function () {
     });
   });
 
-  describe('mobile: navigateTo', function () {
-    before(function () {
-      if (process.env.CI) {
-        // CI env is flaky because of the bad emulator performance
-        this.skip();
-      }
-    });
-
+  describe('mobile: navigateTo', {skip: Boolean(process.env.CI)}, function () {
     it('should validate params', async function () {
       const element = await driver.$('~Views');
       await expect(
@@ -230,14 +194,7 @@ describe('mobile', function () {
     });
   });
 
-  describe('mobile: scrollToPage', function () {
-    before(function () {
-      if (process.env.CI) {
-        // CI env is flaky because of the bad emulator performance
-        this.skip();
-      }
-    });
-
+  describe('mobile: scrollToPage', {skip: Boolean(process.env.CI)}, function () {
     it('should validate the parameters', async function () {
       const el = await driver.$('~Views');
       await expect(
@@ -275,14 +232,7 @@ describe('mobile', function () {
     });
   });
 
-  describe('mobile:uiautomator', function () {
-    before(function () {
-      if (process.env.CI) {
-        // CI env is flaky because of the bad emulator performance
-        this.skip();
-      }
-    });
-
+  describe('mobile:uiautomator', {skip: Boolean(process.env.CI)}, function () {
     it('should be able to find and take action on all uiObjects', async function () {
       const text = await driver.execute('mobile: uiautomator', {
         strategy: 'clazz',
@@ -301,15 +251,8 @@ describe('mobile', function () {
       expect(text).to.eql(['Views']);
     });
   });
-  describe('mobile: clickAction', function () {
+  describe('mobile: clickAction', {skip: Boolean(process.env.CI)}, function () {
     let viewEl: ChainablePromiseElement;
-
-    before(function () {
-      if (process.env.CI) {
-        // CI env is flaky because of the bad emulator performance
-        this.skip();
-      }
-    });
 
     beforeEach(async function () {
       viewEl = await driver.$('~Views');
@@ -357,14 +300,7 @@ describe('mobile', function () {
     }
   });
 
-  describe('mobile: backdoor', function () {
-    before(function () {
-      if (process.env.CI) {
-        // CI env is flaky because of the bad emulator performance
-        this.skip();
-      }
-    });
-
+  describe('mobile: backdoor', {skip: Boolean(process.env.CI)}, function () {
     it('should get element type face', async function () {
       const element = await driver.$('~Views');
       // Below returns like: {"mStyle"=>0, "mSupportedAxes"=>nil, "mWeight"=>400, "native_instance"=>131438067610240}

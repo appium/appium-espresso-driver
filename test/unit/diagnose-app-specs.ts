@@ -1,3 +1,4 @@
+import {describe, it} from 'node:test';
 import path from 'node:path';
 import {expect} from 'chai';
 import {fs, tempDir} from 'appium/support.js';

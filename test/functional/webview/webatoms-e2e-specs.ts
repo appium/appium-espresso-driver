@@ -1,22 +1,20 @@
+import {describe, it, before, after} from 'node:test';
 import type {Browser} from 'webdriverio';
 import {sleep} from 'asyncbox';
-import chai from 'chai';
+import {use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {amendCapabilities, APIDEMO_CAPS} from '../desired';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
-describe('mobile web atoms', function () {
-  this.timeout(MOCHA_TIMEOUT);
+const SKIP_WEB_ATOMS_TESTS =
+  Boolean(process.env.CI) && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 26;
+
+describe('mobile web atoms', {skip: SKIP_WEB_ATOMS_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
 
   before(async function () {
-    // API level 26 emulators don't have WebView installed by default.
-    if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 26) {
-      this.skip();
-    }
-
     driver = await initSession(
       amendCapabilities(APIDEMO_CAPS, {
         'appium:appPackage': 'io.appium.android.apis',

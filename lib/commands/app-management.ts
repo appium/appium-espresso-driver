@@ -1,6 +1,6 @@
-import type {EspressoDriver} from '../driver';
-import {errors} from 'appium/driver';
-import {qualifyActivityName} from '../utils';
+import type {EspressoDriver} from '../driver.js';
+import {errors} from 'appium/driver.js';
+import {qualifyActivityName} from '../utils/index.js';
 
 /**
  * Starts the given activity with intent options, activity options and locale.

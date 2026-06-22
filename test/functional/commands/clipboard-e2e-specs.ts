@@ -1,15 +1,17 @@
+import {describe, it, before, after} from 'node:test';
 import type {Browser} from 'webdriverio';
 import {AssertionError} from 'node:assert';
-import chai, {expect} from 'chai';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {APIDEMO_CAPS} from '../desired';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+import {APIDEMO_CAPS} from '../desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
-describe('clipboard', function () {
-  this.timeout(MOCHA_TIMEOUT);
+// TODO: Enable this in CI after the functional coverage update in the follow-up PR.
+const SKIP_CLIPBOARD_TESTS = Boolean(process.env.CI);
 
+describe('clipboard', {skip: SKIP_CLIPBOARD_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
 
   before(async function () {

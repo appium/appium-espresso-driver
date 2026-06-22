@@ -1,4 +1,4 @@
-import type {EspressoDriver} from '../driver';
+import type {EspressoDriver} from '../driver.js';
 
 /**
  * Gets the clipboard content from the device.

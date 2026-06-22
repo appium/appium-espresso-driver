@@ -1,22 +1,18 @@
+import {describe, it, before, after} from 'node:test';
 import type {Browser} from 'webdriverio';
-import chai, {expect} from 'chai';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession, MOCHA_TIMEOUT} from '../helpers/session';
-import {amendCapabilities, APIDEMO_CAPS} from '../desired';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
-describe('context', function () {
-  this.timeout(MOCHA_TIMEOUT);
+const SKIP_CONTEXT_TESTS = Boolean(process.env.CI);
 
+describe('context', {skip: SKIP_CONTEXT_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
 
   before(async function () {
-    // We are getting rate limited by the API when running on CI.
-    if (process.env.CI) {
-      this.skip();
-    }
-
     driver = await initSession(
       amendCapabilities(APIDEMO_CAPS, {
         'appium:appActivity': 'io.appium.android.apis.view.WebView1',

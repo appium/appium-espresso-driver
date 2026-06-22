@@ -1,5 +1,5 @@
-import type {EspressoDriver} from '../driver';
-import type {ScreenshotsInfo} from './types';
+import type {EspressoDriver} from '../driver.js';
+import type {ScreenshotsInfo} from './types.js';
 
 // Display 4619827259835644672 (HWC display 0): port=0 pnpId=GGL displayName="EMU_display_0"
 const DISPLAY_PATTERN = /^Display\s+(\d+)\s+\(.+display\s+(\d+)\).+displayName="([^"]*)/gm;

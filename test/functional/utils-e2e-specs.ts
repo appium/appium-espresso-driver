@@ -1,10 +1,11 @@
-import chai, {expect} from 'chai';
+import {describe, it, before, beforeEach, afterEach} from 'node:test';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import path from 'node:path';
-import {fs, tempDir} from 'appium/support';
-import {copyGradleProjectRecursively} from '../../lib/commands/server/runner';
+import {fs, tempDir} from 'appium/support.js';
+import {copyGradleProjectRecursively} from '../../lib/commands/server/runner.js';
 
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
 describe('copyGradleProjectRecursively', function () {
   let baseSrcDir: string;

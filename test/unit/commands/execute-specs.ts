@@ -1,15 +1,15 @@
+import {describe, it, beforeEach, afterEach} from 'node:test';
 import sinon from 'sinon';
-import {EspressoDriver} from '../../../lib/driver';
-import chai from 'chai';
+import {EspressoDriver} from '../../../lib/driver.js';
+import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-const {expect} = chai;
-chai.use(chaiAsPromised);
+use(chaiAsPromised);
 
 const sandbox = sinon.createSandbox();
 
 describe('commands', function () {
-  this.afterEach(function () {
+  afterEach(function () {
     sandbox.restore();
   });
 
