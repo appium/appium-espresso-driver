@@ -1,3 +1,9 @@
+## [9.0.1](https://github.com/appium/appium-espresso-driver/compare/v9.0.0...v9.0.1) (2026-07-01)
+
+### Miscellaneous Chores
+
+* downgrade conventional-changelog-conventionalcommits to v9 ([#1188](https://github.com/appium/appium-espresso-driver/issues/1188)) ([869b6ab](https://github.com/appium/appium-espresso-driver/commit/869b6ab7533a26c892f1379140625378675ee8ab))
+
 ## [9.0.0](https://github.com/appium/appium-espresso-driver/compare/v8.6.2...v9.0.0) (2026-06-22)
 
 ### ⚠ BREAKING CHANGES
