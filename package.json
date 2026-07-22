@@ -77,7 +77,7 @@
   ],
   "dependencies": {
     "appium-adb": "^15.0.0",
-    "appium-android-driver": "^13.2.3",
+    "appium-android-driver": "^14.0.0",
     "asyncbox": "^6.1.0",
     "axios": "^1.16.1",
     "commander": "^14.0.1",
