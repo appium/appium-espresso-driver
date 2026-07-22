@@ -9,7 +9,7 @@ espresso = "3.7.0"
 nanohttpd = "2.3.1"
 robolectric = "4.16.1"
 junit = "4.13.2"
-uiautomator = "2.3.0"
+uiautomator = "2.4.0"
 
 [libraries]
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
