@@ -7,14 +7,14 @@ import io.appium.espressoserver.jvmtarget.AppiumJvmTarget
 import org.gradle.api.GradleException
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val appiumCompileSdk: String by project
-val appiumMinSdk: String by project
-val appiumTargetSdk: String by project
-val appiumBuildTools: String by project
-val appiumTargetPackage: String by project
-val appiumSourceCompatibility: String by project
-val appiumTargetCompatibility: String by project
-val appiumJvmTarget: String by project
+val appiumCompileSdk = project.property("appiumCompileSdk") as String
+val appiumMinSdk = project.property("appiumMinSdk") as String
+val appiumTargetSdk = project.property("appiumTargetSdk") as String
+val appiumBuildTools = project.property("appiumBuildTools") as String
+val appiumTargetPackage = project.property("appiumTargetPackage") as String
+val appiumSourceCompatibility = project.property("appiumSourceCompatibility") as String
+val appiumTargetCompatibility = project.property("appiumTargetCompatibility") as String
+val appiumJvmTarget = project.property("appiumJvmTarget") as String
 
 val useComposeLibrary: Boolean =
     (findProperty("appiumComposeSupport") as String?)?.equals("false", ignoreCase = true) != true

@@ -1,6 +1,6 @@
 [versions]
 androidGradlePlugin = "9.3.0"
-kotlin = "2.3.21"
+kotlin = "2.4.10"
 androidxTest = "1.7.0"
 annotation = "1.10.0"
 composeUiTest = "1.11.4"
@@ -23,6 +23,7 @@ androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test", ve
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "composeUiTest" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 nanohttpd-webserver = { group = "org.nanohttpd", name = "nanohttpd-webserver", version.ref = "nanohttpd" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
