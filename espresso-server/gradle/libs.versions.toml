@@ -1,6 +1,6 @@
 [versions]
 androidGradlePlugin = "9.3.0"
-kotlin = "2.3.21"
+kotlin = "2.4.10"
 androidxTest = "1.7.0"
 annotation = "1.10.0"
 composeUiTest = "1.11.4"
