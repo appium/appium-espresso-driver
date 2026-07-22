@@ -1,3 +1,9 @@
+## [9.0.2](https://github.com/appium/appium-espresso-driver/compare/v9.0.1...v9.0.2) (2026-07-22)
+
+### Miscellaneous Chores
+
+* Bump appium-android-driver ([#1200](https://github.com/appium/appium-espresso-driver/issues/1200)) ([b40e59a](https://github.com/appium/appium-espresso-driver/commit/b40e59a37fe132ddea7ff2ed8ed7d4526dbcbdf7))
+
 ## [9.0.1](https://github.com/appium/appium-espresso-driver/compare/v9.0.0...v9.0.1) (2026-07-01)
 
 ### Miscellaneous Chores
