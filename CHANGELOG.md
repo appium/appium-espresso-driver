@@ -1,3 +1,9 @@
+## [9.0.3](https://github.com/appium/appium-espresso-driver/compare/v9.0.2...v9.0.3) (2026-07-23)
+
+### Miscellaneous Chores
+
+* Change Dependabot commit message prefix to 'chore' ([57c0b04](https://github.com/appium/appium-espresso-driver/commit/57c0b04dc98f59686fb76ef6c232b679c0059672))
+
 ## [9.0.2](https://github.com/appium/appium-espresso-driver/compare/v9.0.1...v9.0.2) (2026-07-22)
 
 ### Miscellaneous Chores
