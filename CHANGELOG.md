@@ -1,3 +1,9 @@
+## [9.0.4](https://github.com/appium/appium-espresso-driver/compare/v9.0.3...v9.0.4) (2026-07-23)
+
+### Miscellaneous Chores
+
+* **deps:** bump androidGradlePlugin in /espresso-server ([#1203](https://github.com/appium/appium-espresso-driver/issues/1203)) ([62834f8](https://github.com/appium/appium-espresso-driver/commit/62834f81d0b5f27b47f2d2a2945026dcd4ecbdc8))
+
 ## [9.0.3](https://github.com/appium/appium-espresso-driver/compare/v9.0.2...v9.0.3) (2026-07-23)
 
 ### Miscellaneous Chores
