@@ -1,5 +1,5 @@
 [versions]
-androidGradlePlugin = "9.3.0"
+androidGradlePlugin = "9.3.1"
 kotlin = "2.4.10"
 androidxTest = "1.7.0"
 annotation = "1.10.0"
