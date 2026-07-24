@@ -103,7 +103,6 @@
     "format:check": "prettier --check ./lib ./test",
     "prepare": "npm run rebuild",
     "sync-version": "node ./scripts/sync-version.mjs --package-version=${npm_package_version}",
-    "pretest": "npm run build:node",
     "test": "node --test --test-timeout=60000 \"build/test/unit/**/*-specs.js\"",
     "test:node": "npm test",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace || cd ..",
