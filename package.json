@@ -137,7 +137,7 @@
     "semantic-release": "^25.0.2",
     "semver": "^7.3.7",
     "sinon": "^22.0.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "webdriverio": "^9.26.0",
     "xpath": "^0.x"
   },
