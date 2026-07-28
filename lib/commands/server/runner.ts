@@ -391,7 +391,7 @@ export class EspressoRunner {
     try {
       await this.jwproxy.command('/', 'DELETE');
     } catch (err: any) {
-      this.log.warn(`Did not get confirmation Espresso deleteSession worked; ` + `Error was: ${err}`);
+      this.log.warn(`Did not get confirmation Espresso deleteSession worked; Error was: ${err}`);
     }
 
     if (this.instProcess?.isRunning) {

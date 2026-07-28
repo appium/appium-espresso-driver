@@ -209,7 +209,7 @@ export class ServerBuilder {
 
   private async runBuildProcess(): Promise<void> {
     const {cmd, args} = this.getCommand();
-    this.log.debug(`Beginning build with command '${cmd} ${args.join(' ')}' ` + `in directory '${this.serverPath}'`);
+    this.log.debug(`Beginning build with command '${cmd} ${args.join(' ')}' in directory '${this.serverPath}'`);
     const gradlebuild = new SubProcess(cmd, args, {
       cwd: this.serverPath,
       stdio: ['ignore', 'pipe', 'pipe'],
@@ -231,8 +231,7 @@ export class ServerBuilder {
       await gradlebuild.start();
       await gradlebuild.join();
     } catch (err: any) {
-      const msg =
-        `Unable to build Espresso server - ${err.message}\n` + `Gradle error message:${EOL}${gradleError.join('\n')}`;
+      const msg = `Unable to build Espresso server - ${err.message}\nGradle error message:${EOL}${gradleError.join('\n')}`;
       throw this.log.errorWithException(msg);
     } finally {
       gradlebuild.removeAllListeners();

@@ -311,7 +311,7 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<Espr
         // the app isn't an actual app file but rather something we want to
         // assume is on the device and just launch via the appPackage
         this.log.info(
-          `App file was not listed, instead we're going to run ` + `${this.opts.appPackage} directly on the device`,
+          `App file was not listed, instead we're going to run ${this.opts.appPackage} directly on the device`,
         );
         if (!(await this.adb.isAppInstalled(this.opts.appPackage as string))) {
           throw this.log.errorWithException(

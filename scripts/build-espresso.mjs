@@ -39,7 +39,7 @@ async function buildEspressoServer(options) {
       LOG.info(`The espresso build config is ${JSON.stringify(opts.buildConfiguration)}`);
     } catch (e) {
       throw new Error(
-        `Failed to parse the build config at '${options.buildConfig}'. ` + `Please make sure it is a valid JSON file.`,
+        `Failed to parse the build config at '${options.buildConfig}'. Please make sure it is a valid JSON file.`,
         {cause: e},
       );
     }
