@@ -1,8 +1,10 @@
+import path from 'node:path';
 import {describe, it, before, beforeEach, afterEach} from 'node:test';
+
+import {fs, tempDir} from 'appium/support.js';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import path from 'node:path';
-import {fs, tempDir} from 'appium/support.js';
+
 import {copyGradleProjectRecursively} from '../../lib/commands/server/runner.js';
 
 use(chaiAsPromised);

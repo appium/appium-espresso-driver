@@ -1,5 +1,7 @@
-import {fs} from 'appium/support.js';
 import path from 'node:path';
+
+import {fs} from 'appium/support.js';
+
 import {normalizeVersion} from './version-utils.mjs';
 
 /** @type {ReadonlyArray<{moduleId: string, matches: (base: string) => boolean}>} */
@@ -9,8 +11,7 @@ const META_INF_VERSION_MODULE_RULES = [
   {moduleId: 'espresso', matches: (base) => base.startsWith('androidx.test.espresso')},
   {
     moduleId: 'annotation',
-    matches: (base) =>
-      base.startsWith('androidx.annotation_annotation') && !base.includes('experimental'),
+    matches: (base) => base.startsWith('androidx.annotation_annotation') && !base.includes('experimental'),
   },
   {moduleId: 'uiautomator', matches: (base) => base.startsWith('androidx.test.uiautomator')},
   {

@@ -47,9 +47,7 @@ export function formatReport(report, opts = {}) {
       lines.push('  Gradle reports minifyEnabled=true for this project.');
     }
     if (report.proguardLikely) {
-      lines.push(
-        '  The APK looks obfuscated/minified. Dependency versions extracted from the APK may be incomplete.',
-      );
+      lines.push('  The APK looks obfuscated/minified. Dependency versions extracted from the APK may be incomplete.');
     }
     lines.push('');
     lines.push('Espresso server default module versions (from driver libs.versions.toml):');
@@ -83,8 +81,7 @@ export function formatReport(report, opts = {}) {
     lines.push('');
   }
 
-  const includeMerged =
-    opts.includeMergedConfig !== false && !opts.compact;
+  const includeMerged = opts.includeMergedConfig !== false && !opts.compact;
   const mergedConfig = mergeEspressoBuildConfigSuggestions(report.modules);
   if (includeMerged && Object.keys(mergedConfig).length) {
     lines.push('Merged espressoBuildConfig suggestion (combine with your existing config):');

@@ -39,11 +39,7 @@ export async function mobileStartService(
  * @throws {Error} If there was a failure while stopping the service
  * or required options are missing
  */
-export async function mobileStopService(
-  this: EspressoDriver,
-  intent: string,
-  user?: string | number,
-): Promise<string> {
+export async function mobileStopService(this: EspressoDriver, intent: string, user?: string | number): Promise<string> {
   return (await this.espresso.jwproxy.command('/appium/execute_mobile/stop_service', 'POST', {
     intent,
     user,

@@ -1,7 +1,8 @@
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {Command} from 'commander';
+
 import {logger, fs} from 'appium/support.js';
+import {Command} from 'commander';
 import semver from 'semver';
 
 const LOG = logger.getLogger('VersionSync');
@@ -19,7 +20,7 @@ const VERSION_FILE = path.join(
   'espressoserver',
   'lib',
   'helpers',
-  'Version.kt'
+  'Version.kt',
 );
 const VERSION_PATTERN = /VERSION\s*=\s*"([0-9.]+)"/;
 
@@ -43,18 +44,12 @@ async function main() {
   program
     .name('node ./scripts/sync-version.mjs')
     .description('Sync package version into Espresso server module source')
-    .requiredOption(
-      '--package-version <version>',
-      'Package version to synchronize',
-      (value) => {
-        if (!semver.valid(value)) {
-          throw new Error(
-            `Invalid version specified '${value}'. The value must be a valid semver string like '1.2.3'`
-          );
-        }
-        return value;
+    .requiredOption('--package-version <version>', 'Package version to synchronize', (value) => {
+      if (!semver.valid(value)) {
+        throw new Error(`Invalid version specified '${value}'. The value must be a valid semver string like '1.2.3'`);
       }
-    )
+      return value;
+    })
     .action(async (options) => {
       await syncModuleVersion(options.packageVersion);
     });

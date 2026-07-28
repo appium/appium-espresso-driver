@@ -1,7 +1,9 @@
-import {fs} from 'appium/support.js';
-import {ADB} from 'appium-adb';
 import path from 'node:path';
+
+import {ADB} from 'appium-adb';
+import {fs} from 'appium/support.js';
 import {exec} from 'teen_process';
+
 import {normalizeVersion} from './version-utils.mjs';
 
 /** @type {Promise<import('appium-adb').ADB> | undefined} */

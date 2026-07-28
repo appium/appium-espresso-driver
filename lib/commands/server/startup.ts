@@ -99,15 +99,9 @@ export async function startSession(this: EspressoDriver): Promise<void> {
   // launch espresso and wait till its online and we have a session
   await this.espresso.startSession(this.caps);
   if (this.caps.autoLaunch === false) {
-    this.log.info(
-      `Not waiting for the application activity to start because 'autoLaunch' is disabled`,
-    );
+    this.log.info(`Not waiting for the application activity to start because 'autoLaunch' is disabled`);
   } else {
-    await this.adb.waitForActivity(
-      appWaitPackage,
-      this.caps.appWaitActivity,
-      this.opts.appWaitDuration,
-    );
+    await this.adb.waitForActivity(appWaitPackage, this.caps.appWaitActivity, this.opts.appWaitDuration);
   }
   // if we want to immediately get into a webview, set our context
   // appropriately

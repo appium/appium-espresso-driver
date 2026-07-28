@@ -16,17 +16,10 @@ import type {EspressoDriver} from '../driver.js';
  * @throws {Error} If there was a failure while parsing options or registering
  * the actual instances
  */
-export async function mobileRegisterIdlingResources(
-  this: EspressoDriver,
-  classNames: string,
-): Promise<any> {
-  return await this.espresso.jwproxy.command(
-    '/appium/execute_mobile/register_idling_resources',
-    'POST',
-    {
-      classNames,
-    },
-  );
+export async function mobileRegisterIdlingResources(this: EspressoDriver, classNames: string): Promise<any> {
+  return await this.espresso.jwproxy.command('/appium/execute_mobile/register_idling_resources', 'POST', {
+    classNames,
+  });
 }
 
 /**
@@ -44,17 +37,10 @@ export async function mobileRegisterIdlingResources(
  * @throws {Error} If there was a failure while parsing options or unregistering
  * the actual instances
  */
-export async function mobileUnregisterIdlingResources(
-  this: EspressoDriver,
-  classNames: string,
-): Promise<any> {
-  return await this.espresso.jwproxy.command(
-    '/appium/execute_mobile/unregister_idling_resources',
-    'POST',
-    {
-      classNames,
-    },
-  );
+export async function mobileUnregisterIdlingResources(this: EspressoDriver, classNames: string): Promise<any> {
+  return await this.espresso.jwproxy.command('/appium/execute_mobile/unregister_idling_resources', 'POST', {
+    classNames,
+  });
 }
 
 /**
@@ -64,10 +50,7 @@ export async function mobileUnregisterIdlingResources(
  * @returns Promise that resolves to the list of fully qualified class names
  */
 export async function mobileListIdlingResources(this: EspressoDriver): Promise<string[]> {
-  return (await this.espresso.jwproxy.command(
-    '/appium/execute_mobile/list_idling_resources',
-    'GET',
-  )) as string[];
+  return (await this.espresso.jwproxy.command('/appium/execute_mobile/list_idling_resources', 'GET')) as string[];
 }
 
 /**

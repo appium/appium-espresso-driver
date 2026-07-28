@@ -45,9 +45,17 @@ export function formatDiagnosisReport(report) {
  * @param {import('./types.mjs').CheckStatus} s
  */
 function statusIcon(s) {
-  if (s === 'pass') {return '[PASS]';}
-  if (s === 'warn') {return '[WARN]';}
-  if (s === 'fail') {return '[FAIL]';}
-  if (s === 'skip') {return '[SKIP]';}
+  if (s === 'pass') {
+    return '[PASS]';
+  }
+  if (s === 'warn') {
+    return '[WARN]';
+  }
+  if (s === 'fail') {
+    return '[FAIL]';
+  }
+  if (s === 'skip') {
+    return '[SKIP]';
+  }
   return '[INFO]';
 }

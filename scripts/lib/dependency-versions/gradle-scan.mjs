@@ -1,5 +1,7 @@
-import {fs} from 'appium/support.js';
 import path from 'node:path';
+
+import {fs} from 'appium/support.js';
+
 import {TRACKED_MODULES, createEmptyVersionSets} from './tracked-modules.mjs';
 import {
   normalizeVersion,
@@ -9,8 +11,7 @@ import {
 } from './version-utils.mjs';
 
 /** @type {RegExp} Gradle configs that do not affect the main/release app artifact. */
-const NON_MAIN_DEP_CONFIG_LINE =
-  /^\s*(?:androidTest|test)(?:Implementation|Api|CompileOnly|RuntimeOnly|WearApp)\b/;
+const NON_MAIN_DEP_CONFIG_LINE = /^\s*(?:androidTest|test)(?:Implementation|Api|CompileOnly|RuntimeOnly|WearApp)\b/;
 
 /**
  * Keeps dependency declarations that can affect the main app artifact (implementation, api, …).
@@ -50,14 +51,11 @@ export function extractMainAppDependencyScopes(text) {
  * @returns {Promise<string[]>}
  */
 export async function findGradleFiles(root, maxDepth = 6) {
-  const matches = await fs.glob(
-    '**/{build.gradle,build.gradle.kts,gradle.properties,libs.versions.toml}',
-    {
-      cwd: root,
-      absolute: true,
-      ignore: ['**/node_modules/**', '**/.git/**', '**/build/**'],
-    },
-  );
+  const matches = await fs.glob('**/{build.gradle,build.gradle.kts,gradle.properties,libs.versions.toml}', {
+    cwd: root,
+    absolute: true,
+    ignore: ['**/node_modules/**', '**/.git/**', '**/build/**'],
+  });
   return matches.filter((filePath) => {
     const parts = path.relative(root, filePath).split(path.sep).filter(Boolean);
     return parts.length - 1 <= maxDepth;

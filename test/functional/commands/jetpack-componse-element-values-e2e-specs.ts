@@ -1,9 +1,11 @@
 import {describe, it, before, beforeEach, afterEach} from 'node:test';
+
+import {retryInterval} from 'asyncbox';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {retryInterval} from 'asyncbox';
-import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+
 import {type ComposeCaps, getComposeCaps} from '../desired.js';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 use(chaiAsPromised);
 
@@ -63,9 +65,9 @@ describe('Jetpack Compose', {timeout: E2E_TEST_TIMEOUT}, function () {
 
     await driver.setValueImmediate(textElement.elementId, 'hello');
     // should append to the exiting text
-    await expect(
-      driver.$(await driver.findElement('tag name', 'text_input')).getText(),
-    ).to.eventually.equal('Enter your text herehello');
+    await expect(driver.$(await driver.findElement('tag name', 'text_input')).getText()).to.eventually.equal(
+      'Enter your text herehello',
+    );
 
     await textElement.setValue('テスト');
     //  should replace existing text

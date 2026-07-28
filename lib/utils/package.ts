@@ -1,7 +1,8 @@
-import {fs} from 'appium/support.js';
-import path from 'node:path';
 import _fs from 'node:fs';
+import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+
+import {fs} from 'appium/support.js';
 
 let PACKAGE_INFO: {manifestPath: string; manifestPayload: Record<string, any>} | null = null;
 const MODULE_NAME = 'appium-espresso-driver';

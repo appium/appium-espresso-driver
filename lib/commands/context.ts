@@ -1,5 +1,6 @@
-import type {EspressoDriver} from '../driver.js';
 import type {StringRecord} from '@appium/types';
+
+import type {EspressoDriver} from '../driver.js';
 
 /**
  * Stop proxying to any Chromedriver and redirect to Espresso

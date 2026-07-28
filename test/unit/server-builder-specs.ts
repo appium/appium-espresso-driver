@@ -1,14 +1,12 @@
 import {describe, it} from 'node:test';
+
 import {system} from 'appium/support.js';
-import {ServerBuilder} from '../../lib/commands/server/index.js';
-import {
-  GRADLE_URL_TEMPLATE,
-  VERSION_KEYS,
-  updateDependencyLines,
-} from '../../lib/commands/server/builder.js';
-import {log} from '../../lib/logger.js';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+
+import {GRADLE_URL_TEMPLATE, VERSION_KEYS, updateDependencyLines} from '../../lib/commands/server/builder.js';
+import {ServerBuilder} from '../../lib/commands/server/index.js';
+import {log} from '../../lib/logger.js';
 
 use(chaiAsPromised);
 
@@ -18,9 +16,7 @@ describe('server-builder', function () {
 
     it('should not pass properties when no versions are specified', function () {
       const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
-      expect((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand()).to.eql(
-        expected,
-      );
+      expect((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand()).to.eql(expected);
     });
 
     it('should pass only specified versions as properties and pass them correctly', function () {
@@ -92,9 +88,7 @@ describe('server-builder', function () {
           }) as any
         ).getCommand(),
       ).to.eql(expected);
-      expect((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand()).to.eql(
-        expected,
-      );
+      expect((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand()).to.eql(expected);
     });
   });
 
@@ -157,11 +151,10 @@ describe('server-builder', function () {
   // additionalAndroidTestDependencies placeholder (don't change or delete this line)
 }`);
 
-      const replacedContent2 = updateDependencyLines(
-        replacedContent,
-        'additionalAndroidTestDependencies',
-        ['a.b.c:1.2.3', 'foo.bar.foobar:4.5.6'],
-      );
+      const replacedContent2 = updateDependencyLines(replacedContent, 'additionalAndroidTestDependencies', [
+        'a.b.c:1.2.3',
+        'foo.bar.foobar:4.5.6',
+      ]);
       expect(replacedContent2).to.eql(`dependencies {
   ext.annotation_version = '1.1.0'
 

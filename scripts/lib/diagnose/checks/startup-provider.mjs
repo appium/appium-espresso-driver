@@ -23,7 +23,8 @@ export function checkInitializationProvider(appInput) {
         id: 'startup-provider',
         title: 'App Startup provider',
         status: 'pass',
-        message: 'InitializationProvider is explicitly removed for instrumentation (recommended for Espresso fixtures).',
+        message:
+          'InitializationProvider is explicitly removed for instrumentation (recommended for Espresso fixtures).',
       },
     ];
   }

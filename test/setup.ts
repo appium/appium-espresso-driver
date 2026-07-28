@@ -1,15 +1,12 @@
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+
 import {fs, net, tempDir} from 'appium/support.js';
 
 const DIRNAME = path.dirname(fileURLToPath(import.meta.url));
 const COMPOSE_PLAYGROUND_URL =
   'https://github.com/appium/compose-playground/releases/download/v1.1.0/ComposePlayground-debug.apk';
-const COMPOSE_PLAYGROUND_CACHE_PATH = path.resolve(
-  DIRNAME,
-  'fixtures',
-  'ComposePlayground-debug.apk',
-);
+const COMPOSE_PLAYGROUND_CACHE_PATH = path.resolve(DIRNAME, 'fixtures', 'ComposePlayground-debug.apk');
 
 // Cache the download promises to prevent concurrent downloads
 const downloadPromises = new Map<string, Promise<string>>();
@@ -19,11 +16,7 @@ const downloadPromises = new Map<string, Promise<string>>();
  * Concurrent callers reuse the same download promise.
  */
 export async function getComposePlaygroundPath(): Promise<string> {
-  return downloadApp(
-    COMPOSE_PLAYGROUND_URL,
-    COMPOSE_PLAYGROUND_CACHE_PATH,
-    'ComposePlayground-debug.apk',
-  );
+  return downloadApp(COMPOSE_PLAYGROUND_URL, COMPOSE_PLAYGROUND_CACHE_PATH, 'ComposePlayground-debug.apk');
 }
 
 async function downloadApp(url: string, cachePath: string, fileName: string): Promise<string> {

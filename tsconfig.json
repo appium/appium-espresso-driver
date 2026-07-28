@@ -4,19 +4,12 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "outDir": "build",
-    "types": [
-      "node",
-      "chai"
-    ],
+    "types": ["node", "chai"],
     "checkJs": true,
     "strict": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "rootDir": "."
   },
-  "include": [
-    "lib",
-    "test",
-    "scripts/**/*.mjs"
-  ]
+  "include": ["lib", "test", "scripts/**/*.mjs"]
 }

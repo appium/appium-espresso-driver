@@ -1,9 +1,11 @@
 import {describe, it, before, after} from 'node:test';
-import type {Browser} from 'webdriverio';
+
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+import type {Browser} from 'webdriverio';
+
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 use(chaiAsPromised);
 

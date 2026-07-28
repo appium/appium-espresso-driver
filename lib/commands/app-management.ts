@@ -1,5 +1,6 @@
-import type {EspressoDriver} from '../driver.js';
 import {errors} from 'appium/driver.js';
+
+import type {EspressoDriver} from '../driver.js';
 import {qualifyActivityName} from '../utils/index.js';
 
 /**

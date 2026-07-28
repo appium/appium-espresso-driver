@@ -1,8 +1,10 @@
 import {describe, it, beforeEach, afterEach} from 'node:test';
-import sinon from 'sinon';
-import {EspressoDriver} from '../../../lib/driver.js';
+
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import sinon from 'sinon';
+
+import {EspressoDriver} from '../../../lib/driver.js';
 
 use(chaiAsPromised);
 
@@ -24,9 +26,7 @@ describe('commands', function () {
     it('should accept sensorSet on emulator', async function () {
       sandbox.stub(driver, 'isEmulator').returns(true);
       const stub = sandbox.stub(driver, 'sensorSet');
-      await (driver as any).execute('mobile: sensorSet', [
-        {sensorType: 'acceleration', value: '0:9.77631:0.812349'},
-      ]);
+      await (driver as any).execute('mobile: sensorSet', [{sensorType: 'acceleration', value: '0:9.77631:0.812349'}]);
       expect(stub.calledOnce).to.equal(true);
       expect(stub.calledWith('acceleration', '0:9.77631:0.812349')).to.be.true;
     });

@@ -1,5 +1,6 @@
-import {fs, zip} from 'appium/support.js';
 import path from 'node:path';
+
+import {fs, zip} from 'appium/support.js';
 
 /**
  * @param {string} apkPath

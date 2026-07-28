@@ -40,8 +40,7 @@ export async function checkInternetPermission(appInput) {
   const corpus = appInput.gradleCorpus ?? '';
   const manifests = appInput.manifestPaths ?? [];
   const hasInternet =
-    /android\.permission\.INTERNET/.test(corpus) ||
-    manifests.some((m) => /android\.permission\.INTERNET/.test(m));
+    /android\.permission\.INTERNET/.test(corpus) || manifests.some((m) => /android\.permission\.INTERNET/.test(m));
 
   if (hasInternet) {
     return [

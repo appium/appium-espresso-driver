@@ -1,5 +1,7 @@
-import {fs} from 'appium/support.js';
 import path from 'node:path';
+
+import {fs} from 'appium/support.js';
+
 import {
   collectAppVersionsFromApk,
   collectAppVersionsFromProject,
@@ -37,9 +39,7 @@ export async function loadEspressoServerDefaults(espressoServerRoot, driverRoot)
 export async function collectAppInputFromProject(projectRoot) {
   const {versions, minifyEnabled, sources} = await collectAppVersionsFromProject(projectRoot);
   const gradleFiles = sources.map((rel) => path.join(projectRoot, rel));
-  const gradleCorpus = (
-    await Promise.all(gradleFiles.map((f) => fs.readFile(f, 'utf8').catch(() => '')))
-  ).join('\n');
+  const gradleCorpus = (await Promise.all(gradleFiles.map((f) => fs.readFile(f, 'utf8').catch(() => '')))).join('\n');
   const manifestTexts = await findManifestTexts(projectRoot);
 
   return {

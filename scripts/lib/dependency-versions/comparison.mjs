@@ -1,4 +1,5 @@
 import semver from 'semver';
+
 import {TRACKED_MODULES} from './tracked-modules.mjs';
 
 /**
@@ -166,9 +167,8 @@ function buildVersionRecommendation(mod, diff, appVersion, serverVersion, ctx) {
     };
   }
   if (diff === 'major' || diff === 'unknown') {
-    const serverIsNewer = semver.valid(serverVersion) && semver.valid(appVersion)
-      ? semver.gt(serverVersion, appVersion)
-      : false;
+    const serverIsNewer =
+      semver.valid(serverVersion) && semver.valid(appVersion) ? semver.gt(serverVersion, appVersion) : false;
     if (serverIsNewer) {
       return {
         level: 'warning',

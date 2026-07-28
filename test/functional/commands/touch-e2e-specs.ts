@@ -1,11 +1,13 @@
 import {describe, it, before, after, beforeEach} from 'node:test';
-import axios from 'axios';
+
 import {asyncmap, sleep} from 'asyncbox';
+import axios from 'axios';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import type {Browser, ChainablePromiseElement} from 'webdriverio';
-import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+
 import {APIDEMO_CAPS} from '../desired.js';
+import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 use(chaiAsPromised);
 
@@ -219,9 +221,7 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
     it('should swipe on drag and drop', async function () {
       await startDragAndDropActivity();
 
-      const el = await driver.$(
-        await driver.findElement('id', 'io.appium.android.apis:id/drag_dot_1'),
-      );
+      const el = await driver.$(await driver.findElement('id', 'io.appium.android.apis:id/drag_dot_1'));
       const {x, y} = await el.getLocation();
 
       const touchActions = [
