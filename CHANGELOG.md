@@ -1,3 +1,9 @@
+## [9.0.5](https://github.com/appium/appium-espresso-driver/compare/v9.0.4...v9.0.5) (2026-07-28)
+
+### Miscellaneous Chores
+
+* Integrate oxc and release configs ([#1207](https://github.com/appium/appium-espresso-driver/issues/1207)) ([272a442](https://github.com/appium/appium-espresso-driver/commit/272a4423b5e2256e00e4ef5848c768322187310a))
+
 ## [9.0.4](https://github.com/appium/appium-espresso-driver/compare/v9.0.3...v9.0.4) (2026-07-23)
 
 ### Miscellaneous Chores
