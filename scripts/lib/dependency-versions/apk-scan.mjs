@@ -1,9 +1,10 @@
 import {fs, tempDir} from 'appium/support.js';
+
+import {extractApk, readAllDexStrings, detectProguardLikely, collectMetaInfStrings} from './apk-dex.mjs';
+import {mergeKotlinMetadataVersionsFromDex} from './apk-kotlin-metadata.mjs';
+import {mergeMetaInfEmbeddedVersions} from './apk-meta-inf.mjs';
 import {createEmptyVersionSets} from './tracked-modules.mjs';
 import {collectVersionsFromCorpus, versionSetsToSortedRecords} from './version-utils.mjs';
-import {extractApk, readAllDexStrings, detectProguardLikely, collectMetaInfStrings} from './apk-dex.mjs';
-import {mergeMetaInfEmbeddedVersions} from './apk-meta-inf.mjs';
-import {mergeKotlinMetadataVersionsFromDex} from './apk-kotlin-metadata.mjs';
 
 /**
  * @param {string} apkPath

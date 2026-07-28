@@ -1,8 +1,10 @@
 import {describe, it, before, beforeEach, afterEach} from 'node:test';
+
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+
 import {type ComposeCaps, getComposeCaps} from '../desired.js';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 use(chaiAsPromised);
 

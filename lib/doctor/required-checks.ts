@@ -1,8 +1,9 @@
-import {doctor as doctorCommon} from 'appium-android-driver';
-import {exec} from 'teen_process';
-import {fs, system, doctor} from 'appium/support.js';
 import path from 'node:path';
+
 import type {AppiumLogger, IDoctorCheck} from '@appium/types';
+import {doctor as doctorCommon} from 'appium-android-driver';
+import {fs, system, doctor} from 'appium/support.js';
+import {exec} from 'teen_process';
 
 export const androidHomeCheck = doctorCommon.androidHomeCheck;
 export const javaHomeCheck = doctorCommon.javaHomeCheck;
@@ -16,15 +17,9 @@ export class JavaVersionCheck implements IDoctorCheck {
 
   async diagnose() {
     const javaHome = process.env.JAVA_HOME;
-    const fullJavaPath = path.join(
-      javaHome ?? '',
-      'bin',
-      `java${system.isWindows() ? '.exe' : ''}`,
-    );
+    const fullJavaPath = path.join(javaHome ?? '', 'bin', `java${system.isWindows() ? '.exe' : ''}`);
     if (!javaHome || !(await fs.exists(fullJavaPath))) {
-      return doctor.nok(
-        `Cannot retrieve Java version. Is Java installed and JAVA_HOME set to a proper path?`,
-      );
+      return doctor.nok(`Cannot retrieve Java version. Is Java installed and JAVA_HOME set to a proper path?`);
     }
     let javaVerMatch: RegExpExecArray | null;
     try {

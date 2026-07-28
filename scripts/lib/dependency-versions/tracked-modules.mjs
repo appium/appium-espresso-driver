@@ -35,10 +35,7 @@ export const TRACKED_MODULES = [
     toolsVersionKey: 'annotationVersion',
     catalogKey: 'annotation',
     gradleProperty: 'appiumAnnotationVersion',
-    patterns: [
-      /\bannotation\s*=\s*["']([^"']+)["']/gi,
-      /androidx\.annotation:annotation:([\d.]+)/gi,
-    ],
+    patterns: [/\bannotation\s*=\s*["']([^"']+)["']/gi, /androidx\.annotation:annotation:([\d.]+)/gi],
   },
   {
     id: 'androidxTest',
@@ -47,10 +44,7 @@ export const TRACKED_MODULES = [
     toolsVersionKey: null,
     catalogKey: 'androidxTest',
     gradleProperty: 'appiumAndroidxTestVersion',
-    patterns: [
-      /androidxTest\s*=\s*["']([^"']+)["']/gi,
-      /androidx\.test:(?:core|runner|rules|ext):[\w-]*:([\d.]+)/gi,
-    ],
+    patterns: [/androidxTest\s*=\s*["']([^"']+)["']/gi, /androidx\.test:(?:core|runner|rules|ext):[\w-]*:([\d.]+)/gi],
   },
   {
     id: 'uiautomator',
@@ -59,10 +53,7 @@ export const TRACKED_MODULES = [
     toolsVersionKey: null,
     catalogKey: 'uiautomator',
     gradleProperty: 'appiumUiAutomatorVersion',
-    patterns: [
-      /\buiautomator\s*=\s*["']([^"']+)["']/gi,
-      /androidx\.test\.uiautomator:uiautomator:([\d.]+)/gi,
-    ],
+    patterns: [/\buiautomator\s*=\s*["']([^"']+)["']/gi, /androidx\.test\.uiautomator:uiautomator:([\d.]+)/gi],
   },
   {
     id: 'kotlin',

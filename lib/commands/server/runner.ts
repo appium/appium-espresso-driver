@@ -1,27 +1,18 @@
-import {JWProxy, errors} from 'appium/driver.js';
-import {sleep, waitForCondition} from 'asyncbox';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+
+import type {AppiumLogger, StringRecord, HTTPMethod, HTTPBody, ProxyResponse, ProxyOptions} from '@appium/types';
+import type {ADB} from 'appium-adb';
+import {JWProxy, errors} from 'appium/driver.js';
 import {fs, node, util, timing} from 'appium/support.js';
-import {getPackageInfoSync, getPackageInfo, isPlainObject} from '../../utils/index.js';
-import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './builder.js';
-import {
-  ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS,
-  TARGET_PACKAGE_CONTAINER,
-  TEST_APK_PKG,
-} from './constants.js';
+import {sleep, waitForCondition} from 'asyncbox';
 import axios from 'axios';
 import * as semver from 'semver';
-import type {
-  AppiumLogger,
-  StringRecord,
-  HTTPMethod,
-  HTTPBody,
-  ProxyResponse,
-  ProxyOptions,
-} from '@appium/types';
-import type {ADB} from 'appium-adb';
 import type {SubProcess} from 'teen_process';
+
+import {getPackageInfoSync, getPackageInfo, isPlainObject} from '../../utils/index.js';
+import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './builder.js';
+import {ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS, TARGET_PACKAGE_CONTAINER, TEST_APK_PKG} from './constants.js';
 
 export interface EspressoRunnerOptions {
   adb: ADB;
@@ -146,13 +137,7 @@ export class EspressoRunner {
     this.disableSuppressAccessibilityService = opts.disableSuppressAccessibilityService;
 
     // Espresso Server app needs to be signed with same keyStore as appPackage
-    if (
-      opts.useKeystore &&
-      opts.keystorePath &&
-      opts.keystorePassword &&
-      opts.keyAlias &&
-      opts.keyPassword
-    ) {
+    if (opts.useKeystore && opts.keystorePath && opts.keystorePassword && opts.keyAlias && opts.keyPassword) {
       this.signingConfig = buildServerSigningConfig({
         keystoreFile: opts.keystorePath,
         keystorePassword: opts.keystorePassword,
@@ -188,13 +173,10 @@ export class EspressoRunner {
       this.adb.APP_INSTALL_STATE.OLDER_VERSION_INSTALLED,
       this.adb.APP_INSTALL_STATE.NEWER_VERSION_INSTALLED,
     ].includes(appState);
-    const shouldInstallApp =
-      shouldUninstallApp || [this.adb.APP_INSTALL_STATE.NOT_INSTALLED].includes(appState);
+    const shouldInstallApp = shouldUninstallApp || [this.adb.APP_INSTALL_STATE.NOT_INSTALLED].includes(appState);
 
     if (shouldUninstallApp) {
-      this.log.info(
-        `Uninstalling Espresso Test Server apk from the target device (pkg: '${TEST_APK_PKG}')`,
-      );
+      this.log.info(`Uninstalling Espresso Test Server apk from the target device (pkg: '${TEST_APK_PKG}')`);
       try {
         await this.adb.uninstallApk(TEST_APK_PKG);
       } catch (err: any) {
@@ -203,21 +185,15 @@ export class EspressoRunner {
     }
 
     if (shouldInstallApp) {
-      this.log.info(
-        `Installing Espresso Test Server apk from the target device (path: '${this.modServerPath}')`,
-      );
+      this.log.info(`Installing Espresso Test Server apk from the target device (path: '${this.modServerPath}')`);
       try {
         await this.adb.install(this.modServerPath, {
           replace: false,
           timeout: this.androidInstallTimeout,
         });
-        this.log.info(
-          `Installed Espresso Test Server apk '${this.modServerPath}' (pkg: '${TEST_APK_PKG}')`,
-        );
+        this.log.info(`Installed Espresso Test Server apk '${this.modServerPath}' (pkg: '${TEST_APK_PKG}')`);
       } catch (err: any) {
-        throw this.log.errorWithException(
-          `Cannot install '${this.modServerPath}' because of '${err.message}'`,
-        );
+        throw this.log.errorWithException(`Cannot install '${this.modServerPath}' because of '${err.message}'`);
       }
     }
   }
@@ -275,9 +251,7 @@ export class EspressoRunner {
     this.log.debug(`The build folder root could be customized by changing the 'tmpDir' capability`);
     await fs.rimraf(serverPath);
     await fs.mkdirp(serverPath);
-    this.log.debug(
-      `Copying espresso server template from ('${getTestServerRoot()}' to '${serverPath}')`,
-    );
+    this.log.debug(`Copying espresso server template from ('${getTestServerRoot()}' to '${serverPath}')`);
     await copyGradleProjectRecursively(getTestServerRoot(), serverPath);
     this.log.debug('Bulding espresso server');
     await new ServerBuilder(this.log, {
@@ -318,19 +292,13 @@ export class EspressoRunner {
     ];
 
     if (typeof this.disableSuppressAccessibilityService === 'boolean') {
-      cmd.push(
-        '-e',
-        'DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES',
-        String(this.disableSuppressAccessibilityService),
-      );
+      cmd.push('-e', 'DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES', String(this.disableSuppressAccessibilityService));
     }
 
     cmd.push(`${TEST_APK_PKG}/androidx.test.runner.AndroidJUnitRunner`);
 
     const {manifestPayload} = await getPackageInfo();
-    this.log.info(
-      `Starting Espresso Server v${manifestPayload.version} with cmd: adb ${cmd.join(' ')}`,
-    );
+    this.log.info(`Starting Espresso Server v${manifestPayload.version} with cmd: adb ${cmd.join(' ')}`);
 
     let hasSocketError = false;
     // start the instrumentation process
@@ -423,9 +391,7 @@ export class EspressoRunner {
     try {
       await this.jwproxy.command('/', 'DELETE');
     } catch (err: any) {
-      this.log.warn(
-        `Did not get confirmation Espresso deleteSession worked; ` + `Error was: ${err}`,
-      );
+      this.log.warn(`Did not get confirmation Espresso deleteSession worked; Error was: ${err}`);
     }
 
     if (this.instProcess?.isRunning) {
@@ -445,9 +411,7 @@ export class EspressoRunner {
       ).data as SessionsResponse;
       const activeSessionIds = value.map((sess) => sess.id);
       if (activeSessionIds.length) {
-        this.log.debug(
-          `The following obsolete sessions are still running: ${JSON.stringify(activeSessionIds)}`,
-        );
+        this.log.debug(`The following obsolete sessions are still running: ${JSON.stringify(activeSessionIds)}`);
         this.log.debug('Cleaning up the obsolete sessions');
         await Promise.all(
           activeSessionIds.map((id) =>
@@ -469,15 +433,10 @@ export class EspressoRunner {
 
   private async recordTargetAppPackage(): Promise<void> {
     await this.adb.shell([`echo "${this.appPackage}" > "${TARGET_PACKAGE_CONTAINER}"`]);
-    this.log.info(
-      `Recorded the target application package '${this.appPackage}' to ${TARGET_PACKAGE_CONTAINER}`,
-    );
+    this.log.info(`Recorded the target application package '${this.appPackage}' to ${TARGET_PACKAGE_CONTAINER}`);
   }
 
-  private async _verifyServerStatus(
-    driverVersion: string,
-    serverStatus: ServerStatus,
-  ): Promise<boolean> {
+  private async _verifyServerStatus(driverVersion: string, serverStatus: ServerStatus): Promise<boolean> {
     if (!isPlainObject(serverStatus) || !isPlainObject(serverStatus.build)) {
       throw this.log.errorWithException(
         `The Espresso server version integrated with the application under test is not compatible ` +
@@ -487,9 +446,7 @@ export class EspressoRunner {
     const {
       build: {version: serverVersion, packageName: serverPackageName},
     } = serverStatus;
-    const appLabel = serverPackageName
-      ? `'${serverPackageName}' application`
-      : 'application under test';
+    const appLabel = serverPackageName ? `'${serverPackageName}' application` : 'application under test';
     const parsedServerVersion = semver.coerce(serverVersion);
     const parsedDriverVersion = semver.coerce(driverVersion);
     if (parsedServerVersion && parsedDriverVersion) {
@@ -544,10 +501,7 @@ let testServerRoot: string | undefined;
  * @param sourceBaseDir directory to copy files from
  * @param targetBaseDir directory to copy files to
  */
-export async function copyGradleProjectRecursively(
-  sourceBaseDir: string,
-  targetBaseDir: string,
-): Promise<void> {
+export async function copyGradleProjectRecursively(sourceBaseDir: string, targetBaseDir: string): Promise<void> {
   // @ts-ignore it is ok to have the async callback
   await fs.walkDir(sourceBaseDir, true, async (itemPath: string, isDirectory: boolean) => {
     const relativePath = path.relative(sourceBaseDir, itemPath);

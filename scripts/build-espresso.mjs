@@ -1,14 +1,13 @@
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
-import {Command} from 'commander';
+
 import {logger, fs} from 'appium/support.js';
+import {Command} from 'commander';
 
 const LOG = logger.getLogger('EspressoBuild');
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SERVER_BUILDER_MODULE = pathToFileURL(
-  path.join(ROOT_DIR, 'build/lib/commands/server/index.js'),
-).href;
+const SERVER_BUILDER_MODULE = pathToFileURL(path.join(ROOT_DIR, 'build/lib/commands/server/index.js')).href;
 const ESPRESSO_SERVER_ROOT = path.join(ROOT_DIR, 'espresso-server');
 const ESPRESSO_SERVER_BUILD = path.join(ESPRESSO_SERVER_ROOT, 'app', 'build');
 
@@ -31,7 +30,7 @@ async function buildEspressoServer(options) {
   if (options.buildConfig) {
     if (!(await fs.exists(options.buildConfig))) {
       throw new Error(
-        `Cannot find build config at '${options.buildConfig}'. Please provide a valid absolute path to it.`
+        `Cannot find build config at '${options.buildConfig}'. Please provide a valid absolute path to it.`,
       );
     }
     try {
@@ -40,8 +39,8 @@ async function buildEspressoServer(options) {
       LOG.info(`The espresso build config is ${JSON.stringify(opts.buildConfiguration)}`);
     } catch (e) {
       throw new Error(
-        `Failed to parse the build config at '${options.buildConfig}'. ` +
-          `Please make sure it is a valid JSON file.`, {cause: e}
+        `Failed to parse the build config at '${options.buildConfig}'. Please make sure it is a valid JSON file.`,
+        {cause: e},
       );
     }
   }
@@ -79,9 +78,7 @@ async function buildEspressoServer(options) {
  */
 function isGradleLogEnabled(options) {
   const showGradleLogEnv = process.env.SHOW_GRADLE_LOG?.toLowerCase();
-  return Boolean(options.showGradleLog ||
-    (showGradleLogEnv && ['1', 'true'].includes(showGradleLogEnv))
-  );
+  return Boolean(options.showGradleLog || (showGradleLogEnv && ['1', 'true'].includes(showGradleLogEnv)));
 }
 
 async function main() {

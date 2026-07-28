@@ -1,9 +1,11 @@
 import {describe, it, before, after, beforeEach, afterEach} from 'node:test';
+
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import type {Browser, ChainablePromiseElement} from 'webdriverio';
-import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 use(chaiAsPromised);
 
@@ -47,9 +49,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
         await driver.back();
       });
       it('should call GeneralSwipeAction and use default params when params missing', async function () {
-        const element = await driver.$(
-          await driver.findElement('class name', 'android.widget.ListView'),
-        );
+        const element = await driver.$(await driver.findElement('class name', 'android.widget.ListView'));
         await driver.execute('mobile: swipe', {elementId: element.elementId, swiper: 'slow'});
         // The swipe action shows up the app history, so should go back to the app view to proceed the test.
         // Android doesn't accept incoming actions on the espresso server with the app history.
@@ -57,9 +57,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
         await expect(driver.getPageSource()).to.eventually.contain('Animation');
       });
       it('should call GeneralSwipeAction with provided parameters', async function () {
-        const element = await driver.$(
-          await driver.findElement('class name', 'android.widget.ListView'),
-        );
+        const element = await driver.$(await driver.findElement('class name', 'android.widget.ListView'));
         await driver.execute('mobile: swipe', {
           elementId: element.elementId,
           swiper: 'slow',
@@ -74,9 +72,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
       });
       describe('failing swipe tests', function () {
         it('should not accept "direction" and "swiper". Must be one or the other', async function () {
-          const element = await driver.$(
-            await driver.findElement('class name', 'android.widget.ListView'),
-          );
+          const element = await driver.$(await driver.findElement('class name', 'android.widget.ListView'));
           await expect(
             driver.execute('mobile: swipe', {
               elementId: element.elementId,
@@ -86,12 +82,10 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
           ).to.be.rejectedWith(/Cannot set both 'direction' and 'swiper' for swipe action/);
         });
         it('should not accept if "direction" and "swiper" both are not set', async function () {
-          const element = await driver.$(
-            await driver.findElement('class name', 'android.widget.ListView'),
+          const element = await driver.$(await driver.findElement('class name', 'android.widget.ListView'));
+          await expect(driver.execute('mobile: swipe', {elementId: element.elementId})).to.be.rejectedWith(
+            /Must set one of 'direction' or 'swiper'/,
           );
-          await expect(
-            driver.execute('mobile: swipe', {elementId: element.elementId}),
-          ).to.be.rejectedWith(/Must set one of 'direction' or 'swiper'/);
         });
 
         // Iterate through a list of bad params
@@ -103,9 +97,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
           {precisionDescriber: 'BUM'},
         ]) {
           it(`should reject bad parameters: ${JSON.stringify(badParams)}`, async function () {
-            const element = await driver.$(
-              await driver.findElement('class name', 'android.widget.ListView'),
-            );
+            const element = await driver.$(await driver.findElement('class name', 'android.widget.ListView'));
             await expect(
               driver.execute('mobile: swipe', {
                 elementId: element.elementId,
@@ -126,12 +118,12 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
     it('should call these two commands but fail because element is not a drawer', async function () {
       // Testing for failures because ApiDemos app does not have a drawer to test on
       const el = await driver.$('~Views');
-      await expect(
-        driver.execute('mobile: openDrawer', {elementId: el.elementId, gravity: 1}),
-      ).to.be.rejectedWith(/open drawer with gravity/);
-      await expect(
-        driver.execute('mobile: closeDrawer', {elementId: el.elementId, gravity: 1}),
-      ).to.be.rejectedWith(/close drawer with gravity/);
+      await expect(driver.execute('mobile: openDrawer', {elementId: el.elementId, gravity: 1})).to.be.rejectedWith(
+        /open drawer with gravity/,
+      );
+      await expect(driver.execute('mobile: closeDrawer', {elementId: el.elementId, gravity: 1})).to.be.rejectedWith(
+        /close drawer with gravity/,
+      );
     });
   });
 
@@ -180,9 +172,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
       await expect(
         driver.execute('mobile: navigateTo', {elementId: element.elementId, menuItemId: 'fake'}),
       ).to.be.rejectedWith(/'menuItemId' must be a non-negative number/);
-      await expect(
-        driver.execute('mobile: navigateTo', {elementId: element.elementId}),
-      ).to.be.rejectedWith(/required/);
+      await expect(driver.execute('mobile: navigateTo', {elementId: element.elementId})).to.be.rejectedWith(/required/);
     });
     // dependency issue
     it.skip('should call the navigateTo method', async function () {
@@ -278,11 +268,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
 
     const badParams: Array<[string, unknown, RegExp]> = [
       ['tapper', 'BaD TAPPER', /is not a valid 'tapper' type/],
-      [
-        'coordinatesProvider',
-        'BAD_COORDINATES_prOVIDER',
-        /is not a valid 'coordinatesProvider' type/,
-      ],
+      ['coordinatesProvider', 'BAD_COORDINATES_prOVIDER', /is not a valid 'coordinatesProvider' type/],
       ['precisionDescriber', 'BaD PrEcIsIoN DeScRiBeR', /is not a valid 'precisionDescriber' type/],
       ['inputDevice', 'wrong', /NumberFormatException/],
       ['buttonState', 'wrong', /NumberFormatException/],

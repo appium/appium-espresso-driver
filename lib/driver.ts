@@ -8,29 +8,30 @@ import type {
   SingularSessionData,
   SessionCapabilities,
 } from '@appium/types';
-import type {EspressoConstraints} from './constraints.js';
-import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver.js';
-import * as serverCmds from './commands/server/index.js';
-import type {EspressoRunner} from './commands/server/index.js';
-import * as appManagementCmds from './commands/app-management.js';
-import * as contextCmds from './commands/context.js';
-import * as elementCmds from './commands/element.js';
-import * as miscCmds from './commands/misc.js';
-import * as servicesCmds from './commands/services.js';
-import * as screenshotCmds from './commands/screenshot.js';
-import * as idlingResourcesCmds from './commands/idling-resources.js';
-import * as actionsCmds from './commands/actions.js';
-import * as clipboardCmds from './commands/clipboard.js';
-import * as appInstallCmds from './commands/app-install.js';
 import {DEFAULT_ADB_PORT} from 'appium-adb';
 import {AndroidDriver} from 'appium-android-driver';
-import {ESPRESSO_CONSTRAINTS} from './constraints.js';
-import {findAPortNotInUse} from 'portscanner';
+import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver.js';
 import {retryInterval} from 'asyncbox';
-import {isEmptyValue} from './utils/index.js';
+import {findAPortNotInUse} from 'portscanner';
+
+import * as actionsCmds from './commands/actions.js';
+import * as appInstallCmds from './commands/app-install.js';
+import * as appManagementCmds from './commands/app-management.js';
+import * as clipboardCmds from './commands/clipboard.js';
+import * as contextCmds from './commands/context.js';
+import * as elementCmds from './commands/element.js';
+import * as idlingResourcesCmds from './commands/idling-resources.js';
+import * as miscCmds from './commands/misc.js';
+import * as screenshotCmds from './commands/screenshot.js';
+import * as serverCmds from './commands/server/index.js';
+import type {EspressoRunner} from './commands/server/index.js';
+import * as servicesCmds from './commands/services.js';
+import type {EspressoConstraints} from './constraints.js';
+import {ESPRESSO_CONSTRAINTS} from './constraints.js';
+import {executeMethodMap} from './execute-method-map.js';
 import {newMethodMap} from './method-map.js';
 import type {EspressoDriverCaps, EspressoDriverOpts, W3CEspressoDriverCaps} from './types.js';
-import {executeMethodMap} from './execute-method-map.js';
+import {isEmptyValue} from './utils/index.js';
 
 // NO_PROXY contains the paths that we never want to proxy to espresso server.
 // TODO:  Add the list of paths that we never want to proxy to espresso server.
@@ -130,10 +131,7 @@ const CHROME_NO_PROXY: RouteMatcher[] = [
   ['POST', new RegExp('^/session/[^/]+/se/log')],
 ];
 
-export class EspressoDriver
-  extends AndroidDriver
-  implements ExternalDriver<EspressoConstraints, string, StringRecord>
-{
+export class EspressoDriver extends AndroidDriver implements ExternalDriver<EspressoConstraints, string, StringRecord> {
   static newMethodMap = newMethodMap;
   static executeMethodMap = executeMethodMap as unknown as typeof AndroidDriver.executeMethodMap;
 
@@ -152,15 +150,12 @@ export class EspressoDriver
   performActions = actionsCmds.performActions as AndroidDriver['performActions'];
 
   startActivity = appManagementCmds.startActivity;
-  mobileStartActivity =
-    appManagementCmds.mobileStartActivity as unknown as AndroidDriver['mobileStartActivity'];
+  mobileStartActivity = appManagementCmds.mobileStartActivity as unknown as AndroidDriver['mobileStartActivity'];
 
   mobileWebAtoms = contextCmds.mobileWebAtoms;
-  suspendChromedriverProxy =
-    contextCmds.suspendChromedriverProxy as AndroidDriver['suspendChromedriverProxy'];
+  suspendChromedriverProxy = contextCmds.suspendChromedriverProxy as AndroidDriver['suspendChromedriverProxy'];
 
-  mobilePerformEditorAction =
-    elementCmds.mobilePerformEditorAction as AndroidDriver['mobilePerformEditorAction'];
+  mobilePerformEditorAction = elementCmds.mobilePerformEditorAction as AndroidDriver['mobilePerformEditorAction'];
   mobileSwipe = elementCmds.mobileSwipe;
   mobileOpenDrawer = elementCmds.mobileOpenDrawer;
   mobileCloseDrawer = elementCmds.mobileCloseDrawer;
@@ -186,10 +181,8 @@ export class EspressoDriver
   mobileGetClipboard = clipboardCmds.getClipboard;
   mobileSetClipboard = clipboardCmds.mobileSetClipboard;
 
-  mobileStartService =
-    servicesCmds.mobileStartService as unknown as AndroidDriver['mobileStartService'];
-  mobileStopService =
-    servicesCmds.mobileStopService as unknown as AndroidDriver['mobileStopService'];
+  mobileStartService = servicesCmds.mobileStartService as unknown as AndroidDriver['mobileStartService'];
+  mobileStopService = servicesCmds.mobileStopService as unknown as AndroidDriver['mobileStopService'];
 
   getScreenshot = screenshotCmds.getScreenshot;
   mobileScreenshots = screenshotCmds.mobileScreenshots;
@@ -318,8 +311,7 @@ export class EspressoDriver
         // the app isn't an actual app file but rather something we want to
         // assume is on the device and just launch via the appPackage
         this.log.info(
-          `App file was not listed, instead we're going to run ` +
-            `${this.opts.appPackage} directly on the device`,
+          `App file was not listed, instead we're going to run ${this.opts.appPackage} directly on the device`,
         );
         if (!(await this.adb.isAppInstalled(this.opts.appPackage as string))) {
           throw this.log.errorWithException(
@@ -429,9 +421,7 @@ export class EspressoDriver
       await this.settingsApp.setAnimationState(false);
       this.wasAnimationEnabled = true;
     } else if (shouldEnableAnimation) {
-      this.log.debug(
-        'Enabling window animation as "disableWindowAnimation" capability is set to false',
-      );
+      this.log.debug('Enabling window animation as "disableWindowAnimation" capability is set to false');
       await this.settingsApp.setAnimationState(true);
       this.wasAnimationEnabled = false;
     } else {
@@ -480,10 +470,7 @@ export class EspressoDriver
     // and one for Espresso(NO_PROXY), based on current context will return related NO_PROXY list
     this.jwpProxyAvoid = this.chromedriver == null ? NO_PROXY : CHROME_NO_PROXY;
     if (this.opts.nativeWebScreenshot) {
-      this.jwpProxyAvoid = [
-        ...this.jwpProxyAvoid,
-        ['GET', new RegExp('^/session/[^/]+/screenshot')],
-      ];
+      this.jwpProxyAvoid = [...this.jwpProxyAvoid, ['GET', new RegExp('^/session/[^/]+/screenshot')]];
     }
 
     return this.jwpProxyAvoid;

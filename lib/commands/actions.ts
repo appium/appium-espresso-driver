@@ -1,5 +1,6 @@
-import type {EspressoDriver} from '../driver.js';
 import type {StringRecord} from '@appium/types';
+
+import type {EspressoDriver} from '../driver.js';
 
 /**
  * Performs a sequence of W3C actions (e.g., pointer, key, wheel actions).

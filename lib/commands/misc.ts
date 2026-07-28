@@ -1,6 +1,7 @@
-import {util} from 'appium/support.js';
-import {errors} from 'appium/driver.js';
 import type {StringRecord} from '@appium/types';
+import {errors} from 'appium/driver.js';
+import {util} from 'appium/support.js';
+
 import type {EspressoDriver} from '../driver.js';
 import type {DeviceInfo} from '../types.js';
 
@@ -30,15 +31,11 @@ export async function mobilePressKey(
   flags?: number,
   isLongPress: boolean = false,
 ): Promise<void> {
-  await this.espresso.jwproxy.command(
-    `/appium/device/${isLongPress ? 'long_' : ''}press_keycode`,
-    'POST',
-    {
-      keycode,
-      metastate,
-      flags,
-    },
-  );
+  await this.espresso.jwproxy.command(`/appium/device/${isLongPress ? 'long_' : ''}press_keycode`, 'POST', {
+    keycode,
+    metastate,
+    flags,
+  });
 }
 
 /**
@@ -58,11 +55,7 @@ export async function mobileGetDeviceInfo(this: EspressoDriver): Promise<DeviceI
  * @returns Promise that resolves to true if the toast is visible, false otherwise
  * @throws {errors.InvalidArgumentError} If text is not provided
  */
-export async function mobileIsToastVisible(
-  this: EspressoDriver,
-  text: string,
-  isRegexp?: boolean,
-): Promise<any> {
+export async function mobileIsToastVisible(this: EspressoDriver, text: string, isRegexp?: boolean): Promise<any> {
   if (!util.hasValue(text)) {
     throw new errors.InvalidArgumentError(`'text' argument is mandatory`);
   }
@@ -76,11 +69,7 @@ export async function mobileIsToastVisible(
  * @returns Promise that resolves to the display density value
  */
 export async function getDisplayDensity(this: EspressoDriver): Promise<number> {
-  return (await this.espresso.jwproxy.command(
-    '/appium/device/display_density',
-    'GET',
-    {},
-  )) as number;
+  return (await this.espresso.jwproxy.command('/appium/device/display_density', 'GET', {})) as number;
 }
 
 /**
@@ -138,9 +127,7 @@ export async function mobileBackdoor(
   elementId?: string,
 ): Promise<any> {
   if (target === 'element' && !elementId) {
-    throw new errors.InvalidArgumentError(
-      `'elementId' is required if 'target' equals to 'element'`,
-    );
+    throw new errors.InvalidArgumentError(`'elementId' is required if 'target' equals to 'element'`);
   }
   return await this.espresso.jwproxy.command(`/appium/execute_mobile/backdoor`, 'POST', {
     target,
@@ -186,10 +173,7 @@ export async function mobileUiautomator(
  * @returns {Promise<string>} uiautomator DOM xml as string
  */
 export async function mobileUiautomatorPageSource(this: EspressoDriver): Promise<string> {
-  return (await this.espresso.jwproxy.command(
-    `/appium/execute_mobile/uiautomator_page_source`,
-    'GET',
-  )) as string;
+  return (await this.espresso.jwproxy.command(`/appium/execute_mobile/uiautomator_page_source`, 'GET')) as string;
 }
 
 /**
@@ -198,10 +182,7 @@ export async function mobileUiautomatorPageSource(this: EspressoDriver): Promise
  * @param settings - Settings object containing key-value pairs of settings to apply
  * @returns Promise that resolves when settings are updated
  */
-export async function updateSettings(
-  this: EspressoDriver,
-  settings: SettingsOptions,
-): Promise<void> {
+export async function updateSettings(this: EspressoDriver, settings: SettingsOptions): Promise<void> {
   await this.settings.update(settings);
   try {
     await this.espresso.jwproxy.command(`/appium/settings`, 'POST', {settings});
@@ -216,9 +197,6 @@ export async function updateSettings(
  */
 export async function getSettings(this: EspressoDriver): Promise<Record<string, any>> {
   const driverSettings = this.settings.getSettings();
-  const serverSettings = (await this.espresso.jwproxy.command(`/appium/settings`, 'GET')) as Record<
-    string,
-    any
-  >;
+  const serverSettings = (await this.espresso.jwproxy.command(`/appium/settings`, 'GET')) as Record<string, any>;
   return {...driverSettings, ...serverSettings};
 }

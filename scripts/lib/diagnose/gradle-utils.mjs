@@ -19,11 +19,7 @@ export function parseGradleProperties(text) {
  * @returns {number | null}
  */
 export function parseCompileSdkFromCorpus(corpus) {
-  const patterns = [
-    /compileSdk\s*=\s*(\d+)/,
-    /compileSdkVersion\s*=\s*(\d+)/,
-    /compileSdk\s+(\d+)/,
-  ];
+  const patterns = [/compileSdk\s*=\s*(\d+)/, /compileSdkVersion\s*=\s*(\d+)/, /compileSdk\s+(\d+)/];
   let max = 0;
   for (const pattern of patterns) {
     let match;

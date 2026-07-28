@@ -1,11 +1,13 @@
+import path from 'node:path';
+
 import type {PostProcessOptions, PostProcessResult, CachedAppInfo} from '@appium/types';
 import {utils} from 'appium-android-driver';
 import {fs, tempDir, zip} from 'appium/support.js';
 import {SETTINGS_HELPER_ID} from 'io.appium.settings';
-import path from 'node:path';
+
 import type {EspressoDriver} from '../driver.js';
-import {TEST_APK_PKG} from './server/index.js';
 import {isPlainObject} from '../utils/index.js';
+import {TEST_APK_PKG} from './server/index.js';
 
 export const APK_EXT = '.apk';
 export const AAB_EXT = '.aab';
@@ -30,8 +32,7 @@ export function isAppOnDevice(driver: EspressoDriver): boolean {
  */
 export async function unzipApp(this: EspressoDriver, appPath: string): Promise<string> {
   const useSystemUnzipEnv = process.env.APPIUM_PREFER_SYSTEM_UNZIP;
-  const useSystemUnzip =
-    !useSystemUnzipEnv || !['0', 'false'].includes(useSystemUnzipEnv.toLowerCase());
+  const useSystemUnzip = !useSystemUnzipEnv || !['0', 'false'].includes(useSystemUnzipEnv.toLowerCase());
   const tmpRoot = await tempDir.openDir();
   await zip.extractAllTo(appPath, tmpRoot, {useSystemUnzip});
 
@@ -135,9 +136,7 @@ export async function initAUT(this: EspressoDriver): Promise<void> {
 
   if (!this.opts.app) {
     if (this.opts.fullReset) {
-      throw this.log.errorWithException(
-        'Full reset requires an app capability, use fastReset if app is not provided',
-      );
+      throw this.log.errorWithException('Full reset requires an app capability, use fastReset if app is not provided');
     }
     this.log.debug('No app capability. Assuming it is already on the device');
     if (this.opts.fastReset) {
@@ -166,24 +165,15 @@ export async function initAUT(this: EspressoDriver): Promise<void> {
     await this.adb.addToDeviceIdleWhitelist(SETTINGS_HELPER_ID, TEST_APK_PKG);
   } catch (e: unknown) {
     const stderr =
-      typeof e === 'object' &&
-      e !== null &&
-      'stderr' in e &&
-      typeof (e as {stderr: unknown}).stderr === 'string'
+      typeof e === 'object' && e !== null && 'stderr' in e && typeof (e as {stderr: unknown}).stderr === 'string'
         ? (e as {stderr: string}).stderr
         : undefined;
     const message = e instanceof Error ? e.message : String(e);
-    this.log.warn(
-      `Cannot add server packages to the Doze whitelist. Original error: ` + (stderr || message),
-    );
+    this.log.warn(`Cannot add server packages to the Doze whitelist. Original error: ` + (stderr || message));
   }
 }
 
 /** Type guard for cached app metadata shape. */
 function isCachedAppInfo(value: unknown): value is StrictCachedAppInfo {
-  return (
-    isPlainObject(value) &&
-    typeof value.packageHash === 'string' &&
-    typeof value.fullPath === 'string'
-  );
+  return isPlainObject(value) && typeof value.packageHash === 'string' && typeof value.fullPath === 'string';
 }

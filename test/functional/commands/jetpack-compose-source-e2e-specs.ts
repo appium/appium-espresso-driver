@@ -1,10 +1,12 @@
 import {describe, it, before, after} from 'node:test';
+
+import {DOMParser} from '@xmldom/xmldom';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {DOMParser} from '@xmldom/xmldom';
 import xpath from 'xpath';
-import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+
 import {type ComposeCaps, getComposeCaps} from '../desired.js';
+import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 use(chaiAsPromised);
 

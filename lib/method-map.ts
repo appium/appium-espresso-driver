@@ -1,5 +1,5 @@
-import {AndroidDriver} from 'appium-android-driver';
 import type {MethodMap} from '@appium/types';
+import {AndroidDriver} from 'appium-android-driver';
 
 export const newMethodMap = {
   ...AndroidDriver.newMethodMap,

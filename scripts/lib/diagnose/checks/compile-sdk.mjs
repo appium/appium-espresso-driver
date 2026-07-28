@@ -1,4 +1,5 @@
 import semver from 'semver';
+
 import {parseCompileSdkFromCorpus} from '../gradle-utils.mjs';
 
 /**

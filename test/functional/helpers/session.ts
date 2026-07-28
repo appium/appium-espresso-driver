@@ -1,6 +1,6 @@
-import {remote, type Browser} from 'webdriverio';
-import AsyncLock from 'async-lock';
 import type {Capabilities} from '@wdio/types';
+import AsyncLock from 'async-lock';
+import {remote, type Browser} from 'webdriverio';
 
 const SESSION_GUARD = new AsyncLock();
 const HOST = process.env.APPIUM_TEST_SERVER_HOST || '127.0.0.1';

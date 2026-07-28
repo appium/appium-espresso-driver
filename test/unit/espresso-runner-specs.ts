@@ -1,10 +1,12 @@
 import {describe, it, afterEach} from 'node:test';
-import {EspressoRunner} from '../../lib/commands/server/index.js';
+
 import {ADB} from 'appium-adb';
-import sinon from 'sinon';
-import {log} from '../../lib/logger.js';
 import {expect, use} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import sinon from 'sinon';
+
+import {EspressoRunner} from '../../lib/commands/server/index.js';
+import {log} from '../../lib/logger.js';
 
 use(chaiAsPromised);
 

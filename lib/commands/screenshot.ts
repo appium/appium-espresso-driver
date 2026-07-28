@@ -15,10 +15,7 @@ const DISPLAY_PATTERN = /^Display\s+(\d+)\s+\(.+display\s+(\d+)\).+displayName="
  * and values contain display information and base64-encoded PNG screenshot data
  * @throws {Error} If display information cannot be determined or if a provided displayId is not found
  */
-export async function mobileScreenshots(
-  this: EspressoDriver,
-  displayId?: number | string,
-): Promise<ScreenshotsInfo> {
+export async function mobileScreenshots(this: EspressoDriver, displayId?: number | string): Promise<ScreenshotsInfo> {
   const displaysInfo = await this.adb.shell(['dumpsys', 'SurfaceFlinger', '--display-id']);
   const infos: Record<string, {id: string; isDefault: boolean; name: string}> = {};
   let match;

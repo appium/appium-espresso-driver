@@ -1,7 +1,9 @@
-import {describe, it} from 'node:test';
 import path from 'node:path';
-import {expect} from 'chai';
+import {describe, it} from 'node:test';
+
 import {fs, tempDir} from 'appium/support.js';
+import {expect} from 'chai';
+
 import {
   buildComparisonReport,
   collectAppVersionsFromProject,
@@ -65,8 +67,7 @@ espresso = "3.7.0"
         proguardLikely: false,
         minifyEnabled: false,
         sources: [],
-        gradleCorpus:
-          'android.permission.INTERNET\ncompileSdk = 35\nandroidx.compose.ui:ui-test:1.11.2',
+        gradleCorpus: 'android.permission.INTERNET\ncompileSdk = 35\nandroidx.compose.ui:ui-test:1.11.2',
         manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
         apkHasInternetPermission: null,
       },
@@ -111,9 +112,7 @@ espresso = "3.7.0"
     expect(mapMetaInfVersionBaseToModule('androidx.compose.ui_ui')).to.equal('compose');
     expect(mapMetaInfVersionBaseToModule('androidx.compose.ui_ui-test')).to.equal('compose');
     expect(mapMetaInfVersionBaseToModule('androidx.annotation_annotation-experimental')).to.be.null;
-    expect(mapMetaInfVersionBaseToModule('androidx.test.espresso.espresso-core')).to.equal(
-      'espresso',
-    );
+    expect(mapMetaInfVersionBaseToModule('androidx.test.espresso.espresso-core')).to.equal('espresso');
   });
 
   it('parseKotlinMetadataVersionsFromDexdump reads @Metadata mv', function () {

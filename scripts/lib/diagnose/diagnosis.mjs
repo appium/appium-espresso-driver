@@ -1,6 +1,4 @@
 import {buildComparisonReport} from '../dependency-versions/index.mjs';
-import {mergeAllEspressoBuildConfig} from './espresso-build-config.mjs';
-import {buildDiagnosisSummary} from './summary.mjs';
 import {
   checkAndroidX,
   checkCompileSdk,
@@ -11,6 +9,8 @@ import {
   checkPrecompileInputKind,
   mapDependencyChecks,
 } from './checks/index.mjs';
+import {mergeAllEspressoBuildConfig} from './espresso-build-config.mjs';
+import {buildDiagnosisSummary} from './summary.mjs';
 
 /**
  * @param {import('./types.mjs').AppInput} appInput

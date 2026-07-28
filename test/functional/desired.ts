@@ -1,11 +1,11 @@
 import type {Capabilities} from '@wdio/types';
 import {node} from 'appium/support.js';
+
 import {getComposePlaygroundPath} from '../setup.js';
 
 export type ComposeCaps = Capabilities.W3CCapabilities;
 
-const APIDEMOS_APK_URL =
-  'https://github.com/appium/android-apidemos/releases/download/v6.0.2/ApiDemos-debug.apk';
+const APIDEMOS_APK_URL = 'https://github.com/appium/android-apidemos/releases/download/v6.0.2/ApiDemos-debug.apk';
 
 export function amendCapabilities(baseCaps: ComposeCaps, ...newCaps: Array<Record<string, any>>) {
   return node.deepFreeze({

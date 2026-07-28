@@ -1,5 +1,7 @@
-import {fs} from 'appium/support.js';
 import path from 'node:path';
+
+import {fs} from 'appium/support.js';
+
 import {TRACKED_MODULES} from './tracked-modules.mjs';
 import {parseVersionsToml} from './version-utils.mjs';
 

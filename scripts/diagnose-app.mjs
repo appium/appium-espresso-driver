@@ -1,9 +1,11 @@
+import {constants as fsConstants} from 'node:fs';
+import {access} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {access} from 'node:fs/promises';
-import {constants as fsConstants} from 'node:fs';
-import {Command} from 'commander';
+
 import {logger} from 'appium/support.js';
+import {Command} from 'commander';
+
 import {
   collectAppInputFromApk,
   collectAppInputFromProject,
@@ -50,13 +52,8 @@ async function main() {
   const program = new Command();
   program
     .name('appium driver run espresso diagnose-app')
-    .description(
-      'Diagnose whether an Android app is ready to embed a precompiled Espresso server',
-    )
-    .requiredOption(
-      '--app <path>',
-      'Gradle project root of the AUT, or path to a built .apk (debug APK recommended)',
-    )
+    .description('Diagnose whether an Android app is ready to embed a precompiled Espresso server')
+    .requiredOption('--app <path>', 'Gradle project root of the AUT, or path to a built .apk (debug APK recommended)')
     .action(async (options) => {
       const [appInput, serverDefaults] = await Promise.all([
         resolveAppInput(options.app),
@@ -67,9 +64,7 @@ async function main() {
       LOG.info(`App: ${appInput.kind} at ${appInput.path}`);
       LOG.info(`Driver: appium-espresso-driver@${serverDefaults.driverVersion}`);
       if (appInput.sources?.length) {
-        LOG.info(
-          `Scanned: ${appInput.sources.slice(0, 8).join(', ')}${appInput.sources.length > 8 ? '…' : ''}`,
-        );
+        LOG.info(`Scanned: ${appInput.sources.slice(0, 8).join(', ')}${appInput.sources.length > 8 ? '…' : ''}`);
       }
       LOG.info('');
       LOG.info(formatDiagnosisReport(report));

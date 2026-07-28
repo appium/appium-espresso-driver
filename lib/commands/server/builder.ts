@@ -1,18 +1,16 @@
-import {SubProcess} from 'teen_process';
-import {fs, system} from 'appium/support.js';
-import path from 'node:path';
 import {EOL} from 'node:os';
-import {escapeRegExp} from '../../utils/index.js';
+import path from 'node:path';
+
 import type {AppiumLogger} from '@appium/types';
+import {fs, system} from 'appium/support.js';
+import {SubProcess} from 'teen_process';
+
+import {escapeRegExp} from '../../utils/index.js';
 
 const GRADLE_VERSION_KEY = 'gradle';
 const GRADLE_URL_PREFIX = 'distributionUrl=';
-export const GRADLE_URL_TEMPLATE =
-  'https\\://services.gradle.org/distributions/gradle-VERSION-all.zip';
-const DEPENDENCY_PROP_NAMES = [
-  'additionalAppDependencies',
-  'additionalAndroidTestDependencies',
-] as const;
+export const GRADLE_URL_TEMPLATE = 'https\\://services.gradle.org/distributions/gradle-VERSION-all.zip';
+const DEPENDENCY_PROP_NAMES = ['additionalAppDependencies', 'additionalAndroidTestDependencies'] as const;
 
 export const VERSION_KEYS = [
   GRADLE_VERSION_KEY,
@@ -114,8 +112,7 @@ export class ServerBuilder {
 
   private getCommand(): {cmd: string; args: string[]} {
     const cmd = system.isWindows() ? 'gradlew.bat' : path.resolve(this.serverPath, 'gradlew');
-    const buildProperty = (key: string, value?: string): string | null =>
-      value ? `-P${key}=${value}` : null;
+    const buildProperty = (key: string, value?: string): string | null => (value ? `-P${key}=${value}` : null);
     const args: string[] = VERSION_KEYS.filter((key) => key !== GRADLE_VERSION_KEY)
       .map((key) => {
         const serverVersion = this.serverVersions[key];
@@ -157,12 +154,7 @@ export class ServerBuilder {
   }
 
   private async setGradleWrapperVersion(version: string): Promise<void> {
-    const propertiesPath = path.resolve(
-      this.serverPath,
-      'gradle',
-      'wrapper',
-      'gradle-wrapper.properties',
-    );
+    const propertiesPath = path.resolve(this.serverPath, 'gradle', 'wrapper', 'gradle-wrapper.properties');
     const originalProperties = await fs.readFile(propertiesPath, 'utf8');
     const newProperties = this.updateGradleDistUrl(originalProperties, version);
     await fs.writeFile(propertiesPath, newProperties, 'utf8');
@@ -204,9 +196,7 @@ export class ServerBuilder {
     let configuration = await fs.readFile(buildPath, 'utf8');
     for (const propName of DEPENDENCY_PROP_NAMES) {
       const prefix = propName === DEPENDENCY_PROP_NAMES[0] ? 'api' : 'androidTestImplementation';
-      const deps = this[propName]
-        .filter((line) => line.trim())
-        .map((line) => `${prefix}("${line}")`);
+      const deps = this[propName].filter((line) => line.trim()).map((line) => `${prefix}("${line}")`);
       if (deps.length === 0) {
         continue;
       }
@@ -219,10 +209,7 @@ export class ServerBuilder {
 
   private async runBuildProcess(): Promise<void> {
     const {cmd, args} = this.getCommand();
-    this.log.debug(
-      `Beginning build with command '${cmd} ${args.join(' ')}' ` +
-        `in directory '${this.serverPath}'`,
-    );
+    this.log.debug(`Beginning build with command '${cmd} ${args.join(' ')}' in directory '${this.serverPath}'`);
     const gradlebuild = new SubProcess(cmd, args, {
       cwd: this.serverPath,
       stdio: ['ignore', 'pipe', 'pipe'],
@@ -244,9 +231,7 @@ export class ServerBuilder {
       await gradlebuild.start();
       await gradlebuild.join();
     } catch (err: any) {
-      const msg =
-        `Unable to build Espresso server - ${err.message}\n` +
-        `Gradle error message:${EOL}${gradleError.join('\n')}`;
+      const msg = `Unable to build Espresso server - ${err.message}\nGradle error message:${EOL}${gradleError.join('\n')}`;
       throw this.log.errorWithException(msg);
     } finally {
       gradlebuild.removeAllListeners();

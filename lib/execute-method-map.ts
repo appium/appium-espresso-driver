@@ -28,13 +28,7 @@ export const executeMethodMap = {
     command: 'mobileClickAction',
     params: {
       required: ['elementId'],
-      optional: [
-        'tapper',
-        'coordinatesProvider',
-        'precisionDescriber',
-        'inputDevice',
-        'buttonState',
-      ],
+      optional: ['tapper', 'coordinatesProvider', 'precisionDescriber', 'inputDevice', 'buttonState'],
     },
   },
 
