@@ -1,8 +1,8 @@
+import assert from 'node:assert/strict';
 import path from 'node:path';
 import {describe, it} from 'node:test';
 
 import {fs, tempDir} from 'appium/support.js';
-import {expect} from 'chai';
 
 import {
   buildComparisonReport,
@@ -23,14 +23,14 @@ describe('diagnose-app', function () {
 composeUiTest = "1.11.2"
 espresso = "3.7.0"
 `);
-    expect(versions.composeUiTest).to.equal('1.11.2');
-    expect(versions.espresso).to.equal('3.7.0');
+    assert.strictEqual(versions.composeUiTest, '1.11.2');
+    assert.strictEqual(versions.espresso, '3.7.0');
   });
 
   it('compareModuleVersions', function () {
-    expect(compareModuleVersions('1.11.2', '1.11.2')).to.equal('equal');
-    expect(compareModuleVersions('1.11.2', '1.10.0')).to.equal('minor');
-    expect(compareModuleVersions('1.11.2', '2.0.0')).to.equal('major');
+    assert.strictEqual(compareModuleVersions('1.11.2', '1.11.2'), 'equal');
+    assert.strictEqual(compareModuleVersions('1.11.2', '1.10.0'), 'minor');
+    assert.strictEqual(compareModuleVersions('1.11.2', '2.0.0'), 'major');
   });
 
   it('runDiagnosis fails on missing INTERNET in manifest', async function () {
@@ -54,8 +54,8 @@ espresso = "3.7.0"
       },
     );
     const internet = report.checks.find((c) => c.id === 'manifest-internet');
-    expect(internet?.status).to.equal('fail');
-    expect(report.ready).to.be.false;
+    assert.strictEqual(internet?.status, 'fail');
+    assert.strictEqual(report.ready, false);
   });
 
   it('runDiagnosis passes aligned compose versions', async function () {
@@ -79,8 +79,8 @@ espresso = "3.7.0"
       },
     );
     const composeDep = report.checks.find((c) => c.id === 'dependency-compose');
-    expect(composeDep?.status).to.equal('pass');
-    expect(report.ready).to.be.true;
+    assert.strictEqual(composeDep?.status, 'pass');
+    assert.strictEqual(report.ready, true);
   });
 
   it('runDiagnosis passes aligned kotlin versions without test libraries', async function () {
@@ -104,22 +104,22 @@ espresso = "3.7.0"
       },
     );
     const kotlinDep = report.checks.find((c) => c.id === 'dependency-kotlin');
-    expect(kotlinDep?.status).to.equal('pass');
-    expect(report.ready).to.be.true;
+    assert.strictEqual(kotlinDep?.status, 'pass');
+    assert.strictEqual(report.ready, true);
   });
 
   it('mapMetaInfVersionBaseToModule maps Compose artifacts', function () {
-    expect(mapMetaInfVersionBaseToModule('androidx.compose.ui_ui')).to.equal('compose');
-    expect(mapMetaInfVersionBaseToModule('androidx.compose.ui_ui-test')).to.equal('compose');
-    expect(mapMetaInfVersionBaseToModule('androidx.annotation_annotation-experimental')).to.be.null;
-    expect(mapMetaInfVersionBaseToModule('androidx.test.espresso.espresso-core')).to.equal('espresso');
+    assert.strictEqual(mapMetaInfVersionBaseToModule('androidx.compose.ui_ui'), 'compose');
+    assert.strictEqual(mapMetaInfVersionBaseToModule('androidx.compose.ui_ui-test'), 'compose');
+    assert.strictEqual(mapMetaInfVersionBaseToModule('androidx.annotation_annotation-experimental'), null);
+    assert.strictEqual(mapMetaInfVersionBaseToModule('androidx.test.espresso.espresso-core'), 'espresso');
   });
 
   it('parseKotlinMetadataVersionsFromDexdump reads @Metadata mv', function () {
     const versions = parseKotlinMetadataVersionsFromDexdump(
       'VISIBILITY_RUNTIME Lkotlin/Metadata; k=3 mv={ 2 3 0 } xi=48',
     );
-    expect(versions).to.eql(['2.3.0']);
+    assert.deepStrictEqual(versions, ['2.3.0']);
   });
 
   it('mergeMetaInfEmbeddedVersions reads AGP META-INF version files', async function () {
@@ -130,7 +130,7 @@ espresso = "3.7.0"
     /** @type {Record<string, Set<string>>} */
     const found = {compose: new Set<string>()};
     await mergeMetaInfEmbeddedVersions(root, found);
-    expect([...found.compose]).to.eql(['1.11.2']);
+    assert.deepStrictEqual([...found.compose], ['1.11.2']);
     await fs.rimraf(root);
   });
 
@@ -141,8 +141,8 @@ espresso = "3.7.0"
       {proguardLikely: false, minifyEnabled: false},
     );
     const compose = depReport.modules.find((m) => m.id === 'compose');
-    expect(compose?.diff).to.equal('minor');
-    expect(compose?.recommendation.espressoBuildConfig).to.eql({
+    assert.strictEqual(compose?.diff, 'minor');
+    assert.deepStrictEqual(compose?.recommendation.espressoBuildConfig, {
       toolsVersions: {composeVersion: '1.10.0'},
     });
   });
@@ -154,8 +154,8 @@ espresso = "3.7.0"
       {proguardLikely: false, minifyEnabled: false},
     );
     const kotlin = depReport.modules.find((m) => m.id === 'kotlin');
-    expect(kotlin?.diff).to.equal('minor');
-    expect(kotlin?.recommendation.espressoBuildConfig).to.eql({
+    assert.strictEqual(kotlin?.diff, 'minor');
+    assert.deepStrictEqual(kotlin?.recommendation.espressoBuildConfig, {
       toolsVersions: {kotlin: '2.0.0'},
     });
   });
@@ -170,9 +170,9 @@ dependencies {
     )
 }
 `);
-    expect(mainOnly).to.include('androidx.core:core:1.15.0');
-    expect(mainOnly).not.to.include('ui-test');
-    expect(mainOnly).not.to.include('espresso-core');
+    assert.ok(mainOnly.includes('androidx.core:core:1.15.0'));
+    assert.ok(!mainOnly.includes('ui-test'));
+    assert.ok(!mainOnly.includes('espresso-core'));
   });
 
   it('collectAppVersionsFromProject ignores test-only modules in androidTest configurations', async function () {
@@ -201,8 +201,8 @@ espresso = "3.7.0"
       'utf8',
     );
     const {versions} = await collectAppVersionsFromProject(root);
-    expect(versions.compose).to.eql(['1.11.2']);
-    expect(versions.espresso ?? []).to.eql([]);
+    assert.deepStrictEqual(versions.compose, ['1.11.2']);
+    assert.deepStrictEqual(versions.espresso ?? [], []);
     await fs.rimraf(root);
   });
 
@@ -214,7 +214,7 @@ espresso = "3.7.0"
       'utf8',
     );
     const {versions} = await collectAppVersionsFromProject(root);
-    expect(versions.espresso).to.eql(['3.6.1']);
+    assert.deepStrictEqual(versions.espresso, ['3.6.1']);
     await fs.rimraf(root);
   });
 
@@ -225,9 +225,9 @@ espresso = "3.7.0"
       {proguardLikely: false, minifyEnabled: false, detectionSource: 'project'},
     );
     const espresso = depReport.modules.find((m) => m.id === 'espresso');
-    expect(espresso?.diff).to.equal('present');
-    expect(espresso?.recommendation.level).to.equal('warning');
-    expect(espresso?.recommendation.message).to.include('instrumented-test');
-    expect(espresso?.recommendation.espressoBuildConfig).to.be.undefined;
+    assert.strictEqual(espresso?.diff, 'present');
+    assert.strictEqual(espresso?.recommendation.level, 'warning');
+    assert.ok(espresso?.recommendation.message.includes('instrumented-test'));
+    assert.strictEqual(espresso?.recommendation.espressoBuildConfig, undefined);
   });
 });

@@ -1,12 +1,8 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, beforeEach, afterEach} from 'node:test';
-
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
 import {type ComposeCaps, getComposeCaps} from '../desired.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-use(chaiAsPromised);
 
 describe('Jetpack Compose', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: any;
@@ -31,17 +27,17 @@ describe('Jetpack Compose', {timeout: E2E_TEST_TIMEOUT}, function () {
     await driver.updateSettings({driver: 'compose'});
 
     const e = await driver.$(await driver.findElement('tag name', 'lol'));
-    await expect(driver.isElementDisplayed(e.elementId)).to.eventually.be.true;
+    assert.strictEqual(await driver.isElementDisplayed(e.elementId), true);
 
     const elementWithDescription = await driver.$('~desc');
-    await expect(elementWithDescription.getText()).to.eventually.equal('Click to see dialog');
-    await expect(driver.isElementDisplayed(elementWithDescription.elementId)).to.eventually.be.true;
+    assert.strictEqual(await elementWithDescription.getText(), 'Click to see dialog');
+    assert.strictEqual(await driver.isElementDisplayed(elementWithDescription.elementId), true);
 
     const clickableText = await driver.$('=Click to see dialog');
     await clickableText.click();
 
     await driver.$('=Congratulations! You just clicked the text successfully');
-    await expect(driver.getSettings()).to.eventually.eql({driver: 'compose'});
+    assert.deepStrictEqual(await driver.getSettings(), {driver: 'compose'});
   });
 
   it('should find element by xpath', async function () {
@@ -52,7 +48,7 @@ describe('Jetpack Compose', {timeout: E2E_TEST_TIMEOUT}, function () {
     await driver.updateSettings({driver: 'compose'});
 
     const e = await driver.$("//*[@view-tag='lol']//*[@content-desc='desc']");
-    await expect(e.getText()).to.eventually.equal('Click to see dialog');
+    assert.strictEqual(await e.getText(), 'Click to see dialog');
   });
 
   it('should find elements', async function () {
@@ -63,7 +59,7 @@ describe('Jetpack Compose', {timeout: E2E_TEST_TIMEOUT}, function () {
     await driver.updateSettings({driver: 'compose'});
 
     const e = await driver.$$('=Grace Hopper');
-    expect(e.length).to.eql(2);
-    await expect(e[0].getText()).to.eventually.equal('Grace Hopper');
+    assert.deepStrictEqual(e.length, 2);
+    assert.strictEqual(await e[0].getText(), 'Grace Hopper');
   });
 });

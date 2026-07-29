@@ -4,7 +4,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "outDir": "build",
-    "types": ["node", "chai"],
+    "types": ["node"],
     "checkJs": true,
     "strict": true,
     "module": "NodeNext",

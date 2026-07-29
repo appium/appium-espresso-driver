@@ -1,13 +1,10 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, after} from 'node:test';
 
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import type {Browser} from 'webdriverio';
 
 import {APIDEMO_CAPS} from '../desired.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-use(chaiAsPromised);
 
 describe('Size', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
@@ -20,19 +17,19 @@ describe('Size', {timeout: E2E_TEST_TIMEOUT}, function () {
 
   it('should find rect of window', async function () {
     const {width, height, x, y} = await driver.getWindowRect();
-    expect(width).to.be.above(0);
-    expect(height).to.be.above(0);
-    expect(x).to.equal(0);
-    expect(y).to.equal(0);
+    assert.ok(width > 0);
+    assert.ok(height > 0);
+    assert.strictEqual(x, 0);
+    assert.strictEqual(y, 0);
   });
 
   it('should find rect of an element', async function () {
     const el = await driver.$('~App');
     const {width, height, x, y} = await driver.getElementRect(await el.elementId);
-    expect(width).to.be.above(0);
-    expect(height).to.be.above(0);
+    assert.ok(width > 0);
+    assert.ok(height > 0);
     // the element start from the edge of left.
-    expect(x).to.equal(0);
-    expect(y).to.be.above(0);
+    assert.strictEqual(x, 0);
+    assert.ok(y > 0);
   });
 });
