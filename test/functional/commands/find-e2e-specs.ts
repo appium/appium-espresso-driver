@@ -1,12 +1,8 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, after} from 'node:test';
-
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
 import {APIDEMO_CAPS} from '../desired.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-use(chaiAsPromised);
 
 describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: any;
@@ -23,19 +19,19 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
 
       it(`should find an element by it's xpath`, async function () {
         const el = await driver.$("//*[@text='Animation']");
-        expect(el).to.exist;
+        assert.ok(el);
         await el.click();
         await driver.back();
       });
       it('should find multiple elements that match one xpath', async function () {
         const els = await driver.$$('//android.widget.TextView');
-        expect(els.length).to.be.above(1);
+        assert.ok(els.length > 1);
         await els[0].click();
         await driver.back();
       });
       it('should get the first element of an xpath that matches more than one element', async function () {
         const el = await driver.$('//android.widget.TextView');
-        expect(el).to.exist;
+        assert.ok(el);
         await el.click();
         await driver.back();
       });
@@ -46,13 +42,13 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
           await driver.elementClick(await el.elementId);
           throw Error('Should raise an error before this line.');
         } catch (err: unknown) {
-          expect(err instanceof Error ? err.name : '').to.eq('stale element reference');
+          assert.strictEqual(err instanceof Error ? err.name : '', 'stale element reference');
         }
         await driver.back();
       });
       it('should get the isElementDisplayed attribute on the same element twice', async function () {
         const el = await driver.$("//*[@content-desc='Animation']");
-        await expect(driver.isElementDisplayed(await el.elementId)).to.eventually.be.true;
+        assert.strictEqual(await driver.isElementDisplayed(await el.elementId), true);
         await el.click();
         await driver.back();
       });
@@ -86,8 +82,8 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
         const el = await driver.$('~Views');
         const elAgain = await driver.$("//*[@content-desc='Views']");
         const elNonMatch = await driver.$('~Preference');
-        await expect(el.isEqual(elAgain)).to.eventually.be.true;
-        await expect(el.isEqual(elNonMatch)).to.eventually.be.false;
+        assert.strictEqual(await el.isEqual(elAgain), true);
+        assert.strictEqual(await el.isEqual(elNonMatch), false);
       });
       // TODO: This test is very flakey. Need to inspect this.
       it.skip('should scroll element back into view if was scrolled out of view (regression test for https://github.com/appium/appium-espresso-driver/issues/276)', async function () {
@@ -96,10 +92,10 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
         let el = await driver.$('~Views');
         await el.click();
         el = await driver.$('~Custom');
-        await expect(el.text()).to.eventually.equal('Custom');
+        assert.strictEqual(await el.text(), 'Custom');
         const {value: element} = await driver.elementById('android:id/list');
         await driver.execute('mobile: swipe', {direction: 'up', element});
-        await expect(el.text()).to.eventually.equal('Custom');
+        assert.strictEqual(await el.text(), 'Custom');
         await driver.back();
       });
     });
@@ -121,10 +117,10 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
             args: ['title', 'A Fake Item'],
           }),
         )) as {error: string};
-        expect(err.error).to.eq('no such element');
+        assert.strictEqual(err.error, 'no such element');
       });
       it('should fail with invalid selector with helpful error messages', async function () {
-        await expect(
+        await assert.rejects(
           driver.findElement(
             '-android datamatcher',
             JSON.stringify({
@@ -132,10 +128,11 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
               args: ['title', 'A Fake Item'],
             }),
           ),
-        ).to.be.rejectedWith(/Not a valid selector/);
+          /Not a valid selector/,
+        );
       });
       it('should allow "class" property with fully qualified className', async function () {
-        await expect(
+        await assert.rejects(
           driver.findElement(
             '-android datamatcher',
             JSON.stringify({
@@ -144,7 +141,8 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
               class: 'org.hamcrest.Matchers',
             }),
           ),
-        ).to.be.rejectedWith(/Not a valid selector/);
+          /Not a valid selector/,
+        );
       });
       it('should find an element using a data matcher', async function () {
         const el = await driver.$(
@@ -203,26 +201,26 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
 
         // Narrow them down by making the root an adapter view
         const listOneEl = await driver.$(await driver.findElement('id', 'io.appium.android.apis:id/list1'));
-        await expect(
-          listOneEl.findElement(
+        assert.ok(
+          await listOneEl.findElement(
             '-android datamatcher',
             JSON.stringify({
               name: 'equalTo',
               args: 'Zamorano',
             }),
           ),
-        ).to.eventually.exist;
+        );
 
         const listTwoEl = await driver.$(await driver.findElement('id', 'list2'));
-        await expect(
-          listTwoEl.findElement(
+        assert.ok(
+          await listTwoEl.findElement(
             '-android datamatcher',
             JSON.stringify({
               name: 'equalTo',
               args: 'Zamorano',
             }),
           ),
-        ).to.eventually.exist;
+        );
       });
     });
   });
@@ -244,11 +242,11 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
             args: ['title', 'A Fake Item'],
           }),
         )) as {error: string};
-        expect(err.error).to.eq('no such element');
+        assert.strictEqual(err.error, 'no such element');
       });
 
       it('should fail with invalid selector with helpful error messages', async function () {
-        await expect(
+        await assert.rejects(
           driver.findElement(
             '-android viewmatcher',
             JSON.stringify({
@@ -256,11 +254,11 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
               args: ['title', 'A Fake Item'],
             }),
           ),
-        ).to.be.rejected;
+        );
       });
 
       it('should allow "class" property with fully qualified className', async function () {
-        await expect(
+        await assert.rejects(
           driver.findElement(
             '-android viewmatcher',
             JSON.stringify({
@@ -269,7 +267,7 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
               class: 'org.hamcrest.Matchers',
             }),
           ),
-        ).to.be.rejected;
+        );
       });
     });
 
@@ -287,8 +285,8 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
       });
 
       it('should find an element using view matcher', async function () {
-        await expect(
-          driver.findElement(
+        assert.ok(
+          await driver.findElement(
             '-android viewmatcher',
             JSON.stringify({
               name: 'withText',
@@ -296,11 +294,11 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
               class: 'androidx.test.espresso.matcher.ViewMatchers',
             }),
           ),
-        ).to.eventually.exist;
+        );
       });
       it('should allow multiple view matchers to be passed as args', async function () {
-        await expect(
-          driver.findElement(
+        assert.ok(
+          await driver.findElement(
             '-android viewmatcher',
             JSON.stringify({
               name: 'withText',
@@ -314,7 +312,7 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
               class: 'androidx.test.espresso.matcher.ViewMatchers',
             }),
           ),
-        ).to.eventually.exist;
+        );
       });
     });
 
@@ -342,8 +340,8 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
         // })).should.eventually.be.rejectedWith(/AmbiguousViewMatcherException/);
 
         const listTwoEl = await driver.$("//android.widget.LinearLayout[@index='2']");
-        await expect(
-          listTwoEl.findElement(
+        assert.ok(
+          await listTwoEl.findElement(
             '-android viewmatcher',
             JSON.stringify({
               name: 'withText',
@@ -351,11 +349,11 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
               class: 'androidx.test.espresso.matcher.ViewMatchers',
             }),
           ),
-        ).to.eventually.exist;
+        );
 
         const listOneEl = await driver.$("//android.widget.LinearLayout[@index='1']");
-        await expect(
-          listOneEl.findElement(
+        assert.ok(
+          await listOneEl.findElement(
             '-android viewmatcher',
             JSON.stringify({
               name: 'withText',
@@ -363,7 +361,7 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
               class: 'androidx.test.espresso.matcher.ViewMatchers',
             }),
           ),
-        ).to.eventually.exist;
+        );
       });
     });
   });
@@ -387,7 +385,7 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
       const el = await driver.$('~Views');
       await el.click();
       const imageEl = await driver.$('~ImageView');
-      expect(imageEl).to.exist;
+      assert.ok(imageEl);
     });
   });
 });

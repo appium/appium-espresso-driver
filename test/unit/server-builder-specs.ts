@@ -1,14 +1,11 @@
+import assert from 'node:assert/strict';
 import {describe, it} from 'node:test';
 
 import {system} from 'appium/support.js';
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
 import {GRADLE_URL_TEMPLATE, VERSION_KEYS, updateDependencyLines} from '../../lib/commands/server/builder.js';
 import {ServerBuilder} from '../../lib/commands/server/index.js';
 import {log} from '../../lib/logger.js';
-
-use(chaiAsPromised);
 
 describe('server-builder', function () {
   describe('getCommand', function () {
@@ -16,7 +13,7 @@ describe('server-builder', function () {
 
     it('should not pass properties when no versions are specified', function () {
       const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
-      expect((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand()).to.eql(expected);
+      assert.deepStrictEqual((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand(), expected);
     });
 
     it('should pass only specified versions as properties and pass them correctly', function () {
@@ -32,12 +29,12 @@ describe('server-builder', function () {
         },
         serverPath: '/path/to/project',
       });
-      expect((serverBuilder as any).getCommand()).to.eql(expected);
+      assert.deepStrictEqual((serverBuilder as any).getCommand(), expected);
     });
 
     it('should skip unknown version keys', function () {
       const unknownKey = 'unknown_key';
-      expect(VERSION_KEYS).to.not.contain(unknownKey);
+      assert.ok(!(VERSION_KEYS as readonly string[]).includes(unknownKey));
 
       const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
       const serverBuilder = new ServerBuilder(log, {
@@ -48,7 +45,7 @@ describe('server-builder', function () {
         },
         serverPath: '/path/to/project',
       });
-      expect((serverBuilder as any).getCommand()).to.eql(expected);
+      assert.deepStrictEqual((serverBuilder as any).getCommand(), expected);
     });
 
     it('should not pass gradle_version as property', function () {
@@ -61,7 +58,7 @@ describe('server-builder', function () {
         },
         serverPath: '/path/to/project',
       });
-      expect((serverBuilder as any).getCommand()).to.eql(expected);
+      assert.deepStrictEqual((serverBuilder as any).getCommand(), expected);
     });
 
     it('should pass appiumComposeSupport=false when composeSupport is false', function () {
@@ -75,20 +72,21 @@ describe('server-builder', function () {
         },
         serverPath: '/path/to/project',
       });
-      expect((serverBuilder as any).getCommand()).to.eql(expected);
+      assert.deepStrictEqual((serverBuilder as any).getCommand(), expected);
     });
 
     it('should not pass compose support property when composeSupport is true or omitted', function () {
       const expected = {cmd: expectedCmd, args: ['app:assembleAndroidTest']};
-      expect(
+      assert.deepStrictEqual(
         (
           new ServerBuilder(log, {
             buildConfiguration: {composeSupport: true},
             serverPath: '/path/to/project',
           }) as any
         ).getCommand(),
-      ).to.eql(expected);
-      expect((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand()).to.eql(expected);
+        expected,
+      );
+      assert.deepStrictEqual((new ServerBuilder(log, {serverPath: '/path/to/project'}) as any).getCommand(), expected);
     });
   });
 
@@ -99,10 +97,11 @@ describe('server-builder', function () {
       const serverBuilder = new ServerBuilder(log, {serverPath});
       const actualFileContent = (serverBuilder as any).updateGradleDistUrl(readFileResult, '1.2.3');
 
-      expect(actualFileContent).to.eql(
+      assert.strictEqual(
+        actualFileContent,
         `foo=1\ndistributionUrl=${GRADLE_URL_TEMPLATE.replace('VERSION', '1.2.3')}\nbar=2`,
       );
-      expect(actualFileContent).to.contain('gradle-1.2.3-all.zip');
+      assert.ok(actualFileContent.includes('gradle-1.2.3-all.zip'));
     });
 
     it('should keep other lines not affected', function () {
@@ -110,8 +109,8 @@ describe('server-builder', function () {
       const serverBuilder = new ServerBuilder(log, {serverPath});
       const actualFileContent = (serverBuilder as any).updateGradleDistUrl(readFileResult, '1.2.3');
 
-      expect(actualFileContent).to.match(/^foo=1$/m);
-      expect(actualFileContent).to.match(/^bar=2$/m);
+      assert.match(actualFileContent, /^foo=1$/m);
+      assert.match(actualFileContent, /^bar=2$/m);
     });
   });
 
@@ -135,7 +134,9 @@ describe('server-builder', function () {
         'a.b.c:1.2.3',
         'foo.bar.foobar:4.5.6',
       ]);
-      expect(replacedContent).to.eql(`dependencies {
+      assert.strictEqual(
+        replacedContent,
+        `dependencies {
   ext.annotation_version = '1.1.0'
 
   implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -149,13 +150,16 @@ describe('server-builder', function () {
   androidTestImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
   // additionalAndroidTestDependencies placeholder (don't change or delete this line)
-}`);
+}`,
+      );
 
       const replacedContent2 = updateDependencyLines(replacedContent, 'additionalAndroidTestDependencies', [
         'a.b.c:1.2.3',
         'foo.bar.foobar:4.5.6',
       ]);
-      expect(replacedContent2).to.eql(`dependencies {
+      assert.strictEqual(
+        replacedContent2,
+        `dependencies {
   ext.annotation_version = '1.1.0'
 
   implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -171,14 +175,16 @@ describe('server-builder', function () {
   // additionalAndroidTestDependencies placeholder (don't change or delete this line)
   a.b.c:1.2.3
   foo.bar.foobar:4.5.6
-}`);
+}`,
+      );
     });
 
     it('should throw on single quotes in additional dependencies', async function () {
       const serverBuilder = new ServerBuilder(log, {serverPath});
       (serverBuilder as any).additionalAppDependencies = ["foo.':1.2.3"];
 
-      await expect((serverBuilder as any).insertAdditionalDependencies()).to.be.rejectedWith(
+      await assert.rejects(
+        (serverBuilder as any).insertAdditionalDependencies(),
         /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/,
       );
     });
@@ -187,7 +193,8 @@ describe('server-builder', function () {
       const serverBuilder = new ServerBuilder(log, {serverPath});
       (serverBuilder as any).additionalAndroidTestDependencies = ["foo.':1.2.3"];
 
-      await expect((serverBuilder as any).insertAdditionalDependencies()).to.be.rejectedWith(
+      await assert.rejects(
+        (serverBuilder as any).insertAdditionalDependencies(),
         /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/,
       );
     });
@@ -196,7 +203,8 @@ describe('server-builder', function () {
       const serverBuilder = new ServerBuilder(log, {serverPath});
       (serverBuilder as any).additionalAppDependencies = ['foo.\n:1.2.3'];
 
-      await expect((serverBuilder as any).insertAdditionalDependencies()).to.be.rejectedWith(
+      await assert.rejects(
+        (serverBuilder as any).insertAdditionalDependencies(),
         /Single quotes, dollar characters and whitespace characters are disallowed in additional dependencies/,
       );
     });

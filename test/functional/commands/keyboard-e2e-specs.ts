@@ -1,13 +1,10 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, after} from 'node:test';
 
 import axios from 'axios';
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-use(chaiAsPromised);
 
 describe('keyboard', {timeout: E2E_TEST_TIMEOUT}, function () {
   let idCounter = 0;
@@ -64,9 +61,9 @@ describe('keyboard', {timeout: E2E_TEST_TIMEOUT}, function () {
   it('should send keys to the correct element with setImmediateValue', async function () {
     const el = await driver.$('//android.widget.AutoCompleteTextView');
     await driver.setValueImmediate(el.elementId, 'hello world');
-    await expect(el.getText()).to.eventually.equal('hello world');
+    assert.strictEqual(await el.getText(), 'hello world');
     await driver.setValueImmediate(el.elementId, '!!!');
-    await expect(el.getText()).to.eventually.equal('hello world!!!');
+    assert.strictEqual(await el.getText(), 'hello world!!!');
     await driver.elementClear(el.elementId);
   });
 
@@ -87,7 +84,7 @@ describe('keyboard', {timeout: E2E_TEST_TIMEOUT}, function () {
       {type: 'keyUp', value: 'S'},
     ];
     await performActions(keyActions);
-    await expect(autocompleteEl.getText()).to.eventually.equal('HAtS');
+    assert.strictEqual(await autocompleteEl.getText(), 'HAtS');
     await driver.elementClear(autocompleteEl.elementId);
   });
 });

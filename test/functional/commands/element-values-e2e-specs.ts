@@ -1,13 +1,10 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, after} from 'node:test';
 
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import type {Browser} from 'webdriverio';
 
 import {APIDEMO_CAPS} from '../desired.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-use(chaiAsPromised);
 
 describe('ElementValue', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
@@ -26,8 +23,8 @@ describe('ElementValue', {timeout: E2E_TEST_TIMEOUT}, function () {
 
     const el = await driver.$(await driver.findElement('class name', 'android.widget.EditText'));
     await driver.setValueImmediate(await el.elementId, 'hello');
-    await expect(el.getText()).to.eventually.equal('Left is besthello');
+    assert.strictEqual(await el.getText(), 'Left is besthello');
     await el.setValue('テスト');
-    await expect(el.getText()).to.eventually.equal('テスト');
+    assert.strictEqual(await el.getText(), 'テスト');
   });
 });

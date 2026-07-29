@@ -1,14 +1,11 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, after} from 'node:test';
 
 import {DOMParser} from '@xmldom/xmldom';
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import xpath from 'xpath';
 
 import {type ComposeCaps, getComposeCaps} from '../desired.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-use(chaiAsPromised);
 
 describe('source commands', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: any;
@@ -28,10 +25,10 @@ describe('source commands', {timeout: E2E_TEST_TIMEOUT}, function () {
       await el.click();
       await driver.updateSettings({driver: 'compose'});
       const sourceXML = await driver.getPageSource();
-      expect(sourceXML).to.be.a.string;
+      assert.strictEqual(typeof sourceXML, 'string');
       const doc = new DOMParser().parseFromString(sourceXML, 'application/xml');
       const node = xpath.select('//*', doc as unknown as Node);
-      expect(node).to.exist;
+      assert.ok(node);
     });
   });
 });

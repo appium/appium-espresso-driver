@@ -1,13 +1,10 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, beforeEach, afterEach} from 'node:test';
 
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import {remote, type Browser} from 'webdriverio';
 
 import {APIDEMO_CAPS, amendCapabilities} from './desired.js';
 import {COMMON_REMOTE_OPTIONS} from './helpers/session.js';
-
-use(chaiAsPromised);
 
 describe('EspressoDriver', function () {
   let driver: Browser;
@@ -29,7 +26,7 @@ describe('EspressoDriver', function () {
           ...COMMON_REMOTE_OPTIONS,
           capabilities: APIDEMO_CAPS,
         });
-        await expect(driver.getCurrentActivity()).to.eventually.equal('.ApiDemos');
+        assert.strictEqual(await driver.getCurrentActivity(), '.ApiDemos');
       });
       it('should start android session focusing on specified activity', async function () {
         // for now the activity needs to be fully qualified
@@ -39,32 +36,30 @@ describe('EspressoDriver', function () {
             'appium:appActivity': 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
           }),
         });
-        await expect(driver.getCurrentActivity()).to.eventually.equal(
-          '.accessibility.AccessibilityNodeProviderActivity',
-        );
+        assert.strictEqual(await driver.getCurrentActivity(), '.accessibility.AccessibilityNodeProviderActivity');
       });
     });
     describe('failure', function () {
       it('should reject start session for non-existent activity', async function () {
         // for now the activity needs to be fully qualified
-        await expect(
+        await assert.rejects(
           remote({
             ...COMMON_REMOTE_OPTIONS,
             capabilities: amendCapabilities(APIDEMO_CAPS, {
               'appium:appActivity': 'io.appium.android.apis.some.fake.Activity',
             }),
           }),
-        ).to.be.rejected;
+        );
       });
       it('should reject opening of appPackage with incorrect signature', async function () {
-        await expect(
+        await assert.rejects(
           remote({
             ...COMMON_REMOTE_OPTIONS,
             capabilities: amendCapabilities(APIDEMO_CAPS, {
               'appium:appActivity': 'com.android.settings',
             }),
           }),
-        ).to.be.rejected;
+        );
       });
     });
   });
@@ -82,7 +77,7 @@ describe('EspressoDriver', function () {
       await driver.execute('mobile:startActivity', {
         appActivity: '.accessibility.AccessibilityNodeProviderActivity',
       });
-      await expect(driver.getCurrentActivity()).to.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
+      assert.strictEqual(await driver.getCurrentActivity(), '.accessibility.AccessibilityNodeProviderActivity');
     });
     it('should start activity by fully-qualified name', async function () {
       driver = await remote({
@@ -92,7 +87,7 @@ describe('EspressoDriver', function () {
       await driver.execute('mobile:startActivity', {
         appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
       });
-      await expect(driver.getCurrentActivity()).to.eventually.eql('.accessibility.AccessibilityNodeProviderActivity');
+      assert.strictEqual(await driver.getCurrentActivity(), '.accessibility.AccessibilityNodeProviderActivity');
     });
   });
 
@@ -124,7 +119,7 @@ describe('EspressoDriver', function () {
         },
       ]);
       const editEl = await driver.$('//android.widget.AutoCompleteTextView');
-      await expect(editEl.getText()).to.eventually.equal('Hello World!');
+      assert.strictEqual(await editEl.getText(), 'Hello World!');
       await editEl.clearValue();
     });
 
@@ -139,7 +134,7 @@ describe('EspressoDriver', function () {
           isLongPress,
         });
         const editEl = await driver.$('//android.widget.AutoCompleteTextView');
-        await expect(editEl.getText()).to.eventually.equal(isLongPress ? 'GG' : 'G');
+        assert.strictEqual(await editEl.getText(), isLongPress ? 'GG' : 'G');
         await editEl.clearValue();
       }
     });

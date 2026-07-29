@@ -1,13 +1,10 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, after} from 'node:test';
 
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import type {Browser} from 'webdriverio';
 
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-use(chaiAsPromised);
 
 const SKIP_CONTEXT_TESTS = Boolean(process.env.CI);
 
@@ -28,12 +25,12 @@ describe('context', {skip: SKIP_CONTEXT_TESTS, timeout: E2E_TEST_TIMEOUT}, funct
   it('should get contexts and set them without errors', async function () {
     const viewContexts = await driver.getContexts();
 
-    await expect(driver.getContext()).to.eventually.eql(viewContexts[0]);
+    assert.strictEqual(await driver.getContext(), viewContexts[0]);
 
     await driver.switchContext(viewContexts[1]);
-    await expect(driver.getContext()).to.eventually.eql(viewContexts[1]);
+    assert.strictEqual(await driver.getContext(), viewContexts[1]);
 
     await driver.switchContext(viewContexts[0]);
-    await expect(driver.getContext()).to.eventually.eql(viewContexts[0]);
+    assert.strictEqual(await driver.getContext(), viewContexts[0]);
   });
 });

@@ -1,12 +1,8 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, beforeEach, afterEach} from 'node:test';
-
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
 import {type ComposeCaps, getComposeCaps} from '../desired.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-use(chaiAsPromised);
 
 describe('compose node attributes', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: any;
@@ -32,25 +28,25 @@ describe('compose node attributes', {timeout: E2E_TEST_TIMEOUT}, function () {
       await driver.updateSettings({driver: 'compose'});
 
       const taggedElement = await driver.$('<lol>');
-      await expect(taggedElement.getAttribute('view-tag')).to.eventually.equal('lol');
+      assert.strictEqual(await taggedElement.getAttribute('view-tag'), 'lol');
 
       const click_dialog = await driver.$("//*[@text='Click to see dialog']");
-      await expect(click_dialog.getAttribute('text')).to.eventually.equal('Click to see dialog');
-      await expect(click_dialog.getText()).to.eventually.equal('Click to see dialog');
+      assert.strictEqual(await click_dialog.getAttribute('text'), 'Click to see dialog');
+      assert.strictEqual(await click_dialog.getText(), 'Click to see dialog');
 
-      await expect(click_dialog.getAttribute('selected')).to.eventually.equal('false');
-      await expect(click_dialog.isSelected()).to.eventually.be.false;
+      assert.strictEqual(await click_dialog.getAttribute('selected'), 'false');
+      assert.strictEqual(await click_dialog.isSelected(), false);
 
-      await expect(click_dialog.isDisplayed()).to.eventually.be.true;
+      assert.strictEqual(await click_dialog.isDisplayed(), true);
 
-      await expect(click_dialog.getAttribute('class')).to.eventually.equal('Text');
+      assert.strictEqual(await click_dialog.getAttribute('class'), 'Text');
 
-      await expect(click_dialog.getAttribute('clickable')).to.eventually.equal('false');
+      assert.strictEqual(await click_dialog.getAttribute('clickable'), 'false');
 
-      await expect(click_dialog.getAttribute('enabled')).to.eventually.equal('true');
-      await expect(click_dialog.isEnabled()).to.eventually.be.true;
+      assert.strictEqual(await click_dialog.getAttribute('enabled'), 'true');
+      assert.strictEqual(await click_dialog.isEnabled(), true);
 
-      await expect(click_dialog.getAttribute('focused')).to.eventually.equal('false');
+      assert.strictEqual(await click_dialog.getAttribute('focused'), 'false');
     });
   });
 });

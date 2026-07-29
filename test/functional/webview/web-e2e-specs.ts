@@ -1,13 +1,10 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, after} from 'node:test';
 
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import type {Browser} from 'webdriverio';
 
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-use(chaiAsPromised);
 
 const SKIP_WEB_TESTS = Boolean(process.env.CI);
 
@@ -27,13 +24,13 @@ describe('web', {skip: SKIP_WEB_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
       await deleteSession();
     });
     it('should get the title of a webview page', async function () {
-      await expect(driver.getTitle()).to.eventually.equal('I am a page title');
+      assert.strictEqual(await driver.getTitle(), 'I am a page title');
     });
     it('should find one native and one web context', async function () {
       const contexts = await driver.getContexts();
-      expect(contexts.length).to.equal(2);
-      expect(contexts[0]).to.match(/^native/i);
-      expect(contexts[1]).to.match(/^webview/i);
+      assert.strictEqual(contexts.length, 2);
+      assert.match(contexts[0] as string, /^native/i);
+      assert.match(contexts[1] as string, /^webview/i);
     });
     it('should send text to html text inputs', async function (t) {
       if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) > 31) {
@@ -43,29 +40,29 @@ describe('web', {skip: SKIP_WEB_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
       }
 
       const html = await driver.getPageSource();
-      expect(html).to.match(/Selenium/);
+      assert.match(html, /Selenium/);
       // Chrome 83 must be W3C
       const textbox = await driver.$('#i_am_a_textbox');
       await textbox.clearValue();
       await textbox.addValue('Text contents');
-      await expect(textbox.getAttribute('value')).to.eventually.equal('Text contents');
+      assert.strictEqual(await textbox.getAttribute('value'), 'Text contents');
       await textbox.clearValue();
-      await expect(textbox.getText()).to.eventually.equal('');
+      assert.strictEqual(await textbox.getText(), '');
     });
     it('should navigate between webview pages', async function () {
       const anchorLink = await driver.$('[id="i am a link"]');
       await anchorLink.click();
       const bodyEl = await driver.$(await driver.findElement('tag name', 'body'));
-      expect(bodyEl).to.exist;
+      assert.ok(bodyEl);
       await driver.back();
       const el = await driver.$('[id="i am a link"]');
-      expect(el).to.exist;
+      assert.ok(el);
     });
     it('should be able to switch from webview back to native, navigate to a different webview and then switch back to web context', async function () {
       // Switch to webview
       let contexts = await driver.getContexts();
       await driver.switchContext(contexts[1]);
-      await expect(driver.getTitle()).to.eventually.equal('I am a page title');
+      assert.strictEqual(await driver.getTitle(), 'I am a page title');
 
       // Switch to native and go to different activity
       await driver.switchContext(contexts[0]);
@@ -75,11 +72,11 @@ describe('web', {skip: SKIP_WEB_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
       });
       contexts = await driver.getContexts();
       const el = await driver.$(await driver.findElement('id', 'android:id/content'));
-      expect(el).to.exist;
+      assert.ok(el);
 
       // Switch to webview again
       await driver.switchContext(contexts[1]);
-      await expect(driver.getTitle()).to.eventually.equal('I am a page title');
+      assert.strictEqual(await driver.getTitle(), 'I am a page title');
     });
   });
 });

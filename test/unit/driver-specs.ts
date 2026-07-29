@@ -1,13 +1,10 @@
+import assert from 'node:assert/strict';
 import {describe, it, beforeEach, afterEach} from 'node:test';
 
 import {ADB} from 'appium-adb';
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 
 import {EspressoDriver} from '../../lib/driver.js';
-
-use(chaiAsPromised);
 
 const sandbox = sinon.createSandbox();
 
@@ -28,13 +25,13 @@ describe('driver', function () {
       sandbox.stub(driver.adb, 'getApiLevel').resolves(28);
       const setDefaultHiddenApiPolicyStub = sandbox.stub(driver.adb, 'setDefaultHiddenApiPolicy');
       await driver.deleteSession();
-      expect(setDefaultHiddenApiPolicyStub.calledOnce).to.be.true;
+      assert.strictEqual(setDefaultHiddenApiPolicyStub.calledOnce, true);
     });
     it('should not call setDefaultHiddenApiPolicy', async function () {
       sandbox.stub(driver.adb, 'getApiLevel').resolves(27);
       const setDefaultHiddenApiPolicyStub = sandbox.stub(driver.adb, 'setDefaultHiddenApiPolicy');
       await driver.deleteSession();
-      expect(setDefaultHiddenApiPolicyStub.calledOnce).to.be.false;
+      assert.strictEqual(setDefaultHiddenApiPolicyStub.calledOnce, false);
     });
   });
 
@@ -81,7 +78,7 @@ describe('driver', function () {
           },
         } as any);
         proxyAvoidList = driver.getProxyAvoidList(driver.sessionId).filter(nativeWebScreenshotFilter);
-        expect(proxyAvoidList).to.be.empty;
+        assert.strictEqual(proxyAvoidList.length, 0);
       });
       it('should not proxy screenshot if nativeWebScreenshot is on on chromedriver mode', async function () {
         await driver.createSession({
@@ -94,7 +91,7 @@ describe('driver', function () {
           },
         } as any);
         proxyAvoidList = driver.getProxyAvoidList(driver.sessionId).filter(nativeWebScreenshotFilter);
-        expect(proxyAvoidList).to.not.be.empty;
+        assert.ok(proxyAvoidList.length > 0);
       });
     });
   });

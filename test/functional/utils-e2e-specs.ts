@@ -1,33 +1,26 @@
+import assert from 'node:assert/strict';
 import path from 'node:path';
-import {describe, it, before, beforeEach, afterEach} from 'node:test';
+import {describe, it, beforeEach, afterEach} from 'node:test';
 
 import {fs, tempDir} from 'appium/support.js';
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
 import {copyGradleProjectRecursively} from '../../lib/commands/server/runner.js';
-
-use(chaiAsPromised);
 
 describe('copyGradleProjectRecursively', function () {
   let baseSrcDir: string;
   let baseDestDir: string;
 
   async function expectNotExist(file: string) {
-    await expect(fs.access(file, fs.constants.F_OK)).to.be.rejectedWith(/no such file/);
+    await assert.rejects(fs.access(file, fs.constants.F_OK), /no such file/);
   }
 
   async function expectCorrectFileContentIn(filepath: string) {
-    await expect(fs.readFile(filepath, 'utf8')).to.eventually.eql('foobar');
+    assert.strictEqual(await fs.readFile(filepath, 'utf8'), 'foobar');
   }
 
   async function createTestFile(filepath: string) {
     await fs.writeFile(filepath, 'foobar', 'utf8');
   }
-
-  before(async function () {
-    // chai initialized
-  });
 
   beforeEach(async function () {
     baseSrcDir = await tempDir.openDir();

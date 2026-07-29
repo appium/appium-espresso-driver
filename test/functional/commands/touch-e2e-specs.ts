@@ -1,15 +1,12 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, after, beforeEach} from 'node:test';
 
 import {asyncmap, sleep} from 'asyncbox';
 import axios from 'axios';
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import type {Browser, ChainablePromiseElement} from 'webdriverio';
 
 import {APIDEMO_CAPS} from '../desired.js';
 import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-use(chaiAsPromised);
 
 // TODO: Enable this in CI after the functional coverage update in the follow-up PR.
 const SKIP_TOUCH_TESTS = Boolean(process.env.CI);
@@ -240,7 +237,7 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
     beforeEach(async function () {
       await startTextSwitcherActivity();
 
-      expect(await driver.$("//*[@text='0']")).to.exist;
+      assert.ok(await driver.$("//*[@text='0']"));
 
       nextEl = await driver.$('~Next');
     });
@@ -255,7 +252,7 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
       ];
       await performTouchAction(touchActions as any);
 
-      expect(await driver.$("//*[@text='1']")).to.exist;
+      assert.ok(await driver.$("//*[@text='1']"));
     });
 
     it('should touch down and up on an element by id', async function () {
@@ -271,7 +268,7 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
       ];
       await performTouchAction(touchActions);
 
-      expect(await driver.$("//*[@text='1']")).to.exist;
+      assert.ok(await driver.$("//*[@text='1']"));
     });
   });
 
@@ -282,8 +279,8 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
       beforeEach(async function () {
         await startTextSwitcherActivity();
 
-        expect(await driver.$("//*[@text='0']")).to.exist;
-        await expect(driver.$("//*[@text='1']")).to.be.rejectedWith(/NoSuchElement/);
+        assert.ok(await driver.$("//*[@text='0']"));
+        await assert.rejects(async () => driver.$("//*[@text='1']"), /NoSuchElement/);
 
         nextEl = await (driver as any).elementByAccessibilityId('Next');
       });
@@ -298,7 +295,7 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
           },
         });
 
-        expect(await driver.$("//*[@text='1']")).to.exist;
+        assert.ok(await driver.$("//*[@text='1']"));
       });
 
       it('should do touch/longclick event', async function () {
@@ -311,11 +308,11 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
           },
         });
 
-        expect(await driver.$("//*[@text='1']")).to.exist;
+        assert.ok(await driver.$("//*[@text='1']"));
       });
 
       it('should do touch/doubleclick event', async function () {
-        await expect(driver.$("//*[@text='2']")).to.be.rejectedWith(/NoSuchElement/);
+        await assert.rejects(async () => driver.$("//*[@text='2']"), /NoSuchElement/);
 
         const {value: elementId} = nextEl;
         await axios({
@@ -326,8 +323,8 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
           },
         });
 
-        expect(await driver.$("//*[@text='1']")).to.exist;
-        expect(await driver.$("//*[@text='2']")).to.exist;
+        assert.ok(await driver.$("//*[@text='1']"));
+        assert.ok(await driver.$("//*[@text='2']"));
       });
 
       it('should touch down at a location and then touch up', async function () {
@@ -352,7 +349,7 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
           },
         });
 
-        expect(await driver.$("//*[@text='1']")).to.exist;
+        assert.ok(await driver.$("//*[@text='1']"));
       });
     });
 

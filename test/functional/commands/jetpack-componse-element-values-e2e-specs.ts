@@ -1,13 +1,10 @@
+import assert from 'node:assert/strict';
 import {describe, it, before, beforeEach, afterEach} from 'node:test';
 
 import {retryInterval} from 'asyncbox';
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
 import {type ComposeCaps, getComposeCaps} from '../desired.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-use(chaiAsPromised);
 
 describe('Jetpack Compose', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: any;
@@ -61,20 +58,21 @@ describe('Jetpack Compose', {timeout: E2E_TEST_TIMEOUT}, function () {
 
     const textElement = await driver.$(await driver.findElement('tag name', 'text_input'));
     // verify default text
-    await expect(textElement.getText()).to.eventually.equal('Enter your text here');
+    assert.strictEqual(await textElement.getText(), 'Enter your text here');
 
     await driver.setValueImmediate(textElement.elementId, 'hello');
     // should append to the exiting text
-    await expect(driver.$(await driver.findElement('tag name', 'text_input')).getText()).to.eventually.equal(
+    assert.strictEqual(
+      await driver.$(await driver.findElement('tag name', 'text_input')).getText(),
       'Enter your text herehello',
     );
 
     await textElement.setValue('テスト');
     //  should replace existing text
-    await expect(textElement.getText()).to.eventually.equal('テスト');
+    assert.strictEqual(await textElement.getText(), 'テスト');
 
     await textElement.clearValue();
     //  should clear existing text
-    await expect(textElement.getText()).to.eventually.equal('');
+    assert.strictEqual(await textElement.getText(), '');
   });
 });

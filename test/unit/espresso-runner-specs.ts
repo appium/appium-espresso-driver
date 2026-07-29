@@ -1,14 +1,11 @@
+import assert from 'node:assert/strict';
 import {describe, it, afterEach} from 'node:test';
 
 import {ADB} from 'appium-adb';
-import {expect, use} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 
 import {EspressoRunner} from '../../lib/commands/server/index.js';
 import {log} from '../../lib/logger.js';
-
-use(chaiAsPromised);
 
 const REQUIRED_PARAMS = [
   'adb',
@@ -37,9 +34,12 @@ describe('espresso-runner', function () {
   describe('constructor', function () {
     function runConstructorTest(opts: any, missingParam: string) {
       it(`should error out if missing '${missingParam}' parameter`, function () {
-        expect(function () {
-          new EspressoRunner(log, opts);
-        }).to.throw(`Option '${missingParam}' is required!`);
+        assert.throws(
+          function () {
+            new EspressoRunner(log, opts);
+          },
+          new Error(`Option '${missingParam}' is required!`),
+        );
       });
     }
     for (const requiredParam of REQUIRED_PARAMS) {
@@ -92,8 +92,8 @@ describe('espresso-runner', function () {
       });
 
       await espresso.installServer();
-      expect((espresso.adb as any).uninstallApk()).to.eql(1);
-      expect((espresso.adb as any).install()).to.eql(1);
+      assert.strictEqual((espresso.adb as any).uninstallApk(), 1);
+      assert.strictEqual((espresso.adb as any).install(), 1);
     });
 
     it('should install older server', async function () {
@@ -119,8 +119,8 @@ describe('espresso-runner', function () {
       });
 
       await espresso.installServer();
-      expect((espresso.adb as any).uninstallApk()).to.eql(1);
-      expect((espresso.adb as any).install()).to.eql(1);
+      assert.strictEqual((espresso.adb as any).uninstallApk(), 1);
+      assert.strictEqual((espresso.adb as any).install(), 1);
     });
 
     it('should install from no server', async function () {
@@ -146,8 +146,8 @@ describe('espresso-runner', function () {
       });
 
       await espresso.installServer();
-      expect(espresso.adb.uninstallApk('io.appium.espressoserver.test')).to.eql(0);
-      expect(espresso.adb.install('path/to/apk')).to.eql(1);
+      assert.strictEqual(espresso.adb.uninstallApk('io.appium.espressoserver.test'), 0);
+      assert.strictEqual(espresso.adb.install('path/to/apk'), 1);
     });
 
     it('should raise an error when it fails to install an apk', async function () {
@@ -175,8 +175,8 @@ describe('espresso-runner', function () {
         forceEspressoRebuild: false,
       });
 
-      await expect(espresso.installServer()).to.be.rejectedWith(/error happened/i);
-      expect((espresso.adb as any).uninstallApk()).to.eql(0);
+      await assert.rejects(espresso.installServer(), /error happened/i);
+      assert.strictEqual((espresso.adb as any).uninstallApk(), 0);
     });
   });
 });
