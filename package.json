@@ -1,6 +1,6 @@
 {
   "name": "appium-espresso-driver",
-  "version": "9.0.5",
+  "version": "9.0.6",
   "description": "Espresso integration for Appium",
   "keywords": [
     "android",

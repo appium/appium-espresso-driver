@@ -1,3 +1,9 @@
+## [9.0.6](https://github.com/appium/appium-espresso-driver/compare/v9.0.5...v9.0.6) (2026-07-29)
+
+### Miscellaneous Chores
+
+* Drop chai ([#1208](https://github.com/appium/appium-espresso-driver/issues/1208)) ([428fd22](https://github.com/appium/appium-espresso-driver/commit/428fd22cac103a73198d923b7307f280cb3e0306))
+
 ## [9.0.5](https://github.com/appium/appium-espresso-driver/compare/v9.0.4...v9.0.5) (2026-07-28)
 
 ### Miscellaneous Chores
