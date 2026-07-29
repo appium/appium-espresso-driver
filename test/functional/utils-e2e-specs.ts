@@ -15,7 +15,7 @@ describe('copyGradleProjectRecursively', function () {
   }
 
   async function expectCorrectFileContentIn(filepath: string) {
-    assert.deepStrictEqual(await fs.readFile(filepath, 'utf8'), 'foobar');
+    assert.strictEqual(await fs.readFile(filepath, 'utf8'), 'foobar');
   }
 
   async function createTestFile(filepath: string) {

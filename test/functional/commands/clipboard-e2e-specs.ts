@@ -27,15 +27,15 @@ describe('clipboard', {skip: SKIP_CLIPBOARD_TESTS, timeout: E2E_TEST_TIMEOUT}, f
     // 'SGVsbG8=' is 'Hello' in base 64 encoding with a new line.
     const text = String(await driver.execute('mobile:getClipboard'));
     try {
-      assert.deepStrictEqual(text, 'SGVsbG8=');
+      assert.strictEqual(text, 'SGVsbG8=');
     } catch (e) {
       if (e instanceof AssertionError) {
         // API level 23 and 25 emulator has '\n'
-        assert.deepStrictEqual(text, 'SGVsbG8=\n');
+        assert.strictEqual(text, 'SGVsbG8=\n');
       } else {
         throw e;
       }
     }
-    assert.deepStrictEqual(Buffer.from(text, 'base64').toString(), 'Hello');
+    assert.strictEqual(Buffer.from(text, 'base64').toString(), 'Hello');
   });
 });

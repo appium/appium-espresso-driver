@@ -59,7 +59,7 @@ describe('Jetpack Compose', {timeout: E2E_TEST_TIMEOUT}, function () {
     await driver.updateSettings({driver: 'compose'});
 
     const e = await driver.$$('=Grace Hopper');
-    assert.deepStrictEqual(e.length, 2);
+    assert.strictEqual(e.length, 2);
     assert.strictEqual(await e[0].getText(), 'Grace Hopper');
   });
 });

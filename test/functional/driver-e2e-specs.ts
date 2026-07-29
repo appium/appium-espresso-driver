@@ -77,7 +77,7 @@ describe('EspressoDriver', function () {
       await driver.execute('mobile:startActivity', {
         appActivity: '.accessibility.AccessibilityNodeProviderActivity',
       });
-      assert.deepStrictEqual(await driver.getCurrentActivity(), '.accessibility.AccessibilityNodeProviderActivity');
+      assert.strictEqual(await driver.getCurrentActivity(), '.accessibility.AccessibilityNodeProviderActivity');
     });
     it('should start activity by fully-qualified name', async function () {
       driver = await remote({
@@ -87,7 +87,7 @@ describe('EspressoDriver', function () {
       await driver.execute('mobile:startActivity', {
         appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
       });
-      assert.deepStrictEqual(await driver.getCurrentActivity(), '.accessibility.AccessibilityNodeProviderActivity');
+      assert.strictEqual(await driver.getCurrentActivity(), '.accessibility.AccessibilityNodeProviderActivity');
     });
   });
 

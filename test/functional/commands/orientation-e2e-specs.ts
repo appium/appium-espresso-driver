@@ -17,12 +17,12 @@ describe('orientation', {timeout: E2E_TEST_TIMEOUT}, function () {
   });
 
   it('should set and get orientation', async function () {
-    assert.deepStrictEqual(await driver.getOrientation(), 'PORTRAIT');
+    assert.strictEqual(await driver.getOrientation(), 'PORTRAIT');
 
     await driver.setOrientation('landscape');
-    assert.deepStrictEqual(await driver.getOrientation(), 'LANDSCAPE');
+    assert.strictEqual(await driver.getOrientation(), 'LANDSCAPE');
 
     await driver.setOrientation('PORTRAIT');
-    assert.deepStrictEqual(await driver.getOrientation(), 'PORTRAIT');
+    assert.strictEqual(await driver.getOrientation(), 'PORTRAIT');
   });
 });

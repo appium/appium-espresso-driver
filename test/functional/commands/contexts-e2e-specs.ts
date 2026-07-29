@@ -25,12 +25,12 @@ describe('context', {skip: SKIP_CONTEXT_TESTS, timeout: E2E_TEST_TIMEOUT}, funct
   it('should get contexts and set them without errors', async function () {
     const viewContexts = await driver.getContexts();
 
-    assert.deepStrictEqual(await driver.getContext(), viewContexts[0]);
+    assert.strictEqual(await driver.getContext(), viewContexts[0]);
 
     await driver.switchContext(viewContexts[1]);
-    assert.deepStrictEqual(await driver.getContext(), viewContexts[1]);
+    assert.strictEqual(await driver.getContext(), viewContexts[1]);
 
     await driver.switchContext(viewContexts[0]);
-    assert.deepStrictEqual(await driver.getContext(), viewContexts[0]);
+    assert.strictEqual(await driver.getContext(), viewContexts[0]);
   });
 });
