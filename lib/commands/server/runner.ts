@@ -3,7 +3,7 @@ import {fileURLToPath} from 'node:url';
 
 import type {AppiumLogger, StringRecord, HTTPMethod, HTTPBody, ProxyResponse, ProxyOptions} from '@appium/types';
 import type {ADB} from 'appium-adb';
-import {JWProxy, errors} from 'appium/driver.js';
+import {WebDriverProxy, errors} from 'appium/driver.js';
 import {fs, node, util, timing} from 'appium/support.js';
 import {sleep, waitForCondition} from 'asyncbox';
 import axios from 'axios';
@@ -55,7 +55,7 @@ interface SessionsResponse {
   value: SessionInfo[];
 }
 
-class EspressoProxy extends JWProxy {
+class EspressoProxy extends WebDriverProxy {
   instrumentationState!: InstrumentationState;
 
   override async proxyCommand(
