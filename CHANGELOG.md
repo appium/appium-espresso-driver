@@ -1,3 +1,9 @@
+## [9.0.7](https://github.com/appium/appium-espresso-driver/compare/v9.0.6...v9.0.7) (2026-08-12)
+
+### Miscellaneous Chores
+
+* rename safe occurrences of JWProxy ([#1210](https://github.com/appium/appium-espresso-driver/issues/1210)) ([dafbe7f](https://github.com/appium/appium-espresso-driver/commit/dafbe7f7a2c44a1c3efbd7ebbb760d83d98d0faf))
+
 ## [9.0.6](https://github.com/appium/appium-espresso-driver/compare/v9.0.5...v9.0.6) (2026-07-29)
 
 ### Miscellaneous Chores
