@@ -8,6 +8,22 @@ title: Overview
 The Espresso driver is an Appium driver intended for grey-box automated testing of native and
 hybrid Android applications.
 
+## What Grey-Box Means
+
+Before using this driver, it is critical to understand how it differs from other black-box drivers
+such as [UiAutomator2](https://github.com/appium/appium-uiautomator2-driver). Grey-box testing is
+more closely coupled to the app under test than black-box testing, which means two things:
+
+* The Espresso driver can access in-depth information about the app under test that is not exposed to black-box drivers: off-screen elements, element tag values, use of [IdlingResource](https://developer.android.com/reference/androidx/test/espresso/IdlingResource), and more
+* The Espresso driver requires the tester to have access to the source code of the app under test - specifically, the version numbers of various tools and dependencies used to build the exact tested version of the app
+
+These version numbers are important: in order to attach to the app, the driver automatically builds
+its own application (the Espresso server) using many of the same standard Android application tools
+and dependencies, then installs this server on the device. If there are any version
+incompatibilities between the app and the Espresso server, ^^session creation may simply not work^^.
+
+For information on where and how to set these version numbers, refer to [the Creating a Session guide](./getting-started/session-creation.md).
+
 ## Target Platforms
 
 The driver supports the following Android platforms as automation targets:
@@ -16,7 +32,7 @@ The driver supports the following Android platforms as automation targets:
 |--|--|--|
 |Android|:white_check_mark:|:white_check_mark:|
 |Android TV|:question: [^untested]|:question: [^untested]|
-|Wear OS|:question: [^untested]|:question: [^untested]|
+|Android Wear / Wear OS|:question: [^untested]|:question: [^untested]|
 |Android XR|:question: [^untested]|:question: [^untested]|
 |Android Auto|:x:|:x:|
 |Android Automotive|:question: [^untested]|:question: [^untested]|

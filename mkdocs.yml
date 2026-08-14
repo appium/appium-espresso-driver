@@ -34,7 +34,7 @@ nav:
       - getting-started/index.md
       - getting-started/system-requirements.md
       - getting-started/installation.md
-      - getting-started/device-and-app-setup.md
+      - getting-started/device-preparation.md
       - getting-started/session-creation.md
   - Reference:
       - Command Line:
