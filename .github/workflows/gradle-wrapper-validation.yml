@@ -1,11 +1,17 @@
 name: "Gradle Dependency Submission"
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - 'mkdocs.yml'
   pull_request:
-    branches:
-      - master
+    branches: [ master ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - 'mkdocs.yml'
 permissions:
   contents: write
   pull-requests: write
