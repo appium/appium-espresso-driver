@@ -14,15 +14,19 @@ Before using this driver, it is critical to understand how it differs from other
 such as [UiAutomator2](https://github.com/appium/appium-uiautomator2-driver). Grey-box testing is
 more closely coupled to the app under test than black-box testing, which means two things:
 
-* The Espresso driver can access in-depth information about the app under test that is not exposed to black-box drivers: off-screen elements, element tag values, use of [IdlingResource](https://developer.android.com/reference/androidx/test/espresso/IdlingResource), and more
-* The Espresso driver requires the tester to have access to the source code of the app under test - specifically, the version numbers of various tools and dependencies used to build the exact tested version of the app
+* The Espresso driver can access in-depth information about the app under test that is not exposed
+to black-box drivers: off-screen elements, element tag values, use of [IdlingResource](https://developer.android.com/reference/androidx/test/espresso/IdlingResource),
+and more
+* The Espresso driver requires the tester to have access to the source code of the app under test -
+specifically, the version numbers of various tools and dependencies used to build the exact tested
+version of the app
 
 These version numbers are important: in order to attach to the app, the driver automatically builds
-its own application (the Espresso server) using many of the same standard Android application tools
-and dependencies, then installs this server on the device. If there are any version
+its own helper application (the Espresso server) using many of the same standard Android application
+tools and dependencies, then installs this server on the device. If there are any version
 incompatibilities between the app and the Espresso server, ^^session creation may simply not work^^.
 
-For information on where and how to set these version numbers, refer to [the Creating a Session guide](./getting-started/session-creation.md).
+For information on where and how to set these version numbers, refer to [the Getting Started guide](./getting-started/index.md).
 
 ## Target Platforms
 
@@ -41,9 +45,9 @@ The driver supports the following Android platforms as automation targets:
 
 The following application contexts are supported for automation:
 
-- Native applications
-- Webviews based on Chrome
-- Hybrid applications
+* Native applications
+* Webviews based on Chrome
+* Hybrid applications
 
 ## Technologies Used
 
@@ -51,15 +55,15 @@ The Espresso driver uses the [W3C WebDriver protocol](https://www.w3.org/TR/webd
 management. Under the hood, the driver combines several different technologies to achieve its
 functionality:
 
-- Native testing
-    - Based on Android's [Espresso testing library](https://developer.android.com/training/testing/espresso/)
-    - Provided by the bundled Espresso server application
-- Webview testing
-    - Based on [the ChromeDriver server](https://developer.chrome.com/docs/chromedriver)
-    - Provided by the [`appium-chromedriver`](https://github.com/appium/appium-chromedriver) library
-- Additional tools
-    - Support for `adb` is handled by the [`appium-adb`](https://github.com/appium/appium-adb) library
-    - Management of certain Android settings is handled by the [`io.appium.settings`](https://github.com/appium/io.appium.settings) library
+* Native testing
+    * Based on Android's [Espresso testing library](https://developer.android.com/training/testing/espresso/)
+    * Provided by the bundled Espresso server application
+* Webview testing
+    * Based on [the ChromeDriver server](https://developer.chrome.com/docs/chromedriver)
+    * Provided by the [`appium-chromedriver`](https://github.com/appium/appium-chromedriver) library
+* Additional tools
+    * Support for `adb` is handled by the [`appium-adb`](https://github.com/appium/appium-adb) library
+    * Management of certain Android settings is handled by the [`io.appium.settings`](https://github.com/appium/io.appium.settings) library
 
 Several libraries and other features are shared with [the Appium UiAutomator2 driver](https://github.com/appium/appium-uiautomator2-driver),
 as part of the [`appium-android-driver`](https://github.com/appium/appium-android-driver) library.

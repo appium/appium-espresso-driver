@@ -30,12 +30,7 @@ extra:
 nav:
   - index.md
   - overview.md
-  - Getting Started:
-      - getting-started/index.md
-      - getting-started/system-requirements.md
-      - getting-started/installation.md
-      - getting-started/device-preparation.md
-      - getting-started/session-creation.md
+  - Getting Started: getting-started/index.md
   - Reference:
       - Command Line:
           - reference/scripts.md
