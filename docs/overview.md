@@ -8,7 +8,7 @@ title: Overview
 The Espresso driver is an Appium driver intended for grey-box automated testing of native and
 hybrid Android applications.
 
-## What Grey-Box Means
+## Key Design Principle
 
 Before using this driver, it is critical to understand how it differs from other black-box drivers
 such as [UiAutomator2](https://github.com/appium/appium-uiautomator2-driver). Grey-box testing is
@@ -24,9 +24,10 @@ version of the app
 These version numbers are important: in order to attach to the app, the driver automatically builds
 its own helper application (the Espresso server) using many of the same standard Android application
 tools and dependencies, then installs this server on the device. If there are any version
-incompatibilities between the app and the Espresso server, ^^session creation may simply not work^^.
+incompatibilities between the app and the Espresso server, ^^session creation will simply not work^^.
 
-For information on where and how to set these version numbers, refer to [the Getting Started guide](./getting-started/index.md).
+In order to avoid this problem, it is necessary to specify all of the required version numbers,
+which is done using the `appium:espressoBuildConfig` session capability.
 
 ## Target Platforms
 

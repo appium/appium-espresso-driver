@@ -7,11 +7,10 @@ title: Getting Started
 
 ## System Requirements
 
-There are five primary requirements to use the Espresso driver:
+There are four primary requirements to use the Espresso driver:
 
 * macOS, Windows or Linux host machine
 * Appium
-* [Gradle](https://gradle.org/)
 * Java Development Kit (JDK)
     * Can be downloaded from hosts like [Oracle](https://jdk.java.net/) or [Adoptium](https://adoptium.net/en-GB/temurin/releases/)
     * [`JAVA_HOME` environment variable must be set](https://www.baeldung.com/java-home-on-windows-7-8-10-mac-os-x-linux)
@@ -51,15 +50,14 @@ in the aforementioned host machine requirements.
 | >= 6.0.0 | Android 8 (Oreo / API level 26) |
 | 2.0.0 - 5.0.4 | Android 5 (Lollipop / API level 21) [^android5] |
 
-### JDK & Gradle
+### JDK
 
-Gradle is required to build the Espresso server application. JDK is required by both Gradle and the
-Android SDK.
+JDK is required both by the Android SDK and for building the Espresso server app.
 
-| Espresso driver version | Minimum JDK version | Minimum Gradle version |
-| --- | --- | --- |
-| >= 8.0.0 | JDK 17 [^jdk17] | 7.3 |
-| 2.1.0 - 7.2.1 | JDK 11 | 5.0 |
+| Espresso driver version | Minimum JDK version |
+| --- | --- |
+| >= 8.0.0 | JDK 17 [^jdk17] |
+| 2.1.0 - 7.2.1 | JDK 11 |
 
 ### Appium Server
 
@@ -110,7 +108,7 @@ The server log output should include a line like the following:
 
 * One or more Android Virtual Devices (AVDs) must be created
     * This can be done either via [Android Studio](https://developer.android.com/studio/run/managing-avds)
-    or using [the standalone `avdmanager` tool](https://developer.android.com/tools/avdmanager)
+      or using [the standalone `avdmanager` tool](https://developer.android.com/tools/avdmanager)
 
 ### Real Devices
 
@@ -120,14 +118,42 @@ The server log output should include a line like the following:
 ## Creating a Session
 
 The Espresso driver, like all Appium drivers, requires providing [specific capabilities](https://appium.io/docs/en/latest/guides/caps/)
-in order to start a new session. The following example lists the minimum required capabilities for
-a basic session:
+in order to start a new session.
+
+Unlike other native black-box drivers, the capabilities of any Espresso driver session ^^must^^
+specify the application under test. This can be provided in two ways:
+
+* Path to an `.apk` or `.aab` file on the host machine, via the `appium:app` capability
+* For an already installed app, the name of its package and activity to be started, via the
+  `appium:appPackage` and `appium:appActivity` capabilities
+
+Furthermore, the driver must be aware of the tool and dependency versions used to build the 
+application under test, which are specified using the `appium:espressoBuildConfig` capability
+(see [Key Design Principle](../overview.md#key-design-principle)). While the capability does set
+default values for all of these versions, the versions that were used to build the app under test will almost
+certainly differ, making the use of this capability a requirement.
+
+Given the above details, the following examples list the minimum required capabilities for a basic session:
 
 ```json
-// This will start a session on the first connected real device, attaching to its foreground activity
+// This will install 'application.apk' on the first connected real device and start a session
 {
   "platformName": "Android",
-  "appium:automationName": "espresso"
+  "appium:automationName": "Espresso",
+  "appium:app": "/path/to/application.apk",
+  "appium:espressoBuildConfig": "{...}"
+}
+```
+
+```json
+// This will start a session on the first connected real device,
+// attaching to an already-installed app with the package 'com.company.mypackage'
+{
+  "platformName": "Android",
+  "appium:automationName": "Espresso",
+  "appium:appPackage": "com.company.mypackage",
+  "appium:appActivity": "com.company.mypackage.MainActivity",
+  "appium:espressoBuildConfig": "{...}"
 }
 ```
 
