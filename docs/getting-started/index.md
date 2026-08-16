@@ -130,10 +130,11 @@ specify the application under test. This can be provided in two ways:
 Furthermore, the driver must be aware of the tool and dependency versions used to build the 
 application under test, which are specified using the `appium:espressoBuildConfig` capability
 (see [Key Design Principle](../overview.md#key-design-principle)). While the capability does set
-default values for all of these versions, the versions that were used to build the app under test will almost
-certainly differ, making the use of this capability a requirement.
+default values for all of these versions, the versions that were used to build the app under test
+will almost certainly differ, making the use of this capability a requirement.
 
-Given the above details, the following examples list the minimum required capabilities for a basic session:
+Given the above details, the following examples list the minimum required capabilities for a basic
+session:
 
 ```json
 // This will install 'application.apk' on the first connected real device and start a session
