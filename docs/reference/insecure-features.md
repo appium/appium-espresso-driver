@@ -17,8 +17,8 @@ For other insecure feature names recognized by the Appium server, see
 
 ## `adb_listen_all_network`
 
-Enables the underlying `adb` instance to listen on all network interfaces, not just `localhost`.
-Equivalent to passing the `-a` flag to `adb`.
+Allows enabling the underlying `adb` instance to listen on all network interfaces using the
+[`appium:adbListenAllNetwork`](./capabilities.md#adblistenallnetwork) capability.
 
 Available since driver version 6.2.0.
 

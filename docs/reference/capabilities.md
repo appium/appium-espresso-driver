@@ -193,8 +193,20 @@ starting the emulator. Only applied if the emulator is not already running.
 | -- | -- | -- |
 | `appium:isHeadless` | `boolean` | `false` |
 
-Whether to start the emulator in headless mode. Equivalent to the [`-no-window` command-line argument](https://developer.android.com/studio/run/emulator-commandline).
+Whether to start the emulator in headless mode. Maps to the [`-no-window` command-line argument](https://developer.android.com/studio/run/emulator-commandline).
 Only applied if the emulator is not already running.
+
+### allowDelayAdb
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:allowDelayAdb` | `boolean` | `true` |
+
+Whether to wait until the emulator has finished booting before processing ADB packets. Maps to the
+`-delay-adb` flag of `adb`. Requires emulator version `29.0.7` or later, running Android 9
+(Pie / API level 28) or later.
+
+Refer to [this issue](https://github.com/appium/appium/issues/14773) for more details.
 
 ### networkSpeed
 
@@ -202,7 +214,7 @@ Only applied if the emulator is not already running.
 | -- | -- | -- |
 | `appium:networkSpeed` | `string` | Not specified |
 
-The network speed to apply to the emulator. Equivalent to the [`-netspeed` command-line argument](https://developer.android.com/studio/run/emulator-commandline).
+The network speed to apply to the emulator. Maps to the [`-netspeed` command-line argument](https://developer.android.com/studio/run/emulator-commandline).
 Only applied if the emulator is not already running.
 
 ### injectedImageProperties
@@ -229,24 +241,86 @@ Available since driver version 2.43.0.
 
 ### adbPort
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:adbPort` | `number` | `5037` |
+
+Number of the port to use for starting ADB. Maps to the `-P` flag of `adb`.
+
 ### remoteAdbHost
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:remoteAdbHost` | `string` | `localhost` |
+
+Name of the ADB server host.  Maps to the `-H` flag of `adb`.
 
 ### adbExecTimeout
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:adbExecTimeout` | `number` | `20000` |
+
+Maximum number of milliseconds to wait for the execution of any single ADB command.
+
 ### buildToolsVersion
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:buildToolsVersion` | `string` | Not specified |
+
+The version of Android build tools to use (name of a directory located at `$ANDROID_HOME/build-tools`).
+By default, the driver uses the most recent available version, but it may be useful to explicitly
+change this in case of any known bugs. 
 
 ### skipLogcatCapture
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:skipLogcatCapture` | `boolean` | `false` |
+
+Whether to skip collecting logcat logs.
+
 ### suppressKillServer
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:suppressKillServer` | `boolean` | `false` |
+
+Whether to prevent the driver from ever killing the ADB server. Can be useful if ADB is connected
+wirelessly.
 
 ### logcatFormat
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:logcatFormat` | `string` | `threadtime` |
+
+The output format of logcat logs. Maps to the `-v` flag of `adb logcat`. Refer to
+[the `logcat` documentation](https://developer.android.com/tools/logcat#outputFormat) for
+supported values.
+
 ### logcatFilterSpecs
 
-### allowDelayAdb
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:logcatFilterSpecs` | `string` or `Array<string>` | Not specified |
+
+One or more filter expressions to use for filtering logcat output. Refer to
+[the `logcat` documentation](https://developer.android.com/tools/logcat#filteringOutput)
+for the format of a filter expression.
 
 ### adbListenAllNetwork
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:adbListenAllNetwork` | `boolean` | `false` |
+
+Whether to listen on all network interfaces, not only `localhost`. Equivalent to the `-a` flag of
+`adb`. The [`adb_listen_all_network` insecure feature](./insecure-features.md#adb_listen_all_network)
+must be enabled.
+
+Available since driver version 6.2.0.
 
 ## Espresso Server
 
