@@ -27,7 +27,8 @@ tools and dependencies, then installs this server on the device. If there are an
 incompatibilities between the app and the Espresso server, ^^session creation will simply not work^^.
 
 In order to avoid this problem, it is necessary to specify all of the required version numbers,
-which is done using the `appium:espressoBuildConfig` session capability.
+which is done using the [`appium:espressoBuildConfig`](./reference/capabilities.md#espressobuildconfig)
+session capability.
 
 ## Target Platforms
 
