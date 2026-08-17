@@ -69,14 +69,13 @@ UDID of the device under test. Can be retrieved by running `adb devices`. If nei
 nor `appium:avd` is set, the driver will automatically try to use the first connected device. Always
 set this capability if you run parallel tests.
 
-### disableSuppressAccessibilityService
+### skipLogcatCapture
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:disableSuppressAccessibilityService` | `boolean` | `false` |
+| `appium:skipLogcatCapture` | `boolean` | `false` |
 
-Whether the instrumentation process should avoid suppressing accessibility services during the
-session. Useful if your automated test needs these services.
+Whether to skip collecting device logcat logs.
 
 ### clearDeviceLogsOnStart
 
@@ -84,7 +83,27 @@ session. Useful if your automated test needs these services.
 | -- | -- | -- |
 | `appium:clearDeviceLogsOnStart` | `boolean` | `false` |
 
-Whether device logs should be cleared upon session start (using `adb logcat -c`).
+Whether device logs should be cleared upon session start. Maps to the `-c` flag of `adb logcat`.
+
+### logcatFormat
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:logcatFormat` | `string` | `threadtime` |
+
+The output format of device logcat logs. Maps to the `-v` flag of `adb logcat`. Refer to
+[the `logcat` documentation](https://developer.android.com/tools/logcat#outputFormat) for
+supported values.
+
+### logcatFilterSpecs
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:logcatFilterSpecs` | `string` or `Array<string>` | Not specified |
+
+One or more filter expressions to use for filtering device logcat output. Refer to
+[the `logcat` documentation](https://developer.android.com/tools/logcat#filteringOutput)
+for the format of a filter expression.
 
 ### ignoreHiddenApiPolicyError
 
@@ -95,6 +114,15 @@ Whether device logs should be cleared upon session start (using `adb logcat -c`)
 Whether to ignore failures caused by the driver automatically relaxing Android's hidden API access
 policies, in order to enable access to non-SDK interfaces (such as logging). May be useful on
 devices where access to these policies has been locked by its vendor.
+
+### disableSuppressAccessibilityService
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:disableSuppressAccessibilityService` | `boolean` | `false` |
+
+Whether the instrumentation process should avoid suppressing accessibility services during the
+session. Useful if your automated test needs these services.
 
 ### disableWindowAnimation
 
@@ -139,6 +167,47 @@ current locale.
 
 Package identifier of the app to use for mocking device location. Has no effect on emulators. If
 set to `null` or an empty string, Appium will skip the setup of the location mocking feature.
+
+### skipUnlock
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:skipUnlock` | `boolean` | `true` |
+
+Whether to skip unlocking the device lockscreen on session startup, if one is present.
+
+### unlockType
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:unlockType` | `string` | Not specified |
+
+The type of lockscreen security on the device, which can be used to unlock it. If omitted, the
+driver assumes no security is used, and the screen can be unlocked without additional details.
+
+Supported values are `pin`, `password`, and `pattern`. Must be provided together with
+`appium:unlockKey`, whose value depends on the lockscreen type.
+
+Refer to [the Unlock guide](../guides/unlock.md) for more details.
+
+### unlockKey
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:unlockKey` | `string` | Not specified |
+
+The key used to unlock the lockscreen. The expected format depends on the value of
+`appium:unlockType`, which must be provided together with this capability.
+
+Refer to [the Unlock guide](../guides/unlock.md) for more details.
+
+### unlockSuccessTimeout
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:unlockSuccessTimeout` | `number` | `2000` |
+
+Maximum number of milliseconds to wait until the device is unlocked.
 
 ## Emulator (AVD)
 
@@ -193,8 +262,8 @@ starting the emulator. Only applied if the emulator is not already running.
 | -- | -- | -- |
 | `appium:isHeadless` | `boolean` | `false` |
 
-Whether to start the emulator in headless mode. Maps to the [`-no-window` command-line argument](https://developer.android.com/studio/run/emulator-commandline).
-Only applied if the emulator is not already running.
+Whether to start the emulator in headless mode. Maps to the [`-no-window`](https://developer.android.com/studio/run/emulator-commandline)
+emulator command-line argument. Only applied if the emulator is not already running.
 
 ### allowDelayAdb
 
@@ -214,8 +283,8 @@ Refer to [this issue](https://github.com/appium/appium/issues/14773) for more de
 | -- | -- | -- |
 | `appium:networkSpeed` | `string` | Not specified |
 
-The network speed to apply to the emulator. Maps to the [`-netspeed` command-line argument](https://developer.android.com/studio/run/emulator-commandline).
-Only applied if the emulator is not already running.
+The network speed to apply to the emulator. Maps to the [`-netspeed`](https://developer.android.com/studio/run/emulator-commandline)
+emulator command-line argument. Only applied if the emulator is not already running.
 
 ### injectedImageProperties
 
@@ -273,14 +342,6 @@ The version of Android build tools to use (name of a directory located at `$ANDR
 By default, the driver uses the most recent available version, but it may be useful to explicitly
 change this in case of any known bugs. 
 
-### skipLogcatCapture
-
-| Name | Type | Default |
-| -- | -- | -- |
-| `appium:skipLogcatCapture` | `boolean` | `false` |
-
-Whether to skip collecting logcat logs.
-
 ### suppressKillServer
 
 | Name | Type | Default |
@@ -290,35 +351,15 @@ Whether to skip collecting logcat logs.
 Whether to prevent the driver from ever killing the ADB server. Can be useful if ADB is connected
 wirelessly.
 
-### logcatFormat
-
-| Name | Type | Default |
-| -- | -- | -- |
-| `appium:logcatFormat` | `string` | `threadtime` |
-
-The output format of logcat logs. Maps to the `-v` flag of `adb logcat`. Refer to
-[the `logcat` documentation](https://developer.android.com/tools/logcat#outputFormat) for
-supported values.
-
-### logcatFilterSpecs
-
-| Name | Type | Default |
-| -- | -- | -- |
-| `appium:logcatFilterSpecs` | `string` or `Array<string>` | Not specified |
-
-One or more filter expressions to use for filtering logcat output. Refer to
-[the `logcat` documentation](https://developer.android.com/tools/logcat#filteringOutput)
-for the format of a filter expression.
-
 ### adbListenAllNetwork
 
 | Name | Type | Default |
 | -- | -- | -- |
 | `appium:adbListenAllNetwork` | `boolean` | `false` |
 
-Whether to listen on all network interfaces, not only `localhost`. Equivalent to the `-a` flag of
-`adb`. The [`adb_listen_all_network` insecure feature](./insecure-features.md#adb_listen_all_network)
-must be enabled.
+Whether to listen on all network interfaces, not only `localhost`. Maps to the `-a` flag of `adb`.
+The [`adb_listen_all_network` insecure feature](./insecure-features.md#adb_listen_all_network) must
+be enabled.
 
 Available since driver version 6.2.0.
 
@@ -398,17 +439,6 @@ Available since driver version 6.2.0.
 ### locale
 
 ### appLocale
-
-
-## Device Lock
-
-### skipUnlock
-
-### unlockType
-
-### unlockKey
-
-### unlockSuccessTimeout
 
 
 ## Web Context
