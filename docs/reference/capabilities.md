@@ -144,22 +144,86 @@ set to `null` or an empty string, Appium will skip the setup of the location moc
 
 ### avd
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:avd` | `string` | Not specified |
+
+The name of Android emulator to run the test on. The names of currently installed emulators can
+be listed by running `avdmanager list avd`. If the specified emulator is not running upon starting
+a session, the driver will automatically launch it.
+
 ### avdLaunchTimeout
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:avdLaunchTimeout` | `number` | `60000` |
+
+Maximum number in milliseconds to wait until the Android emulator has started.
 
 ### avdReadyTimeout
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:avdReadyTimeout` | `number` | `60000` |
+
+Maximum number of milliseconds to wait until the Android emulator has fully booted and is ready for
+usage.
+
 ### avdArgs
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:avdArgs` | `string` or `Array<string>` | Not specified |
+
+One or more [supported command-line arguments](https://developer.android.com/studio/run/emulator-commandline)
+to apply when starting the emulator. Only applied if the emulator is not already running.
 
 ### avdEnv
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:avdEnv` | `Record<string, any>` | Not specified |
+
+One or more [environment variables](https://developer.android.com/tools/variables) to set when
+starting the emulator. Only applied if the emulator is not already running.
+
 ### isHeadless
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:isHeadless` | `boolean` | `false` |
+
+Whether to start the emulator in headless mode. Equivalent to the [`-no-window` command-line argument](https://developer.android.com/studio/run/emulator-commandline).
+Only applied if the emulator is not already running.
 
 ### networkSpeed
 
-### gpsEnabled
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:networkSpeed` | `string` | Not specified |
+
+The network speed to apply to the emulator. Equivalent to the [`-netspeed` command-line argument](https://developer.android.com/studio/run/emulator-commandline).
+Only applied if the emulator is not already running.
 
 ### injectedImageProperties
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:injectedImageProperties` | `Record<string, Record<string, number>>` | Not specified |
+
+Adjusts properties of the image injected using the `mobile: injectEmulatorCameraImage` extension.
+If the emulator is already running, it will be restarted in order to apply the properties.
+
+The value of this capability is an object with the following keys. All keys and sub-keys are
+optional, with the given defaults used for absent keys.
+
+| Key | Description | Default |
+| -- | -- | -- |
+| `size` | Scale multipliers for X and Y axes | `{scaleX: 1, scaleY: 1}` |
+| `position` | Offset coefficients for X/Y/Z axes, where 0 means centered | `{x: 0, y: 0, z: -1.5}` |
+| `rotation` | Degrees of rotation for X/Y/Z axes | `{x: 0, y: 0, z: 0}` |
+
+Available since driver version 2.43.0.
 
 ## ADB
 
