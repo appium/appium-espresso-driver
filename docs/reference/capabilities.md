@@ -381,7 +381,86 @@ try the first available port in the range `8300..8399`.
 | -- | -- | -- |
 | `appium:espressoBuildConfig` | `string` | See below |
 
-Configuration for the Espresso server, either as stringified JSON or path to a JSON file.
+Configuration for building the Espresso server. The value can be either a stringified JSON object,
+or path to a JSON file that contains the configuration. The following keys are supported:
+
+#### composeSupport
+
+| Type | Default |
+| -- | -- |
+| `boolean` | `true` |
+
+Whether to include Jetpack Compose UI test dependencies in the server app. If disabled, the app
+size will be reduced, but any Compose-only functionality, including changing the `driver` setting
+to `compose`, will return an error.
+
+#### toolsVersions
+
+| Type | Default |
+| -- | -- |
+| `Record<string, string>` | See below |
+
+Map of various tools to their versions that should be used during the build process. They are
+listed in the following table. For most tools, their default version is automatically kept
+up-to-date, so each table entry includes a link to the version definition file for that tool.
+
+| <div style="width:11em">Name</div> | Description | Default |
+| -- | -- | -- |
+| `gradle` | Gradle version to build the app with | See [`gradle-wrapper.properties`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/wrapper/gradle-wrapper.properties) |
+| `compileSdk` | Android SDK version to compile the server for | See `appiumCompileSdk` in [`gradle.properties`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle.properties) |
+| `minSdk` | Minimum supported Android SDK version | See `appiumMinSdk` in [`gradle.properties`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle.properties) |
+| `targetSdk` | Target Android SDK version | See `appiumTargetSdk` in [`gradle.properties`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle.properties) |
+| `buildTools` | Android SDK Build-Tools version to build the server with | See `appiumBuildTools` in [`gradle.properties`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle.properties) |
+| `sourceCompatibility` | Minimum supported JVM version for the project sources | See `appiumSourceCompatibility` in [`gradle.properties`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle.properties) |
+| `targetCompatibility` | Target JVM version for the project sources | See `appiumTargetCompatibility` in [`gradle.properties`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle.properties) |
+| `jvmTarget` | Target version of the generated JVM bytecode | See `appiumJvmTarget` in [`gradle.properties`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle.properties) |
+| `androidGradlePlugin` | Android Gradle plugin version | See [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
+| `kotlin` | Kotlin version to compile the server for | See [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
+| `composeVersion` | Version of Jetpack Compose dependencies to compile the server for | See `composeUiTest` in [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
+| `espressoVersion` | Version of Espresso dependencies to compile the server for | See `espresso` in [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
+| `annotationVersion` | Version of the `androidx.annotation:annotation` package | See `annotation` in [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
+
+#### additionalAppDependencies
+
+| Type | Default |
+| -- | -- |
+| `Array<string>` | `[]` |
+
+List of one or more Gradle module names and their versions to include as `api` dependencies.
+
+#### additionalAndroidTestDependencies
+
+| Type | Default |
+| -- | -- |
+| `Array<string>` | `[]` |
+
+List of one or more Gradle module names and their versions to include as
+`androidTestImplementation` dependencies.
+
+#### Full Example
+
+```json
+{
+  "composeSupport": false,
+  "toolsVersions": {
+    "gradle": "9.5.0",
+    "compileSdk": "32",
+    "minSdk": "22",
+    "targetSdk": "30",
+    "buildTools": "32.0.0",
+    "sourceCompatibility": "VERSION_12",
+    "targetCompatibility": "VERSION_12",
+    "jvmTarget": "9",
+    "androidGradlePlugin": "9.0.0",
+    "kotlin": "2.3.0",
+    "composeVersion": "1.10.0",
+    "espressoVersion": "3.5.0",
+    "annotationVersion": "1.9.0"
+  },
+  "additionalAppDependencies": ["api.package:1.2.3", "api.otherpackage:4.5.6"],
+  "additionalAndroidTestDependencies": ["test.package:1.2.3"]
+}
+```
 
 ### espressoServerLaunchTimeout
 
