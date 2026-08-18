@@ -367,16 +367,61 @@ Available since driver version 6.2.0.
 
 ### systemPort
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:systemPort` | `number` | `8300` |
+
+The port for the Espresso server to listen on. Must be unique for each session - see the
+[Testing in Parallel guide](../guides/parallel-tests.md) for details. If not provided, Appium will
+try the first available port in the range `8300..8399`.
+
 ### espressoBuildConfig
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:espressoBuildConfig` | `string` | See below |
+
+Configuration for the Espresso server, either as stringified JSON or path to a JSON file.
 
 ### espressoServerLaunchTimeout
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:espressoServerLaunchTimeout` | `number` | `45000` |
+
+Maximum number of milliseconds to wait until the Espresso server has started.
+
 ### skipServerInstallation
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:skipServerInstallation` | `boolean` | `false` |
+
+Whether to skip installation of the Espresso server on the device under test, along with all other
+related checks. Useful for speeding up session startup if the device already has a compatible
+Espresso server app installed. Note that unexpected errors may occur if the Espresso server app is
+not compatible with the driver or the app under test.
+
+Since driver version 3.3.0, the installed server app is always subject to simple compatibility
+checks - however, minor mismatches are treated as warnings, so a session can still be started.
 
 ### forceEspressoRebuild
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:forceEspressoRebuild` | `boolean` | `false` |
+
+Whether to always rebuild the Espresso server when starting a new session. By default, the driver
+caches the previously built server, and only rebuilds it if it does not match the target
+application under test.
+
 ### showGradleLog
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:showGradleLog` | `boolean` | `false` |
+
+Whether to show Gradle logs during the build process of the Espresso server.
 
 ## App Management
 
