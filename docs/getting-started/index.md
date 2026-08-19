@@ -123,11 +123,12 @@ in order to start a new session.
 Unlike other native black-box drivers, the capabilities of any Espresso driver session ^^must^^
 specify the application under test. This can be provided in two ways:
 
-* Path to an `.apk` or `.aab` file on the host machine, via the [`appium:app`](../reference/capabilities.md#app)
+* Local path or remote URL to an `.apk` or `.aab` file, via the [`appium:app`](../reference/capabilities.md#app)
   capability
-* For an already installed app, the name of its package and activity to be started, via the
-  [`appium:appPackage`](../reference/capabilities.md#apppackage) and [`appium:appActivity`](../reference/capabilities.md#appactivity)
-  capabilities
+* For an already installed app, the name of its package to be started, via the
+  [`appium:appPackage`](../reference/capabilities.md#apppackage) capability. It is recommended to
+  also specify the app activity via the [`appium:appActivity`](../reference/capabilities.md#appactivity)
+  capability.
 
 Furthermore, the driver must be aware of the tool and dependency versions used to build the 
 application under test, which are specified using the [`appium:espressoBuildConfig`](../reference/capabilities.md#espressobuildconfig)
@@ -151,11 +152,11 @@ session:
 ```json
 // This will start a session on the first connected real device,
 // attaching to an already-installed app with the package 'com.company.mypackage'
+// and using its default launchable activity
 {
   "platformName": "Android",
   "appium:automationName": "Espresso",
   "appium:appPackage": "com.company.mypackage",
-  "appium:appActivity": "com.company.mypackage.MainActivity",
   "appium:espressoBuildConfig": "{...}"
 }
 ```

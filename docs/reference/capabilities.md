@@ -382,7 +382,7 @@ try the first available port in the range `8300..8399`.
 | `appium:espressoBuildConfig` | `string` | See below |
 
 Configuration for building the Espresso server. The value can be either a stringified JSON object,
-or path to a JSON file that contains the configuration. The following keys are supported:
+or path to a JSON file that contains the configuration. The following options are supported:
 
 #### composeSupport
 
@@ -506,38 +506,385 @@ Whether to show Gradle logs during the build process of the Espresso server.
 
 ### app
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:app` | `string` | Not specified |
+
+Full path to a file on the host machine, or URL to a remote location, that contains the application
+under test. Required unless [`appium:appPackage`](#apppackage) is specified.
+
+The app file must have either the `.apk` or `.aab` extension. Files with the `.aab` extension are
+only supported since driver version 2.1.0, and require `bundletool.jar` to be present on the system
+`PATH`.
+
 ### appPackage
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:appPackage` | `string` | Not specified |
+
+Package identifier of the application under test. Required unless [`appium:app`](#app) is specified.
+
+It is allowed to set both `appium:app` and this capability, but if only `appium:app` is provided,
+the package identifier is automatically detected from the app manifest.
+
+Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.md) for more details.
 
 ### appActivity
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:appActivity` | `string` | Not specified |
+
+Launchable activity identifier of the application under test. If not provided, the activity is
+automatically detected from either [`appium:app`](#app) or [`appium:appPackage`](#apppackage), in
+that order.
+
+Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.md) for more details.
+
 ### appWaitPackage
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:appWaitPackage` | `string` | Matches the package identifier (see [`appium:appPackage`](#apppackage)) |
+
+Identifier of the first app package to be launched.
+
+Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.md) for more details.
 
 ### appWaitActivity
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:appWaitActivity` | `string` | Matches the app main activity (see [`appium:appActivity`](#appactivity)) |
+
+Identifier of the first app activity to be launched.
+
+Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.md) for more details.
+
 ### appWaitDuration
 
-### activityOptions
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:appWaitDuration` | `number` | `20000` |
+
+Maximum number of milliseconds to wait until the activity specified by [`appium:appWaitPackage`](#appwaitpackage)
+and [`appium:appWaitActivity`](#appwaitactivity) has started.
+
+Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.md) for more details.
 
 ### intentOptions
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:intentOptions` | `Record<string, any>` | See below |
+
+Map of options to be applied for the intent passed to the launchable app activity. Refer to the
+[Android Intent documentation](https://developer.android.com/reference/android/content/Intent) for
+more details. The following options are supported:
+
+#### action
+
+| Type | Default |
+| -- | -- |
+| `string` | `ACTION_MAIN` |
+
+Name of the action. Application-specific actions should be prefixed with the vendor's package name.
+
+#### data
+
+| Type | Default |
+| -- | -- |
+| `string` | `null` |
+
+Data URI of the intent.
+
+#### type
+
+| Type | Default |
+| -- | -- |
+| `string` | `null` |
+
+MIME type of the intent.
+
+#### categories
+
+| Type | Default |
+| -- | -- |
+| `string` | Not specified |
+
+One or more comma-separated intent categories.
+
+#### component
+
+| Type | Default |
+| -- | -- |
+| `string` | Not specified |
+
+Component name with a package name prefix.
+
+#### intFlags
+
+| Type | Default |
+| -- | -- |
+| `string` | Not specified |
+
+Sum of all intent flag integer or hexadecimal values, as a string.
+
+Refer to the [`setFlags` documentation](https://developer.android.com/reference/android/content/Intent.html#setFlags(int))
+for more details.
+
+#### flags
+
+| Type | Default |
+| -- | -- |
+| `string` | Not specified |
+
+Comma-separated string of additional intent flag names. The `FLAG_` prefix can be omitted.
+
+Refer to the [`addFlags` documentation](https://developer.android.com/reference/android/content/Intent#addFlags(int))
+for more details.
+
+#### className
+
+| Type | Default |
+| -- | -- |
+| `string` | The fully qualified name of the app activity |
+
+Name of a class inside of the application package that will be used as the component for this
+intent.
+
+#### e
+
+| Type | Default |
+| -- | -- |
+| `Record<string, string>` | Not specified |
+
+Map of string parameters to apply to the intent. Same as [`es`](#es).
+
+#### es
+
+| Type | Default |
+| -- | -- |
+| `Record<string, string>` | Not specified |
+
+Map of string parameters to apply to the intent. Same as [`e`](#e).
+
+#### esn
+
+| Type | Default |
+| -- | -- |
+| `Array<string>` | Not specified |
+
+Array of null parameters to apply to the intent.
+
+#### ez
+
+| Type | Default |
+| -- | -- |
+| `Record<string, boolean>` | Not specified |
+
+Map of boolean parameters to apply to the intent.
+
+#### ei
+
+| Type | Default |
+| -- | -- |
+| `Record<string, number>` | Not specified |
+
+Map of integer parameters to apply to the intent.
+
+#### el
+
+| Type | Default |
+| -- | -- |
+| `Record<string, number>` | Not specified |
+
+Map of long integer parameters to apply to the intent.
+
+#### ef
+
+| Type | Default |
+| -- | -- |
+| `Record<string, number>` | Not specified |
+
+Map of float parameters to apply to the intent.
+
+#### eu
+
+| Type | Default |
+| -- | -- |
+| `Record<string, string>` | Not specified |
+
+Map of URI-data parameters to apply to the intent.
+
+#### ecn
+
+| Type | Default |
+| -- | -- |
+| `Record<string, string>` | Not specified |
+
+Map of component name parameters to apply to the intent.
+
+#### esa
+
+| Type | Default |
+| -- | -- |
+| `Record<string, Array<string>>` | Not specified |
+
+Map of string array parameters to apply to the intent.
+
+#### eia
+
+| Type | Default |
+| -- | -- |
+| `Record<string, string>` | Not specified |
+
+Map of integer array parameters to apply to the intent.
+
+#### ela
+
+| Type | Default |
+| -- | -- |
+| `Record<string, string>` | Not specified |
+
+Map of long integer array parameters to apply to the intent.
+
+#### efa
+
+| Type | Default |
+| -- | -- |
+| `Record<string, string>` | Not specified |
+
+Map of float array parameters to apply to the intent.
+
+#### Full Example
+
+```json
+{
+  "action": "ACTION_VIEW",
+  "data": "content://contacts/people/1",
+  "type": "image/png",
+  "categories": "android.intent.category.APP_CONTACTS",
+  "component": "com.example.app/.ExampleActivity",
+  "intFlags": "15", // or 0x0F
+  "flags": "FLAG_GRANT_READ_URI_PERMISSION, ACTIVITY_CLEAR_TASK",
+  "className": "com.example.app.MainActivity",
+  "e": {"foo": "bar"},
+  "es": {"foo": "bar"},
+  "esn": ["foo", "bar"],
+  "ez": {"foo": true, "bar": false},
+  "ei": {"foo": 1, "bar": 2},
+  "el": {"foo": 1L, "bar": 2L},
+  "ef": {"foo": 1.ff, "bar": 2.2f},
+  "eu": {"foo": "content://contacts/people/1"},
+  "ecn": {"foo": "com.example.app/.ExampleActivity"},
+  "esa": {"foo": ["bar1","bar2","bar3","bar4"]},
+  "eia": {"foo": "1,2,3,4"},
+  "ela": {"foo": "1L,2L,3L,4L"},
+  "efa": {"foo": "1.1,2.2,3.3,4.4"},
+}
+```
+
+### activityOptions
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:activityOptions` | `Record<string, any>` | Not specified |
+
+Map of additional options to be applied for the launchable app activity. The following options are
+supported:
+
+#### launchDisplayId
+
+| Type | Default |
+| -- | -- |
+| `string` or `number` | Not specified |
+
+Identifier of the display to launch the activity on. Useful if the device under test supports
+multiple displays.
+
 ### androidInstallTimeout
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:androidInstallTimeout` | `number` | `90000` |
+
+Maximum amount of milliseconds to wait until the application under test is installed.
 
 ### enforceAppInstall
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:enforceAppInstall` | `boolean` | `false` |
+
+Whether to always reinstall the application under test, even if a newer version already exists
+on the device under test.
+
 ### noReset
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:noReset` | `boolean` | `false` |
+
+Whether to prevent the app from being automatically relaunched and its data cleaned before session
+startup.
+
+Mutually exclusive with [`appium:fullReset`](#fullreset).
 
 ### fullReset
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:fullReset` | `boolean` | `false` |
+
+Whether to always reinstall the app before session startup, and uninstall it after deleting the
+session.
+
+Mutually exclusive with [`appium:noReset`](#noreset).
+
 ### autoGrantPermissions
 
-### otherApps
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:autoGrantPermissions` | `boolean` | `false` |
+
+Whether to automatically grant all requested application permissions upon session startup.
+
+If the `targetSdk` of the application under test is below `23`, or the device under test is running
+Android 5 (API level 22), granting permissions requires the application to be reinstalled, for
+example, using the [`appium:fullReset`](#fullreset) capability.
 
 ### uninstallOtherPackages
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:uninstallOtherPackages` | `string` | Not specified |
+
+One or more comma-separated package identifiers to be uninstalled from the device upon session
+startup. Always excludes packages required by the driver (`io.appium.settings` and
+`io.appium.espressoserver.test`).
+
 ### allowTestPackages
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:allowTestPackages` | `boolean` | `false` |
+
+Whether to allow installation of test-only versions of the application under test. Maps to the `-t`
+flag of `adb install`. Only applied if the application is to be installed or reinstalled.
 
 ### remoteAppsCacheLimit
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:remoteAppsCacheLimit` | `number` | `10` |
+
+Maximum number of application packages to be cached on the device under test. Primarily needed for
+devices that don't support streamed installs (Android 7 and below), which require `adb` to push
+each installable package to the device first, requiring additional time.
+
+If set to `0`, the cache is disabled.
 
 ## App Signing
 
