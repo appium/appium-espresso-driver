@@ -1076,7 +1076,7 @@ for supported values.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:chromedriverPort` | `number` | Not specified |
+| `appium:chromedriverPort` | `number` | Random |
 
 The port to use for ChromeDriver communication. Must be unique for each session - see the
 [Testing in Parallel guide](../guides/parallel-tests.md) for details. By default, a random free
@@ -1104,18 +1104,93 @@ mobile.
 
 ### chromedriverExecutable
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromedriverExecutable` | `string` | Not specified |
+
+Custom path to a ChromeDriver executable on the host file system. Takes priority over
+[`appium:chromedriverExecutableDir`](#chromedriverexecutabledir).
+
 ### chromedriverExecutableDir
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromedriverExecutableDir` | `string` | See below |
+
+Custom path to a directory on the host file system, containing ChromeDriver executables. If
+automatic ChromeDriver download is enabled, this folder is also used to store the downloaded
+executables.
+
+The default value is `node_modules/appium-chromedriver/chromedriver/<host os>` in the driver's
+installation directory.
+
+Refer to the [Automatic Chromedriver Discovery guide](../guides/hybrid.md) for more details.
 
 ### chromedriverChromeMappingFile
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromedriverExecutableDir` | `string` | See below |
+
+Custom path to a JSON file containing a mapping of webview/browser versions to the ChromeDriver
+versions that are capable of automating them.
+
+The default value is `node_modules/appium-chromedriver/config/mapping.json` in the driver's
+installation directory.
+
+Refer to the [Automatic Chromedriver Discovery guide](../guides/hybrid.md) for more details.
+
 ### chromedriverUseSystemExecutable
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromedriverUseSystemExecutable` | `boolean` | `false` |
+
+Whether to use the ChromeDriver binary bundled with the driver.
+
+This capability is primarily relevant for driver versions 3.3.1 or earlier, which automatically
+downloaded ChromeDriver upon installation.
 
 ### chromedriverDisableBuildCheck
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromedriverDisableBuildCheck` | `boolean` | `false` |
+
+Whether to disable the check that requires ChromeDriver and the browser executable to have matching
+versions. Maps to the `--disable-build-check` flag of the ChromeDriver binary.
+
 ### recreateChromeDriverSessions
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:recreateChromeDriverSessions` | `boolean` | `false` |
+
+Whether the driver should kill the ChromeDriver session upon switching to native context and
+recreate it upon switching back, instead of merely suspending it.
 
 ### nativeWebScreenshot
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:nativeWebScreenshot` | `boolean` | `false` |
+
+Whether to use the screenshoting endpoint provided by the Espresso framework instead of the one
+provided by ChromeDriver. Can be useful if experiencing issues with the latter.
+
 ### extractChromeAndroidPackageFromContextName
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:extractChromeAndroidPackageFromContextName` | `boolean` | `false` |
+
+Whether to instruct ChromeDriver to attach to the Android package included in the context name,
+rather than the package of the application under test.
+
 ### showChromedriverLog
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:showChromedriverLog` | `boolean` | `false` |
+
+Whether to include ChromeDriver logs in Appium server logs.
