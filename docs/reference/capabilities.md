@@ -1020,21 +1020,87 @@ and [`appium:locale`](#locale).
 
 ### autoWebview
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:autoWebview` | `boolean` | `false` |
+
+Whether to automatically switch to the first available webview context upon session start.
+
 ### autoWebviewTimeout
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:autoWebviewTimeout` | `number` | `2000` |
+
+Maximum number of milliseconds to wait until a webview is available before switching to it.
+Requires [`appium:autoWebview`](#autowebview) to be set.
 
 ### webviewDevtoolsPort
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:webviewDevtoolsPort` | `number` | `10900` |
+
+The port to use for communicating with webviews over the DevTools protocol. Must be unique for
+each session - see the [Testing in Parallel guide](../guides/parallel-tests.md) for details. If not
+provided, Appium will try the first available port in the range `10900..11000`.
+
 ### ensureWebviewsHavePages
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:ensureWebviewsHavePages` | `boolean` | `true` |
+
+Whether to skip web views that have no pages from being included in the list of available contexts.
+The driver uses the DevTools connection to retrieve information about existing pages.
 
 ### enableWebviewDetailsCollection
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:enableWebviewDetailsCollection` | `boolean` | `true` |
+
+Whether to retrieve extended webview information via DevTools. Enabling this capability improves
+detection of the required ChromeDriver version.
+
 ### chromeOptions
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromeOptions` | `Record<string, any>` | Not specified |
+
+Map of ChromeDriver options to apply. Refer to Google's [`ChromeOptions` documentation](https://developer.chrome.com/docs/chromedriver/capabilities#chromeoptions_object)
+for supported values.
 
 ### chromedriverPort
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromedriverPort` | `number` | Not specified |
+
+The port to use for ChromeDriver communication. Must be unique for each session - see the
+[Testing in Parallel guide](../guides/parallel-tests.md) for details. By default, a random free
+port is used. 
+
 ### chromedriverPorts
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromedriverPort` | `Array<number | Array<number>>` | Not specified |
+
+List of possible ports and/or port ranges to use for ChromeDriver communication, for example,
+`[5600, 5610, [5650, 5660]]`. An error is thrown if all specified ports are busy. 
+
 ### chromedriverArgs
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromedriverArgs` | `Array<string>` | Not specified |
+
+List of command line switches to apply to ChromeDriver. Refer to the links in
+[Selenium's Chrome documentation](https://www.selenium.dev/documentation/webdriver/browsers/chrome/#arguments)
+for more details on supported switches. Note that not all desktop Chrome switches are available on
+mobile.
 
 ### chromedriverExecutable
 
