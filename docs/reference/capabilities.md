@@ -382,7 +382,8 @@ try the first available port in the range `8300..8399`.
 | `appium:espressoBuildConfig` | `string` | See below |
 
 Configuration for building the Espresso server. The value can be either a stringified JSON object,
-or path to a JSON file that contains the configuration. The following options are supported:
+or path to a JSON file that contains the configuration. The configuration supports the following
+keys, all of which are optional:
 
 #### composeSupport
 
@@ -400,9 +401,10 @@ to `compose`, will return an error.
 | -- | -- |
 | `Record<string, string>` | See below |
 
-Map of various tools to their versions that should be used during the build process. They are
-listed in the following table. For most tools, their default version is automatically kept
-up-to-date, so each table entry includes a link to the version definition file for that tool.
+Map of various tools to their versions that should be used during the build process. The mapping
+supports the following keys, all of which are optional. For most tools, their default version is
+automatically kept up-to-date, so each table entry includes a link to the version definition file
+for that tool.
 
 | <div style="width:11em">Name</div> | Description | Default |
 | -- | -- | -- |
@@ -581,7 +583,7 @@ Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.
 
 Map of options to be applied for the intent passed to the launchable app activity. Refer to the
 [Android Intent documentation](https://developer.android.com/reference/android/content/Intent) for
-more details. The following options are supported:
+more details. The mapping supports the following options, all of which are optional:
 
 #### action
 
@@ -792,8 +794,8 @@ Map of float array parameters to apply to the intent.
 | -- | -- | -- |
 | `appium:activityOptions` | `Record<string, any>` | Not specified |
 
-Map of additional options to be applied for the launchable app activity. The following options are
-supported:
+Map of additional options to be applied for the launchable app activity. The mapping supports the
+following options:
 
 #### launchDisplayId
 
@@ -890,27 +892,129 @@ If set to `0`, the cache is disabled.
 
 ### useKeystore
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:useKeystore` | `boolean` | `false` |
+
+Whether to use a custom [keystore](https://developer.android.com/studio/publish/app-signing#certificates-keystores)
+to sign the app under test. By default, apps are signed with the default Appium debug certificate,
+unless [`appium:noSign`](#nosign) is used.
+
+Used in combination with [`appium:keystorePath`](#keystorepath), [`appium:keystorePassword`](#keystorepassword),
+[`appium:keyAlias`](#keyalias) and [`appium:keyPassword`](#keypassword).
+
 ### keystorePath
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:keystorePath` | `string` | Not specified |
+
+Full path to the keystore file on the server filesystem.
+
+Used in combination with [`appium:useKeystore`](#usekeystore), [`appium:keystorePassword`](#keystorepassword),
+[`appium:keyAlias`](#keyalias) and [`appium:keyPassword`](#keypassword).
 
 ### keystorePassword
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:keystorePassword` | `string` | Not specified |
+
+Password of the keystore file specified by [`appium:keystorePath`](#keystorepath).
+
+Used in combination with [`appium:useKeystore`](#usekeystore), [`appium:keystorePath`](#keystorepath),
+[`appium:keyAlias`](#keyalias) and [`appium:keyPassword`](#keypassword).
+
 ### keyAlias
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:keyAlias` | `string` | Not specified |
+
+Alias of the key in the keystore file specified by [`appium:keystorePath`](#keystorepath).
+
+Used in combination with [`appium:useKeystore`](#usekeystore), [`appium:keystorePath`](#keystorepath),
+[`appium:keystorePassword`](#keystorepassword) and [`appium:keyPassword`](#keypassword).
 
 ### keyPassword
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:keyAlias` | `string` | Not specified |
+
+Password of the key in the keystore file specified by [`appium:keystorePath`](#keystorepath).
+
+Used in combination with [`appium:useKeystore`](#usekeystore), [`appium:keystorePath`](#keystorepath),
+[`appium:keystorePassword`](#keystorepassword) and [`appium:keyAlias`](#keyalias).
+
 ### noSign
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:noSign` | `boolean` | `false` |
+
+Whether to skip signing of the application under test, and use it as-is. By default, all apps are
+signed with the default Appium debug signature. Make sure that the server package is signed with
+the same signature as the application under test before disabling this capability.
+
+This capability does not affect `.apks` packages, as they are expected to be already signed. 
 
 ## App Localization
 
-### localeScript
-
 ### language
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:language` | `string` | Not specified |
+
+Language code to use for setting the locale of the device under test. The code should match the
+`language` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html).
+Must be provided together with [`appium:locale`](#locale).
+
+The language set by this capability is also used by the `mobile: getAppStrings` execute method,
+unless explicitly overridden.
+
+In order to set the locale of only the application under test, use [`appium:appLocale`](#applocale).
 
 ### locale
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:locale` | `string` | Not specified |
+
+Country code to use for setting the locale of the device under test. The code should match the
+`country` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html).
+Must be provided together with [`appium:language`](#language).
+
+In order to set the locale of only the application under test, use [`appium:appLocale`](#applocale).
+
+### localeScript
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:localeScript` | `string` | Not specified |
+
+Script code to use for setting the locale of the device under test. The code should match the
+`script` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html).
+If specified, [`appium:language`](#language) and [`appium:locale`](#locale) must also be provided.
+
 ### appLocale
 
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:appLocale` | `Record<string, string>` | Not specified |
+
+Map of language-related identifiers to use for setting the locale of the app under test. The
+mapping supports the following options, where only `language` is required:
+
+| Name | Description |
+| -- | -- |
+| `language` | Matches the `language` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
+| `country` | Matches the `country` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
+| `variant` | Matches the `variant` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
+
+In order to set the locale of the entire device under test, use [`appium:language`](#language)
+and [`appium:locale`](#locale).
 
 ## Web Context
 
