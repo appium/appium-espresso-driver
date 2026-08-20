@@ -1,3 +1,5 @@
+import {util} from 'appium/support.js';
+
 import type {EspressoDriver} from '../../driver.js';
 import {qualifyActivityName, getPackageInfo} from '../../utils/index.js';
 import {DEVICE_PORT} from './constants.js';
@@ -27,6 +29,10 @@ export async function startSession(this: EspressoDriver): Promise<void> {
   }
 
   // start an avd, set the language/locale, pick an emulator, etc...
+  if (util.hasValue(this.opts.gpsEnabled)) {
+    this.log.info(`Trying to ${this.opts.gpsEnabled ? 'enable' : 'disable'} gps location provider`);
+    await this.adb.toggleGPSLocationProvider(Boolean(this.opts.gpsEnabled));
+  }
   if (this.opts.hideKeyboard) {
     this._originalIme = await this.adb.defaultIME();
   }
