@@ -1,3 +1,9 @@
+## [9.1.0](https://github.com/appium/appium-espresso-driver/compare/v9.0.7...v9.1.0) (2026-08-21)
+
+### Features
+
+* add missing support for gpsEnabled capability ([#1212](https://github.com/appium/appium-espresso-driver/issues/1212)) ([c4747ab](https://github.com/appium/appium-espresso-driver/commit/c4747ab56b87e4d4cef5019df8e020a729b8bb29))
+
 ## [9.0.7](https://github.com/appium/appium-espresso-driver/compare/v9.0.6...v9.0.7) (2026-08-12)
 
 ### Miscellaneous Chores
