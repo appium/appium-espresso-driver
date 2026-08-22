@@ -9,6 +9,8 @@ Refer to the documentation of your Appium client for how to call specific endpoi
 The driver also defines several additional endpoints listed below. Please note that most of the
 driver-specific functionality is available using [Execute Methods](./execute-methods.md) instead.
 
+All endpoints listed below are supported since driver version 2.13.10, unless otherwise specified.
+
 ## JSON Wire Protocol
 
 ### availableIMEEngines
@@ -420,3 +422,378 @@ Determines whether the device is locked.
 #### Response
 
 `boolean` - `true` if the device is locked, otherwise `false`
+
+### getPerformanceData
+
+```
+POST /session/:sessionId/appium/getPerformanceData
+```
+
+Retrieves performance data about the given Android subsystem. The data is parsed from the output of
+the `dumpsys` utility.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: getPerformanceData`](./execute-methods.md#mobile-getperformancedata)
+    execute method instead
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|--|--|--|
+|`packageName`|`string`|Name of the package identifier to fetch the data for|
+|`dataType`|`string`|Subsystem name to return the data for. Supported values can be retrieved using the [`getPerformanceDataTypes`](#getperformancedatatypes) endpoint.|
+
+#### Response
+
+`Array<Array<any>[]>` - table formatted as an array of arrays, where the first subarray represents
+column names, and the following subarrays represent data for those columns. The returned columns
+and their data depend on the specified `dataType`.
+
+For example, a response for the `cpuinfo` datatype could look as follows:
+```
+[
+  [user, kernel],
+  [0.9, 1.3]
+]
+```
+
+### getPerformanceDataTypes
+
+```
+POST /session/:sessionId/appium/performanceData/types
+```
+
+Retrieves supported performance data types, which can be used as the `dataType` argument for the
+[`getPerformanceData`](#getperformancedata) endpoint.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: getPerformanceDataTypes`](./execute-methods.md#mobile-getperformancedatatypes)
+    execute method instead
+
+#### Response
+
+`Array<string>` - list of supported data types
+
+### fingerprint
+
+```
+POST /session/:sessionId/appium/device/finger_print
+```
+
+Emulates authentication using a virtual fingerprint with the specified ID. Only supported on emulators
+running Android 6 (Marshmallow / API level 23) or later.
+
+Virtual fingerprints should first be registered by opening the Android fingerprint registration
+settings and running this command with the ID that the fingerprint should be assigned to. Once
+registered, the command and ID can be used in fingerprint authentication prompts.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: fingerprint`](./execute-methods.md#mobile-fingerprint) execute method
+    instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`fingerprintId`|`number` or `string`|Identifier of a virtual fingerprint|
+
+#### Response
+
+`null`
+
+### sendSMS
+
+```
+POST /session/:sessionId/appium/device/send_sms
+```
+
+Emulates sending an SMS to the specified phone number. Only supported on emulators.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: sendSMS`](./execute-methods.md#mobile-sendsms) execute method instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`phoneNumber`|`string`|Phone number to send the message to|
+|`message`|`string`|Message contents to send|
+
+#### Response
+
+`null`
+
+### gsmCall
+
+```
+POST /session/:sessionId/appium/device/gsm_call
+```
+
+Emulates a GSM call action for the specified phone number. Only supported on emulators.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: gsmCall`](./execute-methods.md#mobile-gsmcall) execute method instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`phoneNumber`|`string`|Phone number to apply the action to|
+|`action`|`string`|Call action to apply. Supported values are `call`, `accept`, `cancel` and `hold`.|
+
+#### Response
+
+`null`
+
+### gsmSignal
+
+```
+POST /session/:sessionId/appium/device/gsm_signal
+```
+
+Emulates a change of the GSM signal strength profile. Only supported on emulators.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: gsmSignal`](./execute-methods.md#mobile-gsmsignal) execute method instead
+
+#### Parameters
+
+|<div style="width:8em">Name</div>|Type|Description|
+|--|--|--|
+|`signalStrength`|`number`|Signal strength profile to apply. Supported values are `0` (worst signal), `1`, `2`, `3`, and `4` (best signal)|
+
+#### Response
+
+`null`
+
+### gsmVoice
+
+```
+POST /session/:sessionId/appium/device/gsm_voice
+```
+
+Emulates a change of the GSM voice state. Only supported on emulators.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: gsmVoice`](./execute-methods.md#mobile-gsmvoice) execute method instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`state`|`string`|Voice state to apply. Supported values are `on`, `off`, `denied`, `searching`, `roaming`, `home`, and `unregistered`.|
+
+#### Response
+
+`null`
+
+### powerAC
+
+```
+POST /session/:sessionId/appium/device/power_ac
+```
+
+Emulates a power state change on the device. Only supported on emulators.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: powerAC`](./execute-methods.md#mobile-powerac) execute method instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`state`|`string`|Power state to apply. Supported values are `on` and `off`.|
+
+#### Response
+
+`null`
+
+### powerCapacity
+
+```
+POST /session/:sessionId/appium/device/power_capacity
+```
+
+Emulates a power capacity change on the device. Only supported on emulators.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: powerCapacity`](./execute-methods.md#mobile-powercapacity) execute
+    method instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`percent`|`number` or `string`|Power capacity to apply. Must be an integer in the range `0..100`.|
+
+#### Response
+
+`null`
+
+### networkSpeed
+
+```
+POST /session/:sessionId/appium/device/network_speed
+```
+
+Emulates a network connection speed mode change. Only supported on emulators.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: networkSpeed`](./execute-methods.md#mobile-networkspeed) execute
+    method instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`netspeed`|`string`|Network speed mode to apply. Supported values are `gsm`, `scsd`, `gprs`, `edge`, `umts`, `hsdpa`, `lte`, `evdo`, and `full`.|
+
+#### Response
+
+`null`
+
+### getCurrentActivity
+
+```
+GET /session/:sessionId/appium/device/current_activity
+```
+
+Retrieves the name of the currently focused app activity.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: getCurrentActivity`](./execute-methods.md#mobile-getcurrentactivity)
+    execute method instead
+
+#### Response
+
+`string` - name of the focused app activity. Could be `null`
+
+### getCurrentPackage
+
+```
+GET /session/:sessionId/appium/device/current_package
+```
+
+Retrieves the package name of the currently focused app.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: getCurrentPackage`](./execute-methods.md#mobile-getcurrentpackage)
+    execute method instead
+
+#### Response
+
+`string` - name of the focused app package. Could be `null`
+
+### queryAppState
+
+```
+POST /session/:sessionId/appium/device/app_state
+```
+
+Retrieves the state of the specified app.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: queryAppState`](./execute-methods.md#mobile-queryappstate) execute
+    method instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`appId`|`string`|Package identifier of the app|
+
+#### Response
+
+`number` - an integer indicating the app state:
+
+|Number|Description|
+|--|--|
+|`0`|Not installed|
+|`1`|Not running|
+|`3`|Running in background|
+|`4`|Running in foreground|
+
+### toggleFlightMode
+
+```
+POST /session/:sessionId/appium/device/toggle_airplane_mode
+```
+
+Toggles the state of airplane mode. On real devices this functionality is only supported starting
+from Android 12 (API level 31).
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: setConnectivity`](./execute-methods.md#mobile-setconnectivity) execute
+    method instead
+
+#### Response
+
+`null`
+
+### toggleData
+
+```
+POST /session/:sessionId/appium/device/toggle_data
+```
+
+Toggles the state of mobile data. On real devices this functionality is only supported starting
+from Android 12 (API level 31).
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: setConnectivity`](./execute-methods.md#mobile-setconnectivity) execute
+    method instead
+
+#### Response
+
+`null`
+
+### toggleWiFi
+
+```
+POST /session/:sessionId/appium/device/toggle_wifi
+```
+
+Toggles the state of Wi-Fi. On real devices this functionality is only supported starting from
+Android 12 (API level 31).
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: setConnectivity`](./execute-methods.md#mobile-setconnectivity) execute
+    method instead
+
+#### Response
+
+`null`
+
+### toggleLocationServices
+
+```
+POST /session/:sessionId/appium/device/toggle_location_services
+```
+
+Toggles the state of location services (GPS). This functionality only works reliably starting from
+Android 12 (API level 31).
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: toggleGps`](./execute-methods.md#mobile-togglegps) execute method
+    instead
+
+#### Response
+
+`null`
