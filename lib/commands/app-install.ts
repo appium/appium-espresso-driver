@@ -142,8 +142,8 @@ export async function initAUT(this: EspressoDriver): Promise<void> {
     } catch (e) {
       throw this.log.errorWithException(`Could not parse "otherApps" capability: ${(e as Error).message}`);
     }
-    otherApps = await Promise.all(otherApps.map((app) => this.helpers.configureApp(app, [APK_EXT])));
-    await this.installOtherApks(otherApps);
+    const configuredApps = await Promise.all(otherApps.map((app) => this.helpers.configureApp(app, [APK_EXT])));
+    await this.installOtherApks(configuredApps);
   }
 
   if (!this.opts.app) {
