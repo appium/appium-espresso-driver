@@ -971,8 +971,8 @@ Language code to use for setting the locale of the device under test. The code s
 `language` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html).
 Must be provided together with [`appium:locale`](#locale).
 
-The language set by this capability is also used by the `mobile: getAppStrings` execute method,
-unless explicitly overridden.
+The language set by this capability is also used by the [`mobile: getAppStrings`](./execute-methods.md#mobile-getappstrings)
+execute method, unless explicitly overridden.
 
 In order to set the locale of only the application under test, use [`appium:appLocale`](#applocale).
 

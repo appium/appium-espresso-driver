@@ -90,7 +90,8 @@ always uses the currently active window.
 
 !!! warning "Deprecated"
 
-    Please use the [getWindowRect](https://appium.io/docs/en/latest/reference/api/webdriver/#getwindowrect) endpoint instead
+    Please use the [getWindowRect](https://appium.io/docs/en/latest/reference/api/webdriver/#getwindowrect)
+    endpoint instead
 
 #### Response
 
@@ -129,7 +130,8 @@ Returns the element's location on the page.
 
 !!! warning "Deprecated"
 
-    Please use the [getElementRect](https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect) endpoint instead
+    Please use the [getElementRect](https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect)
+    endpoint instead
 
 #### Response
 
@@ -146,7 +148,8 @@ Returns the element's location on the page screen once it has been scrolled into
 
 !!! warning "Deprecated"
 
-    Please use the [getElementRect](https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect) endpoint instead
+    Please use the [getElementRect](https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect)
+    endpoint instead
 
 #### Response
 
@@ -163,7 +166,8 @@ Returns the element's size in pixels.
 
 !!! warning "Deprecated"
 
-    Please use the [getElementRect](https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect) endpoint instead
+    Please use the [getElementRect](https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect)
+    endpoint instead
 
 #### Response
 
@@ -374,8 +378,8 @@ contains no data.
 POST /session/:sessionId/appium/device/lock
 ```
 
-Locks the device (and optionally unlock it after a certain amount of time). Only simple (e.g.
-without a password) locks are supported.
+Locks the device and optionally unlocks it after a specified duration. Only simple (e.g. without a
+password) locks are supported.
 
 !!! warning "Deprecated"
 
@@ -793,6 +797,177 @@ Android 12 (API level 31).
 
     Please use the [`mobile: toggleGps`](./execute-methods.md#mobile-togglegps) execute method
     instead
+
+#### Response
+
+`null`
+
+### startActivity
+
+```
+POST /session/:sessionId/appium/device/start_activity
+```
+
+Starts the specified app activity. The activity can only be executed in scope of the current app
+package.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: startActivity`](./execute-methods.md#mobile-startactivity) execute
+    method instead
+
+#### Parameters
+
+|<div style="width:9em">Name</div>|Type|Description|
+|--|--|--|
+|`appPackage?`|`string`|Package of app whose activity should be started. If omitted, the `appPackage` value of the app under test is used.|
+|`appActivity`|`string`|Activity to be started|
+|`appWaitPackage?`|`string`|Package to be waited on upon launching the specified activity. Set to `appPackage` if omitted.|
+|`appWaitActivity?`|`string`|Activity to be waited on upon launching the specified activity. Set to `appActivity` if omitted.|
+
+#### Response
+
+`null`
+
+### getSystemBars
+
+```
+GET /session/:sessionId/appium/device/system_bars
+```
+
+Retrieves properties of system bars.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: getSystemBars`](./execute-methods.md#mobile-getsystembars)
+    execute method instead
+
+#### Response
+
+`Record<string, Record<string, any>>` - mapping of system bar names to their properties. The
+following system bar names are included:
+
+* `statusBar`
+* `navigationBar`
+
+All system bars include the following properties:
+
+|Name|Type|Description|
+|--|--|--|
+|`visible`|`boolean`|Whether the bar is visible|
+|`x`|`number`|Left X coordinate of the bar. Could be `0` if the bar is not visible|
+|`y`|`number`|Top Y coordinate of the bar. Could be `0` if the bar is not visible|
+|`width`|`number`|Bar width. Could be `0` if the bar is not visible|
+|`height`|`number`|Bar height. Could be `0` if the bar is not visible|
+
+### getDisplayDensity
+
+```
+GET /session/:sessionId/appium/device/display_density
+```
+
+Retrieves the density of the current display in DPI.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: getDisplayDensity`](./execute-methods.md#mobile-getdisplaydensity)
+    execute method instead
+
+#### Response
+
+`number` - the display density in DPI
+
+### background
+
+```
+POST /session/:sessionId/appium/app/background
+```
+
+Moves the active app to the background and optionally restores it into the foreground after a
+specified duration.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: backgroundApp`](./execute-methods.md#mobile-backgroundapp) execute
+    method instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`seconds`|`number`|Number of seconds after which to restore the app to foreground. If set to `0` or a negative value, automatic restoration is skipped.|
+
+#### Response
+
+`boolean | string` - the log output of launching the app if it was originally launched using
+[`startActivity`](#startactivity), otherwise `true`
+
+### getStrings
+
+```
+POST /session/:sessionId/appium/app/strings
+```
+
+Retrieves string resources for the specified app language. An error is thrown if strings cannot be
+fetched, or no strings exist for the specified language.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: getAppStrings`](./execute-methods.md#mobile-getappstrings) execute
+    method instead
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|--|--|--|
+|`language?`|`string`|Language whose strings should be retrieved. If omitted, the default system language is used (affected by the [`appium:language`](./capabilities.md#language) capability)|
+|`stringFile?`|`string`|Path to the app whose strings should be retrieved. If not specified, the app under test is used.|
+
+#### Response
+
+`Record<string, string>` - mapping of resource identifiers to localized strings
+
+### setValueImmediate
+
+```
+POST /session/:sessionId/appium/element/:elementId/value
+```
+
+Sets the value of an element using `adb`.
+
+!!! warning "Deprecated"
+
+    Please use the [setValue](https://appium.io/docs/en/latest/reference/api/webdriver/#setvalue)
+    endpoint instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`text`|`string`|Text to send to an element|
+
+#### Response
+
+`null`
+
+### replaceValue
+
+```
+POST /session/:sessionId/appium/element/:elementId/replace_value
+```
+
+Replaces the value of an element using `adb`.
+
+!!! warning "Deprecated"
+
+    Please use the [setValue](https://appium.io/docs/en/latest/reference/api/webdriver/#setvalue)
+    endpoint instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`text`|`string`|Text to send to an element, replacing existing text|
 
 #### Response
 
