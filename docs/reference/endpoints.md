@@ -348,6 +348,147 @@ The following keys are supported:
 `string` - the Base64-encoded string of the screen recording, or an empty string if `remotePath` is
 set or no active screen recording process is found
 
+### startActivity
+
+```
+POST /session/:sessionId/appium/device/start_activity
+```
+
+Starts the specified app activity. The activity can only be executed in scope of the current app
+package.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: startActivity`](./execute-methods.md#mobile-startactivity) execute
+    method instead
+
+#### Parameters
+
+|<div style="width:9em">Name</div>|Type|Description|
+|--|--|--|
+|`appPackage?`|`string`|Package of app whose activity should be started. If omitted, the `appPackage` value of the app under test is used.|
+|`appActivity`|`string`|Activity to be started|
+|`appWaitPackage?`|`string`|Package to be waited on upon launching the specified activity. Set to `appPackage` if omitted.|
+|`appWaitActivity?`|`string`|Activity to be waited on upon launching the specified activity. Set to `appActivity` if omitted.|
+
+#### Response
+
+`null`
+
+### getCurrentActivity
+
+```
+GET /session/:sessionId/appium/device/current_activity
+```
+
+Retrieves the name of the currently focused app activity.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: getCurrentActivity`](./execute-methods.md#mobile-getcurrentactivity)
+    execute method instead
+
+#### Response
+
+`string` - name of the focused app activity. Could be `null`
+
+### getCurrentPackage
+
+```
+GET /session/:sessionId/appium/device/current_package
+```
+
+Retrieves the package name of the currently focused app.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: getCurrentPackage`](./execute-methods.md#mobile-getcurrentpackage)
+    execute method instead
+
+#### Response
+
+`string` - name of the focused app package. Could be `null`
+
+### queryAppState
+
+```
+POST /session/:sessionId/appium/device/app_state
+```
+
+Retrieves the state of the specified app.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: queryAppState`](./execute-methods.md#mobile-queryappstate) execute
+    method instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`appId`|`string`|Package identifier of the app|
+
+#### Response
+
+`number` - an integer indicating the app state:
+
+|Number|Description|
+|--|--|
+|`0`|Not installed|
+|`1`|Not running|
+|`3`|Running in background|
+|`4`|Running in foreground|
+
+### background
+
+```
+POST /session/:sessionId/appium/app/background
+```
+
+Moves the active app to the background and optionally restores it into the foreground after a
+specified duration.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: backgroundApp`](./execute-methods.md#mobile-backgroundapp) execute
+    method instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`seconds`|`number`|Number of seconds after which to restore the app to foreground. If set to `0` or a negative value, automatic restoration is skipped.|
+
+#### Response
+
+`boolean | string` - the log output of launching the app if it was originally launched using
+[`startActivity`](#startactivity), otherwise `true`
+
+### getStrings
+
+```
+POST /session/:sessionId/appium/app/strings
+```
+
+Retrieves string resources for the specified app language. An error is thrown if strings cannot be
+fetched, or no strings exist for the specified language.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: getAppStrings`](./execute-methods.md#mobile-getappstrings) execute
+    method instead
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|--|--|--|
+|`language?`|`string`|Language whose strings should be retrieved. If omitted, the default system language is used (affected by the [`appium:language`](./capabilities.md#language) capability)|
+|`stringFile?`|`string`|Path to the app whose strings should be retrieved. If not specified, the app under test is used.|
+
+#### Response
+
+`Record<string, string>` - mapping of resource identifiers to localized strings
+
 ### getClipboard
 
 ```
@@ -666,70 +807,6 @@ Emulates a network connection speed mode change. Only supported on emulators.
 
 `null`
 
-### getCurrentActivity
-
-```
-GET /session/:sessionId/appium/device/current_activity
-```
-
-Retrieves the name of the currently focused app activity.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: getCurrentActivity`](./execute-methods.md#mobile-getcurrentactivity)
-    execute method instead
-
-#### Response
-
-`string` - name of the focused app activity. Could be `null`
-
-### getCurrentPackage
-
-```
-GET /session/:sessionId/appium/device/current_package
-```
-
-Retrieves the package name of the currently focused app.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: getCurrentPackage`](./execute-methods.md#mobile-getcurrentpackage)
-    execute method instead
-
-#### Response
-
-`string` - name of the focused app package. Could be `null`
-
-### queryAppState
-
-```
-POST /session/:sessionId/appium/device/app_state
-```
-
-Retrieves the state of the specified app.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: queryAppState`](./execute-methods.md#mobile-queryappstate) execute
-    method instead
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`appId`|`string`|Package identifier of the app|
-
-#### Response
-
-`number` - an integer indicating the app state:
-
-|Number|Description|
-|--|--|
-|`0`|Not installed|
-|`1`|Not running|
-|`3`|Running in background|
-|`4`|Running in foreground|
-
 ### toggleFlightMode
 
 ```
@@ -802,33 +879,6 @@ Android 12 (API level 31).
 
 `null`
 
-### startActivity
-
-```
-POST /session/:sessionId/appium/device/start_activity
-```
-
-Starts the specified app activity. The activity can only be executed in scope of the current app
-package.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: startActivity`](./execute-methods.md#mobile-startactivity) execute
-    method instead
-
-#### Parameters
-
-|<div style="width:9em">Name</div>|Type|Description|
-|--|--|--|
-|`appPackage?`|`string`|Package of app whose activity should be started. If omitted, the `appPackage` value of the app under test is used.|
-|`appActivity`|`string`|Activity to be started|
-|`appWaitPackage?`|`string`|Package to be waited on upon launching the specified activity. Set to `appPackage` if omitted.|
-|`appWaitActivity?`|`string`|Activity to be waited on upon launching the specified activity. Set to `appActivity` if omitted.|
-
-#### Response
-
-`null`
-
 ### getSystemBars
 
 ```
@@ -876,56 +926,6 @@ Retrieves the density of the current display in DPI.
 #### Response
 
 `number` - the display density in DPI
-
-### background
-
-```
-POST /session/:sessionId/appium/app/background
-```
-
-Moves the active app to the background and optionally restores it into the foreground after a
-specified duration.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: backgroundApp`](./execute-methods.md#mobile-backgroundapp) execute
-    method instead
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`seconds`|`number`|Number of seconds after which to restore the app to foreground. If set to `0` or a negative value, automatic restoration is skipped.|
-
-#### Response
-
-`boolean | string` - the log output of launching the app if it was originally launched using
-[`startActivity`](#startactivity), otherwise `true`
-
-### getStrings
-
-```
-POST /session/:sessionId/appium/app/strings
-```
-
-Retrieves string resources for the specified app language. An error is thrown if strings cannot be
-fetched, or no strings exist for the specified language.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: getAppStrings`](./execute-methods.md#mobile-getappstrings) execute
-    method instead
-
-#### Parameters
-
-|<div style="width:7em">Name</div>|Type|Description|
-|--|--|--|
-|`language?`|`string`|Language whose strings should be retrieved. If omitted, the default system language is used (affected by the [`appium:language`](./capabilities.md#language) capability)|
-|`stringFile?`|`string`|Path to the app whose strings should be retrieved. If not specified, the app under test is used.|
-
-#### Response
-
-`Record<string, string>` - mapping of resource identifiers to localized strings
 
 ### setValueImmediate
 
