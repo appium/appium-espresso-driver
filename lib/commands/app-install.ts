@@ -134,6 +134,18 @@ export async function initAUT(this: EspressoDriver): Promise<void> {
     ]);
   }
 
+  // Install any "otherApps" that were specified in caps
+  if (this.opts.otherApps) {
+    let otherApps;
+    try {
+      otherApps = utils.parseArray(this.opts.otherApps);
+    } catch (e) {
+      throw this.log.errorWithException(`Could not parse "otherApps" capability: ${(e as Error).message}`);
+    }
+    otherApps = await Promise.all(otherApps.map((app) => this.helpers.configureApp(app, [APK_EXT])));
+    await this.installOtherApks(otherApps);
+  }
+
   if (!this.opts.app) {
     if (this.opts.fullReset) {
       throw this.log.errorWithException('Full reset requires an app capability, use fastReset if app is not provided');
