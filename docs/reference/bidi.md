@@ -61,8 +61,7 @@ Event emission of all of these log types is supported for both real devices and 
 
 Indicates a change in the current Appium context.
 
-This event is emitted upon context change, either explicit or implicit. It is also emitted at the
-start of a new session.
+This event is emitted upon context change, either explicit or implicit.
 
 See the [GitHub feature ticket](https://github.com/appium/appium/issues/20741) for more details.
 
