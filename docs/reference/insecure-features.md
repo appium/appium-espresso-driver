@@ -44,8 +44,8 @@ Enables execution of Android emulator telnet console interface commands using th
 
 ## `get_server_logs`
 
-Enables retrieval of Appium server logs using [the getLogEvents endpoint](https://appium.io/docs/en/latest/reference/api/appium/#getlogevents)
-and the `log.entryAdded` BiDi event.
+Enables retrieval of Appium server logs using the [getLogEvents](https://appium.io/docs/en/latest/reference/api/appium/#getlogevents)
+endpoint and the [`log.entryAdded`](./bidi.md#logentryadded) BiDi event.
 
 ## `set_stylus_handwriting`
 
