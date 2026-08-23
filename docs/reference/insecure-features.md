@@ -30,7 +30,7 @@ method.
 ## `adb_shell`
 
 Enables shell-related functionality for the underlying `adb` instance. Can be used in execute
-methods like `mobile: shell`.
+methods like [`mobile: shell`](./execute-methods.md#mobile-shell).
 
 ## `chromedriver_autodownload`
 
@@ -40,7 +40,8 @@ relevant in a webview context.
 ## `emulator_console`
 
 Enables execution of Android emulator telnet console interface commands using the
-`mobile: execEmuConsoleCommand` execute method. Not relevant for real devices.
+[`mobile: execEmuConsoleCommand`](./execute-methods.md#mobile-execemuconsolecommand) execute
+method. Not relevant for real devices.
 
 ## `get_server_logs`
 
