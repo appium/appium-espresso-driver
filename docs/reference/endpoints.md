@@ -466,7 +466,7 @@ POST /session/:sessionId/appium/app/background
 ```
 
 Moves the active app to the background and optionally restores it into the foreground after a
-specified duration.
+specified duration. The call is blocking.
 
 !!! warning "Deprecated"
 

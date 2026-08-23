@@ -105,6 +105,8 @@ receive logcat log lines as soon as they are visible to Appium.
 Refer to [Using Mobile Execution Commands to Continuously Stream Device Logs with Appium](https://www.headspin.io/blog/using-mobile-execution-commands-to-continuously-stream-device-logs-with-appium)
 for more details.
 
+Available since driver version 2.37.0.
+
 #### Response
 
 `null`
@@ -116,6 +118,8 @@ The method will return immediately if no websocket server is running.
 
 Refer to [Using Mobile Execution Commands to Continuously Stream Device Logs with Appium](https://www.headspin.io/blog/using-mobile-execution-commands-to-continuously-stream-device-logs-with-appium)
 for more details.
+
+Available since driver version 2.37.0.
 
 #### Response
 
@@ -243,6 +247,7 @@ and [Notification](https://developer.android.com/reference/android/app/Notificat
 The `isRemoved` flag is set to `true` for dismissed notifications.
 
 Example output:
+
 ```json
 {
   "statusBarNotifications": [
@@ -290,6 +295,7 @@ Retrieves the most recent SMS messages.
 messages are always added to the start of the array.
 
 Example output:
+
 ```json
  {
   "items": [
@@ -485,3 +491,207 @@ has stopped.
 #### Response
 
 `boolean` - `true` if the app was terminated, otherwise `false`
+
+### `mobile: installApp`
+
+Installs the specified application on the device under test. 
+
+If a newer version of the application was already installed, the `INSTALL_FAILED_VERSION_DOWNGRADE`
+error may be raised.
+
+#### Parameters
+
+|<div style="width:10em">Name</div>|Type|Description|
+|--|--|--|
+|`appPath`|`string`|Full path to a file on the host machine, or URL to a remote location. The app must have the `.apk` or `.apks` extension.|
+|`checkVersion?`|`boolean`|Whether to skip installation if an identical or newer app version is already installed. Unset by default. Applied before `replace`.|
+|`timeout?`|`number`|Number of milliseconds to wait until the app is installed. Set to `60000` by default, unless overridden using the [`appium:adbExecTimeout`](./capabilities.md#adbexectimeout) capability|
+|`allowTestPackages?`|`boolean`|Whether to allow installation of test packages. Set to `false` by default|
+|`useSdcard?`|`boolean`|Whether to install the app on the SD card instead of built-in storage. Set to `false` by default|
+|`grantPermissions?`|`boolean`|Whether to automatically grant all permissions defined in the application manifest after installation. Set to `false` by default. Only supported on Android 6 (Marshmallow / API level 23) or later.|
+|`replace?`|`boolean`|Whether to replace any already existing app installation. Set to `true` by default. If set to `false` and the app is already installed, an error is thrown. Applied after `checkVersion`.|
+|`noIncremental?`|`boolean`|Whether to disable incremental app installation. Set to `false` by default. Refer to [How ADB incremental-install works](https://android.googlesource.com/platform/packages/modules/adb/+/HEAD/docs/dev/incremental-install.md) for more details.|
+
+#### Response
+
+`null`
+
+### `mobile: clearApp`
+
+Clears all data associated with the application with the specified package identifier: user data,
+cache, and settings. Calls `adb shell pm clear <appId>` under the hood.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`appId`|`string`|Package identifier of the app to clear|
+
+#### Response
+
+`null`
+
+### `mobile: backgroundApp`
+
+Moves the active app to the background and optionally restores it into the foreground after a
+specified duration. The call is blocking.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`seconds`|`number`|Number of seconds after which to restore the app to foreground. If set to `0` or a negative value, automatic restoration is skipped.|
+
+#### Response
+
+`null`
+
+### `mobile: broadcast`
+
+Sends a broadcast Intent to the Android system. Invokes `adb shell am broadcast` under the hood.
+
+#### Parameters
+
+|<div style="width:16em">Name</div>|<div style="width:11em">Type</div>|Description|
+|--|--|--|
+|`intent?`|`string`|Full name of the intent to broadcast|
+|`user?`|`number` or `string`|ID of the user to send the broadcast to|
+|`action?`|`string`|Name of the intent action|
+|`uri?`|`string`|Intent URI|
+|`mimeType?`|`string`|Intent MIME type|
+|`identifier?`|`string`|Intent identifier|
+|`categories?`|`string` or `Array<string>`|One or more intent categories|
+|`component?`|`string`|Intent component|
+|`package?`|`string`|Intent package name|
+|`extras?`|`Array<Array<string>>`|Extra intent arguments. See below for expected structure|
+|`flags?`|`string`|Flags in hexadecimal format to apply on intent start-up. Refer to the [Android Intent documentation](https://developer.android.com/reference/android/content/Intent) for supported values. Multiple flags should be merged into one value.|
+|`receiverPermission?`|`string`|Permission that the receiver must hold|
+|`allowBackgroundActivityStarts?`|`boolean`|Whether the receiver may start activities even if in the background|
+
+The `flags` parameter is an array of arrays, where each subarray contains 3 items: value category,
+key, and the value itself. Supported value categories and their value types are as follows:
+
+|Value Category|Value Type|
+|--|--|
+|`s`|String|
+|`sn`|Null (only the key is required; the value should be omitted)|
+|`z`|Boolean|
+|`i`|Integer|
+|`l`|Long integer|
+|`f`|Float|
+|`u`|URI|
+|`cn`|Component name (string)|
+|`ia`|String of comma-separated integers|
+|`ial`|String of comma-separated integers|
+|`la`|String of comma-separated long integers|
+|`lal`|String of comma-separated long integers|
+|`fa`|String of comma-separated floats|
+|`fal`|String of comma-separated floats|
+|`sa`|Comma-separated strings (commas that are part of the strings themselves should be escaped)|
+|`sal`|Comma-separated strings (commas that are part of the strings themselves should be escaped)|
+
+#### Response
+
+`string` - output of the `adb shell am broadcast` command.
+
+### `mobile: getContexts`
+
+Retrieves a detailed list of available webview contexts with their mapping information. Does not
+include non-webview (e.g. native) contexts.
+
+#### Parameters
+
+|<div style="width:10em">Name</div>|Type|Description|
+|--|--|--|
+|`waitForWebviewMs?`|`number`|Number of milliseconds for how long to retry retrieval of webview data. Set to `0` by default. Higher values can help prevent ChromeDriver errors such as `failed to connect to socket 'localabstract:chrome_devtools_remote'`. Refer to [this issue](https://github.com/appium/appium/issues/19251) for more details. Available since driver version 2.30.0.|
+
+#### Response
+
+`Array<Record<string, any>>` - list of webview objects. Example output:
+
+```json
+[
+  {
+    "proc": "@webview_devtools_remote_22138",
+    "webview": "WEBVIEW_22138",
+    "info": {
+      "Android-Package": "io.appium.settings",
+      "Browser": "Chrome/74.0.3729.185",
+      "Protocol-Version": "1.3",
+      "User-Agent": "Mozilla/5.0 (Linux; Android 10; Android SDK built for x86 Build/QSR1.190920.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.185 Mobile Safari/537.36",
+      "V8-Version": "7.4.288.28",
+      "WebKit-Version": "537.36 (@22955682f94ce09336197bfb8dffea991fa32f0d)",
+      "webSocketDebuggerUrl": "ws://127.0.0.1:10900/devtools/browser"
+    },
+    "pages": [
+      {
+        "description": "{\"attached\":true,\"empty\":false,\"height\":1458,\"screenX\":0,\"screenY\":336,\"visible\":true,\"width\":1080}",
+        "devtoolsFrontendUrl": "http://chrome-devtools-frontend.appspot.com/serve_rev/@22955682f94ce09336197bfb8dffea991fa32f0d/inspector.html?ws=127.0.0.1:10900/devtools/page/27325CC50B600D31B233F45E09487B1F",
+        "id": "27325CC50B600D31B233F45E09487B1F",
+        "title": "Releases · appium/appium · GitHub",
+        "type": "page",
+        "url": "https://github.com/appium/appium/releases",
+        "webSocketDebuggerUrl": "ws://127.0.0.1:10900/devtools/page/27325CC50B600D31B233F45E09487B1F"
+      }
+    ],
+    "webviewName": "WEBVIEW_com.io.appium.setting"
+  }
+]
+```
+
+### `mobile: getChromeCapabilities`
+
+Retrieves the current ChromeDriver session capabilities. Only supported in a webview context. Can
+be useful for debugging Chrome/webview automation issues and understanding what capabilities are
+being applied to the Chromedriver instance.
+
+Available since driver version 6.0.7.
+
+#### Response
+
+`Record<string, any>` - map of current ChromeDriver capabilities, typically consisting of standard
+W3C WebDriver capabilities. The exact structure may depend on the Chrome/ChromeDriver version and
+the initial session capabilities.
+
+### `mobile: lock`
+
+Locks the device and optionally unlocks it after a specified duration. Only simple (e.g. without a
+password) locks are supported.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`seconds?`|`number`|Number of seconds after which to unlock the device. If omitted or set to `0`, automatic unlock is skipped.|
+
+#### Response
+
+`null`
+
+### `mobile: unlock`
+
+Unlocks the device if it is locked. Refer to [the Unlock guide](../guides/unlock.md) for more
+details.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`key?`|`number`|The unlock key. By default, set to the value of the [`appium:unlockKey`](./capabilities.md#unlockkey) capability. Must be provided together with `type`.|
+|`type?`|`number`|The unlock type. By default, set to the value of the [`appium:unlockType`](./capabilities.md#unlocktype) capability. Supported values are `pin`, `pinWithKeyEvent`, `password`, `pattern` and `fingerprint`. Must be provided together with `key`.|
+|`strategy?`|`number`|Approach to use for unlocking. Unset by default. If unset or set to `locksettings`, uses an `adb`-based fast unlock approach, otherwise uses `type`-specific approaches.|
+|`timeoutMs?`|`number`|The unlock timeout. By default, set to the value of the [`appium:unlockSuccessTimeout`](./capabilities.md#unlocksuccesstimeout) capability.|
+
+#### Response
+
+`null`
+
+### `mobile: isLocked`
+
+Determines whether the device is locked.
+
+#### Response
+
+`boolean` - `true` if the device is locked, otherwise `false`
