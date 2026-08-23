@@ -159,6 +159,17 @@ If explicitly set to `false`, `adb shell ime reset` is run on session startup, w
 currently selected/enabled IMEs to the default ones, as if the device was initially booted with the
 current locale.
 
+### gpsEnabled
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:gpsEnabled` | `boolean` | Not specified |
+
+Whether to enable or disable location services (GPS) upon session start. This functionality only
+works reliably starting from Android 12 (API level 31).
+
+Available since driver version 9.1.0.
+
 ### mockLocationApp
 
 | Name | Type | Default |
@@ -857,15 +868,26 @@ If the `targetSdk` of the application under test is below `23`, or the device un
 Android 5 (API level 22), granting permissions requires the application to be reinstalled, for
 example, using the [`appium:fullReset`](#fullreset) capability.
 
+### otherApps
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:otherApps` | `string` or `Array<string>` | Not specified |
+
+One or more application packages (either filepaths on the host machine, or URLs to remote locations)
+that should be installed on the device along with the application under test. Unlike the app under
+test, these apps are not additionally signed, and only apps with the `.apk` extension are supported.
+
+Available since driver version 9.2.0.
+
 ### uninstallOtherPackages
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:uninstallOtherPackages` | `string` | Not specified |
+| `appium:uninstallOtherPackages` | `string` or `Array<string>` | Not specified |
 
-One or more comma-separated package identifiers to be uninstalled from the device upon session
-startup. Always excludes packages required by the driver (`io.appium.settings` and
-`io.appium.espressoserver.test`).
+One or more package identifiers to be uninstalled from the device upon session startup. Always
+excludes packages required by the driver (`io.appium.settings` and `io.appium.espressoserver.test`).
 
 ### allowTestPackages
 
