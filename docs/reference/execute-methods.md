@@ -321,3 +321,167 @@ Example output:
   "total": 2
  }
 ```
+
+### `mobile: pushFile`
+
+Pushes data to a file on the device under test. If the target file already exists, its contents
+will be overwritten.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|---|---|---|
+|`remotePath`|`string`|Full path to the file where the data should be written to, or a path inside an app bundle (e.g. `@my.app.id/my/path`). The latter format requires the target app bundle to have debugging enabled. An error is thrown if the path resolves to a directory.|
+|`payload`|`string`|Base64-encoded data to be included in the file|
+
+#### Response
+
+`null`
+
+### `mobile: pullFile`
+
+Pulls the contents of a file from the device under test.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|---|---|---|
+|`remotePath`|`string`|Full path to the file where the data should be retrieved from, or a path inside an app bundle (e.g. `@my.app.id/my/path`). The latter format requires the target app bundle to have debugging enabled. An error is thrown if the path resolves to a directory.|
+
+#### Response
+
+`string` - Base64-encoded contents of the specified file
+
+### `mobile: pullFolder`
+
+Pulls the contents of a directory from the device under test.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|---|---|---|
+|`remotePath`|`string`|Full path to a directory on the device under test|
+
+#### Response
+
+`string` - Base64-encoded zipped contents of the specified directory
+
+### `mobile: deleteFile`
+
+Deletes a file from the device under test.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|---|---|---|
+|`remotePath`|`string`|Full path to the file to be deleted, or a path inside an app bundle (e.g. `@my.app.id/my/path`). The latter format requires the target app bundle to have debugging enabled. An error is thrown if the path resolves to a directory.|
+
+#### Response
+
+`boolean` - `true` if the file was successfully deleted, `false` if it does not exist
+
+### `mobile: isAppInstalled`
+
+Determines whether the application with the specified package identifier is installed on the device
+under test.
+
+#### Parameters
+
+|Name|Type|Description|
+|---|---|---|
+|`appId`|`string`|Package identifier of the application|
+|`user?`|`number` or `string`|ID of the user for which the app is installed. The `current` user is used by default|
+
+#### Response
+
+`boolean` - `true` if the app is installed, otherwise `false`
+
+### `mobile: listApps`
+
+Retrieves information about installed applications on the device under test. Only supported since
+Android 8 (Oreo / API level 26).
+
+#### Parameters
+
+|Name|Type|Description|
+|---|---|---|
+|`user?`|`number` or `string`|ID of the user to filter the installed packages for|
+
+#### Response
+
+`Record<string, Record<string, any>>` - mapping of package names to their details. The
+`versionCode` property is only populated for devices running Android 9 (Pie / API level 28) or
+later.
+
+In Espresso driver versions before 7.0.0, the response was `Array<string>` - a list of package
+names.
+
+### `mobile: queryAppState`
+
+Retrieves the state of the application with the specified package identifier on the device under
+test.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`appId`|`string`|Package identifier of the app to query|
+
+#### Response
+
+`number` - an integer indicating the app state:
+
+|Number|Description|
+|--|--|
+|`0`|Not installed|
+|`1`|Not running|
+|`3`|Running in background|
+|`4`|Running in foreground|
+
+### `mobile: activateApp`
+
+Activates the application with the specified package identifier or launches it if necessary, by
+simulating a tap on the app icon on the Android UI.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`appId`|`string`|Package identifier of the app to activate|
+
+#### Response
+
+`null`
+
+### `mobile: removeApp`
+
+Uninstalls the application with the specified package identifier from the device under test.
+
+#### Parameters
+
+|<div style="width:10em">Name</div>|Type|Description|
+|--|--|--|
+|`appId`|`string`|Package identifier of the app to uninstall|
+|`timeout?`|`number`|Number of milliseconds to wait until the app is terminated before uninstallation. Set to `20000` by default.|
+|`keepData?`|`boolean`|Whether to retain application data and cache after uninstall. Unset by default.|
+|`skipInstallCheck?`|`boolean`|Whether to check if the app is installed before uninstalling it. Set to `true` by default.|
+
+#### Response
+
+`boolean` - `true` if the app was removed, otherwise `false`
+
+### `mobile: terminateApp`
+
+Terminates the application with the specified package identifier and waits until its app process
+has stopped.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`appId`|`string`|Package identifier of the app to terminate|
+|`timeout?`|`number`|Number of milliseconds to wait until the app is terminated. Set to `500` by default. Since driver version 2.13.0, setting this to `0` or a negative value skips the app state check.|
+
+#### Response
+
+`boolean` - `true` if the app was terminated, otherwise `false`
