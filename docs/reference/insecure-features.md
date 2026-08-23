@@ -24,8 +24,8 @@ Available since driver version 6.2.0.
 
 ## `adb_screen_streaming`
 
-Enables broadcasting the device screen over MJPEG using the `mobile: startScreenStreaming` execute
-method.
+Enables broadcasting the device screen over MJPEG using the [`mobile: startScreenStreaming`](./execute-methods.md#mobile-startscreenstreaming)
+execute method.
 
 ## `adb_shell`
 

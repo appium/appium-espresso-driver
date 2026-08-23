@@ -189,3 +189,135 @@ Retrieves the current system time on the device under test.
 #### Response
 
 `string` - the device timestamp in the specified format
+
+### `mobile: startScreenStreaming`
+
+Starts an MJPEG server for broadcasting the screen of the device under test. The [`adb_screen_streaming`](./insecure-features.md#adb_screen_streaming)
+insecure feature must be enabled, and the host machine must have [GStreamer](https://gstreamer.freedesktop.org/)
+installed and available on `PATH`, along with the `gst-plugins-base`, `gst-plugins-good`,
+`gst-plugins-bad` and `gst-libav` packages.
+
+Broadcasting can be stopped using the [`mobile: stopScreenStreaming`](#mobile-stopscreenstreaming)
+execute method. Repeated calls to this method have no effect unless the previous streaming session
+is stopped.
+
+#### Parameters
+
+|<div style="width:11em">Name</div>|Type|Description|
+|---|---|---|
+|`width?`|`number`|Scaled width of the device screen. Set to the actual device screen width by default. |
+|`height?`|`number`|Scaled height of the device screen. Set to the actual device screen height by default. |
+|`bitRate?`|`number`|Bitrate of the video, in bits per second. Set to `4000000` (4 Mbps) by default.|
+|`host?`|`string`|IP address/host name to start the MJPEG server on. Set to `127.0.0.1` by default. Can be set to `0.0.0.0` to broadcast on all available network interfaces.|
+|`pathname?`|`string`|URL path on which the MJPEG server should be accessible. By default, all pathnames on the given `host`/`port` combination are accessible. Must begin with a forward slash (`/`).|
+|`port?`|`number`|Port number to start the MJPEG server on. Set to `8093` by default.|
+|`tcpPort?`|`number`|Port number to start the internal TCP MJPEG broadcast on. Always starts on the loopback interface (`127.0.0.1`). Set to `8094` by default.|
+|`quality?`|`number`|Quality of the broadcasted images. Must be an integer in the range `1..100`, where `100` indicates the best quality. Set to `70` by default.|
+|`considerRotation?`|`boolean`|Whether to increase the broadcast dimensions to fit both landscape and portrait orientations. Should be set to `true` if the device orientation will be changed during the broadcast. Set to `false` by default.|
+|`logPipelineDetails?`|`boolean`|Whether to include GStreamer pipeline event logs into the standard log output. Can be useful for debugging purposes. Set to `false` by default.|
+
+#### Response
+
+`null`
+
+### `mobile: stopScreenStreaming`
+
+Stops the MJPEG screen broadcasting server previously started using [`mobile: startScreenStreaming`](#mobile-startscreenstreaming).
+The method will return immediately if no streaming server is running.
+
+#### Response
+
+`null`
+
+### `mobile: getNotifications`
+
+Retrieves up to 100 most recent Android notifications, including dismissed ones. The Appium Settings
+helper app must first be *manually* granted notification access.
+
+#### Response
+
+`Record<string, any>` - mapping of notification categories to arrays of notification objects. Newer
+notifications are always added to the start of the array. For details on the notification object,
+refer to the Android [StatusBarNotification](https://developer.android.com/reference/android/service/notification/StatusBarNotification)
+and [Notification](https://developer.android.com/reference/android/app/Notification) documentation.
+The `isRemoved` flag is set to `true` for dismissed notifications.
+
+Example output:
+```json
+{
+  "statusBarNotifications": [
+    {
+      "isGroup": false,
+      "packageName": "io.appium.settings",
+      "isClearable": false,
+      "isOngoing": true,
+      "id": 1,
+      "tag": null,
+      "notification": {
+        "title": null,
+        "bigTitle": "Appium Settings",
+        "text": null,
+        "bigText": "Keep this service running, so Appium for Android can properly interact with several system APIs",
+        "tickerText": null,
+        "subText": null,
+        "infoText": null,
+        "template": "android.app.Notification$BigTextStyle"
+      },
+      "userHandle": 0,
+      "groupKey": "0|io.appium.settings|1|null|10133",
+      "overrideGroupKey": null,
+      "postTime": 1576853518850,
+      "key": "0|io.appium.settings|1|null|10133",
+      "isRemoved": false
+    }
+  ]
+}
+```
+
+### `mobile: listSms`
+
+Retrieves the most recent SMS messages.
+
+#### Parameters
+
+|Name|Type|Description|
+|---|---|---|
+|`max?`|`number`|Maximum number of messages to retrieve. Set to `100` by default.|
+
+#### Response
+
+`Record<string, any>` - map containing an array of notification objects, and their count. Newer
+messages are always added to the start of the array.
+
+Example output:
+```json
+ {
+  "items": [
+    {
+      "id": "2",
+      "address": "+123456789",
+      "person": null,
+      "date": "1581936422203",
+      "read": "0",
+      "status": "-1",
+      "type": "1",
+      "subject": null,
+      "body": "\"text message2\"",
+      "serviceCenter": null
+    },
+    {
+      "id": "1",
+      "address": "+123456789",
+      "person": null,
+      "date": "1581936382740",
+      "read": "0",
+      "status": "-1",
+      "type": "1",
+      "subject": null,
+      "body": "\"text message\"",
+      "serviceCenter": null
+    }
+  ],
+  "total": 2
+ }
+```
