@@ -19,6 +19,8 @@ All endpoints listed below are supported since driver version 2.13.10, unless ot
 GET /session/:sessionId/ime/available_engines
 ```
 
+> JSONWP documentation: [/session/:sessionId/ime/available_engines](https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidimeavailable_engines)
+
 Retrieves all IME (input method editor) engines available on the device under test.
 
 #### Response
@@ -30,6 +32,8 @@ Retrieves all IME (input method editor) engines available on the device under te
 ```
 GET /session/:sessionId/ime/active_engine
 ```
+
+> JSONWP documentation: [/session/:sessionId/ime/active_engine](https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidimeactive_engine)
 
 Retrieves the name of the active IME engine.
 
@@ -43,6 +47,8 @@ Retrieves the name of the active IME engine.
 GET /session/:sessionId/ime/activated
 ```
 
+> JSONWP documentation: [/session/:sessionId/ime/activated](https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidimeactivated)
+
 Determines if IME input is available and active.
 
 #### Response
@@ -55,6 +61,8 @@ Determines if IME input is available and active.
 POST /session/:sessionId/ime/deactivate
 ```
 
+> JSONWP documentation: [/session/:sessionId/ime/deactivate](https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidimedeactivate)
+
 Deactivates the currently active IME engine.
 
 #### Response
@@ -66,6 +74,8 @@ Deactivates the currently active IME engine.
 ```
 POST /session/:sessionId/ime/activate
 ```
+
+> JSONWP documentation: [/session/:sessionId/ime/activate](https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidimeactivate)
 
 Activates an IME engine.
 
@@ -85,6 +95,8 @@ Activates an IME engine.
 GET /session/:sessionId/window/:windowhandle/size
 ```
 
+> JSONWP documentation: [/session/:sessionId/window/:windowhandle/size](https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidwindowwindowhandlesize)
+
 Retrieves the size of the current window. The `:windowhandle` property is ignored, as the driver
 always uses the currently active window.
 
@@ -103,6 +115,8 @@ window
 ```
 POST /session/:sessionId/keys
 ```
+
+> JSONWP documentation: [/session/:sessionId/keys](https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidkeys)
 
 Sends a sequence of key strokes to the active element.
 
@@ -126,6 +140,8 @@ Sends a sequence of key strokes to the active element.
 GET /session/:sessionId/element/:elementId/location
 ```
 
+> JSONWP documentation: [/session/:sessionId/element/:elementId/location](https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidelementidlocation)
+
 Returns the element's location on the page.
 
 !!! warning "Deprecated"
@@ -144,6 +160,8 @@ coordinates
 GET /session/:sessionId/element/:elementId/location_in_view
 ```
 
+> JSONWP documentation: [/session/:sessionId/element/:elementId/location_in_view](https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidelementidlocation_in_view)
+
 Returns the element's location on the page screen once it has been scrolled into view.
 
 !!! warning "Deprecated"
@@ -161,6 +179,8 @@ coordinates
 ```
 GET /session/:sessionId/element/:elementId/size
 ```
+
+> JSONWP documentation: [/session/:sessionId/element/:elementId/size](https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidelementidsize)
 
 Returns the element's size in pixels.
 
