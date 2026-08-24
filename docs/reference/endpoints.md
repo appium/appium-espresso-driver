@@ -306,7 +306,7 @@ POST /session/:sessionId/appium/start_recording_screen
 ```
 
 Starts recording the device screen using Android's `screenrecord` tool. On emulators this
-functionality is only supported starting from Android 9 (Pie / API level 28). The recording can be
+functionality is only supported starting from Android 8 (Oreo / API level 27). The recording can be
 stopped either using the [`stopRecordingScreen`](#stoprecordingscreen) endpoint, or by stopping the
 session itself.
 
@@ -358,7 +358,7 @@ The following keys are supported:
 |`remotePath?`|`string`|Path to a remote location where the resulting video file should be uploaded. Supported path protocols are HTTP(S) and FTP (deprecated). An exception is thrown if the file is too big to fit in the process memory.|
 |`user?`|`string`|Username used for authentication to `remotePath`|
 |`pass?`|`string`|Password used for authentication to `remotePath`|
-|`method?`|`string`|Name of the HTTP(S) multipart upload method. Set to `POST` by default.|
+|`method?`|`string`|Name of the HTTP(S) multipart upload method. Set to `PUT` by default.|
 |`headers?`|`Record<string, any>`|Additional headers to use for the HTTP(S) multipart upload|
 |`fileFieldName?`|`string`|Name of the form field for storing the file content blob for HTTP(S) uploads. Set to `file` by default.|
 |`formFields?`|`Record<string, any>` or `Array<[string, any]>`|Additional form fields to use for the HTTP(S) multipart upload|

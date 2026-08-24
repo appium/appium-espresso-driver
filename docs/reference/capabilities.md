@@ -166,7 +166,7 @@ current locale.
 | `appium:gpsEnabled` | `boolean` | Not specified |
 
 Whether to enable or disable location services (GPS) upon session start. This functionality only
-works reliably starting from Android 12 (API level 31).
+works reliably starting from Android 12 (S / API level 31).
 
 Available since driver version 9.1.0.
 

@@ -695,3 +695,220 @@ Determines whether the device is locked.
 #### Response
 
 `boolean` - `true` if the device is locked, otherwise `false`
+
+### `mobile: refreshGpsCache`
+
+Sends a request to refresh the GPS cache on the device under test. By default, location tracking is
+configured for [low battery consumption](https://github.com/appium/io.appium.settings/blob/master/app/src/main/java/io/appium/settings/LocationTracker.java),
+so this method can be useful if the device location frequently changes.
+
+The device under test must either have Google Play Services installed, or be running Android 11
+(R / API level 30) or later (which relies on [LocationManager](https://developer.android.com/reference/android/location/LocationManager)).
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`timeoutMs?`|`number`|Maximum number of milliseconds to block until the GPS cache is confirmed to have been refreshed. Set to `20000` by default. An error is thrown if the device does not return a successful cache refresh response within this timeout. If set to `0` or a negative value, waiting is skipped.|
+
+#### Response
+
+`null`
+
+### `mobile: startMediaProjectionRecording`
+
+Starts recording the device screen and audio using Android's [Media Projection](https://developer.android.com/reference/android/media/projection/MediaProjection)
+API. The device under test must be running Android 10 (Q / API level 29) or later. Recording can be
+stopped using the [`mobile: stopMediaProjectionRecording`](#mobile-stopmediaprojectionrecording)
+execute method.
+
+#### Parameters
+
+|<div style="width:9em">Name</div>|Type|Description|
+|--|--|--|
+|`resolution?`|`string`|Resolution of the resulting video, formatted as `<width>x<height>`. Supported values are `1920x1080`, `1280x720`, `720x480`, `320x240` and `176x144`. Set to the greatest supported device resolution by default (usually `1920x1080`).|
+|`priority?`|`string`|Priority of the recorder process, which could be adjusted in case of performance drops. Supported values are `high`, `normal` and `low`. Set to `high` by default.|
+|`maxDurationSec?`|`number`|Maximum recording time in seconds. Set to `900` (15 minutes) by default. |
+|`filename?`|`string`|Name of the resulting video file. The `.mp4` extension is added automatically if absent. Set to the current timestamp by default.|
+
+#### Response
+
+`boolean` - `true` if a new recording has successfully started, otherwise `false`
+
+### `mobile: isMediaProjectionRecordingRunning`
+
+Determines whether a Media Projection-based recording is currently active. The device under test
+must be running Android 10 (Q / API level 29) or later.
+
+#### Response
+
+`boolean` - `true` if recording is active, otherwise `false`
+
+### `mobile: stopMediaProjectionRecording`
+
+Stops the active screen recording process started by [`mobile: startMediaProjectionRecording`](#mobile-startmediaprojectionrecording),
+either returning its payload or uploading it to a remote location. The device under test must be
+running Android 10 (Q / API level 29) or later.
+
+If the recording process is not running, but another recording has previously finished, its data is
+used instead. If no previous recording was found, an error is thrown.
+
+#### Parameters
+
+|<div style="width:8em">Name</div>|<div style="width:8em">Type</div>|Description|
+|--|--|--|
+|`remotePath?`|`string`|Path to a remote location where the resulting video file should be uploaded. Supported path protocols are HTTP(S) and FTP (deprecated). An exception is thrown if the file is too big to fit in the process memory.|
+|`user?`|`string`|Username used for authentication to `remotePath`|
+|`pass?`|`string`|Password used for authentication to `remotePath`|
+|`method?`|`string`|Name of the HTTP(S) multipart upload method. Set to `PUT` by default.|
+|`headers?`|`Record<string, any>`|Additional headers to use for the HTTP(S) multipart upload|
+|`fileFieldName?`|`string`|Name of the form field for storing the file content blob for HTTP(S) uploads. Set to `file` by default.|
+|`formFields?`|`Record<string, any>` or `Array<[string, any]>`|Additional form fields to use for the HTTP(S) multipart upload|
+
+#### Response
+
+`string` - the Base64-encoded string of the screen recording, or an empty string if `remotePath` is
+set
+
+### `mobile: getConnectivity`
+
+Retrieves the state of one or more connectivity-related system services.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`services?`|`string` or `Array<string>`|One or more service names to check. Supported values are `wifi`, `data`, and `airplaneMode`. By default, the states for all services are returned.|
+
+#### Response
+
+`Record<string, boolean>` - mapping of service names to whether they are enabled. If the `services` parameter was set, only the specified services are returned.
+
+### `mobile: setConnectivity`
+
+Sets the state of one or more connectivity-related system services. On real devices, switching WiFi
+only works reliably since Android 11 (R / API level 30).
+
+!!! warning
+
+    Using this method may result in Android terminating/disconnecting the Espresso server app on
+    the device under test, causing a session disconnect. The only way to restore the session
+    afterwards would be to quit it, restore device connectivity, then reconnect to it with the
+    `noReset` capability set to `true`.
+
+#### Parameters
+
+At least one of the below parameters must be provided. If any parameter is not specified, the state
+of its service remains unchanged.
+
+|Name|Type|Description|
+|--|--|--|
+|`wifi?`|`boolean`|Whether WiFi should be enabled or disabled|
+|`data?`|`boolean`|Whether mobile data should be enabled or disabled|
+|`airplaneMode?`|`boolean`|Whether Airplane Mode should be enabled or disabled|
+
+#### Response
+
+`null`
+
+### `mobile: hideKeyboard`
+
+Hides the on-screen keyboard. An error is thrown if the keyboard cannot be hidden.
+
+#### Response
+
+`boolean` - `true` if the keyboard was successfully hidden, otherwise `false`
+
+### `mobile: isKeyboardShown`
+
+Determines whether the on-screen keyboard is shown.
+
+#### Response
+
+`boolean` - `true` if the keyboard is shown, otherwise `false`
+
+### `mobile: deviceidle`
+
+Adds or removes one or more applications from the Android system whitelist for apps that should not
+be forced into a limited mode after a period of inactivity (in other words, apps that should not be
+automatically put to sleep). Calls `adb shell dumpsys deviceidle` under the hood. Only supported
+since Android 6 (Marshmallow / API level 23).
+
+Refer to the [Diving Into Android 'M' Doze](https://www.protechtraining.com/blog/post/diving-into-android-m-doze-875)
+guide for more details.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`action`|`string`|Action to apply for the whitelist. Supported values are `whitelistAdd` and `whitelistRemove`.|
+|`packages`|`string` or `Array<string>`|One or more package identifiers to add or remove from the whitelist|
+
+#### Response
+
+`null`
+
+### `mobile: bluetooth`
+
+Performs the specified action on the Android system Bluetooth adapter. An error is thrown if the
+device under test does not have a Bluetooth adapter.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`action`|`string`|Bluetooth action to apply. Supported values are `enable`, `disable`, and `unpairAll`.|
+
+#### Response
+
+`null`
+
+### `mobile: nfc`
+
+Performs the specified action on the Android system NFC adapter. An error is thrown if the device
+under test does not have a NFC adapter.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`action`|`string`|NFC action to apply. Supported values are `enable` and `disable`.|
+
+#### Response
+
+`null`
+
+### `mobile: setUiMode`
+
+Sets the device appearance mode. Only supported since Android 10 (Q / API level 29). Calls
+`adb shell cmd uimode` under the hood.
+
+Available since driver version 2.29.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`mode`|`string`|Appearance mode to set. Supported values are `night` and `car`.|
+|`value`|`string`|Value of the specified `mode`. Supported values are either `yes`, `no`, `auto`, `custom_schedule`, and `custom_bedtime` (for `night` mode), or `yes` and `no` (for `car` mode).|
+
+#### Response
+
+`null`
+
+### `mobile: getUiMode`
+
+Retrieves the value for the specified device appearance mode. Only supported since Android 10 (Q /
+API level 29). Calls `adb shell cmd uimode` under the hood.
+
+Available since driver version 2.29.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`mode`|`string`|Appearance mode to check. Supported values are `night` and `car`.|
+
+#### Response
+
+`string` - value of the specified appearance mode
