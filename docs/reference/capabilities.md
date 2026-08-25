@@ -384,7 +384,7 @@ Available since driver version 6.2.0.
 
 The port for the Espresso server to listen on. Must be unique for each session - see the
 [Testing in Parallel guide](../guides/parallel-tests.md) for details. If not provided, Appium will
-try the first available port in the range `8300..8399`.
+try the first available port in the range `[8300, 8399]`.
 
 ### espressoBuildConfig
 
@@ -865,8 +865,8 @@ Mutually exclusive with [`appium:noReset`](#noreset).
 Whether to automatically grant all requested application permissions upon session startup.
 
 If the `targetSdk` of the application under test is below `23`, or the device under test is running
-Android 5 (API level 22), granting permissions requires the application to be reinstalled, for
-example, using the [`appium:fullReset`](#fullreset) capability.
+Android 5 (Lollipop / API level 22), granting permissions requires the application to be
+reinstalled, for example, using the [`appium:fullReset`](#fullreset) capability.
 
 ### otherApps
 
@@ -1065,7 +1065,7 @@ Requires [`appium:autoWebview`](#autowebview) to be set.
 
 The port to use for communicating with webviews over the DevTools protocol. Must be unique for
 each session - see the [Testing in Parallel guide](../guides/parallel-tests.md) for details. If not
-provided, Appium will try the first available port in the range `10900..11000`.
+provided, Appium will try the first available port in the range `[10900, 11000]`.
 
 ### ensureWebviewsHavePages
 

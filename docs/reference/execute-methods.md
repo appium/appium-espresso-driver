@@ -79,6 +79,7 @@ matching the command's `stderr`.
 
 Executes the specified command using the Android emulator telnet console interface. The
 [`emulator_console`](./insecure-features.md#emulator_console) insecure feature must be enabled.
+Only supported on emulators.
 
 #### Parameters
 
@@ -216,7 +217,7 @@ is stopped.
 |`pathname?`|`string`|URL path on which the MJPEG server should be accessible. By default, all pathnames on the given `host`/`port` combination are accessible. Must begin with a forward slash (`/`).|
 |`port?`|`number`|Port number to start the MJPEG server on. Set to `8093` by default.|
 |`tcpPort?`|`number`|Port number to start the internal TCP MJPEG broadcast on. Always starts on the loopback interface (`127.0.0.1`). Set to `8094` by default.|
-|`quality?`|`number`|Quality of the broadcasted images. Must be an integer in the range `1..100`, where `100` indicates the best quality. Set to `70` by default.|
+|`quality?`|`number`|Quality of the broadcasted images. Must be an integer in the range `[1, 100]`, where `100` indicates the best quality. Set to `70` by default.|
 |`considerRotation?`|`boolean`|Whether to increase the broadcast dimensions to fit both landscape and portrait orientations. Should be set to `true` if the device orientation will be changed during the broadcast. Set to `false` by default.|
 |`logPipelineDetails?`|`boolean`|Whether to include GStreamer pipeline event logs into the standard log output. Can be useful for debugging purposes. Set to `false` by default.|
 
@@ -718,8 +719,8 @@ The device under test must either have Google Play Services installed, or be run
 ### `mobile: startMediaProjectionRecording`
 
 Starts recording the device screen and audio using Android's [Media Projection](https://developer.android.com/reference/android/media/projection/MediaProjection)
-API. The device under test must be running Android 10 (Q / API level 29) or later. Recording can be
-stopped using the [`mobile: stopMediaProjectionRecording`](#mobile-stopmediaprojectionrecording)
+API. Only supported since Android 10 (Q / API level 29). Recording can be stopped using the
+[`mobile: stopMediaProjectionRecording`](#mobile-stopmediaprojectionrecording)
 execute method.
 
 #### Parameters
@@ -737,8 +738,8 @@ execute method.
 
 ### `mobile: isMediaProjectionRecordingRunning`
 
-Determines whether a Media Projection-based recording is currently active. The device under test
-must be running Android 10 (Q / API level 29) or later.
+Determines whether a Media Projection-based recording is currently active. Only supported since
+Android 10 (Q / API level 29).
 
 #### Response
 
@@ -747,8 +748,8 @@ must be running Android 10 (Q / API level 29) or later.
 ### `mobile: stopMediaProjectionRecording`
 
 Stops the active screen recording process started by [`mobile: startMediaProjectionRecording`](#mobile-startmediaprojectionrecording),
-either returning its payload or uploading it to a remote location. The device under test must be
-running Android 10 (Q / API level 29) or later.
+either returning its payload or uploading it to a remote location. Only supported since Android 10
+(Q / API level 29).
 
 If the recording process is not running, but another recording has previously finished, its data is
 used instead. If no previous recording was found, an error is thrown.
@@ -912,3 +913,421 @@ Available since driver version 2.29.0.
 #### Response
 
 `string` - value of the specified appearance mode
+
+### `mobile: injectEmulatorCameraImage`
+
+Sets the specified image as the output of the camera viewfinder. Only supported on emulators.
+
+This functionality can be useful, for example, when testing QR code scanning functionality in the
+application under test. 
+
+Available since driver version 2.43.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`payload`|`string`|Base64-encoded `.PNG` image to set as the viewfinder output. Other image formats are not supported.|
+
+#### Response
+
+`null`
+
+### `mobile: sendTrimMemory`
+
+Simulates a system memory trimming-related event for the specified package, by calling the Android
+[`onTrimMemory()`](https://developer.android.com/reference/android/content/ComponentCallbacks2#onTrimMemory(int))
+event.
+
+This functionality can be useful to verify app functionality under different system memory usage
+levels. Refer to the Android [Manage your app's memory](https://developer.android.com/topic/performance/memory)
+guide for more details.
+
+Available since driver version 2.40.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`pkg`|`string`|Package identifier of the application to send the event to.|
+|`level`|`string`|Context of the trim to simulate. Supported values are `COMPLETE`, `MODERATE`, `BACKGROUND`, `UI_HIDDEN`, `RUNNING_CRITICAL`, `RUNNING_LOW`, and `RUNNING_MODERATE`.|
+
+#### Response
+
+`null`
+
+### `mobile: getPerformanceData`
+
+Retrieves performance data about the given Android subsystem. The data is parsed from the output of
+the `dumpsys` utility.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|--|--|--|
+|`packageName`|`string`|Name of the package identifier to fetch the data for|
+|`dataType`|`string`|Subsystem name to return the data for. Supported values can be retrieved using the [`mobile: getPerformanceDataTypes`](#mobile-getperformancedatatypes) method.|
+
+#### Response
+
+`Array<Array<any>[]>` - table formatted as an array of arrays, where the first subarray represents
+column names, and the following subarrays represent data for those columns. The returned columns
+and their data depend on the specified `dataType`.
+
+For example, a response for the `cpuinfo` datatype could look as follows:
+```
+[
+  [user, kernel],
+  [0.9, 1.3]
+]
+```
+
+### `mobile: getPerformanceDataTypes`
+
+Retrieves supported performance data types, which can be used as the `dataType` argument for the
+[`mobile: getPerformanceData`](#mobile-getperformancedata) method.
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`Array<string>` - list of supported data types
+
+### `mobile: toggleGps`
+
+Toggles the state of location services (GPS). This functionality only works reliably starting from
+Android 12 (S / API level 31).
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`null`
+
+### `mobile: isGpsEnabled`
+
+Determines whether location services (GPS) are enabled. This functionality only works reliably
+starting from Android 12 (S / API level 31).
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`boolean` - `true` if GPS services are enabled, otherwise `false`
+
+### `mobile: getDisplayDensity`
+
+Retrieves the density of the current display in DPI.
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`number` - the display density in DPI
+
+### mobile: getSystemBars
+
+Retrieves properties of various bars in the system UI.
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`Record<string, Record<string, any>>` - mapping of system bar names to their properties. The
+following system bar names are included:
+
+* `statusBar`
+* `navigationBar`
+
+All system bars include the following properties:
+
+|Name|Type|Description|
+|--|--|--|
+|`visible`|`boolean`|Whether the bar is visible|
+|`x`|`number`|Left X coordinate of the bar. Could be `0` if the bar is not visible|
+|`y`|`number`|Top Y coordinate of the bar. Could be `0` if the bar is not visible|
+|`width`|`number`|Bar width. Could be `0` if the bar is not visible|
+|`height`|`number`|Bar height. Could be `0` if the bar is not visible|
+
+### `mobile: statusBar`
+
+Performs the specified command on the system status bar. Calls `adb shell cmd statusbar` under the
+hood. Only supported since Android 8 (Oreo / API level 26).
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`command`|`string`|Name of the status bar command. See below for supported values.|
+|`component?`|`string`|Name of the tile component to apply the command on. Only used for `addTile`, `removeTile` and `clickTile` commands.|
+
+The following values are supported for the `command` parameter:
+
+|<div style="width:11em">Name</div>|Description|
+|--|--|
+|`expandNotifications`|Opens the notifications panel|
+|`expandSettings`|Opens the notifications panel and expand quick settings if present|
+|`collapse`|Collapses the notifications and settings panel|
+|`addTile`|Adds a TileService of the specified component|
+|`removeTile`|Removes a TileService of the specified component|
+|`clickTile`|Clicks on a TileService of the specified component|
+|`getStatusIcons`|Returns the list of status bar icons and the order they appear in. List items are separated using the newline character|
+
+#### Response
+
+`string` - output of the requested status bar command. Could be empty
+
+### `mobile: fingerprint`
+
+Emulates authentication using a virtual fingerprint with the specified ID. Only supported on
+emulators running Android 6 (Marshmallow / API level 23) or later.
+
+Virtual fingerprints should first be registered by opening the Android fingerprint registration
+settings and running this command with the ID that the fingerprint should be assigned to. Once
+registered, the command and ID can be used in fingerprint authentication prompts.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`fingerprintId`|`number` or `string`|Identifier of a virtual fingerprint|
+
+#### Response
+
+`null`
+
+### `mobile: sendSms`
+
+Emulates sending an SMS to the specified phone number. Only supported on emulators.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`phoneNumber`|`string`|Phone number to send the message to|
+|`message`|`string`|Message contents to send|
+
+#### Response
+
+`null`
+
+### `mobile: gsmCall`
+
+Emulates a GSM call action for the specified phone number. Only supported on emulators.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`phoneNumber`|`string`|Phone number to apply the action to|
+|`action`|`string`|Call action to apply. Supported values are `call`, `accept`, `cancel` and `hold`.|
+
+#### Response
+
+`null`
+
+### `mobile: gsmSignal`
+
+Emulates a change of the GSM signal strength profile. Only supported on emulators.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|<div style="width:8em">Name</div>|Type|Description|
+|--|--|--|
+|`signalStrength`|`number`|Signal strength profile to apply. Supported values are `0` (worst signal), `1`, `2`, `3`, and `4` (best signal)|
+
+#### Response
+
+`null`
+
+### `mobile: gsmVoice`
+
+Emulates a change of the GSM voice state. Only supported on emulators.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`state`|`string`|Voice state to apply. Supported values are `on`, `off`, `denied`, `searching`, `roaming`, `home`, and `unregistered`.|
+
+#### Response
+
+`null`
+
+### `mobile: powerAC`
+
+Emulates a power state change on the device. Only supported on emulators.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`state`|`string`|Power state to apply. Supported values are `on` and `off`.|
+
+#### Response
+
+`null`
+
+### `mobile: powerCapacity`
+
+Emulates a power capacity change on the device. Only supported on emulators.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`percent`|`number` or `string`|Power capacity to apply. Must be an integer in the range `[0, 100]`.|
+
+#### Response
+
+`null`
+
+### `mobile: networkSpeed`
+
+Emulates a network connection speed mode change. Only supported on emulators.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`netspeed`|`string`|Network speed mode to apply. Supported values are `gsm`, `scsd`, `gprs`, `edge`, `umts`, `hsdpa`, `lte`, `evdo`, and `full`.|
+
+#### Response
+
+`null`
+
+### `mobile: sensorSet`
+
+Sets the value of a specific hardware sensor on the device under test. Only supported on emulators.
+Refer to the Android [Manage sensors on the emulator](https://developer.android.com/studio/run/emulator-console#manage-sensors)
+guide for more details.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`sensorType`|`string`|Type of sensor to set the value for. Supported values can be found in the [`appium-adb` source code here](https://github.com/appium/appium-adb/blob/master/lib/tools/emu-constants.ts#L32).|
+|`value`|`string`|Value to set for the specified sensor. The supported format depends on `sensorType`.|
+
+#### Response
+
+`null`
+
+### `mobile: getCurrentActivity`
+
+Retrieves the name of the currently focused app activity.
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`string` - name of the focused app activity. Could be `null`
+
+### `mobile: getCurrentPackage`
+
+Retrieves the package name of the currently focused app.
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`string` - name of the focused app package. Could be `null`
+
+### `mobile: setGeolocation`
+
+Sets the current location of the device under test.
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|--|--|--|
+|`latitude`|`number`|New latitude value|
+|`longitude`|`number`|New longitude value|
+|`altitude?`|`number`|New altitude value|
+|`satellites?`|`number`|Number of satellites being tracked. Only supported on emulators. Must be an integer in the range `[1, 12]`.|
+|`speed?`|`number`|Current speed in meters per second. Must be a non-negative float. See [`setSpeed`](https://developer.android.com/reference/android/location/Location#setSpeed(float)) for more details.|
+|`bearing?`|`number`|Current bearing in degrees. Only supported on real devices. Must be a float in the range `[0, 360)`. See [`setBearing`](https://developer.android.com/reference/android/location/Location#setBearing(float)) for more details.|
+|`accuracy?`|`number`|Current horizontal accuracy in meters. Only supported on real devices. Must be a non-negative float. See [`setAccuracy`](https://developer.android.com/reference/android/location/Location#setAccuracy(float)) for more details.|
+
+#### Response
+
+`null`
+
+### `mobile: getGeolocation`
+
+Retrieves the current location of the device under test.
+
+#### Response
+
+`Location` - an object with the following properties:
+
+|Name|Type|Description|
+|--|--|--|
+|`altitude`|`number`|Altitude of the device location|
+|`latitude`|`number`|Latitude of the device location|
+|`longitude`|`number`|Longitude of the device location|
+
+### `mobile: resetGeolocation`
+
+Resets the current location of the device under test to the default/system one. Only supported on
+real devices.
+
+#### Response
+
+`null`
+
+### `mobile: setStylusHandwriting`
+
+Enables or disables the Android system stylus handwriting input method. The [`set_stylus_handwriting`](./insecure-features.md#set_stylus_handwriting)
+insecure feature must be enabled.
+
+This functionality can be used to hide a possible system popup titled 'Try out your stylus'. Refer
+to [this ticket](https://github.com/appium/appium-uiautomator2-driver/issues/909) for more details.
+
+Available since driver version 7.1.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`enabled`|`boolean`|Whether to enable or disable the stylus handwriting feature|
+
+#### Response
+
+`null`
+
+### `mobile: getAppStrings`
+
+Retrieves string resources for the specified app language. An error is thrown if strings cannot be
+fetched, or no strings exist for the specified language.
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|--|--|--|
+|`language?`|`string`|Language whose strings should be retrieved. If omitted, the default system language is used (affected by the [`appium:language`](./capabilities.md#language) capability)|
+|`stringFile?`|`string`|Path to the app whose strings should be retrieved. If not specified, the app under test is used.|
+
+#### Response
+
+`Record<string, string>` - mapping of resource identifiers to localized strings

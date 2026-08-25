@@ -647,8 +647,8 @@ Retrieves supported performance data types, which can be used as the `dataType` 
 POST /session/:sessionId/appium/device/finger_print
 ```
 
-Emulates authentication using a virtual fingerprint with the specified ID. Only supported on emulators
-running Android 6 (Marshmallow / API level 23) or later.
+Emulates authentication using a virtual fingerprint with the specified ID. Only supported on
+emulators running Android 6 (Marshmallow / API level 23) or later.
 
 Virtual fingerprints should first be registered by opening the Android fingerprint registration
 settings and running this command with the ID that the fingerprint should be assigned to. Once
@@ -798,7 +798,7 @@ Emulates a power capacity change on the device. Only supported on emulators.
 
 |Name|Type|Description|
 |--|--|--|
-|`percent`|`number` or `string`|Power capacity to apply. Must be an integer in the range `0..100`.|
+|`percent`|`number` or `string`|Power capacity to apply. Must be an integer in the range `[0, 100]`.|
 
 #### Response
 
@@ -834,7 +834,7 @@ POST /session/:sessionId/appium/device/toggle_airplane_mode
 ```
 
 Toggles the state of airplane mode. On real devices this functionality is only supported starting
-from Android 12 (API level 31).
+from Android 12 (S / API level 31).
 
 !!! warning "Deprecated"
 
@@ -852,7 +852,7 @@ POST /session/:sessionId/appium/device/toggle_data
 ```
 
 Toggles the state of mobile data. On real devices this functionality is only supported starting
-from Android 12 (API level 31).
+from Android 12 (S / API level 31).
 
 !!! warning "Deprecated"
 
@@ -870,7 +870,7 @@ POST /session/:sessionId/appium/device/toggle_wifi
 ```
 
 Toggles the state of Wi-Fi. On real devices this functionality is only supported starting from
-Android 12 (API level 31).
+Android 12 (S / API level 31).
 
 !!! warning "Deprecated"
 
@@ -888,7 +888,7 @@ POST /session/:sessionId/appium/device/toggle_location_services
 ```
 
 Toggles the state of location services (GPS). This functionality only works reliably starting from
-Android 12 (API level 31).
+Android 12 (S / API level 31).
 
 !!! warning "Deprecated"
 
@@ -905,7 +905,7 @@ Android 12 (API level 31).
 GET /session/:sessionId/appium/device/system_bars
 ```
 
-Retrieves properties of system bars.
+Retrieves properties of various bars in the system UI.
 
 !!! warning "Deprecated"
 
