@@ -64,7 +64,7 @@ insecure feature must be enabled.
 |---|---|---|
 |`command`|`string`|Shell command name to execute|
 |`args?`|`Array<string>`|Additional arguments to pass to the command. Keys and values should be provided as separate strings.|
-|`timeout?`|`number`|Command timeout in milliseconds. An error is thrown if the command blocks for longer than this timeout. Set to `20000` by default|
+|`timeout?`|`integer`|Command timeout in milliseconds. An error is thrown if the command blocks for longer than this timeout. Set to `20000` by default|
 |`includeStderr?`|`boolean`|Whether to include stderr stream into the returned result. Set to `false` by default|
 
 #### Response
@@ -86,9 +86,9 @@ Only supported on emulators.
 |<div style="width:7em">Name</div>|Type|Description|
 |---|---|---|
 |`command`|`string` or `Array<string>`|Command name to execute. See [Android Emulator Console Guide](https://developer.android.com/studio/run/emulator-console) for more details on available commands|
-|`execTimeout?`|`number`|Timeout in milliseconds to wait for the server to reply to the given command. Set to `60000` by default|
-|`connTimeout?`|`number`|Console connection timeout in milliseconds. Set to `5000` by default|
-|`initTimeout?`|`number`|Telnet console initialization timeout in milliseconds (the time between the connection being established and the command prompt becoming available). Set to `5000` ms by default|
+|`execTimeout?`|`integer`|Timeout in milliseconds to wait for the server to reply to the given command. Set to `60000` by default|
+|`connTimeout?`|`integer`|Console connection timeout in milliseconds. Set to `5000` by default|
+|`initTimeout?`|`integer`|Telnet console initialization timeout in milliseconds (the time between the connection being established and the command prompt becoming available). Set to `5000` ms by default|
 
 #### Response
 
@@ -175,7 +175,7 @@ invocation of such a callback on the focused element.
 
 |Name|Type|Description|
 |---|---|---|
-|`action`|`string` or `number`|Name or integer code of the editor action to be executed. Supported values are `unspecified`, `none`, `go`, `search`, `send`, `next`, `done`, and `previous`. Refer to the [Android EditorInfo](https://developer.android.com/reference/android/view/inputmethod/EditorInfo) documentation for more details.|
+|`action`|`integer` or `string`|Name or integer code of the editor action to be executed. Supported values are `unspecified`, `none`, `go`, `search`, `send`, `next`, `done`, and `previous`. Refer to the [Android EditorInfo](https://developer.android.com/reference/android/view/inputmethod/EditorInfo) documentation for more details.|
 
 #### Response
 
@@ -210,14 +210,14 @@ is stopped.
 
 |<div style="width:11em">Name</div>|Type|Description|
 |---|---|---|
-|`width?`|`number`|Scaled width of the device screen. Set to the actual device screen width by default. |
-|`height?`|`number`|Scaled height of the device screen. Set to the actual device screen height by default. |
-|`bitRate?`|`number`|Bitrate of the video, in bits per second. Set to `4000000` (4 Mbps) by default.|
+|`width?`|`integer`|Scaled width of the device screen. Set to the actual device screen width by default. |
+|`height?`|`integer`|Scaled height of the device screen. Set to the actual device screen height by default. |
+|`bitRate?`|`integer`|Bitrate of the video, in bits per second. Set to `4000000` (4 Mbps) by default.|
 |`host?`|`string`|IP address/host name to start the MJPEG server on. Set to `127.0.0.1` by default. Can be set to `0.0.0.0` to broadcast on all available network interfaces.|
 |`pathname?`|`string`|URL path on which the MJPEG server should be accessible. By default, all pathnames on the given `host`/`port` combination are accessible. Must begin with a forward slash (`/`).|
-|`port?`|`number`|Port number to start the MJPEG server on. Set to `8093` by default.|
-|`tcpPort?`|`number`|Port number to start the internal TCP MJPEG broadcast on. Always starts on the loopback interface (`127.0.0.1`). Set to `8094` by default.|
-|`quality?`|`number`|Quality of the broadcasted images. Must be an integer in the range `[1, 100]`, where `100` indicates the best quality. Set to `70` by default.|
+|`port?`|`integer`|Port number to start the MJPEG server on. Set to `8093` by default.|
+|`tcpPort?`|`integer`|Port number to start the internal TCP MJPEG broadcast on. Always starts on the loopback interface (`127.0.0.1`). Set to `8094` by default.|
+|`quality?`|`integer`|Quality of the broadcasted images. Must be in the range `[1, 100]`, where `100` indicates the best quality. Set to `70` by default.|
 |`considerRotation?`|`boolean`|Whether to increase the broadcast dimensions to fit both landscape and portrait orientations. Should be set to `true` if the device orientation will be changed during the broadcast. Set to `false` by default.|
 |`logPipelineDetails?`|`boolean`|Whether to include GStreamer pipeline event logs into the standard log output. Can be useful for debugging purposes. Set to `false` by default.|
 
@@ -288,7 +288,7 @@ Retrieves the most recent SMS messages.
 
 |Name|Type|Description|
 |---|---|---|
-|`max?`|`number`|Maximum number of messages to retrieve. Set to `100` by default.|
+|`max?`|`integer`|Maximum number of messages to retrieve. Set to `100` by default.|
 
 #### Response
 
@@ -397,7 +397,7 @@ under test.
 |Name|Type|Description|
 |---|---|---|
 |`appId`|`string`|Package identifier of the application|
-|`user?`|`number` or `string`|ID of the user for which the app is installed. The `current` user is used by default|
+|`user?`|`integer` or `string`|ID of the user for which the app is installed. The `current` user is used by default|
 
 #### Response
 
@@ -412,7 +412,7 @@ Android 8 (Oreo / API level 26).
 
 |Name|Type|Description|
 |---|---|---|
-|`user?`|`number` or `string`|ID of the user to filter the installed packages for|
+|`user?`|`integer` or `string`|ID of the user to filter the installed packages for|
 
 #### Response
 
@@ -436,7 +436,7 @@ test.
 
 #### Response
 
-`number` - an integer indicating the app state:
+`integer` - a number indicating the app state:
 
 |Number|Description|
 |--|--|
@@ -469,7 +469,7 @@ Uninstalls the application with the specified package identifier from the device
 |<div style="width:10em">Name</div>|Type|Description|
 |--|--|--|
 |`appId`|`string`|Package identifier of the app to uninstall|
-|`timeout?`|`number`|Number of milliseconds to wait until the app is terminated before uninstallation. Set to `20000` by default.|
+|`timeout?`|`integer`|Number of milliseconds to wait until the app is terminated before uninstallation. Set to `20000` by default.|
 |`keepData?`|`boolean`|Whether to retain application data and cache after uninstall. Unset by default.|
 |`skipInstallCheck?`|`boolean`|Whether to check if the app is installed before uninstalling it. Set to `true` by default.|
 
@@ -487,7 +487,7 @@ has stopped.
 |Name|Type|Description|
 |--|--|--|
 |`appId`|`string`|Package identifier of the app to terminate|
-|`timeout?`|`number`|Number of milliseconds to wait until the app is terminated. Set to `500` by default. Since driver version 2.13.0, setting this to `0` or a negative value skips the app state check.|
+|`timeout?`|`integer`|Number of milliseconds to wait until the app is terminated. Set to `500` by default. Since driver version 2.13.0, setting this to `0` or a negative value skips the app state check.|
 
 #### Response
 
@@ -506,7 +506,7 @@ error may be raised.
 |--|--|--|
 |`appPath`|`string`|Full path to a file on the host machine, or URL to a remote location. The app must have the `.apk` or `.apks` extension.|
 |`checkVersion?`|`boolean`|Whether to skip installation if an identical or newer app version is already installed. Unset by default. Applied before `replace`.|
-|`timeout?`|`number`|Number of milliseconds to wait until the app is installed. Set to `60000` by default, unless overridden using the [`appium:adbExecTimeout`](./capabilities.md#adbexectimeout) capability|
+|`timeout?`|`integer`|Number of milliseconds to wait until the app is installed. Set to `60000` by default, unless overridden using the [`appium:adbExecTimeout`](./capabilities.md#adbexectimeout) capability|
 |`allowTestPackages?`|`boolean`|Whether to allow installation of test packages. Set to `false` by default|
 |`useSdcard?`|`boolean`|Whether to install the app on the SD card instead of built-in storage. Set to `false` by default|
 |`grantPermissions?`|`boolean`|Whether to automatically grant all permissions defined in the application manifest after installation. Set to `false` by default. Only supported on Android 6 (Marshmallow / API level 23) or later.|
@@ -543,7 +543,7 @@ Available since driver version 2.23.0.
 
 |Name|Type|Description|
 |--|--|--|
-|`seconds`|`number`|Number of seconds after which to restore the app to foreground. If set to `0` or a negative value, automatic restoration is skipped.|
+|`seconds`|`float`|Number of seconds after which to restore the app to foreground. If set to `0` or a negative value, automatic restoration is skipped.|
 
 #### Response
 
@@ -558,7 +558,7 @@ Sends a broadcast Intent to the Android system. Invokes `adb shell am broadcast`
 |<div style="width:16em">Name</div>|<div style="width:11em">Type</div>|Description|
 |--|--|--|
 |`intent?`|`string`|Full name of the intent to broadcast|
-|`user?`|`number` or `string`|ID of the user to send the broadcast to|
+|`user?`|`integer` or `string`|ID of the user to send the broadcast to|
 |`action?`|`string`|Name of the intent action|
 |`uri?`|`string`|Intent URI|
 |`mimeType?`|`string`|Intent MIME type|
@@ -606,7 +606,7 @@ include non-webview (e.g. native) contexts.
 
 |<div style="width:10em">Name</div>|Type|Description|
 |--|--|--|
-|`waitForWebviewMs?`|`number`|Number of milliseconds for how long to retry retrieval of webview data. Set to `0` by default. Higher values can help prevent ChromeDriver errors such as `failed to connect to socket 'localabstract:chrome_devtools_remote'`. Refer to [this issue](https://github.com/appium/appium/issues/19251) for more details. Available since driver version 2.30.0.|
+|`waitForWebviewMs?`|`integer`|Number of milliseconds for how long to retry retrieval of webview data. Set to `0` by default. Higher values can help prevent ChromeDriver errors such as `failed to connect to socket 'localabstract:chrome_devtools_remote'`. Refer to [this issue](https://github.com/appium/appium/issues/19251) for more details. Available since driver version 2.30.0.|
 
 #### Response
 
@@ -665,7 +665,7 @@ password) locks are supported.
 
 |Name|Type|Description|
 |--|--|--|
-|`seconds?`|`number`|Number of seconds after which to unlock the device. If omitted or set to `0`, automatic unlock is skipped.|
+|`seconds?`|`float`|Number of seconds after which to unlock the device. If omitted or set to `0`, automatic unlock is skipped.|
 
 #### Response
 
@@ -680,10 +680,10 @@ details.
 
 |<div style="width:6em">Name</div>|Type|Description|
 |--|--|--|
-|`key?`|`number`|The unlock key. By default, set to the value of the [`appium:unlockKey`](./capabilities.md#unlockkey) capability. Must be provided together with `type`.|
-|`type?`|`number`|The unlock type. By default, set to the value of the [`appium:unlockType`](./capabilities.md#unlocktype) capability. Supported values are `pin`, `pinWithKeyEvent`, `password`, `pattern` and `fingerprint`. Must be provided together with `key`.|
-|`strategy?`|`number`|Approach to use for unlocking. Unset by default. If unset or set to `locksettings`, uses an `adb`-based fast unlock approach, otherwise uses `type`-specific approaches.|
-|`timeoutMs?`|`number`|The unlock timeout. By default, set to the value of the [`appium:unlockSuccessTimeout`](./capabilities.md#unlocksuccesstimeout) capability.|
+|`key?`|`string`|The unlock key. By default, set to the value of the [`appium:unlockKey`](./capabilities.md#unlockkey) capability. Must be provided together with `type`.|
+|`type?`|`string`|The unlock type. By default, set to the value of the [`appium:unlockType`](./capabilities.md#unlocktype) capability. Supported values are `pin`, `pinWithKeyEvent`, `password`, `pattern` and `fingerprint`. Must be provided together with `key`.|
+|`strategy?`|`string`|Approach to use for unlocking. Unset by default. If unset or set to `locksettings`, uses an `adb`-based fast unlock approach, otherwise uses `type`-specific approaches.|
+|`timeoutMs?`|`integer`|The unlock timeout. By default, set to the value of the [`appium:unlockSuccessTimeout`](./capabilities.md#unlocksuccesstimeout) capability.|
 
 #### Response
 
@@ -710,7 +710,7 @@ The device under test must either have Google Play Services installed, or be run
 
 |<div style="width:6em">Name</div>|Type|Description|
 |--|--|--|
-|`timeoutMs?`|`number`|Maximum number of milliseconds to block until the GPS cache is confirmed to have been refreshed. Set to `20000` by default. An error is thrown if the device does not return a successful cache refresh response within this timeout. If set to `0` or a negative value, waiting is skipped.|
+|`timeoutMs?`|`integer`|Maximum number of milliseconds to block until the GPS cache is confirmed to have been refreshed. Set to `20000` by default. An error is thrown if the device does not return a successful cache refresh response within this timeout. If set to `0` or a negative value, waiting is skipped.|
 
 #### Response
 
@@ -729,7 +729,7 @@ execute method.
 |--|--|--|
 |`resolution?`|`string`|Resolution of the resulting video, formatted as `<width>x<height>`. Supported values are `1920x1080`, `1280x720`, `720x480`, `320x240` and `176x144`. Set to the greatest supported device resolution by default (usually `1920x1080`).|
 |`priority?`|`string`|Priority of the recorder process, which could be adjusted in case of performance drops. Supported values are `high`, `normal` and `low`. Set to `high` by default.|
-|`maxDurationSec?`|`number`|Maximum recording time in seconds. Set to `900` (15 minutes) by default. |
+|`maxDurationSec?`|`integer`|Maximum recording time in seconds. Set to `900` (15 minutes) by default. |
 |`filename?`|`string`|Name of the resulting video file. The `.mp4` extension is added automatically if absent. Set to the current timestamp by default.|
 
 #### Response
@@ -1025,7 +1025,7 @@ Available since driver version 2.23.0.
 
 #### Response
 
-`number` - the display density in DPI
+`integer` - the display density in DPI
 
 ### mobile: getSystemBars
 
@@ -1046,10 +1046,10 @@ All system bars include the following properties:
 |Name|Type|Description|
 |--|--|--|
 |`visible`|`boolean`|Whether the bar is visible|
-|`x`|`number`|Left X coordinate of the bar. Could be `0` if the bar is not visible|
-|`y`|`number`|Top Y coordinate of the bar. Could be `0` if the bar is not visible|
-|`width`|`number`|Bar width. Could be `0` if the bar is not visible|
-|`height`|`number`|Bar height. Could be `0` if the bar is not visible|
+|`x`|`integer`|Left X coordinate of the bar. Could be `0` if the bar is not visible|
+|`y`|`integer`|Top Y coordinate of the bar. Could be `0` if the bar is not visible|
+|`width`|`integer`|Bar width. Could be `0` if the bar is not visible|
+|`height`|`integer`|Bar height. Could be `0` if the bar is not visible|
 
 ### `mobile: statusBar`
 
@@ -1096,7 +1096,7 @@ Available since driver version 2.23.0.
 
 |Name|Type|Description|
 |--|--|--|
-|`fingerprintId`|`number` or `string`|Identifier of a virtual fingerprint|
+|`fingerprintId`|`integer` or `string`|Identifier of a virtual fingerprint|
 
 #### Response
 
@@ -1146,7 +1146,7 @@ Available since driver version 2.23.0.
 
 |<div style="width:8em">Name</div>|Type|Description|
 |--|--|--|
-|`signalStrength`|`number`|Signal strength profile to apply. Supported values are `0` (worst signal), `1`, `2`, `3`, and `4` (best signal)|
+|`signalStrength`|`integer`|Signal strength profile to apply. Supported values are `0` (worst signal), `1`, `2`, `3`, and `4` (best signal)|
 
 #### Response
 
@@ -1194,7 +1194,7 @@ Available since driver version 2.23.0.
 
 |Name|Type|Description|
 |--|--|--|
-|`percent`|`number` or `string`|Power capacity to apply. Must be an integer in the range `[0, 100]`.|
+|`percent`|`integer` or `string`|Power capacity to apply. Must be in the range `[0, 100]`.|
 
 #### Response
 
@@ -1261,13 +1261,13 @@ Sets the current location of the device under test.
 
 |<div style="width:7em">Name</div>|Type|Description|
 |--|--|--|
-|`latitude`|`number`|New latitude value|
-|`longitude`|`number`|New longitude value|
-|`altitude?`|`number`|New altitude value|
-|`satellites?`|`number`|Number of satellites being tracked. Only supported on emulators. Must be an integer in the range `[1, 12]`.|
-|`speed?`|`number`|Current speed in meters per second. Must be a non-negative float. See [`setSpeed`](https://developer.android.com/reference/android/location/Location#setSpeed(float)) for more details.|
-|`bearing?`|`number`|Current bearing in degrees. Only supported on real devices. Must be a float in the range `[0, 360)`. See [`setBearing`](https://developer.android.com/reference/android/location/Location#setBearing(float)) for more details.|
-|`accuracy?`|`number`|Current horizontal accuracy in meters. Only supported on real devices. Must be a non-negative float. See [`setAccuracy`](https://developer.android.com/reference/android/location/Location#setAccuracy(float)) for more details.|
+|`latitude`|`float`|New latitude value|
+|`longitude`|`float`|New longitude value|
+|`altitude?`|`float`|New altitude value|
+|`satellites?`|`integer`|Number of satellites being tracked. Only supported on emulators. Must be in the range `[1, 12]`.|
+|`speed?`|`float`|Current speed in meters per second. Must not be negative. See [`setSpeed`](https://developer.android.com/reference/android/location/Location#setSpeed(float)) for more details.|
+|`bearing?`|`float`|Current bearing in degrees. Only supported on real devices. Must be in the range `[0, 360)`. See [`setBearing`](https://developer.android.com/reference/android/location/Location#setBearing(float)) for more details.|
+|`accuracy?`|`float`|Current horizontal accuracy in meters. Only supported on real devices. Must not be negative. See [`setAccuracy`](https://developer.android.com/reference/android/location/Location#setAccuracy(float)) for more details.|
 
 #### Response
 
@@ -1283,9 +1283,9 @@ Retrieves the current location of the device under test.
 
 |Name|Type|Description|
 |--|--|--|
-|`altitude`|`number`|Altitude of the device location|
-|`latitude`|`number`|Latitude of the device location|
-|`longitude`|`number`|Longitude of the device location|
+|`altitude`|`float`|Altitude of the device location|
+|`latitude`|`float`|Latitude of the device location|
+|`longitude`|`float`|Longitude of the device location|
 
 ### `mobile: resetGeolocation`
 
@@ -1374,7 +1374,7 @@ under the hood, depending on the parameters.
 |--|--|--|
 |`elementId`[^elementid]|`string`|UDID of the element to perform the action on|
 |`scrollTo?`|`string`|Direction in which to scroll. Required unless `scrollToPage` is set. Supported values are `first`, `last`, `left`, and `right`.|
-|`scrollToPage?`|`number`|Number of the page to scroll to. Required unless `scrollTo` is set. Must be a non-negative integer.|
+|`scrollToPage?`|`integer`|Number of the page to scroll to. Required unless `scrollTo` is set. Must be a non-negative integer.|
 |`smoothScroll?`|`boolean`|Whether to perform smoother but slower scrolling. Set to `false` by default.|
 
 #### Response
@@ -1391,7 +1391,7 @@ under the hood.
 |Name|Type|Description|
 |--|--|--|
 |`elementId`[^elementid]|`string`|UDID of the navigation element|
-|`menuItemId?`|`number` or `string`|Resource ID of the target menu item|
+|`menuItemId?`|`integer` or `string`|Resource ID of the target menu item|
 
 #### Response
 
@@ -1410,8 +1410,8 @@ under the hood.
 |`tapper?`|`string`|Type of tap to use. Supported values are `SINGLE`, `LONG`, and `DOUBLE`. Set to `SINGLE` by default.|
 |`coordinatesProvider?`|`string`|Position within the element boundaries to tap on. Supported values are `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER`, `BOTTOM_RIGHT`, and `VISIBLE_CENTER`. Set to `VISIBLE_CENTER` by default.|
 |`precisionDescriber?`|`string`|Size of the tap pointer used. Supported values are `PINPOINT` (1 px), `FINGER` (16mm), and `THUMB` (25mm). Set to `FINGER` by default.|
-|`inputDevice?`|`number`|Identifier of the tap input device. Must match the numerical value for a supported [`InputDevice`](https://developer.android.com/reference/android/view/InputDevice) `SOURCE_` constant. Set to `0` by default.|
-|`buttonState?`|`number`|Identifier of the button sending the click event. Must match the numerical value for a supported [`MotionEvent`](https://developer.android.com/reference/android/view/MotionEvent) `BUTTON_` constant. Set to `0` by default.|
+|`inputDevice?`|`integer`|Identifier of the tap input device. Must match the numerical value for a supported [`InputDevice`](https://developer.android.com/reference/android/view/InputDevice) `SOURCE_` constant. Set to `0` by default.|
+|`buttonState?`|`integer`|Identifier of the button sending the click event. Must match the numerical value for a supported [`MotionEvent`](https://developer.android.com/reference/android/view/MotionEvent) `BUTTON_` constant. Set to `0` by default.|
 
 #### Response
 

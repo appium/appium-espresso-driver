@@ -216,7 +216,7 @@ Refer to [the Unlock guide](../guides/unlock.md) for more details.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:unlockSuccessTimeout` | `number` | `2000` |
+| `appium:unlockSuccessTimeout` | `integer` | `2000` |
 
 Maximum number of milliseconds to wait until the device is unlocked.
 
@@ -236,7 +236,7 @@ a session, the driver will automatically launch it.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:avdLaunchTimeout` | `number` | `60000` |
+| `appium:avdLaunchTimeout` | `integer` | `60000` |
 
 Maximum number in milliseconds to wait until the Android emulator has started.
 
@@ -244,7 +244,7 @@ Maximum number in milliseconds to wait until the Android emulator has started.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:avdReadyTimeout` | `number` | `60000` |
+| `appium:avdReadyTimeout` | `integer` | `60000` |
 
 Maximum number of milliseconds to wait until the Android emulator has fully booted and is ready for
 usage.
@@ -323,7 +323,7 @@ Available since driver version 2.43.0.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:adbPort` | `number` | `5037` |
+| `appium:adbPort` | `integer` | `5037` |
 
 Number of the port to use for starting ADB. Maps to the `-P` flag of `adb`.
 
@@ -339,7 +339,7 @@ Name of the ADB server host.  Maps to the `-H` flag of `adb`.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:adbExecTimeout` | `number` | `20000` |
+| `appium:adbExecTimeout` | `integer` | `20000` |
 
 Maximum number of milliseconds to wait for the execution of any single ADB command.
 
@@ -380,7 +380,7 @@ Available since driver version 6.2.0.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:systemPort` | `number` | `8300` |
+| `appium:systemPort` | `integer` | `8300` |
 
 The port for the Espresso server to listen on. Must be unique for each session - see the
 [Testing in Parallel guide](../guides/parallel-tests.md) for details. If not provided, Appium will
@@ -479,7 +479,7 @@ List of one or more Gradle module names and their versions to include as
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:espressoServerLaunchTimeout` | `number` | `45000` |
+| `appium:espressoServerLaunchTimeout` | `integer` | `45000` |
 
 Maximum number of milliseconds to wait until the Espresso server has started.
 
@@ -579,7 +579,7 @@ Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:appWaitDuration` | `number` | `20000` |
+| `appium:appWaitDuration` | `integer` | `20000` |
 
 Maximum number of milliseconds to wait until the activity specified by [`appium:appWaitPackage`](#appwaitpackage)
 and [`appium:appWaitActivity`](#appwaitactivity) has started.
@@ -812,7 +812,7 @@ following options:
 
 | Type | Default |
 | -- | -- |
-| `string` or `number` | Not specified |
+| `integer` or `string` | Not specified |
 
 Identifier of the display to launch the activity on. Useful if the device under test supports
 multiple displays.
@@ -821,7 +821,7 @@ multiple displays.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:androidInstallTimeout` | `number` | `90000` |
+| `appium:androidInstallTimeout` | `integer` | `90000` |
 
 Maximum amount of milliseconds to wait until the application under test is installed.
 
@@ -902,7 +902,7 @@ flag of `adb install`. Only applied if the application is to be installed or rei
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:remoteAppsCacheLimit` | `number` | `10` |
+| `appium:remoteAppsCacheLimit` | `integer` | `10` |
 
 Maximum number of application packages to be cached on the device under test. Primarily needed for
 devices that don't support streamed installs (Android 7 and below), which require `adb` to push
@@ -1052,7 +1052,7 @@ Whether to automatically switch to the first available webview context upon sess
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:autoWebviewTimeout` | `number` | `2000` |
+| `appium:autoWebviewTimeout` | `integer` | `2000` |
 
 Maximum number of milliseconds to wait until a webview is available before switching to it.
 Requires [`appium:autoWebview`](#autowebview) to be set.
@@ -1061,7 +1061,7 @@ Requires [`appium:autoWebview`](#autowebview) to be set.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:webviewDevtoolsPort` | `number` | `10900` |
+| `appium:webviewDevtoolsPort` | `integer` | `10900` |
 
 The port to use for communicating with webviews over the DevTools protocol. Must be unique for
 each session - see the [Testing in Parallel guide](../guides/parallel-tests.md) for details. If not
@@ -1098,7 +1098,7 @@ for supported values.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:chromedriverPort` | `number` | Random |
+| `appium:chromedriverPort` | `integer` | Random |
 
 The port to use for ChromeDriver communication. Must be unique for each session - see the
 [Testing in Parallel guide](../guides/parallel-tests.md) for details. By default, a random free

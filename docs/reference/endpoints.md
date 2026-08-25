@@ -214,9 +214,9 @@ Retrieves the current location of the device under test.
 
 |Name|Type|Description|
 |--|--|--|
-|`altitude`|`number`|Altitude of the device location|
-|`latitude`|`number`|Latitude of the device location|
-|`longitude`|`number`|Longitude of the device location|
+|`altitude`|`float`|Altitude of the device location|
+|`latitude`|`float`|Latitude of the device location|
+|`longitude`|`float`|Longitude of the device location|
 
 ### setGeoLocation
 
@@ -322,8 +322,8 @@ The following keys are supported:
 |--|--|--|
 |`videoSize?`|`string`|Dimensions of the resulting video, formatted as `<width>x<height>`. By default, the device's native display resolution is used, or `1280x720` if the native resolution is unsupported. For best results, use a size supported by your device's AVC encoder.|
 |`bugReport?`|`boolean`|Whether to add a video overlay with debugging information, such as a timestamp. Only supported since Android 9 (Pie / API level 28).|
-|`timeLimit?`|`number` or `string`|Maximum recording time in seconds. Set to `180` (3 minutes) by default. The maximum supported value is `1800` seconds (30 minutes). A single recording chunk can be at most `180` seconds (3 minutes) long, so if a greater value is specified, the driver will attempt to use multiple chunks and combine them using `ffmpeg`. In such cases, if `ffmpeg` is not available on `PATH`, only the most recent chunk will be retained.|
-|`bitRate?`|`number` or `string`|Bitrate of the video, in bits per second. Set to `20000000` (20Mbps) by default.|
+|`timeLimit?`|`float` or `string`|Maximum recording time in seconds. Set to `180` (3 minutes) by default. The maximum supported value is `1800` seconds (30 minutes). A single recording chunk can be at most `180` seconds (3 minutes) long, so if a greater value is specified, the driver will attempt to use multiple chunks and combine them using `ffmpeg`. In such cases, if `ffmpeg` is not available on `PATH`, only the most recent chunk will be retained.|
+|`bitRate?`|`integer` or `string`|Bitrate of the video, in bits per second. Set to `20000000` (20Mbps) by default.|
 |`forceRestart?`|`boolean`|Whether to skip returning the results of any currently running screenrecording process, and start a new one right away|
 
 If `forceRestart` is `false` or unset (the default value), all the keys supported by
@@ -450,7 +450,7 @@ Retrieves the state of the specified app.
 
 #### Response
 
-`number` - an integer indicating the app state:
+`integer` - a number indicating the app state:
 
 |Number|Description|
 |--|--|
@@ -477,7 +477,7 @@ specified duration. The call is blocking.
 
 |Name|Type|Description|
 |--|--|--|
-|`seconds`|`number`|Number of seconds after which to restore the app to foreground. If set to `0` or a negative value, automatic restoration is skipped.|
+|`seconds`|`float`|Number of seconds after which to restore the app to foreground. If set to `0` or a negative value, automatic restoration is skipped.|
 
 #### Response
 
@@ -550,7 +550,7 @@ password) locks are supported.
 
 |Name|Type|Description|
 |--|--|--|
-|`seconds?`|`number`|Number of seconds after which to unlock the device. If omitted or set to `0`, automatic unlock is skipped.|
+|`seconds?`|`float`|Number of seconds after which to unlock the device. If omitted or set to `0`, automatic unlock is skipped.|
 
 #### Response
 
@@ -663,7 +663,7 @@ registered, the command and ID can be used in fingerprint authentication prompts
 
 |Name|Type|Description|
 |--|--|--|
-|`fingerprintId`|`number` or `string`|Identifier of a virtual fingerprint|
+|`fingerprintId`|`integer` or `string`|Identifier of a virtual fingerprint|
 
 #### Response
 
@@ -731,7 +731,7 @@ Emulates a change of the GSM signal strength profile. Only supported on emulator
 
 |<div style="width:8em">Name</div>|Type|Description|
 |--|--|--|
-|`signalStrength`|`number`|Signal strength profile to apply. Supported values are `0` (worst signal), `1`, `2`, `3`, and `4` (best signal)|
+|`signalStrength`|`integer`|Signal strength profile to apply. Supported values are `0` (worst signal), `1`, `2`, `3`, and `4` (best signal)|
 
 #### Response
 
@@ -798,7 +798,7 @@ Emulates a power capacity change on the device. Only supported on emulators.
 
 |Name|Type|Description|
 |--|--|--|
-|`percent`|`number` or `string`|Power capacity to apply. Must be an integer in the range `[0, 100]`.|
+|`percent`|`integer` or `string`|Power capacity to apply. Must be in the range `[0, 100]`.|
 
 #### Response
 
@@ -925,10 +925,10 @@ All system bars include the following properties:
 |Name|Type|Description|
 |--|--|--|
 |`visible`|`boolean`|Whether the bar is visible|
-|`x`|`number`|Left X coordinate of the bar. Could be `0` if the bar is not visible|
-|`y`|`number`|Top Y coordinate of the bar. Could be `0` if the bar is not visible|
-|`width`|`number`|Bar width. Could be `0` if the bar is not visible|
-|`height`|`number`|Bar height. Could be `0` if the bar is not visible|
+|`x`|`integer`|Left X coordinate of the bar. Could be `0` if the bar is not visible|
+|`y`|`integer`|Top Y coordinate of the bar. Could be `0` if the bar is not visible|
+|`width`|`integer`|Bar width. Could be `0` if the bar is not visible|
+|`height`|`integer`|Bar height. Could be `0` if the bar is not visible|
 
 ### getDisplayDensity
 
@@ -945,7 +945,7 @@ Retrieves the density of the current display in DPI.
 
 #### Response
 
-`number` - the display density in DPI
+`integer` - the display density in DPI
 
 ### setValueImmediate
 
