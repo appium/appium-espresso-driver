@@ -1331,3 +1331,198 @@ fetched, or no strings exist for the specified language.
 #### Response
 
 `Record<string, string>` - mapping of resource identifiers to localized strings
+
+### `mobile: swipe`
+
+Performs a swipe action on the specified element. There are two supported swiping modes (using
+either [`ViewActions.swipe*`](https://developer.android.com/reference/android/support/test/espresso/action/ViewActions)
+or [`GeneralSwipeAction`](https://developer.android.com/reference/android/support/test/espresso/action/GeneralSwipeAction)
+under the hood), which can be distinguished by setting either the `direction` or `swiper`
+parameter, respectively. An error is raised if both parameters are set.
+
+#### Parameters
+
+The following parameters are supported for the `direction` mode:
+
+|Name|Type|Description|
+|--|--|--|
+|`elementId`[^elementid]|`string`|UDID of the element to perform the swipe on|
+|`direction`|`string`|Direction to swipe in. Supported values are `up`, `down`, `left` and `right`.|
+
+The following parameters are supported for the `swiper` mode:
+
+|<div style="width:11em">Name</div>|Type|Description|
+|--|--|--|
+|`elementId`[^elementid]|`string`|UDID of the element to perform the swipe on|
+|`swiper`|`string`|Swiping speed. Supported values are `FAST` and `SLOW`.|
+|`startCoordinates?`|`string`|Swipe start location on the screen. Supported values are `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER`, `BOTTOM_RIGHT`, and `VISIBLE_CENTER`. Set to `BOTTOM_CENTER` by default.|
+|`endCoordinates?`|`string`|Swipe end location on the screen. Supported values are `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER`, `BOTTOM_RIGHT`, and `VISIBLE_CENTER`. Set to `TOP_CENTER` by default.|
+|`precisionDescriber?`|`string`|Size of the pointer used in the swipe. Supported values are `PINPOINT` (1 px), `FINGER` (16mm), and `THUMB` (25mm). Set to `THUMB` by default.|
+
+#### Response
+
+`null`
+
+### `mobile: scrollToPage`
+
+Performs a scroll-to-page action on the specified element. Calls one of [`ViewPagerActions`](https://developer.android.com/reference/androidx/test/espresso/contrib/ViewPagerActions)
+under the hood, depending on the parameters.
+
+#### Parameters
+
+|<div style="width:8em">Name</div>|Type|Description|
+|--|--|--|
+|`elementId`[^elementid]|`string`|UDID of the element to perform the action on|
+|`scrollTo?`|`string`|Direction in which to scroll. Required unless `scrollToPage` is set. Supported values are `first`, `last`, `left`, and `right`.|
+|`scrollToPage?`|`number`|Number of the page to scroll to. Required unless `scrollTo` is set. Must be a non-negative integer.|
+|`smoothScroll?`|`boolean`|Whether to perform smoother but slower scrolling. Set to `false` by default.|
+
+#### Response
+
+`null`
+
+### `mobile: navigateTo`
+
+Navigates to a menu item in a navigation element. Calls [`navigateTo()`](https://developer.android.com/reference/androidx/test/espresso/contrib/NavigationViewActions#navigateto)
+under the hood.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`elementId`[^elementid]|`string`|UDID of the navigation element|
+|`menuItemId?`|`number` or `string`|Resource ID of the target menu item|
+
+#### Response
+
+`null`
+
+### `mobile: clickAction`
+
+Clicks/taps on the specified element. Calls [`GeneralClickAction`](https://developer.android.com/reference/android/support/test/espresso/action/GeneralClickAction)
+under the hood.
+
+#### Parameters
+
+|<div style="width:11em">Name</div>|Type|Description|
+|--|--|--|
+|`elementId`[^elementid]|`string`|UDID of the element to tap on|
+|`tapper?`|`string`|Type of tap to use. Supported values are `SINGLE`, `LONG`, and `DOUBLE`. Set to `SINGLE` by default.|
+|`coordinatesProvider?`|`string`|Position within the element boundaries to tap on. Supported values are `TOP_LEFT`, `TOP_CENTER`, `TOP_RIGHT`, `CENTER_LEFT`, `CENTER`, `CENTER_RIGHT`, `BOTTOM_LEFT`, `BOTTOM_CENTER`, `BOTTOM_RIGHT`, and `VISIBLE_CENTER`. Set to `VISIBLE_CENTER` by default.|
+|`precisionDescriber?`|`string`|Size of the tap pointer used. Supported values are `PINPOINT` (1 px), `FINGER` (16mm), and `THUMB` (25mm). Set to `FINGER` by default.|
+|`inputDevice?`|`number`|Identifier of the tap input device. Must match the numerical value for a supported [`InputDevice`](https://developer.android.com/reference/android/view/InputDevice) `SOURCE_` constant. Set to `0` by default.|
+|`buttonState?`|`number`|Identifier of the button sending the click event. Must match the numerical value for a supported [`MotionEvent`](https://developer.android.com/reference/android/view/MotionEvent) `BUTTON_` constant. Set to `0` by default.|
+
+#### Response
+
+`null`
+
+### `mobile: deviceInfo`
+
+Retrieves information about the device under test.
+
+#### Response
+
+`Record<string, any>` - mapping of device properties to their values. The following properties are
+included:
+
+|<div style="width:9em">Name</div>|Description|
+|--|--|
+|`androidId`|Device identifier ([`ANDROID_ID`](https://developer.android.com/reference/android/provider/Settings.Secure.html#ANDROID_ID))|
+|`manufacturer`|Device manufacturer ([`MANUFACTURER`](https://developer.android.com/reference/android/os/Build#MANUFACTURER))|
+|`model`|Device model ([`MODEL`](https://developer.android.com/reference/android/os/Build#MODEL))|
+|`brand`|Device brand ([`BRAND`](https://developer.android.com/reference/android/os/Build#BRAND))|
+|`apiVersion`|Major Android version ([`VERSION.SDK_INT`](https://developer.android.com/reference/android/os/Build.VERSION#SDK_INT))|
+|`platformVersion`|User-visible platform version ([`VERSION.RELEASE`](https://developer.android.com/reference/android/os/Build.VERSION#RELEASE))|
+|`carrierName`|Network carrier name ([`TelephonyManager.getNetworkOperatorName()`](https://developer.android.com/reference/android/telephony/TelephonyManager#getNetworkOperatorName()))|
+|`realDisplaySize`|Real size of the default display, in `<width>x<height>` format (based on [`Display.getRealSize()`](https://developer.android.com/reference/android/view/Display#getRealSize(android.graphics.Point)))|
+|`displayDensity`|Display density in Density Independent Pixel units (based on [`DisplayMetrics.density`](https://developer.android.com/reference/android/util/DisplayMetrics#density))|
+|`locale`|System locale ([`Locale.getDefault()`](https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html#getDefault--))|
+|`timeZone`|System timezone ([`TimeZone.getDefault()`](https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getDefault--))|
+
+### `mobile: isToastVisible`
+
+Determines whether a toast notification with the specified text is currently visible.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`text`|`string`|Full or partial contents of the notification text|
+|`isRegexp?`|`boolean`|Whether `text` should be parsed as a regular expression. Set to `false` by default.|
+
+#### Response
+
+`boolean` - `true` if a notification with the text is visible, otherwise `false`
+
+### `mobile: openDrawer`
+
+Opens the specified `DrawerLayout` element. Calls [`DrawerActions.open()`](https://developer.android.com/reference/androidx/test/espresso/contrib/DrawerActions#open())
+/ [`DrawerActions.open(int)`](https://developer.android.com/reference/androidx/test/espresso/contrib/DrawerActions#open(int))
+under the hood. Blocks until the drawer is fully open. 
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`elementId`[^elementid]|`string`|UDID of the drawer element to open|
+|`gravity?`|`integer`|Gravity to use when opening the drawer. Must match the numerical value for a supported [`Gravity`](https://developer.android.com/reference/android/view/Gravity) constant.|
+
+#### Response
+
+`null`
+
+### `mobile: closeDrawer`
+
+Closes the specified `DrawerLayout` element. Calls [`DrawerActions.close()`](https://developer.android.com/reference/androidx/test/espresso/contrib/DrawerActions#close())
+/ [`DrawerActions.close(int)`](https://developer.android.com/reference/androidx/test/espresso/contrib/DrawerActions#close(int))
+under the hood. Blocks until the drawer is fully closed. 
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`elementId`[^elementid]|`string`|UDID of the drawer element to close|
+|`gravity?`|`integer`|Gravity to use when closing the drawer. Must match the numerical value for a supported [`Gravity`](https://developer.android.com/reference/android/view/Gravity) constant.|
+
+#### Response
+
+`null`
+
+### `mobile: setDate`
+
+Sets the value of a specified date picker element. Calls [`PickerActions.setDate()`](https://developer.android.com/reference/androidx/test/espresso/contrib/PickerActions#setDate(int,int,int))
+under the hood.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`elementId`[^elementid]|`string`|UDID of the date picker element|
+|`year`|`integer`|Year to set|
+|`monthOfYear`|`integer`|Number of the month to set. Must be in the range `[1..12]`.|
+|`dayOfMonth`|`integer`|Number of the day to set. Must be in the range `[1..31]`.|
+
+#### Response
+
+`null`
+
+### `mobile: setTime`
+
+Sets the value of a specified time picker element. Calls [`PickerActions.setTime()`](https://developer.android.com/reference/androidx/test/espresso/contrib/PickerActions#setTime(int,int))
+under the hood.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`elementId`[^elementid]|`string`|UDID of the time picker element|
+|`hours`|`integer`|Hour to set. Must be in the range `[0..23]`.|
+|`minutes`|`integer`|Minute to set. Must be in the range `[0..59]`.|
+
+#### Response
+
+`null`
+
+
+[^elementid]: Use `element` in driver versions earlier than 2.29.0.
