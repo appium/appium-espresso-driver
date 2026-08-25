@@ -1524,5 +1524,283 @@ under the hood.
 
 `null`
 
+### `mobile: backdoor`
+
+Executes one or more methods inside the application under test. Refer to the [Backdoor](../guides/backdoor.md)
+guide for usage details.
+
+#### Parameters
+
+|Name|<div style="width:14em">Type</div>|Description|
+|--|--|--|
+|`elementId`|`string`|UDID of the element to perform the action on. Required if `target` is set to `element`.|
+|`target`|`string`|Target to call the methods on. Supported values are `activity`, `application`, and `element`.|
+|`methods`|`Array<Record<string, any>>`|List of methods to execute|
+
+#### Response
+
+`any` - the result of the last method specified in `methods`
+
+### `mobile: flashElement`
+
+Adds a flashing animation to the specified element. Calls [`View.startAnimation()`](https://developer.android.com/reference/android/view/View#startAnimation(android.view.animation.Animation))
+under the hood.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`elementId`[^elementid]|`string`|UDID of the element to add the animation to|
+|`durationMillis?`|`integer`|Duration in milliseconds for a single flash. Set to `30` by default.|
+|`repeatCount?`|`integer`|Number of times the flash should repeat. Set to `15` by default.|
+
+#### Response
+
+`null`
+
+### `mobile: uiautomator`
+
+Executes a [UiAutomator](https://developer.android.com/training/testing/ui-automator)-based action
+on one or more elements. This method can be useful for interacting with elements outside of the
+application under test.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`strategy`|`string`|UiAutomator element location strategy. Supported values are `clazz`, `res`, `text`, `textContains`, `textEndsWith`, `textStartsWith`, `desc`, `descContains`, `descEndsWith`, `descStartsWith`, and `pkg`.|
+|`locator`|`string`|Valid UiObject2 locator value for the specified `strategy`|
+|`action`|`string`|Action to perform on the found element(s). Supported values are `click`, `longClick`, `getText`, `getContentDescription`, `getClassName`,  `getResourceName`, `getVisibleBounds`, `getVisibleCenter`, `getApplicationPackage`, `getChildCount`, `clear`, `isCheckable`, `isChecked`, `isClickable`, `isEnabled`, `isFocusable`, `isFocused`, `isLongClickable`, `isScrollable`, and `isSelected`.|
+|`index?`|`integer`|Index for the element to apply the action to, if the specified `strategy`/`locator` return multiple elements. By default, the action is applied to all found elements. Indexing starts from `0`. An error is thrown if the index is equal or greater than the element count.|
+
+#### Response
+
+`Array<any>` - the result of `action` applied to the found elements. If `index` is set, the array
+will contain only one entry.
+
+### `mobile: uiautomatorPageSource`
+
+Retrieves the [UiAutomator](https://developer.android.com/training/testing/ui-automator)-based
+application UI accessibility hierarchy tree. Calls [`UiDevice.dumpWindowHierarchy()`](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice#dumpWindowHierarchy(java.io.OutputStream))
+under the hood.
+
+#### Response
+
+`string` - the UI accessibility hierarchy as a stringified XML.
+
+### `mobile: webAtoms`
+
+Executes a chain of [Espresso web atoms](https://developer.android.com/training/testing/espresso/web)
+on the specified webview element.
+
+#### Parameters
+
+|<div style="width:12em">Name</div>|<div style="width:14em">Type</div>|Description|
+|--|--|--|
+|`webviewEl`|`string`|UDID of the webview element|
+|`forceJavascriptEnabled`|`boolean`|Whether to force enable JavaScript in the webview. Note that web atoms cannot work if JavaScript is disabled.|
+|`methodChain`|`Array<Record<string, any>`|Array of method objects. See below for a detailed structure.|
+
+Each method in the `methodChain` array must be an object with the following properties:
+
+|Name|<div style="width:11em">Type</div>|Description|
+|--|--|--|
+|`name`|`string`|Name of the method. Must match one of [`WebInteraction`](https://cs.android.com/androidx/android-test/+/main:espresso/web/java/androidx/test/espresso/web/sugar/Web.java) action names|
+|`atom`|`Record<string, any>`|See below|
+
+The `atom` property of each method must have the following properties:
+
+|Name|Type|Description|
+|--|--|--|
+|`name`|`string`|Name of the atom to execute. Must match one of [`DriverAtoms`](https://cs.android.com/androidx/android-test/+/main:espresso/web/java/androidx/test/espresso/web/webdriver/DriverAtoms.java) method names|
+|`args`|`Array<any>`|Parameters to pass to the specified atom|
+
+Example for `methodChain`:
+
+```json
+[
+  {"name": "methodName", "atom": {"name": "atomName", "args": ["arg1", "arg2", ...]}},
+  ...
+]
+```
+
+#### Response
+
+`any` - the result returned by the last method in the `methodChain` array
+
+### `mobile: dismissAutofill`
+
+Dismisses the [autofill](https://developer.android.com/guide/topics/text/autofill) picker for the
+specified element if it is visible.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`elementId`[^elementid]|`string`|UDID of the input element to dismiss autofill for|
+
+#### Response
+
+`null`
+
+### `mobile: registerIdlingResources`
+
+Registers one or more [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+Calls [`IdlingRegistry.register()`](https://developer.android.com/reference/androidx/test/espresso/IdlingRegistry#register(androidx.test.espresso.IdlingResource...))
+under the hood.
+
+Refer to the [Integrate Espresso Idling Resources in your app to build flexible UI tests](https://medium.com/android-news/integrate-espresso-idling-resources-in-your-app-to-build-flexible-ui-tests-c779e24f5057)
+guide for more details on how to design and use idling resources in Espresso.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`classNames`|`string`|Comma-separated list of idling resource class names to register. Each name must be a fully qualified Java class name, and the class must implement a singleton pattern and have a static `getInstance()` method returning the class instance, which implements the `androidx.test.espresso.IdlingResource` interface.|
+
+#### Response
+
+`null`
+
+### `mobile: unregisterIdlingResources`
+
+Unregisters one or more [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+Calls [`IdlingRegistry.unregister()`](https://developer.android.com/reference/androidx/test/espresso/IdlingRegistry#unregister(androidx.test.espresso.IdlingResource...))
+under the hood.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`classNames`|`string`|Comma-separated list of idling resource class names to unregister. Each name must be a fully qualified Java class name, and the class must implement a singleton pattern and have a static `getInstance()` method returning the class instance, which implements the `androidx.test.espresso.IdlingResource` interface.|
+
+#### Response
+
+`null`
+
+### `mobile: listIdlingResources`
+
+Lists all previously registered [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+
+#### Response
+
+`Array<string>` - list of fully qualified class names of the currently registered idling resources.
+Could be empty if no resources have been registered yet.
+
+### `mobile: waitForUIThread`
+
+Waits for the main UI thread of the application to become idle. Calls [`UiController.loopMainThreadUntilIdle()`](https://developer.android.com/reference/androidx/test/espresso/UiController#loopMainThreadUntilIdle())
+under the hood.
+
+This method can be useful on Compose and native combination screens, where the Espresso API may
+block the UI thread and freeze the app.
+
+#### Response
+
+`null`
+
+### `mobile: pressKey`
+
+Emulates a single key press of the specified key. Creates a new [`KeyEvent`](https://developer.android.com/reference/android/view/KeyEvent#KeyEvent(long,%20long,%20int,%20int,%20int,%20int,%20int,%20int,%20int))
+and passes it to [`UiController.injectKeyEvent()`](https://developer.android.com/reference/androidx/test/espresso/UiController#injectKeyEvent(android.view.KeyEvent))
+under the hood.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|--|--|--|
+|`keycode`|`integer`|Code of the key to press. Must match the numerical value for a supported KeyEvent `KEYCODE_` constant.|
+|`metastate`|`integer`|One or more meta keys that should be simultaneously pressed. Must match the combined numerical value for one or more supported KeyEvent `META_` constants.|
+|`flags`|`integer`|Flags to apply during the press. Must match the combined numerical value for one or more supported KeyEvent `FLAG_` constants.|
+|`isLongPress?`|`boolean`|Whether to emulate a long press. Set to `false` by default.|
+
+#### Response
+
+`null`
+
+### `mobile: setClipboard`
+
+Sets the contents of the primary device clipboard. Calls [`ClipboardManager.setPrimaryClip()`](https://developer.android.com/reference/android/content/ClipboardManager#setPrimaryClip(android.content.ClipData))
+under the hood.
+
+Available since driver version 2.44.0.
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|--|--|--|
+|`content`|`string`|Base64-encoded payload to place in the clipboard.|
+|`contentType?`|`string`|The only supported and default value is `plaintext`.|
+|`label?`|`string`|Label to identify the payload. By default, set to the first 10 symbols of the plaintext data.|
+
+#### Response
+
+`null`
+
+### `mobile: getClipboard`
+
+Retrieves the content of the primary clipboard on the device under test.
+
+Available since driver version 2.44.0.
+
+#### Response
+
+`string` - the clipboard content as a Base64-encoded string. An empty string is returned if the
+clipboard contains no data.
+
+### `mobile: startService`
+
+Starts a specified service intent. Calls [`Context.startService()`](https://developer.android.com/reference/android/content/Context#startService(android.content.Intent))
+/ [`Context.startForegroundService()`](https://developer.android.com/reference/android/content/Context#startForegroundService(android.content.Intent))
+under the hood.
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|--|--|--|
+|`intent`|`string`|Name of the service intent to start. Only services belonging to the app under test are supported.|
+|`user?`|`integer` or `string`|ID of the user to use for starting the intent. The `current` user is used by default.|
+|`foreground?`|`boolean`|Whether to start the service in the foreground. Set to `false` by default.|
+
+#### Response
+
+`string` - the fully qualified name of the component that was started due to the intent
+
+### `mobile: stopService`
+
+Stops the specified service intent. Calls [`Context.stopService()`](https://developer.android.com/reference/android/content/Context#stopService(android.content.Intent))
+under the hood.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`intent`|`string`|Name of the service intent to stop. Only services belonging to the app under test are supported.|
+|`user?`|`integer` or `string`|ID of the user to use for starting the intent. The `current` user is used by default.|
+
+#### Response
+
+`string` - equal to `'true'` if the service was successfully stopped
+
+### `mobile: startActivity`
+
+Starts the specified app activity. The activity can only be executed in scope of the current app
+package.
+
+#### Parameters
+
+|<div style="width:14em">Name</div>|<div style="width:12em">Type</div>|Description|
+|--|--|--|
+|`appActivity`|`string`|Activity name to start|
+|`locale?`|`Record<string, string>`|Map of language-related identifiers to use for setting the app locale. Follows the same format as the [`appium:appLocale`](./capabilities.md#applocale) capability.|
+|`optionalIntentArguments?`|`Record<string, any>`|Map of options to be applied for the intent passed to the launchable app activity. Follows the same format as the [`appium:intentOptions`](./capabilities.md#intentoptions) capability.|
+|`optionalActivityArguments?`|`string`|Map of options to be applied for the launchable app activity. Follows the same format as the [`appium:activityOptions`](./capabilities.md#activityoptions) capability.|
+
+#### Response
+
+`null`
+
 
 [^elementid]: Use `element` in driver versions earlier than 2.29.0.
