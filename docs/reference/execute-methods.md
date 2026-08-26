@@ -131,8 +131,8 @@ Available since driver version 2.37.0.
 Changes runtime permissions for a specified application package.
 
 This function supports two modes, `pm` and `appops`, which can be distinguished using the `target`
-parameter. Use of the `appops` mode requires the [`adb_shell`](./insecure-features.md#adb_shell)
-insecure feature to be enabled.
+parameter. Use of the `appops` mode requires driver version 2.13.7 or later, and the
+[`adb_shell`](./insecure-features.md#adb_shell) insecure feature to be enabled.
 
 #### Parameters
 
@@ -334,6 +334,8 @@ Example output:
 Pushes data to a file on the device under test. If the target file already exists, its contents
 will be overwritten.
 
+Available since driver version 2.10.0.
+
 #### Parameters
 
 |<div style="width:6em">Name</div>|Type|Description|
@@ -349,6 +351,8 @@ will be overwritten.
 
 Pulls the contents of a file from the device under test.
 
+Available since driver version 2.10.0.
+
 #### Parameters
 
 |<div style="width:6em">Name</div>|Type|Description|
@@ -362,6 +366,8 @@ Pulls the contents of a file from the device under test.
 ### `mobile: pullFolder`
 
 Pulls the contents of a directory from the device under test.
+
+Available since driver version 2.10.0.
 
 #### Parameters
 
@@ -392,12 +398,14 @@ Deletes a file from the device under test.
 Determines whether the application with the specified package identifier is installed on the device
 under test.
 
+Available since driver version 2.10.0.
+
 #### Parameters
 
 |Name|Type|Description|
 |---|---|---|
 |`appId`|`string`|Package identifier of the application|
-|`user?`|`integer` or `string`|ID of the user for which the app is installed. The `current` user is used by default|
+|`user?`|`integer` or `string`|ID of the user for which the app is installed. The `current` user is used by default. Available since driver version 2.39.0.|
 
 #### Response
 
@@ -407,6 +415,8 @@ under test.
 
 Retrieves information about installed applications on the device under test. Only supported since
 Android 8 (Oreo / API level 26).
+
+Available since driver version 6.4.0.
 
 #### Parameters
 
@@ -427,6 +437,8 @@ names.
 
 Retrieves the state of the application with the specified package identifier on the device under
 test.
+
+Available since driver version 2.10.0.
 
 #### Parameters
 
@@ -450,6 +462,8 @@ test.
 Activates the application with the specified package identifier or launches it if necessary, by
 simulating a tap on the app icon on the Android UI.
 
+Available since driver version 2.10.0.
+
 #### Parameters
 
 |Name|Type|Description|
@@ -463,6 +477,8 @@ simulating a tap on the app icon on the Android UI.
 ### `mobile: removeApp`
 
 Uninstalls the application with the specified package identifier from the device under test.
+
+Available since driver version 2.10.0.
 
 #### Parameters
 
@@ -482,6 +498,8 @@ Uninstalls the application with the specified package identifier from the device
 Terminates the application with the specified package identifier and waits until its app process
 has stopped.
 
+Available since driver version 2.10.0.
+
 #### Parameters
 
 |Name|Type|Description|
@@ -500,12 +518,14 @@ Installs the specified application on the device under test.
 If a newer version of the application was already installed, the `INSTALL_FAILED_VERSION_DOWNGRADE`
 error may be raised.
 
+Available since driver version 2.10.0.
+
 #### Parameters
 
 |<div style="width:10em">Name</div>|Type|Description|
 |--|--|--|
 |`appPath`|`string`|Full path to a file on the host machine, or URL to a remote location. The app must have the `.apk` or `.apks` extension.|
-|`checkVersion?`|`boolean`|Whether to skip installation if an identical or newer app version is already installed. Unset by default. Applied before `replace`.|
+|`checkVersion?`|`boolean`|Whether to skip installation if an identical or newer app version is already installed. Unset by default. Applied before `replace`. Available since driver version 2.36.0.|
 |`timeout?`|`integer`|Number of milliseconds to wait until the app is installed. Set to `60000` by default, unless overridden using the [`appium:adbExecTimeout`](./capabilities.md#adbexectimeout) capability|
 |`allowTestPackages?`|`boolean`|Whether to allow installation of test packages. Set to `false` by default|
 |`useSdcard?`|`boolean`|Whether to install the app on the SD card instead of built-in storage. Set to `false` by default|
@@ -522,6 +542,8 @@ error may be raised.
 Clears all data associated with the application with the specified package identifier: user data,
 cache, and settings. Calls `adb shell pm clear <appId>` under the hood.
 
+Available since driver version 2.10.0.
+
 #### Parameters
 
 |Name|Type|Description|
@@ -537,7 +559,7 @@ cache, and settings. Calls `adb shell pm clear <appId>` under the hood.
 Moves the active app to the background and optionally restores it into the foreground after a
 specified duration. The call is blocking.
 
-Available since driver version 2.23.0.
+Available since driver version 2.23.5.
 
 #### Parameters
 
@@ -552,6 +574,8 @@ Available since driver version 2.23.0.
 ### `mobile: broadcast`
 
 Sends a broadcast Intent to the Android system. Invokes `adb shell am broadcast` under the hood.
+
+Available since driver version 2.10.0.
 
 #### Parameters
 
@@ -661,6 +685,8 @@ the initial session capabilities.
 Locks the device and optionally unlocks it after a specified duration. Only simple (e.g. without a
 password) locks are supported.
 
+Available since driver version 2.23.4.
+
 #### Parameters
 
 |Name|Type|Description|
@@ -693,6 +719,8 @@ details.
 
 Determines whether the device is locked.
 
+Available since driver version 2.23.0.
+
 #### Response
 
 `boolean` - `true` if the device is locked, otherwise `false`
@@ -723,6 +751,8 @@ API. Only supported since Android 10 (Q / API level 29). Recording can be stoppe
 [`mobile: stopMediaProjectionRecording`](#mobile-stopmediaprojectionrecording)
 execute method.
 
+Available since driver version 2.7.0.
+
 #### Parameters
 
 |<div style="width:9em">Name</div>|Type|Description|
@@ -741,6 +771,8 @@ execute method.
 Determines whether a Media Projection-based recording is currently active. Only supported since
 Android 10 (Q / API level 29).
 
+Available since driver version 2.7.0.
+
 #### Response
 
 `boolean` - `true` if recording is active, otherwise `false`
@@ -753,6 +785,8 @@ either returning its payload or uploading it to a remote location. Only supporte
 
 If the recording process is not running, but another recording has previously finished, its data is
 used instead. If no previous recording was found, an error is thrown.
+
+Available since driver version 2.7.0.
 
 #### Parameters
 
@@ -775,6 +809,8 @@ set
 
 Retrieves the state of one or more connectivity-related system services.
 
+Available since driver version 2.23.0.
+
 #### Parameters
 
 |Name|Type|Description|
@@ -789,6 +825,8 @@ Retrieves the state of one or more connectivity-related system services.
 
 Sets the state of one or more connectivity-related system services. On real devices, switching WiFi
 only works reliably since Android 11 (R / API level 30).
+
+Available since driver version 2.23.0.
 
 !!! warning
 
@@ -816,6 +854,8 @@ of its service remains unchanged.
 
 Hides the on-screen keyboard. An error is thrown if the keyboard cannot be hidden.
 
+Available since driver version 2.21.0.
+
 #### Response
 
 `boolean` - `true` if the keyboard was successfully hidden, otherwise `false`
@@ -823,6 +863,8 @@ Hides the on-screen keyboard. An error is thrown if the keyboard cannot be hidde
 ### `mobile: isKeyboardShown`
 
 Determines whether the on-screen keyboard is shown.
+
+Available since driver version 2.21.0.
 
 #### Response
 
@@ -837,6 +879,8 @@ since Android 6 (Marshmallow / API level 23).
 
 Refer to the [Diving Into Android 'M' Doze](https://www.protechtraining.com/blog/post/diving-into-android-m-doze-875)
 guide for more details.
+
+Available since driver version 2.40.0.
 
 #### Parameters
 
@@ -854,6 +898,8 @@ guide for more details.
 Performs the specified action on the Android system Bluetooth adapter. An error is thrown if the
 device under test does not have a Bluetooth adapter.
 
+Available since driver version 2.40.0.
+
 #### Parameters
 
 |Name|Type|Description|
@@ -868,6 +914,8 @@ device under test does not have a Bluetooth adapter.
 
 Performs the specified action on the Android system NFC adapter. An error is thrown if the device
 under test does not have a NFC adapter.
+
+Available since driver version 2.40.0.
 
 #### Parameters
 
@@ -921,7 +969,7 @@ Sets the specified image as the output of the camera viewfinder. Only supported 
 This functionality can be useful, for example, when testing QR code scanning functionality in the
 application under test. 
 
-Available since driver version 2.43.0.
+Available since driver version 2.38.3.
 
 #### Parameters
 
@@ -1257,6 +1305,8 @@ Available since driver version 2.23.0.
 
 Sets the current location of the device under test.
 
+Available since driver version 3.5.0.
+
 #### Parameters
 
 |<div style="width:7em">Name</div>|Type|Description|
@@ -1264,10 +1314,10 @@ Sets the current location of the device under test.
 |`latitude`|`float`|New latitude value|
 |`longitude`|`float`|New longitude value|
 |`altitude?`|`float`|New altitude value|
-|`satellites?`|`integer`|Number of satellites being tracked. Only supported on emulators. Must be in the range `[1, 12]`.|
-|`speed?`|`float`|Current speed in meters per second. Must not be negative. See [`setSpeed`](https://developer.android.com/reference/android/location/Location#setSpeed(float)) for more details.|
-|`bearing?`|`float`|Current bearing in degrees. Only supported on real devices. Must be in the range `[0, 360)`. See [`setBearing`](https://developer.android.com/reference/android/location/Location#setBearing(float)) for more details.|
-|`accuracy?`|`float`|Current horizontal accuracy in meters. Only supported on real devices. Must not be negative. See [`setAccuracy`](https://developer.android.com/reference/android/location/Location#setAccuracy(float)) for more details.|
+|`satellites?`|`integer`|Number of satellites being tracked. Only supported on emulators. Must be in the range `[1, 12]`. Available since driver version 4.1.0.|
+|`speed?`|`float`|Current speed in meters per second. Must not be negative. See [`setSpeed`](https://developer.android.com/reference/android/location/Location#setSpeed(float)) for more details. Available since driver version 4.1.0.|
+|`bearing?`|`float`|Current bearing in degrees. Only supported on real devices. Must be in the range `[0, 360)`. See [`setBearing`](https://developer.android.com/reference/android/location/Location#setBearing(float)) for more details. Available since driver version 4.1.0.|
+|`accuracy?`|`float`|Current horizontal accuracy in meters. Only supported on real devices. Must not be negative. See [`setAccuracy`](https://developer.android.com/reference/android/location/Location#setAccuracy(float)) for more details. Available since driver version 4.1.0.|
 
 #### Response
 
@@ -1276,6 +1326,8 @@ Sets the current location of the device under test.
 ### `mobile: getGeolocation`
 
 Retrieves the current location of the device under test.
+
+Available since driver version 3.5.0.
 
 #### Response
 
@@ -1291,6 +1343,8 @@ Retrieves the current location of the device under test.
 
 Resets the current location of the device under test to the default/system one. Only supported on
 real devices.
+
+Available since driver version 3.5.0.
 
 #### Response
 
@@ -1320,6 +1374,8 @@ Available since driver version 7.1.0.
 
 Retrieves string resources for the specified app language. An error is thrown if strings cannot be
 fetched, or no strings exist for the specified language.
+
+Available since driver version 4.0.0.
 
 #### Parameters
 
@@ -1695,6 +1751,8 @@ under the hood.
 This method can be useful on Compose and native combination screens, where the Espresso API may
 block the UI thread and freeze the app.
 
+Available since driver version 2.19.0.
+
 #### Response
 
 `null`
@@ -1705,7 +1763,7 @@ Emulates a single key press of the specified key. Creates a new [`KeyEvent`](htt
 and passes it to [`UiController.injectKeyEvent()`](https://developer.android.com/reference/androidx/test/espresso/UiController#injectKeyEvent(android.view.KeyEvent))
 under the hood.
 
-Available since driver version 2.23.0.
+Available since driver version 2.23.3.
 
 #### Parameters
 
@@ -1788,6 +1846,8 @@ under the hood.
 
 Starts the specified app activity. The activity can only be executed in scope of the current app
 package.
+
+Available since driver version 2.8.0.
 
 #### Parameters
 

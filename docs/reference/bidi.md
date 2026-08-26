@@ -65,6 +65,8 @@ This event is emitted upon context change, either explicit or implicit.
 
 See the [GitHub feature ticket](https://github.com/appium/appium/issues/20741) for more details.
 
+Available since driver version 3.5.3.
+
 #### Event Type (CDDL)
 
 ```cddl

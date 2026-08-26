@@ -69,6 +69,28 @@ UDID of the device under test. Can be retrieved by running `adb devices`. If nei
 nor `appium:avd` is set, the driver will automatically try to use the first connected device. Always
 set this capability if you run parallel tests.
 
+### skipDeviceInitialization
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:skipDeviceInitialization` | `boolean` | `false` |
+
+Whether to skip the device initialization phase of session creation, such as checking if the device
+is available, installing the Appium Settings helper, adjusting permissions, etc.. Can be useful if
+a session had already been previously started, and all the device setup steps were already
+completed.
+
+### skipSettingsAppReinstall
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:skipSettingsAppReinstall` | `boolean` | `false` |
+
+Whether to skip installation of the Appium Settings helper application (`io.appium.settings`) upon
+session start. Can be useful for environments where this application is provisioned separately.
+
+Available since driver version 9.0.2.
+
 ### skipLogcatCapture
 
 | Name | Type | Default |
@@ -134,6 +156,8 @@ Whether to disable window animations. [Google recommends disabling animations wh
 in order to avoid flakiness. The animation state is automatically restored after the session is
 stopped, unless the session is ended unexpectedly.
 
+Available since driver version 2.17.0.
+
 ### timeZone
 
 | Name | Type | Default |
@@ -158,6 +182,8 @@ user normally interacts with the application under test.
 If explicitly set to `false`, `adb shell ime reset` is run on session startup, which resets the
 currently selected/enabled IMEs to the default ones, as if the device was initially booted with the
 current locale.
+
+Available since driver version 2.28.0.
 
 ### gpsEnabled
 
@@ -315,7 +341,7 @@ optional, with the given defaults used for absent keys.
 | `position` | Offset coefficients for X/Y/Z axes, where 0 means centered | `{x: 0, y: 0, z: -1.5}` |
 | `rotation` | Degrees of rotation for X/Y/Z axes | `{x: 0, y: 0, z: 0}` |
 
-Available since driver version 2.43.0.
+Available since driver version 2.42.1.
 
 ## ADB
 
@@ -430,8 +456,8 @@ for that tool.
 | `androidGradlePlugin` | Android Gradle plugin version | See [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
 | `kotlin` | Kotlin version to compile the server for | See [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
 | `composeVersion` | Version of Jetpack Compose dependencies to compile the server for | See `composeUiTest` in [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
-| `espressoVersion` | Version of Espresso dependencies to compile the server for | See `espresso` in [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
-| `annotationVersion` | Version of the `androidx.annotation:annotation` package | See `annotation` in [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
+| `espressoVersion` | Version of Espresso dependencies to compile the server for. Configurable since driver version 2.20.0. | See `espresso` in [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
+| `annotationVersion` | Version of the `androidx.annotation:annotation` package. Configurable since driver version 2.5.0. | See `annotation` in [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
 
 #### additionalAppDependencies
 
@@ -746,6 +772,8 @@ Map of component name parameters to apply to the intent.
 | `Record<string, Array<string>>` | Not specified |
 
 Map of string array parameters to apply to the intent.
+
+Available since driver version 2.9.0.
 
 #### eia
 
@@ -1094,6 +1122,15 @@ detection of the required ChromeDriver version.
 Map of ChromeDriver options to apply. Refer to Google's [`ChromeOptions` documentation](https://developer.chrome.com/docs/chromedriver/capabilities#chromeoptions_object)
 for supported values.
 
+### chromeLoggingPrefs
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromeLoggingPrefs` | `Record<string, string>` | `{"browser": "ALL"}` |
+
+Map of logging types to their levels that should be applied. Refer to Selenium's [Logging documentation](https://github.com/SeleniumHQ/selenium/wiki/Logging)
+for supported type and level values.
+
 ### chromedriverPort
 
 | Name | Type | Default |
@@ -1181,6 +1218,32 @@ downloaded ChromeDriver upon installation.
 
 Whether to disable the check that requires ChromeDriver and the browser executable to have matching
 versions. Maps to the `--disable-build-check` flag of the ChromeDriver binary.
+
+### chromedriverForwardBiDi
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromedriverForwardBiDi` | `boolean` | `false` |
+
+Whether to automatically forward the ChromeDriver BiDi web socket to the Espresso driver web
+socket. This allows sending browser-specific BiDi commands in a webview context. Switching the
+session context terminates this connection. Requires the BiDi protocol to be enabled
+(`webSocketUrl` capability must be `true`).
+
+Note that older ChromeDriver versions may only have partial to no support for the BiDi protocol.
+
+Available since driver version 6.0.3.
+
+### chromedriverGrantPermissions
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:chromedriverGrantPermissions` | `boolean` | `false` |
+
+Whether to automatically grant all requested runtime permissions for the Chrome/webview package,
+so that the session is not interrupted by any native runtime permission dialogs.
+
+Available since driver version 9.0.2.
 
 ### recreateChromeDriverSessions
 
