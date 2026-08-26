@@ -173,4 +173,11 @@ export const executeMethodMap = {
       optional: ['locale', 'optionalIntentArguments', 'optionalActivityArguments'],
     },
   },
+
+  'mobile: screenshots': {
+    command: 'mobileScreenshots',
+    params: {
+      optional: ['displayId'],
+    },
+  },
 } as const satisfies ExecuteMethodMap<any>;

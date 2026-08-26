@@ -1665,6 +1665,8 @@ Example output for different data types:
 Retrieves a screenshot of each display available to Android.
 This functionality is only supported since Android 10.
 
+Available since driver version 9.3.0.
+
 #### Arguments
 
 Name | Type | Required | Description | Example
