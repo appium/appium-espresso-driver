@@ -708,7 +708,7 @@ details.
 |--|--|--|
 |`key?`|`string`|The unlock key. By default, set to the value of the [`appium:unlockKey`](./capabilities.md#unlockkey) capability. Must be provided together with `type`.|
 |`type?`|`string`|The unlock type. By default, set to the value of the [`appium:unlockType`](./capabilities.md#unlocktype) capability. Supported values are `pin`, `pinWithKeyEvent`, `password`, `pattern` and `fingerprint`. Must be provided together with `key`.|
-|`strategy?`|`string`|Approach to use for unlocking. Unset by default. If unset or set to `locksettings`, uses an `adb`-based fast unlock approach, otherwise uses `type`-specific approaches.|
+|`strategy?`|`string`|Approach to use for unlocking. By default, set to the value of the [`appium:unlockStrategy`](./capabilities.md#unlockstrategy) capability. Ignored if `type` is set to `password`.|
 |`timeoutMs?`|`integer`|The unlock timeout. By default, set to the value of the [`appium:unlockSuccessTimeout`](./capabilities.md#unlocksuccesstimeout) capability.|
 
 #### Response

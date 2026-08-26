@@ -223,7 +223,7 @@ The type of lockscreen security on the device, which can be used to unlock it. I
 driver assumes no security is used, and the screen can be unlocked without additional details.
 
 Supported values are `pin`, `password`, and `pattern`. Must be provided together with
-`appium:unlockKey`, whose value depends on the lockscreen type.
+[`appium:unlockKey`](#unlockkey), whose value depends on the lockscreen type.
 
 Refer to [the Unlock guide](../guides/unlock.md) for more details.
 
@@ -234,9 +234,24 @@ Refer to [the Unlock guide](../guides/unlock.md) for more details.
 | `appium:unlockKey` | `string` | Not specified |
 
 The key used to unlock the lockscreen. The expected format depends on the value of
-`appium:unlockType`, which must be provided together with this capability.
+[`appium:unlockType`](#unlocktype), which must be provided together with this capability. If
+omitted, the driver assumes no security is used, and the screen can be unlocked without additional
+details.
 
 Refer to [the Unlock guide](../guides/unlock.md) for more details.
+
+### unlockStrategy
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:unlockStrategy` | `string` | Not specified |
+
+The approach to use for unlocking the screen. Supported values are `locksettings` and
+`uiautomator`. The [`appium:unlockKey`](#unlockkey) and [`appium:unlockType`](#unlocktype) must
+be provided in order for this capability to take effect.
+
+By default, or if set to `locksettings`, unlocking is done using `adb`-based fast unlock. If set to
+`uiautomator`, the unlock approach depends on the [`appium:unlockType`](#unlocktype) capability.
 
 ### unlockSuccessTimeout
 
@@ -377,7 +392,15 @@ Maximum number of milliseconds to wait for the execution of any single ADB comma
 
 The version of Android build tools to use (name of a directory located at `$ANDROID_HOME/build-tools`).
 By default, the driver uses the most recent available version, but it may be useful to explicitly
-change this in case of any known bugs. 
+change this in case of any known bugs.
+
+### allowOfflineDevices
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:allowOfflineDevices` | `boolean` | `false` |
+
+Whether to include offline devices in the list of devices returned by ADB.
 
 ### suppressKillServer
 
@@ -884,6 +907,23 @@ session.
 
 Mutually exclusive with [`appium:noReset`](#noreset).
 
+### dontStopAppOnReset
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:dontStopAppOnReset` | `boolean` | `false` |
+
+Whether to skip termination of the app under test upon session deletion.
+
+### autoLaunch
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:autoLaunch` | `boolean` | Not specified |
+
+If set to `false`, the driver will skip waiting until the application under test has launched and
+is ready.
+
 ### autoGrantPermissions
 
 | Name | Type | Default |
@@ -1084,6 +1124,15 @@ Whether to automatically switch to the first available webview context upon sess
 
 Maximum number of milliseconds to wait until a webview is available before switching to it.
 Requires [`appium:autoWebview`](#autowebview) to be set.
+
+### androidDeviceSocket
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:androidDeviceSocket` | `string` | Not specified |
+
+Name of a Chromium DevTools socket on the device under test. If set, webview discovery will only
+return webviews running on this socket.
 
 ### webviewDevtoolsPort
 
