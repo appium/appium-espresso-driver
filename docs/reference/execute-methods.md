@@ -1075,7 +1075,7 @@ Available since driver version 2.23.0.
 
 `integer` - the display density in DPI
 
-### mobile: getSystemBars
+### `mobile: getSystemBars`
 
 Retrieves properties of various bars in the system UI.
 
@@ -1861,6 +1861,30 @@ Available since driver version 2.8.0.
 #### Response
 
 `null`
+
+### `mobile: screenshots`
+
+Retrieves a screenshot of all device displays. Only supported since Android 10 (Q / API level 29).
+
+Available since driver version 9.3.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`displayId`|`integer` or `string`|Display identifier to take a screenshot for. By default, all available displays are used. An error is thrown if a display with the specified ID does not exist. Available identifiers can be retrieved from the `adb shell dumpsys SurfaceFlinger --display-id` command output.|
+
+#### Response
+
+`Record<string, Record<string, any>>` - a map of display identifiers to their properties. Each set
+of properties contains the following:
+
+|Name|Type|Description|
+|--|--|--|
+|`id`|`string`|Display identifier|
+|`name`|`string`|Display name|
+|`isDefault`|`boolean`|Whether this display is the default one|
+|`payload`|`string`|Base64-encoded PNG screenshot of the display|
 
 
 [^elementid]: Use `element` in driver versions earlier than 2.29.0.
