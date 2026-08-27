@@ -53,6 +53,8 @@ from your client code:
     }));
     ```
 
+## Device Under Test
+
 ### `mobile: shell`
 
 Executes the specified `adb shell` command on the device under test. The [`adb_shell`](./insecure-features.md#adb_shell)
@@ -75,24 +77,101 @@ true, an object with the `stdout` and `stderr` keys and their respective values.
 An error is thrown if the command exits with a non-zero return code, with the error message
 matching the command's `stderr`.
 
-### `mobile: execEmuConsoleCommand`
+### `mobile: deviceInfo`
 
-Executes the specified command using the Android emulator telnet console interface. The
-[`emulator_console`](./insecure-features.md#emulator_console) insecure feature must be enabled.
-Only supported on emulators.
+Retrieves information about the device under test.
+
+#### Response
+
+`Record<string, any>` - mapping of device properties to their values. The following properties are
+included:
+
+|<div style="width:9em">Name</div>|Description|
+|--|--|
+|`androidId`|Device identifier ([`ANDROID_ID`](https://developer.android.com/reference/android/provider/Settings.Secure.html#ANDROID_ID))|
+|`manufacturer`|Device manufacturer ([`MANUFACTURER`](https://developer.android.com/reference/android/os/Build#MANUFACTURER))|
+|`model`|Device model ([`MODEL`](https://developer.android.com/reference/android/os/Build#MODEL))|
+|`brand`|Device brand ([`BRAND`](https://developer.android.com/reference/android/os/Build#BRAND))|
+|`apiVersion`|Major Android version ([`VERSION.SDK_INT`](https://developer.android.com/reference/android/os/Build.VERSION#SDK_INT))|
+|`platformVersion`|User-visible platform version ([`VERSION.RELEASE`](https://developer.android.com/reference/android/os/Build.VERSION#RELEASE))|
+|`carrierName`|Network carrier name ([`TelephonyManager.getNetworkOperatorName()`](https://developer.android.com/reference/android/telephony/TelephonyManager#getNetworkOperatorName()))|
+|`realDisplaySize`|Real size of the default display, in `<width>x<height>` format (based on [`Display.getRealSize()`](https://developer.android.com/reference/android/view/Display#getRealSize(android.graphics.Point)))|
+|`displayDensity`|Display density in Density Independent Pixel units (based on [`DisplayMetrics.density`](https://developer.android.com/reference/android/util/DisplayMetrics#density))|
+|`locale`|System locale ([`Locale.getDefault()`](https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html#getDefault--))|
+|`timeZone`|System timezone ([`TimeZone.getDefault()`](https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getDefault--))|
+
+### `mobile: getDisplayDensity`
+
+Retrieves the density of the current display in DPI.
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`integer` - the display density in DPI
+
+### `mobile: getSystemBars`
+
+Retrieves properties of various bars in the system UI.
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`Record<string, Record<string, any>>` - mapping of system bar names to their properties. The
+following system bar names are included:
+
+* `statusBar`
+* `navigationBar`
+
+All system bars include the following properties:
+
+|Name|Type|Description|
+|--|--|--|
+|`visible`|`boolean`|Whether the bar is visible|
+|`x`|`integer`|Left X coordinate of the bar. Could be `0` if the bar is not visible|
+|`y`|`integer`|Top Y coordinate of the bar. Could be `0` if the bar is not visible|
+|`width`|`integer`|Bar width. Could be `0` if the bar is not visible|
+|`height`|`integer`|Bar height. Could be `0` if the bar is not visible|
+
+### `mobile: getPerformanceData`
+
+Retrieves performance data about the given Android subsystem. The data is parsed from the output of
+the `dumpsys` utility.
+
+Available since driver version 2.23.0.
 
 #### Parameters
 
 |<div style="width:7em">Name</div>|Type|Description|
-|---|---|---|
-|`command`|`string` or `Array<string>`|Command name to execute. See [Android Emulator Console Guide](https://developer.android.com/studio/run/emulator-console) for more details on available commands|
-|`execTimeout?`|`integer`|Timeout in milliseconds to wait for the server to reply to the given command. Set to `60000` by default|
-|`connTimeout?`|`integer`|Console connection timeout in milliseconds. Set to `5000` by default|
-|`initTimeout?`|`integer`|Telnet console initialization timeout in milliseconds (the time between the connection being established and the command prompt becoming available). Set to `5000` ms by default|
+|--|--|--|
+|`packageName`|`string`|Name of the package identifier to fetch the data for|
+|`dataType`|`string`|Subsystem name to return the data for. Supported values can be retrieved using the [`mobile: getPerformanceDataTypes`](#mobile-getperformancedatatypes) method.|
 
 #### Response
 
-`string` - the command output. An error is thrown if command execution fails.
+`Array<Array<any>[]>` - table formatted as an array of arrays, where the first subarray represents
+column names, and the following subarrays represent data for those columns. The returned columns
+and their data depend on the specified `dataType`.
+
+For example, a response for the `cpuinfo` datatype could look as follows:
+```
+[
+  [user, kernel],
+  [0.9, 1.3]
+]
+```
+
+### `mobile: getPerformanceDataTypes`
+
+Retrieves supported performance data types, which can be used as the `dataType` argument for the
+[`mobile: getPerformanceData`](#mobile-getperformancedata) method.
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`Array<string>` - list of supported data types
 
 ### `mobile: startLogsBroadcast`
 
@@ -126,74 +205,74 @@ Available since driver version 2.37.0.
 
 `null`
 
-### `mobile: changePermissions`
+### `mobile: uiautomatorPageSource`
 
-Changes runtime permissions for a specified application package.
+Retrieves the [UiAutomator](https://developer.android.com/training/testing/ui-automator)-based
+application UI accessibility hierarchy tree. Calls [`UiDevice.dumpWindowHierarchy()`](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice#dumpWindowHierarchy(java.io.OutputStream))
+under the hood.
 
-This function supports two modes, `pm` and `appops`, which can be distinguished using the `target`
-parameter. Use of the `appops` mode requires driver version 2.13.7 or later, and the
-[`adb_shell`](./insecure-features.md#adb_shell) insecure feature to be enabled.
+#### Response
+
+`string` - the UI accessibility hierarchy as a stringified XML.
+
+### `mobile: getUiMode`
+
+Retrieves the value for the specified device appearance mode. Only supported since Android 10 (Q /
+API level 29). Calls `adb shell cmd uimode` under the hood.
+
+Available since driver version 2.29.0.
 
 #### Parameters
 
-|<div style="width:7em">Name</div>|<div style="width:7em">Type</div>|Description|
-|---|---|---|
-|`permissions`|`string` or `Array<string>`|One or more permissions to be changed. For `pm` mode, supported values can be found in the [Android Manifest documentation](https://developer.android.com/reference/android/Manifest.permission), and the `all` magic string is additionally supported. For `appops` mode, supported values can be found in the [Android AppOpsManager documentation](https://developer.android.com/reference/android/app/AppOpsManager). Full constant values must be used for both modes.|
-|`appPackage?`|`string`|Name of the application package to change. Set to the package of the app under test by default.|
-|`action`|`string`|Permission action to apply. Supported values are either `grant` or `revoke` (in `pm` mode), or `allow`, `ignore`, `deny` and `default` (in `appops` mode).|
-|`target?`|`string`|The mode to use. Supported values are `pm` and `appops`. Set to `pm` by default.|
+|Name|Type|Description|
+|--|--|--|
+|`mode`|`string`|Appearance mode to check. Supported values are `night` and `car`.|
+
+#### Response
+
+`string` - value of the specified appearance mode
+
+### `mobile: setUiMode`
+
+Sets the device appearance mode. Only supported since Android 10 (Q / API level 29). Calls
+`adb shell cmd uimode` under the hood.
+
+Available since driver version 2.29.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`mode`|`string`|Appearance mode to set. Supported values are `night` and `car`.|
+|`value`|`string`|Value of the specified `mode`. Supported values are either `yes`, `no`, `auto`, `custom_schedule`, and `custom_bedtime` (for `night` mode), or `yes` and `no` (for `car` mode).|
 
 #### Response
 
 `null`
 
-### `mobile: getPermissions`
+### `mobile: screenshots`
 
-Retrieves runtime permissions for a specified application package.
+Retrieves a screenshot of all device displays. Only supported since Android 10 (Q / API level 29).
 
-#### Parameters
-
-|<div style="width:7em">Name</div>|Type|Description|
-|---|---|---|
-|`type?`|`string`|Type of permissions to retrieve. Supported values are `denied`, `granted` and `requested`. Set to `requested` by default.|
-|`appPackage?`|`string`|Name of the application package to change. Set to the package of the app under test by default.|
-
-#### Response
-
-`Array<string>` - list of permission names. Could be empty
-
-### `mobile: performEditorAction`
-
-Performs IME action on the _currently focused_ editable element.
-
-Very often Android developers use the [`onEditorAction`](https://developer.android.com/reference/android/widget/TextView.OnEditorActionListener.html#onEditorAction(android.widget.TextView,%20int,%20android.view.KeyEvent))
-callback with the `actionId` argument to implement handling of actions, for example, when the
-`Search` or `Done` button is pressed on the on-screen keyboard. This method aims to emulate the
-invocation of such a callback on the focused element.
+Available since driver version 9.3.0.
 
 #### Parameters
 
 |Name|Type|Description|
-|---|---|---|
-|`action`|`integer` or `string`|Name or integer code of the editor action to be executed. Supported values are `unspecified`, `none`, `go`, `search`, `send`, `next`, `done`, and `previous`. Refer to the [Android EditorInfo](https://developer.android.com/reference/android/view/inputmethod/EditorInfo) documentation for more details.|
+|--|--|--|
+|`displayId`|`integer` or `string`|Display identifier to take a screenshot for. By default, all available displays are used. An error is thrown if a display with the specified ID does not exist. Available identifiers can be retrieved from the `adb shell dumpsys SurfaceFlinger --display-id` command output.|
 
 #### Response
 
-`null`
-
-### `mobile: getDeviceTime`
-
-Retrieves the current system time on the device under test.
-
-#### Parameters
+`Record<string, Record<string, any>>` - a map of display identifiers to their properties. Each set
+of properties contains the following:
 
 |Name|Type|Description|
-|---|---|---|
-|`format?`|`string`|Format to return the timestamp in. Refer to the [`dayjs` documentation](https://day.js.org/docs/en/display/format) for the format syntax. Set to `YYYY-MM-DDTHH:mm:ssZ` by default, matching the ISO8601 format.|
-
-#### Response
-
-`string` - the device timestamp in the specified format
+|--|--|--|
+|`id`|`string`|Display identifier|
+|`name`|`string`|Display name|
+|`isDefault`|`boolean`|Whether this display is the default one|
+|`payload`|`string`|Base64-encoded PNG screenshot of the display|
 
 ### `mobile: startScreenStreaming`
 
@@ -233,6 +312,147 @@ The method will return immediately if no streaming server is running.
 #### Response
 
 `null`
+
+### `mobile: startMediaProjectionRecording`
+
+Starts recording the device screen and audio using Android's [Media Projection](https://developer.android.com/reference/android/media/projection/MediaProjection)
+API. Only supported since Android 10 (Q / API level 29). Recording can be stopped using the
+[`mobile: stopMediaProjectionRecording`](#mobile-stopmediaprojectionrecording)
+execute method.
+
+Available since driver version 2.7.0.
+
+#### Parameters
+
+|<div style="width:9em">Name</div>|Type|Description|
+|--|--|--|
+|`resolution?`|`string`|Resolution of the resulting video, formatted as `<width>x<height>`. Supported values are `1920x1080`, `1280x720`, `720x480`, `320x240` and `176x144`. Set to the greatest supported device resolution by default (usually `1920x1080`).|
+|`priority?`|`string`|Priority of the recorder process, which could be adjusted in case of performance drops. Supported values are `high`, `normal` and `low`. Set to `high` by default.|
+|`maxDurationSec?`|`integer`|Maximum recording time in seconds. Set to `900` (15 minutes) by default. |
+|`filename?`|`string`|Name of the resulting video file. The `.mp4` extension is added automatically if absent. Set to the current timestamp by default.|
+
+#### Response
+
+`boolean` - `true` if a new recording has successfully started, otherwise `false`
+
+### `mobile: stopMediaProjectionRecording`
+
+Stops the active screen recording process started by [`mobile: startMediaProjectionRecording`](#mobile-startmediaprojectionrecording),
+either returning its payload or uploading it to a remote location. Only supported since Android 10
+(Q / API level 29).
+
+If the recording process is not running, but another recording has previously finished, its data is
+used instead. If no previous recording was found, an error is thrown.
+
+Available since driver version 2.7.0.
+
+#### Parameters
+
+|<div style="width:8em">Name</div>|<div style="width:8em">Type</div>|Description|
+|--|--|--|
+|`remotePath?`|`string`|Path to a remote location where the resulting video file should be uploaded. Supported path protocols are HTTP(S) and FTP (deprecated). An exception is thrown if the file is too big to fit in the process memory.|
+|`user?`|`string`|Username used for authentication to `remotePath`|
+|`pass?`|`string`|Password used for authentication to `remotePath`|
+|`method?`|`string`|Name of the HTTP(S) multipart upload method. Set to `PUT` by default.|
+|`headers?`|`Record<string, any>`|Additional headers to use for the HTTP(S) multipart upload|
+|`fileFieldName?`|`string`|Name of the form field for storing the file content blob for HTTP(S) uploads. Set to `file` by default.|
+|`formFields?`|`Record<string, any>` or `Array<[string, any]>`|Additional form fields to use for the HTTP(S) multipart upload|
+
+#### Response
+
+`string` - the Base64-encoded string of the screen recording, or an empty string if `remotePath` is
+set
+
+### `mobile: isMediaProjectionRecordingRunning`
+
+Determines whether a Media Projection-based recording is currently active. Only supported since
+Android 10 (Q / API level 29).
+
+Available since driver version 2.7.0.
+
+#### Response
+
+`boolean` - `true` if recording is active, otherwise `false`
+
+### `mobile: lock`
+
+Locks the device and optionally unlocks it after a specified duration. Only simple (e.g. without a
+password) locks are supported.
+
+Available since driver version 2.23.4.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`seconds?`|`float`|Number of seconds after which to unlock the device. If omitted or set to `0`, automatic unlock is skipped.|
+
+#### Response
+
+`null`
+
+### `mobile: unlock`
+
+Unlocks the device if it is locked. Refer to [the Unlock guide](../guides/unlock.md) for more
+details.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`key?`|`string`|The unlock key. By default, set to the value of the [`appium:unlockKey`](./capabilities.md#unlockkey) capability. Must be provided together with `type`.|
+|`type?`|`string`|The unlock type. By default, set to the value of the [`appium:unlockType`](./capabilities.md#unlocktype) capability. Supported values are `pin`, `pinWithKeyEvent`, `password`, `pattern` and `fingerprint`. Must be provided together with `key`.|
+|`strategy?`|`string`|Approach to use for unlocking. By default, set to the value of the [`appium:unlockStrategy`](./capabilities.md#unlockstrategy) capability. Ignored if `type` is set to `password`.|
+|`timeoutMs?`|`integer`|The unlock timeout. By default, set to the value of the [`appium:unlockSuccessTimeout`](./capabilities.md#unlocksuccesstimeout) capability.|
+
+#### Response
+
+`null`
+
+### `mobile: isLocked`
+
+Determines whether the device is locked.
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`boolean` - `true` if the device is locked, otherwise `false`
+
+### `mobile: fingerprint`
+
+Emulates authentication using a virtual fingerprint with the specified ID. Only supported on
+emulators running Android 6 (Marshmallow / API level 23) or later.
+
+Virtual fingerprints should first be registered by opening the Android fingerprint registration
+settings and running this command with the ID that the fingerprint should be assigned to. Once
+registered, the command and ID can be used in fingerprint authentication prompts.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`fingerprintId`|`integer` or `string`|Identifier of a virtual fingerprint|
+
+#### Response
+
+`null`
+
+### `mobile: getDeviceTime`
+
+Retrieves the current system time on the device under test.
+
+#### Parameters
+
+|Name|Type|Description|
+|---|---|---|
+|`format?`|`string`|Format to return the timestamp in. Refer to the [`dayjs` documentation](https://day.js.org/docs/en/display/format) for the format syntax. Set to `YYYY-MM-DDTHH:mm:ssZ` by default, matching the ISO8601 format.|
+
+#### Response
+
+`string` - the device timestamp in the specified format
 
 ### `mobile: getNotifications`
 
@@ -279,6 +499,284 @@ Example output:
   ]
 }
 ```
+
+### `mobile: isToastVisible`
+
+Determines whether a toast notification with the specified text is currently visible.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`text`|`string`|Full or partial contents of the notification text|
+|`isRegexp?`|`boolean`|Whether `text` should be parsed as a regular expression. Set to `false` by default.|
+
+#### Response
+
+`boolean` - `true` if a notification with the text is visible, otherwise `false`
+
+### `mobile: statusBar`
+
+Performs the specified command on the system status bar. Calls `adb shell cmd statusbar` under the
+hood. Only supported since Android 8 (Oreo / API level 26).
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`command`|`string`|Name of the status bar command. See below for supported values.|
+|`component?`|`string`|Name of the tile component to apply the command on. Only used for `addTile`, `removeTile` and `clickTile` commands.|
+
+The following values are supported for the `command` parameter:
+
+|<div style="width:11em">Name</div>|Description|
+|--|--|
+|`expandNotifications`|Opens the notifications panel|
+|`expandSettings`|Opens the notifications panel and expand quick settings if present|
+|`collapse`|Collapses the notifications and settings panel|
+|`addTile`|Adds a TileService of the specified component|
+|`removeTile`|Removes a TileService of the specified component|
+|`clickTile`|Clicks on a TileService of the specified component|
+|`getStatusIcons`|Returns the list of status bar icons and the order they appear in. List items are separated using the newline character|
+
+#### Response
+
+`string` - output of the requested status bar command. Could be empty
+
+### `mobile: getConnectivity`
+
+Retrieves the state of one or more connectivity-related system services.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`services?`|`string` or `Array<string>`|One or more service names to check. Supported values are `wifi`, `data`, and `airplaneMode`. By default, the states for all services are returned.|
+
+#### Response
+
+`Record<string, boolean>` - mapping of service names to whether they are enabled. If the `services` parameter was set, only the specified services are returned.
+
+### `mobile: setConnectivity`
+
+Sets the state of one or more connectivity-related system services. On real devices, switching WiFi
+only works reliably since Android 11 (R / API level 30).
+
+Available since driver version 2.23.0.
+
+!!! warning
+
+    Using this method may result in Android terminating/disconnecting the Espresso server app on
+    the device under test, causing a session disconnect. The only way to restore the session
+    afterwards would be to quit it, restore device connectivity, then reconnect to it with the
+    `noReset` capability set to `true`.
+
+#### Parameters
+
+At least one of the below parameters must be provided. If any parameter is not specified, the state
+of its service remains unchanged.
+
+|Name|Type|Description|
+|--|--|--|
+|`wifi?`|`boolean`|Whether WiFi should be enabled or disabled|
+|`data?`|`boolean`|Whether mobile data should be enabled or disabled|
+|`airplaneMode?`|`boolean`|Whether Airplane Mode should be enabled or disabled|
+
+#### Response
+
+`null`
+
+### `mobile: bluetooth`
+
+Performs the specified action on the Android system Bluetooth adapter. An error is thrown if the
+device under test does not have a Bluetooth adapter.
+
+Available since driver version 2.40.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`action`|`string`|Bluetooth action to apply. Supported values are `enable`, `disable`, and `unpairAll`.|
+
+#### Response
+
+`null`
+
+### `mobile: nfc`
+
+Performs the specified action on the Android system NFC adapter. An error is thrown if the device
+under test does not have a NFC adapter.
+
+Available since driver version 2.40.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`action`|`string`|NFC action to apply. Supported values are `enable` and `disable`.|
+
+#### Response
+
+`null`
+
+### `mobile: toggleGps`
+
+Toggles the state of location services (GPS). This functionality only works reliably starting from
+Android 12 (S / API level 31).
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`null`
+
+### `mobile: isGpsEnabled`
+
+Determines whether location services (GPS) are enabled. This functionality only works reliably
+starting from Android 12 (S / API level 31).
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`boolean` - `true` if GPS services are enabled, otherwise `false`
+
+### `mobile: refreshGpsCache`
+
+Sends a request to refresh the GPS cache on the device under test. By default, location tracking is
+configured for [low battery consumption](https://github.com/appium/io.appium.settings/blob/master/app/src/main/java/io/appium/settings/LocationTracker.java),
+so this method can be useful if the device location frequently changes.
+
+The device under test must either have Google Play Services installed, or be running Android 11
+(R / API level 30) or later (which relies on [LocationManager](https://developer.android.com/reference/android/location/LocationManager)).
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`timeoutMs?`|`integer`|Maximum number of milliseconds to block until the GPS cache is confirmed to have been refreshed. Set to `20000` by default. An error is thrown if the device does not return a successful cache refresh response within this timeout. If set to `0` or a negative value, waiting is skipped.|
+
+#### Response
+
+`null`
+
+### `mobile: getGeolocation`
+
+Retrieves the current location of the device under test.
+
+Available since driver version 3.5.0.
+
+#### Response
+
+`Location` - an object with the following properties:
+
+|Name|Type|Description|
+|--|--|--|
+|`altitude`|`float`|Altitude of the device location|
+|`latitude`|`float`|Latitude of the device location|
+|`longitude`|`float`|Longitude of the device location|
+
+### `mobile: setGeolocation`
+
+Sets the current location of the device under test.
+
+Available since driver version 3.5.0.
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|--|--|--|
+|`latitude`|`float`|New latitude value|
+|`longitude`|`float`|New longitude value|
+|`altitude?`|`float`|New altitude value|
+|`satellites?`|`integer`|Number of satellites being tracked. Only supported on emulators. Must be in the range `[1, 12]`. Available since driver version 4.1.0.|
+|`speed?`|`float`|Current speed in meters per second. Must not be negative. See [`setSpeed`](https://developer.android.com/reference/android/location/Location#setSpeed(float)) for more details. Available since driver version 4.1.0.|
+|`bearing?`|`float`|Current bearing in degrees. Only supported on real devices. Must be in the range `[0, 360)`. See [`setBearing`](https://developer.android.com/reference/android/location/Location#setBearing(float)) for more details. Available since driver version 4.1.0.|
+|`accuracy?`|`float`|Current horizontal accuracy in meters. Only supported on real devices. Must not be negative. See [`setAccuracy`](https://developer.android.com/reference/android/location/Location#setAccuracy(float)) for more details. Available since driver version 4.1.0.|
+
+#### Response
+
+`null`
+
+### `mobile: resetGeolocation`
+
+Resets the current location of the device under test to the default/system one. Only supported on
+real devices.
+
+Available since driver version 3.5.0.
+
+#### Response
+
+`null`
+
+### `mobile: pushFile`
+
+Pushes data to a file on the device under test. If the target file already exists, its contents
+will be overwritten.
+
+Available since driver version 2.10.0.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|---|---|---|
+|`remotePath`|`string`|Full path to the file where the data should be written to, or a path inside an app bundle (e.g. `@my.app.id/my/path`). The latter format requires the target app bundle to have debugging enabled. An error is thrown if the path resolves to a directory.|
+|`payload`|`string`|Base64-encoded data to be included in the file|
+
+#### Response
+
+`null`
+
+### `mobile: pullFile`
+
+Pulls the contents of a file from the device under test.
+
+Available since driver version 2.10.0.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|---|---|---|
+|`remotePath`|`string`|Full path to the file where the data should be retrieved from, or a path inside an app bundle (e.g. `@my.app.id/my/path`). The latter format requires the target app bundle to have debugging enabled. An error is thrown if the path resolves to a directory.|
+
+#### Response
+
+`string` - Base64-encoded contents of the specified file
+
+### `mobile: deleteFile`
+
+Deletes a file from the device under test.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|---|---|---|
+|`remotePath`|`string`|Full path to the file to be deleted, or a path inside an app bundle (e.g. `@my.app.id/my/path`). The latter format requires the target app bundle to have debugging enabled. An error is thrown if the path resolves to a directory.|
+
+#### Response
+
+`boolean` - `true` if the file was successfully deleted, `false` if it does not exist
+
+### `mobile: pullFolder`
+
+Pulls the contents of a directory from the device under test.
+
+Available since driver version 2.10.0.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|---|---|---|
+|`remotePath`|`string`|Full path to a directory on the device under test|
+
+#### Response
+
+`string` - Base64-encoded zipped contents of the specified directory
 
 ### `mobile: listSms`
 
@@ -329,527 +827,6 @@ Example output:
  }
 ```
 
-### `mobile: pushFile`
-
-Pushes data to a file on the device under test. If the target file already exists, its contents
-will be overwritten.
-
-Available since driver version 2.10.0.
-
-#### Parameters
-
-|<div style="width:6em">Name</div>|Type|Description|
-|---|---|---|
-|`remotePath`|`string`|Full path to the file where the data should be written to, or a path inside an app bundle (e.g. `@my.app.id/my/path`). The latter format requires the target app bundle to have debugging enabled. An error is thrown if the path resolves to a directory.|
-|`payload`|`string`|Base64-encoded data to be included in the file|
-
-#### Response
-
-`null`
-
-### `mobile: pullFile`
-
-Pulls the contents of a file from the device under test.
-
-Available since driver version 2.10.0.
-
-#### Parameters
-
-|<div style="width:6em">Name</div>|Type|Description|
-|---|---|---|
-|`remotePath`|`string`|Full path to the file where the data should be retrieved from, or a path inside an app bundle (e.g. `@my.app.id/my/path`). The latter format requires the target app bundle to have debugging enabled. An error is thrown if the path resolves to a directory.|
-
-#### Response
-
-`string` - Base64-encoded contents of the specified file
-
-### `mobile: pullFolder`
-
-Pulls the contents of a directory from the device under test.
-
-Available since driver version 2.10.0.
-
-#### Parameters
-
-|<div style="width:6em">Name</div>|Type|Description|
-|---|---|---|
-|`remotePath`|`string`|Full path to a directory on the device under test|
-
-#### Response
-
-`string` - Base64-encoded zipped contents of the specified directory
-
-### `mobile: deleteFile`
-
-Deletes a file from the device under test.
-
-#### Parameters
-
-|<div style="width:6em">Name</div>|Type|Description|
-|---|---|---|
-|`remotePath`|`string`|Full path to the file to be deleted, or a path inside an app bundle (e.g. `@my.app.id/my/path`). The latter format requires the target app bundle to have debugging enabled. An error is thrown if the path resolves to a directory.|
-
-#### Response
-
-`boolean` - `true` if the file was successfully deleted, `false` if it does not exist
-
-### `mobile: isAppInstalled`
-
-Determines whether the application with the specified package identifier is installed on the device
-under test.
-
-Available since driver version 2.10.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|---|---|---|
-|`appId`|`string`|Package identifier of the application|
-|`user?`|`integer` or `string`|ID of the user for which the app is installed. The `current` user is used by default. Available since driver version 2.39.0.|
-
-#### Response
-
-`boolean` - `true` if the app is installed, otherwise `false`
-
-### `mobile: listApps`
-
-Retrieves information about installed applications on the device under test. Only supported since
-Android 8 (Oreo / API level 26).
-
-Available since driver version 6.4.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|---|---|---|
-|`user?`|`integer` or `string`|ID of the user to filter the installed packages for|
-
-#### Response
-
-`Record<string, Record<string, any>>` - mapping of package names to their details. The
-`versionCode` property is only populated for devices running Android 9 (Pie / API level 28) or
-later.
-
-In Espresso driver versions before 7.0.0, the response was `Array<string>` - a list of package
-names.
-
-### `mobile: queryAppState`
-
-Retrieves the state of the application with the specified package identifier on the device under
-test.
-
-Available since driver version 2.10.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`appId`|`string`|Package identifier of the app to query|
-
-#### Response
-
-`integer` - a number indicating the app state:
-
-|Number|Description|
-|--|--|
-|`0`|Not installed|
-|`1`|Not running|
-|`3`|Running in background|
-|`4`|Running in foreground|
-
-### `mobile: activateApp`
-
-Activates the application with the specified package identifier or launches it if necessary, by
-simulating a tap on the app icon on the Android UI.
-
-Available since driver version 2.10.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`appId`|`string`|Package identifier of the app to activate|
-
-#### Response
-
-`null`
-
-### `mobile: removeApp`
-
-Uninstalls the application with the specified package identifier from the device under test.
-
-Available since driver version 2.10.0.
-
-#### Parameters
-
-|<div style="width:10em">Name</div>|Type|Description|
-|--|--|--|
-|`appId`|`string`|Package identifier of the app to uninstall|
-|`timeout?`|`integer`|Number of milliseconds to wait until the app is terminated before uninstallation. Set to `20000` by default.|
-|`keepData?`|`boolean`|Whether to retain application data and cache after uninstall. Unset by default.|
-|`skipInstallCheck?`|`boolean`|Whether to check if the app is installed before uninstalling it. Set to `true` by default.|
-
-#### Response
-
-`boolean` - `true` if the app was removed, otherwise `false`
-
-### `mobile: terminateApp`
-
-Terminates the application with the specified package identifier and waits until its app process
-has stopped.
-
-Available since driver version 2.10.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`appId`|`string`|Package identifier of the app to terminate|
-|`timeout?`|`integer`|Number of milliseconds to wait until the app is terminated. Set to `500` by default. Since driver version 2.13.0, setting this to `0` or a negative value skips the app state check.|
-
-#### Response
-
-`boolean` - `true` if the app was terminated, otherwise `false`
-
-### `mobile: installApp`
-
-Installs the specified application on the device under test. 
-
-If a newer version of the application was already installed, the `INSTALL_FAILED_VERSION_DOWNGRADE`
-error may be raised.
-
-Available since driver version 2.10.0.
-
-#### Parameters
-
-|<div style="width:10em">Name</div>|Type|Description|
-|--|--|--|
-|`appPath`|`string`|Full path to a file on the host machine, or URL to a remote location. The app must have the `.apk` or `.apks` extension.|
-|`checkVersion?`|`boolean`|Whether to skip installation if an identical or newer app version is already installed. Unset by default. Applied before `replace`. Available since driver version 2.36.0.|
-|`timeout?`|`integer`|Number of milliseconds to wait until the app is installed. Set to `60000` by default, unless overridden using the [`appium:adbExecTimeout`](./capabilities.md#adbexectimeout) capability|
-|`allowTestPackages?`|`boolean`|Whether to allow installation of test packages. Set to `false` by default|
-|`useSdcard?`|`boolean`|Whether to install the app on the SD card instead of built-in storage. Set to `false` by default|
-|`grantPermissions?`|`boolean`|Whether to automatically grant all permissions defined in the application manifest after installation. Set to `false` by default. Only supported on Android 6 (Marshmallow / API level 23) or later.|
-|`replace?`|`boolean`|Whether to replace any already existing app installation. Set to `true` by default. If set to `false` and the app is already installed, an error is thrown. Applied after `checkVersion`.|
-|`noIncremental?`|`boolean`|Whether to disable incremental app installation. Set to `false` by default. Refer to [How ADB incremental-install works](https://android.googlesource.com/platform/packages/modules/adb/+/HEAD/docs/dev/incremental-install.md) for more details.|
-
-#### Response
-
-`null`
-
-### `mobile: clearApp`
-
-Clears all data associated with the application with the specified package identifier: user data,
-cache, and settings. Calls `adb shell pm clear <appId>` under the hood.
-
-Available since driver version 2.10.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`appId`|`string`|Package identifier of the app to clear|
-
-#### Response
-
-`null`
-
-### `mobile: backgroundApp`
-
-Moves the active app to the background and optionally restores it into the foreground after a
-specified duration. The call is blocking.
-
-Available since driver version 2.23.5.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`seconds`|`float`|Number of seconds after which to restore the app to foreground. If set to `0` or a negative value, automatic restoration is skipped.|
-
-#### Response
-
-`null`
-
-### `mobile: broadcast`
-
-Sends a broadcast Intent to the Android system. Invokes `adb shell am broadcast` under the hood.
-
-Available since driver version 2.10.0.
-
-#### Parameters
-
-|<div style="width:16em">Name</div>|<div style="width:11em">Type</div>|Description|
-|--|--|--|
-|`intent?`|`string`|Full name of the intent to broadcast|
-|`user?`|`integer` or `string`|ID of the user to send the broadcast to|
-|`action?`|`string`|Name of the intent action|
-|`uri?`|`string`|Intent URI|
-|`mimeType?`|`string`|Intent MIME type|
-|`identifier?`|`string`|Intent identifier|
-|`categories?`|`string` or `Array<string>`|One or more intent categories|
-|`component?`|`string`|Intent component|
-|`package?`|`string`|Intent package name|
-|`extras?`|`Array<Array<string>>`|Extra intent arguments. See below for expected structure|
-|`flags?`|`string`|Flags in hexadecimal format to apply on intent start-up. Refer to the [Android Intent documentation](https://developer.android.com/reference/android/content/Intent) for supported values. Multiple flags should be merged into one value.|
-|`receiverPermission?`|`string`|Permission that the receiver must hold|
-|`allowBackgroundActivityStarts?`|`boolean`|Whether the receiver may start activities even if in the background|
-
-The `flags` parameter is an array of arrays, where each subarray contains 3 items: value category,
-key, and the value itself. Supported value categories and their value types are as follows:
-
-|Value Category|Value Type|
-|--|--|
-|`s`|String|
-|`sn`|Null (only the key is required; the value should be omitted)|
-|`z`|Boolean|
-|`i`|Integer|
-|`l`|Long integer|
-|`f`|Float|
-|`u`|URI|
-|`cn`|Component name (string)|
-|`ia`|String of comma-separated integers|
-|`ial`|String of comma-separated integers|
-|`la`|String of comma-separated long integers|
-|`lal`|String of comma-separated long integers|
-|`fa`|String of comma-separated floats|
-|`fal`|String of comma-separated floats|
-|`sa`|Comma-separated strings (commas that are part of the strings themselves should be escaped)|
-|`sal`|Comma-separated strings (commas that are part of the strings themselves should be escaped)|
-
-#### Response
-
-`string` - output of the `adb shell am broadcast` command.
-
-### `mobile: getContexts`
-
-Retrieves a detailed list of available webview contexts with their mapping information. Does not
-include non-webview (e.g. native) contexts.
-
-#### Parameters
-
-|<div style="width:10em">Name</div>|Type|Description|
-|--|--|--|
-|`waitForWebviewMs?`|`integer`|Number of milliseconds for how long to retry retrieval of webview data. Set to `0` by default. Higher values can help prevent ChromeDriver errors such as `failed to connect to socket 'localabstract:chrome_devtools_remote'`. Refer to [this issue](https://github.com/appium/appium/issues/19251) for more details. Available since driver version 2.30.0.|
-
-#### Response
-
-`Array<Record<string, any>>` - list of webview objects. Example output:
-
-```json
-[
-  {
-    "proc": "@webview_devtools_remote_22138",
-    "webview": "WEBVIEW_22138",
-    "info": {
-      "Android-Package": "io.appium.settings",
-      "Browser": "Chrome/74.0.3729.185",
-      "Protocol-Version": "1.3",
-      "User-Agent": "Mozilla/5.0 (Linux; Android 10; Android SDK built for x86 Build/QSR1.190920.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.185 Mobile Safari/537.36",
-      "V8-Version": "7.4.288.28",
-      "WebKit-Version": "537.36 (@22955682f94ce09336197bfb8dffea991fa32f0d)",
-      "webSocketDebuggerUrl": "ws://127.0.0.1:10900/devtools/browser"
-    },
-    "pages": [
-      {
-        "description": "{\"attached\":true,\"empty\":false,\"height\":1458,\"screenX\":0,\"screenY\":336,\"visible\":true,\"width\":1080}",
-        "devtoolsFrontendUrl": "http://chrome-devtools-frontend.appspot.com/serve_rev/@22955682f94ce09336197bfb8dffea991fa32f0d/inspector.html?ws=127.0.0.1:10900/devtools/page/27325CC50B600D31B233F45E09487B1F",
-        "id": "27325CC50B600D31B233F45E09487B1F",
-        "title": "Releases · appium/appium · GitHub",
-        "type": "page",
-        "url": "https://github.com/appium/appium/releases",
-        "webSocketDebuggerUrl": "ws://127.0.0.1:10900/devtools/page/27325CC50B600D31B233F45E09487B1F"
-      }
-    ],
-    "webviewName": "WEBVIEW_com.io.appium.setting"
-  }
-]
-```
-
-### `mobile: getChromeCapabilities`
-
-Retrieves the current ChromeDriver session capabilities. Only supported in a webview context. Can
-be useful for debugging Chrome/webview automation issues and understanding what capabilities are
-being applied to the Chromedriver instance.
-
-Available since driver version 6.0.7.
-
-#### Response
-
-`Record<string, any>` - map of current ChromeDriver capabilities, typically consisting of standard
-W3C WebDriver capabilities. The exact structure may depend on the Chrome/ChromeDriver version and
-the initial session capabilities.
-
-### `mobile: lock`
-
-Locks the device and optionally unlocks it after a specified duration. Only simple (e.g. without a
-password) locks are supported.
-
-Available since driver version 2.23.4.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`seconds?`|`float`|Number of seconds after which to unlock the device. If omitted or set to `0`, automatic unlock is skipped.|
-
-#### Response
-
-`null`
-
-### `mobile: unlock`
-
-Unlocks the device if it is locked. Refer to [the Unlock guide](../guides/unlock.md) for more
-details.
-
-#### Parameters
-
-|<div style="width:6em">Name</div>|Type|Description|
-|--|--|--|
-|`key?`|`string`|The unlock key. By default, set to the value of the [`appium:unlockKey`](./capabilities.md#unlockkey) capability. Must be provided together with `type`.|
-|`type?`|`string`|The unlock type. By default, set to the value of the [`appium:unlockType`](./capabilities.md#unlocktype) capability. Supported values are `pin`, `pinWithKeyEvent`, `password`, `pattern` and `fingerprint`. Must be provided together with `key`.|
-|`strategy?`|`string`|Approach to use for unlocking. By default, set to the value of the [`appium:unlockStrategy`](./capabilities.md#unlockstrategy) capability. Ignored if `type` is set to `password`.|
-|`timeoutMs?`|`integer`|The unlock timeout. By default, set to the value of the [`appium:unlockSuccessTimeout`](./capabilities.md#unlocksuccesstimeout) capability.|
-
-#### Response
-
-`null`
-
-### `mobile: isLocked`
-
-Determines whether the device is locked.
-
-Available since driver version 2.23.0.
-
-#### Response
-
-`boolean` - `true` if the device is locked, otherwise `false`
-
-### `mobile: refreshGpsCache`
-
-Sends a request to refresh the GPS cache on the device under test. By default, location tracking is
-configured for [low battery consumption](https://github.com/appium/io.appium.settings/blob/master/app/src/main/java/io/appium/settings/LocationTracker.java),
-so this method can be useful if the device location frequently changes.
-
-The device under test must either have Google Play Services installed, or be running Android 11
-(R / API level 30) or later (which relies on [LocationManager](https://developer.android.com/reference/android/location/LocationManager)).
-
-#### Parameters
-
-|<div style="width:6em">Name</div>|Type|Description|
-|--|--|--|
-|`timeoutMs?`|`integer`|Maximum number of milliseconds to block until the GPS cache is confirmed to have been refreshed. Set to `20000` by default. An error is thrown if the device does not return a successful cache refresh response within this timeout. If set to `0` or a negative value, waiting is skipped.|
-
-#### Response
-
-`null`
-
-### `mobile: startMediaProjectionRecording`
-
-Starts recording the device screen and audio using Android's [Media Projection](https://developer.android.com/reference/android/media/projection/MediaProjection)
-API. Only supported since Android 10 (Q / API level 29). Recording can be stopped using the
-[`mobile: stopMediaProjectionRecording`](#mobile-stopmediaprojectionrecording)
-execute method.
-
-Available since driver version 2.7.0.
-
-#### Parameters
-
-|<div style="width:9em">Name</div>|Type|Description|
-|--|--|--|
-|`resolution?`|`string`|Resolution of the resulting video, formatted as `<width>x<height>`. Supported values are `1920x1080`, `1280x720`, `720x480`, `320x240` and `176x144`. Set to the greatest supported device resolution by default (usually `1920x1080`).|
-|`priority?`|`string`|Priority of the recorder process, which could be adjusted in case of performance drops. Supported values are `high`, `normal` and `low`. Set to `high` by default.|
-|`maxDurationSec?`|`integer`|Maximum recording time in seconds. Set to `900` (15 minutes) by default. |
-|`filename?`|`string`|Name of the resulting video file. The `.mp4` extension is added automatically if absent. Set to the current timestamp by default.|
-
-#### Response
-
-`boolean` - `true` if a new recording has successfully started, otherwise `false`
-
-### `mobile: isMediaProjectionRecordingRunning`
-
-Determines whether a Media Projection-based recording is currently active. Only supported since
-Android 10 (Q / API level 29).
-
-Available since driver version 2.7.0.
-
-#### Response
-
-`boolean` - `true` if recording is active, otherwise `false`
-
-### `mobile: stopMediaProjectionRecording`
-
-Stops the active screen recording process started by [`mobile: startMediaProjectionRecording`](#mobile-startmediaprojectionrecording),
-either returning its payload or uploading it to a remote location. Only supported since Android 10
-(Q / API level 29).
-
-If the recording process is not running, but another recording has previously finished, its data is
-used instead. If no previous recording was found, an error is thrown.
-
-Available since driver version 2.7.0.
-
-#### Parameters
-
-|<div style="width:8em">Name</div>|<div style="width:8em">Type</div>|Description|
-|--|--|--|
-|`remotePath?`|`string`|Path to a remote location where the resulting video file should be uploaded. Supported path protocols are HTTP(S) and FTP (deprecated). An exception is thrown if the file is too big to fit in the process memory.|
-|`user?`|`string`|Username used for authentication to `remotePath`|
-|`pass?`|`string`|Password used for authentication to `remotePath`|
-|`method?`|`string`|Name of the HTTP(S) multipart upload method. Set to `PUT` by default.|
-|`headers?`|`Record<string, any>`|Additional headers to use for the HTTP(S) multipart upload|
-|`fileFieldName?`|`string`|Name of the form field for storing the file content blob for HTTP(S) uploads. Set to `file` by default.|
-|`formFields?`|`Record<string, any>` or `Array<[string, any]>`|Additional form fields to use for the HTTP(S) multipart upload|
-
-#### Response
-
-`string` - the Base64-encoded string of the screen recording, or an empty string if `remotePath` is
-set
-
-### `mobile: getConnectivity`
-
-Retrieves the state of one or more connectivity-related system services.
-
-Available since driver version 2.23.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`services?`|`string` or `Array<string>`|One or more service names to check. Supported values are `wifi`, `data`, and `airplaneMode`. By default, the states for all services are returned.|
-
-#### Response
-
-`Record<string, boolean>` - mapping of service names to whether they are enabled. If the `services` parameter was set, only the specified services are returned.
-
-### `mobile: setConnectivity`
-
-Sets the state of one or more connectivity-related system services. On real devices, switching WiFi
-only works reliably since Android 11 (R / API level 30).
-
-Available since driver version 2.23.0.
-
-!!! warning
-
-    Using this method may result in Android terminating/disconnecting the Espresso server app on
-    the device under test, causing a session disconnect. The only way to restore the session
-    afterwards would be to quit it, restore device connectivity, then reconnect to it with the
-    `noReset` capability set to `true`.
-
-#### Parameters
-
-At least one of the below parameters must be provided. If any parameter is not specified, the state
-of its service remains unchanged.
-
-|Name|Type|Description|
-|--|--|--|
-|`wifi?`|`boolean`|Whether WiFi should be enabled or disabled|
-|`data?`|`boolean`|Whether mobile data should be enabled or disabled|
-|`airplaneMode?`|`boolean`|Whether Airplane Mode should be enabled or disabled|
-
-#### Response
-
-`null`
-
 ### `mobile: hideKeyboard`
 
 Hides the on-screen keyboard. An error is thrown if the keyboard cannot be hidden.
@@ -870,97 +847,97 @@ Available since driver version 2.21.0.
 
 `boolean` - `true` if the keyboard is shown, otherwise `false`
 
-### `mobile: deviceidle`
+### `mobile: setStylusHandwriting`
 
-Adds or removes one or more applications from the Android system whitelist for apps that should not
-be forced into a limited mode after a period of inactivity (in other words, apps that should not be
-automatically put to sleep). Calls `adb shell dumpsys deviceidle` under the hood. Only supported
-since Android 6 (Marshmallow / API level 23).
+Enables or disables the Android system stylus handwriting input method. The [`set_stylus_handwriting`](./insecure-features.md#set_stylus_handwriting)
+insecure feature must be enabled.
 
-Refer to the [Diving Into Android 'M' Doze](https://www.protechtraining.com/blog/post/diving-into-android-m-doze-875)
-guide for more details.
+This functionality can be used to hide a possible system popup titled 'Try out your stylus'. Refer
+to [this ticket](https://github.com/appium/appium-uiautomator2-driver/issues/909) for more details.
 
-Available since driver version 2.40.0.
+Available since driver version 7.1.0.
 
 #### Parameters
 
 |Name|Type|Description|
 |--|--|--|
-|`action`|`string`|Action to apply for the whitelist. Supported values are `whitelistAdd` and `whitelistRemove`.|
-|`packages`|`string` or `Array<string>`|One or more package identifiers to add or remove from the whitelist|
+|`enabled`|`boolean`|Whether to enable or disable the stylus handwriting feature|
 
 #### Response
 
 `null`
 
-### `mobile: bluetooth`
+### `mobile: getClipboard`
 
-Performs the specified action on the Android system Bluetooth adapter. An error is thrown if the
-device under test does not have a Bluetooth adapter.
+Retrieves the content of the primary clipboard on the device under test.
 
-Available since driver version 2.40.0.
+Available since driver version 2.44.0.
+
+#### Response
+
+`string` - the clipboard content as a Base64-encoded string. An empty string is returned if the
+clipboard contains no data.
+
+### `mobile: setClipboard`
+
+Sets the contents of the primary device clipboard. Calls [`ClipboardManager.setPrimaryClip()`](https://developer.android.com/reference/android/content/ClipboardManager#setPrimaryClip(android.content.ClipData))
+under the hood.
+
+Available since driver version 2.44.0.
 
 #### Parameters
 
-|Name|Type|Description|
+|<div style="width:7em">Name</div>|Type|Description|
 |--|--|--|
-|`action`|`string`|Bluetooth action to apply. Supported values are `enable`, `disable`, and `unpairAll`.|
+|`content`|`string`|Base64-encoded payload to place in the clipboard.|
+|`contentType?`|`string`|The only supported and default value is `plaintext`.|
+|`label?`|`string`|Label to identify the payload. By default, set to the first 10 symbols of the plaintext data.|
 
 #### Response
 
 `null`
 
-### `mobile: nfc`
+### `mobile: pressKey`
 
-Performs the specified action on the Android system NFC adapter. An error is thrown if the device
-under test does not have a NFC adapter.
+Emulates a single key press of the specified key. Creates a new [`KeyEvent`](https://developer.android.com/reference/android/view/KeyEvent#KeyEvent(long,%20long,%20int,%20int,%20int,%20int,%20int,%20int,%20int))
+and passes it to [`UiController.injectKeyEvent()`](https://developer.android.com/reference/androidx/test/espresso/UiController#injectKeyEvent(android.view.KeyEvent))
+under the hood.
 
-Available since driver version 2.40.0.
+Available since driver version 2.23.3.
 
 #### Parameters
 
-|Name|Type|Description|
+|<div style="width:7em">Name</div>|Type|Description|
 |--|--|--|
-|`action`|`string`|NFC action to apply. Supported values are `enable` and `disable`.|
+|`keycode`|`integer`|Code of the key to press. Must match the numerical value for a supported KeyEvent `KEYCODE_` constant.|
+|`metastate`|`integer`|One or more meta keys that should be simultaneously pressed. Must match the combined numerical value for one or more supported KeyEvent `META_` constants.|
+|`flags`|`integer`|Flags to apply during the press. Must match the combined numerical value for one or more supported KeyEvent `FLAG_` constants.|
+|`isLongPress?`|`boolean`|Whether to emulate a long press. Set to `false` by default.|
 
 #### Response
 
 `null`
 
-### `mobile: setUiMode`
+## Emulators
 
-Sets the device appearance mode. Only supported since Android 10 (Q / API level 29). Calls
-`adb shell cmd uimode` under the hood.
+### `mobile: execEmuConsoleCommand`
 
-Available since driver version 2.29.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`mode`|`string`|Appearance mode to set. Supported values are `night` and `car`.|
-|`value`|`string`|Value of the specified `mode`. Supported values are either `yes`, `no`, `auto`, `custom_schedule`, and `custom_bedtime` (for `night` mode), or `yes` and `no` (for `car` mode).|
-
-#### Response
-
-`null`
-
-### `mobile: getUiMode`
-
-Retrieves the value for the specified device appearance mode. Only supported since Android 10 (Q /
-API level 29). Calls `adb shell cmd uimode` under the hood.
-
-Available since driver version 2.29.0.
+Executes the specified command using the Android emulator telnet console interface. The
+[`emulator_console`](./insecure-features.md#emulator_console) insecure feature must be enabled.
+Only supported on emulators.
 
 #### Parameters
 
-|Name|Type|Description|
-|--|--|--|
-|`mode`|`string`|Appearance mode to check. Supported values are `night` and `car`.|
+|<div style="width:7em">Name</div>|Type|Description|
+|---|---|---|
+|`command`|`string` or `Array<string>`|Command name to execute. See [Android Emulator Console Guide](https://developer.android.com/studio/run/emulator-console) for more details on available commands|
+|`execTimeout?`|`integer`|Timeout in milliseconds to wait for the server to reply to the given command. Set to `60000` by default|
+|`connTimeout?`|`integer`|Console connection timeout in milliseconds. Set to `5000` by default|
+|`initTimeout?`|`integer`|Telnet console initialization timeout in milliseconds (the time between the connection being established and the command prompt becoming available). Set to `5000` ms by default|
 
 #### Response
 
-`string` - value of the specified appearance mode
+`string` - the command output. An error is thrown if command execution fails.
 
 ### `mobile: injectEmulatorCameraImage`
 
@@ -976,175 +953,6 @@ Available since driver version 2.38.3.
 |Name|Type|Description|
 |--|--|--|
 |`payload`|`string`|Base64-encoded `.PNG` image to set as the viewfinder output. Other image formats are not supported.|
-
-#### Response
-
-`null`
-
-### `mobile: sendTrimMemory`
-
-Simulates a system memory trimming-related event for the specified package, by calling the Android
-[`onTrimMemory()`](https://developer.android.com/reference/android/content/ComponentCallbacks2#onTrimMemory(int))
-event.
-
-This functionality can be useful to verify app functionality under different system memory usage
-levels. Refer to the Android [Manage your app's memory](https://developer.android.com/topic/performance/memory)
-guide for more details.
-
-Available since driver version 2.40.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`pkg`|`string`|Package identifier of the application to send the event to.|
-|`level`|`string`|Context of the trim to simulate. Supported values are `COMPLETE`, `MODERATE`, `BACKGROUND`, `UI_HIDDEN`, `RUNNING_CRITICAL`, `RUNNING_LOW`, and `RUNNING_MODERATE`.|
-
-#### Response
-
-`null`
-
-### `mobile: getPerformanceData`
-
-Retrieves performance data about the given Android subsystem. The data is parsed from the output of
-the `dumpsys` utility.
-
-Available since driver version 2.23.0.
-
-#### Parameters
-
-|<div style="width:7em">Name</div>|Type|Description|
-|--|--|--|
-|`packageName`|`string`|Name of the package identifier to fetch the data for|
-|`dataType`|`string`|Subsystem name to return the data for. Supported values can be retrieved using the [`mobile: getPerformanceDataTypes`](#mobile-getperformancedatatypes) method.|
-
-#### Response
-
-`Array<Array<any>[]>` - table formatted as an array of arrays, where the first subarray represents
-column names, and the following subarrays represent data for those columns. The returned columns
-and their data depend on the specified `dataType`.
-
-For example, a response for the `cpuinfo` datatype could look as follows:
-```
-[
-  [user, kernel],
-  [0.9, 1.3]
-]
-```
-
-### `mobile: getPerformanceDataTypes`
-
-Retrieves supported performance data types, which can be used as the `dataType` argument for the
-[`mobile: getPerformanceData`](#mobile-getperformancedata) method.
-
-Available since driver version 2.23.0.
-
-#### Response
-
-`Array<string>` - list of supported data types
-
-### `mobile: toggleGps`
-
-Toggles the state of location services (GPS). This functionality only works reliably starting from
-Android 12 (S / API level 31).
-
-Available since driver version 2.23.0.
-
-#### Response
-
-`null`
-
-### `mobile: isGpsEnabled`
-
-Determines whether location services (GPS) are enabled. This functionality only works reliably
-starting from Android 12 (S / API level 31).
-
-Available since driver version 2.23.0.
-
-#### Response
-
-`boolean` - `true` if GPS services are enabled, otherwise `false`
-
-### `mobile: getDisplayDensity`
-
-Retrieves the density of the current display in DPI.
-
-Available since driver version 2.23.0.
-
-#### Response
-
-`integer` - the display density in DPI
-
-### `mobile: getSystemBars`
-
-Retrieves properties of various bars in the system UI.
-
-Available since driver version 2.23.0.
-
-#### Response
-
-`Record<string, Record<string, any>>` - mapping of system bar names to their properties. The
-following system bar names are included:
-
-* `statusBar`
-* `navigationBar`
-
-All system bars include the following properties:
-
-|Name|Type|Description|
-|--|--|--|
-|`visible`|`boolean`|Whether the bar is visible|
-|`x`|`integer`|Left X coordinate of the bar. Could be `0` if the bar is not visible|
-|`y`|`integer`|Top Y coordinate of the bar. Could be `0` if the bar is not visible|
-|`width`|`integer`|Bar width. Could be `0` if the bar is not visible|
-|`height`|`integer`|Bar height. Could be `0` if the bar is not visible|
-
-### `mobile: statusBar`
-
-Performs the specified command on the system status bar. Calls `adb shell cmd statusbar` under the
-hood. Only supported since Android 8 (Oreo / API level 26).
-
-Available since driver version 2.23.0.
-
-#### Parameters
-
-|<div style="width:6em">Name</div>|Type|Description|
-|--|--|--|
-|`command`|`string`|Name of the status bar command. See below for supported values.|
-|`component?`|`string`|Name of the tile component to apply the command on. Only used for `addTile`, `removeTile` and `clickTile` commands.|
-
-The following values are supported for the `command` parameter:
-
-|<div style="width:11em">Name</div>|Description|
-|--|--|
-|`expandNotifications`|Opens the notifications panel|
-|`expandSettings`|Opens the notifications panel and expand quick settings if present|
-|`collapse`|Collapses the notifications and settings panel|
-|`addTile`|Adds a TileService of the specified component|
-|`removeTile`|Removes a TileService of the specified component|
-|`clickTile`|Clicks on a TileService of the specified component|
-|`getStatusIcons`|Returns the list of status bar icons and the order they appear in. List items are separated using the newline character|
-
-#### Response
-
-`string` - output of the requested status bar command. Could be empty
-
-### `mobile: fingerprint`
-
-Emulates authentication using a virtual fingerprint with the specified ID. Only supported on
-emulators running Android 6 (Marshmallow / API level 23) or later.
-
-Virtual fingerprints should first be registered by opening the Android fingerprint registration
-settings and running this command with the ID that the fingerprint should be assigned to. Once
-registered, the command and ID can be used in fingerprint authentication prompts.
-
-Available since driver version 2.23.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`fingerprintId`|`integer` or `string`|Identifier of a virtual fingerprint|
 
 #### Response
 
@@ -1281,94 +1089,185 @@ guide for more details.
 
 `null`
 
-### `mobile: getCurrentActivity`
+## Applications
 
-Retrieves the name of the currently focused app activity.
+### `mobile: listApps`
 
-Available since driver version 2.23.0.
+Retrieves information about installed applications on the device under test. Only supported since
+Android 8 (Oreo / API level 26).
 
-#### Response
-
-`string` - name of the focused app activity. Could be `null`
-
-### `mobile: getCurrentPackage`
-
-Retrieves the package name of the currently focused app.
-
-Available since driver version 2.23.0.
-
-#### Response
-
-`string` - name of the focused app package. Could be `null`
-
-### `mobile: setGeolocation`
-
-Sets the current location of the device under test.
-
-Available since driver version 3.5.0.
+Available since driver version 6.4.0.
 
 #### Parameters
 
-|<div style="width:7em">Name</div>|Type|Description|
-|--|--|--|
-|`latitude`|`float`|New latitude value|
-|`longitude`|`float`|New longitude value|
-|`altitude?`|`float`|New altitude value|
-|`satellites?`|`integer`|Number of satellites being tracked. Only supported on emulators. Must be in the range `[1, 12]`. Available since driver version 4.1.0.|
-|`speed?`|`float`|Current speed in meters per second. Must not be negative. See [`setSpeed`](https://developer.android.com/reference/android/location/Location#setSpeed(float)) for more details. Available since driver version 4.1.0.|
-|`bearing?`|`float`|Current bearing in degrees. Only supported on real devices. Must be in the range `[0, 360)`. See [`setBearing`](https://developer.android.com/reference/android/location/Location#setBearing(float)) for more details. Available since driver version 4.1.0.|
-|`accuracy?`|`float`|Current horizontal accuracy in meters. Only supported on real devices. Must not be negative. See [`setAccuracy`](https://developer.android.com/reference/android/location/Location#setAccuracy(float)) for more details. Available since driver version 4.1.0.|
+|Name|Type|Description|
+|---|---|---|
+|`user?`|`integer` or `string`|ID of the user to filter the installed packages for|
 
 #### Response
 
-`null`
+`Record<string, Record<string, any>>` - mapping of package names to their details. The
+`versionCode` property is only populated for devices running Android 9 (Pie / API level 28) or
+later.
 
-### `mobile: getGeolocation`
+In Espresso driver versions before 7.0.0, the response was `Array<string>` - a list of package
+names.
 
-Retrieves the current location of the device under test.
+### `mobile: isAppInstalled`
 
-Available since driver version 3.5.0.
+Determines whether the application with the specified package identifier is installed on the device
+under test.
 
-#### Response
+Available since driver version 2.10.0.
 
-`Location` - an object with the following properties:
+#### Parameters
 
 |Name|Type|Description|
-|--|--|--|
-|`altitude`|`float`|Altitude of the device location|
-|`latitude`|`float`|Latitude of the device location|
-|`longitude`|`float`|Longitude of the device location|
-
-### `mobile: resetGeolocation`
-
-Resets the current location of the device under test to the default/system one. Only supported on
-real devices.
-
-Available since driver version 3.5.0.
+|---|---|---|
+|`appId`|`string`|Package identifier of the application|
+|`user?`|`integer` or `string`|ID of the user for which the app is installed. The `current` user is used by default. Available since driver version 2.39.0.|
 
 #### Response
 
-`null`
+`boolean` - `true` if the app is installed, otherwise `false`
 
-### `mobile: setStylusHandwriting`
+### `mobile: queryAppState`
 
-Enables or disables the Android system stylus handwriting input method. The [`set_stylus_handwriting`](./insecure-features.md#set_stylus_handwriting)
-insecure feature must be enabled.
+Retrieves the state of the application with the specified package identifier on the device under
+test.
 
-This functionality can be used to hide a possible system popup titled 'Try out your stylus'. Refer
-to [this ticket](https://github.com/appium/appium-uiautomator2-driver/issues/909) for more details.
-
-Available since driver version 7.1.0.
+Available since driver version 2.10.0.
 
 #### Parameters
 
 |Name|Type|Description|
 |--|--|--|
-|`enabled`|`boolean`|Whether to enable or disable the stylus handwriting feature|
+|`appId`|`string`|Package identifier of the app to query|
+
+#### Response
+
+`integer` - a number indicating the app state:
+
+|Number|Description|
+|--|--|
+|`0`|Not installed|
+|`1`|Not running|
+|`3`|Running in background|
+|`4`|Running in foreground|
+
+### `mobile: activateApp`
+
+Activates the application with the specified package identifier or launches it if necessary, by
+simulating a tap on the app icon on the Android UI.
+
+Available since driver version 2.10.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`appId`|`string`|Package identifier of the app to activate|
 
 #### Response
 
 `null`
+
+### `mobile: terminateApp`
+
+Terminates the application with the specified package identifier and waits until its app process
+has stopped.
+
+Available since driver version 2.10.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`appId`|`string`|Package identifier of the app to terminate|
+|`timeout?`|`integer`|Number of milliseconds to wait until the app is terminated. Set to `500` by default. Since driver version 2.13.0, setting this to `0` or a negative value skips the app state check.|
+
+#### Response
+
+`boolean` - `true` if the app was terminated, otherwise `false`
+
+### `mobile: backgroundApp`
+
+Moves the active app to the background and optionally restores it into the foreground after a
+specified duration. The call is blocking.
+
+Available since driver version 2.23.5.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`seconds`|`float`|Number of seconds after which to restore the app to foreground. If set to `0` or a negative value, automatic restoration is skipped.|
+
+#### Response
+
+`null`
+
+### `mobile: installApp`
+
+Installs the specified application on the device under test. 
+
+If a newer version of the application was already installed, the `INSTALL_FAILED_VERSION_DOWNGRADE`
+error may be raised.
+
+Available since driver version 2.10.0.
+
+#### Parameters
+
+|<div style="width:10em">Name</div>|Type|Description|
+|--|--|--|
+|`appPath`|`string`|Full path to a file on the host machine, or URL to a remote location. The app must have the `.apk` or `.apks` extension.|
+|`checkVersion?`|`boolean`|Whether to skip installation if an identical or newer app version is already installed. Unset by default. Applied before `replace`. Available since driver version 2.36.0.|
+|`timeout?`|`integer`|Number of milliseconds to wait until the app is installed. Set to `60000` by default, unless overridden using the [`appium:adbExecTimeout`](./capabilities.md#adbexectimeout) capability|
+|`allowTestPackages?`|`boolean`|Whether to allow installation of test packages. Set to `false` by default|
+|`useSdcard?`|`boolean`|Whether to install the app on the SD card instead of built-in storage. Set to `false` by default|
+|`grantPermissions?`|`boolean`|Whether to automatically grant all permissions defined in the application manifest after installation. Set to `false` by default. Only supported on Android 6 (Marshmallow / API level 23) or later.|
+|`replace?`|`boolean`|Whether to replace any already existing app installation. Set to `true` by default. If set to `false` and the app is already installed, an error is thrown. Applied after `checkVersion`.|
+|`noIncremental?`|`boolean`|Whether to disable incremental app installation. Set to `false` by default. Refer to [How ADB incremental-install works](https://android.googlesource.com/platform/packages/modules/adb/+/HEAD/docs/dev/incremental-install.md) for more details.|
+
+#### Response
+
+`null`
+
+### `mobile: clearApp`
+
+Clears all data associated with the application with the specified package identifier: user data,
+cache, and settings. Calls `adb shell pm clear <appId>` under the hood.
+
+Available since driver version 2.10.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`appId`|`string`|Package identifier of the app to clear|
+
+#### Response
+
+`null`
+
+### `mobile: removeApp`
+
+Uninstalls the application with the specified package identifier from the device under test.
+
+Available since driver version 2.10.0.
+
+#### Parameters
+
+|<div style="width:10em">Name</div>|Type|Description|
+|--|--|--|
+|`appId`|`string`|Package identifier of the app to uninstall|
+|`timeout?`|`integer`|Number of milliseconds to wait until the app is terminated before uninstallation. Set to `20000` by default.|
+|`keepData?`|`boolean`|Whether to retain application data and cache after uninstall. Unset by default.|
+|`skipInstallCheck?`|`boolean`|Whether to check if the app is installed before uninstalling it. Set to `true` by default.|
+
+#### Response
+
+`boolean` - `true` if the app was removed, otherwise `false`
 
 ### `mobile: getAppStrings`
 
@@ -1387,6 +1286,390 @@ Available since driver version 4.0.0.
 #### Response
 
 `Record<string, string>` - mapping of resource identifiers to localized strings
+
+### `mobile: getPermissions`
+
+Retrieves runtime permissions for a specified application package.
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|---|---|---|
+|`type?`|`string`|Type of permissions to retrieve. Supported values are `denied`, `granted` and `requested`. Set to `requested` by default.|
+|`appPackage?`|`string`|Name of the application package to change. Set to the package of the app under test by default.|
+
+#### Response
+
+`Array<string>` - list of permission names. Could be empty
+
+### `mobile: changePermissions`
+
+Changes runtime permissions for a specified application package.
+
+This function supports two modes, `pm` and `appops`, which can be distinguished using the `target`
+parameter. Use of the `appops` mode requires driver version 2.13.7 or later, and the
+[`adb_shell`](./insecure-features.md#adb_shell) insecure feature to be enabled.
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|<div style="width:7em">Type</div>|Description|
+|---|---|---|
+|`permissions`|`string` or `Array<string>`|One or more permissions to be changed. For `pm` mode, supported values can be found in the [Android Manifest documentation](https://developer.android.com/reference/android/Manifest.permission), and the `all` magic string is additionally supported. For `appops` mode, supported values can be found in the [Android AppOpsManager documentation](https://developer.android.com/reference/android/app/AppOpsManager). Full constant values must be used for both modes.|
+|`appPackage?`|`string`|Name of the application package to change. Set to the package of the app under test by default.|
+|`action`|`string`|Permission action to apply. Supported values are either `grant` or `revoke` (in `pm` mode), or `allow`, `ignore`, `deny` and `default` (in `appops` mode).|
+|`target?`|`string`|The mode to use. Supported values are `pm` and `appops`. Set to `pm` by default.|
+
+#### Response
+
+`null`
+
+### `mobile: getCurrentPackage`
+
+Retrieves the package name of the currently focused app.
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`string` - name of the focused app package. Could be `null`
+
+### `mobile: getCurrentActivity`
+
+Retrieves the name of the currently focused app activity.
+
+Available since driver version 2.23.0.
+
+#### Response
+
+`string` - name of the focused app activity. Could be `null`
+
+### `mobile: startActivity`
+
+Starts the specified app activity. The activity can only be executed in scope of the current app
+package.
+
+Available since driver version 2.8.0.
+
+#### Parameters
+
+|<div style="width:14em">Name</div>|<div style="width:12em">Type</div>|Description|
+|--|--|--|
+|`appActivity`|`string`|Activity name to start|
+|`locale?`|`Record<string, string>`|Map of language-related identifiers to use for setting the app locale. Follows the same format as the [`appium:appLocale`](./capabilities.md#applocale) capability.|
+|`optionalIntentArguments?`|`Record<string, any>`|Map of options to be applied for the intent passed to the launchable app activity. Follows the same format as the [`appium:intentOptions`](./capabilities.md#intentoptions) capability.|
+|`optionalActivityArguments?`|`string`|Map of options to be applied for the launchable app activity. Follows the same format as the [`appium:activityOptions`](./capabilities.md#activityoptions) capability.|
+
+#### Response
+
+`null`
+
+### `mobile: startService`
+
+Starts a specified service intent. Calls [`Context.startService()`](https://developer.android.com/reference/android/content/Context#startService(android.content.Intent))
+/ [`Context.startForegroundService()`](https://developer.android.com/reference/android/content/Context#startForegroundService(android.content.Intent))
+under the hood.
+
+#### Parameters
+
+|<div style="width:7em">Name</div>|Type|Description|
+|--|--|--|
+|`intent`|`string`|Name of the service intent to start. Only services belonging to the app under test are supported.|
+|`user?`|`integer` or `string`|ID of the user to use for starting the intent. The `current` user is used by default.|
+|`foreground?`|`boolean`|Whether to start the service in the foreground. Set to `false` by default.|
+
+#### Response
+
+`string` - the fully qualified name of the component that was started due to the intent
+
+### `mobile: stopService`
+
+Stops the specified service intent. Calls [`Context.stopService()`](https://developer.android.com/reference/android/content/Context#stopService(android.content.Intent))
+under the hood.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`intent`|`string`|Name of the service intent to stop. Only services belonging to the app under test are supported.|
+|`user?`|`integer` or `string`|ID of the user to use for starting the intent. The `current` user is used by default.|
+
+#### Response
+
+`string` - equal to `'true'` if the service was successfully stopped
+
+### `mobile: broadcast`
+
+Sends a broadcast Intent to the Android system. Invokes `adb shell am broadcast` under the hood.
+
+Available since driver version 2.10.0.
+
+#### Parameters
+
+|<div style="width:16em">Name</div>|<div style="width:11em">Type</div>|Description|
+|--|--|--|
+|`intent?`|`string`|Full name of the intent to broadcast|
+|`user?`|`integer` or `string`|ID of the user to send the broadcast to|
+|`action?`|`string`|Name of the intent action|
+|`uri?`|`string`|Intent URI|
+|`mimeType?`|`string`|Intent MIME type|
+|`identifier?`|`string`|Intent identifier|
+|`categories?`|`string` or `Array<string>`|One or more intent categories|
+|`component?`|`string`|Intent component|
+|`package?`|`string`|Intent package name|
+|`extras?`|`Array<Array<string>>`|Extra intent arguments. See below for expected structure|
+|`flags?`|`string`|Flags in hexadecimal format to apply on intent start-up. Refer to the [Android Intent documentation](https://developer.android.com/reference/android/content/Intent) for supported values. Multiple flags should be merged into one value.|
+|`receiverPermission?`|`string`|Permission that the receiver must hold|
+|`allowBackgroundActivityStarts?`|`boolean`|Whether the receiver may start activities even if in the background|
+
+The `flags` parameter is an array of arrays, where each subarray contains 3 items: value category,
+key, and the value itself. Supported value categories and their value types are as follows:
+
+|Value Category|Value Type|
+|--|--|
+|`s`|String|
+|`sn`|Null (only the key is required; the value should be omitted)|
+|`z`|Boolean|
+|`i`|Integer|
+|`l`|Long integer|
+|`f`|Float|
+|`u`|URI|
+|`cn`|Component name (string)|
+|`ia`|String of comma-separated integers|
+|`ial`|String of comma-separated integers|
+|`la`|String of comma-separated long integers|
+|`lal`|String of comma-separated long integers|
+|`fa`|String of comma-separated floats|
+|`fal`|String of comma-separated floats|
+|`sa`|Comma-separated strings (commas that are part of the strings themselves should be escaped)|
+|`sal`|Comma-separated strings (commas that are part of the strings themselves should be escaped)|
+
+#### Response
+
+`string` - output of the `adb shell am broadcast` command.
+
+### `mobile: backdoor`
+
+Executes one or more methods inside the application under test. Refer to the [Backdoor](../guides/backdoor.md)
+guide for usage details.
+
+#### Parameters
+
+|Name|<div style="width:14em">Type</div>|Description|
+|--|--|--|
+|`elementId`|`string`|UDID of the element to perform the action on. Required if `target` is set to `element`.|
+|`target`|`string`|Target to call the methods on. Supported values are `activity`, `application`, and `element`.|
+|`methods`|`Array<Record<string, any>>`|List of methods to execute|
+
+#### Response
+
+`any` - the result of the last method specified in `methods`
+
+### `mobile: deviceidle`
+
+Adds or removes one or more applications from the Android system whitelist for apps that should not
+be forced into a limited mode after a period of inactivity (in other words, apps that should not be
+automatically put to sleep). Calls `adb shell dumpsys deviceidle` under the hood. Only supported
+since Android 6 (Marshmallow / API level 23).
+
+Refer to the [Diving Into Android 'M' Doze](https://www.protechtraining.com/blog/post/diving-into-android-m-doze-875)
+guide for more details.
+
+Available since driver version 2.40.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`action`|`string`|Action to apply for the whitelist. Supported values are `whitelistAdd` and `whitelistRemove`.|
+|`packages`|`string` or `Array<string>`|One or more package identifiers to add or remove from the whitelist|
+
+#### Response
+
+`null`
+
+### `mobile: registerIdlingResources`
+
+Registers one or more [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+Calls [`IdlingRegistry.register()`](https://developer.android.com/reference/androidx/test/espresso/IdlingRegistry#register(androidx.test.espresso.IdlingResource...))
+under the hood.
+
+Refer to the [Integrate Espresso Idling Resources in your app to build flexible UI tests](https://medium.com/android-news/integrate-espresso-idling-resources-in-your-app-to-build-flexible-ui-tests-c779e24f5057)
+guide for more details on how to design and use idling resources in Espresso.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`classNames`|`string`|Comma-separated list of idling resource class names to register. Each name must be a fully qualified Java class name, and the class must implement a singleton pattern and have a static `getInstance()` method returning the class instance, which implements the `androidx.test.espresso.IdlingResource` interface.|
+
+#### Response
+
+`null`
+
+### `mobile: unregisterIdlingResources`
+
+Unregisters one or more [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+Calls [`IdlingRegistry.unregister()`](https://developer.android.com/reference/androidx/test/espresso/IdlingRegistry#unregister(androidx.test.espresso.IdlingResource...))
+under the hood.
+
+#### Parameters
+
+|<div style="width:6em">Name</div>|Type|Description|
+|--|--|--|
+|`classNames`|`string`|Comma-separated list of idling resource class names to unregister. Each name must be a fully qualified Java class name, and the class must implement a singleton pattern and have a static `getInstance()` method returning the class instance, which implements the `androidx.test.espresso.IdlingResource` interface.|
+
+#### Response
+
+`null`
+
+### `mobile: listIdlingResources`
+
+Lists all previously registered [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
+
+#### Response
+
+`Array<string>` - list of fully qualified class names of the currently registered idling resources.
+Could be empty if no resources have been registered yet.
+
+### `mobile: waitForUIThread`
+
+Waits for the main UI thread of the application to become idle. Calls [`UiController.loopMainThreadUntilIdle()`](https://developer.android.com/reference/androidx/test/espresso/UiController#loopMainThreadUntilIdle())
+under the hood.
+
+This method can be useful on Compose and native combination screens, where the Espresso API may
+block the UI thread and freeze the app.
+
+Available since driver version 2.19.0.
+
+#### Response
+
+`null`
+
+### `mobile: sendTrimMemory`
+
+Simulates a system memory trimming-related event for the specified package, by calling the Android
+[`onTrimMemory()`](https://developer.android.com/reference/android/content/ComponentCallbacks2#onTrimMemory(int))
+event.
+
+This functionality can be useful to verify app functionality under different system memory usage
+levels. Refer to the Android [Manage your app's memory](https://developer.android.com/topic/performance/memory)
+guide for more details.
+
+Available since driver version 2.40.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`pkg`|`string`|Package identifier of the application to send the event to.|
+|`level`|`string`|Context of the trim to simulate. Supported values are `COMPLETE`, `MODERATE`, `BACKGROUND`, `UI_HIDDEN`, `RUNNING_CRITICAL`, `RUNNING_LOW`, and `RUNNING_MODERATE`.|
+
+#### Response
+
+`null`
+
+## Webviews
+
+### `mobile: getContexts`
+
+Retrieves a detailed list of available webview contexts with their mapping information. Does not
+include non-webview (e.g. native) contexts.
+
+#### Parameters
+
+|<div style="width:10em">Name</div>|Type|Description|
+|--|--|--|
+|`waitForWebviewMs?`|`integer`|Number of milliseconds for how long to retry retrieval of webview data. Set to `0` by default. Higher values can help prevent ChromeDriver errors such as `failed to connect to socket 'localabstract:chrome_devtools_remote'`. Refer to [this issue](https://github.com/appium/appium/issues/19251) for more details. Available since driver version 2.30.0.|
+
+#### Response
+
+`Array<Record<string, any>>` - list of webview objects. Example output:
+
+```json
+[
+  {
+    "proc": "@webview_devtools_remote_22138",
+    "webview": "WEBVIEW_22138",
+    "info": {
+      "Android-Package": "io.appium.settings",
+      "Browser": "Chrome/74.0.3729.185",
+      "Protocol-Version": "1.3",
+      "User-Agent": "Mozilla/5.0 (Linux; Android 10; Android SDK built for x86 Build/QSR1.190920.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.185 Mobile Safari/537.36",
+      "V8-Version": "7.4.288.28",
+      "WebKit-Version": "537.36 (@22955682f94ce09336197bfb8dffea991fa32f0d)",
+      "webSocketDebuggerUrl": "ws://127.0.0.1:10900/devtools/browser"
+    },
+    "pages": [
+      {
+        "description": "{\"attached\":true,\"empty\":false,\"height\":1458,\"screenX\":0,\"screenY\":336,\"visible\":true,\"width\":1080}",
+        "devtoolsFrontendUrl": "http://chrome-devtools-frontend.appspot.com/serve_rev/@22955682f94ce09336197bfb8dffea991fa32f0d/inspector.html?ws=127.0.0.1:10900/devtools/page/27325CC50B600D31B233F45E09487B1F",
+        "id": "27325CC50B600D31B233F45E09487B1F",
+        "title": "Releases · appium/appium · GitHub",
+        "type": "page",
+        "url": "https://github.com/appium/appium/releases",
+        "webSocketDebuggerUrl": "ws://127.0.0.1:10900/devtools/page/27325CC50B600D31B233F45E09487B1F"
+      }
+    ],
+    "webviewName": "WEBVIEW_com.io.appium.setting"
+  }
+]
+```
+
+### `mobile: getChromeCapabilities`
+
+Retrieves the current ChromeDriver session capabilities. Only supported in a webview context. Can
+be useful for debugging Chrome/webview automation issues and understanding what capabilities are
+being applied to the Chromedriver instance.
+
+Available since driver version 6.0.7.
+
+#### Response
+
+`Record<string, any>` - map of current ChromeDriver capabilities, typically consisting of standard
+W3C WebDriver capabilities. The exact structure may depend on the Chrome/ChromeDriver version and
+the initial session capabilities.
+
+### `mobile: webAtoms`
+
+Executes a chain of [Espresso web atoms](https://developer.android.com/training/testing/espresso/web)
+on the specified webview element.
+
+#### Parameters
+
+|<div style="width:12em">Name</div>|<div style="width:14em">Type</div>|Description|
+|--|--|--|
+|`webviewEl`|`string`|UDID of the webview element|
+|`forceJavascriptEnabled`|`boolean`|Whether to force enable JavaScript in the webview. Note that web atoms cannot work if JavaScript is disabled.|
+|`methodChain`|`Array<Record<string, any>`|Array of method objects. See below for a detailed structure.|
+
+Each method in the `methodChain` array must be an object with the following properties:
+
+|Name|<div style="width:11em">Type</div>|Description|
+|--|--|--|
+|`name`|`string`|Name of the method. Must match one of [`WebInteraction`](https://cs.android.com/androidx/android-test/+/main:espresso/web/java/androidx/test/espresso/web/sugar/Web.java) action names|
+|`atom`|`Record<string, any>`|See below|
+
+The `atom` property of each method must have the following properties:
+
+|Name|Type|Description|
+|--|--|--|
+|`name`|`string`|Name of the atom to execute. Must match one of [`DriverAtoms`](https://cs.android.com/androidx/android-test/+/main:espresso/web/java/androidx/test/espresso/web/webdriver/DriverAtoms.java) method names|
+|`args`|`Array<any>`|Parameters to pass to the specified atom|
+
+Example for `methodChain`:
+
+```json
+[
+  {"name": "methodName", "atom": {"name": "atomName", "args": ["arg1", "arg2", ...]}},
+  ...
+]
+```
+
+#### Response
+
+`any` - the result returned by the last method in the `methodChain` array
+
+## Elements
 
 ### `mobile: swipe`
 
@@ -1473,43 +1756,22 @@ under the hood.
 
 `null`
 
-### `mobile: deviceInfo`
+### `mobile: flashElement`
 
-Retrieves information about the device under test.
-
-#### Response
-
-`Record<string, any>` - mapping of device properties to their values. The following properties are
-included:
-
-|<div style="width:9em">Name</div>|Description|
-|--|--|
-|`androidId`|Device identifier ([`ANDROID_ID`](https://developer.android.com/reference/android/provider/Settings.Secure.html#ANDROID_ID))|
-|`manufacturer`|Device manufacturer ([`MANUFACTURER`](https://developer.android.com/reference/android/os/Build#MANUFACTURER))|
-|`model`|Device model ([`MODEL`](https://developer.android.com/reference/android/os/Build#MODEL))|
-|`brand`|Device brand ([`BRAND`](https://developer.android.com/reference/android/os/Build#BRAND))|
-|`apiVersion`|Major Android version ([`VERSION.SDK_INT`](https://developer.android.com/reference/android/os/Build.VERSION#SDK_INT))|
-|`platformVersion`|User-visible platform version ([`VERSION.RELEASE`](https://developer.android.com/reference/android/os/Build.VERSION#RELEASE))|
-|`carrierName`|Network carrier name ([`TelephonyManager.getNetworkOperatorName()`](https://developer.android.com/reference/android/telephony/TelephonyManager#getNetworkOperatorName()))|
-|`realDisplaySize`|Real size of the default display, in `<width>x<height>` format (based on [`Display.getRealSize()`](https://developer.android.com/reference/android/view/Display#getRealSize(android.graphics.Point)))|
-|`displayDensity`|Display density in Density Independent Pixel units (based on [`DisplayMetrics.density`](https://developer.android.com/reference/android/util/DisplayMetrics#density))|
-|`locale`|System locale ([`Locale.getDefault()`](https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html#getDefault--))|
-|`timeZone`|System timezone ([`TimeZone.getDefault()`](https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html#getDefault--))|
-
-### `mobile: isToastVisible`
-
-Determines whether a toast notification with the specified text is currently visible.
+Adds a flashing animation to the specified element. Calls [`View.startAnimation()`](https://developer.android.com/reference/android/view/View#startAnimation(android.view.animation.Animation))
+under the hood.
 
 #### Parameters
 
 |Name|Type|Description|
 |--|--|--|
-|`text`|`string`|Full or partial contents of the notification text|
-|`isRegexp?`|`boolean`|Whether `text` should be parsed as a regular expression. Set to `false` by default.|
+|`elementId`[^elementid]|`string`|UDID of the element to add the animation to|
+|`durationMillis?`|`integer`|Duration in milliseconds for a single flash. Set to `30` by default.|
+|`repeatCount?`|`integer`|Number of times the flash should repeat. Set to `15` by default.|
 
 #### Response
 
-`boolean` - `true` if a notification with the text is visible, otherwise `false`
+`null`
 
 ### `mobile: openDrawer`
 
@@ -1580,35 +1842,35 @@ under the hood.
 
 `null`
 
-### `mobile: backdoor`
+### `mobile: performEditorAction`
 
-Executes one or more methods inside the application under test. Refer to the [Backdoor](../guides/backdoor.md)
-guide for usage details.
+Performs IME action on the _currently focused_ editable element.
+
+Very often Android developers use the [`onEditorAction`](https://developer.android.com/reference/android/widget/TextView.OnEditorActionListener.html#onEditorAction(android.widget.TextView,%20int,%20android.view.KeyEvent))
+callback with the `actionId` argument to implement handling of actions, for example, when the
+`Search` or `Done` button is pressed on the on-screen keyboard. This method aims to emulate the
+invocation of such a callback on the focused element.
 
 #### Parameters
 
-|Name|<div style="width:14em">Type</div>|Description|
-|--|--|--|
-|`elementId`|`string`|UDID of the element to perform the action on. Required if `target` is set to `element`.|
-|`target`|`string`|Target to call the methods on. Supported values are `activity`, `application`, and `element`.|
-|`methods`|`Array<Record<string, any>>`|List of methods to execute|
+|Name|Type|Description|
+|---|---|---|
+|`action`|`integer` or `string`|Name or integer code of the editor action to be executed. Supported values are `unspecified`, `none`, `go`, `search`, `send`, `next`, `done`, and `previous`. Refer to the [Android EditorInfo](https://developer.android.com/reference/android/view/inputmethod/EditorInfo) documentation for more details.|
 
 #### Response
 
-`any` - the result of the last method specified in `methods`
+`null`
 
-### `mobile: flashElement`
+### `mobile: dismissAutofill`
 
-Adds a flashing animation to the specified element. Calls [`View.startAnimation()`](https://developer.android.com/reference/android/view/View#startAnimation(android.view.animation.Animation))
-under the hood.
+Dismisses the [autofill](https://developer.android.com/guide/topics/text/autofill) picker for the
+specified element if it is visible.
 
 #### Parameters
 
 |Name|Type|Description|
 |--|--|--|
-|`elementId`[^elementid]|`string`|UDID of the element to add the animation to|
-|`durationMillis?`|`integer`|Duration in milliseconds for a single flash. Set to `30` by default.|
-|`repeatCount?`|`integer`|Number of times the flash should repeat. Set to `15` by default.|
+|`elementId`[^elementid]|`string`|UDID of the input element to dismiss autofill for|
 
 #### Response
 
@@ -1633,258 +1895,6 @@ application under test.
 
 `Array<any>` - the result of `action` applied to the found elements. If `index` is set, the array
 will contain only one entry.
-
-### `mobile: uiautomatorPageSource`
-
-Retrieves the [UiAutomator](https://developer.android.com/training/testing/ui-automator)-based
-application UI accessibility hierarchy tree. Calls [`UiDevice.dumpWindowHierarchy()`](https://developer.android.com/reference/androidx/test/uiautomator/UiDevice#dumpWindowHierarchy(java.io.OutputStream))
-under the hood.
-
-#### Response
-
-`string` - the UI accessibility hierarchy as a stringified XML.
-
-### `mobile: webAtoms`
-
-Executes a chain of [Espresso web atoms](https://developer.android.com/training/testing/espresso/web)
-on the specified webview element.
-
-#### Parameters
-
-|<div style="width:12em">Name</div>|<div style="width:14em">Type</div>|Description|
-|--|--|--|
-|`webviewEl`|`string`|UDID of the webview element|
-|`forceJavascriptEnabled`|`boolean`|Whether to force enable JavaScript in the webview. Note that web atoms cannot work if JavaScript is disabled.|
-|`methodChain`|`Array<Record<string, any>`|Array of method objects. See below for a detailed structure.|
-
-Each method in the `methodChain` array must be an object with the following properties:
-
-|Name|<div style="width:11em">Type</div>|Description|
-|--|--|--|
-|`name`|`string`|Name of the method. Must match one of [`WebInteraction`](https://cs.android.com/androidx/android-test/+/main:espresso/web/java/androidx/test/espresso/web/sugar/Web.java) action names|
-|`atom`|`Record<string, any>`|See below|
-
-The `atom` property of each method must have the following properties:
-
-|Name|Type|Description|
-|--|--|--|
-|`name`|`string`|Name of the atom to execute. Must match one of [`DriverAtoms`](https://cs.android.com/androidx/android-test/+/main:espresso/web/java/androidx/test/espresso/web/webdriver/DriverAtoms.java) method names|
-|`args`|`Array<any>`|Parameters to pass to the specified atom|
-
-Example for `methodChain`:
-
-```json
-[
-  {"name": "methodName", "atom": {"name": "atomName", "args": ["arg1", "arg2", ...]}},
-  ...
-]
-```
-
-#### Response
-
-`any` - the result returned by the last method in the `methodChain` array
-
-### `mobile: dismissAutofill`
-
-Dismisses the [autofill](https://developer.android.com/guide/topics/text/autofill) picker for the
-specified element if it is visible.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`elementId`[^elementid]|`string`|UDID of the input element to dismiss autofill for|
-
-#### Response
-
-`null`
-
-### `mobile: registerIdlingResources`
-
-Registers one or more [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
-Calls [`IdlingRegistry.register()`](https://developer.android.com/reference/androidx/test/espresso/IdlingRegistry#register(androidx.test.espresso.IdlingResource...))
-under the hood.
-
-Refer to the [Integrate Espresso Idling Resources in your app to build flexible UI tests](https://medium.com/android-news/integrate-espresso-idling-resources-in-your-app-to-build-flexible-ui-tests-c779e24f5057)
-guide for more details on how to design and use idling resources in Espresso.
-
-#### Parameters
-
-|<div style="width:6em">Name</div>|Type|Description|
-|--|--|--|
-|`classNames`|`string`|Comma-separated list of idling resource class names to register. Each name must be a fully qualified Java class name, and the class must implement a singleton pattern and have a static `getInstance()` method returning the class instance, which implements the `androidx.test.espresso.IdlingResource` interface.|
-
-#### Response
-
-`null`
-
-### `mobile: unregisterIdlingResources`
-
-Unregisters one or more [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
-Calls [`IdlingRegistry.unregister()`](https://developer.android.com/reference/androidx/test/espresso/IdlingRegistry#unregister(androidx.test.espresso.IdlingResource...))
-under the hood.
-
-#### Parameters
-
-|<div style="width:6em">Name</div>|Type|Description|
-|--|--|--|
-|`classNames`|`string`|Comma-separated list of idling resource class names to unregister. Each name must be a fully qualified Java class name, and the class must implement a singleton pattern and have a static `getInstance()` method returning the class instance, which implements the `androidx.test.espresso.IdlingResource` interface.|
-
-#### Response
-
-`null`
-
-### `mobile: listIdlingResources`
-
-Lists all previously registered [idling resources](https://developer.android.com/training/testing/espresso/idling-resource).
-
-#### Response
-
-`Array<string>` - list of fully qualified class names of the currently registered idling resources.
-Could be empty if no resources have been registered yet.
-
-### `mobile: waitForUIThread`
-
-Waits for the main UI thread of the application to become idle. Calls [`UiController.loopMainThreadUntilIdle()`](https://developer.android.com/reference/androidx/test/espresso/UiController#loopMainThreadUntilIdle())
-under the hood.
-
-This method can be useful on Compose and native combination screens, where the Espresso API may
-block the UI thread and freeze the app.
-
-Available since driver version 2.19.0.
-
-#### Response
-
-`null`
-
-### `mobile: pressKey`
-
-Emulates a single key press of the specified key. Creates a new [`KeyEvent`](https://developer.android.com/reference/android/view/KeyEvent#KeyEvent(long,%20long,%20int,%20int,%20int,%20int,%20int,%20int,%20int))
-and passes it to [`UiController.injectKeyEvent()`](https://developer.android.com/reference/androidx/test/espresso/UiController#injectKeyEvent(android.view.KeyEvent))
-under the hood.
-
-Available since driver version 2.23.3.
-
-#### Parameters
-
-|<div style="width:7em">Name</div>|Type|Description|
-|--|--|--|
-|`keycode`|`integer`|Code of the key to press. Must match the numerical value for a supported KeyEvent `KEYCODE_` constant.|
-|`metastate`|`integer`|One or more meta keys that should be simultaneously pressed. Must match the combined numerical value for one or more supported KeyEvent `META_` constants.|
-|`flags`|`integer`|Flags to apply during the press. Must match the combined numerical value for one or more supported KeyEvent `FLAG_` constants.|
-|`isLongPress?`|`boolean`|Whether to emulate a long press. Set to `false` by default.|
-
-#### Response
-
-`null`
-
-### `mobile: setClipboard`
-
-Sets the contents of the primary device clipboard. Calls [`ClipboardManager.setPrimaryClip()`](https://developer.android.com/reference/android/content/ClipboardManager#setPrimaryClip(android.content.ClipData))
-under the hood.
-
-Available since driver version 2.44.0.
-
-#### Parameters
-
-|<div style="width:7em">Name</div>|Type|Description|
-|--|--|--|
-|`content`|`string`|Base64-encoded payload to place in the clipboard.|
-|`contentType?`|`string`|The only supported and default value is `plaintext`.|
-|`label?`|`string`|Label to identify the payload. By default, set to the first 10 symbols of the plaintext data.|
-
-#### Response
-
-`null`
-
-### `mobile: getClipboard`
-
-Retrieves the content of the primary clipboard on the device under test.
-
-Available since driver version 2.44.0.
-
-#### Response
-
-`string` - the clipboard content as a Base64-encoded string. An empty string is returned if the
-clipboard contains no data.
-
-### `mobile: startService`
-
-Starts a specified service intent. Calls [`Context.startService()`](https://developer.android.com/reference/android/content/Context#startService(android.content.Intent))
-/ [`Context.startForegroundService()`](https://developer.android.com/reference/android/content/Context#startForegroundService(android.content.Intent))
-under the hood.
-
-#### Parameters
-
-|<div style="width:7em">Name</div>|Type|Description|
-|--|--|--|
-|`intent`|`string`|Name of the service intent to start. Only services belonging to the app under test are supported.|
-|`user?`|`integer` or `string`|ID of the user to use for starting the intent. The `current` user is used by default.|
-|`foreground?`|`boolean`|Whether to start the service in the foreground. Set to `false` by default.|
-
-#### Response
-
-`string` - the fully qualified name of the component that was started due to the intent
-
-### `mobile: stopService`
-
-Stops the specified service intent. Calls [`Context.stopService()`](https://developer.android.com/reference/android/content/Context#stopService(android.content.Intent))
-under the hood.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`intent`|`string`|Name of the service intent to stop. Only services belonging to the app under test are supported.|
-|`user?`|`integer` or `string`|ID of the user to use for starting the intent. The `current` user is used by default.|
-
-#### Response
-
-`string` - equal to `'true'` if the service was successfully stopped
-
-### `mobile: startActivity`
-
-Starts the specified app activity. The activity can only be executed in scope of the current app
-package.
-
-Available since driver version 2.8.0.
-
-#### Parameters
-
-|<div style="width:14em">Name</div>|<div style="width:12em">Type</div>|Description|
-|--|--|--|
-|`appActivity`|`string`|Activity name to start|
-|`locale?`|`Record<string, string>`|Map of language-related identifiers to use for setting the app locale. Follows the same format as the [`appium:appLocale`](./capabilities.md#applocale) capability.|
-|`optionalIntentArguments?`|`Record<string, any>`|Map of options to be applied for the intent passed to the launchable app activity. Follows the same format as the [`appium:intentOptions`](./capabilities.md#intentoptions) capability.|
-|`optionalActivityArguments?`|`string`|Map of options to be applied for the launchable app activity. Follows the same format as the [`appium:activityOptions`](./capabilities.md#activityoptions) capability.|
-
-#### Response
-
-`null`
-
-### `mobile: screenshots`
-
-Retrieves a screenshot of all device displays. Only supported since Android 10 (Q / API level 29).
-
-Available since driver version 9.3.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`displayId`|`integer` or `string`|Display identifier to take a screenshot for. By default, all available displays are used. An error is thrown if a display with the specified ID does not exist. Available identifiers can be retrieved from the `adb shell dumpsys SurfaceFlinger --display-id` command output.|
-
-#### Response
-
-`Record<string, Record<string, any>>` - a map of display identifiers to their properties. Each set
-of properties contains the following:
-
-|Name|Type|Description|
-|--|--|--|
-|`id`|`string`|Display identifier|
-|`name`|`string`|Display name|
-|`isDefault`|`boolean`|Whether this display is the default one|
-|`payload`|`string`|Base64-encoded PNG screenshot of the display|
 
 
 [^elementid]: Use `element` in driver versions earlier than 2.29.0.
