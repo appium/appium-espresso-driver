@@ -918,7 +918,7 @@ Available since driver version 2.23.3.
 
 `null`
 
-## Emulators
+## Emulator (AVD)
 
 ### `mobile: execEmuConsoleCommand`
 
@@ -1568,7 +1568,7 @@ Available since driver version 2.40.0.
 
 `null`
 
-## Webviews
+## Web Context
 
 ### `mobile: getContexts`
 

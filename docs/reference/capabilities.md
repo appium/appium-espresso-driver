@@ -39,7 +39,7 @@ Selenium Grid compatibility.
 
 Specifies the Appium driver to use. Must be set to `Espresso` (case-insensitive)
 
-## Device
+## Device Under Test
 
 ### deviceName
 
