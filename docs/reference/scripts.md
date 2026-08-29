@@ -16,20 +16,20 @@ For more information about the `appium driver run` command, refer to [the Appium
     Script arguments should be provided after an additional double dash (`--`), to ensure they are
     passed to the script itself, instead of the `appium driver run` command.
 
-### `build-espresso`
+## `build-espresso`
 
 Builds the Espresso server application. This can help to speed up session creation, as the driver
 will be able to reuse the already-build server application.
 
 Available since driver version 2.18.0.
 
-#### Usage
+### Usage
 
 ```
 appium driver run espresso build-espresso
 ```
 
-##### Optional Arguments
+#### Optional Arguments
 
 |<div style="width:10em">Argument</div>|Description|Type|Default|
 |--|--|--|--|
@@ -37,7 +37,7 @@ appium driver run espresso build-espresso
 |`--show-gradle-log`|Whether to show the output of the Gradle log. Can alternatively be specified using the `SHOW_GRADLE_LOG` environment variable.|boolean|`false`|
 |`--test-app-package`|Name of the application package to build the server for (`applicationId`). Can alternatively be specified using the `TEST_APP_PACKAGE` environment variable.|string||
 
-#### Examples
+### Examples
 
 - Build the Espresso server with default settings and no target application:
 
@@ -51,7 +51,7 @@ appium driver run espresso build-espresso
     appium driver run espresso build-espresso -- --build-config=/path/to/config.json --test-app-package=com.mycompany.myapp
     ```
 
-### `diagnose-app`
+## `diagnose-app`
 
 Analyses the provided application under test, identifies any potential automation-related issues,
 and suggests fragments for the [`appium:espressoBuildConfig`](./capabilities.md#espressobuildconfig)
@@ -59,7 +59,7 @@ capability.
 
 Available since driver version 8.6.0.
 
-#### Usage
+### Usage
 
 ```
 appium driver run espresso diagnose-app -- --app=<app>
@@ -69,7 +69,7 @@ appium driver run espresso diagnose-app -- --app=<app>
 |--|--|--|
 |`--app`|Path to either the Gradle project root of the app, or an already-built `.apk` file. If specifying the `.apk` path, it is recommended to use a debug APK.|string|
 
-#### Examples
+### Examples
 
 - Diagnose the Gradle project at `/path/to/project`:
 
@@ -83,13 +83,13 @@ appium driver run espresso diagnose-app -- --app=<app>
     appium driver run espresso diagnose-app -- --app=/path/to/app.apk
     ```
 
-### `print-espresso-path`
+## `print-espresso-path`
 
 Prints the path to the Espresso server directory.
 
 Available since driver version 2.15.2.
 
-#### Usage
+### Usage
 
 ```
 appium driver run espresso print-espresso-path
