@@ -1061,6 +1061,9 @@ mobile.
 Custom path to a ChromeDriver executable on the host file system. Takes priority over
 [`appium:chromedriverExecutableDir`](#chromedriverexecutabledir).
 
+Refer to the [Managing ChromeDriver guide](../guides/hybrid.md#managing-chromedriver) for more
+details.
+
 ### chromedriverExecutableDir
 
 | Name | Type | Default |
@@ -1074,7 +1077,8 @@ executables.
 The default value is `node_modules/appium-chromedriver/chromedriver/<host os>` in the driver's
 installation directory.
 
-Refer to the [Automatic Chromedriver Discovery guide](../guides/hybrid.md) for more details.
+Refer to the [Managing ChromeDriver guide](../guides/hybrid.md#managing-chromedriver) for more
+details.
 
 ### chromedriverChromeMappingFile
 
@@ -1083,12 +1087,20 @@ Refer to the [Automatic Chromedriver Discovery guide](../guides/hybrid.md) for m
 | `appium:chromedriverExecutableDir` | `string` | See below |
 
 Custom path to a JSON file containing a mapping of webview/browser versions to the ChromeDriver
-versions that are capable of automating them.
+versions that are capable of automating them, similarly to the following:
+
+```json
+{
+  "2.42": "63.0.3239",
+  "2.41": "62.0.3202"
+}
+```
 
 The default value is `node_modules/appium-chromedriver/config/mapping.json` in the driver's
 installation directory.
 
-Refer to the [Automatic Chromedriver Discovery guide](../guides/hybrid.md) for more details.
+Refer to the [Managing ChromeDriver guide](../guides/hybrid.md#managing-chromedriver) for more
+details.
 
 ### chromedriverUseSystemExecutable
 
