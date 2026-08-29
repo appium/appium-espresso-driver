@@ -1424,7 +1424,7 @@ Available since driver version 2.10.0.
 The `flags` parameter is an array of arrays, where each subarray contains 3 items: value category,
 key, and the value itself. Supported value categories and their value types are as follows:
 
-|Value Category|Value Type|
+|<div style="width:7em">Value Category</div>|Value Type|
 |--|--|
 |`s`|String|
 |`sn`|Null (only the key is required; the value should be omitted)|

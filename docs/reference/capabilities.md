@@ -645,182 +645,29 @@ Map of options to be applied for the intent passed to the launchable app activit
 [Android Intent documentation](https://developer.android.com/reference/android/content/Intent) for
 more details. The mapping supports the following options, all of which are optional:
 
-#### action
-
-| Type | Default |
-| -- | -- |
-| `string` | `ACTION_MAIN` |
-
-Name of the action. Application-specific actions should be prefixed with the vendor's package name.
-
-#### data
-
-| Type | Default |
-| -- | -- |
-| `string` | `null` |
-
-Data URI of the intent.
-
-#### type
-
-| Type | Default |
-| -- | -- |
-| `string` | `null` |
-
-MIME type of the intent.
-
-#### categories
-
-| Type | Default |
-| -- | -- |
-| `string` | Not specified |
-
-One or more comma-separated intent categories.
-
-#### component
-
-| Type | Default |
-| -- | -- |
-| `string` | Not specified |
-
-Component name with a package name prefix.
-
-#### intFlags
-
-| Type | Default |
-| -- | -- |
-| `string` | Not specified |
-
-Sum of all intent flag integer or hexadecimal values, as a string.
-
-Refer to the [`setFlags` documentation](https://developer.android.com/reference/android/content/Intent.html#setFlags(int))
-for more details.
-
-#### flags
-
-| Type | Default |
-| -- | -- |
-| `string` | Not specified |
-
-Comma-separated string of additional intent flag names. The `FLAG_` prefix can be omitted.
-
-Refer to the [`addFlags` documentation](https://developer.android.com/reference/android/content/Intent#addFlags(int))
-for more details.
-
-#### className
-
-| Type | Default |
-| -- | -- |
-| `string` | The fully qualified name of the app activity |
-
-Name of a class inside of the application package that will be used as the component for this
-intent.
-
-#### e
-
-| Type | Default |
-| -- | -- |
-| `Record<string, string>` | Not specified |
-
-Map of string parameters to apply to the intent. Same as [`es`](#es).
-
-#### es
-
-| Type | Default |
-| -- | -- |
-| `Record<string, string>` | Not specified |
-
-Map of string parameters to apply to the intent. Same as [`e`](#e).
-
-#### esn
-
-| Type | Default |
-| -- | -- |
-| `Array<string>` | Not specified |
-
-Array of null parameters to apply to the intent.
-
-#### ez
-
-| Type | Default |
-| -- | -- |
-| `Record<string, boolean>` | Not specified |
-
-Map of boolean parameters to apply to the intent.
-
-#### ei
-
-| Type | Default |
-| -- | -- |
-| `Record<string, number>` | Not specified |
-
-Map of integer parameters to apply to the intent.
-
-#### el
-
-| Type | Default |
-| -- | -- |
-| `Record<string, number>` | Not specified |
-
-Map of long integer parameters to apply to the intent.
-
-#### ef
-
-| Type | Default |
-| -- | -- |
-| `Record<string, number>` | Not specified |
-
-Map of float parameters to apply to the intent.
-
-#### eu
-
-| Type | Default |
-| -- | -- |
-| `Record<string, string>` | Not specified |
-
-Map of URI-data parameters to apply to the intent.
-
-#### ecn
-
-| Type | Default |
-| -- | -- |
-| `Record<string, string>` | Not specified |
-
-Map of component name parameters to apply to the intent.
-
-#### esa
-
-| Type | Default |
-| -- | -- |
-| `Record<string, Array<string>>` | Not specified |
-
-Map of string array parameters to apply to the intent.
-
-Available since driver version 2.9.0.
-
-#### eia
-
-| Type | Default |
-| -- | -- |
-| `Record<string, string>` | Not specified |
-
-Map of integer array parameters to apply to the intent.
-
-#### ela
-
-| Type | Default |
-| -- | -- |
-| `Record<string, string>` | Not specified |
-
-Map of long integer array parameters to apply to the intent.
-
-#### efa
-
-| Type | Default |
-| -- | -- |
-| `Record<string, string>` | Not specified |
-
-Map of float array parameters to apply to the intent.
+| <div style="width:6em">Name</div> | <div style="width:16em">Type</div> | Description |
+| -- | -- | -- |
+| `action` | `string` | Name of the action. Application-specific actions should be prefixed with the vendor's package name. Set to `ACTION_MAIN` by default. |
+| `data` | `string` | Data URI of the intent. Set to `null` by default. |
+| `type` | `string` | MIME type of the intent. Set to `null` by default. |
+| `categories` | `string` | One or more comma-separated intent categories |
+| `component` | `string` | Component name with a package name prefix |
+| `intFlags` | `string` | Sum of all intent flag integer or hexadecimal values, as a string. Refer to the [`setFlags` documentation](https://developer.android.com/reference/android/content/Intent.html#setFlags(int)) for more details. |
+| `flags` | `string` | Comma-separated string of additional intent flag names. The `FLAG_` prefix can be omitted. Refer to the [`addFlags` documentation](https://developer.android.com/reference/android/content/Intent#addFlags(int)) for more details. |
+| `className` | `string` | Name of a class inside of the application package that will be used as the component for this intent. Set to the fully qualified name of the app activity by default. |
+| `e` | `Record<string, string>` | Map of string parameters to apply to the intent. Same as `es`. |
+| `es` | `Record<string, string>` | Map of string parameters to apply to the intent. Same as `e`. |
+| `esn` | `Array<string>` | Array of null parameters to apply to the intent |
+| `ez` | `Record<string, boolean>` | Map of boolean parameters to apply to the intent |
+| `ei` | `Record<string, number>` | Map of integer parameters to apply to the intent |
+| `el` | `Record<string, number>` | Map of long integer parameters to apply to the intent |
+| `ef` | `Record<string, number>` | Map of float parameters to apply to the intent |
+| `eu` | `Record<string, string>` | Map of URI-data parameters to apply to the intent |
+| `ecn` | `Record<string, string>` | Map of component name parameters to apply to the intent |
+| `esa` | `Record<string, Array<string>>` | Map of string array parameters to apply to the intent. Available since driver version 2.9.0. |
+| `eia` | `Record<string, string>` | Map of integer array parameters (as comma-separated strings) to apply to the intent |
+| `ela` | `Record<string, string>` | Map of long integer array parameters (as comma-separated strings) to apply to the intent |
+| `efa` | `Record<string, string>` | Map of float array parameters (as comma-separated strings) to apply to the intent |
 
 #### Full Example
 
@@ -859,14 +706,9 @@ Map of float array parameters to apply to the intent.
 Map of additional options to be applied for the launchable app activity. The mapping supports the
 following options:
 
-#### launchDisplayId
-
-| Type | Default |
-| -- | -- |
-| `integer` or `string` | Not specified |
-
-Identifier of the display to launch the activity on. Useful if the device under test supports
-multiple displays.
+| <div style="width:9em">Name</div> | Type | Description |
+| -- | -- | -- |
+| `launchDisplayId` | `integer` or `string` | Identifier of the display to launch the activity on. Useful if the device under test supports multiple displays. |
 
 ### androidInstallTimeout
 
