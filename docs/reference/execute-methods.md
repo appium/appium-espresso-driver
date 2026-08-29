@@ -463,8 +463,8 @@ helper app must first be *manually* granted notification access.
 
 `Record<string, any>` - mapping of notification categories to arrays of notification objects. Newer
 notifications are always added to the start of the array. For details on the notification object,
-refer to the Android [StatusBarNotification](https://developer.android.com/reference/android/service/notification/StatusBarNotification)
-and [Notification](https://developer.android.com/reference/android/app/Notification) documentation.
+refer to the Android [`StatusBarNotification`](https://developer.android.com/reference/android/service/notification/StatusBarNotification)
+and [`Notification`](https://developer.android.com/reference/android/app/Notification) documentation.
 The `isRemoved` flag is set to `true` for dismissed notifications.
 
 Example output:
@@ -653,7 +653,7 @@ configured for [low battery consumption](https://github.com/appium/io.appium.set
 so this method can be useful if the device location frequently changes.
 
 The device under test must either have Google Play Services installed, or be running Android 11
-(R / API level 30) or later (which relies on [LocationManager](https://developer.android.com/reference/android/location/LocationManager)).
+(R / API level 30) or later (which relies on [`LocationManager`](https://developer.android.com/reference/android/location/LocationManager)).
 
 #### Parameters
 
@@ -695,9 +695,9 @@ Available since driver version 3.5.0.
 |`longitude`|`float`|New longitude value|
 |`altitude?`|`float`|New altitude value|
 |`satellites?`|`integer`|Number of satellites being tracked. Only supported on emulators. Must be in the range `[1, 12]`. Available since driver version 4.1.0.|
-|`speed?`|`float`|Current speed in meters per second. Must not be negative. See [`setSpeed`](https://developer.android.com/reference/android/location/Location#setSpeed(float)) for more details. Available since driver version 4.1.0.|
-|`bearing?`|`float`|Current bearing in degrees. Only supported on real devices. Must be in the range `[0, 360)`. See [`setBearing`](https://developer.android.com/reference/android/location/Location#setBearing(float)) for more details. Available since driver version 4.1.0.|
-|`accuracy?`|`float`|Current horizontal accuracy in meters. Only supported on real devices. Must not be negative. See [`setAccuracy`](https://developer.android.com/reference/android/location/Location#setAccuracy(float)) for more details. Available since driver version 4.1.0.|
+|`speed?`|`float`|Current speed in meters per second. Must not be negative. See [`Location.setSpeed`](https://developer.android.com/reference/android/location/Location#setSpeed(float)) for more details. Available since driver version 4.1.0.|
+|`bearing?`|`float`|Current bearing in degrees. Only supported on real devices. Must be in the range `[0, 360)`. See [`Location.setBearing`](https://developer.android.com/reference/android/location/Location#setBearing(float)) for more details. Available since driver version 4.1.0.|
+|`accuracy?`|`float`|Current horizontal accuracy in meters. Only supported on real devices. Must not be negative. See [`Location.setAccuracy`](https://developer.android.com/reference/android/location/Location#setAccuracy(float)) for more details. Available since driver version 4.1.0.|
 
 #### Response
 
@@ -1547,9 +1547,8 @@ Available since driver version 2.19.0.
 
 ### `mobile: sendTrimMemory`
 
-Simulates a system memory trimming-related event for the specified package, by calling the Android
-[`onTrimMemory()`](https://developer.android.com/reference/android/content/ComponentCallbacks2#onTrimMemory(int))
-event.
+Simulates a system memory trimming-related event for the specified package, by calling
+[`ComponentCallbacks2.onTrimMemory()`](https://developer.android.com/reference/android/content/ComponentCallbacks2#onTrimMemory(int)).
 
 This functionality can be useful to verify app functionality under different system memory usage
 levels. Refer to the Android [Manage your app's memory](https://developer.android.com/topic/performance/memory)
@@ -1722,7 +1721,7 @@ under the hood, depending on the parameters.
 
 ### `mobile: navigateTo`
 
-Navigates to a menu item in a navigation element. Calls [`navigateTo()`](https://developer.android.com/reference/androidx/test/espresso/contrib/NavigationViewActions#navigateto)
+Navigates to a menu item in a navigation element. Calls [`NavigationViewActions.navigateTo()`](https://developer.android.com/reference/androidx/test/espresso/contrib/NavigationViewActions#navigateto)
 under the hood.
 
 #### Parameters

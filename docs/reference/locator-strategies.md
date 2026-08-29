@@ -28,7 +28,7 @@ test is added automatically.
 
 !!! info "When to Use"
 
-    Use this strategy for elements that can be identified using their [`id`](https://developer.android.com/reference/android/view/View#attr_android:id)
+    Use this strategy for elements that can be identified using their [`View.id`](https://developer.android.com/reference/android/view/View#attr_android:id)
     attribute value.
 
 ### Accessibility Id
@@ -45,7 +45,7 @@ scrolled into view.
 
 !!! info "When to Use"
 
-    Use this strategy for elements that can be identified using their [`contentDescription`](https://developer.android.com/reference/android/view/View#attr_android:contentDescription)
+    Use this strategy for elements that can be identified using their [`View.contentDescription`](https://developer.android.com/reference/android/view/View#attr_android:contentDescription)
     attribute value.
 
 ### Class Name
@@ -67,12 +67,12 @@ whose class name matches the specified value exactly.
 |---|---|---|
 |`text`|⭐⭐⭐⭐⭐|`my text`|
 
-This strategy is mapped to the native Espresso `withText` matcher, which returns elements whose
-text matches the specified value exactly.
+This strategy is mapped to the native Espresso `withText` matcher, which returns `TextView`
+elements whose text matches the specified value exactly.
 
 !!! info "When to Use"
 
-    Use this strategy for elements that can be identified using their [`text`](https://developer.android.com/reference/android/widget/TextView#attr_android:text)
+    Use this strategy for elements that can be identified using their [`TextView.text`](https://developer.android.com/reference/android/widget/TextView#attr_android:text)
     attribute value.
 
 ### View Tag
@@ -86,7 +86,7 @@ text matches the specified value exactly.
 
 !!! info "When to Use"
 
-    Use this strategy for elements that can be identified using their [`tag`](https://developer.android.com/reference/android/view/View#attr_android:tag)
+    Use this strategy for elements that can be identified using their [`View.tag`](https://developer.android.com/reference/android/view/View#attr_android:tag)
     attribute value.
 
 ### Tag Name
@@ -169,7 +169,7 @@ matcher, which returns elements whose content description matches the specified 
 
 !!! info "When to Use"
 
-    Use this strategy for elements that can be identified using their [`contentDescription`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/package-summary#(androidx.compose.ui.semantics.SemanticsPropertyReceiver).contentDescription())
+    Use this strategy for elements that can be identified using their [`SemanticsProperties.ContentDescription`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#ContentDescription())
     attribute value.
 
 ### View Tag
@@ -183,7 +183,7 @@ matcher, which returns elements whose text matches the specified value exactly.
 
 !!! info "When to Use"
 
-    Use this strategy for elements that can be identified using their [`testTag`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/package-summary#(androidx.compose.ui.semantics.SemanticsPropertyReceiver).testTag())
+    Use this strategy for elements that can be identified using their [`SemanticsProperties.TestTag`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#TestTag())
     attribute value.
 
 ### Tag Name
@@ -205,7 +205,7 @@ matcher, which returns elements whose text matches the specified value exactly.
 
 !!! info "When to Use"
 
-    Use this strategy for elements that can be identified using their [`text`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/package-summary#(androidx.compose.ui.semantics.SemanticsPropertyReceiver).text())
+    Use this strategy for elements that can be identified using their [`SemanticsProperties.Text`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#Text())
     attribute value.
 
 ### Link Text

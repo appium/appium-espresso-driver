@@ -18,28 +18,28 @@ Full name of the element's class. Inner classes are preferred. Could be `null`.
 
 > Example: `com.mycompany`
 
-Name of the package the element belongs to, retrieved by calling [`getPackageName()`](https://developer.android.com/reference/android/content/Context#getPackageName()).
+Name of the package the element belongs to, retrieved from [`Context.getPackageName()`](https://developer.android.com/reference/android/content/Context#getPackageName()).
 
 ### `resource-id`
 
 > Example: `com.mycompany:id/resId`
 
-Resource identifier of the element, retrieved as a combination of [`getResourcePackageName`](https://developer.android.com/reference/android/content/res/Resources#getResourcePackageName(int)),
-[`getResourceTypeName`](https://developer.android.com/reference/android/content/res/Resources#getResourceTypeName(int)),
-and [`getResourceEntryName`](https://developer.android.com/reference/android/content/res/Resources#getResourceEntryName(int)).
+Resource identifier of the element, retrieved as a combination of [`Resources.getResourcePackageName()`](https://developer.android.com/reference/android/content/res/Resources#getResourcePackageName(int)),
+[`Resources.getResourceTypeName()`](https://developer.android.com/reference/android/content/res/Resources#getResourceTypeName(int)),
+and [`Resources.getResourceEntryName()`](https://developer.android.com/reference/android/content/res/Resources#getResourceEntryName(int)).
 Could be `null`.
 
 ### `view-tag`
 
 > Example: `my tag`
 
-Tag value of the element, retrieved by calling [`getTag()`](https://developer.android.com/reference/android/view/View#getTag()).
+Tag value of the element, retrieved from [`View.getTag()`](https://developer.android.com/reference/android/view/View#getTag()).
 
 ### `content-desc`
 
 > Example: `foo`
 
-Content description of the element, retrieved by calling [`getContentDescription()`](https://developer.android.com/reference/android/view/View#getContentDescription()).
+Content description of the element, retrieved from [`View.getContentDescription()`](https://developer.android.com/reference/android/view/View#getContentDescription()).
 
 ### `text`
 
@@ -49,7 +49,7 @@ Text or value of the element, depending on the element's view type:
 
 * `TextView`: set to the value of [`getHint()`](https://developer.android.com/reference/android/widget/TextView#getHint())
   if populated, otherwise [`getText()`](https://developer.android.com/reference/android/widget/TextView#getText())
-* `NumberPicker`: set to the value of [`getValue()`](https://developer.android.com/reference/android/widget/TextView#getText())
+* `NumberPicker`: set to the value of [`getValue()`](https://developer.android.com/reference/android/widget/NumberPicker#getValue())
 * `ProgressBar`: set to the value of [`getProgress()`](https://developer.android.com/reference/android/widget/ProgressBar#getProgress())
 * All other view types: set to `null`
 
@@ -58,8 +58,10 @@ Text or value of the element, depending on the element's view type:
 > Example: `[0,0][100,100]`
 
 Bounds of the element's frame as a combination of its top-left and bottom-right corner points,
-formatted as `[<top-left-X>,<top-left-Y>][<bottom-right-X>,<bottom-right-Y>]`. Retrieved as a combination of [`getLocationOnScreen()`](https://developer.android.com/reference/android/view/View#getLocationOnScreen(int[])), [`getWidth()`](https://developer.android.com/reference/android/view/View#getWidth()), and
-[`getHeight()`](https://developer.android.com/reference/android/view/View#getHeight()).
+formatted as `[<top-left-X>,<top-left-Y>][<bottom-right-X>,<bottom-right-Y>]`. Retrieved as a
+combination of [`View.getLocationOnScreen()`](https://developer.android.com/reference/android/view/View#getLocationOnScreen(int[])),
+[`View.getWidth()`](https://developer.android.com/reference/android/view/View#getWidth()), and
+[`View.getHeight()`](https://developer.android.com/reference/android/view/View#getHeight()).
 
 ### `index`
 
@@ -106,14 +108,14 @@ matcher.
 
 > Example: `true`
 
-Whether the element is accessibility focused, retrieved by calling [`isAccessibilityFocused()`](https://developer.android.com/reference/android/view/View#isAccessibilityFocused()).
+Whether the element is accessibility focused, retrieved from [`View.isAccessibilityFocused()`](https://developer.android.com/reference/android/view/View#isAccessibilityFocused()).
 Always `false` if the element is not [focusable](#focusable).
 
 ### `long-clickable`
 
 > Example: `true`
 
-Whether the element reacts to long clicks, retrieved by calling [`isLongClickable()`](https://developer.android.com/reference/android/view/View#isLongClickable()).
+Whether the element reacts to long clicks, retrieved from [`View.isLongClickable()`](https://developer.android.com/reference/android/view/View#isLongClickable()).
 
 ### `password`
 
@@ -128,7 +130,7 @@ and [`TYPE_NUMBER_VARIATION_PASSWORD`](https://developer.android.com/reference/a
 
 > Example: `true`
 
-Whether the element is scrollable, retrieved by calling [`isScrollContainer()`](https://developer.android.com/reference/android/view/View#isScrollContainer()).
+Whether the element is scrollable, retrieved from [`View.isScrollContainer()`](https://developer.android.com/reference/android/view/View#isScrollContainer()).
 
 ### `selected`
 
@@ -198,3 +200,92 @@ element view types other than `AdapterView`. Cannot be retrieved using the stand
 [Get Element Attribute](https://www.w3.org/TR/webdriver2/#get-element-attribute) endpoint.
 
 ## Compose Subdriver
+
+### `class`
+
+> Example: `ComposeNode`
+
+Name of the element's class. Usually retrieved from [`SemanticsProperties.Role`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#Role())
+if populated. Set to `ComposeNode` by default.
+
+### `resource-id`
+
+> Example: `com.mycompany:id/resId`
+
+Resource identifier of the element, retrieved from [`SemanticsNode.id`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsNode#id()).
+
+### `view-tag`
+
+> Example: `my tag`
+
+Tag value of the element, retrieved from [`SemanticsProperties.TestTag`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#TestTag()).
+
+### `content-desc`
+
+> Example: `foo`
+
+Content description of the element, retrieved from [`SemanticsProperties.ContentDescription`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#ContentDescription()).
+
+### `text`
+
+> Example: `my text`
+
+Text or value of the element, retrieved from [`SemanticsProperties.Text`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#Text()),
+[`SemanticsProperties.EditableText`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#EditableText()),
+or [`ProgressBarRangeInfo.current`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/ProgressBarRangeInfo#current()),
+whichever is populated first.
+
+### `bounds`
+
+> Example: `[0,0][100,100]`
+
+Bounds of the element's frame as a combination of its top-left and bottom-right corner points,
+formatted as `[<top-left-X>,<top-left-Y>][<bottom-right-X>,<bottom-right-Y>]`. Retrieved from [`SemanticsNode.boundsInWindow()`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsNode#boundsInWindow()).
+
+### `index`
+
+> Example: `1`
+
+Index of the element node under its parent. Set to `0` if the node has no parent.
+
+### `checked`
+
+> Example: `true`
+
+Whether the element is checked, retrieved from [`SemanticsProperties.ToggleableState`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#ToggleableState()).
+
+### `clickable`
+
+> Example: `true`
+
+Whether the element is clickable, retrieved by determining if the element responds to [`SemanticsActions.OnClick`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsActions#OnClick()).
+
+### `enabled`
+
+> Example: `true`
+
+Whether the element is enabled, retrieved from the inverse of [`SemanticsProperties.Disabled`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#Disabled()).
+
+### `focused`
+
+> Example: `true`
+
+Whether the element is accessibility focused, retrieved from [`SemanticsProperties.Focused`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#Focused()).
+
+### `password`
+
+> Example: `true`
+
+Whether the element is a password input field, retrieved from [`SemanticsProperties.Password`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#Password()).
+
+### `scrollable`
+
+> Example: `true`
+
+Whether the element is scrollable, retrieved by determining if the element responds to [`SemanticsActions.ScrollBy`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsActions#ScrollBy()).
+
+### `selected`
+
+> Example: `true`
+
+Whether the element is selected, retrieved from [`SemanticsProperties.Selected`](https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/SemanticsProperties#Selected()).
