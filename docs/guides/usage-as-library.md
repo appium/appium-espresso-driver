@@ -11,7 +11,7 @@ support. This way, the Espresso server APK could be automatically built with the
 of AGP, Kotlin and dependencies. If the app is obfuscated, it is also possible to use
 [`slackhq/keeper`](https://github.com/slackhq/keeper) to infer the obfuscation rules.
 
-### Building the App Under Test
+## Building the App Under Test
 
 Standalone test module:
 
@@ -67,7 +67,7 @@ Build both the app and Espresso server:
 ./gradlew :app:assembleDebug :espresso_server:assembleDebug
 ```
 
-### Running Appium Tests
+## Running Appium Tests
 
 As soon as the application containing the Espresso server is built, it can be used to run tests
 with this driver. The only requirements to run a test are:
