@@ -27,6 +27,10 @@ extra:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/AppiumDevs
 
+plugins:
+  mike:
+    canonical_version: 'latest'
+
 nav:
   - index.md
   - overview.md
