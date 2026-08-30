@@ -225,7 +225,7 @@ driver assumes no security is used, and the screen can be unlocked without addit
 Supported values are `pin`, `password`, and `pattern`. Must be provided together with
 [`appium:unlockKey`](#unlockkey), whose value depends on the lockscreen type.
 
-Refer to [the Unlock guide](../guides/unlock.md) for more details.
+Refer to [the Device Lock/Unlock guide](../guides/unlock.md) for more details.
 
 ### unlockKey
 
@@ -238,7 +238,7 @@ The key used to unlock the lockscreen. The expected format depends on the value 
 omitted, the driver assumes no security is used, and the screen can be unlocked without additional
 details.
 
-Refer to [the Unlock guide](../guides/unlock.md) for more details.
+Refer to [the Device Lock/Unlock guide](../guides/unlock.md) for more details.
 
 ### unlockStrategy
 

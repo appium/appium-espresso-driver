@@ -393,8 +393,8 @@ Available since driver version 2.23.4.
 
 ### `mobile: unlock`
 
-Unlocks the device if it is locked. Refer to [the Unlock guide](../guides/unlock.md) for more
-details.
+Unlocks the device if it is locked. Refer to [the Device Lock/Unlock guide](../guides/unlock.md)
+for more details.
 
 #### Parameters
 
@@ -402,7 +402,7 @@ details.
 |--|--|--|
 |`key?`|`string`|The unlock key. By default, set to the value of the [`appium:unlockKey`](./capabilities.md#unlockkey) capability. Must be provided together with `type`.|
 |`type?`|`string`|The unlock type. By default, set to the value of the [`appium:unlockType`](./capabilities.md#unlocktype) capability. Supported values are `pin`, `pinWithKeyEvent`, `password`, `pattern` and `fingerprint`. Must be provided together with `key`.|
-|`strategy?`|`string`|Approach to use for unlocking. By default, set to the value of the [`appium:unlockStrategy`](./capabilities.md#unlockstrategy) capability. Ignored if `type` is set to `password`.|
+|`strategy?`|`string`|Approach to use for unlocking. By default, set to the value of the [`appium:unlockStrategy`](./capabilities.md#unlockstrategy) capability. Ignored if `type` is set to `fingerprint`.|
 |`timeoutMs?`|`integer`|The unlock timeout. By default, set to the value of the [`appium:unlockSuccessTimeout`](./capabilities.md#unlocksuccesstimeout) capability.|
 
 #### Response
