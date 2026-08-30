@@ -17,7 +17,7 @@ Note that a single device under test should only be used in one session at a tim
 ## Important Capabilities
 
 In order to avoid issues when running parallel sessions, several capabilities should be explicitly
-specified to have a unique value among all parallel sessions: 
+specified in each session, and must have a unique value among all parallel sessions: 
 
 * [`appium:udid`](../reference/capabilities.md#udid)
 * [`appium:systemPort`](../reference/capabilities.md#systemport)

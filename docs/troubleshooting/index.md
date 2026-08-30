@@ -14,13 +14,7 @@ Any problems cause the script to exit with a non-zero code.
 ## Jetpack Compose
 
 For handling issues when testing Jetpack Compose apps (or hybrid View + Compose UIs), refer to the
-[Compose Troubleshooting guide](./compose.md). It can help with the following problems:
-
-* Server startup failures
-* `NoSuchMethodError` in `androidx.compose.*`
-* Misleading `INTERNET` permission errors
-* `InitializationProvider` / `Resources$NotFoundException`
-* Locator issues in `compose` subdriver mode
+[Compose Troubleshooting guide](./compose.md).
 
 ## Session Startup
 

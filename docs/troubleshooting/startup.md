@@ -47,10 +47,10 @@ Espresso requires the debug APK and app-under-test APK (AUT) to have the same si
 automatically signs the AUT with the `io.appium.espressoserver.test` signature. This may be
 problematic if using an outdated Android SDK tools and/or an outdated Java version.
 
-## Rebuilding Espresso Server
+## Outdated Espresso Server
 
 If there are problems starting a session, set the [`appium:forceEspressoRebuild`](../reference/capabilities.md#forceespressorebuild)
-capability to `true` and retry. This will force the Espresso server app to be rebuild. If the
+capability to `true` and retry. This will force the Espresso server app to be rebuilt. If the
 following session startup is successful, set it back to `false`, so the session startup performance
 is back to normal.
 

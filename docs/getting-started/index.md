@@ -139,27 +139,31 @@ under test will almost certainly differ, making the use of this capability a req
 Given the above details, the following examples list the minimum required capabilities for a basic
 session:
 
-```json
-// This will install 'application.apk' on the first connected real device and start a session
-{
-  "platformName": "Android",
-  "appium:automationName": "Espresso",
-  "appium:app": "/path/to/application.apk",
-  "appium:espressoBuildConfig": "{...}"
-}
-```
+=== "When Installing an APK File"
 
-```json
-// This will start a session on the first connected real device,
-// attaching to an already-installed app with the package 'com.company.mypackage'
-// and using its default launchable activity
-{
-  "platformName": "Android",
-  "appium:automationName": "Espresso",
-  "appium:appPackage": "com.company.mypackage",
-  "appium:espressoBuildConfig": "{...}"
-}
-```
+    ```json
+    // This will install 'application.apk' on the first connected real device and start a session
+    {
+      "platformName": "Android",
+      "appium:automationName": "Espresso",
+      "appium:app": "/path/to/application.apk",
+      "appium:espressoBuildConfig": "{...}"
+    }
+    ```
+
+=== "When Using a Pre-Installed App"
+
+    ```json
+    // This will start a session on the first connected real device,
+    // attaching to an already-installed app with the package 'com.company.mypackage'
+    // and using its default launchable activity
+    {
+      "platformName": "Android",
+      "appium:automationName": "Espresso",
+      "appium:appPackage": "com.company.mypackage",
+      "appium:espressoBuildConfig": "{...}"
+    }
+    ```
 
 See [the Capabilities reference page](../reference/capabilities.md) for more information on the
 capabilities supported by the driver.

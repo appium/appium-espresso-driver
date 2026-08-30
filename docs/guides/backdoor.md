@@ -12,7 +12,7 @@ The Espresso driver allows to directly invoke a method from the application unde
 ## Targets
 
 The execute method allows to specify the application methods using the `methods` parameter, and
-distinguish the target type using the `target` parameter:
+distinguish the target type depending on the value of the `target` parameter:
 
 * `application`: `methods` will be invoked on the application class
 * `activity`: `methods` will be invoked on the current application activity

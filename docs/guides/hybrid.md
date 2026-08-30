@@ -84,7 +84,7 @@ In order to manually download the correct ChromeDriver executable (for Chrome 73
 ChromeDriver [Version Selection](https://developer.chrome.com/docs/chromedriver/downloads/version-selection)
 guide.
 
-For Chrome 72 / ChromeDriver 2.46 or earlier, you can find supported Chrome versions under each
+For Chrome 72 / ChromeDriver 2.46 or earlier, supported Chrome versions can be found under each
 entry in the [ChromeDriver release notes](https://developer.chrome.com/docs/chromedriver/downloads).
 
 ### Upon Driver Installation

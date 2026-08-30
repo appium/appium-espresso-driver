@@ -2,7 +2,7 @@
 title: Activity Startup
 ---
 
-> The Activity class is a crucial component of an Android app, and the way activities are launched and put together is a fundamental part of the platform's application model. Unlike programming paradigms in which apps are launched with a main() method, the Android system initiates code in an Activity instance by invoking specific callback methods that correspond to specific stages of its lifecycle.
+> The `Activity` class is a crucial component of an Android app, and the way activities are launched and put together is a fundamental part of the platform's application model. Unlike programming paradigms in which apps are launched with a `main` method, the Android system initiates code in an `Activity` instance by invoking specific callback methods that correspond to specific stages of its lifecycle.
 >
 > &copy; [Android Developer Documentation](https://developer.android.com/guide/components/activities/intro-activities)
 
@@ -23,7 +23,8 @@ The driver supports multiple activity startup-related capabilities:
   until `appWaitActivity` is focused
 
 All of these capabilities are optional. If they are not set explicitly, the driver tries to
-auto-detect them by reading their values from the APK manifest.
+auto-detect them by reading their values from the manifest of the APK file specified using the
+[`appium:app`](../reference/capabilities.md#app) capability.
 
 If the application under test is supposed to be already installed on the device, then at least the
 `appium:appActivity` and `appium:appPackage` capabilities must be set, since no package manifest is

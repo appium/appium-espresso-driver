@@ -10,16 +10,19 @@ hybrid Android applications.
 
 ## Key Design Principle
 
-Before using this driver, it is critical to understand how it differs from other black-box drivers
-such as [UiAutomator2](https://github.com/appium/appium-uiautomator2-driver). Grey-box testing is
-more closely coupled to the app under test than black-box testing, which means two things:
+Most other Appium drivers such as [UiAutomator2](https://github.com/appium/appium-uiautomator2-driver)
+are used for black-box testing, so before using the Espresso driver, it is critical to understand
+how its grey-box approach is different.
+
+Grey-box testing is more closely coupled to the app under test than black-box testing, which means
+two things:
 
 * The Espresso driver can access in-depth information about the app under test that is not exposed
-to black-box drivers: off-screen elements, element tag values, use of [IdlingResource](https://developer.android.com/reference/androidx/test/espresso/IdlingResource),
-and more
-* The Espresso driver requires the tester to have access to the source code of the app under test -
-specifically, the version numbers of various tools and dependencies used to build the exact tested
-version of the app
+  to black-box drivers: off-screen elements, element tag values, use of [IdlingResource](https://developer.android.com/reference/androidx/test/espresso/IdlingResource),
+  and more
+* The Espresso driver requires the tester to have knowledge of the source code of the app under
+  test - specifically, the version numbers of various tools and dependencies used to build the
+  exact tested version of the app
 
 These version numbers are important: in order to attach to the app, the driver automatically builds
 its own helper application (the Espresso server) using many of the same standard Android application
