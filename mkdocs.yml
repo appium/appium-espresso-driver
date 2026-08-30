@@ -46,9 +46,8 @@ nav:
           - reference/locator-strategies.md
           - reference/element-attributes.md
   - Guides:
-      - Environment Configuration:
-          - guides/usage-as-library.md
       - Session Configuration:
+          - guides/usage-as-library.md
           - guides/parallel-tests.md
           - guides/hybrid.md
       - Driver Actions:

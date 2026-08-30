@@ -74,8 +74,8 @@ with this driver. The only requirements to run a test are:
 
 - The application build is installed on the device, following the above tutorial
 - The precompiled Espresso Server module version satisfies the driver version:
-  - At least major versions should match
-  - The driver version must not be older than the server version
+    - At least major versions should match
+    - The driver version must not be older than the server version
 
 Make sure to set the [`appium:skipServerInstallation`](../reference/capabilities.md#skipserverinstallation)
 capability to `true` in order to let the driver know that the Espresso server is already listening
