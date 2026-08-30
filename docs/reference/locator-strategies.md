@@ -116,8 +116,8 @@ The selector syntax for this strategy is a JSON matcher. It is a map with the fo
 |`class?`|`string`|Full qualified class name of the matcher specified in `name`. Set to `org.hamcrest.Matchers` by default. Must be changed if using matchers from other classes. Class names without the full package name are automatically prepended with `androidx.test.espresso.matcher`.|
 |`scope?`|`Map<string, string>`|JSON matcher for limiting the parent scope of this selector. Its name should be a valid [`RootMatchers`](https://cs.android.com/androidx/android-test/+/main:espresso/core/java/androidx/test/espresso/matcher/RootMatchers.java) matcher, with its class set to `androidx.test.espresso.matcher.RootMatchers`.|
 
-Refer to the [Espresso DataMatcher Selector guide](../guides/datamatcher-selector.md) for more
-details on how to construct these locators.
+Refer to the [Espresso DataMatcher Selector guide](../guides/datamatcher-selector.md) for examples
+on how to construct these locators.
 
 !!! info "When to Use"
 
