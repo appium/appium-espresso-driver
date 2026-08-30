@@ -944,9 +944,35 @@ Only supported on emulators.
 Sets the specified image as the output of the camera viewfinder. Only supported on emulators.
 
 This functionality can be useful, for example, when testing QR code scanning functionality in the
-application under test. 
+application under test.
 
 Available since driver version 2.38.3.
+
+#### Preconditions
+
+If this method is used on a newly created or resetted device, it is mandatory to provide a value
+(or an empty map to use its defaults) to the [`appium:injectedImageProperties`](./capabilities.md#injectedimageproperties)
+capability, in order to prepare the emulator for image injection.
+
+There is also a possibility to perform a manual configuration of the necessary preconditions. For
+that, replace the content of the `Toren1BD.posters` file located in `$ANDROID_HOME/emulator/resources`
+with the following text:
+
+```
+poster wall
+size 2 2
+position -0.807 0.320 5.316
+rotation 0 -150 0
+default poster.png
+
+poster table
+size 1 1
+position 0 0 -1.5
+rotation 0 0 0
+```
+
+After that, make sure to (re)start the emulator to pick up the changes. The values under
+`poster table` can also be customized for different image properties.
 
 #### Parameters
 
