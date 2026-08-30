@@ -445,7 +445,7 @@ Configuration for building the Espresso server. The value can be either a string
 or path to a JSON file that contains the configuration. The configuration supports the following
 keys, all of which are optional:
 
-#### composeSupport
+#### `composeSupport`
 
 | Type | Default |
 | -- | -- |
@@ -455,7 +455,7 @@ Whether to include Jetpack Compose UI test dependencies in the server app. If di
 size will be reduced, but any Compose-only functionality, including changing the `driver` setting
 to `compose`, will return an error.
 
-#### toolsVersions
+#### `toolsVersions`
 
 | Type | Default |
 | -- | -- |
@@ -482,7 +482,7 @@ for that tool.
 | `espressoVersion` | Version of Espresso dependencies to compile the server for. Configurable since driver version 2.20.0. | See `espresso` in [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
 | `annotationVersion` | Version of the `androidx.annotation:annotation` package. Configurable since driver version 2.5.0. | See `annotation` in [`libs.versions.toml`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/gradle/libs.versions.toml) |
 
-#### additionalAppDependencies
+#### `additionalAppDependencies`
 
 | Type | Default |
 | -- | -- |
@@ -490,7 +490,7 @@ for that tool.
 
 List of one or more Gradle module names and their versions to include as `api` dependencies.
 
-#### additionalAndroidTestDependencies
+#### `additionalAndroidTestDependencies`
 
 | Type | Default |
 | -- | -- |
@@ -590,7 +590,7 @@ Package identifier of the application under test. Required unless [`appium:app`]
 It is allowed to set both `appium:app` and this capability, but if only `appium:app` is provided,
 the package identifier is automatically detected from the app manifest.
 
-Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.md) for more details.
+Refer to the [Activity Startup guide](../guides/activity-startup.md) for more details.
 
 ### appActivity
 
@@ -602,7 +602,7 @@ Launchable activity identifier of the application under test. If not provided, t
 automatically detected from either [`appium:app`](#app) or [`appium:appPackage`](#apppackage), in
 that order.
 
-Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.md) for more details.
+Refer to the [Activity Startup guide](../guides/activity-startup.md) for more details.
 
 ### appWaitPackage
 
@@ -612,7 +612,7 @@ Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.
 
 Identifier of the first app package to be launched.
 
-Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.md) for more details.
+Refer to the [Activity Startup guide](../guides/activity-startup.md) for more details.
 
 ### appWaitActivity
 
@@ -622,7 +622,7 @@ Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.
 
 Identifier of the first app activity to be launched.
 
-Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.md) for more details.
+Refer to the [Activity Startup guide](../guides/activity-startup.md) for more details.
 
 ### appWaitDuration
 
@@ -633,7 +633,7 @@ Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.
 Maximum number of milliseconds to wait until the activity specified by [`appium:appWaitPackage`](#appwaitpackage)
 and [`appium:appWaitActivity`](#appwaitactivity) has started.
 
-Refer to [Troubleshooting Activity Startup](../troubleshooting/activity-startup.md) for more details.
+Refer to the [Activity Startup guide](../guides/activity-startup.md) for more details.
 
 ### intentOptions
 

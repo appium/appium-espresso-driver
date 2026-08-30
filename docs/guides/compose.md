@@ -34,9 +34,12 @@ The following driver functionality has Compose mode-specific behavior:
 
 Calling other driver element-specific APIs not listed above would most likely throw an exception.
 
-## More Resources
+## Troubleshooting
 
-If session startup or Compose interactions fail, refer to the [Compose Troubleshooting](../troubleshooting/compose.md) guide.
+Refer to the [Jetpack Compose Issues](../troubleshooting/compose.md) guide for handling potential
+issues.
+
+## More Resources
 
 For more information on Compose-based driver usage and capability setup, refer to end-to-end tests:
 
