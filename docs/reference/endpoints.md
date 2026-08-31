@@ -193,31 +193,6 @@ Returns the element's size in pixels.
 
 `Record<string, number>` - object containing the `width` and `height` properties of the element
 
-### getGeoLocation
-
-```
-GET /session/:sessionId/location
-```
-
-> JSONWP documentation: [/session/:sessionId/location](https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidlocation)
-
-Retrieves the current location of the device under test.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: getGeolocation`](./execute-methods.md#mobile-getgeolocation) execute
-    method instead
-
-#### Response
-
-`Location` - an object with the following properties:
-
-|Name|Type|Description|
-|--|--|--|
-|`altitude`|`float`|Altitude of the device location|
-|`latitude`|`float`|Latitude of the device location|
-|`longitude`|`float`|Longitude of the device location|
-
 ### setGeoLocation
 
 ```
@@ -237,7 +212,15 @@ Sets the current location of the device under test.
 
 |Name|Type|Description|
 |--|--|--|
-|`location`|[`Location`](#response_10)|New device latitude, longitude and altitude|
+|`location`|`Record<string, float>`|New device latitude, longitude and altitude|
+
+The `location` parameter is an object with the following properties:
+
+|Name|Type|Description|
+|--|--|--|
+|`altitude`|`float`|Altitude of the device location|
+|`latitude`|`float`|Latitude of the device location|
+|`longitude`|`float`|Longitude of the device location|
 
 #### Response
 
@@ -669,236 +652,6 @@ registered, the command and ID can be used in fingerprint authentication prompts
 
 `null`
 
-### sendSMS
-
-```
-POST /session/:sessionId/appium/device/send_sms
-```
-
-Emulates sending an SMS to the specified phone number. Only supported on emulators.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: sendSMS`](./execute-methods.md#mobile-sendsms) execute method instead
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`phoneNumber`|`string`|Phone number to send the message to|
-|`message`|`string`|Message contents to send|
-
-#### Response
-
-`null`
-
-### gsmCall
-
-```
-POST /session/:sessionId/appium/device/gsm_call
-```
-
-Emulates a GSM call action for the specified phone number. Only supported on emulators.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: gsmCall`](./execute-methods.md#mobile-gsmcall) execute method instead
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`phoneNumber`|`string`|Phone number to apply the action to|
-|`action`|`string`|Call action to apply. Supported values are `call`, `accept`, `cancel` and `hold`.|
-
-#### Response
-
-`null`
-
-### gsmSignal
-
-```
-POST /session/:sessionId/appium/device/gsm_signal
-```
-
-Emulates a change of the GSM signal strength profile. Only supported on emulators.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: gsmSignal`](./execute-methods.md#mobile-gsmsignal) execute method instead
-
-#### Parameters
-
-|<div style="width:8em">Name</div>|Type|Description|
-|--|--|--|
-|`signalStrength`|`integer`|Signal strength profile to apply. Supported values are `0` (worst signal), `1`, `2`, `3`, and `4` (best signal)|
-
-#### Response
-
-`null`
-
-### gsmVoice
-
-```
-POST /session/:sessionId/appium/device/gsm_voice
-```
-
-Emulates a change of the GSM voice state. Only supported on emulators.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: gsmVoice`](./execute-methods.md#mobile-gsmvoice) execute method instead
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`state`|`string`|Voice state to apply. Supported values are `on`, `off`, `denied`, `searching`, `roaming`, `home`, and `unregistered`.|
-
-#### Response
-
-`null`
-
-### powerAC
-
-```
-POST /session/:sessionId/appium/device/power_ac
-```
-
-Emulates a power state change on the device. Only supported on emulators.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: powerAC`](./execute-methods.md#mobile-powerac) execute method instead
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`state`|`string`|Power state to apply. Supported values are `on` and `off`.|
-
-#### Response
-
-`null`
-
-### powerCapacity
-
-```
-POST /session/:sessionId/appium/device/power_capacity
-```
-
-Emulates a power capacity change on the device. Only supported on emulators.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: powerCapacity`](./execute-methods.md#mobile-powercapacity) execute
-    method instead
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`percent`|`integer` or `string`|Power capacity to apply. Must be in the range `[0, 100]`.|
-
-#### Response
-
-`null`
-
-### networkSpeed
-
-```
-POST /session/:sessionId/appium/device/network_speed
-```
-
-Emulates a network connection speed mode change. Only supported on emulators.
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: networkSpeed`](./execute-methods.md#mobile-networkspeed) execute
-    method instead
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`netspeed`|`string`|Network speed mode to apply. Supported values are `gsm`, `scsd`, `gprs`, `edge`, `umts`, `hsdpa`, `lte`, `evdo`, and `full`.|
-
-#### Response
-
-`null`
-
-### toggleFlightMode
-
-```
-POST /session/:sessionId/appium/device/toggle_airplane_mode
-```
-
-Toggles the state of airplane mode. On real devices this functionality is only supported starting
-from Android 12 (S / API level 31).
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: setConnectivity`](./execute-methods.md#mobile-setconnectivity) execute
-    method instead
-
-#### Response
-
-`null`
-
-### toggleData
-
-```
-POST /session/:sessionId/appium/device/toggle_data
-```
-
-Toggles the state of mobile data. On real devices this functionality is only supported starting
-from Android 12 (S / API level 31).
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: setConnectivity`](./execute-methods.md#mobile-setconnectivity) execute
-    method instead
-
-#### Response
-
-`null`
-
-### toggleWiFi
-
-```
-POST /session/:sessionId/appium/device/toggle_wifi
-```
-
-Toggles the state of Wi-Fi. On real devices this functionality is only supported starting from
-Android 12 (S / API level 31).
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: setConnectivity`](./execute-methods.md#mobile-setconnectivity) execute
-    method instead
-
-#### Response
-
-`null`
-
-### toggleLocationServices
-
-```
-POST /session/:sessionId/appium/device/toggle_location_services
-```
-
-Toggles the state of location services (GPS). This functionality only works reliably starting from
-Android 12 (S / API level 31).
-
-!!! warning "Deprecated"
-
-    Please use the [`mobile: toggleGps`](./execute-methods.md#mobile-togglegps) execute method
-    instead
-
-#### Response
-
-`null`
-
 ### getSystemBars
 
 ```
@@ -946,6 +699,77 @@ Retrieves the density of the current display in DPI.
 #### Response
 
 `integer` - the display density in DPI
+
+### openNotifications
+
+```
+POST /session/:sessionId/appium/device/open_notifications
+```
+
+Opens the notification tray on the device under test. Does nothing if the tray is already opened.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: statusBar`](./execute-methods.md#mobile-statusbar) execute method
+    instead
+
+#### Response
+
+`null`
+
+### pressKeyCode
+
+```
+POST /session/:sessionId/appium/device/press_keycode
+```
+
+Emulates a single key press of the specified key. Creates a new [`KeyEvent`](https://developer.android.com/reference/android/view/KeyEvent#KeyEvent(long,%20long,%20int,%20int,%20int,%20int,%20int,%20int,%20int))
+and passes it to [`UiController.injectKeyEvent()`](https://developer.android.com/reference/androidx/test/espresso/UiController#injectKeyEvent(android.view.KeyEvent))
+under the hood.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: pressKey`](./execute-methods.md#mobile-presskey) execute method
+    instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`keycode`|`integer`|Code of the key to press. Must match the numerical value for a supported KeyEvent `KEYCODE_` constant.|
+|`metastate`|`integer`|One or more meta keys that should be simultaneously pressed. Must match the combined numerical value for one or more supported KeyEvent `META_` constants.|
+|`flags`|`integer`|Flags to apply during the press. Must match the combined numerical value for one or more supported KeyEvent `FLAG_` constants.|
+
+#### Response
+
+`null`
+
+### longPressKeyCode
+
+```
+POST /session/:sessionId/appium/device/long_press_keycode
+```
+
+Emulates a single long key press of the specified key. Creates a new [`KeyEvent`](https://developer.android.com/reference/android/view/KeyEvent#KeyEvent(long,%20long,%20int,%20int,%20int,%20int,%20int,%20int,%20int))
+and passes it to [`UiController.injectKeyEvent()`](https://developer.android.com/reference/androidx/test/espresso/UiController#injectKeyEvent(android.view.KeyEvent))
+under the hood.
+
+!!! warning "Deprecated"
+
+    Please use the [`mobile: pressKey`](./execute-methods.md#mobile-presskey) execute method
+    instead
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`keycode`|`integer`|Code of the key to press. Must match the numerical value for a supported KeyEvent `KEYCODE_` constant.|
+|`metastate`|`integer`|One or more meta keys that should be simultaneously pressed. Must match the combined numerical value for one or more supported KeyEvent `META_` constants.|
+|`flags`|`integer`|Flags to apply during the press. Must match the combined numerical value for one or more supported KeyEvent `FLAG_` constants.|
+
+#### Response
+
+`null`
 
 ### setValueImmediate
 
