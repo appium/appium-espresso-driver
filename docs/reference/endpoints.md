@@ -307,7 +307,7 @@ POST /session/:sessionId/appium/start_recording_screen
 
 Starts recording the device screen using Android's `screenrecord` tool. On emulators this
 functionality is only supported starting from Android 8 (Oreo / API level 27). The recording can be
-stopped either using the [`stopRecordingScreen`](#stoprecordingscreen) endpoint, or by stopping the
+stopped either using the [stopRecordingScreen](#stoprecordingscreen) endpoint, or by stopping the
 session itself.
 
 #### Parameters
@@ -322,12 +322,12 @@ The following keys are supported:
 |--|--|--|
 |`videoSize?`|`string`|Dimensions of the resulting video, formatted as `<width>x<height>`. By default, the device's native display resolution is used, or `1280x720` if the native resolution is unsupported. For best results, use a size supported by your device's AVC encoder.|
 |`bugReport?`|`boolean`|Whether to add a video overlay with debugging information, such as a timestamp. Only supported since Android 9 (Pie / API level 28).|
-|`timeLimit?`|`float` or `string`|Maximum recording time in seconds. Set to `180` (3 minutes) by default. The maximum supported value is `1800` seconds (30 minutes). A single recording chunk can be at most `180` seconds (3 minutes) long, so if a greater value is specified, the driver will attempt to use multiple chunks and combine them using `ffmpeg`. In such cases, if `ffmpeg` is not available on `PATH`, only the most recent chunk will be retained.|
+|`timeLimit?`|`float` or `string`|Maximum recording time in seconds. Set to `180` (3 minutes) by default. The maximum supported value is `1800` seconds (30 minutes). A single recording chunk can be at most `180` seconds long, so if a greater value is specified, the driver will attempt to use multiple chunks and combine them using `ffmpeg`. In such cases, if `ffmpeg` is not available on `PATH`, only the most recent chunk will be retained.|
 |`bitRate?`|`integer` or `string`|Bitrate of the video, in bits per second. Set to `20000000` (20Mbps) by default.|
 |`forceRestart?`|`boolean`|Whether to skip returning the results of any currently running screenrecording process, and start a new one right away|
 
-If `forceRestart` is `false` or unset (the default value), all the keys supported by
-`stopRecordingScreen` can also be used, in order to handle the upload of the result from the
+If `forceRestart` is `false` or unset (the default value), all the keys supported by the
+stopRecordingScreen endpoint can also be used, in order to handle the upload of the result from the
 currently running screenrecord process.
 
 #### Response
@@ -341,7 +341,7 @@ currently running screenrecord process.
 POST /session/:sessionId/appium/stop_recording_screen
 ```
 
-Stops the active screen recording process started by [`startRecordingScreen`](#startrecordingscreen),
+Stops the active screen recording process started by [startRecordingScreen](#startrecordingscreen),
 either returning its payload or uploading it to a remote location. On emulators this functionality
 is only supported starting from Android 9 (Pie / API level 28).
 
@@ -607,7 +607,7 @@ the `dumpsys` utility.
 |<div style="width:7em">Name</div>|Type|Description|
 |--|--|--|
 |`packageName`|`string`|Name of the package identifier to fetch the data for|
-|`dataType`|`string`|Subsystem name to return the data for. Supported values can be retrieved using the [`getPerformanceDataTypes`](#getperformancedatatypes) endpoint.|
+|`dataType`|`string`|Subsystem name to return the data for. Supported values can be retrieved using the [getPerformanceDataTypes](#getperformancedatatypes) endpoint.|
 
 #### Response
 
@@ -630,7 +630,7 @@ POST /session/:sessionId/appium/performanceData/types
 ```
 
 Retrieves supported performance data types, which can be used as the `dataType` argument for the
-[`getPerformanceData`](#getperformancedata) endpoint.
+[getPerformanceData](#getperformancedata) endpoint.
 
 !!! warning "Deprecated"
 

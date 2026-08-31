@@ -344,8 +344,9 @@ emulator command-line argument. Only applied if the emulator is not already runn
 | -- | -- | -- |
 | `appium:injectedImageProperties` | `Record<string, Record<string, number>>` | Not specified |
 
-Adjusts properties of the image injected using the `mobile: injectEmulatorCameraImage` extension.
-If the emulator is already running, it will be restarted in order to apply the properties.
+Adjusts properties of the image injected using the [`mobile: injectEmulatorCameraImage`](./execute-methods.md#mobile-injectemulatorcameraimage)
+execute method. If the emulator is already running, it will be restarted in order to apply the
+properties.
 
 The value of this capability is an object with the following keys. All keys and sub-keys are
 optional, with the given defaults used for absent keys.
@@ -761,10 +762,9 @@ Whether to skip termination of the app under test upon session deletion.
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:autoLaunch` | `boolean` | Not specified |
+| `appium:autoLaunch` | `boolean` | `true` |
 
-If set to `false`, the driver will skip waiting until the application under test has launched and
-is ready.
+Whether to launch the application under test on session start, and wait until it is ready.
 
 ### autoGrantPermissions
 
@@ -937,13 +937,13 @@ If specified, [`appium:language`](#language) and [`appium:locale`](#locale) must
 | `appium:appLocale` | `Record<string, string>` | Not specified |
 
 Map of language-related identifiers to use for setting the locale of the app under test. The
-mapping supports the following options, where only `language` is required:
+mapping supports the following options:
 
 | Name | Description |
 | -- | -- |
 | `language` | Matches the `language` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
-| `country` | Matches the `country` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
-| `variant` | Matches the `variant` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
+| `country?` | Matches the `country` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
+| `variant?` | Matches the `variant` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
 
 In order to set the locale of the entire device under test, use [`appium:language`](#language)
 and [`appium:locale`](#locale).

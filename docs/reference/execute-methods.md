@@ -573,7 +573,7 @@ Available since driver version 2.23.0.
     Using this method may result in Android terminating/disconnecting the Espresso server app on
     the device under test, causing a session disconnect. The only way to restore the session
     afterwards would be to quit it, restore device connectivity, then reconnect to it with the
-    `noReset` capability set to `true`.
+    [`appium:noReset`](./capabilities.md#noreset) capability set to `true`.
 
 #### Parameters
 
@@ -1136,7 +1136,7 @@ Available since driver version 6.4.0.
 `versionCode` property is only populated for devices running Android 9 (Pie / API level 28) or
 later.
 
-In Espresso driver versions before 7.0.0, the response was `Array<string>` - a list of package
+In Espresso driver versions before 7.0.0, the response is `Array<string>` - a list of package
 names.
 
 ### `mobile: isAppInstalled`
@@ -1702,7 +1702,8 @@ Performs a swipe action on the specified element. There are two supported swipin
 either [`ViewActions.swipe*`](https://developer.android.com/reference/android/support/test/espresso/action/ViewActions)
 or [`GeneralSwipeAction`](https://developer.android.com/reference/android/support/test/espresso/action/GeneralSwipeAction)
 under the hood), which can be distinguished by setting either the `direction` or `swiper`
-parameter, respectively. An error is raised if both parameters are set.
+parameter, respectively. An error is thrown if both parameters are set. The `swiper` mode is not
+supported in Compose mode (see the [Jetpack Compose guide](../guides/compose.md) for details).
 
 #### Parameters
 
@@ -1869,7 +1870,7 @@ under the hood.
 
 ### `mobile: performEditorAction`
 
-Performs IME action on the _currently focused_ editable element.
+Performs IME action on the currently focused editable element.
 
 Very often Android developers use the [`onEditorAction`](https://developer.android.com/reference/android/widget/TextView.OnEditorActionListener.html#onEditorAction(android.widget.TextView,%20int,%20android.view.KeyEvent))
 callback with the `actionId` argument to implement handling of actions, for example, when the
@@ -1880,7 +1881,7 @@ invocation of such a callback on the focused element.
 
 |Name|Type|Description|
 |---|---|---|
-|`action`|`integer` or `string`|Name or integer code of the editor action to be executed. Supported values are `unspecified`, `none`, `go`, `search`, `send`, `next`, `done`, and `previous`. Refer to the [Android EditorInfo](https://developer.android.com/reference/android/view/inputmethod/EditorInfo) documentation for more details.|
+|`action`|`integer` or `string`|Name or integer code of the editor action to be executed. Supported values are `unspecified`, `none`, `go`, `search`, `send`, `next`, `done`, and `previous`. Refer to the [Android `EditorInfo`](https://developer.android.com/reference/android/view/inputmethod/EditorInfo) documentation for more details.|
 
 #### Response
 

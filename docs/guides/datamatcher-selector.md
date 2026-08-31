@@ -12,7 +12,7 @@ Android apps have special types of Views called [AdapterViews](https://developer
 (e.g.: `ScrollView`, `ListView`, `GridView`). These views have child views, but the app only
 renders the child views that are in the visible viewport. However, each AdapterView also has an
 "adapter" object, which stores all the data for its AdapterView's children, including the views
-that aren't being rendered.
+that are not being rendered.
 
 When using the Data Matcher strategy, element search is based on a [Hamcrest matcher](http://hamcrest.org/JavaHamcrest/javadoc/1.3/org/hamcrest/Matchers.html)
 that selects an item from an adapter. If the item is not in the view hierarchy, Espresso

@@ -40,11 +40,11 @@ The driver supports the following Android platforms as automation targets:
 |Platform|Simulators|Real devices|
 |--|--|--|
 |Android|:white_check_mark:|:white_check_mark:|
-|Android TV|:question: [^untested]|:question: [^untested]|
-|Android Wear / Wear OS|:question: [^untested]|:question: [^untested]|
-|Android XR|:question: [^untested]|:question: [^untested]|
+|Android TV|:white_check_mark:|:question: [^untested]|
+|Android Wear / Wear OS|:white_check_mark:|:question: [^untested]|
+|Android XR|:white_check_mark:|:question: [^untested]|
 |Android Auto|:x:|:x:|
-|Android Automotive|:question: [^untested]|:question: [^untested]|
+|Android Automotive|:white_check_mark:|:question: [^untested]|
 
 ## Contexts
 
@@ -112,4 +112,4 @@ flowchart TD
   CD -->|"WebDriver in webview"| AUT
 ```
 
-[^untested]: Not tested, though likely to still work
+[^untested]: Not tested

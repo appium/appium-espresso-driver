@@ -37,6 +37,8 @@ methods like [`mobile: shell`](./execute-methods.md#mobile-shell).
 Enables automatic download of a ChromeDriver binary compatible with the active webview. Only
 relevant in a webview context.
 
+Refer to the [Hybrid Mode guide](../guides/hybrid.md) for more details.
+
 ## `emulator_console`
 
 Enables execution of Android emulator telnet console interface commands using the
@@ -50,7 +52,7 @@ endpoint and the [`log.entryAdded`](./bidi.md#logentryadded) BiDi event.
 
 ## `set_stylus_handwriting`
 
-Enables toggling the Android stylus handwriting feature using the `mobile: setStylusHandwriting`
+Enables toggling the Android stylus handwriting feature using the [`mobile: setStylusHandwriting`](./execute-methods.md#mobile-setstylushandwriting)
 execute method.
 
 Available since driver version 7.1.0.

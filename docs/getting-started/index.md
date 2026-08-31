@@ -125,16 +125,15 @@ specify the application under test. This can be provided in two ways:
 
 * Local path or remote URL to an `.apk` or `.aab` file, via the [`appium:app`](../reference/capabilities.md#app)
   capability
-* For an already installed app, the name of its package to be started, via the
-  [`appium:appPackage`](../reference/capabilities.md#apppackage) capability. It is recommended to
-  also specify the app activity via the [`appium:appActivity`](../reference/capabilities.md#appactivity)
-  capability.
+* For an already installed app, the name of its package and main activity to be started, via the
+  [`appium:appPackage`](../reference/capabilities.md#apppackage) and
+  [`appium:appActivity`](../reference/capabilities.md#appactivity) capabilities
 
 Furthermore, the driver must be aware of the tool and dependency versions used to build the 
 application under test, which are specified using the [`appium:espressoBuildConfig`](../reference/capabilities.md#espressobuildconfig)
 capability (see [Key Design Principle](../overview.md#key-design-principle)). While the capability
 does set default values for all of these versions, the versions that were used to build the app
-under test will almost certainly differ, making the use of this capability a requirement.
+under test will likely differ, making the use of this capability a common requirement.
 
 Given the above details, the following examples list the minimum required capabilities for a basic
 session:
@@ -156,11 +155,12 @@ session:
     ```json
     // This will start a session on the first connected real device,
     // attaching to an already-installed app with the package 'com.company.mypackage'
-    // and using its default launchable activity
+    // and activity 'com.company.mypackage.MainActivity'
     {
       "platformName": "Android",
       "appium:automationName": "Espresso",
       "appium:appPackage": "com.company.mypackage",
+      "appium:appActivity": "com.company.mypackage.MainActivity",
       "appium:espressoBuildConfig": "{...}"
     }
     ```

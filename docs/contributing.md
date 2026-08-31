@@ -40,14 +40,16 @@ npm run test     # unit
 npm run e2e-test # functional
 ```
 
-If running functional tests, it is often useful to be able to set break points in the Espresso
-server.
+!!! tip
 
-To accomplish this, open the Espresso server project in Android Studio, set the
-[`ESPRESSO_JAVA_DEBUG`](./reference/env-vars.md#espresso_java_debug) environment variable, and then
-run the tests. When the tests start repeatedly pinging the Espresso server (i.e. outputting
-`Proxying [GET /status] to [GET http://localhost:4567/status] with no body`), click on
-`Attach debugger to Android process` in Android Studio.
+    If running functional tests, it is often useful to be able to set break points in the Espresso
+    server.
+
+    To accomplish this, open the Espresso server project in Android Studio, set the
+    [`ESPRESSO_JAVA_DEBUG`](./reference/env-vars.md#espresso_java_debug) environment variable, and then
+    run the tests. When the tests start repeatedly pinging the Espresso server (i.e. outputting
+    `Proxying [GET /status] to [GET http://localhost:4567/status] with no body`), click on
+    `Attach debugger to Android process` in Android Studio.
 
 To run tests for the Espresso server, use Android Studio. Tests are located at
 `espresso-server/library/src/test/java/io/appium/espressoserver/test`.
@@ -69,7 +71,7 @@ To develop documentation:
 
 ```bash
 npm run install-docs-deps # install the dependencies (Python packages)
-npm run dev:docs # serve the docs locally and watch for changes
+npm run dev:docs          # serve the docs locally and watch for changes
 ```
 
 Additional scripts can also be found in `package.json`.

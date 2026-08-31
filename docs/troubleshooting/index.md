@@ -28,7 +28,8 @@ may cause problems if the application under test has no Compose dependencies.
 
 In such cases, it may help to exclude the Compose dependencies in the Espresso server. This can be
 done by setting the [`composeSupport`](../reference/capabilities.md#composesupport) property of the
-`appium:espressoBuildConfig` capability to `false`.
+[`appium:espressoBuildConfig`](../reference/capabilities.md#espressobuildconfig) capability to
+`false`.
 
 While in a session without Compose dependencies, make sure to avoid using the
 [`driver`](../reference/settings.md#driver) setting, and leave it at its default `espresso` value.
