@@ -1028,7 +1028,7 @@ Available since driver version 2.23.0.
 
 |<div style="width:8em">Name</div>|Type|Description|
 |--|--|--|
-|`signalStrength`|`integer`|Signal strength profile to apply. Supported values are `0` (worst signal), `1`, `2`, `3`, and `4` (best signal)|
+|`strength`|`integer`|Signal strength profile to apply. Supported values are `0` (worst signal), `1`, `2`, `3`, and `4` (best signal)|
 
 #### Response
 
@@ -1092,7 +1092,7 @@ Available since driver version 2.23.0.
 
 |Name|Type|Description|
 |--|--|--|
-|`netspeed`|`string`|Network speed mode to apply. Supported values are `gsm`, `scsd`, `gprs`, `edge`, `umts`, `hsdpa`, `lte`, `evdo`, and `full`.|
+|`speed`|`string`|Network speed mode to apply. Supported values are `gsm`, `scsd`, `gprs`, `edge`, `umts`, `hsdpa`, `lte`, `evdo`, and `full`.|
 
 #### Response
 

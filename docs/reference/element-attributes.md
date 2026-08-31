@@ -51,7 +51,7 @@ Text or value of the element, depending on the element's view type:
   if populated, otherwise [`getText()`](https://developer.android.com/reference/android/widget/TextView#getText())
 * `NumberPicker`: set to the value of [`getValue()`](https://developer.android.com/reference/android/widget/NumberPicker#getValue())
 * `ProgressBar`: set to the value of [`getProgress()`](https://developer.android.com/reference/android/widget/ProgressBar#getProgress())
-* All other view types: set to `null`
+* All other view types: attribute is omitted
 
 ### `bounds`
 
@@ -68,6 +68,12 @@ combination of [`View.getLocationOnScreen()`](https://developer.android.com/refe
 > Example: `1`
 
 Index of the element under its parent `ViewGroup`. Set to `0` if the parent view is not a `ViewGroup`.
+
+### `viewIndex`
+
+> Example: `1`
+
+Index of the element in the full application source of the current view. Indices start from `1`.
 
 ### `checkable`
 
@@ -147,7 +153,7 @@ Whether the element's `text` value is a hint. The value depends on the element's
 
 * `TextView`: set to `true` only if [`getText()`](https://developer.android.com/reference/android/widget/TextView#getText()) is empty while [`getHint()`](https://developer.android.com/reference/android/widget/TextView#getHint()) is non-empty, otherwise `false`
 * `NumberPicker`, `ProgressBar`: set to `false`
-* All other view types: set to `null`
+* All other view types: attribute is omitted
 
 ### `no-multiline-buttons`
 
