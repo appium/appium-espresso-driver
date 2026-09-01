@@ -1,11 +1,44 @@
-# Appium Espresso Driver
+## Appium Espresso Driver
 
-[![Build Status](https://dev.azure.com/AppiumCI/Appium%20CI/_apis/build/status/appium.appium-espresso-driver?branchName=master)](https://dev.azure.com/AppiumCI/Appium%20CI/_build/latest?definitionId=3&branchName=master)
+<p align="center">
+   <a href="https://appium.github.io/appium-espresso-driver/">
+      <img alt="Appium Espresso Driver" src="./docs/assets/images/appium-plus-espresso.png" width="400">
+   </a>
+</p>
+
+<div align="center">
 
 [![NPM version](http://img.shields.io/npm/v/appium-espresso-driver.svg)](https://npmjs.org/package/appium-espresso-driver)
 [![Downloads](http://img.shields.io/npm/dm/appium-espresso-driver.svg)](https://npmjs.org/package/appium-espresso-driver)
-
 [![Release](https://github.com/appium/appium-espresso-driver/actions/workflows/publish.js.yml/badge.svg)](https://github.com/appium/appium-espresso-driver/actions/workflows/publish.js.yml)
+
+</div>
+
+---
+
+<p align="center"><b>
+   <a href="https://appium.github.io/appium-espresso-driver/">Documentation</a> |
+   <a href="https://appium.github.io/appium-espresso-driver/latest/getting-started/">Get Started</a> |
+   <a href="https://github.com/appium/appium-espresso-driver/blob/master/CHANGELOG.md">Changelog</a>
+</b></p>
+
+---
+
+This is a grey-box Appium driver for automating native and hybrid applications on Android, using
+Android's Espresso framework.
+
+> [!IMPORTANT]
+> Since major version *5.0.0*, this driver is only compatible with Appium 3.
+
+
+## Documentation
+
+You can access the documentation here: [**https://appium.github.io/appium-espresso-driver**](https://appium.github.io/appium-espresso-driver)
+
+The original README remains below, but will be removed in the near future. Please update your links
+to the documentation website.
+
+---
 
 Appium's Espresso Driver is a test automation server for Android that uses [Espresso](https://developer.android.com/training/testing/espresso/) as the underlying test technology. The Espresso Driver is a part of the Appium framework. The driver operates in scope of [W3C WebDriver protocol](https://www.w3.org/TR/webdriver/) with several custom extensions to cover operating-system specific scenarios.
 
