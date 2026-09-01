@@ -84,15 +84,15 @@
     "e2e-test": "node --test --test-concurrency=1 --test-timeout=300000 \"build/test/functional/**/*-specs.js\""
   },
   "dependencies": {
-    "appium-adb": "^16.0.0",
-    "appium-android-driver": "^14.0.2",
-    "asyncbox": "^6.1.0",
-    "axios": "^1.16.1",
+    "appium-adb": "^16.0.4",
+    "appium-android-driver": "^14.0.7",
+    "asyncbox": "^6.4.3",
+    "axios": "^1.18.0",
     "commander": "^14.0.1",
     "io.appium.settings": "^8.0.1",
     "portscanner": "^2.2.0",
     "semver": "^7.6.2",
-    "teen_process": "^4.0.6"
+    "teen_process": "^4.2.0"
   },
   "devDependencies": {
     "@appium/docutils": "^3.0.0",
@@ -106,7 +106,7 @@
     "@types/semver": "^7.7.1",
     "@types/sinon": "^22.0.0",
     "@xmldom/xmldom": "^0.x",
-    "appium-chromedriver": "^9.0.1",
+    "appium-chromedriver": "^9.0.15",
     "async-lock": "^1.0.0",
     "semver": "^7.3.7",
     "sinon": "^22.0.0",
