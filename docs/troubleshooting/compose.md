@@ -312,7 +312,7 @@ versions in the AUT.
 ## Related Links
 
 - [Troubleshooting](./index.md) — general Espresso driver issues
-- [Activity Startup Issues](./activity-startup.md)
+- [Activity Startup Issues](./startup.md)
 - [`appium:espressoBuildConfig`](../reference/capabilities.md#espressobuildconfig) —
   `composeVersion`, `compileSdk`, dependencies
 - [`compose-playground`](https://github.com/appium/compose-playground) — maintained AUT for Compose
