@@ -5,7 +5,6 @@ import type {
   InitialOpts,
   RouteMatcher,
   StringRecord,
-  SingularSessionData,
   SessionCapabilities,
 } from '@appium/types';
 import {DEFAULT_ADB_PORT} from 'appium-adb';
@@ -131,7 +130,10 @@ const CHROME_NO_PROXY: RouteMatcher[] = [
   ['POST', new RegExp('^/session/[^/]+/se/log')],
 ];
 
-export class EspressoDriver extends AndroidDriver implements ExternalDriver<EspressoConstraints, string, StringRecord> {
+export class EspressoDriver
+  extends AndroidDriver<EspressoConstraints>
+  implements ExternalDriver<EspressoConstraints, string, StringRecord>
+{
   static newMethodMap = newMethodMap;
   static executeMethodMap = executeMethodMap as unknown as typeof AndroidDriver.executeMethodMap;
 
@@ -224,12 +226,6 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<Espr
 
   get appOnDevice(): boolean {
     return appInstallCmds.isAppOnDevice(this);
-  }
-
-  // needed to make the typechecker happy: AndroidDriver's inherited getSession() is bound to
-  // AndroidDriverConstraints, which isn't assignable to EspressoConstraints
-  override async getSession(): Promise<SingularSessionData<EspressoConstraints>> {
-    return this.caps as SingularSessionData<EspressoConstraints>;
   }
 
   // needed to make the typechecker happy
