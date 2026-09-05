@@ -226,8 +226,10 @@ export class EspressoDriver extends AndroidDriver implements ExternalDriver<Espr
     return appInstallCmds.isAppOnDevice(this);
   }
 
+  // needed to make the typechecker happy: AndroidDriver's inherited getSession() is bound to
+  // AndroidDriverConstraints, which isn't assignable to EspressoConstraints
   override async getSession(): Promise<SingularSessionData<EspressoConstraints>> {
-    return await BaseDriver.prototype.getSession.call(this);
+    return this.caps as SingularSessionData<EspressoConstraints>;
   }
 
   // needed to make the typechecker happy
