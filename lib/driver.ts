@@ -5,7 +5,6 @@ import type {
   InitialOpts,
   RouteMatcher,
   StringRecord,
-  SessionCapabilities,
 } from '@appium/types';
 import {DEFAULT_ADB_PORT} from 'appium-adb';
 import {AndroidDriver} from 'appium-android-driver';
@@ -226,11 +225,6 @@ export class EspressoDriver
 
   get appOnDevice(): boolean {
     return appInstallCmds.isAppOnDevice(this);
-  }
-
-  // needed to make the typechecker happy
-  async getAppiumSessionCapabilities(): Promise<SessionCapabilities<EspressoConstraints>> {
-    return (await super.getAppiumSessionCapabilities()) as SessionCapabilities<EspressoConstraints>;
   }
 
   override async createSession(
