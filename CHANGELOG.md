@@ -1,3 +1,13 @@
+## [9.3.3](https://github.com/appium/appium-espresso-driver/compare/v9.3.2...v9.3.3) (2026-09-10)
+
+### Miscellaneous Chores
+
+* **ci:** publish via bundled dependencies instead of npm-shrinkwrap ([#1222](https://github.com/appium/appium-espresso-driver/issues/1222)) ([a20a50b](https://github.com/appium/appium-espresso-driver/commit/a20a50bc927464fe0350cf59addd5d10e40a62bb))
+
+### Code Refactoring
+
+* stop relying on the deprecated BaseDriver.getSession ([#1221](https://github.com/appium/appium-espresso-driver/issues/1221)) ([2111d1a](https://github.com/appium/appium-espresso-driver/commit/2111d1a8511934133f4acec20721bdbedd81f50e))
+
 ## [9.3.2](https://github.com/appium/appium-espresso-driver/compare/v9.3.1...v9.3.2) (2026-09-01)
 
 ### Bug Fixes
