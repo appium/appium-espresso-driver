@@ -1,3 +1,9 @@
+## [9.3.4](https://github.com/appium/appium-espresso-driver/compare/v9.3.3...v9.3.4) (2026-09-18)
+
+### Miscellaneous Chores
+
+* **deps:** bump kotlin from 2.4.10 to 2.4.20 in /espresso-server ([#1223](https://github.com/appium/appium-espresso-driver/issues/1223)) ([4f6c3fa](https://github.com/appium/appium-espresso-driver/commit/4f6c3faa9d871ac0e9e2b420cb4503fd0e4b6c1a))
+
 ## [9.3.3](https://github.com/appium/appium-espresso-driver/compare/v9.3.2...v9.3.3) (2026-09-10)
 
 ### Miscellaneous Chores
