@@ -461,7 +461,7 @@ export class EspressoDriver
 
   async onSettingsUpdate(key: string, value: any) {
     if (key === 'driver') {
-      const driverValueLowerCase = value.toLowerCase();
+      const driverValueLowerCase = String(value).toLowerCase();
       if (driverValueLowerCase === 'espresso') {
         this.locatorStrategies = LOCATOR_STRATEGIES_ESPRESSO_CONTEXT;
       } else if (driverValueLowerCase === 'compose') {
