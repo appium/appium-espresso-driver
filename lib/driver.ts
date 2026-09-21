@@ -129,6 +129,26 @@ const CHROME_NO_PROXY: RouteMatcher[] = [
   ['POST', new RegExp('^/session/[^/]+/se/log')],
 ];
 
+const LOCATOR_STRATEGIES_ESPRESSO_CONTEXT = [
+  'id',
+  'class name',
+  'accessibility id',
+  'text',
+  '-android viewtag',
+  'tag name',
+  '-android datamatcher',
+  '-android viewmatcher',
+  'xpath',
+];
+const LOCATOR_STRATEGIES_COMPOSE_CONTEXT = [
+  'accessibility id',
+  'text',
+  '-android viewtag',
+  'tag name',
+  'link text',
+  'xpath',
+];
+
 export class EspressoDriver
   extends AndroidDriver<EspressoConstraints>
   implements ExternalDriver<EspressoConstraints, string, StringRecord>
@@ -207,7 +227,7 @@ export class EspressoDriver
     }
 
     super(opts, shouldValidateCaps);
-    this.locatorStrategies = ['id', 'class name', 'accessibility id'];
+    this.locatorStrategies = LOCATOR_STRATEGIES_ESPRESSO_CONTEXT;
     this.desiredCapConstraints = ESPRESSO_CONSTRAINTS;
     this.jwpProxyAvoid = NO_PROXY;
     this._originalIme = null;
@@ -439,9 +459,13 @@ export class EspressoDriver
     this.caps.deviceManufacturer = manufacturer;
   }
 
-  async onSettingsUpdate() {
-    // intentionally do nothing here, since commands.updateSettings proxies
-    // settings to the espresso server already
+  async onSettingsUpdate(key: string, value: any) {
+    if (key === 'driver') {
+      this.locatorStrategies =
+        String(value).toLowerCase() === 'compose'
+          ? LOCATOR_STRATEGIES_COMPOSE_CONTEXT
+          : LOCATOR_STRATEGIES_ESPRESSO_CONTEXT;
+    }
   }
 
   override proxyActive(sessionId?: string | null) {
