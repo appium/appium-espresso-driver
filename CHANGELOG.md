@@ -1,3 +1,11 @@
+## [9.3.5](https://github.com/appium/appium-espresso-driver/compare/v9.3.4...v9.3.5) (2026-09-21)
+
+### Miscellaneous Chores
+
+* **deps:** bump androidGradlePlugin in /espresso-server ([#1225](https://github.com/appium/appium-espresso-driver/issues/1225)) ([5aebf43](https://github.com/appium/appium-espresso-driver/commit/5aebf4320a60c31d2dafe10b97ce308c01081eef))
+* **deps:** bump gradle-wrapper from 9.6.1 to 9.7.1 in /espresso-server ([#1224](https://github.com/appium/appium-espresso-driver/issues/1224)) ([f1c46a9](https://github.com/appium/appium-espresso-driver/commit/f1c46a9f94a01d28880524b2f1a2b4c646c21c0d))
+* **deps:** bump org.robolectric:robolectric in /espresso-server ([#1226](https://github.com/appium/appium-espresso-driver/issues/1226)) ([905447a](https://github.com/appium/appium-espresso-driver/commit/905447a70effd16952551f20cb17bce45cd9c5fd))
+
 ## [9.3.4](https://github.com/appium/appium-espresso-driver/compare/v9.3.3...v9.3.4) (2026-09-18)
 
 ### Miscellaneous Chores
