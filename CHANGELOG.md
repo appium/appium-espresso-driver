@@ -1,3 +1,9 @@
+## [9.3.6](https://github.com/appium/appium-espresso-driver/compare/v9.3.5...v9.3.6) (2026-09-21)
+
+### Bug Fixes
+
+* use correct locatorStrategies ([#1227](https://github.com/appium/appium-espresso-driver/issues/1227)) ([4f66f0c](https://github.com/appium/appium-espresso-driver/commit/4f66f0cdc1c107cd6d025c8262bbf78037bc052e))
+
 ## [9.3.5](https://github.com/appium/appium-espresso-driver/compare/v9.3.4...v9.3.5) (2026-09-21)
 
 ### Miscellaneous Chores
