@@ -461,12 +461,10 @@ export class EspressoDriver
 
   async onSettingsUpdate(key: string, value: any) {
     if (key === 'driver') {
-      const driverValueLowerCase = String(value).toLowerCase();
-      if (driverValueLowerCase === 'espresso') {
-        this.locatorStrategies = LOCATOR_STRATEGIES_ESPRESSO_CONTEXT;
-      } else if (driverValueLowerCase === 'compose') {
-        this.locatorStrategies = LOCATOR_STRATEGIES_COMPOSE_CONTEXT;
-      }
+      this.locatorStrategies =
+        String(value).toLowerCase() === 'compose'
+          ? LOCATOR_STRATEGIES_COMPOSE_CONTEXT
+          : LOCATOR_STRATEGIES_ESPRESSO_CONTEXT;
     }
   }
 
