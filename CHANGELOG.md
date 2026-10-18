@@ -1,3 +1,9 @@
+## [9.3.7](https://github.com/appium/appium-espresso-driver/compare/v9.3.6...v9.3.7) (2026-10-18)
+
+### Bug Fixes
+
+* point test apps and docs to the appium-android monorepo ([#1231](https://github.com/appium/appium-espresso-driver/issues/1231)) ([8070a99](https://github.com/appium/appium-espresso-driver/commit/8070a990e319dfb53c7abf8ee5452cdd60bca38a))
+
 ## [9.3.6](https://github.com/appium/appium-espresso-driver/compare/v9.3.5...v9.3.6) (2026-09-21)
 
 ### Bug Fixes
