@@ -8,7 +8,7 @@ is powerful, but it also means Compose-related failures often look like generic 
 start" errors, while the real cause is a dependency or manifest mismatch between the two APKs.
 
 This guide collects problems that commonly appear when testing Compose-heavy (or hybrid View +
-Compose) apps, especially when using a dedicated fixture such as [`compose-playground`](https://github.com/appium/compose-playground).
+Compose) apps, especially when using a dedicated fixture such as [`compose-playground`](https://github.com/appium/appium-android/tree/main/packages/compose-playground).
 
 For general driver issues (signatures, `forceEspressoRebuild`, ProGuard), see
 [the main Troubleshooting guide](./index.md).
@@ -82,7 +82,7 @@ await driver.updateSettings({ driver: 'compose' });
 
 Ensure menu labels and the demo content match what is expected by tests. For examples, refer to the
 [`test/functional/commands/jetpack-compose-*.ts`](https://github.com/appium/appium-espresso-driver/tree/master/test/functional/commands)
-tests in the driver repository. The tests use Appium's own [`compose-playground`](https://github.com/appium/compose-playground)
+tests in the driver repository. The tests use Appium's own [`compose-playground`](https://github.com/appium/appium-android/tree/main/packages/compose-playground)
 app, which also documents the contract in its README.
 
 ## Possible Issues and Fixes
@@ -286,7 +286,7 @@ Modifier.semantics { testTagsAsResourceId = true }
 ```
 
 There is also a reference implementation in the `compose-playground` test app in
-[`ClickableDemo.kt`](https://github.com/appium/compose-playground/blob/main/app/src/main/java/io/appium/composeplayground/compose/ClickableDemo.kt).
+[`ClickableDemo.kt`](https://github.com/appium/appium-android/blob/main/packages/compose-playground/app/src/main/java/io/appium/composeplayground/compose/ClickableDemo.kt).
 
 ### `ProcessLifecycleOwner` Classpath Conflicts
 
@@ -315,7 +315,7 @@ versions in the AUT.
 - [Activity Startup Issues](./startup.md)
 - [`appium:espressoBuildConfig`](../reference/capabilities.md#espressobuildconfig) —
   `composeVersion`, `compileSdk`, dependencies
-- [`compose-playground`](https://github.com/appium/compose-playground) — maintained AUT for Compose
+- [`compose-playground`](https://github.com/appium/appium-android/tree/main/packages/compose-playground) — maintained AUT for Compose
   e2e tests
 - [Issue #812](https://github.com/appium/appium-espresso-driver/issues/812) — classpath /
   dependency alignment

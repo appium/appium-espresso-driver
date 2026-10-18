@@ -5,7 +5,7 @@ import {fs, net, tempDir} from 'appium/support.js';
 
 const DIRNAME = path.dirname(fileURLToPath(import.meta.url));
 const COMPOSE_PLAYGROUND_URL =
-  'https://github.com/appium/compose-playground/releases/download/v1.1.0/ComposePlayground-debug.apk';
+  'https://github.com/appium/appium-android/releases/download/compose-playground@1.2.1/ComposePlayground-debug.apk';
 const COMPOSE_PLAYGROUND_CACHE_PATH = path.resolve(DIRNAME, 'fixtures', 'ComposePlayground-debug.apk');
 
 // Cache the download promises to prevent concurrent downloads
