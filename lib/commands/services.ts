@@ -3,7 +3,7 @@ import type {EspressoDriver} from '../driver.js';
 /**
  * Starts the given service intent.
  *
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-startservice
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-startservice
  * @param intent - The name of the service intent to start, for example
  * `com.some.package.name/.YourServiceSubClassName`. This option is mandatory.
  * !!! Only services in the app's under test scope could be started.
@@ -30,7 +30,7 @@ export async function mobileStartService(
 /**
  * Stops the given service intent.
  *
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-stopservice
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-stopservice
  * @param intent - The name of the service intent to stop, for example
  * `com.some.package.name/.YourServiceSubClassName`. This option is mandatory.
  * !!! Only services in the app's under test scope could be stopped.

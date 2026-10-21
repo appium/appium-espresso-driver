@@ -339,7 +339,7 @@ export class EspressoDriver
       const cause = e instanceof Error ? e : new Error(String(e));
       cause.message +=
         `${cause.message.endsWith('.') ? '' : '.'} Check ` +
-        'https://github.com/appium/appium-espresso-driver#troubleshooting ' +
+        'https://appium.github.io/appium-espresso-driver/latest/troubleshooting/startup/ ' +
         'regarding advanced session startup troubleshooting.';
       if (isErrorType(e, errors.SessionNotCreatedError)) {
         throw e;

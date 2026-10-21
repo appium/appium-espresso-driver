@@ -7,7 +7,8 @@ import type {DeviceInfo} from '../types.js';
 
 /**
  * Settings parameters that are available in
- * https://github.com/appium/appium-espresso-driver#settings-api or enabled plugins.
+ * https://appium.github.io/appium-espresso-driver/latest/reference/settings/
+ * or enabled plugins.
  */
 export interface SettingsOptions {
   [key: string]: string | number | boolean;
@@ -49,7 +50,7 @@ export async function mobileGetDeviceInfo(this: EspressoDriver): Promise<DeviceI
 
 /**
  * Checks if a toast message with the given text is currently visible on the screen.
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-istoastvisible
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-istoastvisible
  * @param text - The text to search for in the toast message
  * @param isRegexp - Optional flag indicating if the text should be treated as a regular expression
  * @returns Promise that resolves to true if the toast is visible, false otherwise
@@ -110,7 +111,7 @@ export async function getDisplayDensity(this: EspressoDriver): Promise<number> {
  *
  * @throws {Error} if target is not 'activity' or 'application'
  * @throws {Error} if a method is not found with given argument types
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-backdoor
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-backdoor
  * @param target - The target object to invoke methods on: 'activity', 'application', or 'element'
  * @param methods - Array of method definitions to invoke in sequence. Each method can have a name and optional args array
  * @param elementId - Required if target is 'element', the ID of the element to invoke methods on
@@ -145,7 +146,7 @@ export async function mobileBackdoor(
  *                        "getResourceName", "getVisibleBounds", "getVisibleCenter", "getApplicationPackage",
  *                        "getChildCount", "clear", "isCheckable", "isChecked", "isClickable", "isEnabled",
  *                        "isFocusable", "isFocused", "isLongClickable", "isScrollable", "isSelected"
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-uiautomator
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-uiautomator
  * @param strategy - The locator strategy to use (e.g., "clazz", "res", "text", "desc", "pkg", etc.)
  * @param locator - The locator value to match elements
  * @param action - The action to perform on the matched element

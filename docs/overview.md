@@ -10,7 +10,7 @@ hybrid Android applications.
 
 ## Key Design Principle
 
-Most other Appium drivers such as [UiAutomator2](https://github.com/appium/appium-uiautomator2-driver)
+Most other Appium drivers such as [UiAutomator2](https://appium.github.io/appium-uiautomator2-driver/)
 are used for black-box testing, so before using the Espresso driver, it is critical to understand
 how its grey-box approach is different.
 
@@ -70,7 +70,7 @@ functionality:
     * Support for `adb` is handled by the [`appium-adb`](https://github.com/appium/appium-adb) library
     * Management of certain Android settings is handled by the [`io.appium.settings`](https://github.com/appium/io.appium.settings) library
 
-Several libraries and other features are shared with [the Appium UiAutomator2 driver](https://github.com/appium/appium-uiautomator2-driver),
+Several libraries and other features are shared with [the Appium UiAutomator2 driver](https://appium.github.io/appium-uiautomator2-driver/),
 as part of the [`appium-android-driver`](https://github.com/appium/appium-android-driver) library.
 
 ## End-to-End Architecture

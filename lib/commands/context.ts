@@ -27,7 +27,7 @@ export function suspendChromedriverProxy(this: EspressoDriver): void {
  *     ...
  *   ]
  * }
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-webatoms
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-webatoms
  * @param webviewEl - Optional webview element ID to operate on
  * @param forceJavascriptEnabled - If webview disables javascript, webatoms won't work, this forces it
  * @param methodChain - Array of method chain objects, each containing a name and atom with name and args
