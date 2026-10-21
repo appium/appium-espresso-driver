@@ -3,7 +3,7 @@ import type {EspressoDriver} from '../driver.js';
 /**
  * Registers one or more idling resources
  *
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-registeridlingresources
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-registeridlingresources
  * @param classNames - The comma-separated list of idling resources class names.
  * Each name must be a full-qualified java class name, like `io.appium.espressoserver.lib.MyIdlingResource`.
  * Each class in the app source must implement a singleton pattern and have a static `getInstance()`

@@ -6,7 +6,7 @@ import type {EspressoDriver} from '../driver.js';
 /**
  * Flash the element with given id.
  * durationMillis and repeatCount are optional
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-flashelement
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-flashelement
  * @param elementId - The ID of the element to flash
  * @param durationMillis - Optional duration in milliseconds for each flash
  * @param repeatCount - Optional number of times to repeat the flash
@@ -26,7 +26,7 @@ export async function mobileFlashElement(
 
 /**
  * Dismisses the autofill UI for the given element.
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-dismissautofill
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-dismissautofill
  * @param elementId - The ID of the element for which to dismiss autofill
  * @returns Promise that resolves when the autofill is dismissed
  */
@@ -40,7 +40,7 @@ export async function mobileDismissAutofill(this: EspressoDriver, elementId: str
 
 /**
  * Performs a swipe gesture on the given element.
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-swipe
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-swipe
  * @param elementId - The ID of the element to swipe
  * @param direction - Optional swipe direction (e.g., 'up', 'down', 'left', 'right')
  * @param swiper - Optional swiper configuration
@@ -70,7 +70,7 @@ export async function mobileSwipe(
 
 /**
  * Opens a drawer element (e.g., Navigation Drawer) with the specified gravity.
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-opendrawer
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-opendrawer
  * @param elementId - The ID of the drawer element to open
  * @param gravity - Optional gravity value for drawer positioning (e.g., Gravity.START, Gravity.END)
  * @returns Promise that resolves when the drawer is opened
@@ -81,7 +81,7 @@ export async function mobileOpenDrawer(this: EspressoDriver, elementId: string, 
 
 /**
  * Closes a drawer element (e.g., Navigation Drawer) with the specified gravity.
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-closedrawer
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-closedrawer
  * @param elementId - The ID of the drawer element to close
  * @param gravity - Optional gravity value for drawer positioning (e.g., Gravity.START, Gravity.END)
  * @returns Promise that resolves when the drawer is closed
@@ -92,7 +92,7 @@ export async function mobileCloseDrawer(this: EspressoDriver, elementId: string,
 
 /**
  * Sets the date on a date picker element.
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-setdate
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-setdate
  * @param elementId - The ID of the date picker element
  * @param year - The year to set (e.g., 2024)
  * @param monthOfYear - The month to set (0-11, where 0 is January)
@@ -115,7 +115,7 @@ export async function mobileSetDate(
 
 /**
  * Sets the time on a time picker element.
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-settime
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-settime
  * @param elementId - The ID of the time picker element
  * @param hours - The hour to set (0-23)
  * @param minutes - The minute to set (0-59)
@@ -135,7 +135,7 @@ export async function mobileSetTime(
 
 /**
  * Navigates to a menu item in a navigation element (e.g., BottomNavigationView).
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-navigateto
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-navigateto
  * @param elementId - The ID of the navigation element
  * @param menuItemId - The ID of the menu item to navigate to (must be a non-negative number)
  * @returns Promise that resolves when navigation is completed
@@ -156,7 +156,7 @@ export async function mobileNavigateTo(
 /**
  * Perform a 'GeneralClickAction' (https://developer.android.com/reference/androidx/test/espresso/action/GeneralClickAction)
  *
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-clickaction
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-clickaction
  * @param elementId - The ID of the element to perform the click action on
  * @param tapper - Optional tapper configuration for the click action
  * @param coordinatesProvider - Optional coordinates provider for the click position
@@ -185,7 +185,7 @@ export async function mobileClickAction(
 
 /**
  * Scrolls to a specific page in a ViewPager or similar scrollable element.
- * @see https://github.com/appium/appium-espresso-driver?tab=readme-ov-file#mobile-scrolltopage
+ * @see https://appium.github.io/appium-espresso-driver/latest/reference/execute-methods/#mobile-scrolltopage
  * @param elementId - The ID of the scrollable element (e.g., ViewPager)
  * @param scrollTo - Optional direction to scroll: 'first', 'last', 'left', or 'right'
  * @param scrollToPage - Optional page index to scroll to (must be non-negative)

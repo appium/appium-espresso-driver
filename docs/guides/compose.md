@@ -4,7 +4,7 @@ title: Jetpack Compose Support
 
 The Espresso driver supports basic interactions with [Jetpack Compose](https://developer.android.com/jetpack/compose)-based applications.
 
-Unlike the [UiAutomator2 driver](https://github.com/appium/appium-uiautomator2-driver/), which
+Unlike the [UiAutomator2 driver](https://appium.github.io/appium-uiautomator2-driver/), which
 allows interacting with Compose elements via the accessibility layer, using the 
 [`testTag`](https://developer.android.com/reference/kotlin/androidx/compose/ui/platform/package-summary#(androidx.compose.ui.Modifier).testTag(kotlin.String))
 attribute or the displayed text, the Espresso driver allows accessing Jetpack Compose elements
