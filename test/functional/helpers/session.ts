@@ -1,5 +1,5 @@
 import type {Capabilities} from '@wdio/types';
-import AsyncLock from 'async-lock';
+import {AsyncLock} from 'asyncbox';
 import {remote, type Browser} from 'webdriverio';
 
 const SESSION_GUARD = new AsyncLock();
