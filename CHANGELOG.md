@@ -1,3 +1,9 @@
+## [9.3.8](https://github.com/appium/appium-espresso-driver/compare/v9.3.7...v9.3.8) (2026-10-23)
+
+### Miscellaneous Chores
+
+* use AsyncLock from asyncbox instead of async-lock ([#1234](https://github.com/appium/appium-espresso-driver/issues/1234)) ([2901a8f](https://github.com/appium/appium-espresso-driver/commit/2901a8f05e95cd80297afc2ffe1c899c8ba07aa3))
+
 ## [9.3.7](https://github.com/appium/appium-espresso-driver/compare/v9.3.6...v9.3.7) (2026-10-18)
 
 ### Bug Fixes
