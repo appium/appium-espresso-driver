@@ -2,9 +2,10 @@ import assert from 'node:assert/strict';
 import {describe, it, afterEach} from 'node:test';
 
 import {ADB} from 'appium-adb';
+import {fs} from 'appium/support.js';
 import sinon from 'sinon';
 
-import {EspressoRunner} from '../../lib/commands/server/index.js';
+import {EspressoRunner, ServerBuilder} from '../../lib/commands/server/index.js';
 import {log} from '../../lib/logger.js';
 
 const REQUIRED_PARAMS = [
@@ -177,6 +178,36 @@ describe('espresso-runner', function () {
 
       await assert.rejects(espresso.installServer(), /error happened/i);
       assert.strictEqual((espresso.adb as any).uninstallApk(), 0);
+    });
+  });
+
+  describe('buildNewModServer', function () {
+    it('should continue building when cleaning up the previous build folder fails with EBUSY', async function () {
+      const ebusyError = Object.assign(
+        new Error("EBUSY: resource busy or locked, rmdir 'espresso-server-emulator-5554'"),
+        {
+          code: 'EBUSY',
+        },
+      );
+      sandbox.stub(fs, 'rimraf').rejects(ebusyError);
+      sandbox.stub(fs, 'mkdirp').resolves();
+      sandbox.stub(fs, 'walkDir').resolves();
+      const copyFileStub = sandbox.stub(fs, 'copyFile').resolves();
+      const buildStub = sandbox.stub(ServerBuilder.prototype, 'build').resolves();
+
+      const espresso = new EspressoRunner(log, {
+        adb: {curDeviceId: 'emulator-5554'} as any,
+        tmpDir: 'tmp',
+        host: 'localhost',
+        systemPort: 4724,
+        devicePort: 6790,
+        appPackage: 'io.appium.example',
+        forceEspressoRebuild: true,
+      });
+
+      await espresso.buildNewModServer();
+      assert.strictEqual(buildStub.calledOnce, true);
+      assert.strictEqual(copyFileStub.calledOnce, true);
     });
   });
 });
