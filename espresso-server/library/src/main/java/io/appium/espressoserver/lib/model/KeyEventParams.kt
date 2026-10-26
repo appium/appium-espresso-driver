@@ -16,8 +16,20 @@
 
 package io.appium.espressoserver.lib.model
 
+import com.google.gson.annotations.SerializedName
+
 data class KeyEventParams(
-    val keycode: Int = 0,
-    val metastate: Int = 0,
-    val flags: Int = 0
-) : AppiumParams()
+    @SerializedName("keycode")
+    private val _keycode: Int? = null,
+    @SerializedName("metastate")
+    private val _metastate: Int? = null,
+    @SerializedName("flags")
+    private val _flags: Int? = null
+) : AppiumParams() {
+    val keycode: Int
+        get() = _keycode ?: 0
+    val metastate: Int
+        get() = _metastate ?: 0
+    val flags: Int
+        get() = _flags ?: 0
+}

@@ -21,6 +21,13 @@ import com.google.gson.annotations.SerializedName
 data class MoveToParams(
     @SerializedName("element", alternate = [W3C_ELEMENT_KEY])
     val elementToMoveTo: String? = null,
-    val xOffset: Int = 0,
-    val yOffset: Int = 0
-) : AppiumParams()
+    @SerializedName("xOffset")
+    private val _xOffset: Int? = null,
+    @SerializedName("yOffset")
+    private val _yOffset: Int? = null
+) : AppiumParams() {
+    val xOffset: Int
+        get() = _xOffset ?: 0
+    val yOffset: Int
+        get() = _yOffset ?: 0
+}
