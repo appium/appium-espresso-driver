@@ -38,12 +38,12 @@ class WebAtoms : RequestHandler<WebAtomsParams, Any?> {
         // TODO: Add a 'waitForDocument' feature to wait for HTML DOCUMENT to be ready
 
         // Initialize onWebView with web view matcher (if webviewEl provided)
-        params.webviewEl.let { webviewEl ->
-            AndroidLogger.info("Initializing webView interaction on webview with the element")
-            val viewState = EspressoElement.getCachedViewStateById(webviewEl)
-            val matcher = withView(viewState.view)
-            webViewInteraction = onWebView(matcher)
-        }
+        val webviewEl = params.webviewEl
+            ?: throw InvalidArgumentException("'webviewEl' must be provided")
+        AndroidLogger.info("Initializing webView interaction on webview with the element")
+        val viewState = EspressoElement.getCachedViewStateById(webviewEl)
+        val matcher = withView(viewState.view)
+        webViewInteraction = onWebView(matcher)
 
         // Set forceJavascript enabled if provided
         if (params.forceJavascriptEnabled) {

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import io.appium.espressoserver.lib.model.AppiumParams
 
 data class WebAtomsParams(
-    val webviewEl: String = "",
+    val webviewEl: String? = null,
     @SerializedName("forceJavascriptEnabled")
     private val _forceJavascriptEnabled: Boolean? = null,
     @SerializedName("methodChain")

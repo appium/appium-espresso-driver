@@ -20,6 +20,7 @@ import io.appium.espressoserver.lib.model.ViewFlashParams
 import io.appium.espressoserver.lib.model.web.WebAtomsParams
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class GsonDefaultValueTest {
@@ -109,5 +110,10 @@ class GsonDefaultValueTest {
         assertEquals("abc", webAtomsParams.webviewEl)
         assertEquals(true, webAtomsParams.forceJavascriptEnabled)
         assertTrue(webAtomsParams.methodChain.isEmpty())
+
+        val emptyWebAtomsParams = gson.fromJson("{}", WebAtomsParams::class.java)
+        assertNull(emptyWebAtomsParams.webviewEl)
+        assertEquals(false, emptyWebAtomsParams.forceJavascriptEnabled)
+        assertTrue(emptyWebAtomsParams.methodChain.isEmpty())
     }
 }
