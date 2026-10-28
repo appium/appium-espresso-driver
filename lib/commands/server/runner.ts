@@ -1,3 +1,4 @@
+import {promises as nodeFs} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
@@ -249,7 +250,8 @@ export class EspressoRunner {
     const serverPath = path.resolve(this.tmpDir, dirName);
     this.log.info(`Building espresso server in '${serverPath}'`);
     this.log.debug(`The build folder root could be customized by changing the 'tmpDir' capability`);
-    await fs.rimraf(serverPath);
+    // Allow transient file locks to clear, but do not build on top of a partially removed project.
+    await nodeFs.rm(serverPath, {recursive: true, force: true, maxRetries: 3, retryDelay: 100});
     await fs.mkdirp(serverPath);
     this.log.debug(`Copying espresso server template from ('${getTestServerRoot()}' to '${serverPath}')`);
     await copyGradleProjectRecursively(getTestServerRoot(), serverPath);

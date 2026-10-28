@@ -57,6 +57,9 @@ jobs:
         sudo udevadm trigger --name-match=kvm
     - name: Setup Android SDK
       uses: android-actions/setup-android@v4
+    - name: Install emulator package
+      # Required by the doctor check; the emulator runner only installs it later
+      run: sdkmanager --install emulator
     - name: AVD cache
       uses: actions/cache@v6
       id: avd-cache
