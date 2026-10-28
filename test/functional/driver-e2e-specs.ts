@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import {describe, it, before, beforeEach, afterEach} from 'node:test';
 
+import axios from 'axios';
 import {remote, type Browser} from 'webdriverio';
 
 import {APIDEMO_CAPS, amendCapabilities} from './desired.js';
-import {COMMON_REMOTE_OPTIONS} from './helpers/session.js';
+import {COMMON_REMOTE_OPTIONS, HOST, PORT} from './helpers/session.js';
 
 describe('EspressoDriver', function () {
   let driver: Browser;
@@ -74,8 +75,13 @@ describe('EspressoDriver', function () {
         ...COMMON_REMOTE_OPTIONS,
         capabilities: APIDEMO_CAPS,
       });
-      await driver.execute('mobile:startActivity', {
-        appActivity: '.accessibility.AccessibilityNodeProviderActivity',
+      await axios({
+        method: 'POST',
+        url: `http://${HOST}:${PORT}/session/${driver.sessionId}/appium/device/start_activity`,
+        data: {
+          appPackage: 'io.appium.android.apis',
+          appActivity: '.accessibility.AccessibilityNodeProviderActivity',
+        },
       });
       assert.strictEqual(await driver.getCurrentActivity(), '.accessibility.AccessibilityNodeProviderActivity');
     });
@@ -84,8 +90,13 @@ describe('EspressoDriver', function () {
         ...COMMON_REMOTE_OPTIONS,
         capabilities: APIDEMO_CAPS,
       });
-      await driver.execute('mobile:startActivity', {
-        appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
+      await axios({
+        method: 'POST',
+        url: `http://${HOST}:${PORT}/session/${driver.sessionId}/appium/device/start_activity`,
+        data: {
+          appPackage: 'io.appium.android.apis',
+          appActivity: 'io.appium.android.apis.accessibility.AccessibilityNodeProviderActivity',
+        },
       });
       assert.strictEqual(await driver.getCurrentActivity(), '.accessibility.AccessibilityNodeProviderActivity');
     });
