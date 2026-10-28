@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
+import {promises as nodeFs} from 'node:fs';
+import path from 'node:path';
 import {describe, it, afterEach} from 'node:test';
 
 import {ADB} from 'appium-adb';
+import {fs} from 'appium/support.js';
 import sinon from 'sinon';
 
-import {EspressoRunner} from '../../lib/commands/server/index.js';
+import {EspressoRunner, ServerBuilder} from '../../lib/commands/server/index.js';
 import {log} from '../../lib/logger.js';
 
 const REQUIRED_PARAMS = [
@@ -46,6 +49,66 @@ describe('espresso-runner', function () {
       const params = REQUIRED_PARAMS.filter((el) => el !== requiredParam);
       const opts = getOpts(params);
       runConstructorTest(opts, requiredParam);
+    }
+  });
+
+  describe('buildNewModServer', function () {
+    function createRunner() {
+      return new EspressoRunner(log, {
+        adb: {curDeviceId: 'emulator-5554'} as ADB,
+        tmpDir: 'tmp',
+        host: 'localhost',
+        systemPort: 4724,
+        devicePort: 6790,
+        appPackage: 'io.appium.example',
+        forceEspressoRebuild: true,
+      });
+    }
+
+    it('should wait for cleanup with bounded retries before copying and building', async function () {
+      let finishCleanup!: () => void;
+      const cleanup = new Promise<void>((resolve) => {
+        finishCleanup = resolve;
+      });
+      const rmStub = sandbox.stub(nodeFs, 'rm').returns(cleanup);
+      const mkdirStub = sandbox.stub(fs, 'mkdirp').resolves();
+      const walkStub = sandbox.stub(fs, 'walkDir').resolves();
+      const copyStub = sandbox.stub(fs, 'copyFile').resolves();
+      const buildStub = sandbox.stub(ServerBuilder.prototype, 'build').resolves();
+
+      const build = createRunner().buildNewModServer();
+      sinon.assert.calledOnceWithExactly(rmStub, path.resolve('tmp', 'espresso-server-emulator-5554'), {
+        recursive: true,
+        force: true,
+        maxRetries: 3,
+        retryDelay: 100,
+      });
+      sinon.assert.notCalled(mkdirStub);
+      sinon.assert.notCalled(walkStub);
+      sinon.assert.notCalled(buildStub);
+
+      finishCleanup();
+      await build;
+      sinon.assert.calledOnce(buildStub);
+      sinon.assert.calledOnce(copyStub);
+      sinon.assert.callOrder(rmStub, mkdirStub, walkStub, buildStub, copyStub);
+    });
+
+    for (const code of ['EBUSY', 'EACCES']) {
+      it(`should stop before copying or building when cleanup rejects with ${code}`, async function () {
+        const error = Object.assign(new Error('Cannot remove build folder'), {code});
+        sandbox.stub(nodeFs, 'rm').rejects(error);
+        const mkdirStub = sandbox.stub(fs, 'mkdirp').resolves();
+        const walkStub = sandbox.stub(fs, 'walkDir').resolves();
+        const copyStub = sandbox.stub(fs, 'copyFile').resolves();
+        const buildStub = sandbox.stub(ServerBuilder.prototype, 'build').resolves();
+
+        await assert.rejects(createRunner().buildNewModServer(), (err) => err === error);
+        sinon.assert.notCalled(mkdirStub);
+        sinon.assert.notCalled(walkStub);
+        sinon.assert.notCalled(copyStub);
+        sinon.assert.notCalled(buildStub);
+      });
     }
   });
 
