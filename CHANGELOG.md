@@ -1,3 +1,9 @@
+## [9.3.9](https://github.com/appium/appium-espresso-driver/compare/v9.3.8...v9.3.9) (2026-10-28)
+
+### Bug Fixes
+
+* retry transient espresso build folder cleanup failures ([#1237](https://github.com/appium/appium-espresso-driver/issues/1237)) ([2cedb97](https://github.com/appium/appium-espresso-driver/commit/2cedb97897dd16b04d097622da21f754a782e608))
+
 ## [9.3.8](https://github.com/appium/appium-espresso-driver/compare/v9.3.7...v9.3.8) (2026-10-23)
 
 ### Miscellaneous Chores
