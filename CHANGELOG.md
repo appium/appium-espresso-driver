@@ -1,3 +1,9 @@
+## [9.3.10](https://github.com/appium/appium-espresso-driver/compare/v9.3.9...v9.3.10) (2026-10-28)
+
+### Bug Fixes
+
+* preserve Kotlin default values during Gson deserialization ([#1235](https://github.com/appium/appium-espresso-driver/issues/1235)) ([b781a12](https://github.com/appium/appium-espresso-driver/commit/b781a12c3883d70ff1ed85e42fa9db053ea4933f))
+
 ## [9.3.9](https://github.com/appium/appium-espresso-driver/compare/v9.3.8...v9.3.9) (2026-10-28)
 
 ### Bug Fixes
