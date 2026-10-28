@@ -16,4 +16,12 @@
 
 package io.appium.espressoserver.lib.model
 
-data class SettingsParams(val settings: Map<String, Any?> = emptyMap()) : AppiumParams()
+import com.google.gson.annotations.SerializedName
+
+data class SettingsParams(
+    @SerializedName("settings")
+    private val _settings: Map<String, Any?>? = null
+) : AppiumParams() {
+    val settings: Map<String, Any?>
+        get() = _settings ?: emptyMap()
+}

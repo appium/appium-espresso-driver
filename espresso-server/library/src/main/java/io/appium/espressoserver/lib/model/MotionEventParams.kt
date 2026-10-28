@@ -23,13 +23,34 @@ fun Int.toAndroidButtonState(): Int {
 
 data class MotionEventParams(
     @SerializedName("element", alternate = [W3C_ELEMENT_KEY])
-    val targetElement: String?,
-    var x: Long = 0,
-    var y: Long = 0,
-    var button: Int = MOUSE_LEFT
+    val targetElement: String? = null,
+    @SerializedName("x")
+    private var _x: Long? = null,
+    @SerializedName("y")
+    private var _y: Long? = null,
+    @SerializedName("button")
+    private var _button: Int? = null
 ) : AppiumParams() {
 
     constructor(x: Long, y: Long) : this(null, x, y)
+
+    var x: Long
+        get() = _x ?: 0L
+        set(value) {
+            _x = value
+        }
+
+    var y: Long
+        get() = _y ?: 0L
+        set(value) {
+            _y = value
+        }
+
+    var button: Int
+        get() = _button ?: MOUSE_LEFT
+        set(value) {
+            _button = value
+        }
 
     val androidButtonState: Int
         @Throws(InvalidArgumentException::class)

@@ -21,8 +21,12 @@ import com.google.gson.annotations.SerializedName
 data class ScrollToPageParams(
     var scrollTo: ScrollTo? = null,
     var scrollToPage: Int? = null,
-    val smoothScroll: Boolean = false
+    @SerializedName("smoothScroll")
+    private val _smoothScroll: Boolean? = null
 ) : AppiumParams() {
+    val smoothScroll: Boolean
+        get() = _smoothScroll ?: false
+
     enum class ScrollTo {
         @SerializedName("first")
         FIRST,

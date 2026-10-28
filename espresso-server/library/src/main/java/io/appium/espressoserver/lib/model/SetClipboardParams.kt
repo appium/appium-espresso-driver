@@ -20,7 +20,7 @@ import com.google.gson.annotations.SerializedName
 
 data class SetClipboardParams(
     @SerializedName("contentType")
-    private val _contentType: String?,
+    private val _contentType: String? = null,
     val content: String? = null,
     val label: String? = null
 ) : AppiumParams() {

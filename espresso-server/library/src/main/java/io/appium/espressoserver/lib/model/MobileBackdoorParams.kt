@@ -12,9 +12,12 @@ enum class InvocationTarget {
 }
 
 data class MobileBackdoorParams(
-        val target: InvocationTarget? = null,
-        var targetElement: String? = null,
-        val methods: List<MobileBackdoorMethod> = emptyList()
-
-) : AppiumParams()
+    val target: InvocationTarget? = null,
+    var targetElement: String? = null,
+    @SerializedName("methods")
+    private val _methods: List<MobileBackdoorMethod>? = null
+) : AppiumParams() {
+    val methods: List<MobileBackdoorMethod>
+        get() = _methods ?: emptyList()
+}
 

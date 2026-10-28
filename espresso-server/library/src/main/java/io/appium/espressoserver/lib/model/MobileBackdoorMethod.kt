@@ -1,11 +1,19 @@
 package io.appium.espressoserver.lib.model
 
+import com.google.gson.annotations.SerializedName
 import io.appium.espressoserver.lib.helpers.BackdoorUtils
 
 data class MobileBackdoorMethod (
     var name: String? = null,
-    var args: List<BackdoorMethodArg> = emptyList()
+    @SerializedName("args")
+    private var _args: List<BackdoorMethodArg>? = null
 ) {
+    var args: List<BackdoorMethodArg>
+        get() = _args ?: emptyList()
+        set(value) {
+            _args = value
+        }
+
     val argumentTypes: Array<Class<*>?>
         get() {
             return args.indices.map {

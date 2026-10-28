@@ -20,7 +20,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GetClipboardParams(
     @SerializedName("contentType")
-    private val _contentType: String?
+    private val _contentType: String? = null
 ) : AppiumParams() {
     val contentType : ClipboardDataType
         get() = _contentType?.toClipboardDataType() ?: ClipboardDataType.PLAINTEXT

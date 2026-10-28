@@ -16,7 +16,16 @@
 
 package io.appium.espressoserver.lib.model
 
+import com.google.gson.annotations.SerializedName
+
 data class ToastLookupParams(
-    val text: String = "",
-    val isRegexp: Boolean = false
-) : AppiumParams()
+    @SerializedName("text")
+    private val _text: String? = null,
+    @SerializedName("isRegexp")
+    private val _isRegexp: Boolean? = null
+) : AppiumParams() {
+    val text: String
+        get() = _text ?: ""
+    val isRegexp: Boolean
+        get() = _isRegexp ?: false
+}
