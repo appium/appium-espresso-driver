@@ -9,6 +9,8 @@ import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.AndroidKeyEvent
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.keyCodeToEvent
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.W3CKeyEvent
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ARROW_DOWN
+import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.ARROW_UP
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.constants.NormalizedKeys.BACKSPACE
 import io.appium.espressoserver.lib.helpers.w3c.dispatcher.getKeyEvent
 import org.junit.Assert
@@ -110,5 +112,7 @@ class AndroidKeyEventTest {
     fun keyCode() {
         Assert.assertEquals(keyCodeToEvent(BACKSPACE, 0).toLong(), KeyEvent.KEYCODE_DEL.toLong())
         Assert.assertEquals(keyCodeToEvent("A", 0).toLong(), -1)
+        Assert.assertEquals(keyCodeToEvent(ARROW_UP, 0).toLong(), KeyEvent.KEYCODE_DPAD_UP.toLong())
+        Assert.assertEquals(keyCodeToEvent(ARROW_DOWN, 0).toLong(), KeyEvent.KEYCODE_DPAD_DOWN.toLong())
     }
 }

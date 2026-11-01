@@ -123,7 +123,7 @@ fun keyCodeToEvent(keyValue: String?, @Suppress("UNUSED_PARAMETER") location: In
         END -> KeyEvent.KEYCODE_MOVE_END
         HOME -> KeyEvent.KEYCODE_HOME
         ARROW_LEFT -> KeyEvent.KEYCODE_DPAD_LEFT
-        ARROW_UP -> KeyEvent.KEYCODE_DPAD_DOWN
+        ARROW_UP -> KeyEvent.KEYCODE_DPAD_UP
         ARROW_RIGHT -> KeyEvent.KEYCODE_DPAD_RIGHT
         ARROW_DOWN -> KeyEvent.KEYCODE_DPAD_DOWN
         INSERT -> KeyEvent.KEYCODE_INSERT
