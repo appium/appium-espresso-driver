@@ -170,6 +170,8 @@ describe('keyboard', {timeout: E2E_TEST_TIMEOUT}, function () {
         assert.strictEqual(err.response?.status, 400);
         return true;
       });
+      // The failed request leaves Shift pressed in the session input state
+      await performActions([keyUp(SHIFT)]);
     });
   });
 });
@@ -200,5 +202,35 @@ describe('keyboard non-ASCII in a password field', {timeout: E2E_TEST_TIMEOUT}, 
       actions: [{type: 'key', id: 'kbd', actions}],
     });
     assert.strictEqual(await pwd.getText(), 'пароль');
+  });
+});
+
+describe('keyboard non-ASCII in a dialog', {timeout: E2E_TEST_TIMEOUT}, function () {
+  let driver: any;
+
+  before(async function () {
+    driver = await initSession(
+      amendCapabilities(APIDEMO_CAPS, {
+        'appium:autoGrantPermissions': true,
+        'appium:appActivity': 'io.appium.android.apis.app.AlertDialogSamples',
+      }),
+    );
+  });
+  after(async function () {
+    await deleteSession();
+  });
+
+  it('should type into a text field of a dialog', async function () {
+    await (await driver.$('id=io.appium.android.apis:id/text_entry_button')).click();
+    const field = await driver.$('id=io.appium.android.apis:id/username_edit');
+    await field.click();
+    const actions = Array.from('Привіт').flatMap((value) => [
+      {type: 'keyDown', value},
+      {type: 'keyUp', value},
+    ]);
+    await axios.post(`http://${HOST}:${PORT}/session/${await driver.sessionId}/actions`, {
+      actions: [{type: 'key', id: 'kbd', actions}],
+    });
+    assert.strictEqual(await field.getText(), 'Привіт');
   });
 });

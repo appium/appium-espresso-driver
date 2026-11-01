@@ -134,6 +134,25 @@ fun keyCodeToEvent(keyValue: String?, @Suppress("UNUSED_PARAMETER") location: In
 
 private const val IME_SETTLE_MS = 150L
 
+// Shared across instances: the legacy /keys handler creates a new AndroidKeyEvent per request
+private object ImeSettle {
+    private var lastWasInsertion = false
+    private var lastInputAt = 0L
+
+    /** Waits until the IME had time to process the previous input if it was of the other kind. */
+    fun await(uiController: UiController, isInsertion: Boolean) {
+        val remaining = IME_SETTLE_MS - (SystemClock.uptimeMillis() - lastInputAt)
+        if (lastInputAt > 0 && lastWasInsertion != isInsertion && remaining > 0) {
+            uiController.loopMainThreadForAtLeast(remaining)
+        }
+    }
+
+    fun mark(isInsertion: Boolean) {
+        lastWasInsertion = isInsertion
+        lastInputAt = SystemClock.uptimeMillis()
+    }
+}
+
 class AndroidKeyEvent @JvmOverloads constructor(
         private val uiController: UiController,
         // Overridable for tests; returns null for chars without key events
@@ -143,9 +162,6 @@ class AndroidKeyEvent @JvmOverloads constructor(
     private val keyDownTimes: MutableMap<String?, List<KeyEvent>> = HashMap()
     private val insertedKeys: MutableSet<String?> = HashSet()
     private val textInserter by lazy { NonAsciiTextInserter(uiController) }
-    // The IME handles key events and direct edits asynchronously, so switching between them needs a pause
-    private var hasUnsettledKeyEvents = false
-    private var hasUnsettledInsertion = false
 
     @Throws(AppiumException::class)
     fun keyDown(w3cKeyEvent: W3CKeyEvent) {
@@ -240,12 +256,10 @@ class AndroidKeyEvent @JvmOverloads constructor(
             throw InvalidArgumentException(
                     "Cannot type a character that has no key code while modifier keys are pressed")
         }
-        if (hasUnsettledKeyEvents) {
-            uiController.loopMainThreadForAtLeast(IME_SETTLE_MS)
-            hasUnsettledKeyEvents = false
-        }
+        // The IME handles key events and direct edits asynchronously, so switching needs a pause
+        ImeSettle.await(uiController, true)
         textInserter.insert(w3cKeyEvent.key ?: "")
-        hasUnsettledInsertion = true
+        ImeSettle.mark(true)
         insertedKeys.add(w3cKeyEvent.key)
     }
 
@@ -285,11 +299,7 @@ class AndroidKeyEvent @JvmOverloads constructor(
             keyDownTimes.remove(key)
         }
 
-        if (hasUnsettledInsertion) {
-            uiController.loopMainThreadForAtLeast(IME_SETTLE_MS)
-            hasUnsettledInsertion = false
-        }
-        hasUnsettledKeyEvents = true
+        ImeSettle.await(uiController, false)
 
         // Inject all of the key events, in order
         for (androidKeyEvent in keyEvents) {
@@ -304,5 +314,6 @@ class AndroidKeyEvent @JvmOverloads constructor(
                 throw AppiumException(String.format("Could not inject key event %s", key))
             }
         }
+        ImeSettle.mark(false)
     }
 }

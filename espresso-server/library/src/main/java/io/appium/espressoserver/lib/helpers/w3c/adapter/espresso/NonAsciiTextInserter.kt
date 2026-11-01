@@ -57,9 +57,26 @@ class NonAsciiTextInserter(private val uiController: UiController) {
                 else "Cannot type the character: the focused element is not editable")
     }
 
-    private fun findFocusedView(): View? = ActivityLifecycleMonitorRegistry.getInstance()
-            .getActivitiesInStage(Stage.RESUMED)
-            .firstNotNullOfOrNull { it.window?.decorView?.rootView?.findFocus() }
+    // Dialogs and popups have their own windows, so look at all app roots, the focused window first
+    private fun findFocusedView(): View? {
+        val roots = getRootViews()
+        val ordered = roots.filter { it.hasWindowFocus() } + roots.filterNot { it.hasWindowFocus() }.asReversed()
+        return ordered.firstNotNullOfOrNull { it.findFocus() }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun getRootViews(): List<View> {
+        try {
+            val wmgClass = Class.forName("android.view.WindowManagerGlobal")
+            val wmg = wmgClass.getMethod("getInstance").invoke(null)
+            val views = wmgClass.getDeclaredField("mViews").apply { isAccessible = true }.get(wmg)
+            return (views as List<View>).filter { it.isShown }
+        } catch (e: ReflectiveOperationException) {
+            AndroidLogger.info("Cannot enumerate root views, using resumed activities only: ${e.message}")
+        }
+        return ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
+                .mapNotNull { it.window?.decorView?.rootView }
+    }
 
     companion object {
         fun isTypeableCodePoint(codePoint: Int): Boolean {
