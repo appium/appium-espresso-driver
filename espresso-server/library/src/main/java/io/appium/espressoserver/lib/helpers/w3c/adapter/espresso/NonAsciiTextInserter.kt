@@ -4,6 +4,7 @@ import android.os.SystemClock
 import android.text.Editable
 import android.text.Selection
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.test.espresso.UiController
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
@@ -36,6 +37,8 @@ class NonAsciiTextInserter(private val uiController: UiController) {
                 ?: throw InvalidElementStateException("The focused element does not expose editable text")
         val inserted = insertIntoEditable(editable, text)
         AndroidLogger.info("Typed $inserted of ${text.length} chars into the focused element")
+        // Resync the IME with the edited text and selection, as it may keep stale state
+        textView.context.getSystemService(InputMethodManager::class.java)?.restartInput(textView)
         uiController.loopMainThreadUntilIdle()
     }
 
