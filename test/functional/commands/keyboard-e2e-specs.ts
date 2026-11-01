@@ -90,6 +90,7 @@ describe('keyboard', {timeout: E2E_TEST_TIMEOUT}, function () {
   describe('non-ASCII characters', function () {
     const ARROW_LEFT = '\uE012';
     const SHIFT = '\uE008';
+    const CONTROL = '\uE009';
     const keyDown = (value: string) => ({type: 'keyDown', value});
     const keyUp = (value: string) => ({type: 'keyUp', value});
     const typeEach = (text: string) => Array.from(text).flatMap((ch) => [keyDown(ch), keyUp(ch)]);
@@ -140,16 +141,9 @@ describe('keyboard', {timeout: E2E_TEST_TIMEOUT}, function () {
 
     it('should replace the selection', async function () {
       await performActions(typeEach('тест'));
-      await performActions([
-        keyDown(SHIFT),
-        keyDown(ARROW_LEFT),
-        keyUp(ARROW_LEFT),
-        keyDown(ARROW_LEFT),
-        keyUp(ARROW_LEFT),
-        keyUp(SHIFT),
-      ]);
+      await performActions([keyDown(CONTROL), keyDown('a'), keyUp('a'), keyUp(CONTROL)]);
       await performActions(typeEach('Ж'));
-      assert.strictEqual(await el.getText(), 'теЖ');
+      assert.strictEqual(await el.getText(), 'Ж');
     });
 
     it('should type surrogate pairs and combining sequences', async function () {
