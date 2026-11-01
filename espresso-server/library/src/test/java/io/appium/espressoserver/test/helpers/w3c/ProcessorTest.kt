@@ -191,6 +191,26 @@ class ProcessorTest {
 
     @Test
     @Throws(InvalidArgumentException::class)
+    fun shouldPassKeyIfSurrogatePair() {
+        val action = Action()
+        action.type = ActionType.KEY_DOWN
+        action.value = "\uD83D\uDE00"
+        val actionObject = processKeyAction(action, InputSourceType.KEY, "any", 0)
+        assertEquals(actionObject.value, action.value)
+    }
+
+    @Test
+    fun shouldRejectKeyIfTwoSurrogatePairs() {
+        val action = Action()
+        action.type = ActionType.KEY_DOWN
+        action.value = "\uD83D\uDE00\uD83D\uDE00"
+        assertThrows(InvalidArgumentException::class.java) {
+            processKeyAction(action, InputSourceType.KEY, "any", 0)
+        }
+    }
+
+    @Test
+    @Throws(InvalidArgumentException::class)
     fun shouldPassKeyIfUnicode() {
         val action = Action()
         action.type = ActionType.KEY_DOWN
