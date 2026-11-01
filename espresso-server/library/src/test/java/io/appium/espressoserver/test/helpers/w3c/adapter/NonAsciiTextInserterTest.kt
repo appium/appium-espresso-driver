@@ -1,6 +1,7 @@
 package io.appium.espressoserver.test.helpers.w3c.adapter
 
 import android.text.InputFilter
+import android.view.KeyEvent
 import android.text.Selection
 import android.text.SpannableStringBuilder
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
@@ -89,5 +90,20 @@ class NonAsciiTextInserterTest {
     @Test
     fun keyUpOfNeverTypedNonAsciiIsNoop() {
         AndroidKeyEvent(AndroidKeyEventTest.MockUiController()) { null }.keyUp(keyEvent("Ж"))
+    }
+
+    @Test
+    fun releasesPressedKeys() {
+        val uiController = AndroidKeyEventTest.MockUiController()
+        val androidKeyEvent = AndroidKeyEvent(uiController) { null }
+        val shift = W3CKeyEvent().also { it.key = "\uE008"; it.keyCode = KeyEvent.KEYCODE_SHIFT_LEFT }
+        androidKeyEvent.keyDown(shift)
+        androidKeyEvent.releasePressedKeys()
+        val last = uiController.keyEvents.last()
+        Assert.assertEquals(KeyEvent.ACTION_UP, last.action)
+        Assert.assertEquals(KeyEvent.KEYCODE_SHIFT_LEFT, last.keyCode)
+        val count = uiController.keyEvents.size
+        androidKeyEvent.releasePressedKeys()
+        Assert.assertEquals(count, uiController.keyEvents.size)
     }
 }

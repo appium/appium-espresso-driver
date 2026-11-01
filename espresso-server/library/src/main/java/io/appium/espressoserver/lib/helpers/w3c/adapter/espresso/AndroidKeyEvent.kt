@@ -264,6 +264,26 @@ class AndroidKeyEvent @JvmOverloads constructor(
     }
 
     /**
+     * Release the keys injected as pressed by this instance, e.g. after a failed request,
+     * because the next request starts with no knowledge of them.
+     */
+    fun releasePressedKeys() {
+        val pressed = keyDownTimes.values.toList()
+        keyDownTimes.clear()
+        for (keyEvents in pressed) {
+            for (down in keyEvents) {
+                val up = KeyEvent(down.downTime, SystemClock.uptimeMillis(), KeyEvent.ACTION_UP, down.keyCode,
+                        0, down.metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0)
+                try {
+                    uiController.injectKeyEvent(up)
+                } catch (e: InjectEventSecurityException) {
+                    AndroidLogger.info("Could not release the key ${down.keyCode}: ${e.message}")
+                }
+            }
+        }
+    }
+
+    /**
      * Get the Android key meta state from a W3C key event
      * @param keyEvent W3C key event
      * @return

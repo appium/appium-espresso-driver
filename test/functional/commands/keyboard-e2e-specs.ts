@@ -160,12 +160,16 @@ describe('keyboard', {timeout: E2E_TEST_TIMEOUT}, function () {
     });
 
     it('should fail if a modifier is pressed', async function () {
-      await assert.rejects(performActions([keyDown(SHIFT), keyDown('ж'), keyUp('ж'), keyUp(SHIFT)]), (err: any) => {
+      const send = async (actions: any[]) =>
+        await axios.post(`http://${HOST}:${PORT}/session/${await driver.sessionId}/actions`, {
+          actions: [{type: 'key', id: 'kbd-modifier', actions}],
+        });
+      await assert.rejects(send([keyDown(SHIFT), keyDown('ж'), keyUp('ж'), keyUp(SHIFT)]), (err: any) => {
         assert.strictEqual(err.response?.status, 400);
         return true;
       });
-      // The failed request leaves Shift pressed in the session input state
-      await performActions([keyUp(SHIFT)]);
+      // The failed request leaves Shift pressed in the session input state of the same source
+      await send([keyUp(SHIFT)]);
     });
   });
 });
