@@ -23,16 +23,12 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import io.appium.espressoserver.lib.compose.ComposeHandlerBridge
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.viewmatcher.withView
 import org.hamcrest.Matcher
 
-class UiControllerPerformer<T>(
-    private val runnable: UiControllerRunnable<T>,
-    private val syncWithCompose: Boolean = false,
-) : ViewAction {
+class UiControllerPerformer<T>(private val runnable: UiControllerRunnable<T>) : ViewAction {
     private var appiumException: AppiumException? = null
     private var runResult: T? = null
 
@@ -54,19 +50,6 @@ class UiControllerPerformer<T>(
 
     @Throws(AppiumException::class)
     fun run(): T? {
-        // A busy Compose tree must not block input injection; see withoutComposeIdleSync
-        if (syncWithCompose) {
-            performInteraction()
-        } else {
-            ComposeHandlerBridge.withoutComposeIdleSync { performInteraction() }
-        }
-        if (appiumException != null) {
-            throw appiumException!!
-        }
-        return runResult
-    }
-
-    private fun performInteraction() {
         // Get the root view because it doesn't matter what we perform this interaction on
         val rootView = ViewGetter().rootView
         val viewInteraction = Espresso.onView(withView(rootView))
@@ -76,5 +59,9 @@ class UiControllerPerformer<T>(
         } catch (nme: NoMatchingViewException) {
             // Ignore this. The viewMatcher is a hack to begin with
         }
+        if (appiumException != null) {
+            throw appiumException!!
+        }
+        return runResult
     }
 }

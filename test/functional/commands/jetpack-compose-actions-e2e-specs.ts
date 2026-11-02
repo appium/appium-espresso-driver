@@ -126,13 +126,13 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
     assert.strictEqual(await textInput.getText(), 'Enter your text here!aЖb');
   });
 
-  it('should not wait for Compose to become idle after tapping a text field', async function () {
+  it('should keep Compose usable after tapping a text field', async function () {
     await openTextInput();
     const textInput = await getTextInput();
 
-    // A focused text field may keep Compose busy forever
     await tapElement(await textInput.elementId);
     await typeEach('ab');
-    await typeEach('Ж');
+
+    assert.strictEqual(await textInput.getText(), 'Enter your text hereab');
   });
 });

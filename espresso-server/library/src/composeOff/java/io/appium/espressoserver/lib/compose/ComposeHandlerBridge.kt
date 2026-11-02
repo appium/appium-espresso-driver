@@ -31,8 +31,6 @@ import io.appium.espressoserver.lib.model.TextValueParams
 internal object ComposeHandlerBridge {
     private fun unsupported(): Nothing = throw ComposeNotSupportedException()
 
-    fun <T> withoutComposeIdleSync(block: () -> T): T = block()
-
     fun hasFocusedEditableNode(view: View): Boolean = false
 
     fun insertTextIntoFocusedNode(view: View, text: String): Boolean = false

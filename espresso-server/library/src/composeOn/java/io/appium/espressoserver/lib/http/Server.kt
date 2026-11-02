@@ -16,11 +16,19 @@
 
 package io.appium.espressoserver.lib.http
 
+import io.appium.espressoserver.lib.compose.ComposeResourceIds
 import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.drivers.composeTestRule
 import org.junit.rules.TestRule
+import java.io.IOException
 
 class Server : ServerBase(), TestRule by DriverContext.composeTestRule {
+
+    @Throws(IOException::class)
+    override fun start() {
+        ComposeResourceIds.alignWithTarget()
+        super.start()
+    }
 
     override fun advanceComposeMainClockIfNeeded() {
         if (DriverContext.currentStrategyType == DriverContext.StrategyType.COMPOSE) {

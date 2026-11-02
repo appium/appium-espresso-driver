@@ -25,8 +25,6 @@ import androidx.compose.ui.semantics.getAllSemanticsNodes
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.platform.ViewRootForTest
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performGesture
@@ -57,41 +55,6 @@ import io.appium.espressoserver.lib.model.Size
 import io.appium.espressoserver.lib.model.TextValueParams
 
 internal object ComposeHandlerBridge {
-    private const val COMPOSE_ESPRESSO_LINK = "Compose-Espresso link"
-    private const val COMPOSE_SETTLE_TIMEOUT_MS = 2000L
-    private const val COMPOSE_SETTLE_POLL_MS = 10L
-
-    /**
-     * Runs [block] without Espresso waiting for Compose to become idle, since a tree with
-     * perpetual recompositions (e.g. a focused text field) never does. Afterwards Compose gets
-     * a bounded chance to settle.
-     */
-    fun <T> withoutComposeIdleSync(block: () -> T): T {
-        val registry = IdlingRegistry.getInstance()
-        val links = registry.resources.filter { it.name == COMPOSE_ESPRESSO_LINK }.toTypedArray()
-        if (links.isEmpty()) {
-            return block()
-        }
-        registry.unregister(*links)
-        try {
-            return block()
-        } finally {
-            registry.register(*links)
-            val instrumentation = InstrumentationRegistry.getInstrumentation()
-            val deadline = System.currentTimeMillis() + COMPOSE_SETTLE_TIMEOUT_MS
-            var isIdle = false
-            while (!isIdle && System.currentTimeMillis() < deadline) {
-                instrumentation.runOnMainSync { isIdle = links.all { it.isIdleNow } }
-                if (!isIdle) {
-                    Thread.sleep(COMPOSE_SETTLE_POLL_MS)
-                }
-            }
-            if (!isIdle) {
-                AndroidLogger.info("Compose is still busy after the action, continuing anyway")
-            }
-        }
-    }
-
     fun hasFocusedEditableNode(view: View): Boolean = findFocusedEditableNode(view) != null
 
     /** Inserts at the cursor of the focused Compose text field; must run on the main thread. */
