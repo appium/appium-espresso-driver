@@ -1,0 +1,138 @@
+import assert from 'node:assert/strict';
+import {describe, it, before, beforeEach, afterEach} from 'node:test';
+
+import {retryInterval} from 'asyncbox';
+import axios from 'axios';
+
+import {type ComposeCaps, getComposeCaps} from '../desired.js';
+import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
+
+const W3C_ELEMENT_KEY = 'element-6066-11e4-a52e-4f735466cecf';
+
+describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function () {
+  let driver: any;
+  let composeCaps: ComposeCaps;
+  let keyId = 0;
+
+  const typeEach = (text: string) =>
+    driver.performActions([
+      {
+        type: 'key',
+        id: `keyboard-${keyId++}`,
+        actions: Array.from(text).flatMap((value) => [
+          {type: 'keyDown', value},
+          {type: 'keyUp', value},
+        ]),
+      },
+    ]);
+
+  const tapElement = (elementId: string) =>
+    driver.performActions([
+      {
+        type: 'pointer',
+        id: 'finger',
+        parameters: {pointerType: 'touch'},
+        actions: [
+          {type: 'pointerMove', duration: 0, x: 0, y: 0, origin: {[W3C_ELEMENT_KEY]: elementId}},
+          {type: 'pointerDown', button: 0},
+          {type: 'pause', duration: 50},
+          {type: 'pointerUp', button: 0},
+        ],
+      },
+    ]);
+
+  const openTextInput = async () => {
+    const windowRect = await driver.getWindowRect();
+    await retryInterval(10, 10_000, async () => {
+      await driver.performActions([
+        {
+          type: 'pointer',
+          id: 'touch',
+          actions: [
+            {
+              type: 'pointerMove',
+              duration: 50,
+              x: windowRect.width / 2.0,
+              y: windowRect.height / 2.0,
+              origin: 'viewport',
+            },
+            {type: 'pointerDown', button: 0},
+            {type: 'pause', duration: 500},
+            {
+              type: 'pointerMove',
+              duration: 500,
+              x: windowRect.width / 2.0,
+              y: windowRect.height / 8.0,
+              origin: 'viewport',
+            },
+            {type: 'pointerUp', button: 0},
+          ],
+        },
+      ]);
+      const el = await driver.$("//*[@text='Text Input Components']");
+      await driver.elementClick(el.elementId);
+    });
+    await driver.updateSettings({driver: 'compose'});
+  };
+
+  const getTextInput = async () => driver.$(await driver.findElement('tag name', 'text_input'));
+
+  before(async function () {
+    composeCaps = await getComposeCaps();
+  });
+
+  beforeEach(async function () {
+    driver = await initSession(composeCaps);
+  });
+
+  afterEach(async function () {
+    await deleteSession();
+  });
+
+  it('should tap a compose element using the element origin', async function () {
+    const el = await driver.$("//*[@text='Clickable Component']");
+    await el.click();
+    await driver.updateSettings({driver: 'compose'});
+
+    const clickable = await driver.$('=Click to see dialog');
+    await tapElement(clickable.elementId);
+
+    await driver.$('=Congratulations! You just clicked the text successfully');
+  });
+
+  it('should type ASCII and non-ASCII keys into the focused text field', async function () {
+    await openTextInput();
+    const textInput = await getTextInput();
+    // Focuses the field without a pointer tap
+    await driver.setValueImmediate(textInput.elementId, '!');
+
+    await typeEach('ab');
+    await typeEach('Привіт');
+    await typeEach('c');
+
+    assert.strictEqual(await textInput.getText(), 'Enter your text here!abПривітc');
+  });
+
+  it('should type into the focused text field using the legacy keys endpoint', async function () {
+    await openTextInput();
+    const textInput = await getTextInput();
+    await driver.setValueImmediate(textInput.elementId, '!');
+
+    const {status} = await axios.post(`http://${HOST}:${PORT}/session/${driver.sessionId}/keys`, {
+      value: ['a', 'Ж', 'b'],
+    });
+    assert.strictEqual(status, 200);
+
+    assert.strictEqual(await textInput.getText(), 'Enter your text here!aЖb');
+  });
+
+  it('should not wait for Compose to become idle after tapping a text field', async function () {
+    await openTextInput();
+    const textInput = await getTextInput();
+
+    // A focused text field may keep Compose busy forever
+    await tapElement(textInput.elementId);
+    await typeEach('ab');
+    await typeEach('Ж');
+  });
+});

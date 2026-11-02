@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.test.espresso.UiController
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
+import io.appium.espressoserver.lib.compose.ComposeHandlerBridge
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidElementStateException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
@@ -31,20 +32,27 @@ class NonAsciiTextInserter(private val uiController: UiController) {
                     "The code point $it is neither a known W3C special key nor a printable character that could be typed")
         }
         uiController.loopMainThreadUntilIdle()
-        val textView = waitForFocusedEditor()
-        val editable = textView.text as? Editable
-                ?: throw InvalidElementStateException("The focused element does not expose editable text")
-        val inserted = insertIntoEditable(editable, text)
-        AndroidLogger.info("Typed $inserted of ${text.length} chars into the focused element")
+        val focused = waitForFocusedEditor()
+        if (focused is TextView) {
+            val editable = focused.text as? Editable
+                    ?: throw InvalidElementStateException("The focused element does not expose editable text")
+            val inserted = insertIntoEditable(editable, text)
+            AndroidLogger.info("Typed $inserted of ${text.length} chars into the focused element")
+        } else if (ComposeHandlerBridge.insertTextIntoFocusedNode(focused, text)) {
+            AndroidLogger.info("Typed ${text.length} chars into the focused Compose element")
+        } else {
+            throw InvalidElementStateException("The focused Compose element rejected the text")
+        }
         uiController.loopMainThreadUntilIdle()
     }
 
-    private fun waitForFocusedEditor(): TextView {
+    private fun waitForFocusedEditor(): View {
         val deadline = SystemClock.uptimeMillis() + FOCUS_TIMEOUT_MS
         var focused: View?
         while (true) {
             focused = findFocusedView()
-            if (focused is TextView && focused.onCheckIsTextEditor()) {
+            if (focused is TextView && focused.onCheckIsTextEditor()
+                    || focused != null && ComposeHandlerBridge.hasFocusedEditableNode(focused)) {
                 return focused
             }
             if (SystemClock.uptimeMillis() >= deadline) {

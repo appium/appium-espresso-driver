@@ -23,7 +23,14 @@ import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
-class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3CActionAdapter() {
+/**
+ * @param elementCenters pre-resolved origin element centers for elements that cannot
+ * be looked up on the main thread (Compose)
+ */
+class EspressoW3CActionAdapter @JvmOverloads constructor(
+    private val uiController: UiController,
+    private val elementCenters: Map<String, Point> = emptyMap(),
+) : BaseW3CActionAdapter() {
 
     private val androidKeyEvent: AndroidKeyEvent = AndroidKeyEvent(uiController)
     private val multiTouchState = MultiTouchState()
@@ -129,6 +136,7 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
     }
 
     override fun getElementCenterPoint(elementId: String?): Point {
+        elementCenters[elementId]?.let { return it }
         val viewState = EspressoElement.getCachedViewStateById(elementId)
         val coords = GeneralLocation.CENTER.calculateCoordinates(viewState.view)
         val point = Point()

@@ -80,5 +80,7 @@ class Keys : RequestHandler<TextValueParams, Unit> {
         UiControllerPerformer(runnable).run()
     }
 
-    override fun handleCompose(params: TextValueParams) = ComposeHandlerBridge.keys(params)
+    // Without an element the keys go to the focused view, as in Espresso mode
+    override fun handleCompose(params: TextValueParams) =
+        if (params.elementId == null) handleEspresso(params) else ComposeHandlerBridge.keys(params)
 }

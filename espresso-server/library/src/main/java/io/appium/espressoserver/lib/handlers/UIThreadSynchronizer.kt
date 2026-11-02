@@ -30,6 +30,6 @@ class UIThreadSynchronizer : RequestHandler<AppiumParams, Void?> {
             }
         }
 
-        return UiControllerPerformer(runnable).run()
+        return UiControllerPerformer(runnable, syncWithCompose = true).run()
     }
 }
