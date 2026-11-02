@@ -16,6 +16,13 @@
 
 package io.appium.espressoserver.lib.http
 
-class Server : ServerBase() {
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
+
+/** Must be a [TestRule] since the instrumentation test declares it as a JUnit rule. */
+class Server : ServerBase(), TestRule {
     override fun advanceComposeMainClockIfNeeded() = Unit
+
+    override fun apply(base: Statement, description: Description): Statement = base
 }

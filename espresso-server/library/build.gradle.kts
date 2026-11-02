@@ -158,6 +158,12 @@ dependencies {
     }
 
     constraints {
+        api(libs.androidx.lifecycle.common) {
+            because(
+                "androidx.test:core brings an old version without Compose, and the server classes " +
+                    "shadow the AUT ones, so apps with a modern lifecycle crash on startup",
+            )
+        }
         api(libs.kotlin.stdlib.jdk8) {
             version {
                 require(resolveCapabilityVersion("appiumKotlin", libs.versions.kotlin.get()))
