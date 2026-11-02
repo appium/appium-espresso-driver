@@ -4,12 +4,13 @@ import {describe, it, before, beforeEach, afterEach} from 'node:test';
 import {util} from 'appium/support.js';
 import {retryInterval} from 'asyncbox';
 import axios from 'axios';
+import type {Browser} from 'webdriverio';
 
 import {type ComposeCaps, getComposeCaps} from '../desired.js';
 import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function () {
-  let driver: any;
+  let driver: Browser;
   let composeCaps: ComposeCaps;
   let keyId = 0;
 
@@ -69,7 +70,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
         },
       ]);
       const el = await driver.$("//*[@text='Text Input Components']");
-      await driver.elementClick(el.elementId);
+      await driver.elementClick(await el.elementId);
     });
     await driver.updateSettings({driver: 'compose'});
   };
@@ -94,7 +95,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
     await driver.updateSettings({driver: 'compose'});
 
     const clickable = await driver.$('=Click to see dialog');
-    await tapElement(clickable.elementId);
+    await tapElement(await clickable.elementId);
 
     await driver.$('=Congratulations! You just clicked the text successfully');
   });
@@ -103,7 +104,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
     await openTextInput();
     const textInput = await getTextInput();
     // Focuses the field without a pointer tap
-    await driver.setValueImmediate(textInput.elementId, '!');
+    await driver.setValueImmediate(await textInput.elementId, '!');
 
     await typeEach('ab');
     await typeEach('Привіт');
@@ -115,7 +116,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
   it('should type into the focused text field using the legacy keys endpoint', async function () {
     await openTextInput();
     const textInput = await getTextInput();
-    await driver.setValueImmediate(textInput.elementId, '!');
+    await driver.setValueImmediate(await textInput.elementId, '!');
 
     const {status} = await axios.post(`http://${HOST}:${PORT}/session/${driver.sessionId}/keys`, {
       value: ['a', 'Ж', 'b'],
@@ -130,7 +131,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
     const textInput = await getTextInput();
 
     // A focused text field may keep Compose busy forever
-    await tapElement(textInput.elementId);
+    await tapElement(await textInput.elementId);
     await typeEach('ab');
     await typeEach('Ж');
   });
