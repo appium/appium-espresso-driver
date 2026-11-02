@@ -1,3 +1,9 @@
+## [9.3.11](https://github.com/appium/appium-espresso-driver/compare/v9.3.10...v9.3.11) (2026-11-02)
+
+### Bug Fixes
+
+* **server:** support non-ASCII characters in W3C key actions ([#1240](https://github.com/appium/appium-espresso-driver/issues/1240)) ([d7af08c](https://github.com/appium/appium-espresso-driver/commit/d7af08c1bc71ed1a0c95d41dd27535d277989b1b))
+
 ## [9.3.10](https://github.com/appium/appium-espresso-driver/compare/v9.3.9...v9.3.10) (2026-10-28)
 
 ### Bug Fixes
