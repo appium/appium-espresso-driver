@@ -76,8 +76,10 @@ internal object ComposeHandlerBridge {
             throw StaleElementException(elementId ?: "null")
         }
         val bounds = ComposeNodeElement(node).bounds
+        val root = node.root as? ViewRootForTest
+            ?: throw InvalidElementStateException("The element is not attached to a window")
         val windowOrigin = IntArray(2)
-        (node.root as? ViewRootForTest)?.view?.getLocationOnScreen(windowOrigin)
+        root.view.getLocationOnScreen(windowOrigin)
         return Point(windowOrigin[0] + bounds.centerX(), windowOrigin[1] + bounds.centerY())
     }
 

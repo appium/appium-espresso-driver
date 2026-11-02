@@ -20,6 +20,7 @@ import android.graphics.Point
 import androidx.test.espresso.UiController
 import io.appium.espressoserver.lib.compose.ComposeHandlerBridge
 import io.appium.espressoserver.lib.drivers.DriverContext
+import io.appium.espressoserver.lib.helpers.ComposeViewCache
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions
@@ -61,6 +62,8 @@ class PerformAction : RequestHandler<Actions, Void?> {
             .filter { it.isOriginElement }
             .mapNotNull { it.origin.elementId }
             .distinct()
+            // Other ids are Espresso views, which the adapter resolves itself
+            .filter { ComposeViewCache.get(it) != null }
             .associateWith { ComposeHandlerBridge.getElementCenterPoint(it) }
     }
 }

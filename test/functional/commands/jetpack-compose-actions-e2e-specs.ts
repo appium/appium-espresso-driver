@@ -100,6 +100,16 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
     await driver.$('=Congratulations! You just clicked the text successfully');
   });
 
+  it('should tap an Espresso view using the element origin in compose mode', async function () {
+    const el = await driver.$("//*[@text='Clickable Component']");
+    const elementId = await el.elementId;
+    await driver.updateSettings({driver: 'compose'});
+
+    await tapElement(elementId);
+
+    await driver.$('=Click to see dialog');
+  });
+
   it('should type ASCII and non-ASCII keys into the focused text field', async function () {
     await openTextInput();
     const textInput = await getTextInput();
@@ -133,6 +143,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
     await tapElement(await textInput.elementId);
     await typeEach('ab');
 
-    assert.strictEqual(await textInput.getText(), 'Enter your text hereab');
+    // The tap decides where the caret is, so only check that 'ab' was inserted somewhere
+    assert.strictEqual((await textInput.getText()).replace('ab', ''), 'Enter your text here');
   });
 });

@@ -40,7 +40,7 @@ internal object ComposeResourceIds {
         try {
             val dexFile = DexFile(instrumentation.context.packageCodePath)
             try {
-                dexFile.entries().toList()
+                dexFile.entries().asSequence()
                     .filter { it.startsWith(COMPOSE_PACKAGE_PREFIX) && it.contains(".R$") }
                     .forEach { className ->
                         val type = className.substringAfter(".R$")
@@ -51,7 +51,8 @@ internal object ComposeResourceIds {
             } finally {
                 dexFile.close()
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
+            // Best effort: never fail the server start
             AndroidLogger.info("Could not align Compose resource IDs with the app: $e")
         }
         AndroidLogger.info("Aligned $aligned Compose resource IDs with the app under test")
@@ -74,7 +75,7 @@ internal object ComposeResourceIds {
                         aligned++
                     }
                 }
-        } catch (e: ReflectiveOperationException) {
+        } catch (e: Throwable) {
             AndroidLogger.info("Could not align $className: $e")
         }
         return aligned
