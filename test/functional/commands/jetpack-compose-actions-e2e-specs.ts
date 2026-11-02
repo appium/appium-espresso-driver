@@ -1,13 +1,12 @@
 import assert from 'node:assert/strict';
 import {describe, it, before, beforeEach, afterEach} from 'node:test';
 
+import {util} from 'appium/support.js';
 import {retryInterval} from 'asyncbox';
 import axios from 'axios';
 
 import {type ComposeCaps, getComposeCaps} from '../desired.js';
 import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
-
-const W3C_ELEMENT_KEY = 'element-6066-11e4-a52e-4f735466cecf';
 
 describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: any;
@@ -33,7 +32,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
         id: 'finger',
         parameters: {pointerType: 'touch'},
         actions: [
-          {type: 'pointerMove', duration: 0, x: 0, y: 0, origin: {[W3C_ELEMENT_KEY]: elementId}},
+          {type: 'pointerMove', duration: 0, x: 0, y: 0, origin: {[util.W3C_WEB_ELEMENT_IDENTIFIER]: elementId}},
           {type: 'pointerDown', button: 0},
           {type: 'pause', duration: 50},
           {type: 'pointerUp', button: 0},
