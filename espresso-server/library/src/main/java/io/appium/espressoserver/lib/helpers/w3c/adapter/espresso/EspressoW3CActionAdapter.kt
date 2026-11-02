@@ -48,6 +48,8 @@ class EspressoW3CActionAdapter(private val uiController: UiController) : BaseW3C
         androidKeyEvent.keyUp(keyUpEvent)
     }
 
+    fun releasePressedKeys() = androidKeyEvent.releasePressedKeys()
+
     @Throws(AppiumException::class)
     override fun pointerDown(button: Int, sourceId: String, pointerType: PointerType?,
                     x: Float, y: Float, depressedButtons: Set<Int>,

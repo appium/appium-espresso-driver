@@ -67,8 +67,11 @@ class Keys : RequestHandler<TextValueParams, Unit> {
                         .withAdapter(EspressoW3CActionAdapter(uiController))
                         .build()
 
-                actions.perform(params.sessionId!!)
-                actions.release(params.sessionId!!)
+                try {
+                    actions.perform(params.sessionId!!)
+                } finally {
+                    actions.release(params.sessionId!!)
+                }
 
                 return null
             }

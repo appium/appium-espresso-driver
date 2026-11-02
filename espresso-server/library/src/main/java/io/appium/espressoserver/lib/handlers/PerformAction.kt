@@ -30,8 +30,15 @@ class PerformAction : RequestHandler<Actions, Void?> {
 
         val runnable = object: UiControllerRunnable<Void?> {
             override fun run(uiController: UiController): Void? {
-                params.adapter = EspressoW3CActionAdapter(uiController)
-                params.perform(params.sessionId!!)
+                val adapter = EspressoW3CActionAdapter(uiController)
+                params.adapter = adapter
+                try {
+                    params.perform(params.sessionId!!)
+                } catch (e: AppiumException) {
+                    // The next request has no record of injected keys, so release them now
+                    adapter.releasePressedKeys()
+                    throw e
+                }
                 return null
             }
         }

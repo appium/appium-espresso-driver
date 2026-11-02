@@ -123,7 +123,7 @@ fun keyCodeToEvent(keyValue: String?, @Suppress("UNUSED_PARAMETER") location: In
         END -> KeyEvent.KEYCODE_MOVE_END
         HOME -> KeyEvent.KEYCODE_HOME
         ARROW_LEFT -> KeyEvent.KEYCODE_DPAD_LEFT
-        ARROW_UP -> KeyEvent.KEYCODE_DPAD_DOWN
+        ARROW_UP -> KeyEvent.KEYCODE_DPAD_UP
         ARROW_RIGHT -> KeyEvent.KEYCODE_DPAD_RIGHT
         ARROW_DOWN -> KeyEvent.KEYCODE_DPAD_DOWN
         INSERT -> KeyEvent.KEYCODE_INSERT
@@ -132,9 +132,36 @@ fun keyCodeToEvent(keyValue: String?, @Suppress("UNUSED_PARAMETER") location: In
     }
 }
 
-class AndroidKeyEvent(private val uiController: UiController) {
-    private val keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
+private const val IME_SETTLE_MS = 150L
+
+// Shared across instances: the legacy /keys handler creates a new AndroidKeyEvent per request
+private object ImeSettle {
+    private var lastWasInsertion = false
+    private var lastInputAt = 0L
+
+    /** Waits until the IME had time to process the previous input if it was of the other kind. */
+    fun await(uiController: UiController, isInsertion: Boolean) {
+        val remaining = IME_SETTLE_MS - (SystemClock.uptimeMillis() - lastInputAt)
+        if (lastInputAt > 0 && lastWasInsertion != isInsertion && remaining > 0) {
+            uiController.loopMainThreadForAtLeast(remaining)
+        }
+    }
+
+    fun mark(isInsertion: Boolean) {
+        lastWasInsertion = isInsertion
+        lastInputAt = SystemClock.uptimeMillis()
+    }
+}
+
+class AndroidKeyEvent @JvmOverloads constructor(
+        private val uiController: UiController,
+        // Overridable for tests; returns null for chars without key events
+        private val charsToEvents: (CharArray) -> Array<KeyEvent>? =
+                KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)::getEvents
+) {
     private val keyDownTimes: MutableMap<String?, List<KeyEvent>> = HashMap()
+    private val insertedKeys: MutableSet<String?> = HashSet()
+    private val textInserter by lazy { NonAsciiTextInserter(uiController) }
 
     @Throws(AppiumException::class)
     fun keyDown(w3cKeyEvent: W3CKeyEvent) {
@@ -152,14 +179,11 @@ class AndroidKeyEvent(private val uiController: UiController) {
      * @param isDown Returns true if this is a key down events
      * @param isRepeat Returns true if this is a repeat key down
      * @param metaState The current global meta state of Android key events
-     * @return
-     * @throws InvalidArgumentException
+     * @return The events or null if the key has no Android key event representation
      */
-    @Throws(InvalidArgumentException::class)
     private fun convertStringToAndroidKeyEvents(key: String?, isDown: Boolean,
-                                                isRepeat: Boolean, metaState: Int): List<KeyEvent> {
-        val keyEventsFromChar = keyCharacterMap.getEvents(key!!.toCharArray())
-                ?: throw InvalidArgumentException(String.format("Could not find matching keycode for character %s", key))
+                                                isRepeat: Boolean, metaState: Int): List<KeyEvent>? {
+        val keyEventsFromChar = charsToEvents(key!!.toCharArray()) ?: return null
         val now = SystemClock.uptimeMillis()
         val keyEvents: MutableList<KeyEvent> = ArrayList()
         var keyEventIndex = 0
@@ -193,6 +217,10 @@ class AndroidKeyEvent(private val uiController: UiController) {
         val key = w3cKeyEvent.key
         val keyCode = w3cKeyEvent.keyCode
 
+        // Characters without key codes are typed on keyDown, so their keyUp is a no-op
+        if (!isDown && insertedKeys.remove(key)) {
+            return
+        }
         // No-op if releasing a key that isn't down
         if (action == KeyEvent.ACTION_UP && !keyDownTimes.containsKey(key)) {
             return
@@ -214,8 +242,45 @@ class AndroidKeyEvent(private val uiController: UiController) {
         } else {
             // If there's no keyCode, map the characters to Android keys
             convertStringToAndroidKeyEvents(key, isDown, w3cKeyEvent.isRepeat, getMetaState(w3cKeyEvent))
+                    ?: run {
+                        insertText(w3cKeyEvent)
+                        return
+                    }
         }
         injectKeyEvents(isDown, keyEvents, key)
+    }
+
+    @Throws(AppiumException::class)
+    private fun insertText(w3cKeyEvent: W3CKeyEvent) {
+        if (w3cKeyEvent.isAltKey || w3cKeyEvent.isCtrlKey || w3cKeyEvent.isShiftKey || w3cKeyEvent.isMetaKey) {
+            throw InvalidArgumentException(
+                    "Cannot type a character that has no key code while modifier keys are pressed")
+        }
+        // The IME handles key events and direct edits asynchronously, so switching needs a pause
+        ImeSettle.await(uiController, true)
+        textInserter.insert(w3cKeyEvent.key ?: "")
+        ImeSettle.mark(true)
+        insertedKeys.add(w3cKeyEvent.key)
+    }
+
+    /**
+     * Release the keys injected as pressed by this instance, e.g. after a failed request,
+     * because the next request starts with no knowledge of them.
+     */
+    fun releasePressedKeys() {
+        val pressed = keyDownTimes.values.toList()
+        keyDownTimes.clear()
+        for (keyEvents in pressed) {
+            for (down in keyEvents) {
+                val up = KeyEvent(down.downTime, SystemClock.uptimeMillis(), KeyEvent.ACTION_UP, down.keyCode,
+                        0, down.metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0)
+                try {
+                    uiController.injectKeyEvent(up)
+                } catch (e: InjectEventSecurityException) {
+                    AndroidLogger.info("Could not release the key ${down.keyCode}: ${e.message}")
+                }
+            }
+        }
     }
 
     /**
@@ -254,6 +319,8 @@ class AndroidKeyEvent(private val uiController: UiController) {
             keyDownTimes.remove(key)
         }
 
+        ImeSettle.await(uiController, false)
+
         // Inject all of the key events, in order
         for (androidKeyEvent in keyEvents) {
             AndroidLogger.info(String.format("Calling key event: %s", androidKeyEvent))
@@ -267,5 +334,6 @@ class AndroidKeyEvent(private val uiController: UiController) {
                 throw AppiumException(String.format("Could not inject key event %s", key))
             }
         }
+        ImeSettle.mark(false)
     }
 }
