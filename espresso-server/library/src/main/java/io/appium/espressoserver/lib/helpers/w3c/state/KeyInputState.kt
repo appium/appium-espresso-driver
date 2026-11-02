@@ -60,7 +60,7 @@ class KeyInputState : InputState {
     }
 
     fun logMessage(): String {
-        return "alt=[$isAlt] shift=[$isShift] ctrl=[$isCtrl] meta=[$isMeta] pressed=[$pressed]"
+        return "alt=[$isAlt] shift=[$isShift] ctrl=[$isCtrl] meta=[$isMeta] pressedCount=[${pressed.size}]"
     }
 
     fun toMetaState(): Int {

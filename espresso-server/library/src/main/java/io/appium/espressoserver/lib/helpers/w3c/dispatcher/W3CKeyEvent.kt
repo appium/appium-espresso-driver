@@ -14,8 +14,10 @@ class W3CKeyEvent {
     var isRepeat = false
     var isComposing = false
 
+    // Typed characters may be sensitive, so neither key nor code are logged
     fun logMessage(): String {
-        return "key=[$key] code=[$code] altKey=[$isAltKey] shiftKey=[$isShiftKey] ctrlKey=[$isCtrlKey] metaKey=[$isMetaKey]"
+        val keyKind = if (key?.firstOrNull() in '\uE000'..'\uF8FF') "special" else "character"
+        return "key=[$keyKind] altKey=[$isAltKey] shiftKey=[$isShiftKey] ctrlKey=[$isCtrlKey] metaKey=[$isMetaKey]"
     }
 
 }
