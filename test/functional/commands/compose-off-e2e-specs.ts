@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {describe, it, before, after} from 'node:test';
 
 import {util} from 'appium/support.js';
+import {retryInterval} from 'asyncbox';
 import axios from 'axios';
 import type {Browser} from 'webdriverio';
 
@@ -47,49 +48,52 @@ describe('compose support disabled', {timeout: E2E_TEST_TIMEOUT}, function () {
     await deleteSession();
   });
 
-  // The IME drops the first character right after the session start on CI emulators
-  it('should send keys to an element', {skip: Boolean(process.env.CI)}, async function () {
-    const el = await getField();
-    await driver.elementSendKeys(await el.elementId, 'hello');
-    assert.strictEqual(await el.getText(), 'hello');
+  // The IME may drop characters while the emulator is still busy after the session start
+  const typeAndCheck = (expected: string, type: (el: Awaited<ReturnType<typeof getField>>) => Promise<unknown>) =>
+    retryInterval(3, 1000, async () => {
+      const el = await getField();
+      await type(el);
+      assert.strictEqual(await el.getText(), expected);
+    });
+
+  it('should send keys to an element', async function () {
+    await typeAndCheck('hello', async (el) => driver.elementSendKeys(await el.elementId, 'hello'));
   });
 
   it('should type ASCII and non-ASCII characters using W3C actions', async function () {
-    const el = await getField();
-    await typeEach('aжb');
-    assert.strictEqual(await el.getText(), 'aжb');
+    await typeAndCheck('aжb', () => typeEach('aжb'));
   });
 
   it('should type using the legacy keys endpoint', async function () {
-    const el = await getField();
-    await axios.post(`http://${HOST}:${PORT}/session/${await driver.sessionId}/keys`, {
-      value: Array.from('Привіт'),
-    });
-    assert.strictEqual(await el.getText(), 'Привіт');
+    await typeAndCheck('Привіт', async () =>
+      axios.post(`http://${HOST}:${PORT}/session/${await driver.sessionId}/keys`, {
+        value: Array.from('Привіт'),
+      }),
+    );
   });
 
   it('should tap an element using the element origin', async function () {
-    const el = await getField();
-    await driver.performActions([
-      {
-        type: 'pointer',
-        id: 'finger',
-        parameters: {pointerType: 'touch'},
-        actions: [
-          {
-            type: 'pointerMove',
-            duration: 0,
-            x: 0,
-            y: 0,
-            origin: {[util.W3C_WEB_ELEMENT_IDENTIFIER]: await el.elementId},
-          },
-          {type: 'pointerDown', button: 0},
-          {type: 'pause', duration: 50},
-          {type: 'pointerUp', button: 0},
-        ],
-      },
-    ]);
-    await typeEach('ж');
-    assert.strictEqual(await el.getText(), 'ж');
+    await typeAndCheck('ж', async (el) => {
+      await driver.performActions([
+        {
+          type: 'pointer',
+          id: 'finger',
+          parameters: {pointerType: 'touch'},
+          actions: [
+            {
+              type: 'pointerMove',
+              duration: 0,
+              x: 0,
+              y: 0,
+              origin: {[util.W3C_WEB_ELEMENT_IDENTIFIER]: await el.elementId},
+            },
+            {type: 'pointerDown', button: 0},
+            {type: 'pause', duration: 50},
+            {type: 'pointerUp', button: 0},
+          ],
+        },
+      ]);
+      await typeEach('ж');
+    });
   });
 });
