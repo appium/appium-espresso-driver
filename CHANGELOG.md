@@ -1,3 +1,9 @@
+## [9.3.12](https://github.com/appium/appium-espresso-driver/compare/v9.3.11...v9.3.12) (2026-11-03)
+
+### Bug Fixes
+
+* **server:** make the compose-off server build start on a device ([#1242](https://github.com/appium/appium-espresso-driver/issues/1242)) ([1c40633](https://github.com/appium/appium-espresso-driver/commit/1c406335fc696024d6183ef505253196b1e5f2ea))
+
 ## [9.3.11](https://github.com/appium/appium-espresso-driver/compare/v9.3.10...v9.3.11) (2026-11-02)
 
 ### Bug Fixes
