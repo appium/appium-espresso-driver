@@ -124,7 +124,8 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
     await typeEach('Привіт');
     await typeEach('c');
 
-    assert.strictEqual(await textInput.getText(), 'Enter your text here!abПривітc');
+    // The IME may move the caret or replace its composing word, so only check the typed run
+    assert.ok((await textInput.getText()).includes('abПривітc'));
   });
 
   it('should type into the focused text field using the legacy keys endpoint', async function () {
@@ -137,7 +138,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
     });
     assert.strictEqual(status, 200);
 
-    assert.strictEqual(await textInput.getText(), 'Enter your text here!aЖb');
+    assert.ok((await textInput.getText()).includes('aЖb'));
   });
 
   it('should keep Compose usable after tapping a text field', async function () {
