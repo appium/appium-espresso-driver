@@ -185,6 +185,8 @@ receive logcat log lines as soon as they are visible to Appium.
 Refer to [Using Mobile Execution Commands to Continuously Stream Device Logs with Appium](https://www.headspin.io/blog/using-mobile-execution-commands-to-continuously-stream-device-logs-with-appium)
 for more details.
 
+Consider using [log broadcast via BiDi](../reference/bidi.md#logentryadded) over this extension.
+
 Available since driver version 2.37.0.
 
 #### Response
@@ -198,6 +200,8 @@ The method will return immediately if no websocket server is running.
 
 Refer to [Using Mobile Execution Commands to Continuously Stream Device Logs with Appium](https://www.headspin.io/blog/using-mobile-execution-commands-to-continuously-stream-device-logs-with-appium)
 for more details.
+
+Consider using [log broadcast via BiDi](../reference/bidi.md#logentryadded) over this extension.
 
 Available since driver version 2.37.0.
 
@@ -260,7 +264,7 @@ Available since driver version 9.3.0.
 
 |Name|Type|Description|
 |--|--|--|
-|`displayId`|`integer` or `string`|Display identifier to take a screenshot for. By default, all available displays are used. An error is thrown if a display with the specified ID does not exist. Available identifiers can be retrieved from the `adb shell dumpsys SurfaceFlinger --display-id` command output.|
+|`displayId?`|`integer` or `string`|Display identifier to take a screenshot for. By default, all available displays are used. An error is thrown if a display with the specified ID does not exist. Available identifiers can be retrieved from the `adb shell dumpsys SurfaceFlinger --display-id` command output.|
 
 #### Response
 
@@ -357,6 +361,7 @@ Available since driver version 2.7.0.
 |`headers?`|`Record<string, any>`|Additional headers to use for the HTTP(S) multipart upload|
 |`fileFieldName?`|`string`|Name of the form field for storing the file content blob for HTTP(S) uploads. Set to `file` by default.|
 |`formFields?`|`Record<string, any>` or `Array<[string, any]>`|Additional form fields to use for the HTTP(S) multipart upload|
+|`uploadTimeout?`|`integer`|Maximum timeout for uploading the file. Set to `240000` (4 minutes) by default. Available since driver version 2.21.1.|
 
 #### Response
 
@@ -419,27 +424,6 @@ Available since driver version 2.23.0.
 
 `boolean` - `true` if the device is locked, otherwise `false`
 
-### `mobile: fingerprint`
-
-Emulates authentication using a virtual fingerprint with the specified ID. Only supported on
-emulators running Android 6 (Marshmallow / API level 23) or later.
-
-Virtual fingerprints should first be registered by opening the Android fingerprint registration
-settings and running this command with the ID that the fingerprint should be assigned to. Once
-registered, the command and ID can be used in fingerprint authentication prompts.
-
-Available since driver version 2.23.0.
-
-#### Parameters
-
-|Name|Type|Description|
-|--|--|--|
-|`fingerprintId`|`integer` or `string`|Identifier of a virtual fingerprint|
-
-#### Response
-
-`null`
-
 ### `mobile: getDeviceTime`
 
 Retrieves the current system time on the device under test.
@@ -456,8 +440,10 @@ Retrieves the current system time on the device under test.
 
 ### `mobile: getNotifications`
 
-Retrieves up to 100 most recent Android notifications, including dismissed ones. The Appium Settings
-helper app must first be *manually* granted notification access.
+Retrieves up to 100 most recent Android notifications, including dismissed ones.
+
+For devices running Android 8 (Oreo / API level 27) or earlier, the Appium Settings helper app must
+first be manually granted notification access.
 
 #### Response
 
@@ -1108,8 +1094,29 @@ guide for more details.
 
 |<div style="width:6em">Name</div>|Type|Description|
 |--|--|--|
-|`sensorType`|`string`|Type of sensor to set the value for. Supported values can be found in the [`appium-adb` source code here](https://github.com/appium/appium-adb/blob/master/lib/tools/emu-constants.ts#L32).|
+|`sensorType`|`string`|Type of sensor to set the value for. Supported values can be found in the [`appium-adb` source code here](https://github.com/appium/appium-android/blob/main/packages/adb/lib/tools/emu-constants.ts#L32).|
 |`value`|`string`|Value to set for the specified sensor. The supported format depends on `sensorType`.|
+
+#### Response
+
+`null`
+
+### `mobile: fingerprint`
+
+Emulates authentication using a virtual fingerprint with the specified ID. Only supported on
+emulators running Android 6 (Marshmallow / API level 23) or later.
+
+Virtual fingerprints should first be registered by opening the Android fingerprint registration
+settings and running this command with the ID that the fingerprint should be assigned to. Once
+registered, the command and ID can be used in fingerprint authentication prompts.
+
+Available since driver version 2.23.0.
+
+#### Parameters
+
+|Name|Type|Description|
+|--|--|--|
+|`fingerprintId`|`integer` or `string`|Identifier of a virtual fingerprint|
 
 #### Response
 
@@ -1307,7 +1314,7 @@ Available since driver version 4.0.0.
 |<div style="width:7em">Name</div>|Type|Description|
 |--|--|--|
 |`language?`|`string`|Language whose strings should be retrieved. If omitted, the default system language is used (affected by the [`appium:language`](./capabilities.md#language) capability)|
-|`stringFile?`|`string`|Path to the app whose strings should be retrieved. If not specified, the app under test is used.|
+|`stringFile?`|`string`|Path to the app whose strings should be retrieved. If not specified, the app under test is used. Available since driver version 9.0.7.|
 
 #### Response
 
@@ -1442,12 +1449,12 @@ Available since driver version 2.10.0.
 |`categories?`|`string` or `Array<string>`|One or more intent categories|
 |`component?`|`string`|Intent component|
 |`package?`|`string`|Intent package name|
-|`extras?`|`Array<Array<string>>`|Extra intent arguments. See below for expected structure|
+|`extras?`|`ActivityExtras`|Extra intent arguments. See below for expected structure|
 |`flags?`|`string`|Flags in hexadecimal format to apply on intent start-up. Refer to the [Android Intent documentation](https://developer.android.com/reference/android/content/Intent) for supported values. Multiple flags should be merged into one value.|
 |`receiverPermission?`|`string`|Permission that the receiver must hold|
 |`allowBackgroundActivityStarts?`|`boolean`|Whether the receiver may start activities even if in the background|
 
-The `flags` parameter is an array of arrays, where each subarray contains 3 items: value category,
+The `extras` parameter (`ActivityExtras`) is an array of arrays, where each subarray contains 3 items: value category,
 key, and the value itself. Supported value categories and their value types are as follows:
 
 |<div style="width:7em">Value Category</div>|Value Type|
@@ -1574,7 +1581,7 @@ Available since driver version 2.19.0.
 ### `mobile: sendTrimMemory`
 
 Simulates a system memory trimming-related event for the specified package, by calling
-[`ComponentCallbacks2.onTrimMemory()`](https://developer.android.com/reference/android/content/ComponentCallbacks2#onTrimMemory(int)).
+`adb shell am send-trim-memory`.
 
 This functionality can be useful to verify app functionality under different system memory usage
 levels. Refer to the Android [Manage your app's memory](https://developer.android.com/topic/performance/memory)

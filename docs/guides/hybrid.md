@@ -93,7 +93,7 @@ entry in the [ChromeDriver release notes](https://developer.chrome.com/docs/chro
 
     This approach is only applicable to Espresso driver versions 3.3.1 or earlier.
 
-ChromeDriver versions are managed by the [`appium-chromedriver`](https://github.com/appium/appium-chromedriver)
+ChromeDriver versions are managed by the [`appium-chromedriver`](https://github.com/appium/appium-android/tree/main/packages/chromedriver)
 package, which comes bundled with the Espresso driver. Upon installation, `appium-chromedriver`
 automatically tries to download the most recent version of ChromeDriver.
 
@@ -120,7 +120,7 @@ capability.
 ### Downloading
 
 In case of issues when downloading ChromeDriver, the underlying `appium-chromedriver` package
-allows changing the download CDN. Refer to [its README](https://github.com/appium/appium-chromedriver#custom-binaries-url)
+allows changing the download CDN. Refer to [its README](https://github.com/appium/appium-android/tree/main/packages/chromedriver#custom-binaries-url)
 for details.
 
 It may also be necessary to adjust network proxy and firewall settings for the above to work.

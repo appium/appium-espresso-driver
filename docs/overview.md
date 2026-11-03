@@ -65,13 +65,13 @@ functionality:
     * Provided by the bundled Espresso server application
 * Webview testing
     * Based on [the ChromeDriver server](https://developer.chrome.com/docs/chromedriver)
-    * Provided by the [`appium-chromedriver`](https://github.com/appium/appium-chromedriver) library
+    * Provided by the [`appium-chromedriver`](https://github.com/appium/appium-android/tree/main/packages/chromedriver) library
 * Additional tools
-    * Support for `adb` is handled by the [`appium-adb`](https://github.com/appium/appium-adb) library
-    * Management of certain Android settings is handled by the [`io.appium.settings`](https://github.com/appium/io.appium.settings) library
+    * Support for `adb` is handled by the [`appium-adb`](https://github.com/appium/appium-android/tree/main/packages/adb) library
+    * Management of certain Android settings is handled by the [`io.appium.settings`](https://github.com/appium/appium-android/tree/main/packages/settings) library
 
 Several libraries and other features are shared with [the Appium UiAutomator2 driver](https://appium.github.io/appium-uiautomator2-driver/),
-as part of the [`appium-android-driver`](https://github.com/appium/appium-android-driver) library.
+as part of the [`appium-android-driver`](https://github.com/appium/appium-android/tree/main/packages/driver-lib) library.
 
 ## End-to-End Architecture
 

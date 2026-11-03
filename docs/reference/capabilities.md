@@ -158,6 +158,43 @@ stopped, unless the session is ended unexpectedly.
 
 Available since driver version 2.17.0.
 
+### language
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:language` | `string` | Not specified |
+
+Language code to use for setting the locale of the device under test. The code should match the
+`language` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html).
+Must be provided together with [`appium:locale`](#locale).
+
+The language set by this capability is also used by the [`mobile: getAppStrings`](./execute-methods.md#mobile-getappstrings)
+execute method, unless explicitly overridden.
+
+In order to set the locale of only the application under test, use [`appium:appLocale`](#applocale).
+
+### locale
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:locale` | `string` | Not specified |
+
+Country code to use for setting the locale of the device under test. The code should match the
+`country` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html).
+Must be provided together with [`appium:language`](#language).
+
+In order to set the locale of only the application under test, use [`appium:appLocale`](#applocale).
+
+### localeScript
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:localeScript` | `string` | Not specified |
+
+Script code to use for setting the locale of the device under test. The code should match the
+`script` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html).
+If specified, [`appium:language`](#language) and [`appium:locale`](#locale) must also be provided.
+
 ### timeZone
 
 | Name | Type | Default |
@@ -209,7 +246,7 @@ set to `null` or an empty string, Appium will skip the setup of the location moc
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:skipUnlock` | `boolean` | `true` |
+| `appium:skipUnlock` | `boolean` | Not specified |
 
 Whether to skip unlocking the device lockscreen on session startup, if one is present.
 
@@ -723,16 +760,18 @@ Maximum amount of milliseconds to wait until the application under test is insta
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:enforceAppInstall` | `boolean` | `false` |
+| `appium:enforceAppInstall` | `boolean` | Not specified |
 
 Whether to always reinstall the application under test, even if a newer version already exists
 on the device under test.
+
+Has no effect if either [`appium:noReset`](#noreset) or [`appium:fullReset`](#fullreset) is set.
 
 ### noReset
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:noReset` | `boolean` | `false` |
+| `appium:noReset` | `boolean` | Not specified |
 
 Whether to prevent the app from being automatically relaunched and its data cleaned before session
 startup.
@@ -754,7 +793,7 @@ Mutually exclusive with [`appium:noReset`](#noreset).
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:dontStopAppOnReset` | `boolean` | `false` |
+| `appium:dontStopAppOnReset` | `boolean` | Not specified |
 
 Whether to skip termination of the app under test upon session deletion.
 
@@ -770,7 +809,7 @@ Whether to launch the application under test on session start, and wait until it
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:autoGrantPermissions` | `boolean` | `false` |
+| `appium:autoGrantPermissions` | `boolean` | Not specified |
 
 Whether to automatically grant all requested application permissions upon session startup.
 
@@ -803,7 +842,7 @@ excludes packages required by the driver (`io.appium.settings` and `io.appium.es
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:allowTestPackages` | `boolean` | `false` |
+| `appium:allowTestPackages` | `boolean` | Not specified |
 
 Whether to allow installation of test-only versions of the application under test. Maps to the `-t`
 flag of `adb install`. Only applied if the application is to be installed or reinstalled.
@@ -820,13 +859,31 @@ each installable package to the device first, requiring additional time.
 
 If set to `0`, the cache is disabled.
 
+### appLocale
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:appLocale` | `Record<string, string>` | Not specified |
+
+Map of language-related identifiers to use for setting the locale of the app under test. The
+mapping supports the following options:
+
+| Name | Description |
+| -- | -- |
+| `language` | Matches the `language` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
+| `country?` | Matches the `country` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
+| `variant?` | Matches the `variant` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
+
+In order to set the locale of the entire device under test, use [`appium:language`](#language)
+and [`appium:locale`](#locale).
+
 ## App Signing
 
 ### useKeystore
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:useKeystore` | `boolean` | `false` |
+| `appium:useKeystore` | `boolean` | Not specified |
 
 Whether to use a custom [keystore](https://developer.android.com/studio/publish/app-signing#certificates-keystores)
 to sign the app under test. By default, apps are signed with the default Appium debug certificate,
@@ -891,72 +948,28 @@ the same signature as the application under test before disabling this capabilit
 
 This capability does not affect `.apks` packages, as they are expected to be already signed. 
 
-## App Localization
-
-### language
-
-| Name | Type | Default |
-| -- | -- | -- |
-| `appium:language` | `string` | Not specified |
-
-Language code to use for setting the locale of the device under test. The code should match the
-`language` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html).
-Must be provided together with [`appium:locale`](#locale).
-
-The language set by this capability is also used by the [`mobile: getAppStrings`](./execute-methods.md#mobile-getappstrings)
-execute method, unless explicitly overridden.
-
-In order to set the locale of only the application under test, use [`appium:appLocale`](#applocale).
-
-### locale
-
-| Name | Type | Default |
-| -- | -- | -- |
-| `appium:locale` | `string` | Not specified |
-
-Country code to use for setting the locale of the device under test. The code should match the
-`country` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html).
-Must be provided together with [`appium:language`](#language).
-
-In order to set the locale of only the application under test, use [`appium:appLocale`](#applocale).
-
-### localeScript
-
-| Name | Type | Default |
-| -- | -- | -- |
-| `appium:localeScript` | `string` | Not specified |
-
-Script code to use for setting the locale of the device under test. The code should match the
-`script` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html).
-If specified, [`appium:language`](#language) and [`appium:locale`](#locale) must also be provided.
-
-### appLocale
-
-| Name | Type | Default |
-| -- | -- | -- |
-| `appium:appLocale` | `Record<string, string>` | Not specified |
-
-Map of language-related identifiers to use for setting the locale of the app under test. The
-mapping supports the following options:
-
-| Name | Description |
-| -- | -- |
-| `language` | Matches the `language` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
-| `country?` | Matches the `country` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
-| `variant?` | Matches the `variant` field for Android's [`Locale` class](https://developer.android.com/reference/java/util/Locale.html) |
-
-In order to set the locale of the entire device under test, use [`appium:language`](#language)
-and [`appium:locale`](#locale).
-
 ## Web Context
 
 ### autoWebview
 
 | Name | Type | Default |
 | -- | -- | -- |
-| `appium:autoWebview` | `boolean` | `false` |
+| `appium:autoWebview` | `boolean` | Not specified |
 
-Whether to automatically switch to the first available webview context upon session start.
+Whether to automatically switch to a webview context upon session start. The name of the selected
+context is derived from the application package, prefixed by `WEBVIEW_`, but can be changed using
+the [`appium:autoWebviewName`](#autowebviewname) capability.
+
+### autoWebviewName
+
+| Name | Type | Default |
+| -- | -- | -- |
+| `appium:autoWebviewName` | `string` | Not specified |
+
+Custom name of a webview context, used to replace the application package part of the initial
+webview name used by [`appium:autoWebview`](#autowebview).
+
+Available since driver version 2.13.2.
 
 ### autoWebviewTimeout
 
@@ -965,7 +978,7 @@ Whether to automatically switch to the first available webview context upon sess
 | `appium:autoWebviewTimeout` | `integer` | `2000` |
 
 Maximum number of milliseconds to wait until a webview is available before switching to it.
-Requires [`appium:autoWebview`](#autowebview) to be set.
+Has no effect unless [`appium:autoWebview`](#autowebview) is set.
 
 ### androidDeviceSocket
 
