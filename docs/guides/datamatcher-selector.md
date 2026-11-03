@@ -1,5 +1,5 @@
 ---
-title: DataMatcher Selectors
+title: DataMatcher Locator Strategy
 ---
 
 By using the driver's [Data Matcher](../reference/locator-strategies.md#data-matcher) locator

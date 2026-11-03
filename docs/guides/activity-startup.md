@@ -31,7 +31,7 @@ If the application under test is supposed to be already installed on the device,
 available in such case.
 
 For more details, check the implementation of the `packageAndLaunchActivityFromManifest` method in
-the [`appium-adb`](https://github.com/appium/appium-adb/blob/master/lib/tools/android-manifest.js)
+the [`appium-adb`](https://github.com/appium/appium-android/blob/main/packages/adb/lib/tools/android-manifest.ts)
 package.
 
 ## How Espresso Starts Activities
@@ -44,7 +44,7 @@ package.
    output (`mFocusedApp` or `mCurrentFocus` entries)
 
 For more details, check the implementation of the `getFocusedPackageAndActivity` method in the
-[`appium-adb`](https://github.com/appium/appium-adb/blob/master/lib/tools/apk-utils.js) package,
+[`appium-adb`](https://github.com/appium/appium-android/blob/main/packages/adb/lib/tools/apk-utils.ts) package,
 as well as the [`startActivity`](https://github.com/appium/appium-espresso-driver/blob/master/espresso-server/app/src/androidTest/java/io/appium/espressoserver/lib/helpers/ActivityHelpers.kt)
 helper inside the Espresso server code.
 
