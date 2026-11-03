@@ -86,6 +86,18 @@ class AndroidKeyEventTest {
     }
 
     @Test
+    fun failedInjectionDoesNotExposePrintingKey() {
+        val mockUiController = object : UiController by MockUiController() {
+            override fun injectKeyEvent(event: KeyEvent) = false
+        }
+        val w3CKeyEvent = getKeyEvent(EspressoW3CActionAdapter(mockUiController), "7")
+        val error = Assert.assertThrows(AppiumException::class.java) {
+            AndroidKeyEvent(mockUiController).keyDown(w3CKeyEvent)
+        }
+        Assert.assertEquals("Could not inject key event: key=[printing key]", error.message)
+    }
+
+    @Test
     @Throws(AppiumException::class)
     fun keyDownAndUp() {
         val mockUiController = MockUiController()

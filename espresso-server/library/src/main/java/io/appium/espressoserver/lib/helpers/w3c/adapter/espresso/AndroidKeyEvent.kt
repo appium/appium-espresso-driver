@@ -333,7 +333,7 @@ class AndroidKeyEvent @JvmOverloads constructor(
                 throw AppiumException(e.cause.toString())
             }
             if (!isSuccess) {
-                throw AppiumException(String.format("Could not inject key event %s", key))
+                throw AppiumException("Could not inject key event: key=[$keyName]")
             }
         }
         ImeSettle.mark(false)
