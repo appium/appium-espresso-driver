@@ -43,6 +43,7 @@ import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.helpers.toNodeInteractionsCollection
+import io.appium.espressoserver.lib.helpers.windowOriginOnScreen
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.BaseElement
 import io.appium.espressoserver.lib.model.ComposeElement
@@ -78,9 +79,9 @@ internal object ComposeHandlerBridge {
         val bounds = ComposeNodeElement(node).bounds
         val root = node.root as? ViewRootForTest
             ?: throw InvalidElementStateException("The element is not attached to a window")
-        val windowOrigin = IntArray(2)
-        root.view.getLocationOnScreen(windowOrigin)
-        return Point(windowOrigin[0] + bounds.centerX(), windowOrigin[1] + bounds.centerY())
+        // The bounds are relative to the window, not to the (possibly offset) Compose view
+        val windowOrigin = root.view.windowOriginOnScreen()
+        return Point(windowOrigin.x + bounds.centerX(), windowOrigin.y + bounds.centerY())
     }
 
     fun findElement(params: Locator): BaseElement {

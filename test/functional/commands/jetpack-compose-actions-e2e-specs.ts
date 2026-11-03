@@ -97,7 +97,11 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
     const clickable = await driver.$('=Click to see dialog');
     await tapElement(await clickable.elementId);
 
-    await driver.$('=Congratulations! You just clicked the text successfully');
+    await (
+      await driver.$('=Congratulations! You just clicked the text successfully')
+    ).waitForExist({
+      timeout: 5000,
+    });
   });
 
   it('should tap an Espresso view using the element origin in compose mode', async function () {
@@ -107,7 +111,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
 
     await tapElement(elementId);
 
-    await driver.$('=Click to see dialog');
+    await (await driver.$('=Click to see dialog')).waitForExist({timeout: 5000});
   });
 
   it('should type ASCII and non-ASCII keys into the focused text field', async function () {

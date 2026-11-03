@@ -17,9 +17,11 @@
 package io.appium.espressoserver.lib.helpers
 
 import android.content.Context
+import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build
 import android.util.DisplayMetrics
+import android.view.View
 import android.view.WindowManager
 import androidx.test.core.app.ApplicationProvider
 
@@ -36,4 +38,13 @@ fun getCurrentWindowRect(): Rect {
     @Suppress("DEPRECATION")
     windowManager.defaultDisplay.getMetrics(displayMetrics)
     return Rect(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels)
+}
+
+/** Screen position of the window origin; unlike the view location, it ignores the view offset and translation. */
+fun View.windowOriginOnScreen(): Point {
+    val onScreen = IntArray(2)
+    val inWindow = IntArray(2)
+    getLocationOnScreen(onScreen)
+    getLocationInWindow(inWindow)
+    return Point(onScreen[0] - inWindow[0], onScreen[1] - inWindow[1])
 }
