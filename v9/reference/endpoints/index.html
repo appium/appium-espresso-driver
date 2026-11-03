@@ -2824,7 +2824,7 @@
   <span class="md-ellipsis">
     
   
-    DataMatcher Selectors
+    DataMatcher Locator Strategy
   
 
     
@@ -4552,7 +4552,7 @@ driver-specific functionality is available using <a href="../execute-methods/">E
 always uses the currently active window.</p>
 <div class="admonition warning">
 <p class="admonition-title">Deprecated</p>
-<p>Please use the <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#getwindowrect">getWindowRect</a>
+<p>Please use the standard <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#getwindowrect">Get Window Rect</a>
 endpoint instead</p>
 </div>
 <h4 id="response_5">Response<a class="headerlink" href="#response_5" title="Permanent link">&para;</a></h4>
@@ -4597,7 +4597,7 @@ window</p>
 <p>Returns the element's location on the page.</p>
 <div class="admonition warning">
 <p class="admonition-title">Deprecated</p>
-<p>Please use the <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect">getElementRect</a>
+<p>Please use the standard <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect">Get Element Rect</a>
 endpoint instead</p>
 </div>
 <h4 id="response_7">Response<a class="headerlink" href="#response_7" title="Permanent link">&para;</a></h4>
@@ -4612,7 +4612,7 @@ coordinates</p>
 <p>Returns the element's location on the page screen once it has been scrolled into view.</p>
 <div class="admonition warning">
 <p class="admonition-title">Deprecated</p>
-<p>Please use the <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect">getElementRect</a>
+<p>Please use the standard <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect">Get Element Rect</a>
 endpoint instead</p>
 </div>
 <h4 id="response_8">Response<a class="headerlink" href="#response_8" title="Permanent link">&para;</a></h4>
@@ -4627,7 +4627,7 @@ coordinates</p>
 <p>Returns the element's size in pixels.</p>
 <div class="admonition warning">
 <p class="admonition-title">Deprecated</p>
-<p>Please use the <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect">getElementRect</a>
+<p>Please use the standard <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#getelementrect">Get Element Rect</a>
 endpoint instead</p>
 </div>
 <h4 id="response_9">Response<a class="headerlink" href="#response_9" title="Permanent link">&para;</a></h4>
@@ -5368,12 +5368,12 @@ instead</p>
 <td>Code of the key to press. Must match the numerical value for a supported KeyEvent <code>KEYCODE_</code> constant.</td>
 </tr>
 <tr>
-<td><code>metastate</code></td>
+<td><code>metastate?</code></td>
 <td><code>integer</code></td>
 <td>One or more meta keys that should be simultaneously pressed. Must match the combined numerical value for one or more supported KeyEvent <code>META_</code> constants.</td>
 </tr>
 <tr>
-<td><code>flags</code></td>
+<td><code>flags?</code></td>
 <td><code>integer</code></td>
 <td>Flags to apply during the press. Must match the combined numerical value for one or more supported KeyEvent <code>FLAG_</code> constants.</td>
 </tr>
@@ -5408,12 +5408,12 @@ instead</p>
 <td>Code of the key to press. Must match the numerical value for a supported KeyEvent <code>KEYCODE_</code> constant.</td>
 </tr>
 <tr>
-<td><code>metastate</code></td>
+<td><code>metastate?</code></td>
 <td><code>integer</code></td>
 <td>One or more meta keys that should be simultaneously pressed. Must match the combined numerical value for one or more supported KeyEvent <code>META_</code> constants.</td>
 </tr>
 <tr>
-<td><code>flags</code></td>
+<td><code>flags?</code></td>
 <td><code>integer</code></td>
 <td>Flags to apply during the press. Must match the combined numerical value for one or more supported KeyEvent <code>FLAG_</code> constants.</td>
 </tr>
@@ -5427,7 +5427,7 @@ instead</p>
 <p>Sets the value of an element using <code>adb</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Deprecated</p>
-<p>Please use the <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#setvalue">setValue</a>
+<p>Please use the standard <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#setvalue">Element Send Keys</a>
 endpoint instead</p>
 </div>
 <h4 id="parameters_16">Parameters<a class="headerlink" href="#parameters_16" title="Permanent link">&para;</a></h4>
@@ -5455,7 +5455,7 @@ endpoint instead</p>
 <p>Replaces the value of an element using <code>adb</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Deprecated</p>
-<p>Please use the <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#setvalue">setValue</a>
+<p>Please use the standard <a href="https://appium.io/docs/en/latest/reference/api/webdriver/#setvalue">Element Send Keys</a>
 endpoint instead</p>
 </div>
 <h4 id="parameters_17">Parameters<a class="headerlink" href="#parameters_17" title="Permanent link">&para;</a></h4>
@@ -5497,7 +5497,7 @@ endpoint instead</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 1, 2026 08:52:36 UTC"><span class="timeago" datetime="2026-09-01T08:52:36+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 1, 2026 08:52:36 UTC">2026-09-01</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="November 3, 2026 15:10:32 UTC"><span class="timeago" datetime="2026-11-03T15:10:32+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="November 3, 2026 15:10:32 UTC">2026-11-03</span>
   </span>
 
     
