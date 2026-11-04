@@ -1,3 +1,9 @@
+## [9.3.13](https://github.com/appium/appium-espresso-driver/compare/v9.3.12...v9.3.13) (2026-11-04)
+
+### Bug Fixes
+
+* **server:** make W3C actions work in compose mode ([#1241](https://github.com/appium/appium-espresso-driver/issues/1241)) ([c8a6e59](https://github.com/appium/appium-espresso-driver/commit/c8a6e599a286214ef792a7d09f3ec58cf1a94ecf))
+
 ## [9.3.12](https://github.com/appium/appium-espresso-driver/compare/v9.3.11...v9.3.12) (2026-11-03)
 
 ### Bug Fixes
