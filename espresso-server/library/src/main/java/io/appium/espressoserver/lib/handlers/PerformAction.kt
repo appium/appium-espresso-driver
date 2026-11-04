@@ -16,7 +16,11 @@
 
 package io.appium.espressoserver.lib.handlers
 
+import android.graphics.Point
 import androidx.test.espresso.UiController
+import io.appium.espressoserver.lib.compose.ComposeHandlerBridge
+import io.appium.espressoserver.lib.drivers.DriverContext
+import io.appium.espressoserver.lib.helpers.ComposeViewCache
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.helpers.w3c.adapter.espresso.EspressoW3CActionAdapter
 import io.appium.espressoserver.lib.helpers.w3c.models.Actions
@@ -27,10 +31,11 @@ class PerformAction : RequestHandler<Actions, Void?> {
 
     @Throws(AppiumException::class)
     override fun handleInternal(params: Actions): Void? {
+        val elementCenters = resolveComposeElementCenters(params)
 
         val runnable = object: UiControllerRunnable<Void?> {
             override fun run(uiController: UiController): Void? {
-                val adapter = EspressoW3CActionAdapter(uiController)
+                val adapter = EspressoW3CActionAdapter(uiController, elementCenters)
                 params.adapter = adapter
                 try {
                     params.perform(params.sessionId!!)
@@ -45,5 +50,20 @@ class PerformAction : RequestHandler<Actions, Void?> {
 
         UiControllerPerformer(runnable).run()
         return null
+    }
+
+    // Compose elements cannot be resolved on the main thread, so resolve them up front
+    private fun resolveComposeElementCenters(params: Actions): Map<String, Point> {
+        if (DriverContext.currentStrategyType != DriverContext.StrategyType.COMPOSE) {
+            return emptyMap()
+        }
+        return params.actions.orEmpty()
+            .flatMap { it.actions.orEmpty() }
+            .filter { it.isOriginElement }
+            .mapNotNull { it.origin.elementId }
+            .distinct()
+            // Other ids are Espresso views, which the adapter resolves itself
+            .filter { ComposeViewCache.get(it) != null }
+            .associateWith { ComposeHandlerBridge.getElementCenterPoint(it) }
     }
 }

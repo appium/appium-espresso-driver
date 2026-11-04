@@ -16,6 +16,8 @@
 
 package io.appium.espressoserver.lib.compose
 
+import android.graphics.Point
+import android.view.View
 import io.appium.espressoserver.lib.handlers.exceptions.ComposeNotSupportedException
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.BaseElement
@@ -28,6 +30,12 @@ import io.appium.espressoserver.lib.model.TextValueParams
 
 internal object ComposeHandlerBridge {
     private fun unsupported(): Nothing = throw ComposeNotSupportedException()
+
+    fun hasFocusedEditableNode(view: View): Boolean = false
+
+    fun insertTextIntoFocusedNode(view: View, text: String): Boolean = false
+
+    fun getElementCenterPoint(elementId: String?): Point = unsupported()
 
     fun findElement(params: Locator): BaseElement = unsupported()
 

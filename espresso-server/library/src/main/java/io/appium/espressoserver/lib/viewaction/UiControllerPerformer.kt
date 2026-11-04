@@ -31,6 +31,7 @@ import org.hamcrest.Matcher
 class UiControllerPerformer<T>(private val runnable: UiControllerRunnable<T>) : ViewAction {
     private var appiumException: AppiumException? = null
     private var runResult: T? = null
+    private var isPerformed = false
 
     override fun getConstraints(): Matcher<View> {
         return ViewMatchers.isRoot()
@@ -46,6 +47,7 @@ class UiControllerPerformer<T>(private val runnable: UiControllerRunnable<T>) : 
         } catch (e: AppiumException) {
             appiumException = e
         }
+        isPerformed = true
     }
 
     @Throws(AppiumException::class)
@@ -58,6 +60,12 @@ class UiControllerPerformer<T>(private val runnable: UiControllerRunnable<T>) : 
             viewInteraction.perform(this, ViewActions.closeSoftKeyboard())
         } catch (nme: NoMatchingViewException) {
             // Ignore this. The viewMatcher is a hack to begin with
+        } catch (e: RuntimeException) {
+            // The exception class is private. The actions may have opened a window that never takes focus
+            if (!isPerformed || e.javaClass.simpleName != "RootViewWithoutFocusException") {
+                throw e
+            }
+            AndroidLogger.info("The root view has no focus after the actions were performed")
         }
         if (appiumException != null) {
             throw appiumException!!

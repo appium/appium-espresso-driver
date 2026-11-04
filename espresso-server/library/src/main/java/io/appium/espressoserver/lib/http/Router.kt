@@ -210,7 +210,12 @@ internal class Router(server: ServerBase) {
         try {
             // Parse the parameters
             val appiumParams: AppiumParams = postJson?.let {
-                AndroidLogger.debug("Got raw post data: ${abbreviate(it, 300)}")
+                // Requests carrying text to type may contain sensitive data
+                if (paramClass == TextValueParams::class.java || paramClass == Actions::class.java) {
+                    AndroidLogger.debug("Got raw post data of ${it.length} chars")
+                } else {
+                    AndroidLogger.debug("Got raw post data: ${abbreviate(it, 300)}")
+                }
                 try {
                     paramClass.cast(Gson().fromJson<AppiumParams>(it, paramClass))
                             ?: return AppiumResponse(InvalidArgumentException("Could not parse JSON: $it"))

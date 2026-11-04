@@ -323,7 +323,9 @@ class AndroidKeyEvent @JvmOverloads constructor(
 
         // Inject all of the key events, in order
         for (androidKeyEvent in keyEvents) {
-            AndroidLogger.info(String.format("Calling key event: %s", androidKeyEvent))
+            // Printing keys are not logged since they may be sensitive
+            val keyName = if (androidKeyEvent.isPrintingKey) "printing key" else KeyEvent.keyCodeToString(androidKeyEvent.keyCode)
+            AndroidLogger.info("Calling key event: action=${androidKeyEvent.action} key=[$keyName]")
             var isSuccess: Boolean
             isSuccess = try {
                 uiController.injectKeyEvent(androidKeyEvent)
@@ -331,7 +333,7 @@ class AndroidKeyEvent @JvmOverloads constructor(
                 throw AppiumException(e.cause.toString())
             }
             if (!isSuccess) {
-                throw AppiumException(String.format("Could not inject key event %s", key))
+                throw AppiumException("Could not inject key event: key=[$keyName]")
             }
         }
         ImeSettle.mark(false)

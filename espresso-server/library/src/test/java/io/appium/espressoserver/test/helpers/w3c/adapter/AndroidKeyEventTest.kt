@@ -1,5 +1,6 @@
 package io.appium.espressoserver.test.helpers.w3c.adapter
 
+import android.graphics.Point
 import android.os.SystemClock
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -85,6 +86,18 @@ class AndroidKeyEventTest {
     }
 
     @Test
+    fun failedInjectionDoesNotExposePrintingKey() {
+        val mockUiController = object : UiController by MockUiController() {
+            override fun injectKeyEvent(event: KeyEvent) = false
+        }
+        val w3CKeyEvent = getKeyEvent(EspressoW3CActionAdapter(mockUiController), "7")
+        val error = Assert.assertThrows(AppiumException::class.java) {
+            AndroidKeyEvent(mockUiController).keyDown(w3CKeyEvent)
+        }
+        Assert.assertEquals("Could not inject key event: key=[printing key]", error.message)
+    }
+
+    @Test
     @Throws(AppiumException::class)
     fun keyDownAndUp() {
         val mockUiController = MockUiController()
@@ -114,5 +127,13 @@ class AndroidKeyEventTest {
         Assert.assertEquals(keyCodeToEvent("A", 0).toLong(), -1)
         Assert.assertEquals(keyCodeToEvent(ARROW_UP, 0).toLong(), KeyEvent.KEYCODE_DPAD_UP.toLong())
         Assert.assertEquals(keyCodeToEvent(ARROW_DOWN, 0).toLong(), KeyEvent.KEYCODE_DPAD_DOWN.toLong())
+    }
+
+    @Test
+    fun preResolvedElementCenterIsUsed() {
+        val adapter = EspressoW3CActionAdapter(MockUiController(), mapOf("compose-node" to Point(12, 34)))
+        val center = adapter.getElementCenterPoint("compose-node")
+        Assert.assertEquals(12, center.x)
+        Assert.assertEquals(34, center.y)
     }
 }

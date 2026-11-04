@@ -16,6 +16,15 @@
 
 package io.appium.espressoserver.lib.compose
 
+import android.graphics.Point
+import android.view.View
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getAllSemanticsNodes
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.platform.ViewRootForTest
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performGesture
@@ -34,6 +43,7 @@ import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.getNodeInteractionById
 import io.appium.espressoserver.lib.helpers.getSemanticsNode
 import io.appium.espressoserver.lib.helpers.toNodeInteractionsCollection
+import io.appium.espressoserver.lib.helpers.windowOriginOnScreen
 import io.appium.espressoserver.lib.model.AppiumParams
 import io.appium.espressoserver.lib.model.BaseElement
 import io.appium.espressoserver.lib.model.ComposeElement
@@ -46,6 +56,34 @@ import io.appium.espressoserver.lib.model.Size
 import io.appium.espressoserver.lib.model.TextValueParams
 
 internal object ComposeHandlerBridge {
+    fun hasFocusedEditableNode(view: View): Boolean = findFocusedEditableNode(view) != null
+
+    /** Inserts at the cursor of the focused Compose text field; must run on the main thread. */
+    fun insertTextIntoFocusedNode(view: View, text: String): Boolean =
+        findFocusedEditableNode(view)
+            ?.config?.getOrNull(SemanticsActions.InsertTextAtCursor)?.action
+            ?.invoke(AnnotatedString(text)) ?: false
+
+    private fun findFocusedEditableNode(view: View): SemanticsNode? =
+        (view as? ViewRootForTest)?.semanticsOwner?.getAllSemanticsNodes(true)?.firstOrNull {
+            it.config.getOrNull(SemanticsProperties.Focused) == true &&
+                it.config.contains(SemanticsActions.InsertTextAtCursor)
+        }
+
+    fun getElementCenterPoint(elementId: String?): Point {
+        val node = try {
+            getNodeInteractionById(elementId).fetchSemanticsNode()
+        } catch (e: AssertionError) {
+            throw StaleElementException(elementId ?: "null")
+        }
+        val bounds = ComposeNodeElement(node).bounds
+        val root = node.root as? ViewRootForTest
+            ?: throw InvalidElementStateException("The element is not attached to a window")
+        // The bounds are relative to the window, not to the (possibly offset) Compose view
+        val windowOrigin = root.view.windowOriginOnScreen()
+        return Point(windowOrigin.x + bounds.centerX(), windowOrigin.y + bounds.centerY())
+    }
+
     fun findElement(params: Locator): BaseElement {
         val nodeInteractions = toNodeInteractionsCollection(params)
         if (nodeInteractions.fetchSemanticsNodes(false).isEmpty()) {
