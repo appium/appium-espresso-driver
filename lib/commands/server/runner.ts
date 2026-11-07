@@ -9,7 +9,6 @@ import {fs, node, util, timing} from 'appium/support.js';
 import {sleep, waitForCondition} from 'asyncbox';
 import axios from 'axios';
 import * as semver from 'semver';
-import type {SubProcess} from 'teen_process';
 
 import {getPackageInfoSync, getPackageInfo, isPlainObject} from '../../utils/index.js';
 import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './builder.js';
@@ -94,7 +93,8 @@ export class EspressoRunner {
   public readonly androidInstallTimeout?: number;
   public readonly disableSuppressAccessibilityService?: boolean;
   public readonly signingConfig: ServerSigningConfig | null;
-  public instProcess: SubProcess | null = null;
+  // Derived from ADB, as teen_process copies of different versions have incompatible types
+  public instProcess: ReturnType<ADB['createSubProcess']> | null = null;
   private readonly log: AppiumLogger;
 
   constructor(log: AppiumLogger, opts: EspressoRunnerOptions) {
