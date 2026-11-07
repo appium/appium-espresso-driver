@@ -3,7 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 import type {AppiumLogger, StringRecord, HTTPMethod, HTTPBody, ProxyResponse, ProxyOptions} from '@appium/types';
-import type {ADB} from 'appium-adb';
+import type {ADB, SubProcess} from 'appium-adb';
 import {WebDriverProxy, errors} from 'appium/driver.js';
 import {fs, node, util, timing} from 'appium/support.js';
 import {sleep, waitForCondition} from 'asyncbox';
@@ -93,8 +93,7 @@ export class EspressoRunner {
   public readonly androidInstallTimeout?: number;
   public readonly disableSuppressAccessibilityService?: boolean;
   public readonly signingConfig: ServerSigningConfig | null;
-  // Derived from ADB, as teen_process copies of different versions have incompatible types
-  public instProcess: ReturnType<ADB['createSubProcess']> | null = null;
+  public instProcess: SubProcess | null = null;
   private readonly log: AppiumLogger;
 
   constructor(log: AppiumLogger, opts: EspressoRunnerOptions) {
