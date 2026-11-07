@@ -2,6 +2,7 @@ import path from 'node:path';
 
 import {fs} from 'appium/support.js';
 
+import {findFiles} from '../find-files.mjs';
 import {TRACKED_MODULES, createEmptyVersionSets} from './tracked-modules.mjs';
 import {
   normalizeVersion,
@@ -51,11 +52,7 @@ export function extractMainAppDependencyScopes(text) {
  * @returns {Promise<string[]>}
  */
 export async function findGradleFiles(root, maxDepth = 6) {
-  const matches = await fs.glob('**/{build.gradle,build.gradle.kts,gradle.properties,libs.versions.toml}', {
-    cwd: root,
-    absolute: true,
-    ignore: ['**/node_modules/**', '**/.git/**', '**/build/**'],
-  });
+  const matches = await findFiles('**/{build.gradle,build.gradle.kts,gradle.properties,libs.versions.toml}', root);
   return matches.filter((filePath) => {
     const parts = path.relative(root, filePath).split(path.sep).filter(Boolean);
     return parts.length - 1 <= maxDepth;

@@ -3,7 +3,7 @@ import {describe, it, before, after, beforeEach} from 'node:test';
 
 import {asyncmap, sleep} from 'asyncbox';
 import axios from 'axios';
-import type {Browser, ChainablePromiseElement} from 'webdriverio';
+import type {Browser} from 'webdriverio';
 
 import {APIDEMO_CAPS} from '../desired.js';
 import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
@@ -232,7 +232,7 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
   });
 
   describe('touches', function () {
-    let nextEl: ChainablePromiseElement;
+    let nextEl: WebdriverIO.Element;
 
     beforeEach(async function () {
       await startTextSwitcherActivity();

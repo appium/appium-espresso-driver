@@ -22,7 +22,7 @@ describe('ElementValue', {timeout: E2E_TEST_TIMEOUT}, function () {
     await driver.$('~Custom Title').click();
 
     const el = await driver.$(await driver.findElement('class name', 'android.widget.EditText'));
-    await driver.setValueImmediate(await el.elementId, 'hello');
+    await driver.elementSendKeys(await el.elementId, 'hello');
     assert.strictEqual(await el.getText(), 'Left is besthello');
     await el.setValue('テスト');
     assert.strictEqual(await el.getText(), 'テスト');

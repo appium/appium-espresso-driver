@@ -118,7 +118,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
     await openTextInput();
     const textInput = await getTextInput();
     // Focuses the field without a pointer tap
-    await driver.setValueImmediate(await textInput.elementId, '!');
+    await driver.elementSendKeys(await textInput.elementId, '!');
 
     await typeEach('ab');
     await typeEach('Привіт');
@@ -131,7 +131,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
   it('should type into the focused text field using the legacy keys endpoint', async function () {
     await openTextInput();
     const textInput = await getTextInput();
-    await driver.setValueImmediate(await textInput.elementId, '!');
+    await driver.elementSendKeys(await textInput.elementId, '!');
 
     const {status} = await axios.post(`http://${HOST}:${PORT}/session/${driver.sessionId}/keys`, {
       value: ['a', 'Ж', 'b'],
