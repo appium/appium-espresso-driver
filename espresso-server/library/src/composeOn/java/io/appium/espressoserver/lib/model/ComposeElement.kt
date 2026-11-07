@@ -23,7 +23,7 @@ import java.util.UUID
 
 class ComposeElement(node: SemanticsNodeInteraction) : BaseElement {
     @Suppress("JoinDeclarationAndAssignment")
-    @SerializedName(JSONWP_ELEMENT_KEY, alternate = [W3C_ELEMENT_KEY])
+    @SerializedName(W3C_ELEMENT_KEY, alternate = [JSONWP_ELEMENT_KEY])
     override val element: String
 
     init {
