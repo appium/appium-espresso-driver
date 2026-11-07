@@ -31,10 +31,8 @@ export function isAppOnDevice(driver: EspressoDriver): boolean {
  * @throws If the zip did not have any SUPPORTED_EXTENSIONS packages.
  */
 export async function unzipApp(this: EspressoDriver, appPath: string): Promise<string> {
-  const useSystemUnzipEnv = process.env.APPIUM_PREFER_SYSTEM_UNZIP;
-  const useSystemUnzip = !useSystemUnzipEnv || !['0', 'false'].includes(useSystemUnzipEnv.toLowerCase());
   const tmpRoot = await tempDir.openDir();
-  await zip.extractAllTo(appPath, tmpRoot, {useSystemUnzip});
+  await zip.extractAllTo(appPath, tmpRoot);
 
   const globPattern = `**/*.+(${SUPPORTED_EXTENSIONS.map((ext) => ext.replace(/^\./, '')).join('|')})`;
   const sortedBundleItems = (

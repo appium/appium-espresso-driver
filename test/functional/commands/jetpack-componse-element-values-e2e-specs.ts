@@ -60,7 +60,7 @@ describe('Jetpack Compose', {timeout: E2E_TEST_TIMEOUT}, function () {
     // verify default text
     assert.strictEqual(await textElement.getText(), 'Enter your text here');
 
-    await driver.setValueImmediate(textElement.elementId, 'hello');
+    await driver.elementSendKeys(textElement.elementId, 'hello');
     // should append to the exiting text
     assert.strictEqual(
       await driver.$(await driver.findElement('tag name', 'text_input')).getText(),

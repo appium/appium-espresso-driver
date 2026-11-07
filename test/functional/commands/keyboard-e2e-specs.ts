@@ -60,9 +60,9 @@ describe('keyboard', {timeout: E2E_TEST_TIMEOUT}, function () {
 
   it('should send keys to the correct element with setImmediateValue', async function () {
     const el = await driver.$('//android.widget.AutoCompleteTextView');
-    await driver.setValueImmediate(el.elementId, 'hello world');
+    await driver.elementSendKeys(el.elementId, 'hello world');
     assert.strictEqual(await el.getText(), 'hello world');
-    await driver.setValueImmediate(el.elementId, '!!!');
+    await driver.elementSendKeys(el.elementId, '!!!');
     assert.strictEqual(await el.getText(), 'hello world!!!');
     await driver.elementClear(el.elementId);
   });

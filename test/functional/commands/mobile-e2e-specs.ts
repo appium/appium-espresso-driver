@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {describe, it, before, after, beforeEach, afterEach} from 'node:test';
 
-import type {Browser, ChainablePromiseElement} from 'webdriverio';
+import type {Browser} from 'webdriverio';
 
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
@@ -252,7 +252,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
     });
   });
   describe('mobile: clickAction', {skip: Boolean(process.env.CI)}, function () {
-    let viewEl: ChainablePromiseElement;
+    let viewEl: WebdriverIO.Element;
 
     beforeEach(async function () {
       viewEl = await driver.$('~Views');

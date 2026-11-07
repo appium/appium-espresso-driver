@@ -1,11 +1,4 @@
-import type {
-  DefaultCreateSessionResult,
-  DriverData,
-  ExternalDriver,
-  InitialOpts,
-  RouteMatcher,
-  StringRecord,
-} from '@appium/types';
+import type {DefaultCreateSessionResult, ExternalDriver, InitialOpts, RouteMatcher, StringRecord} from '@appium/types';
 import {DEFAULT_ADB_PORT} from 'appium-adb';
 import {AndroidDriver} from 'appium-android-driver';
 import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver.js';
@@ -239,27 +232,15 @@ export class EspressoDriver
     this.chromedriver = undefined;
   }
 
-  get driverData() {
-    return {};
-  }
-
   get appOnDevice(): boolean {
     return appInstallCmds.isAppOnDevice(this);
   }
 
-  override async createSession(
-    w3cCaps1: W3CEspressoDriverCaps,
-    w3cCaps2?: W3CEspressoDriverCaps,
-    w3cCaps3?: W3CEspressoDriverCaps,
-    driverData?: DriverData[],
-  ): Promise<any> {
+  override async createSession(w3cCapabilities: W3CEspressoDriverCaps): Promise<any> {
     try {
       const [sessionId, caps] = (await BaseDriver.prototype.createSession.call(
         this,
-        w3cCaps1,
-        w3cCaps2,
-        w3cCaps3,
-        driverData,
+        w3cCapabilities,
       )) as DefaultCreateSessionResult<EspressoConstraints>;
 
       const serverDetails = {
