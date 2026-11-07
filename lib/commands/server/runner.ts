@@ -6,7 +6,7 @@ import type {AppiumLogger, StringRecord, HTTPMethod, HTTPBody, ProxyResponse, Pr
 import type {ADB} from 'appium-adb';
 import {WebDriverProxy, errors} from 'appium/driver.js';
 import {fs, node, util, timing} from 'appium/support.js';
-import {sleep, waitForCondition} from 'asyncbox';
+import {ConditionUnmetError, sleep, waitForCondition} from 'asyncbox';
 import axios from 'axios';
 import * as semver from 'semver';
 import type {SubProcess} from 'teen_process';
