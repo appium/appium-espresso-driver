@@ -1,3 +1,17 @@
+## [10.0.0](https://github.com/appium/appium-espresso-driver/compare/v9.3.13...v10.0.0) (2026-11-08)
+
+### ⚠ BREAKING CHANGES
+
+* Requires Appium ^4.0.0-beta.6 (peer dependency). The driver is no longer compatible with Appium 3.
+* Drops Node 20. The minimum is now ^22.22.2 || ^24.15.0 || >=26.0.0, matching Appium 4's own engine range.
+* APPIUM_PREFER_SYSTEM_UNZIP is no longer recognized. @appium/support's zip.extractAllTo dropped the useSystemUnzip option, so the variable has no effect. Removed from the code and from docs/reference/env-vars.md.
+* Driver API: createSession now takes a single w3cCapabilities argument and the driverData getter is removed, following the Appium 4 base driver. This only matters to anyone subclassing EspressoDriver.
+* No default export. The package now only has the named EspressoDriver export, so import EspressoDriver from 'appium-espresso-driver' must become import {EspressoDriver} from 'appium-espresso-driver'. Appium itself is not affected, as it loads the class via mainClass.
+
+### Features
+
+* target Appium 4 beta ([#1248](https://github.com/appium/appium-espresso-driver/issues/1248)) ([20a1492](https://github.com/appium/appium-espresso-driver/commit/20a1492825b4d8789ec61efc593ec71e8b5202b4))
+
 ## [9.3.13](https://github.com/appium/appium-espresso-driver/compare/v9.3.12...v9.3.13) (2026-11-04)
 
 ### Bug Fixes
