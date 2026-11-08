@@ -485,5 +485,3 @@ Object.assign(EspressoDriver.prototype, {
   mobileStartService: servicesCmds.mobileStartService,
   mobileStopService: servicesCmds.mobileStopService,
 });
-
-export default EspressoDriver;
