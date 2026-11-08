@@ -1,7 +1,7 @@
 import type {DefaultCreateSessionResult, ExternalDriver, InitialOpts, RouteMatcher, StringRecord} from '@appium/types';
 import {DEFAULT_ADB_PORT} from 'appium-adb';
 import {AndroidDriver} from 'appium-android-driver';
-import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver.js';
+import {errors, isErrorType, DeviceSettings} from 'appium/driver.js';
 import {retryInterval} from 'asyncbox';
 import {findAPortNotInUse} from 'portscanner';
 
@@ -186,8 +186,7 @@ export class EspressoDriver
 
   override async createSession(w3cCapabilities: W3CEspressoDriverCaps): Promise<any> {
     try {
-      const [sessionId, caps] = (await BaseDriver.prototype.createSession.call(
-        this,
+      const [sessionId, caps] = (await super.createSession(
         w3cCapabilities,
       )) as DefaultCreateSessionResult<EspressoConstraints>;
 
