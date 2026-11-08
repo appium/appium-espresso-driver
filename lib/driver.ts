@@ -184,11 +184,11 @@ export class EspressoDriver
     return appInstallCmds.isAppOnDevice(this);
   }
 
-  override async createSession(w3cCapabilities: W3CEspressoDriverCaps): Promise<any> {
+  override async createSession(
+    w3cCapabilities: W3CEspressoDriverCaps,
+  ): Promise<DefaultCreateSessionResult<EspressoConstraints>> {
     try {
-      const [sessionId, caps] = (await super.createSession(
-        w3cCapabilities,
-      )) as DefaultCreateSessionResult<EspressoConstraints>;
+      const [sessionId, caps] = await super.createSession(w3cCapabilities);
 
       const serverDetails = {
         platform: 'LINUX',
@@ -387,7 +387,7 @@ export class EspressoDriver
     this.caps.deviceManufacturer = manufacturer;
   }
 
-  async onSettingsUpdate(key: string, value: any) {
+  async onSettingsUpdate(key: string, value: unknown) {
     if (key === 'driver') {
       this.locatorStrategies =
         String(value).toLowerCase() === 'compose'
