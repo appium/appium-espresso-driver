@@ -1,15 +1,13 @@
 import {fs} from 'appium/support.js';
 
+import {findFiles} from '../find-files.mjs';
+
 /**
  * @param {string} root Gradle project root
  * @returns {Promise<string[]>} Main-manifest file contents (one entry per module)
  */
 export async function findManifestTexts(root) {
-  const manifestPaths = await fs.glob('**/src/main/AndroidManifest.xml', {
-    cwd: root,
-    absolute: true,
-    ignore: ['**/node_modules/**', '**/.git/**', '**/build/**', '**/.gradle/**'],
-  });
+  const manifestPaths = await findFiles('**/src/main/AndroidManifest.xml', root);
   if (!manifestPaths.length) {
     return [];
   }

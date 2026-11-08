@@ -66,7 +66,8 @@ and prerequisites of Appium itself can be found in [the Appium documentation](ht
 
 | Espresso driver version | Supported Appium server version |
 | --- | --- |
-| >= 5.0.0 | Appium 3 |
+| >= 10.0.0 | Appium 4 |
+| 5.0.0 - 9.3.13 | Appium 3 |
 | 2.0.0 - 4.1.17 | Appium 2 |
 
 ## Installation

@@ -1,5 +1,13 @@
 import type {EspressoDriver} from '../driver.js';
 
+declare module '../driver.js' {
+  interface EspressoDriver {
+    getClipboard(...args: Parameters<typeof getClipboard>): ReturnType<typeof getClipboard>;
+    mobileGetClipboard(...args: Parameters<typeof getClipboard>): ReturnType<typeof getClipboard>;
+    mobileSetClipboard(...args: Parameters<typeof mobileSetClipboard>): ReturnType<typeof mobileSetClipboard>;
+  }
+}
+
 /**
  * Gets the clipboard content from the device.
  * @returns Promise that resolves to base64-encoded content of the clipboard

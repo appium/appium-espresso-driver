@@ -10,6 +10,8 @@ const E2E_TEST_TIMEOUT = (process.env.CI ? 10 : 4) * 60 * 1000;
 const COMMON_REMOTE_OPTIONS = {
   hostname: HOST,
   port: PORT,
+  // wdio 10 defaults to strict selectors; the tests rely on first-match $()
+  strictSelectors: false,
 };
 
 let driver: Browser | null = null;

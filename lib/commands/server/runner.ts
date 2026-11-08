@@ -3,13 +3,12 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 import type {AppiumLogger, StringRecord, HTTPMethod, HTTPBody, ProxyResponse, ProxyOptions} from '@appium/types';
-import type {ADB} from 'appium-adb';
+import type {ADB, SubProcess} from 'appium-adb';
 import {WebDriverProxy, errors} from 'appium/driver.js';
 import {fs, node, util, timing} from 'appium/support.js';
 import {sleep, waitForCondition} from 'asyncbox';
 import axios from 'axios';
 import * as semver from 'semver';
-import type {SubProcess} from 'teen_process';
 
 import {getPackageInfoSync, getPackageInfo, isPlainObject} from '../../utils/index.js';
 import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './builder.js';

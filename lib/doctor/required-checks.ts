@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import type {AppiumLogger, IDoctorCheck} from '@appium/types';
+import type {AppiumLogger, DoctorCheckResult, IDoctorCheck} from '@appium/types';
 import {doctor as doctorCommon} from 'appium-android-driver';
 import {fs, system, doctor} from 'appium/support.js';
 import {exec} from 'teen_process';
@@ -15,7 +15,7 @@ export class JavaVersionCheck implements IDoctorCheck {
   MIN_JAVA_VERSION = 11;
   JAVA_VERSION_PATTERN = /^\s*java\.version\s*=\s*([\d.]+)/m;
 
-  async diagnose() {
+  async diagnose(): Promise<DoctorCheckResult> {
     const javaHome = process.env.JAVA_HOME;
     const fullJavaPath = path.join(javaHome ?? '', 'bin', `java${system.isWindows() ? '.exe' : ''}`);
     if (!javaHome || !(await fs.exists(fullJavaPath))) {
@@ -37,18 +37,18 @@ export class JavaVersionCheck implements IDoctorCheck {
       : doctor.ok(`The active Java version matches (${majorVer} >= ${this.MIN_JAVA_VERSION})`);
   }
 
-  async fix() {
+  async fix(): Promise<string> {
     return (
       `Upgrade to Java ${this.MIN_JAVA_VERSION}+ or update ` +
       `the JAVA_HOME environment variable if it is already installed`
     );
   }
 
-  hasAutofix() {
+  hasAutofix(): boolean {
     return false;
   }
 
-  isOptional() {
+  isOptional(): boolean {
     return false;
   }
 }

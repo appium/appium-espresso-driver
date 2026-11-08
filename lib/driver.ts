@@ -1,14 +1,7 @@
-import type {
-  DefaultCreateSessionResult,
-  DriverData,
-  ExternalDriver,
-  InitialOpts,
-  RouteMatcher,
-  StringRecord,
-} from '@appium/types';
+import type {DefaultCreateSessionResult, ExternalDriver, InitialOpts, RouteMatcher, StringRecord} from '@appium/types';
 import {DEFAULT_ADB_PORT} from 'appium-adb';
 import {AndroidDriver} from 'appium-android-driver';
-import {errors, isErrorType, DeviceSettings, BaseDriver} from 'appium/driver.js';
+import {errors, isErrorType, DeviceSettings} from 'appium/driver.js';
 import {retryInterval} from 'asyncbox';
 import {findAPortNotInUse} from 'portscanner';
 
@@ -168,58 +161,6 @@ export class EspressoDriver
 
   override desiredCapConstraints: EspressoConstraints;
 
-  performActions = actionsCmds.performActions as AndroidDriver['performActions'];
-
-  startActivity = appManagementCmds.startActivity;
-  mobileStartActivity = appManagementCmds.mobileStartActivity as unknown as AndroidDriver['mobileStartActivity'];
-
-  mobileWebAtoms = contextCmds.mobileWebAtoms;
-  suspendChromedriverProxy = contextCmds.suspendChromedriverProxy as AndroidDriver['suspendChromedriverProxy'];
-
-  mobilePerformEditorAction = elementCmds.mobilePerformEditorAction as AndroidDriver['mobilePerformEditorAction'];
-  mobileSwipe = elementCmds.mobileSwipe;
-  mobileOpenDrawer = elementCmds.mobileOpenDrawer;
-  mobileCloseDrawer = elementCmds.mobileCloseDrawer;
-  mobileSetDate = elementCmds.mobileSetDate;
-  mobileSetTime = elementCmds.mobileSetTime;
-  mobileNavigateTo = elementCmds.mobileNavigateTo;
-  mobileScrollToPage = elementCmds.mobileScrollToPage;
-  mobileFlashElement = elementCmds.mobileFlashElement;
-  mobileClickAction = elementCmds.mobileClickAction;
-  mobileDismissAutofill = elementCmds.mobileDismissAutofill;
-
-  mobilePressKey = miscCmds.mobilePressKey;
-  mobileGetDeviceInfo = miscCmds.mobileGetDeviceInfo;
-  mobileIsToastVisible = miscCmds.mobileIsToastVisible;
-  getDisplayDensity = miscCmds.getDisplayDensity as AndroidDriver['getDisplayDensity'];
-  mobileBackdoor = miscCmds.mobileBackdoor;
-  mobileUiautomator = miscCmds.mobileUiautomator;
-  mobileUiautomatorPageSource = miscCmds.mobileUiautomatorPageSource;
-  updateSettings = miscCmds.updateSettings;
-  getSettings = miscCmds.getSettings;
-
-  getClipboard = clipboardCmds.getClipboard;
-  mobileGetClipboard = clipboardCmds.getClipboard;
-  mobileSetClipboard = clipboardCmds.mobileSetClipboard;
-
-  mobileStartService = servicesCmds.mobileStartService as unknown as AndroidDriver['mobileStartService'];
-  mobileStopService = servicesCmds.mobileStopService as unknown as AndroidDriver['mobileStopService'];
-
-  getScreenshot = screenshotCmds.getScreenshot;
-  mobileScreenshots = screenshotCmds.mobileScreenshots;
-
-  mobileRegisterIdlingResources = idlingResourcesCmds.mobileRegisterIdlingResources;
-  mobileUnregisterIdlingResources = idlingResourcesCmds.mobileUnregisterIdlingResources;
-  mobileListIdlingResources = idlingResourcesCmds.mobileListIdlingResources;
-  mobileWaitForUIThread = idlingResourcesCmds.mobileWaitForUIThread;
-
-  startEspressoSession = serverCmds.startSession;
-  initEspressoServer = serverCmds.initServer;
-
-  unzipApp = appInstallCmds.unzipApp;
-  onPostConfigureApp = appInstallCmds.onPostConfigureApp;
-  initAUT = appInstallCmds.initAUT;
-
   constructor(opts: InitialOpts = {} as InitialOpts, shouldValidateCaps = true) {
     // `shell` overwrites adb.shell, so remove
     if ('shell' in opts) {
@@ -239,28 +180,15 @@ export class EspressoDriver
     this.chromedriver = undefined;
   }
 
-  get driverData() {
-    return {};
-  }
-
   get appOnDevice(): boolean {
     return appInstallCmds.isAppOnDevice(this);
   }
 
   override async createSession(
-    w3cCaps1: W3CEspressoDriverCaps,
-    w3cCaps2?: W3CEspressoDriverCaps,
-    w3cCaps3?: W3CEspressoDriverCaps,
-    driverData?: DriverData[],
-  ): Promise<any> {
+    w3cCapabilities: W3CEspressoDriverCaps,
+  ): Promise<DefaultCreateSessionResult<EspressoConstraints>> {
     try {
-      const [sessionId, caps] = (await BaseDriver.prototype.createSession.call(
-        this,
-        w3cCaps1,
-        w3cCaps2,
-        w3cCaps3,
-        driverData,
-      )) as DefaultCreateSessionResult<EspressoConstraints>;
+      const [sessionId, caps] = await super.createSession(w3cCapabilities);
 
       const serverDetails = {
         platform: 'LINUX',
@@ -348,7 +276,7 @@ export class EspressoDriver
     }
   }
 
-  override async deleteSession() {
+  override async deleteSession(): Promise<void> {
     this.log.debug('Deleting espresso session');
 
     const screenRecordingStopTasks = [
@@ -459,7 +387,7 @@ export class EspressoDriver
     this.caps.deviceManufacturer = manufacturer;
   }
 
-  async onSettingsUpdate(key: string, value: any) {
+  async onSettingsUpdate(key: string, value: unknown): Promise<void> {
     if (key === 'driver') {
       this.locatorStrategies =
         String(value).toLowerCase() === 'compose'
@@ -468,13 +396,13 @@ export class EspressoDriver
     }
   }
 
-  override proxyActive(sessionId?: string | null) {
+  override proxyActive(sessionId?: string | null): boolean {
     void sessionId;
     // we always have an active proxy to the espresso server
     return true;
   }
 
-  override canProxy(sessionId?: string | null) {
+  override canProxy(sessionId?: string | null): boolean {
     void sessionId;
     // we can always proxy to the espresso server
     return true;
@@ -493,4 +421,67 @@ export class EspressoDriver
   }
 }
 
-export default EspressoDriver;
+Object.assign(EspressoDriver.prototype, {
+  // actions
+  performActions: actionsCmds.performActions,
+
+  // app-install
+  unzipApp: appInstallCmds.unzipApp,
+  onPostConfigureApp: appInstallCmds.onPostConfigureApp,
+  initAUT: appInstallCmds.initAUT,
+
+  // app-management
+  startActivity: appManagementCmds.startActivity,
+  mobileStartActivity: appManagementCmds.mobileStartActivity,
+
+  // clipboard
+  getClipboard: clipboardCmds.getClipboard,
+  mobileGetClipboard: clipboardCmds.getClipboard,
+  mobileSetClipboard: clipboardCmds.mobileSetClipboard,
+
+  // context
+  mobileWebAtoms: contextCmds.mobileWebAtoms,
+  suspendChromedriverProxy: contextCmds.suspendChromedriverProxy,
+
+  // element
+  mobilePerformEditorAction: elementCmds.mobilePerformEditorAction,
+  mobileSwipe: elementCmds.mobileSwipe,
+  mobileOpenDrawer: elementCmds.mobileOpenDrawer,
+  mobileCloseDrawer: elementCmds.mobileCloseDrawer,
+  mobileSetDate: elementCmds.mobileSetDate,
+  mobileSetTime: elementCmds.mobileSetTime,
+  mobileNavigateTo: elementCmds.mobileNavigateTo,
+  mobileScrollToPage: elementCmds.mobileScrollToPage,
+  mobileFlashElement: elementCmds.mobileFlashElement,
+  mobileClickAction: elementCmds.mobileClickAction,
+  mobileDismissAutofill: elementCmds.mobileDismissAutofill,
+
+  // idling-resources
+  mobileRegisterIdlingResources: idlingResourcesCmds.mobileRegisterIdlingResources,
+  mobileUnregisterIdlingResources: idlingResourcesCmds.mobileUnregisterIdlingResources,
+  mobileListIdlingResources: idlingResourcesCmds.mobileListIdlingResources,
+  mobileWaitForUIThread: idlingResourcesCmds.mobileWaitForUIThread,
+
+  // misc
+  mobilePressKey: miscCmds.mobilePressKey,
+  mobileGetDeviceInfo: miscCmds.mobileGetDeviceInfo,
+  mobileIsToastVisible: miscCmds.mobileIsToastVisible,
+  getDisplayDensity: miscCmds.getDisplayDensity,
+  mobileBackdoor: miscCmds.mobileBackdoor,
+  mobileUiautomator: miscCmds.mobileUiautomator,
+  mobileUiautomatorPageSource: miscCmds.mobileUiautomatorPageSource,
+  updateSettings: miscCmds.updateSettings,
+  getSettings: miscCmds.getSettings,
+
+  // screenshot
+  getScreenshot: screenshotCmds.getScreenshot,
+  mobileScreenshots: screenshotCmds.mobileScreenshots,
+
+  // server
+  startEspressoSession: serverCmds.startSession,
+  initEspressoServer: serverCmds.initServer,
+
+  // services
+  mobileStartService: servicesCmds.mobileStartService,
+  mobileStopService: servicesCmds.mobileStopService,
+});

@@ -1,4 +1,1 @@
-import {EspressoDriver} from './driver.js';
-
-export {EspressoDriver};
-export default EspressoDriver;
+export {EspressoDriver} from './driver.js';

@@ -236,13 +236,20 @@ internal class Router(server: ServerBase) {
             sessionId = appiumParams.sessionId
             val handlerResult = handler.handle(appiumParams)
 
-            // If it's a new session, pull out the newly created Session ID
-            if (handlerResult is GlobalSession) {
+            // If it's a new session, pull out the newly created Session ID and report it in
+            // the W3C way (inside the value), since Appium 4 proxies read it only from there
+            val responseValue = if (handlerResult is GlobalSession) {
                 sessionId = handlerResult.sessionId
+                mapOf(
+                    "sessionId" to sessionId,
+                    "capabilities" to handlerResult.capabilities
+                )
+            } else {
+                handlerResult
             }
 
             // Construct the response and serve it
-            val appiumResponse = AppiumResponse(handlerResult, sessionId)
+            val appiumResponse = AppiumResponse(responseValue, sessionId)
             AndroidLogger.debug("Finished processing $method request for '$uri'")
             return appiumResponse
         } catch (e: Throwable) {

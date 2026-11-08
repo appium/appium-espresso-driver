@@ -2,6 +2,15 @@ import type {StringRecord} from '@appium/types';
 
 import type {EspressoDriver} from '../driver.js';
 
+declare module '../driver.js' {
+  interface EspressoDriver {
+    mobileWebAtoms(...args: Parameters<typeof mobileWebAtoms>): ReturnType<typeof mobileWebAtoms>;
+    suspendChromedriverProxy(
+      ...args: Parameters<typeof suspendChromedriverProxy>
+    ): ReturnType<typeof suspendChromedriverProxy>;
+  }
+}
+
 /**
  * Stop proxying to any Chromedriver and redirect to Espresso
  *
