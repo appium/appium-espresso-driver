@@ -276,7 +276,7 @@ export class EspressoDriver
     }
   }
 
-  override async deleteSession() {
+  override async deleteSession(): Promise<void> {
     this.log.debug('Deleting espresso session');
 
     const screenRecordingStopTasks = [
@@ -387,7 +387,7 @@ export class EspressoDriver
     this.caps.deviceManufacturer = manufacturer;
   }
 
-  async onSettingsUpdate(key: string, value: unknown) {
+  async onSettingsUpdate(key: string, value: unknown): Promise<void> {
     if (key === 'driver') {
       this.locatorStrategies =
         String(value).toLowerCase() === 'compose'
@@ -396,13 +396,13 @@ export class EspressoDriver
     }
   }
 
-  override proxyActive(sessionId?: string | null) {
+  override proxyActive(sessionId?: string | null): boolean {
     void sessionId;
     // we always have an active proxy to the espresso server
     return true;
   }
 
-  override canProxy(sessionId?: string | null) {
+  override canProxy(sessionId?: string | null): boolean {
     void sessionId;
     // we can always proxy to the espresso server
     return true;
