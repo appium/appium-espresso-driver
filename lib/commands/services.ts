@@ -1,5 +1,11 @@
 import type {EspressoDriver} from '../driver.js';
 
+declare module '../driver.js' {
+  interface EspressoDriver {
+    mobileStopService(...args: Parameters<typeof mobileStopService>): ReturnType<typeof mobileStopService>;
+  }
+}
+
 /**
  * Starts the given service intent.
  *

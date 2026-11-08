@@ -1,5 +1,20 @@
 import type {EspressoDriver} from '../driver.js';
 
+declare module '../driver.js' {
+  interface EspressoDriver {
+    mobileRegisterIdlingResources(
+      ...args: Parameters<typeof mobileRegisterIdlingResources>
+    ): ReturnType<typeof mobileRegisterIdlingResources>;
+    mobileUnregisterIdlingResources(
+      ...args: Parameters<typeof mobileUnregisterIdlingResources>
+    ): ReturnType<typeof mobileUnregisterIdlingResources>;
+    mobileListIdlingResources(
+      ...args: Parameters<typeof mobileListIdlingResources>
+    ): ReturnType<typeof mobileListIdlingResources>;
+    mobileWaitForUIThread(...args: Parameters<typeof mobileWaitForUIThread>): ReturnType<typeof mobileWaitForUIThread>;
+  }
+}
+
 /**
  * Registers one or more idling resources
  *

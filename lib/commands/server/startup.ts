@@ -5,6 +5,13 @@ import {qualifyActivityName, getPackageInfo} from '../../utils/index.js';
 import {DEVICE_PORT} from './constants.js';
 import {EspressoRunner} from './runner.js';
 
+declare module '../../driver.js' {
+  interface EspressoDriver {
+    startEspressoSession(...args: Parameters<typeof startSession>): ReturnType<typeof startSession>;
+    initEspressoServer(...args: Parameters<typeof initServer>): ReturnType<typeof initServer>;
+  }
+}
+
 /**
  * Start an Espresso session: device setup, server install, and session launch.
  */

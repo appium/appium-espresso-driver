@@ -9,6 +9,14 @@ import type {EspressoDriver} from '../driver.js';
 import {isPlainObject} from '../utils/index.js';
 import {TEST_APK_PKG} from './server/index.js';
 
+declare module '../driver.js' {
+  interface EspressoDriver {
+    unzipApp(...args: Parameters<typeof unzipApp>): ReturnType<typeof unzipApp>;
+    onPostConfigureApp(...args: Parameters<typeof onPostConfigureApp>): ReturnType<typeof onPostConfigureApp>;
+    initAUT(...args: Parameters<typeof initAUT>): ReturnType<typeof initAUT>;
+  }
+}
+
 export const APK_EXT = '.apk';
 export const AAB_EXT = '.aab';
 export const SUPPORTED_EXTENSIONS = [APK_EXT, AAB_EXT];

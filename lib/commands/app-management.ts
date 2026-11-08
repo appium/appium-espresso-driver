@@ -3,6 +3,12 @@ import {errors} from 'appium/driver.js';
 import type {EspressoDriver} from '../driver.js';
 import {qualifyActivityName} from '../utils/index.js';
 
+declare module '../driver.js' {
+  interface EspressoDriver {
+    startActivity(...args: Parameters<typeof startActivity>): ReturnType<typeof startActivity>;
+  }
+}
+
 /**
  * Starts the given activity with intent options, activity options and locale.
  * Activity could only be executed in scope of the current app package.

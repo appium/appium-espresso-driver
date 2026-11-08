@@ -5,6 +5,22 @@ import {util} from 'appium/support.js';
 import type {EspressoDriver} from '../driver.js';
 import type {DeviceInfo} from '../types.js';
 
+declare module '../driver.js' {
+  interface EspressoDriver {
+    mobilePressKey(...args: Parameters<typeof mobilePressKey>): ReturnType<typeof mobilePressKey>;
+    mobileGetDeviceInfo(...args: Parameters<typeof mobileGetDeviceInfo>): ReturnType<typeof mobileGetDeviceInfo>;
+    mobileIsToastVisible(...args: Parameters<typeof mobileIsToastVisible>): ReturnType<typeof mobileIsToastVisible>;
+    getDisplayDensity(...args: Parameters<typeof getDisplayDensity>): ReturnType<typeof getDisplayDensity>;
+    mobileBackdoor(...args: Parameters<typeof mobileBackdoor>): ReturnType<typeof mobileBackdoor>;
+    mobileUiautomator(...args: Parameters<typeof mobileUiautomator>): ReturnType<typeof mobileUiautomator>;
+    mobileUiautomatorPageSource(
+      ...args: Parameters<typeof mobileUiautomatorPageSource>
+    ): ReturnType<typeof mobileUiautomatorPageSource>;
+    updateSettings(...args: Parameters<typeof updateSettings>): ReturnType<typeof updateSettings>;
+    getSettings(...args: Parameters<typeof getSettings>): ReturnType<typeof getSettings>;
+  }
+}
+
 /**
  * Settings parameters that are available in
  * https://appium.github.io/appium-espresso-driver/latest/reference/settings/

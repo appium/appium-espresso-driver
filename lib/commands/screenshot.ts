@@ -1,6 +1,13 @@
 import type {EspressoDriver} from '../driver.js';
 import type {ScreenshotsInfo} from './types.js';
 
+declare module '../driver.js' {
+  interface EspressoDriver {
+    getScreenshot(...args: Parameters<typeof getScreenshot>): ReturnType<typeof getScreenshot>;
+    mobileScreenshots(...args: Parameters<typeof mobileScreenshots>): ReturnType<typeof mobileScreenshots>;
+  }
+}
+
 // Display 4619827259835644672 (HWC display 0): port=0 pnpId=GGL displayName="EMU_display_0"
 const DISPLAY_PATTERN = /^Display\s+(\d+)\s+\(.+display\s+(\d+)\).+displayName="([^"]*)/gm;
 

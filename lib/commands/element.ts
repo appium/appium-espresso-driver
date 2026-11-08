@@ -3,6 +3,24 @@ import {util} from 'appium/support.js';
 
 import type {EspressoDriver} from '../driver.js';
 
+declare module '../driver.js' {
+  interface EspressoDriver {
+    mobilePerformEditorAction(
+      ...args: Parameters<typeof mobilePerformEditorAction>
+    ): ReturnType<typeof mobilePerformEditorAction>;
+    mobileSwipe(...args: Parameters<typeof mobileSwipe>): ReturnType<typeof mobileSwipe>;
+    mobileOpenDrawer(...args: Parameters<typeof mobileOpenDrawer>): ReturnType<typeof mobileOpenDrawer>;
+    mobileCloseDrawer(...args: Parameters<typeof mobileCloseDrawer>): ReturnType<typeof mobileCloseDrawer>;
+    mobileSetDate(...args: Parameters<typeof mobileSetDate>): ReturnType<typeof mobileSetDate>;
+    mobileSetTime(...args: Parameters<typeof mobileSetTime>): ReturnType<typeof mobileSetTime>;
+    mobileNavigateTo(...args: Parameters<typeof mobileNavigateTo>): ReturnType<typeof mobileNavigateTo>;
+    mobileScrollToPage(...args: Parameters<typeof mobileScrollToPage>): ReturnType<typeof mobileScrollToPage>;
+    mobileFlashElement(...args: Parameters<typeof mobileFlashElement>): ReturnType<typeof mobileFlashElement>;
+    mobileClickAction(...args: Parameters<typeof mobileClickAction>): ReturnType<typeof mobileClickAction>;
+    mobileDismissAutofill(...args: Parameters<typeof mobileDismissAutofill>): ReturnType<typeof mobileDismissAutofill>;
+  }
+}
+
 /**
  * Flash the element with given id.
  * durationMillis and repeatCount are optional

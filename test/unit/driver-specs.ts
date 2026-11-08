@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {describe, it, beforeEach, afterEach} from 'node:test';
 
 import {ADB} from 'appium-adb';
+import {AndroidDriver} from 'appium-android-driver';
 import sinon from 'sinon';
 
 import {EspressoDriver} from '../../lib/driver.js';
@@ -93,6 +94,36 @@ describe('driver', function () {
         proxyAvoidList = driver.getProxyAvoidList(driver.sessionId).filter(nativeWebScreenshotFilter);
         assert.ok(proxyAvoidList.length > 0);
       });
+    });
+  });
+
+  describe('command overrides', function () {
+    it('should expose commands as prototype methods', function () {
+      for (const name of [
+        'mobileGetDeviceInfo',
+        'mobileSwipe',
+        'getScreenshot',
+        'getDisplayDensity',
+        'startEspressoSession',
+      ]) {
+        assert.strictEqual(Object.hasOwn(new EspressoDriver({} as any, false), name), false, name);
+        assert.strictEqual(Object.hasOwn(EspressoDriver.prototype, name), true, name);
+      }
+    });
+    it('should keep the base implementation reachable via super', function () {
+      assert.notStrictEqual(EspressoDriver.prototype.getDisplayDensity, AndroidDriver.prototype.getDisplayDensity);
+      assert.strictEqual(Object.getPrototypeOf(EspressoDriver.prototype), AndroidDriver.prototype);
+    });
+    it('should allow descendants to override a command and call super', async function () {
+      class CustomDriver extends EspressoDriver {
+        override async mobileGetDeviceInfo() {
+          const info = await super.mobileGetDeviceInfo();
+          return {...info, model: `custom:${info.model}`};
+        }
+      }
+      const driver = new CustomDriver({} as any, false);
+      driver.espresso = {jwproxy: {command: sandbox.stub().resolves({model: 'Pixel'})}} as any;
+      assert.strictEqual((await driver.mobileGetDeviceInfo()).model, 'custom:Pixel');
     });
   });
 });

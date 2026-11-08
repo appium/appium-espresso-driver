@@ -161,58 +161,6 @@ export class EspressoDriver
 
   override desiredCapConstraints: EspressoConstraints;
 
-  performActions = actionsCmds.performActions as AndroidDriver['performActions'];
-
-  startActivity = appManagementCmds.startActivity;
-  mobileStartActivity = appManagementCmds.mobileStartActivity as unknown as AndroidDriver['mobileStartActivity'];
-
-  mobileWebAtoms = contextCmds.mobileWebAtoms;
-  suspendChromedriverProxy = contextCmds.suspendChromedriverProxy as AndroidDriver['suspendChromedriverProxy'];
-
-  mobilePerformEditorAction = elementCmds.mobilePerformEditorAction as AndroidDriver['mobilePerformEditorAction'];
-  mobileSwipe = elementCmds.mobileSwipe;
-  mobileOpenDrawer = elementCmds.mobileOpenDrawer;
-  mobileCloseDrawer = elementCmds.mobileCloseDrawer;
-  mobileSetDate = elementCmds.mobileSetDate;
-  mobileSetTime = elementCmds.mobileSetTime;
-  mobileNavigateTo = elementCmds.mobileNavigateTo;
-  mobileScrollToPage = elementCmds.mobileScrollToPage;
-  mobileFlashElement = elementCmds.mobileFlashElement;
-  mobileClickAction = elementCmds.mobileClickAction;
-  mobileDismissAutofill = elementCmds.mobileDismissAutofill;
-
-  mobilePressKey = miscCmds.mobilePressKey;
-  mobileGetDeviceInfo = miscCmds.mobileGetDeviceInfo;
-  mobileIsToastVisible = miscCmds.mobileIsToastVisible;
-  getDisplayDensity = miscCmds.getDisplayDensity as AndroidDriver['getDisplayDensity'];
-  mobileBackdoor = miscCmds.mobileBackdoor;
-  mobileUiautomator = miscCmds.mobileUiautomator;
-  mobileUiautomatorPageSource = miscCmds.mobileUiautomatorPageSource;
-  updateSettings = miscCmds.updateSettings;
-  getSettings = miscCmds.getSettings;
-
-  getClipboard = clipboardCmds.getClipboard;
-  mobileGetClipboard = clipboardCmds.getClipboard;
-  mobileSetClipboard = clipboardCmds.mobileSetClipboard;
-
-  mobileStartService = servicesCmds.mobileStartService as unknown as AndroidDriver['mobileStartService'];
-  mobileStopService = servicesCmds.mobileStopService as unknown as AndroidDriver['mobileStopService'];
-
-  getScreenshot = screenshotCmds.getScreenshot;
-  mobileScreenshots = screenshotCmds.mobileScreenshots;
-
-  mobileRegisterIdlingResources = idlingResourcesCmds.mobileRegisterIdlingResources;
-  mobileUnregisterIdlingResources = idlingResourcesCmds.mobileUnregisterIdlingResources;
-  mobileListIdlingResources = idlingResourcesCmds.mobileListIdlingResources;
-  mobileWaitForUIThread = idlingResourcesCmds.mobileWaitForUIThread;
-
-  startEspressoSession = serverCmds.startSession;
-  initEspressoServer = serverCmds.initServer;
-
-  unzipApp = appInstallCmds.unzipApp;
-  onPostConfigureApp = appInstallCmds.onPostConfigureApp;
-  initAUT = appInstallCmds.initAUT;
-
   constructor(opts: InitialOpts = {} as InitialOpts, shouldValidateCaps = true) {
     // `shell` overwrites adb.shell, so remove
     if ('shell' in opts) {
@@ -473,5 +421,70 @@ export class EspressoDriver
     return this.jwpProxyAvoid;
   }
 }
+
+Object.assign(EspressoDriver.prototype, {
+  // actions
+  performActions: actionsCmds.performActions,
+
+  // app-install
+  unzipApp: appInstallCmds.unzipApp,
+  onPostConfigureApp: appInstallCmds.onPostConfigureApp,
+  initAUT: appInstallCmds.initAUT,
+
+  // app-management
+  startActivity: appManagementCmds.startActivity,
+  mobileStartActivity: appManagementCmds.mobileStartActivity,
+
+  // clipboard
+  getClipboard: clipboardCmds.getClipboard,
+  mobileGetClipboard: clipboardCmds.getClipboard,
+  mobileSetClipboard: clipboardCmds.mobileSetClipboard,
+
+  // context
+  mobileWebAtoms: contextCmds.mobileWebAtoms,
+  suspendChromedriverProxy: contextCmds.suspendChromedriverProxy,
+
+  // element
+  mobilePerformEditorAction: elementCmds.mobilePerformEditorAction,
+  mobileSwipe: elementCmds.mobileSwipe,
+  mobileOpenDrawer: elementCmds.mobileOpenDrawer,
+  mobileCloseDrawer: elementCmds.mobileCloseDrawer,
+  mobileSetDate: elementCmds.mobileSetDate,
+  mobileSetTime: elementCmds.mobileSetTime,
+  mobileNavigateTo: elementCmds.mobileNavigateTo,
+  mobileScrollToPage: elementCmds.mobileScrollToPage,
+  mobileFlashElement: elementCmds.mobileFlashElement,
+  mobileClickAction: elementCmds.mobileClickAction,
+  mobileDismissAutofill: elementCmds.mobileDismissAutofill,
+
+  // idling-resources
+  mobileRegisterIdlingResources: idlingResourcesCmds.mobileRegisterIdlingResources,
+  mobileUnregisterIdlingResources: idlingResourcesCmds.mobileUnregisterIdlingResources,
+  mobileListIdlingResources: idlingResourcesCmds.mobileListIdlingResources,
+  mobileWaitForUIThread: idlingResourcesCmds.mobileWaitForUIThread,
+
+  // misc
+  mobilePressKey: miscCmds.mobilePressKey,
+  mobileGetDeviceInfo: miscCmds.mobileGetDeviceInfo,
+  mobileIsToastVisible: miscCmds.mobileIsToastVisible,
+  getDisplayDensity: miscCmds.getDisplayDensity,
+  mobileBackdoor: miscCmds.mobileBackdoor,
+  mobileUiautomator: miscCmds.mobileUiautomator,
+  mobileUiautomatorPageSource: miscCmds.mobileUiautomatorPageSource,
+  updateSettings: miscCmds.updateSettings,
+  getSettings: miscCmds.getSettings,
+
+  // screenshot
+  getScreenshot: screenshotCmds.getScreenshot,
+  mobileScreenshots: screenshotCmds.mobileScreenshots,
+
+  // server
+  startEspressoSession: serverCmds.startSession,
+  initEspressoServer: serverCmds.initServer,
+
+  // services
+  mobileStartService: servicesCmds.mobileStartService,
+  mobileStopService: servicesCmds.mobileStopService,
+});
 
 export default EspressoDriver;
