@@ -87,7 +87,7 @@
     "appium-android-driver": "^15.0.0",
     "asyncbox": "^6.5.0",
     "axios": "^1.18.0",
-    "commander": "^14.0.1",
+    "commander": "^15.0.0",
     "io.appium.settings": "^8.0.1",
     "portscanner": "^2.2.0",
     "semver": "^7.6.2",
