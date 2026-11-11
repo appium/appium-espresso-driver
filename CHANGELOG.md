@@ -1,3 +1,9 @@
+## [10.0.1](https://github.com/appium/appium-espresso-driver/compare/v10.0.0...v10.0.1) (2026-11-11)
+
+### Miscellaneous Chores
+
+* **deps:** bump appium-adb, appium-android-driver, io.appium.settings and appium-chromedriver ([#1251](https://github.com/appium/appium-espresso-driver/issues/1251)) ([3b956b0](https://github.com/appium/appium-espresso-driver/commit/3b956b09a1bbcf79957f0e30304fec95122c5007))
+
 ## [10.0.0](https://github.com/appium/appium-espresso-driver/compare/v9.3.13...v10.0.0) (2026-11-08)
 
 ### ⚠ BREAKING CHANGES
