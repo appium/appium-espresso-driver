@@ -2,8 +2,8 @@ import type {DefaultCreateSessionResult, ExternalDriver, InitialOpts, RouteMatch
 import {DEFAULT_ADB_PORT} from 'appium-adb';
 import {AndroidDriver} from 'appium-android-driver';
 import {errors, isErrorType, DeviceSettings} from 'appium/driver.js';
+import {net} from 'appium/support.js';
 import {retryInterval} from 'asyncbox';
-import {findAPortNotInUse} from 'portscanner';
 
 import * as actionsCmds from './commands/actions.js';
 import * as appInstallCmds from './commands/app-install.js';
@@ -229,9 +229,7 @@ export class EspressoDriver
         }
       }
 
-      this.opts.systemPort =
-        this.opts.systemPort ||
-        (await findAPortNotInUse(serverCmds.SYSTEM_PORT_RANGE[0], serverCmds.SYSTEM_PORT_RANGE[1]));
+      this.opts.systemPort = this.opts.systemPort || (await net.getFreePort({port: serverCmds.SYSTEM_PORT_RANGE}));
       this.opts.adbPort = this.opts.adbPort || DEFAULT_ADB_PORT;
       // get device udid for this session
       const {udid, emPort} = await this.getDeviceInfoFromCaps();
