@@ -1,3 +1,9 @@
+## [10.0.2](https://github.com/appium/appium-espresso-driver/compare/v10.0.1...v10.0.2) (2026-11-13)
+
+### Miscellaneous Chores
+
+* **deps:** bump appium to 4.0.0-beta.8 ([#1252](https://github.com/appium/appium-espresso-driver/issues/1252)) ([74a04cc](https://github.com/appium/appium-espresso-driver/commit/74a04cc20e019b884495f1675d0b6241bc640b47))
+
 ## [10.0.1](https://github.com/appium/appium-espresso-driver/compare/v10.0.0...v10.0.1) (2026-11-11)
 
 ### Miscellaneous Chores
