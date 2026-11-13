@@ -11,6 +11,7 @@ nanohttpd = "2.3.1"
 robolectric = "4.17"
 junit = "4.13.2"
 uiautomator = "2.4.0"
+xpath2Processor = "1.0.1"
 
 [libraries]
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
@@ -33,6 +34,7 @@ kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.re
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+xpath2-processor = { group = "com.github.appium.appium-android", name = "xpath2-processor", version.ref = "xpath2Processor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
