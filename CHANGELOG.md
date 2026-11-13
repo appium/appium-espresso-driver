@@ -1,3 +1,13 @@
+## [10.0.3](https://github.com/appium/appium-espresso-driver/compare/v10.0.2...v10.0.3) (2026-11-13)
+
+### Miscellaneous Chores
+
+* **deps:** bump commander from 14.0.3 to 15.1.0 ([#1249](https://github.com/appium/appium-espresso-driver/issues/1249)) ([8a276be](https://github.com/appium/appium-espresso-driver/commit/8a276be3b5e49187b9822a7e64d4977c17798bbe))
+
+### Code Refactoring
+
+* use port helpers from appium/support instead of portscanner ([#1253](https://github.com/appium/appium-espresso-driver/issues/1253)) ([7484327](https://github.com/appium/appium-espresso-driver/commit/74843274783279cfe227d80e9d38eed34e885e97))
+
 ## [10.0.2](https://github.com/appium/appium-espresso-driver/compare/v10.0.1...v10.0.2) (2026-11-13)
 
 ### Miscellaneous Chores
