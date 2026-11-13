@@ -201,7 +201,7 @@ export class ServerBuilder {
         continue;
       }
 
-      this.log.info(`Adding the following ${propName} to build.gradle.kts: ${deps}`);
+      this.log.info(`Adding the following ${propName} to build.gradle.kts: ${deps.join(', ')}`);
       configuration = updateDependencyLines(configuration, propName, deps);
     }
     await fs.writeFile(buildPath, configuration, 'utf8');

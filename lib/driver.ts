@@ -146,8 +146,8 @@ export class EspressoDriver
   extends AndroidDriver<EspressoConstraints>
   implements ExternalDriver<EspressoConstraints, string, StringRecord>
 {
-  static newMethodMap = newMethodMap;
-  static executeMethodMap = executeMethodMap as unknown as typeof AndroidDriver.executeMethodMap;
+  static override newMethodMap = newMethodMap;
+  static override executeMethodMap = executeMethodMap as unknown as typeof AndroidDriver.executeMethodMap;
 
   _originalIme: string | null;
 
