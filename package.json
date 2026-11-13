@@ -89,7 +89,6 @@
     "axios": "^1.18.0",
     "commander": "^14.0.1",
     "io.appium.settings": "^9.0.0",
-    "portscanner": "^2.2.0",
     "semver": "^7.6.2",
     "teen_process": "^4.2.0"
   },
@@ -100,7 +99,6 @@
     "@appium/tsconfig": "^2.0.0-beta.2",
     "@appium/types": "^2.0.0-beta.6",
     "@types/node": "^26.0.0",
-    "@types/portscanner": "^2.1.4",
     "@types/semver": "^7.7.1",
     "@types/sinon": "^22.0.0",
     "@xmldom/xmldom": "^0.x",
