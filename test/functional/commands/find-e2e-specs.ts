@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import {describe, it, before, after} from 'node:test';
 
 import {APIDEMO_CAPS} from '../desired.js';
+import {scrollListToEnd} from '../helpers/device.js';
+import {isApiBelow} from '../helpers/env.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
@@ -71,44 +73,29 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
         await deleteSession();
       });
 
-      it('should match an element if the element is off-screen but has an accessibility id', async function (t) {
-        if (process.env.CI) {
-          // CI env is flaky
-          return t.skip();
-        }
-        const el = await driver.$('~Views');
-        await el.click();
+      // The clipped list items cannot be clicked on the small API 26 emulator screen, even after scrolling
+      const skipOffScreen = isApiBelow(29) && 'the API 26 emulator screen is too small';
+      it(
+        'should match an element if the element is off-screen but has an accessibility id',
+        {skip: skipOffScreen},
+        async function () {
+          await scrollListToEnd(driver);
+          const el = await driver.$('~Views');
+          await el.click();
 
-        // Click on an element that is at the bottom of the list
-        const moveToEl = await driver.$('~WebView');
-        await driver.elementClick(await moveToEl.elementId);
-        await driver.back();
-        await driver.back();
-      });
-      // TODO: Need to check if this is still valid
-      it.skip('should test element equality', async function () {
-        const el = await driver.$('~Views');
-        const elAgain = await driver.$("//*[@content-desc='Views']");
-        const elNonMatch = await driver.$('~Preference');
-        assert.strictEqual(await el.isEqual(elAgain), true);
-        assert.strictEqual(await el.isEqual(elNonMatch), false);
-      });
-      // TODO: This test is very flakey. Need to inspect this.
-      it.skip('should scroll element back into view if was scrolled out of view (regression test for https://github.com/appium/appium-espresso-driver/issues/276)', async function () {
-        // If we find an element by 'contentDescription', scroll out of view of that element, we should be able to scroll it back into view, as long
-        // as that element has a content description associated with an adapter item
-        let el = await driver.$('~Views');
-        await el.click();
-        el = await driver.$('~Custom');
-        assert.strictEqual(await el.text(), 'Custom');
-        const {value: element} = await driver.elementById('android:id/list');
-        await driver.execute('mobile: swipe', {direction: 'up', element});
-        assert.strictEqual(await el.text(), 'Custom');
-        await driver.back();
-      });
+          // The element at the bottom of the list is found even if it is off-screen,
+          // but it must be scrolled into view to be clicked
+          const moveToEl = await driver.$('~WebView');
+          assert.ok(await moveToEl.isExisting());
+          await scrollListToEnd(driver);
+          await driver.elementClick(await moveToEl.elementId);
+          await driver.back();
+          await driver.back();
+        },
+      );
     });
   });
-  describe('by data matcher', {skip: parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) <= 25}, function () {
+  describe('by data matcher', function () {
     describe('Data Matcher - dependent tests - Set 1', function () {
       before(async function () {
         driver = await initSession(APIDEMO_CAPS);
@@ -383,12 +370,8 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
       await deleteSession();
     });
 
-    it('should move an element outside. the screen into the screen with find element', async function (t) {
-      if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) < 34) {
-        // Unstable on CI with lower version emulators
-        return t.skip();
-      }
-
+    it('should move an element outside. the screen into the screen with find element', async function () {
+      await scrollListToEnd(driver);
       // Espresso specific behavior.
       const el = await driver.$('~Views');
       await el.click();

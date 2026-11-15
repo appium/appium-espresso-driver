@@ -4,9 +4,11 @@ import {describe, it, before, after} from 'node:test';
 import type {Browser} from 'webdriverio';
 
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
+import {isApiBelow, WEBVIEW_MIN_API} from '../helpers/env.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
-const SKIP_WEB_TESTS = Boolean(process.env.CI);
+// Needs a Chromedriver matching the emulator WebView
+const SKIP_WEB_TESTS = isApiBelow(WEBVIEW_MIN_API);
 
 describe('web', {skip: SKIP_WEB_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
   describe('WebView', function () {
@@ -32,20 +34,14 @@ describe('web', {skip: SKIP_WEB_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
       assert.match(contexts[0] as string, /^native/i);
       assert.match(contexts[1] as string, /^webview/i);
     });
-    it('should send text to html text inputs', async function (t) {
-      if (process.env.CI && parseInt(process.env.ANDROID_SDK_VERSION ?? '0', 10) > 31) {
-        // chromedriver or engine side issue on emulators.
-        // Please relax the condition if newer ones work.
-        return t.skip();
-      }
-
+    it('should send text to html text inputs', async function () {
       const html = await driver.getPageSource();
       assert.match(html, /Selenium/);
-      // Chrome 83 must be W3C
       const textbox = await driver.$('#i_am_a_textbox');
       await textbox.clearValue();
       await textbox.addValue('Text contents');
-      assert.strictEqual(await textbox.getAttribute('value'), 'Text contents');
+      // The 'value' attribute is the HTML default; the typed text lives in the property
+      assert.strictEqual(await textbox.getProperty('value'), 'Text contents');
       await textbox.clearValue();
       assert.strictEqual(await textbox.getText(), '');
     });

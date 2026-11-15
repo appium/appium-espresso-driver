@@ -1,17 +1,14 @@
 import assert from 'node:assert/strict';
 import {describe, it, before, after, beforeEach} from 'node:test';
 
-import {asyncmap, sleep} from 'asyncbox';
+import {asyncmap} from 'asyncbox';
 import axios from 'axios';
 import type {Browser} from 'webdriverio';
 
 import {APIDEMO_CAPS} from '../desired.js';
 import {initSession, deleteSession, HOST, PORT, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
-// TODO: Enable this in CI after the functional coverage update in the follow-up PR.
-const SKIP_TOUCH_TESTS = Boolean(process.env.CI);
-
-describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
+describe('touch actions -', {timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;
   let sessionId: string;
 
@@ -187,21 +184,20 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
     describe('multiple', function () {
       beforeEach(startSplitTouchActivity);
       it('should do multiple scrolls on multiple views', async function () {
-        const els = (await driver.$$(
-          await driver.findElements('class name', 'android.widget.ListView'),
-        )) as unknown as any[];
+        const els = await driver.findElements('class name', 'android.widget.ListView');
 
-        const actions = await asyncmap(els, async function (el: any) {
-          const {height} = await el.getSize();
+        const actions = await asyncmap(els, async function (ref) {
+          const elementId = ref['element-6066-11e4-a52e-4f735466cecf'];
+          const {height} = await driver.getElementRect(elementId);
 
           const yMove = Math.round(height / 2) - 10;
 
           const action = [
-            {type: 'pointerMove', origin: {'element-6066-11e4-a52e-4f735466cecf': el.elementId}},
+            {type: 'pointerMove', origin: {'element-6066-11e4-a52e-4f735466cecf': elementId}},
             {type: 'pointerDown', button: 0},
             {
               type: 'pointerMove',
-              origin: {'element-6066-11e4-a52e-4f735466cecf': el.elementId},
+              origin: {'element-6066-11e4-a52e-4f735466cecf': elementId},
               x: 10,
               y: -yMove,
               duration: 3000,
@@ -269,139 +265,6 @@ describe('touch actions -', {skip: SKIP_TOUCH_TESTS, timeout: E2E_TEST_TIMEOUT},
       await performTouchAction(touchActions);
 
       assert.ok(await driver.$("//*[@text='1']"));
-    });
-  });
-
-  describe.skip('mjsonwp touch actions', function () {
-    describe('touch', function () {
-      let nextEl: any;
-
-      beforeEach(async function () {
-        await startTextSwitcherActivity();
-
-        assert.ok(await driver.$("//*[@text='0']"));
-        await assert.rejects(async () => driver.$("//*[@text='1']"), /NoSuchElement/);
-
-        nextEl = await (driver as any).elementByAccessibilityId('Next');
-      });
-
-      it('should do touch/click event', async function () {
-        const {value: elementId} = nextEl;
-        await axios({
-          method: 'POST',
-          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/click`,
-          data: {
-            element: elementId,
-          },
-        });
-
-        assert.ok(await driver.$("//*[@text='1']"));
-      });
-
-      it('should do touch/longclick event', async function () {
-        const {value: elementId} = nextEl;
-        await axios({
-          method: 'POST',
-          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/longclick`,
-          data: {
-            element: elementId,
-          },
-        });
-
-        assert.ok(await driver.$("//*[@text='1']"));
-      });
-
-      it('should do touch/doubleclick event', async function () {
-        await assert.rejects(async () => driver.$("//*[@text='2']"), /NoSuchElement/);
-
-        const {value: elementId} = nextEl;
-        await axios({
-          method: 'POST',
-          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/doubleclick`,
-          data: {
-            element: elementId,
-          },
-        });
-
-        assert.ok(await driver.$("//*[@text='1']"));
-        assert.ok(await driver.$("//*[@text='2']"));
-      });
-
-      it('should touch down at a location and then touch up', async function () {
-        const {x, y} = await nextEl.getLocation();
-
-        await axios({
-          method: 'POST',
-          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/down`,
-          data: {
-            x: x + 1,
-            y: y + 1,
-          },
-        });
-        await sleep(1000);
-
-        await axios({
-          method: 'POST',
-          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/up`,
-          data: {
-            x: x + 1,
-            y: y + 1,
-          },
-        });
-
-        assert.ok(await driver.$("//*[@text='1']"));
-      });
-    });
-
-    // No longer exists.
-    describe.skip('move', function () {
-      beforeEach(startListActivity);
-
-      it('should touch down, move, touch up and cause a scroll event', async function () {
-        const {startX, startY, endX, endY} = await getScrollData();
-
-        await axios({
-          method: 'POST',
-          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/down`,
-          data: {
-            x: startX + 1,
-            y: startY + 1,
-          },
-        });
-        await sleep(1000);
-
-        await axios({
-          method: 'POST',
-          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/move`,
-          data: {
-            x: endX + 1,
-            y: endY + 1,
-          },
-        });
-        await sleep(1000);
-
-        await axios({
-          method: 'POST',
-          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/up`,
-          data: {
-            x: endX + 1,
-            y: endY + 1,
-          },
-        });
-      });
-
-      it('should scroll on an element', async function () {
-        await axios({
-          method: 'POST',
-          url: `http://${HOST}:${PORT}/session/${sessionId}/touch/scroll`,
-          data: {
-            //element: el.elementId,
-            x: 0,
-            y: -300,
-          },
-        });
-        await sleep(1000);
-      });
     });
   });
 });
