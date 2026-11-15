@@ -313,7 +313,9 @@ object ViewFinder {
                 if (e is EspressoException) {
                     return resultViews
                 }
-                throw e
+                // The matcher is evaluated on the main thread, which wraps the XPath errors
+                throw generateSequence<Throwable>(e) { it.cause }
+                    .filterIsInstance<XPathLookupException>().firstOrNull() ?: e
             }
         } while (!findOne && viewIndex < Integer.MAX_VALUE)
         return resultViews

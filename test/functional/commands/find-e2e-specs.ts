@@ -24,8 +24,9 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
         await driver.back();
       });
       it('should find an element by an XPath 2.0 expression', async function () {
-        const els = await driver.$$("//*[matches(@text, '^(Animation|Views)$')]");
-        assert.strictEqual(els.length, 2);
+        const els = await driver.$$("//*[matches(@text, '^Anim.*')]");
+        assert.strictEqual(els.length, 1);
+        assert.strictEqual(await els[0].getText(), 'Animation');
       });
       it('should report an invalid XPath expression as an invalid selector', async function () {
         await assert.rejects(driver.findElement('xpath', '//*[@text + 1 = 2]'), /invalid selector/i);
