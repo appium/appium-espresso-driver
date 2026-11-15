@@ -4,7 +4,7 @@ import {describe, it, before, after, beforeEach} from 'node:test';
 import type {Browser} from 'webdriverio';
 
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
-import {assertThreeButtonNavigation, goToHome, scrollRootListToEnd} from '../helpers/device.js';
+import {assertThreeButtonNavigation, goToHome, scrollListToEnd} from '../helpers/device.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
@@ -32,7 +32,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
   describe('mobile:swipe', function () {
     describe('with direction', function () {
       it('should swipe up and swipe down', async function () {
-        await scrollRootListToEnd(driver);
+        await scrollListToEnd(driver);
         const el = await driver.$('~Views');
         await el.click();
         assert.ok((await driver.getPageSource()).includes('Animation'));
@@ -45,7 +45,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
     });
     describe('with GeneralSwipeAction', function () {
       beforeEach(async function () {
-        await scrollRootListToEnd(driver);
+        await scrollListToEnd(driver);
         const viewEl = await driver.$('~Views');
         await viewEl.click();
       });
@@ -266,7 +266,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
     let viewEl: WebdriverIO.Element;
 
     beforeEach(async function () {
-      await scrollRootListToEnd(driver);
+      await scrollListToEnd(driver);
       viewEl = await driver.$('~Views');
     });
 

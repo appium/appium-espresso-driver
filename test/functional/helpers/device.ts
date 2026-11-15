@@ -39,10 +39,10 @@ export async function assertThreeButtonNavigation(driver: Browser): Promise<void
 }
 
 /**
- * Scrolls the ApiDemos root list to its end. 'Views' is the last item and is clipped
- * (less than 90% visible, so not clickable) on the small CI emulator screens.
+ * Scrolls the current ApiDemos list screen to its end. The last items (e.g. 'Views' in the root list,
+ * 'WebView' in the Views list) are clipped (less than 90% visible, so not clickable) on small emulator screens.
  */
-export async function scrollRootListToEnd(driver: Browser): Promise<void> {
+export async function scrollListToEnd(driver: Browser): Promise<void> {
   const ref = await driver.findElement('id', 'android:id/list');
   await driver.execute('mobile: swipe', {direction: 'up', elementId: ref[ELEMENT_KEY]});
 }
