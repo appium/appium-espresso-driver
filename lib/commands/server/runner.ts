@@ -13,6 +13,9 @@ import * as semver from 'semver';
 import {getPackageInfoSync, getPackageInfo, isPlainObject} from '../../utils/index.js';
 import {ServerBuilder, buildServerSigningConfig, type ServerSigningConfig} from './builder.js';
 import {ESPRESSO_SERVER_LAUNCH_TIMEOUT_MS, TARGET_PACKAGE_CONTAINER, TEST_APK_PKG} from './constants.js';
+import {findHints, withHints} from './hints.js';
+
+const MAX_OUTPUT_LINES = 500;
 
 export interface EspressoRunnerOptions {
   adb: ADB;
@@ -166,6 +169,26 @@ export class EspressoRunner {
    * Installs Espresso server apk on to the device or emulator.
    * Each adb command uses default timeout by them.
    */
+  /**
+   * Appends the hints for the known failures to the message. The cause is looked for in the instrumentation
+   * output first and in the crash buffer of the device after that.
+   */
+  private async withFailureHints(message: string, outputLines: string[]): Promise<string> {
+    let failureText = outputLines.join('\n');
+    if (findHints(failureText).length === 0) {
+      try {
+        failureText += '\n' + (await this.adb.adbExec(['logcat', '-d', '-b', 'crash']));
+      } catch (e: any) {
+        this.log.debug(`Cannot read the crash buffer to look for hints: ${e.message}`);
+      }
+    }
+    const result = withHints(message, failureText);
+    if (result !== message) {
+      this.log.warn(result.slice(message.length + 1));
+    }
+    return result;
+  }
+
   async installServer(): Promise<void> {
     const appState = await this.adb.getApplicationInstallState(this.modServerPath, TEST_APK_PKG);
 
@@ -302,6 +325,7 @@ export class EspressoRunner {
     this.log.info(`Starting Espresso Server v${manifestPayload.version} with cmd: adb ${cmd.join(' ')}`);
 
     let hasSocketError = false;
+    const outputLines: string[] = [];
     // start the instrumentation process
     this.jwproxy.instrumentationState = {
       exited: false,
@@ -320,6 +344,10 @@ export class EspressoRunner {
       }
 
       this.log.debug(`[Instrumentation] ${line.trim()}`);
+      outputLines.push(line);
+      if (outputLines.length > MAX_OUTPUT_LINES) {
+        outputLines.shift();
+      }
       // A 'SocketException' indicates that we couldn't connect to the Espresso server,
       // because the INTERNET permission is not set
       if (line.toLowerCase().includes('java.net.socketexception')) {
@@ -343,8 +371,11 @@ export class EspressoRunner {
             );
           } else if (this.jwproxy.instrumentationState.exited) {
             throw this.log.errorWithException(
-              `Espresso server process has been unexpectedly terminated. ` +
-                `Check the Appium server log and the logcat output for more details`,
+              await this.withFailureHints(
+                `Espresso server process has been unexpectedly terminated. ` +
+                  `Check the Appium server log and the logcat output for more details`,
+                outputLines,
+              ),
             );
           }
           let serverStatus: ServerStatus;
@@ -363,9 +394,12 @@ export class EspressoRunner {
     } catch (e: any) {
       if (/Condition unmet/.test(e.message)) {
         throw this.log.errorWithException(
-          `Timed out waiting for Espresso server to be ` +
-            `online within ${this.serverLaunchTimeout}ms. The timeout value could be ` +
-            `customized using 'espressoServerLaunchTimeout' capability`,
+          await this.withFailureHints(
+            `Timed out waiting for Espresso server to be ` +
+              `online within ${this.serverLaunchTimeout}ms. The timeout value could be ` +
+              `customized using 'espressoServerLaunchTimeout' capability`,
+            outputLines,
+          ),
         );
       }
       throw e;

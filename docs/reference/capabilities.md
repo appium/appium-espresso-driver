@@ -491,7 +491,21 @@ keys, all of which are optional:
 
 Whether to include Jetpack Compose UI test dependencies in the server app. If disabled, the app
 size will be reduced, but any Compose-only functionality, including changing the `driver` setting
-to `compose`, will return an error.
+to `compose`, will return an error. See also [`shadeServer`](#shadeserver).
+
+#### `shadeServer`
+
+| Type | Default |
+| -- | -- |
+| `boolean` | `true` |
+
+Whether to move the libraries bundled with the Espresso server to a private package, so they do not
+shadow the classes of the application under test (AUT) and cause version conflicts. Jetpack Compose
+and its dependencies are shared with the AUT, unless [`composeSupport`](#composesupport) is
+disabled, as are the libraries listed in `additionalAppDependencies` and
+`additionalAndroidTestDependencies`. Set it to `false` only if the symptoms described in
+[Class Conflicts](../troubleshooting/class-conflicts.md) point to it. Use
+`appium:forceEspressoRebuild` for the first session after changing it.
 
 #### `toolsVersions`
 

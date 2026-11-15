@@ -12,3 +12,7 @@ java {
         languageVersion.set(JavaLanguageVersion.of(javaVersion))
     }
 }
+
+dependencies {
+    implementation("org.ow2.asm:asm-commons:9.8")
+}

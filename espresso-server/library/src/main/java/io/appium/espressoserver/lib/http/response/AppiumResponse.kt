@@ -21,6 +21,7 @@ import java.util.UUID
 import fi.iki.elonen.NanoHTTPD.Response.Status
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
 import io.appium.espressoserver.lib.handlers.exceptions.MESSAGE_UNKNOWN_ERROR
+import io.appium.espressoserver.lib.helpers.stripShadedPrefix
 
 class AppiumResponse : BaseResponse {
     internal var value: Any? = null
@@ -41,8 +42,8 @@ class AppiumResponse : BaseResponse {
     private fun formatError(e: AppiumException,
                             originalStacktrace: String): Map<String, String> = mapOf(
         "error" to e.error(),
-        "message" to (e.message ?: MESSAGE_UNKNOWN_ERROR),
-        "stacktrace" to originalStacktrace
+        "message" to (e.message ?: MESSAGE_UNKNOWN_ERROR).stripShadedPrefix(),
+        "stacktrace" to originalStacktrace.stripShadedPrefix()
     )
 
     private fun init(value: Any?, sessionId: String?) {

@@ -17,13 +17,14 @@
 package io.appium.espressoserver.lib.handlers
 
 import androidx.test.espresso.IdlingRegistry
+import io.appium.espressoserver.lib.helpers.stripShadedPrefix
 import io.appium.espressoserver.lib.model.*
 
 class ListIdlingResources : RequestHandler<AppiumParams, List<String>> {
 
     override fun handleInternal(params: AppiumParams): List<String> {
         return IdlingRegistry.getInstance().resources.map {
-            it::class.java.canonicalName!!
+            it::class.java.canonicalName!!.stripShadedPrefix()
         }
     }
 
