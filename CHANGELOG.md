@@ -1,3 +1,9 @@
+## [10.2.0](https://github.com/appium/appium-espresso-driver/compare/v10.1.0...v10.2.0) (2026-11-15)
+
+### Features
+
+* support XPath 2.0 in the xpath locator strategy ([#1254](https://github.com/appium/appium-espresso-driver/issues/1254)) ([c72c168](https://github.com/appium/appium-espresso-driver/commit/c72c168fcfc14702fc475fa46d0e38cee0a79b74))
+
 ## [10.1.0](https://github.com/appium/appium-espresso-driver/compare/v10.0.3...v10.1.0) (2026-11-15)
 
 ### Features
