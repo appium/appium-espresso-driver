@@ -3,6 +3,7 @@ import {describe, it, before, after} from 'node:test';
 
 import {APIDEMO_CAPS} from '../desired.js';
 import {scrollListToEnd} from '../helpers/device.js';
+import {isApiBelow} from '../helpers/env.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
@@ -64,20 +65,26 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
         await deleteSession();
       });
 
-      it('should match an element if the element is off-screen but has an accessibility id', async function () {
-        await scrollListToEnd(driver);
-        const el = await driver.$('~Views');
-        await el.click();
+      // The clipped list items cannot be clicked on the small API 26 emulator screen, even after scrolling
+      const skipOffScreen = isApiBelow(29) && 'the API 26 emulator screen is too small';
+      it(
+        'should match an element if the element is off-screen but has an accessibility id',
+        {skip: skipOffScreen},
+        async function () {
+          await scrollListToEnd(driver);
+          const el = await driver.$('~Views');
+          await el.click();
 
-        // The element at the bottom of the list is found even if it is off-screen,
-        // but it must be scrolled into view to be clicked
-        const moveToEl = await driver.$('~WebView');
-        assert.ok(await moveToEl.isExisting());
-        await scrollListToEnd(driver);
-        await driver.elementClick(await moveToEl.elementId);
-        await driver.back();
-        await driver.back();
-      });
+          // The element at the bottom of the list is found even if it is off-screen,
+          // but it must be scrolled into view to be clicked
+          const moveToEl = await driver.$('~WebView');
+          assert.ok(await moveToEl.isExisting());
+          await scrollListToEnd(driver);
+          await driver.elementClick(await moveToEl.elementId);
+          await driver.back();
+          await driver.back();
+        },
+      );
     });
   });
   describe('by data matcher', function () {
