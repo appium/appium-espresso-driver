@@ -82,6 +82,19 @@ class `XPath Query Tests` {
     }
 
     @Test
+    fun `should report unknown functions and unbound variables as invalid selector`() {
+        assertFailsWith<XPathLookupException> { compileXpathQuery("//*[unknown()]") }
+        assertFailsWith<XPathLookupException> { compileXpathQuery("//*[@text = ${"$"}missing]") }
+    }
+
+    @Test
+    fun `should support the standard xs and fn prefixes`() {
+        assertEquals(listOf(1, 2), evaluate("//*[@enabled][xs:boolean(@enabled) or true()]"))
+        assertEquals(listOf(0, 1), evaluate("//*[fn:matches(@text, '^[A-Z]')]"))
+        assertEquals(listOf(0), evaluate("//*[xs:string(@text) = 'Hello']"))
+    }
+
+    @Test
     fun `should not load documents with fn doc`() {
         assertFailsWith<XPathLookupException> { evaluate("doc('file:///etc/hosts')") }
     }

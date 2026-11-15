@@ -20,7 +20,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
 import io.appium.xpath2.DocumentLoader
 import org.eclipse.wst.xml.xpath2.api.XPath2Expression
 import org.eclipse.wst.xml.xpath2.processor.Engine
-import org.eclipse.wst.xml.xpath2.processor.XPathParserException
+import org.eclipse.wst.xml.xpath2.processor.StaticError
 import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder
 import org.eclipse.wst.xml.xpath2.processor.util.StaticContextBuilder
 import org.w3c.dom.Element
@@ -49,11 +49,16 @@ internal class XPathQuery(
     }
 }
 
+private const val XS_NAMESPACE = "http://www.w3.org/2001/XMLSchema"
+private const val FN_NAMESPACE = "http://www.w3.org/2005/xpath-functions"
+
 internal fun compileXpathQuery(selector: String): XPathQuery {
     val staticContext = StaticContextBuilder()
+        .withNamespace("xs", XS_NAMESPACE)
+        .withNamespace("fn", FN_NAMESPACE)
     return try {
         XPathQuery(selector, Engine().parseExpression(selector, staticContext), staticContext)
-    } catch (e: XPathParserException) {
+    } catch (e: StaticError) {
         throw XPathLookupException(selector, e.message ?: e.javaClass.simpleName)
     }
 }
