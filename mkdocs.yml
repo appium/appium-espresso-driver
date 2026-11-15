@@ -55,6 +55,7 @@ nav:
           - guides/parallel-tests.md
           - guides/hybrid.md
           - guides/activity-startup.md
+          - guides/media-stream.md
       - Driver Actions:
           - guides/compose.md
           - guides/datamatcher-selector.md
