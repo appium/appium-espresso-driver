@@ -60,8 +60,7 @@ async function listDefinedPackages(apk) {
  */
 function findViolations(packages, allowed) {
   /** @param {string} pkg */
-  const isAllowed = (pkg) =>
-    EXACT_PACKAGES.includes(pkg) || allowed.some((a) => pkg === a || pkg.startsWith(`${a}.`));
+  const isAllowed = (pkg) => EXACT_PACKAGES.includes(pkg) || allowed.some((a) => pkg === a || pkg.startsWith(`${a}.`));
   // The listing is a tree where every package carries the counts of its subpackages too
   return [...packages]
     .map(([name, count]) => {

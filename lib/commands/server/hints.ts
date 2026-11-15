@@ -47,9 +47,13 @@ export const HINTS: readonly Hint[] = [
  * @returns Hint texts with the link to the docs, without duplicates.
  */
 export function findHints(text: string): string[] {
-  return [...new Set(HINTS.filter(({pattern}) => pattern.test(text)).map(
-    ({hint, anchor}) => `Hint: ${hint} (see ${DOCS_URL}#${anchor})`,
-  ))];
+  return [
+    ...new Set(
+      HINTS.filter(({pattern}) => pattern.test(text)).map(
+        ({hint, anchor}) => `Hint: ${hint} (see ${DOCS_URL}#${anchor})`,
+      ),
+    ),
+  ];
 }
 
 /**

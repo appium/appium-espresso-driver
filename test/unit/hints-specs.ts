@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import path from 'node:path';
-import {fileURLToPath} from 'node:url';
 import {describe, it} from 'node:test';
+import {fileURLToPath} from 'node:url';
 
 import {HINTS, findHints, withHints} from '../../lib/commands/server/hints.js';
 
@@ -18,7 +18,10 @@ describe('hints', function () {
       "'void io.appium.espressoserver.shaded.androidx.test.runner.Foo.bar()' is inaccessible to class " +
       'androidx.test.runner.AndroidJUnitRunner';
     assert.match(findHints(crash)[0], /shadeServer/);
-    assert.match(findHints('IllegalStateException: ViewTreeLifecycleOwner not found from ComposeView')[0], /shadeServer/);
+    assert.match(
+      findHints('IllegalStateException: ViewTreeLifecycleOwner not found from ComposeView')[0],
+      /shadeServer/,
+    );
     assert.deepEqual(findHints('The ViewTreeLifecycleOwner is set'), []);
     assert.match(findHints('Exception handler was not found via a ServiceLoader')[0], /shadeServer/);
     assert.match(
@@ -42,7 +45,12 @@ describe('hints', function () {
   });
 
   it('should not duplicate hints', function () {
-    assert.equal(findHints('Exception handler was not found via a ServiceLoader\nException handler was not found via a ServiceLoader').length, 1);
+    assert.equal(
+      findHints(
+        'Exception handler was not found via a ServiceLoader\nException handler was not found via a ServiceLoader',
+      ).length,
+      1,
+    );
   });
 
   it('should append the hints to the message', function () {
