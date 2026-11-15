@@ -77,6 +77,16 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
 
   const getTextInput = async () => driver.$(await driver.findElement('tag name', 'text_input'));
 
+  // Focuses the field without a pointer tap. The IME may drop the first key event after the focus change
+  // (seen on CI), so type a marker key until the field accepts it before typing the real sequence.
+  const focusTextInput = async (textInput: Awaited<ReturnType<typeof getTextInput>>) => {
+    await driver.elementSendKeys(await textInput.elementId, '!');
+    await retryInterval(5, 1000, async () => {
+      await typeEach('#');
+      assert.ok((await textInput.getText()).includes('#'));
+    });
+  };
+
   before(async function () {
     composeCaps = await getComposeCaps();
   });
@@ -117,8 +127,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
   it('should type ASCII and non-ASCII keys into the focused text field', async function () {
     await openTextInput();
     const textInput = await getTextInput();
-    // Focuses the field without a pointer tap
-    await driver.elementSendKeys(await textInput.elementId, '!');
+    await focusTextInput(textInput);
 
     await typeEach('ab');
     await typeEach('Привіт');
@@ -131,7 +140,7 @@ describe('Jetpack Compose W3C actions', {timeout: E2E_TEST_TIMEOUT}, function ()
   it('should type into the focused text field using the legacy keys endpoint', async function () {
     await openTextInput();
     const textInput = await getTextInput();
-    await driver.elementSendKeys(await textInput.elementId, '!');
+    await focusTextInput(textInput);
 
     const {status} = await axios.post(`http://${HOST}:${PORT}/session/${driver.sessionId}/keys`, {
       value: ['a', 'Ж', 'b'],
