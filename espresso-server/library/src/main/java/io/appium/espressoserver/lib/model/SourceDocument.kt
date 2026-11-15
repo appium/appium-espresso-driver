@@ -276,10 +276,10 @@ class SourceDocument constructor(
             }
         }, { performCleanup() })
 
-    fun findViewsByXPath(query: XPathQuery): List<View> =
+    internal fun findViewsByXPath(query: XPathQuery): List<View> =
         findMatchingNodeIds(query, VIEW_INDEX).map { viewMap.get(it) }
 
-    fun findMatchingNodeIds(query: XPathQuery, attributeName: String): List<Int> =
+    internal fun findMatchingNodeIds(query: XPathQuery, attributeName: String): List<Int> =
         RESOURCES_GUARD.withPermit({
             toStream().use { xmlStream -> query.evaluateNodeIds(xmlStream, attributeName) }
         }, { performCleanup() })

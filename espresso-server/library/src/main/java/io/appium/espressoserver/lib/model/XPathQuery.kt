@@ -27,7 +27,7 @@ import org.w3c.dom.Element
 import java.io.InputStream
 
 /** A compiled XPath 2.0 expression, which is evaluated against the XML page source. */
-class XPathQuery internal constructor(
+internal class XPathQuery(
     private val selector: String,
     private val expression: XPath2Expression,
     private val staticContext: StaticContextBuilder
@@ -38,7 +38,7 @@ class XPathQuery internal constructor(
         val result = try {
             expression.evaluate(DynamicContextBuilder(staticContext), arrayOf<Any>(document))
         } catch (e: Exception) {
-            throw XPathLookupException(selector, e.message ?: e.javaClass.simpleName)
+            throw XPathLookupException.evaluationFailure(selector, e.message ?: e.javaClass.simpleName)
         }
         return result.iterator().asSequence()
             .map { it.nativeValue }
@@ -49,7 +49,7 @@ class XPathQuery internal constructor(
     }
 }
 
-fun compileXpathQuery(selector: String): XPathQuery {
+internal fun compileXpathQuery(selector: String): XPathQuery {
     val staticContext = StaticContextBuilder()
     return try {
         XPathQuery(selector, Engine().parseExpression(selector, staticContext), staticContext)

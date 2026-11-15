@@ -19,6 +19,7 @@ package io.appium.espressoserver.test.helpers
 import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
 import io.appium.espressoserver.lib.model.compileXpathQuery
 import org.junit.Test
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -70,7 +71,14 @@ class `XPath Query Tests` {
 
     @Test
     fun `should report dynamic errors as invalid selector`() {
-        assertFailsWith<XPathLookupException> { evaluate("//*[@text + 1 = 2]") }
+        val error = assertFailsWith<XPathLookupException> { evaluate("//*[@text + 1 = 2]") }
+        assertContains(error.message.orEmpty(), "Could not evaluate XPath")
+    }
+
+    @Test
+    fun `should report syntax errors as parse errors`() {
+        val error = assertFailsWith<XPathLookupException> { compileXpathQuery("//*[") }
+        assertContains(error.message.orEmpty(), "Could not parse XPath")
     }
 
     @Test
