@@ -27,7 +27,7 @@ import io.appium.espressoserver.lib.handlers.exceptions.StaleElementException
 import io.appium.espressoserver.lib.model.Locator
 import io.appium.espressoserver.lib.model.SourceDocument
 import io.appium.espressoserver.lib.model.AttributesEnum
-import io.appium.espressoserver.lib.model.compileXpathExpression
+import io.appium.espressoserver.lib.model.compileXpathQuery
 import io.appium.espressoserver.lib.viewmatcher.fetchIncludedAttributes
 
 /**
@@ -66,11 +66,11 @@ fun semanticsMatcherForLocator(locator: Locator): SemanticsMatcher =
 
 private fun hasXpath(locator: Locator): SemanticsMatcher {
     val xpath = locator.value!!
-    val expression = compileXpathExpression(xpath)
+    val query = compileXpathQuery(xpath)
     val attributes = fetchIncludedAttributes(xpath)
     val matchingIds = SourceDocument(
         locator.elementId?.let { getSemanticsNode(it) }, attributes
-    ).findMatchingNodeIds(expression, AttributesEnum.RESOURCE_ID.toString())
+    ).findMatchingNodeIds(query, AttributesEnum.RESOURCE_ID.toString())
 
     return SemanticsMatcher("Matches Xpath ${locator.value}") {
         matchingIds.contains(it.id)
