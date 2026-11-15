@@ -1,3 +1,9 @@
+## [10.1.0](https://github.com/appium/appium-espresso-driver/compare/v10.0.3...v10.1.0) (2026-11-15)
+
+### Features
+
+* expose media streaming over BiDi ([#1255](https://github.com/appium/appium-espresso-driver/issues/1255)) ([8baa430](https://github.com/appium/appium-espresso-driver/commit/8baa430830c8d7a6c7f693393a44743cf9d1bfae))
+
 ## [10.0.3](https://github.com/appium/appium-espresso-driver/compare/v10.0.2...v10.0.3) (2026-11-13)
 
 ### Miscellaneous Chores
