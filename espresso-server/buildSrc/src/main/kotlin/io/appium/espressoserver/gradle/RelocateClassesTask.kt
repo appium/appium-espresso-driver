@@ -24,7 +24,8 @@ import java.util.jar.JarOutputStream
  * Moves the bundled classes under [prefix] so they stop shadowing the AUT's copies (the server and the AUT
  * share one class loader). Kept and shared classes keep their names, see [keep] and [shared].
  *
- * `META-INF/services` files of relocated interfaces are rewritten into [servicesDir].
+ * `META-INF/services` files of relocated interfaces are rewritten into [servicesDir], and the originals
+ * are listed in [excludedResources] (see [removeJarEntries]).
  */
 abstract class RelocateClassesTask : DefaultTask() {
     // A pattern ending with a slash is a package prefix, otherwise it is a class with its inner classes
@@ -54,6 +55,9 @@ abstract class RelocateClassesTask : DefaultTask() {
 
     /** Java resources with the relocated service files (the root of `META-INF/services/...`). */
     @get:OutputDirectory abstract val servicesDir: DirectoryProperty
+
+    /** Resource paths of the original service files that were rewritten, one per line. */
+    @get:OutputFile abstract val excludedResources: RegularFileProperty
 
     @TaskAction
     fun run() {
@@ -125,6 +129,7 @@ abstract class RelocateClassesTask : DefaultTask() {
             file.parentFile.mkdirs()
             file.writeText(providers.joinToString("\n", postfix = "\n", transform = remapper::mapDotted))
         }
+        excludedResources.get().asFile.writeText(rewritten.keys.joinToString("\n") { SERVICES_DIR + it })
         logger.lifecycle("Relocated service files: ${rewritten.keys.joinToString()}")
     }
 }

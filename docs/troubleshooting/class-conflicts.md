@@ -37,10 +37,10 @@ prefix. The prefix is removed from the messages the server returns to the client
 | <a id="service-loader"></a>`Exception handler was not found via a ServiceLoader` | A service file was not relocated | Report a bug, and set `shadeServer` to `false` meanwhile |
 | <a id="startup-initializer"></a>`StartupException` with a `ClassCastException` mentioning `Initializer`, or `ViewTreeLifecycleOwner` errors | The classes shared with the AUT are not consistent | Report a bug, and set `shadeServer` to `false` meanwhile |
 | <a id="compose-version"></a>`NoSuchMethodError` or `NoClassDefFoundError` mentioning `androidx.compose` | The Compose version of the AUT differs from the one of the server | Set `toolsVersions.composeVersion` to the AUT's version. If the AUT has no Compose, set `composeSupport` to `false` |
-| <a id="no-compose-hierarchies"></a>`No compose hierarchies found` | The current screen has no Compose content | Switch the [`driver`](../reference/settings.md#driver) setting back to `espresso`, or navigate to a Compose screen |
+| `No compose hierarchies found` | The current screen has no Compose content | Switch the [`driver`](../reference/settings.md#driver) setting back to `espresso`, or navigate to a Compose screen |
 
-The driver adds a hint with a link to this page to the error message when it recognizes one of the
-errors above in the instrumentation output or in the crash buffer of the device.
+The driver adds a hint with a link to this page to the session startup error when it recognizes one of
+the first four errors above in the instrumentation output or in the crash buffer of the device.
 
 If the server is built with `shadeServer` disabled, conflicts like `NoSuchMethodError`,
 `NoClassDefFoundError`, `IncompatibleClassChangeError` or `Resources$NotFoundException` in the AUT

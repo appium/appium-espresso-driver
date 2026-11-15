@@ -165,19 +165,25 @@ export class EspressoRunner {
     return previousAppPackage !== this.appPackage;
   }
 
-  /**
-   * Installs Espresso server apk on to the device or emulator.
-   * Each adb command uses default timeout by them.
-   */
+  /** Current device time in the format of `logcat -T`, or undefined if it cannot be read. */
+  private async getDeviceLogTime(): Promise<string | undefined> {
+    try {
+      return (await this.adb.shell(['date', '+%m-%d %H:%M:%S.000'])).trim() || undefined;
+    } catch (e: any) {
+      this.log.debug(`Cannot read the device time: ${e.message}`);
+      return undefined;
+    }
+  }
+
   /**
    * Appends the hints for the known failures to the message. The cause is looked for in the instrumentation
-   * output first and in the crash buffer of the device after that.
+   * output first and in the crash buffer of the device (since the given device time) after that.
    */
-  private async withFailureHints(message: string, outputLines: string[]): Promise<string> {
+  private async withFailureHints(message: string, outputLines: string[], since?: string): Promise<string> {
     let failureText = outputLines.join('\n');
-    if (findHints(failureText).length === 0) {
+    if (since && findHints(failureText).length === 0) {
       try {
-        failureText += '\n' + (await this.adb.adbExec(['logcat', '-d', '-b', 'crash']));
+        failureText += '\n' + (await this.adb.adbExec(['logcat', '-d', '-b', 'crash', '-T', since]));
       } catch (e: any) {
         this.log.debug(`Cannot read the crash buffer to look for hints: ${e.message}`);
       }
@@ -189,6 +195,10 @@ export class EspressoRunner {
     return result;
   }
 
+  /**
+   * Installs Espresso server apk on to the device or emulator.
+   * Each adb command uses default timeout by them.
+   */
   async installServer(): Promise<void> {
     const appState = await this.adb.getApplicationInstallState(this.modServerPath, TEST_APK_PKG);
 
@@ -326,6 +336,8 @@ export class EspressoRunner {
 
     let hasSocketError = false;
     const outputLines: string[] = [];
+    // Crashes that happened before this moment are not related to the launch
+    const launchTime = await this.getDeviceLogTime();
     // start the instrumentation process
     this.jwproxy.instrumentationState = {
       exited: false,
@@ -375,6 +387,7 @@ export class EspressoRunner {
                 `Espresso server process has been unexpectedly terminated. ` +
                   `Check the Appium server log and the logcat output for more details`,
                 outputLines,
+                launchTime,
               ),
             );
           }
@@ -399,6 +412,7 @@ export class EspressoRunner {
               `online within ${this.serverLaunchTimeout}ms. The timeout value could be ` +
               `customized using 'espressoServerLaunchTimeout' capability`,
             outputLines,
+            launchTime,
           ),
         );
       }

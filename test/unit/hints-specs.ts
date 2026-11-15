@@ -18,6 +18,8 @@ describe('hints', function () {
       "'void io.appium.espressoserver.shaded.androidx.test.runner.Foo.bar()' is inaccessible to class " +
       'androidx.test.runner.AndroidJUnitRunner';
     assert.match(findHints(crash)[0], /shadeServer/);
+    assert.match(findHints('IllegalStateException: ViewTreeLifecycleOwner not found from ComposeView')[0], /shadeServer/);
+    assert.deepEqual(findHints('The ViewTreeLifecycleOwner is set'), []);
     assert.match(findHints('Exception handler was not found via a ServiceLoader')[0], /shadeServer/);
     assert.match(
       findHints(
@@ -35,23 +37,19 @@ describe('hints', function () {
     assert.match(hint, /composeVersion/);
   });
 
-  it('should recognize the missing compose hierarchies', function () {
-    assert.match(findHints('No compose hierarchies found')[0], /"driver" setting/);
-  });
-
   it('should not find hints for unrelated failures', function () {
     assert.deepEqual(findHints('java.lang.NullPointerException at io.appium.Foo'), []);
   });
 
   it('should not duplicate hints', function () {
-    assert.equal(findHints('No compose hierarchies found\nNo compose hierarchies found').length, 1);
+    assert.equal(findHints('Exception handler was not found via a ServiceLoader\nException handler was not found via a ServiceLoader').length, 1);
   });
 
   it('should append the hints to the message', function () {
     assert.equal(withHints('message', 'nothing'), 'message');
-    const result = withHints('message', 'No compose hierarchies found');
+    const result = withHints('message', 'Exception handler was not found via a ServiceLoader');
     assert.ok(result.startsWith('message\nHint: '));
-    assert.ok(result.includes('/troubleshooting/class-conflicts/#no-compose-hierarchies'));
+    assert.ok(result.includes('/troubleshooting/class-conflicts/#service-loader'));
   });
 
   it('should have a row in the docs for every hint', async function () {

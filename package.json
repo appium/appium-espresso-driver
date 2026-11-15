@@ -78,7 +78,8 @@
     "test:node": "npm test",
     "test:server": "cd espresso-server && ./gradlew test --stacktrace || cd ..",
     "assemble:server:compose-off": "cd espresso-server && ./gradlew :app:assembleAndroidTest -PappiumComposeSupport=false --no-daemon",
-    "check:server-packages": "node scripts/check-shaded-packages.mjs espresso-server/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+    "check:server-packages": "node scripts/check-shaded-packages.mjs espresso-server/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk --compose",
+    "check:server-packages:compose-off": "node scripts/check-shaded-packages.mjs espresso-server/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
     "version": "npm run sync-version && npm run build:server",
     "pree2e-test": "npm run build:node",
     "e2e-test": "node --test --test-concurrency=1 --test-timeout=300000 \"build/test/functional/**/*-specs.js\""

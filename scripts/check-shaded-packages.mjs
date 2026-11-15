@@ -17,16 +17,15 @@ const ALWAYS_ALLOWED = [
   'androidx.test.runner',
   'androidx.test.core.app',
   'androidx.test.espresso.idling',
-  // The AUT implements it
-  'androidx.test.espresso',
   // D8 desugaring stubs and the platform
   'android',
   'dalvik',
   'j$',
   'com.android.tools.r8',
 ];
-// D8 synthetic classes live right in these
-const SYNTHETIC_PACKAGES = ['androidx', 'com'];
+// Exactly these packages, without subpackages: D8 synthetic classes live in the first two,
+// `IdlingResource` (implemented by the AUT) in the last one
+const EXACT_PACKAGES = ['androidx', 'com', 'androidx.test.espresso'];
 // Shared with the AUT together with their reference closure
 const COMPOSE_ALLOWED = ['androidx', 'kotlin', 'kotlinx', '_COROUTINE', 'org.jetbrains', 'org.intellij'];
 
@@ -44,7 +43,8 @@ const output = execFileSync(apkanalyzer, ['dex', 'packages', '--defined-only', a
 });
 
 const allowed = [...ALWAYS_ALLOWED, ...(flags.includes('--compose') ? COMPOSE_ALLOWED : [])];
-const isAllowed = (pkg) => SYNTHETIC_PACKAGES.includes(pkg) || allowed.some((a) => pkg === a || pkg.startsWith(`${a}.`));
+/** @param {string} pkg */
+const isAllowed = (pkg) => EXACT_PACKAGES.includes(pkg) || allowed.some((a) => pkg === a || pkg.startsWith(`${a}.`));
 // The listing is a tree where every package carries the counts of its subpackages too
 const packages = new Map(
   output

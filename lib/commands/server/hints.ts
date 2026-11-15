@@ -26,7 +26,7 @@ export const HINTS: readonly Hint[] = [
     hint: `A service file of the server was not relocated. ${REPORT}. As a workaround try ${SHADE_OFF}`,
   },
   {
-    pattern: /StartupException.*ClassCastException.*Initializer|ViewTreeLifecycleOwner/s,
+    pattern: /StartupException.*ClassCastException.*Initializer|ViewTreeLifecycleOwner not found/s,
     anchor: 'startup-initializer',
     hint: `The classes shared with the application under test are not consistent. ${REPORT}. As a workaround try ${SHADE_OFF}`,
   },
@@ -37,13 +37,6 @@ export const HINTS: readonly Hint[] = [
       'The Jetpack Compose version of the application under test differs from the one of the Espresso server. ' +
       'Set "toolsVersions": {"composeVersion": "<version of the app>"} in the espressoBuildConfig capability. ' +
       'If the app has no Compose, set "composeSupport": false instead',
-  },
-  {
-    pattern: /No compose hierarchies found/,
-    anchor: 'no-compose-hierarchies',
-    hint:
-      'The current screen has no Compose content. Switch the "driver" setting back to "espresso", ' +
-      'or navigate to a Compose screen',
   },
 ];
 

@@ -128,7 +128,7 @@ data class HamcrestMatcher(
                     try {
                         val qualifiedClassName = "androidx.test.espresso.matcher.${className}"
                         return@let forNameShaded(qualifiedClassName).kotlin
-                    } catch (cnfe: ClassCastException) {
+                    } catch (cnfe: ClassNotFoundException) {
                         throw JsonParseException("No such class found '${className}'")
                     }
                 }

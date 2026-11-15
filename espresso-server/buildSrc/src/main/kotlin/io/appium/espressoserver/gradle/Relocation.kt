@@ -12,7 +12,9 @@ import org.objectweb.asm.TypePath
 import org.objectweb.asm.commons.ClassRemapper
 import org.objectweb.asm.commons.Remapper
 import java.io.File
+import java.util.jar.JarEntry
 import java.util.jar.JarFile
+import java.util.jar.JarOutputStream
 
 internal const val SERVICES_DIR = "META-INF/services/"
 private val CLASS_NAME = Regex("[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+\\.[A-Z][A-Za-z0-9_$]*")
@@ -168,4 +170,24 @@ internal class PrefixRemapper(
 
     /** Relocated name of a class or service interface/provider given in dotted form. */
     fun mapDotted(name: String): String = map(name.replace('.', '/')).replace('/', '.')
+}
+
+/** Rewrites [jar] without the entries named in [names]. */
+fun removeJarEntries(jar: File, names: Set<String>) {
+    if (names.isEmpty()) {
+        return
+    }
+    val tmp = File(jar.parentFile, "${jar.name}.tmp")
+    JarFile(jar).use { src ->
+        JarOutputStream(tmp.outputStream().buffered()).use { dst ->
+            src.entries().asSequence().filter { it.name !in names }.forEach { e ->
+                dst.putNextEntry(JarEntry(e.name).also { it.time = e.time })
+                if (!e.isDirectory) {
+                    src.getInputStream(e).copyTo(dst)
+                }
+                dst.closeEntry()
+            }
+        }
+    }
+    tmp.renameTo(jar)
 }

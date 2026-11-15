@@ -5,6 +5,7 @@ plugins {
 import com.android.build.api.artifact.ScopedArtifact
 import com.android.build.api.variant.ScopedArtifacts
 import io.appium.espressoserver.gradle.RelocateClassesTask
+import io.appium.espressoserver.gradle.removeJarEntries
 import io.appium.espressoserver.gradle.withCapabilityVersion
 import io.appium.espressoserver.jvmtarget.AppiumJvmTarget
 import org.gradle.api.GradleException
@@ -91,11 +92,10 @@ android {
 
     packaging {
         if (shadeServer) {
-            // Service files stay: the relocation task adds the ones of the relocated interfaces
-            resources.excludes.addAll(
-                listOf("META-INF/*") + listOf("androidx", "nanohttpd", "maven", "proguard", "versions", "gradle")
-                    .map { "META-INF/$it/**" },
-            )
+            // Only the service files stay: the relocation task adds the ones of the relocated interfaces
+            // (a negated class excludes every META-INF folder that does not start with "s")
+            resources.excludes.addAll(listOf("META-INF/*", "META-INF/[!s]*/**", "META-INF/s[!e]*/**"))
+            resources.pickFirsts.add("META-INF/services/**")
         } else {
             resources.excludes.add("META-INF/**")
         }
@@ -138,6 +138,7 @@ if (shadeServer) {
             val suffix = variant.name.replaceFirstChar { it.uppercase() }
             val relocateClasses = tasks.register<RelocateClassesTask>("relocate${suffix}AndroidTestClasses") {
                 prefix.set(shadedPrefix)
+                excludedResources.set(layout.buildDirectory.file("shade/$suffix/excluded-resources.txt"))
                 keep.set(
                     listOf(
                         // Server and the already shaded XPath 2 processor
@@ -176,9 +177,17 @@ if (shadeServer) {
                     RelocateClassesTask::allDirectories,
                     RelocateClassesTask::output,
                 )
-            // Rewritten service files of the relocated interfaces. The originals stay and are harmless:
-            // only the AUT can look them up, and its own copy of the library provides the classes.
+            // Rewritten service files of the relocated interfaces replace the originals, which list
+            // providers that no longer exist under these names
             androidTest.sources.resources?.addGeneratedSourceDirectory(relocateClasses, RelocateClassesTask::servicesDir)
+            tasks.matching { it.name == "merge${suffix}AndroidTestJavaResource" }.configureEach {
+                val excluded = relocateClasses.flatMap { it.excludedResources }
+                inputs.file(excluded)
+                doLast {
+                    val names = excluded.get().asFile.readLines().filter(String::isNotBlank).toSet()
+                    outputs.files.filter { it.name.endsWith(".jar") }.forEach { removeJarEntries(it, names) }
+                }
+            }
         }
     }
 }
