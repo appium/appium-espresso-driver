@@ -4,9 +4,11 @@ import {describe, it, before, after} from 'node:test';
 import type {Browser} from 'webdriverio';
 
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
+import {isApiBelow, WEBVIEW_MIN_API} from '../helpers/env.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
-const SKIP_CONTEXT_TESTS = Boolean(process.env.CI);
+// Needs a Chromedriver matching the emulator WebView
+const SKIP_CONTEXT_TESTS = isApiBelow(WEBVIEW_MIN_API);
 
 describe('context', {skip: SKIP_CONTEXT_TESTS, timeout: E2E_TEST_TIMEOUT}, function () {
   let driver: Browser;

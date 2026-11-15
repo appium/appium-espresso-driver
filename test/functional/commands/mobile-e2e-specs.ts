@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
-import {describe, it, before, after, beforeEach, afterEach} from 'node:test';
+import {describe, it, before, after, beforeEach} from 'node:test';
 
 import type {Browser} from 'webdriverio';
 
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
+import {assertThreeButtonNavigation, goToHome} from '../helpers/device.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
@@ -18,13 +19,18 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
         // })
       }),
     );
+    await assertThreeButtonNavigation(driver);
   });
   after(async function () {
     await deleteSession();
   });
+  // The session is shared, so every test starts from a known screen
+  beforeEach(async function () {
+    await goToHome(driver);
+  });
 
   describe('mobile:swipe', function () {
-    describe('with direction', {skip: Boolean(process.env.CI)}, function () {
+    describe('with direction', function () {
       it('should swipe up and swipe down', async function () {
         const el = await driver.$('~Views');
         await el.click();
@@ -34,23 +40,17 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
         assert.ok((await driver.getPageSource()).includes('Spinner'));
         await driver.execute('mobile: swipe', {direction: 'down', elementId: element.elementId});
         assert.ok((await driver.getPageSource()).includes('Animation'));
-        await driver.back();
       });
     });
-    describe('with GeneralSwipeAction', {skip: Boolean(process.env.CI)}, function () {
+    describe('with GeneralSwipeAction', function () {
       beforeEach(async function () {
         const viewEl = await driver.$('~Views');
         await viewEl.click();
       });
-      afterEach(async function () {
-        await driver.back();
-      });
       it('should call GeneralSwipeAction and use default params when params missing', async function () {
-        const element = await driver.$(await driver.findElement('class name', 'android.widget.ListView'));
+        // The defaults start at the bottom edge of the element, so use a row to stay away from the screen edge
+        const element = await driver.$('~Animation');
         await driver.execute('mobile: swipe', {elementId: element.elementId, swiper: 'slow'});
-        // The swipe action shows up the app history, so should go back to the app view to proceed the test.
-        // Android doesn't accept incoming actions on the espresso server with the app history.
-        await driver.execute('mobile: shell', {command: 'input', args: ['keyevent', 4]});
         assert.ok((await driver.getPageSource()).includes('Animation'));
       });
       it('should call GeneralSwipeAction with provided parameters', async function () {
@@ -58,13 +58,10 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
         await driver.execute('mobile: swipe', {
           elementId: element.elementId,
           swiper: 'slow',
-          startCoordinates: 'BOTTOM_RIGHT',
-          endCoordinates: 'TOP_RIGHT',
+          startCoordinates: 'CENTER',
+          endCoordinates: 'TOP_CENTER',
           precisionDescriber: 'FINGER',
         });
-        // the swipe action shows up the app history, so should go back to the app view to proceed the test.
-        // Android doesn't accept incoming actions on the espresso server with the app history.
-        await driver.execute('mobile: shell', {command: 'input', args: ['keyevent', 4]});
         assert.ok((await driver.getPageSource()).includes('Animation'));
       });
       describe('failing swipe tests', function () {
@@ -113,7 +110,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
     });
   });
 
-  describe('mobile: openDrawer, mobile: closeDrawer', {skip: Boolean(process.env.CI)}, function () {
+  describe('mobile: openDrawer, mobile: closeDrawer', function () {
     it('should call these two commands but fail because element is not a drawer', async function () {
       // Testing for failures because ApiDemos app does not have a drawer to test on
       const el = await driver.$('~Views');
@@ -128,7 +125,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
     });
   });
 
-  describe('mobile: setDate, mobile: setTime', {skip: Boolean(process.env.CI)}, function () {
+  describe('mobile: setDate, mobile: setTime', function () {
     it('should set the date on a DatePicker', async function () {
       await driver.execute('mobile:startActivity', {
         appActivity: 'io.appium.android.apis.view.DateWidgets1',
@@ -146,7 +143,6 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
       await okButton.click();
       const source = await driver.getPageSource();
       assert.strictEqual(source.includes('10-25-2020'), true);
-      await driver.back();
     });
     it('should set the time on a timepicker', async function () {
       await driver.execute('mobile:startActivity', {
@@ -160,11 +156,10 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
       });
       const source = await driver.getPageSource();
       assert.strictEqual(source.includes('10:58'), true);
-      await driver.back();
     });
   });
 
-  describe('mobile: navigateTo', {skip: Boolean(process.env.CI)}, function () {
+  describe('mobile: navigateTo', function () {
     it('should validate params', async function () {
       const element = await driver.$('~Views');
       await assert.rejects(
@@ -177,8 +172,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
       );
       await assert.rejects(driver.execute('mobile: navigateTo', {elementId: element.elementId}), /required/);
     });
-    // dependency issue
-    it.skip('should call the navigateTo method', async function () {
+    it('should call the navigateTo method', {skip: 'ApiDemos has no NavigationView'}, async function () {
       // Testing for failures because ApiDemos app does not have a navigator view to test on
       const element = await driver.$('~Views');
       await assert.rejects(
@@ -188,7 +182,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
     });
   });
 
-  describe('mobile: scrollToPage', {skip: Boolean(process.env.CI)}, function () {
+  describe('mobile: scrollToPage', function () {
     it('should validate the parameters', async function () {
       const el = await driver.$('~Views');
       await assert.rejects(
@@ -232,7 +226,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
     });
   });
 
-  describe('mobile:uiautomator', {skip: Boolean(process.env.CI)}, function () {
+  describe('mobile:uiautomator', function () {
     it('should be able to find and take action on all uiObjects', async function () {
       const text = await driver.execute('mobile: uiautomator', {
         strategy: 'clazz',
@@ -251,7 +245,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
       assert.deepStrictEqual(text, ['Views']);
     });
   });
-  describe('mobile: clickAction', {skip: Boolean(process.env.CI)}, function () {
+  describe('mobile: clickAction', function () {
     let viewEl: WebdriverIO.Element;
 
     beforeEach(async function () {
@@ -261,7 +255,6 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
     it('should click on an element and use default parameters', async function () {
       await driver.execute('mobile: clickAction', {elementId: viewEl.elementId});
       assert.ok((await driver.getPageSource()).includes('Animation'));
-      await driver.back();
     });
     it('should click on an element and accept parameters', async function () {
       await driver.execute('mobile: clickAction', {
@@ -273,7 +266,6 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
         buttonState: 0,
       });
       assert.ok((await driver.getPageSource()).includes('Animation'));
-      await driver.back();
     });
 
     const badParams: Array<[string, unknown, RegExp]> = [
@@ -297,7 +289,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
     }
   });
 
-  describe('mobile: backdoor', {skip: Boolean(process.env.CI)}, function () {
+  describe('mobile: backdoor', function () {
     it('should get element type face', async function () {
       const element = await driver.$('~Views');
       // Below returns like: {"mStyle"=>0, "mSupportedAxes"=>nil, "mWeight"=>400, "native_instance"=>131438067610240}
