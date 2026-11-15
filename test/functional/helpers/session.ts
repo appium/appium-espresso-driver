@@ -14,7 +14,23 @@ const COMMON_REMOTE_OPTIONS = {
   strictSelectors: false,
 };
 
+// Known emulator startup flakes (mostly API 29); everything else must fail the test
+const RETRYABLE_STARTUP_ERROR = /Appium Settings app is not running|DeadSystemException/;
+
 let driver: Browser | null = null;
+
+async function createSession(options: Capabilities.WebdriverIOConfig): Promise<Browser> {
+  try {
+    return await remote(options);
+  } catch (e) {
+    const message = (e as Error).message ?? String(e);
+    if (!RETRYABLE_STARTUP_ERROR.test(message)) {
+      throw e;
+    }
+    process.stderr.write(`Retrying the session creation once after an emulator startup error: ${message}\n`);
+    return await remote(options);
+  }
+}
 
 async function initSession(caps: Capabilities.RequestedStandaloneCapabilities): Promise<Browser> {
   if (driver) {
@@ -26,7 +42,7 @@ async function initSession(caps: Capabilities.RequestedStandaloneCapabilities): 
       ...COMMON_REMOTE_OPTIONS,
       capabilities: caps,
     };
-    driver = await remote(options);
+    driver = await createSession(options);
     return driver;
   });
 }

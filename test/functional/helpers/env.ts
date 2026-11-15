@@ -8,3 +8,8 @@ export const WEBVIEW_MIN_API = 36;
 export function isApiBelow(level: number): boolean {
   return Number.isFinite(apiLevel) && apiLevel < level;
 }
+
+/** True only if the API level is known and equals `level`. */
+export function isApi(level: number): boolean {
+  return apiLevel === level;
+}
