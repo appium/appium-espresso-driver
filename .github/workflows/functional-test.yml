@@ -16,6 +16,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        apiLevel: [36, 32, 29, 26]
+        # The e2e step takes ~11 min on a single job; two shards keep each one under ~10 min
+        shard: [1, 2]
         include:
         - apiLevel: 36
           emuTag: google_apis
@@ -34,6 +37,7 @@ jobs:
       CI: true
       ANDROID_AVD: emulator
       ANDROID_SDK_VERSION: ${{ matrix.apiLevel }}
+      E2E_SHARD_COUNT: 2
       APPIUM_TEST_SERVER_PORT: 4567
       APPIUM_TEST_SERVER_HOST: 127.0.0.1
       _FORCE_LOGS: 1
@@ -92,6 +96,16 @@ jobs:
         npm install
         npm install --no-save mjpeg-consumer
       name: Install dev dependencies
+    - run: npm run build:node
+      name: Build tests
+    - name: Chromedriver cache
+      # Downloaded on demand by the WebView specs (--relaxed-security)
+      if: matrix.apiLevel == 36
+      uses: actions/cache@v6
+      with:
+        path: node_modules/appium-chromedriver/chromedriver
+        key: chromedriver-${{ matrix.apiLevel }}-${{ hashFiles('package.json') }}
+        restore-keys: chromedriver-${{ matrix.apiLevel }}-
     - run: |
         pushd "$(pwd)/espresso-server"
         nohup ./gradlew -PappiumTargetPackage=io.appium.android.apis app:assembleAndroidTest
@@ -113,9 +127,13 @@ jobs:
     - run: nohup adb logcat > logcat.log &
       name: Capture logcat
     - uses: reactivecircus/android-emulator-runner@v2
-      name: e2e_api${{ matrix.apiLevel }}
+      name: e2e_api${{ matrix.apiLevel }}_shard${{ matrix.shard }}
       with:
-        script: npm run e2e-test
+        # Gesture navigation turns edge swipes into Back/app history; the specs assert 3-button mode.
+        # The test command mirrors the 'e2e-test' npm script, plus sharding.
+        script: |
+          adb shell cmd overlay enable com.android.internal.systemui.navbar.threebutton || true
+          node --test --test-concurrency=1 --test-timeout=300000 --test-shard=${{ matrix.shard }}/${{ env.E2E_SHARD_COUNT }} "build/test/functional/**/*-specs.js"
         avd-name: ${{ env.ANDROID_AVD }}
         force-avd-creation: false
         api-level: ${{ matrix.apiLevel }}
@@ -128,11 +146,11 @@ jobs:
       if: ${{ always() }}
       uses: actions/upload-artifact@master
       with:
-        name: logcat-api${{ matrix.apiLevel }}
+        name: logcat-api${{ matrix.apiLevel }}-shard${{ matrix.shard }}
         path: logcat.log
     - name: Save server output
       if: ${{ always() }}
       uses: actions/upload-artifact@master
       with:
-        name: appium-api${{ matrix.apiLevel }}
+        name: appium-api${{ matrix.apiLevel }}-shard${{ matrix.shard }}
         path: appium.log
