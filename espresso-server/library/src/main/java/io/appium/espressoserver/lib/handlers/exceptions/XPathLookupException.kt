@@ -19,13 +19,21 @@ package io.appium.espressoserver.lib.handlers.exceptions
 import fi.iki.elonen.NanoHTTPD
 
 
-class XPathLookupException(xpath: String, reason: String) :
-        AppiumException(String.format("Could not parse XPath %s: %s", xpath, reason)) {
+class XPathLookupException private constructor(message: String) : AppiumException(message) {
+    constructor(xpath: String, reason: String) :
+            this(String.format("Could not parse XPath %s: %s", xpath, reason))
+
     override fun error(): String {
         return "invalid selector"
     }
 
     override fun status(): NanoHTTPD.Response.Status {
         return NanoHTTPD.Response.Status.BAD_REQUEST
+    }
+
+    companion object {
+        /** For a valid expression that has failed while being evaluated */
+        fun evaluationFailure(xpath: String, reason: String) =
+            XPathLookupException(String.format("Could not evaluate XPath %s: %s", xpath, reason))
     }
 }

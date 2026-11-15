@@ -310,6 +310,9 @@ object ViewFinder {
             } catch (e: AppNotIdleException) {
                 throw InvalidElementStateException(APP_NOT_IDLE_MESSAGE + getThreadDump(), e)
             } catch (e: Exception) {
+                // The matcher is evaluated on the main thread, which wraps the XPath errors
+                generateSequence<Throwable>(e) { it.cause }
+                    .filterIsInstance<XPathLookupException>().firstOrNull()?.let { throw it }
                 if (e is EspressoException) {
                     return resultViews
                 }

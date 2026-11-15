@@ -27,20 +27,16 @@ import android.widget.AdapterView
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import io.appium.espressoserver.lib.drivers.DriverContext
 import io.appium.espressoserver.lib.handlers.exceptions.AppiumException
-import io.appium.espressoserver.lib.handlers.exceptions.XPathLookupException
 import io.appium.espressoserver.lib.helpers.AndroidLogger
 import io.appium.espressoserver.lib.helpers.StringHelpers.abbreviate
 import io.appium.espressoserver.lib.helpers.XMLHelpers.toNodeName
 import io.appium.espressoserver.lib.helpers.XMLHelpers.toSafeString
 import io.appium.espressoserver.lib.helpers.extensions.withPermit
 import io.appium.espressoserver.lib.viewaction.ViewGetter
-import org.w3c.dom.NodeList
-import org.xml.sax.InputSource
 import org.xmlpull.v1.XmlSerializer
 import java.io.*
 import java.util.*
 import java.util.concurrent.Semaphore
-import javax.xml.xpath.*
 
 const val NON_XML_CHAR_REPLACEMENT = "?"
 const val VIEW_INDEX = "viewIndex"
@@ -49,7 +45,6 @@ val DEFAULT_VIEW_CLASS_NAME = View::javaClass.name
 const val MAX_TRAVERSAL_DEPTH = 70
 const val MAX_XML_VALUE_LENGTH = 64 * 1024
 const val XML_ENCODING = "UTF-8"
-val XPATH: XPath = XPathFactory.newInstance().newXPath()
 
 
 internal fun toXmlNodeName(className: String?): String {
@@ -70,13 +65,6 @@ internal fun toXmlNodeName(className: String?): String {
     }
     return fixedName
 }
-
-fun compileXpathExpression(selector: String): XPathExpression =
-    try {
-        XPATH.compile(selector)
-    } catch (xe: XPathExpressionException) {
-        throw XPathLookupException(selector, xe.message!!)
-    }
 
 class SourceDocument constructor(
     private val root: Any? = null,
@@ -288,16 +276,11 @@ class SourceDocument constructor(
             }
         }, { performCleanup() })
 
-    fun findViewsByXPath(expression: XPathExpression): List<View> =
-        findMatchingNodeIds(expression, VIEW_INDEX).map { viewMap.get(it) }
+    internal fun findViewsByXPath(query: XPathQuery): List<View> =
+        findMatchingNodeIds(query, VIEW_INDEX).map { viewMap.get(it) }
 
-    fun findMatchingNodeIds(expression: XPathExpression, attributeName: String): List<Int> =
+    internal fun findMatchingNodeIds(query: XPathQuery, attributeName: String): List<Int> =
         RESOURCES_GUARD.withPermit({
-            toStream().use { xmlStream ->
-                val list = expression.evaluate(InputSource(xmlStream), XPathConstants.NODESET) as NodeList
-                (0 until list.length).map { index ->
-                    list.item(index).attributes.getNamedItem(attributeName).nodeValue.toInt()
-                }
-            }
+            toStream().use { xmlStream -> query.evaluateNodeIds(xmlStream, attributeName) }
         }, { performCleanup() })
 }

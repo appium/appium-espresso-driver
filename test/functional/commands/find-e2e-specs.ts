@@ -23,6 +23,14 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
         await el.click();
         await driver.back();
       });
+      it('should find an element by an XPath 2.0 expression', async function () {
+        const els = await driver.$$("//*[matches(@text, '^Anim.*')]");
+        assert.strictEqual(els.length, 1);
+        assert.strictEqual(await els[0].getText(), 'Animation');
+      });
+      it('should report an invalid XPath expression as an invalid selector', async function () {
+        await assert.rejects(driver.findElement('xpath', '//*[@text + 1 = 2]'), /invalid selector/i);
+      });
       it('should find multiple elements that match one xpath', async function () {
         const els = await driver.$$('//android.widget.TextView');
         assert.ok(els.length > 1);

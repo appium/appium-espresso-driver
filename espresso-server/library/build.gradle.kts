@@ -132,6 +132,9 @@ dependencies {
     api(libs.kotlin.reflect) {
         withCapabilityVersion(project, "appiumKotlin", libs.versions.kotlin.get())
     }
+    implementation(libs.xpath2.processor) {
+        because("XPath 2.0 locator support")
+    }
     "composeOnApi"(libs.androidx.compose.ui.test) {
         withCapabilityVersion(project, "appiumComposeVersion", libs.versions.composeUiTest.get())
         because("Android Compose support")
