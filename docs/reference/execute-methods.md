@@ -370,8 +370,7 @@ configuration.
 ### `mobile: stopMediaStream`
 
 Stops a stream started by [`mobile: startMediaStream`](#mobile-startmediastream). Stopping a stream that
-has already ended is a no-op, but only until another stream is started in the session. After that, the
-identifier of the ended stream is forgotten and the method fails with an invalid argument error.
+has already ended is a no-op.
 
 Available since driver version 10.1.0.
 
