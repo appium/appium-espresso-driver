@@ -106,6 +106,15 @@ jobs:
         path: node_modules/appium-chromedriver/chromedriver
         key: chromedriver-${{ matrix.apiLevel }}-${{ hashFiles('package.json') }}
         restore-keys: chromedriver-${{ matrix.apiLevel }}-
+    - name: Gradle cache
+      # The cold Espresso server prebuild downloads Gradle and the dependencies and takes ~3 min
+      uses: actions/cache@v6
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('espresso-server/**/*.gradle*', 'espresso-server/gradle/libs.versions.toml', 'espresso-server/gradle/wrapper/gradle-wrapper.properties') }}
+        restore-keys: gradle-${{ runner.os }}-
     - run: |
         pushd "$(pwd)/espresso-server"
         nohup ./gradlew -PappiumTargetPackage=io.appium.android.apis app:assembleAndroidTest
