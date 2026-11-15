@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {describe, it, before, after} from 'node:test';
 
 import {APIDEMO_CAPS} from '../desired.js';
+import {scrollRootListToEnd} from '../helpers/device.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
@@ -64,6 +65,7 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
       });
 
       it('should match an element if the element is off-screen but has an accessibility id', async function () {
+        await scrollRootListToEnd(driver);
         const el = await driver.$('~Views');
         await el.click();
 
@@ -351,6 +353,7 @@ describe('find elements', {timeout: E2E_TEST_TIMEOUT}, function () {
     });
 
     it('should move an element outside. the screen into the screen with find element', async function () {
+      await scrollRootListToEnd(driver);
       // Espresso specific behavior.
       const el = await driver.$('~Views');
       await el.click();

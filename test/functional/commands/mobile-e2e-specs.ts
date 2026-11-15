@@ -4,7 +4,7 @@ import {describe, it, before, after, beforeEach} from 'node:test';
 import type {Browser} from 'webdriverio';
 
 import {amendCapabilities, APIDEMO_CAPS} from '../desired.js';
-import {assertThreeButtonNavigation, goToHome} from '../helpers/device.js';
+import {assertThreeButtonNavigation, goToHome, scrollRootListToEnd} from '../helpers/device.js';
 import {initSession, deleteSession, E2E_TEST_TIMEOUT} from '../helpers/session.js';
 
 describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
@@ -32,6 +32,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
   describe('mobile:swipe', function () {
     describe('with direction', function () {
       it('should swipe up and swipe down', async function () {
+        await scrollRootListToEnd(driver);
         const el = await driver.$('~Views');
         await el.click();
         assert.ok((await driver.getPageSource()).includes('Animation'));
@@ -44,6 +45,7 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
     });
     describe('with GeneralSwipeAction', function () {
       beforeEach(async function () {
+        await scrollRootListToEnd(driver);
         const viewEl = await driver.$('~Views');
         await viewEl.click();
       });
@@ -227,28 +229,44 @@ describe('mobile', {timeout: E2E_TEST_TIMEOUT}, function () {
   });
 
   describe('mobile:uiautomator', function () {
+    // UiAutomator can see an empty window right after the activity relaunch, so wait for the content.
+    // 'Accessibility' is the first item of the root list, so it is on screen regardless of the screen size.
+    async function uiautomator(params: Record<string, unknown>, expected: (result: unknown) => boolean) {
+      let result: unknown;
+      await driver.waitUntil(
+        async () => {
+          try {
+            result = await driver.execute('mobile: uiautomator', params);
+            return expected(result);
+          } catch {
+            return false;
+          }
+        },
+        {timeout: 20000, timeoutMsg: 'mobile: uiautomator did not return the expected result'},
+      );
+      return result;
+    }
+
     it('should be able to find and take action on all uiObjects', async function () {
-      const text = await driver.execute('mobile: uiautomator', {
-        strategy: 'clazz',
-        locator: 'android.widget.TextView',
-        action: 'getText',
-      });
-      assert.ok((text as string).includes('Views'));
+      const text = await uiautomator(
+        {strategy: 'clazz', locator: 'android.widget.TextView', action: 'getText'},
+        (result) => String(result).includes('Accessibility'),
+      );
+      assert.ok((text as string).includes('Accessibility'));
     });
     it('should be able to find and take action on uiObject with given index', async function () {
-      const text = await driver.execute('mobile: uiautomator', {
-        strategy: 'textContains',
-        locator: 'Views',
-        index: 0,
-        action: 'getText',
-      });
-      assert.deepStrictEqual(text, ['Views']);
+      const text = await uiautomator(
+        {strategy: 'textContains', locator: 'Accessibility', index: 0, action: 'getText'},
+        (result) => Array.isArray(result) && result.length > 0,
+      );
+      assert.deepStrictEqual(text, ['Accessibility']);
     });
   });
   describe('mobile: clickAction', function () {
     let viewEl: WebdriverIO.Element;
 
     beforeEach(async function () {
+      await scrollRootListToEnd(driver);
       viewEl = await driver.$('~Views');
     });
 

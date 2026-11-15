@@ -5,6 +5,7 @@ import type {Browser} from 'webdriverio';
 import {isApiBelow} from './env.js';
 
 const APIDEMOS_PACKAGE = 'io.appium.android.apis';
+const ELEMENT_KEY = 'element-6066-11e4-a52e-4f735466cecf';
 
 /**
  * Brings ApiDemos back to its root screen without pressing Back,
@@ -35,4 +36,13 @@ export async function assertThreeButtonNavigation(driver: Browser): Promise<void
     `Emulator must use 3-button navigation (navigation_mode=${mode}). ` +
       'Run: adb shell cmd overlay enable com.android.internal.systemui.navbar.threebutton',
   );
+}
+
+/**
+ * Scrolls the ApiDemos root list to its end. 'Views' is the last item and is clipped
+ * (less than 90% visible, so not clickable) on the small CI emulator screens.
+ */
+export async function scrollRootListToEnd(driver: Browser): Promise<void> {
+  const ref = await driver.findElement('id', 'android:id/list');
+  await driver.execute('mobile: swipe', {direction: 'up', elementId: ref[ELEMENT_KEY]});
 }
