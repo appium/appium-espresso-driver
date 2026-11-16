@@ -58,6 +58,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    if (shadeServer) {
+        // Drops the library initializers whose classes are relocated
+        sourceSets.getByName("androidTest").manifest.srcFile("src/androidTestShaded/AndroidManifest.xml")
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false

@@ -12,6 +12,8 @@ import org.objectweb.asm.TypePath
 import org.objectweb.asm.commons.ClassRemapper
 import org.objectweb.asm.commons.Remapper
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
@@ -232,5 +234,5 @@ fun removeJarEntries(jar: File, names: Set<String>) {
             }
         }
     }
-    tmp.renameTo(jar)
+    Files.move(tmp.toPath(), jar.toPath(), StandardCopyOption.REPLACE_EXISTING)
 }

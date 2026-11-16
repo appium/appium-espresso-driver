@@ -38,6 +38,10 @@ describe('hints', function () {
       'java.lang.NoSuchMethodError: No static method foo() in class Landroidx/compose/ui/Foo; (androidx.compose.ui.Foo)',
     );
     assert.match(hint, /composeVersion/);
+    assert.equal(
+      findHints('java.lang.NoClassDefFoundError: Failed resolution of: Landroidx/compose/runtime/Composer;').length,
+      1,
+    );
   });
 
   it('should not find hints for unrelated failures', function () {

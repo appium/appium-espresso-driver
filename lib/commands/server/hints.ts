@@ -31,7 +31,7 @@ export const HINTS: readonly Hint[] = [
     hint: `The classes shared with the application under test are not consistent. ${REPORT}. As a workaround try ${SHADE_OFF}`,
   },
   {
-    pattern: /(NoSuchMethodError|NoClassDefFoundError)[^\n]*androidx\.compose/,
+    pattern: /(NoSuchMethodError|NoClassDefFoundError)[^\n]*androidx[./]compose/,
     anchor: 'compose-version',
     hint:
       'The Jetpack Compose version of the application under test differs from the one of the Espresso server. ' +
