@@ -92,10 +92,10 @@ android {
 
     packaging {
         if (shadeServer) {
-            // Only the service files stay: the relocation task adds the ones of the relocated interfaces
+            // Only the service files stay (AGP merges the duplicates): the relocation task adds the ones
+            // of the relocated interfaces
             // (a negated class excludes every META-INF folder that does not start with "s")
             resources.excludes.addAll(listOf("META-INF/*", "META-INF/[!s]*/**", "META-INF/s[!e]*/**"))
-            resources.pickFirsts.add("META-INF/services/**")
         } else {
             resources.excludes.add("META-INF/**")
         }
@@ -151,8 +151,12 @@ if (shadeServer) {
                 shared.set(
                     // Compose test code needs the AUT's own Compose classes (static registries)
                     (if (useComposeLibrary) listOf("androidx/compose/", "kotlin/", "kotlinx/") else emptyList()) +
-                        // The AUT implements IdlingResource and hands it to the server
-                        listOf("androidx/test/espresso/IdlingResource", "androidx/test/espresso/idling/"),
+                        // The AUT implements IdlingResource and registers it in the IdlingRegistry singleton
+                        listOf(
+                            "androidx/test/espresso/IdlingResource",
+                            "androidx/test/espresso/IdlingRegistry",
+                            "androidx/test/espresso/idling/",
+                        ),
                 )
                 sharedExclude.set(listOf("androidx/compose/ui/test/"))
                 if (sharedCoordinates.isNotEmpty()) {

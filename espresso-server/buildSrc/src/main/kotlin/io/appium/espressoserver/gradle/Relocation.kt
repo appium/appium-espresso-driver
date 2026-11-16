@@ -61,6 +61,22 @@ internal fun readServices(jars: Collection<File>, dirs: Collection<File>): Map<S
     return services
 }
 
+/** Bundled classes that extend a platform view (`android.view.*`, `android.widget.*`), directly or indirectly. */
+internal fun viewTypes(classes: Map<String, ByteArray>): List<String> {
+    val superNames = classes.mapValues { (_, bytes) -> ClassReader(bytes).superName }
+    fun isView(name: String): Boolean {
+        var current = superNames[name]
+        while (current != null) {
+            if (current.startsWith("android/view/") || current.startsWith("android/widget/")) {
+                return true
+            }
+            current = superNames[current]
+        }
+        return false
+    }
+    return classes.keys.filter(::isView)
+}
+
 /**
  * Internal names of the classes [bytes] links against (signatures, code, constants).
  * Annotations are skipped: a missing annotation class is ignored at runtime, and following them
@@ -134,6 +150,33 @@ internal fun growClosure(classes: Map<String, ByteArray>, closure: MutableSet<St
         referencedClasses(classes.getValue(queue.removeFirst())) { ref ->
             if (ref in classes && closure.add(ref)) {
                 queue.add(ref)
+            }
+        }
+    }
+}
+
+/**
+ * A relocated class lives in another package than the shared ones, so it cannot use a shared class that is
+ * not public (e.g. extend a package-private base class). Shares such classes, together with what they reference.
+ */
+internal fun shareNonPublicDependents(
+    classes: Map<String, ByteArray>,
+    closure: MutableSet<String>,
+    isKept: (String) -> Boolean,
+) {
+    val references = HashMap<String, Set<String>>()
+    val isPublic = { name: String -> ClassReader(classes.getValue(name)).access and Opcodes.ACC_PUBLIC != 0 }
+    var changed = true
+    while (changed) {
+        changed = false
+        val nonPublic = closure.filterNotTo(HashSet(), isPublic)
+        classes.keys.filter { it !in closure && !isKept(it) }.forEach { name ->
+            val refs = references.getOrPut(name) {
+                HashSet<String>().also { set -> referencedClasses(classes.getValue(name)) { set.add(it) } }
+            }
+            if (refs.any { it in nonPublic }) {
+                growClosure(classes, closure, listOf(name))
+                changed = true
             }
         }
     }

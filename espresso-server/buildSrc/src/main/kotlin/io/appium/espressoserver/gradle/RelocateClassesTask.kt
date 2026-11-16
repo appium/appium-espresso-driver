@@ -74,6 +74,10 @@ abstract class RelocateClassesTask : DefaultTask() {
         }
         logger.info("Shared roots: $roots")
         growClosure(classes, closure, roots)
+        // The AUT creates the views that the server's actions cast and measure (ViewPager, DrawerLayout, ...)
+        val views = viewTypes(classes)
+        logger.lifecycle("Shared view types: ${views.size}")
+        growClosure(classes, closure, views.filterNot(isKept))
         userJars.files.filter { it.name.endsWith(".jar") }.forEach { jar ->
             val before = closure.size
             growClosure(classes, closure, JarFile(jar).use { j ->
@@ -94,6 +98,8 @@ abstract class RelocateClassesTask : DefaultTask() {
                 }
             }
         } while (closure.size != before)
+        // A relocated class cannot extend or use a package-private class that stays shared: other package
+        shareNonPublicDependents(classes, closure, isKept)
         logger.lifecycle("Shared with the AUT: ${closure.size} classes")
         logger.info(
             "Shared packages: " + closure.groupingBy { it.split('/').take(2).joinToString("/") }.eachCount()
