@@ -9,7 +9,7 @@ shadow the copy of the same library in the AUT, which caused version conflicts s
 
 ## How it works
 
-By default the server is built with `shadeServer` enabled:
+By default the server is built with [`shadeServer`](../reference/capabilities.md#shadeserver) enabled:
 
 * the classes bundled with the server are moved to the `io.appium.espressoserver.shaded` package, so
   they cannot clash with the ones of the AUT;
@@ -31,16 +31,46 @@ prefix. The prefix is removed from the messages the server returns to the client
 
 ## Symptoms and settings
 
-| Symptom | Likely cause | What to do |
-| -- | -- | -- |
-| <a id="illegal-access-shaded"></a>`IllegalAccessError` with `io.appium.espressoserver.shaded` classes | Relocation problem in the server build | Report a bug, and set `shadeServer` to `false` meanwhile |
-| <a id="service-loader"></a>`Exception handler was not found via a ServiceLoader` | A service file was not relocated | Report a bug, and set `shadeServer` to `false` meanwhile |
-| <a id="startup-initializer"></a>`StartupException` with a `ClassCastException` mentioning `Initializer`, or `ViewTreeLifecycleOwner` errors | The classes shared with the AUT are not consistent | Report a bug, and set `shadeServer` to `false` meanwhile |
-| <a id="compose-version"></a>`NoSuchMethodError` or `NoClassDefFoundError` mentioning `androidx.compose` | The Compose version of the AUT differs from the one of the server | Set `toolsVersions.composeVersion` to the AUT's version. If the AUT has no Compose, set `composeSupport` to `false` |
-| `No compose hierarchies found` | The current screen has no Compose content | Switch the [`driver`](../reference/settings.md#driver) setting back to `espresso`, or navigate to a Compose screen |
+Even with `shadeServer` enabled some issues are still possible, such as the following ones.
+The driver adds a hint with a link to the matching one of the first four to the session startup error
+when it recognizes it in the instrumentation output or in the crash buffer of the device.
 
-The driver adds a hint with a link to this page to the session startup error when it recognizes one of
-the first four errors above in the instrumentation output or in the crash buffer of the device.
+<a id="illegal-access-shaded"></a>
+
+### IllegalAccessError
+
+`IllegalAccessError` with `io.appium.espressoserver.shaded` classes is a relocation problem in the
+server build. Report a bug, and set `shadeServer` to `false` meanwhile.
+
+<a id="service-loader"></a>
+
+### ServiceLoader
+
+`Exception handler was not found via a ServiceLoader` means that a service file was not relocated.
+Report a bug, and set `shadeServer` to `false` meanwhile.
+
+<a id="startup-initializer"></a>
+
+### StartupException
+
+`StartupException` with a `ClassCastException` mentioning `Initializer`, or `ViewTreeLifecycleOwner`
+errors, mean that the classes shared with the AUT are not consistent. Report a bug, and set
+`shadeServer` to `false` meanwhile.
+
+<a id="compose-version"></a>
+
+### Compose version mismatch
+
+`NoSuchMethodError` or `NoClassDefFoundError` mentioning `androidx.compose` means that the Compose
+version of the AUT differs from the one of the server. Set `toolsVersions.composeVersion` to the AUT's
+version. If the AUT has no Compose, set `composeSupport` to `false`.
+
+### No compose hierarchies found
+
+The current screen has no Compose content. Switch the [`driver`](../reference/settings.md#driver)
+setting back to `espresso`, or navigate to a Compose screen.
+
+## Shading disabled
 
 If the server is built with `shadeServer` disabled, conflicts like `NoSuchMethodError`,
 `NoClassDefFoundError`, `IncompatibleClassChangeError` or `Resources$NotFoundException` in the AUT
