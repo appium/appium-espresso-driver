@@ -24,6 +24,7 @@ import com.google.gson.annotations.JsonAdapter
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.helpers.GsonParserHelpers
+import io.appium.espressoserver.lib.helpers.forNameApp
 import io.appium.espressoserver.lib.helpers.forNameShaded
 import io.appium.espressoserver.lib.helpers.ReflectionUtils.invokeStaticMethod
 import org.hamcrest.Matcher
@@ -58,11 +59,12 @@ data class HamcrestMatcher(
                         className = className.take(className.length - CLASS_SUFFIX.length)
                     }
 
+                    // Arguments are types of the app under test, so its classes take precedence
                     try {
-                        forNameShaded(className)
+                        forNameApp(className)
                     } catch (e: ClassNotFoundException) {
                         try {
-                            forNameShaded("java.lang.${className}")
+                            forNameApp("java.lang.${className}")
                         } catch (e: ClassNotFoundException) {
                             it
                         }

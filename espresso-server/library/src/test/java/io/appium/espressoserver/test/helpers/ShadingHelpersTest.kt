@@ -1,5 +1,6 @@
 package io.appium.espressoserver.test.helpers
 
+import io.appium.espressoserver.lib.helpers.forNameApp
 import io.appium.espressoserver.lib.helpers.forNameShaded
 import io.appium.espressoserver.lib.helpers.stripShadedPrefix
 import org.junit.Test
@@ -16,6 +17,12 @@ class `ShadingHelpers Test` {
     @Test
     fun `'forNameShaded' throws for unknown classes`() {
         assertFailsWith<ClassNotFoundException> { forNameShaded("no.such.Clazz") }
+    }
+
+    @Test
+    fun `'forNameApp' prefers the original name`() {
+        assertEquals(String::class.java, forNameApp("java.lang.String"))
+        assertFailsWith<ClassNotFoundException> { forNameApp("no.such.Clazz") }
     }
 
     @Test

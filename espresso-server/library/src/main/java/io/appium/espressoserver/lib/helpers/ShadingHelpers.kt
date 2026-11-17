@@ -30,5 +30,16 @@ fun forNameShaded(name: String): Class<*> =
         Class.forName(name)
     }
 
+/**
+ * Loads a class given by a client that describes the application under test, e.g. a type to match.
+ * The application's own class wins over the relocated copy of the server.
+ */
+fun forNameApp(name: String): Class<*> =
+    try {
+        Class.forName(name)
+    } catch (e: ClassNotFoundException) {
+        Class.forName(SHADED_PACKAGE_PREFIX + name)
+    }
+
 /** Hides the relocation from the names that are shown to the user. */
 fun String.stripShadedPrefix(): String = replace(SHADED_PACKAGE_PREFIX, "")

@@ -15,5 +15,6 @@ java {
 
 dependencies {
     implementation("org.ow2.asm:asm-commons:9.8")
+    implementation("org.ow2.asm:asm-tree:9.8")
     testImplementation("junit:junit:4.13.2")
 }
