@@ -5,12 +5,14 @@ import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.FieldVisitor
+import org.objectweb.asm.Handle
 import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.TypePath
 import org.objectweb.asm.commons.ClassRemapper
 import org.objectweb.asm.commons.Remapper
+import org.objectweb.asm.tree.ClassNode
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -157,9 +159,33 @@ internal fun growClosure(classes: Map<String, ByteArray>, closure: MutableSet<St
     }
 }
 
+/** Members (`owner`, `name`, `descriptor`) that the code of [bytes] calls or reads, including method handles. */
+internal fun memberReferences(bytes: ByteArray, onRef: (String, String, String) -> Unit) {
+    ClassReader(bytes).accept(
+        object : ClassVisitor(Opcodes.ASM9) {
+            override fun visitMethod(
+                access: Int, name: String?, descriptor: String?, signature: String?, exceptions: Array<out String>?,
+            ): MethodVisitor = object : MethodVisitor(Opcodes.ASM9) {
+                override fun visitMethodInsn(
+                    opcode: Int, owner: String, name: String, descriptor: String, isInterface: Boolean,
+                ) = onRef(owner, name, descriptor)
+
+                override fun visitFieldInsn(opcode: Int, owner: String, name: String, descriptor: String) =
+                    onRef(owner, name, descriptor)
+
+                override fun visitInvokeDynamicInsn(name: String, descriptor: String, handle: Handle, vararg args: Any) {
+                    (listOf(handle) + args).filterIsInstance<Handle>().forEach { onRef(it.owner, it.name, it.desc) }
+                }
+            }
+        },
+        ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES,
+    )
+}
+
 /**
  * A relocated class lives in another package than the shared ones, so it cannot use a shared class that is
- * not public (e.g. extend a package-private base class). Shares such classes, together with what they reference.
+ * not public (e.g. extend a package-private base class), nor its package-private (or protected, unless it is
+ * a subclass) members. Shares such classes, together with what they reference.
  */
 internal fun shareNonPublicDependents(
     classes: Map<String, ByteArray>,
@@ -167,7 +193,38 @@ internal fun shareNonPublicDependents(
     isKept: (String) -> Boolean,
 ) {
     val references = HashMap<String, Set<String>>()
-    val isPublic = { name: String -> ClassReader(classes.getValue(name)).access and Opcodes.ACC_PUBLIC != 0 }
+    val members = HashMap<String, Set<Triple<String, String, String>>>()
+    val readers = HashMap<String, ClassReader>()
+    fun reader(name: String) = readers.getOrPut(name) { ClassReader(classes.getValue(name)) }
+    val isPublic = { name: String -> reader(name).access and Opcodes.ACC_PUBLIC != 0 }
+    // Package-private and protected members declared by the class or inherited from the bundled superclasses
+    val restricted = HashMap<String, Map<String, Boolean>>()
+    fun restrictedMembers(owner: String): Map<String, Boolean> = restricted.getOrPut(owner) {
+        val result = HashMap<String, Boolean>()
+        var current: String? = owner
+        while (current != null && current in classes) {
+            val node = ClassNode().also { reader(current!!).accept(it, ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG) }
+            val declared = node.methods.map { Triple(it.name, it.desc, it.access) } +
+                node.fields.map { Triple(it.name, it.desc, it.access) }
+            declared
+                .filter { (_, _, access) -> access and (Opcodes.ACC_PUBLIC or Opcodes.ACC_PRIVATE) == 0 }
+                .forEach { (name, desc, access) ->
+                    result.putIfAbsent(name + desc, access and Opcodes.ACC_PROTECTED != 0)
+                }
+            current = node.superName
+        }
+        result
+    }
+    fun isSubclass(name: String, owner: String): Boolean {
+        var current: String? = name
+        while (current != null && current in classes) {
+            if (current == owner) {
+                return true
+            }
+            current = reader(current).superName
+        }
+        return current == owner
+    }
     var changed = true
     while (changed) {
         changed = false
@@ -176,7 +233,16 @@ internal fun shareNonPublicDependents(
             val refs = references.getOrPut(name) {
                 HashSet<String>().also { set -> referencedClasses(classes.getValue(name)) { set.add(it) } }
             }
-            if (refs.any { it in nonPublic }) {
+            val memberRefs = members.getOrPut(name) {
+                HashSet<Triple<String, String, String>>().also { set ->
+                    memberReferences(classes.getValue(name)) { o, n, d -> set.add(Triple(o, n, d)) }
+                }
+            }
+            val usesRestrictedMember = memberRefs.any { (owner, memberName, desc) ->
+                owner in closure && restrictedMembers(owner)[memberName + desc]
+                    ?.let { protected -> !protected || !isSubclass(name, owner) } == true
+            }
+            if (usesRestrictedMember || refs.any { it in nonPublic }) {
                 growClosure(classes, closure, listOf(name))
                 changed = true
             }
