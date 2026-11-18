@@ -159,8 +159,21 @@ internal fun growClosure(classes: Map<String, ByteArray>, closure: MutableSet<St
     }
 }
 
-/** Members (`owner`, `name`, `descriptor`) that the code of [bytes] calls or reads, including method handles. */
-internal fun memberReferences(bytes: ByteArray, onRef: (String, String, String) -> Unit) {
+/**
+ * A member that code calls or reads. [staticOrSuper] accesses (static members, `super` calls and constructors)
+ * are allowed for subclasses from another package; instance accesses are not, unless the receiver is `this`.
+ */
+internal data class MemberRef(val owner: String, val name: String, val desc: String, val staticOrSuper: Boolean)
+
+/** Members that the code of [bytes] calls or reads, including method handles. */
+internal fun memberReferences(bytes: ByteArray, onRef: (MemberRef) -> Unit) {
+    val safeInsns = setOf(
+        Opcodes.INVOKESTATIC, Opcodes.GETSTATIC, Opcodes.PUTSTATIC, Opcodes.INVOKESPECIAL,
+    )
+    val safeHandles = setOf(
+        Opcodes.H_INVOKESTATIC, Opcodes.H_GETSTATIC, Opcodes.H_PUTSTATIC,
+        Opcodes.H_INVOKESPECIAL, Opcodes.H_NEWINVOKESPECIAL,
+    )
     ClassReader(bytes).accept(
         object : ClassVisitor(Opcodes.ASM9) {
             override fun visitMethod(
@@ -168,13 +181,14 @@ internal fun memberReferences(bytes: ByteArray, onRef: (String, String, String) 
             ): MethodVisitor = object : MethodVisitor(Opcodes.ASM9) {
                 override fun visitMethodInsn(
                     opcode: Int, owner: String, name: String, descriptor: String, isInterface: Boolean,
-                ) = onRef(owner, name, descriptor)
+                ) = onRef(MemberRef(owner, name, descriptor, opcode in safeInsns))
 
                 override fun visitFieldInsn(opcode: Int, owner: String, name: String, descriptor: String) =
-                    onRef(owner, name, descriptor)
+                    onRef(MemberRef(owner, name, descriptor, opcode in safeInsns))
 
                 override fun visitInvokeDynamicInsn(name: String, descriptor: String, handle: Handle, vararg args: Any) {
-                    (listOf(handle) + args).filterIsInstance<Handle>().forEach { onRef(it.owner, it.name, it.desc) }
+                    (listOf(handle) + args).filterIsInstance<Handle>()
+                        .forEach { onRef(MemberRef(it.owner, it.name, it.desc, it.tag in safeHandles)) }
                 }
             }
         },
@@ -184,8 +198,9 @@ internal fun memberReferences(bytes: ByteArray, onRef: (String, String, String) 
 
 /**
  * A relocated class lives in another package than the shared ones, so it cannot use a shared class that is
- * not public (e.g. extend a package-private base class), nor its package-private (or protected, unless it is
- * a subclass) members. Shares such classes, together with what they reference.
+ * not public (e.g. extend a package-private base class), nor its package-private members, nor its protected ones
+ * except for static access of a subclass (an instance receiver cannot be proven to be the subclass).
+ * Shares such classes, together with what they reference.
  */
 internal fun shareNonPublicDependents(
     classes: Map<String, ByteArray>,
@@ -193,7 +208,7 @@ internal fun shareNonPublicDependents(
     isKept: (String) -> Boolean,
 ) {
     val references = HashMap<String, Set<String>>()
-    val members = HashMap<String, Set<Triple<String, String, String>>>()
+    val members = HashMap<String, Set<MemberRef>>()
     val readers = HashMap<String, ClassReader>()
     fun reader(name: String) = readers.getOrPut(name) { ClassReader(classes.getValue(name)) }
     val isPublic = { name: String -> reader(name).access and Opcodes.ACC_PUBLIC != 0 }
@@ -234,13 +249,11 @@ internal fun shareNonPublicDependents(
                 HashSet<String>().also { set -> referencedClasses(classes.getValue(name)) { set.add(it) } }
             }
             val memberRefs = members.getOrPut(name) {
-                HashSet<Triple<String, String, String>>().also { set ->
-                    memberReferences(classes.getValue(name)) { o, n, d -> set.add(Triple(o, n, d)) }
-                }
+                HashSet<MemberRef>().also { set -> memberReferences(classes.getValue(name)) { set.add(it) } }
             }
-            val usesRestrictedMember = memberRefs.any { (owner, memberName, desc) ->
+            val usesRestrictedMember = memberRefs.any { (owner, memberName, desc, staticOrSuper) ->
                 owner in closure && restrictedMembers(owner)[memberName + desc]
-                    ?.let { protected -> !protected || !isSubclass(name, owner) } == true
+                    ?.let { protected -> !protected || !staticOrSuper || !isSubclass(name, owner) } == true
             }
             if (usesRestrictedMember || refs.any { it in nonPublic }) {
                 growClosure(classes, closure, listOf(name))

@@ -90,6 +90,31 @@ class RelocationTest {
     }
 
     @Test
+    fun sharesSubclassesCallingProtectedInstanceMembersOnOtherReceivers() {
+        val classes = mapOf(
+            "sample/Base" to clazz("sample/Base") {
+                visitMethod(Opcodes.ACC_PROTECTED, "touch", "()V", null, null).apply {
+                    visitCode()
+                    visitInsn(Opcodes.RETURN)
+                    visitMaxs(0, 0)
+                    visitEnd()
+                }
+            },
+            "sample/Sub" to clazz("sample/Sub", "sample/Base") {
+                visitMethod(Opcodes.ACC_PUBLIC or Opcodes.ACC_STATIC, "call", "(Lsample/Base;)V", null, null).apply {
+                    visitCode()
+                    visitVarInsn(Opcodes.ALOAD, 0)
+                    visitMethodInsn(Opcodes.INVOKEVIRTUAL, "sample/Base", "touch", "()V", false)
+                    visitInsn(Opcodes.RETURN)
+                    visitMaxs(1, 1)
+                    visitEnd()
+                }
+            },
+        )
+        assertEquals(setOf("sample/Base", "sample/Sub"), share(classes, listOf("sample/Base")))
+    }
+
+    @Test
     fun sharesDependentsOfNonPublicSharedClasses() {
         val classes = mapOf(
             "sample/Base" to clazz("sample/Base", access = 0),
