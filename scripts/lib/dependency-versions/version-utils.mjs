@@ -7,7 +7,8 @@ import {TRACKED_MODULES} from './tracked-modules.mjs';
  * @returns {string | null}
  */
 export function versionFromPatternMatch(match) {
-  return normalizeVersion(match[1]);
+  const raw = match[3] !== undefined ? `${match[1]}.${match[2]}.${match[3]}` : match[1];
+  return normalizeVersion(raw);
 }
 
 /**

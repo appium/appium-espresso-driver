@@ -5,7 +5,10 @@ import {fs} from 'appium/support.js';
 import {normalizeVersion} from './version-utils.mjs';
 
 /** @type {ReadonlyArray<{moduleId: string, matches: (base: string) => boolean}>} */
-const META_INF_VERSION_MODULE_RULES = [{moduleId: 'compose', matches: (base) => base.startsWith('androidx.compose.')}];
+const META_INF_VERSION_MODULE_RULES = [
+  {moduleId: 'compose', matches: (base) => base.startsWith('androidx.compose.')},
+  {moduleId: 'kotlin', matches: (base) => base.startsWith('org.jetbrains.kotlin_')},
+];
 
 /**
  * @param {string} base Basename without `.version` (e.g. `androidx.compose.ui_ui`)

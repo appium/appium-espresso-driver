@@ -11,9 +11,20 @@ export const TRACKED_MODULES = [
       /compose-ui-test[^:]*:([\d.]+)/gi,
       /compose\.ui:ui-test[^:]*:([\d.]+)/gi,
       /["']androidx\.compose\.ui:ui-test(?:-junit4)?["'][^:]*:([\d.]+)/gi,
-      /composeBom\s*=\s*["']([^"']+)["']/gi,
-      /compose-bom:([\d.]+)/gi,
-      /androidx\.compose:compose-bom:([\d.]+)/gi,
+    ],
+  },
+  {
+    // Kotlin stays shared with the app together with Compose, so its version matters only for Compose apps
+    id: 'kotlin',
+    label: 'Kotlin',
+    onlyWithCompose: true,
+    toolsVersionKey: 'kotlin',
+    catalogKey: 'kotlin',
+    gradleProperty: 'appiumKotlin',
+    patterns: [
+      /\bkotlin\s*=\s*["']([^"']+)["']/gi,
+      /org\.jetbrains\.kotlin:[\w-]+:([\d.]+)/gi,
+      /mv=\{\s*(\d+)\s+(\d+)\s+(\d+)\s*\}/gi,
     ],
   },
 ];

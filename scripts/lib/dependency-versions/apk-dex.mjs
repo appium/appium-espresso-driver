@@ -74,7 +74,7 @@ export async function collectMetaInfStrings(root) {
       const full = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         await walkMeta(full);
-      } else if (/\.(properties|version|txt)$/i.test(entry.name)) {
+      } else if (/\.(properties|version|kotlin_module|txt)$/i.test(entry.name)) {
         try {
           chunks.push(await fs.readFile(full, 'utf8'));
         } catch {

@@ -34,8 +34,9 @@ export function formatReport(report, opts = {}) {
   }
   const lines = [];
   if (!opts.compact) {
-    lines.push('Espresso Compose compatibility report');
-    lines.push('======================================');
+    const title = 'Espresso server compatibility report';
+    lines.push(title);
+    lines.push('='.repeat(title.length));
     lines.push('');
   }
   lines.push(report.summary);

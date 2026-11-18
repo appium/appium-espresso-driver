@@ -19,7 +19,7 @@ export async function runDiagnosis(appInput, serverDefaults) {
     proguardLikely: appInput.proguardLikely,
     minifyEnabled: appInput.minifyEnabled,
     detectionSource: appInput.kind === 'apk' ? 'apk' : 'project',
-    composeDetected: usesCompose(appInput.gradleCorpus ?? ''),
+    composeDetected: usesCompose(appInput.gradleCorpus ?? '') || (appInput.versions.compose ?? []).length > 0,
   });
 
   /** @type {import('./types.mjs').DiagnosticCheck[]} */

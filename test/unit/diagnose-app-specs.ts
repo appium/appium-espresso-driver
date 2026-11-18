@@ -10,6 +10,7 @@ import {
   compareModuleVersions,
   mapMetaInfVersionBaseToModule,
   mergeMetaInfEmbeddedVersions,
+  parseKotlinMetadataVersionsFromDexdump,
   parseVersionsToml,
   usesCompose,
 } from '../../scripts/lib/dependency-versions/index.mjs';
@@ -114,7 +115,7 @@ espresso = "3.7.0"
     });
   });
 
-  it('collectAppVersionsFromProject reads Compose from Gradle files only', async function () {
+  it('collectAppVersionsFromProject ignores libraries that are not shared with the app', async function () {
     const root = await tempDir.openDir();
     const appDir = path.join(root, 'app');
     await fs.mkdir(path.join(appDir, 'src', 'main'), {recursive: true});
@@ -131,7 +132,7 @@ dependencies {
     );
     const {versions} = await collectAppVersionsFromProject(root);
     assert.deepStrictEqual(versions.compose, ['1.11.2']);
-    assert.deepStrictEqual(Object.keys(versions), ['compose']);
+    assert.deepStrictEqual(Object.keys(versions).sort(), ['compose', 'kotlin']);
     await fs.rimraf(root);
   });
 
@@ -214,5 +215,58 @@ dependencies {
       {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
     );
     assert.deepStrictEqual(report.mergedEspressoBuildConfig, {composeSupport: false});
+  });
+
+  it('parseKotlinMetadataVersionsFromDexdump reads @Metadata mv', function () {
+    const versions = parseKotlinMetadataVersionsFromDexdump(
+      'VISIBILITY_RUNTIME Lkotlin/Metadata; k=3 mv={ 2 3 0 } xi=48',
+    );
+    assert.deepStrictEqual(versions, ['2.3.0']);
+  });
+
+  it('buildComparisonReport compares Kotlin only for Compose apps', function () {
+    const kotlinDrift = (composeDetected: boolean) =>
+      buildComparisonReport(
+        {kotlin: '2.1.0'},
+        {kotlin: ['2.0.0']},
+        {proguardLikely: false, minifyEnabled: false, composeDetected},
+      ).modules.find((m) => m.id === 'kotlin');
+    assert.deepStrictEqual(kotlinDrift(true)?.recommendation.espressoBuildConfig, {toolsVersions: {kotlin: '2.0.0'}});
+    assert.strictEqual(kotlinDrift(false), undefined);
+  });
+
+  it('runDiagnosis reports Kotlin drift of a Compose app', async function () {
+    const report = await runDiagnosis(
+      {
+        kind: 'project',
+        path: '/fake',
+        versions: {compose: ['1.12.1'], kotlin: ['2.0.0']},
+        proguardLikely: false,
+        minifyEnabled: false,
+        sources: [],
+        gradleCorpus: 'android.permission.INTERNET\ncompileSdk = 35\nandroidx.compose.ui:ui-test:1.12.1',
+        manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
+        apkHasInternetPermission: null,
+      },
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1', kotlin: '2.4.20'}},
+    );
+    assert.strictEqual(report.checks.find((c) => c.id === 'dependency-kotlin')?.status, 'warn');
+  });
+
+  it('does not take a literal Compose BOM version for the Compose version', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      'dependencies { implementation(platform("androidx.compose:compose-bom:2024.09.00")) }',
+      'utf8',
+    );
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, []);
+    assert.ok(usesCompose('implementation(platform("androidx.compose:compose-bom:2024.09.00"))'));
+    await fs.rimraf(root);
+  });
+
+  it('usesCompose ignores commented-out declarations', function () {
+    assert.ok(!usesCompose('// implementation(libs.androidx.compose.ui)\n/* compose = true */\nandroid {}'));
   });
 });

@@ -43,6 +43,9 @@ export function buildComparisonReport(serverVersions, appVersions, context = {})
   const modules = [];
 
   for (const mod of TRACKED_MODULES) {
+    if (mod.onlyWithCompose && !composeDetected) {
+      continue;
+    }
     const serverVersion = serverVersions[mod.id];
     const appCandidates = appVersions[mod.id] ?? [];
     const appVersion = appCandidates[0] ?? null;

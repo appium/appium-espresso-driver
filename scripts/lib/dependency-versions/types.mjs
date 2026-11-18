@@ -15,6 +15,7 @@
  * @property {string | null} toolsVersionKey
  * @property {string} catalogKey
  * @property {string} gradleProperty
+ * @property {boolean} [onlyWithCompose] When true, the module is compared only if the app uses Compose.
  * @property {RegExp[]} patterns
  */
 

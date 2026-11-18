@@ -31,8 +31,9 @@ export async function findGradleFiles(root, maxDepth = 6) {
  * @returns {boolean}
  */
 export function usesCompose(text) {
+  const code = text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
   return /\bcompose\s*=\s*true\b|kotlin\.plugin\.compose|androidx[.-]compose|\blibs\.[\w.]*compose|compose-?bom/i.test(
-    text,
+    code,
   );
 }
 
