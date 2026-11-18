@@ -1,10 +1,7 @@
 import {buildComparisonReport} from '../dependency-versions/index.mjs';
 import {
-  checkAndroidX,
   checkCompileSdk,
-  checkInitializationProvider,
   checkInternetPermission,
-  checkLifecycleExtensionsPin,
   checkObfuscation,
   checkPrecompileInputKind,
   mapDependencyChecks,
@@ -30,10 +27,7 @@ export async function runDiagnosis(appInput, serverDefaults) {
   checks.push(checkPrecompileInputKind(appInput));
   checks.push(...(await checkInternetPermission(appInput)));
   checks.push(...checkObfuscation(appInput, serverDefaults));
-  checks.push(...checkAndroidX(appInput));
-  checks.push(...checkInitializationProvider(appInput));
   checks.push(...checkCompileSdk(appInput, serverDefaults, dependencyReport));
-  checks.push(...checkLifecycleExtensionsPin(appInput));
   checks.push(...mapDependencyChecks(dependencyReport, appInput));
 
   const failCount = checks.filter((c) => c.status === 'fail').length;

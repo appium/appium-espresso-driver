@@ -5,23 +5,7 @@ import {fs} from 'appium/support.js';
 import {normalizeVersion} from './version-utils.mjs';
 
 /** @type {ReadonlyArray<{moduleId: string, matches: (base: string) => boolean}>} */
-const META_INF_VERSION_MODULE_RULES = [
-  {moduleId: 'compose', matches: (base) => base.startsWith('androidx.compose.')},
-  {moduleId: 'kotlin', matches: (base) => base.startsWith('org.jetbrains.kotlin_')},
-  {moduleId: 'espresso', matches: (base) => base.startsWith('androidx.test.espresso')},
-  {
-    moduleId: 'annotation',
-    matches: (base) => base.startsWith('androidx.annotation_annotation') && !base.includes('experimental'),
-  },
-  {moduleId: 'uiautomator', matches: (base) => base.startsWith('androidx.test.uiautomator')},
-  {
-    moduleId: 'androidxTest',
-    matches: (base) =>
-      base.startsWith('androidx.test.') &&
-      !base.startsWith('androidx.test.espresso') &&
-      !base.startsWith('androidx.test.uiautomator'),
-  },
-];
+const META_INF_VERSION_MODULE_RULES = [{moduleId: 'compose', matches: (base) => base.startsWith('androidx.compose.')}];
 
 /**
  * @param {string} base Basename without `.version` (e.g. `androidx.compose.ui_ui`)

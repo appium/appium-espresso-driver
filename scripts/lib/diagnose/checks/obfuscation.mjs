@@ -26,7 +26,7 @@ export function checkObfuscation(appInput, serverDefaults) {
       title: 'Code shrinking (R8/ProGuard)',
       status: 'fail',
       message:
-        'APK appears obfuscated/minified. Dependency alignment cannot be verified from the APK; use an unobfuscated debug APK if possible. See slackhq/keeper for shrinker rules when testing against release builds.',
+        'APK appears obfuscated/minified. The Compose version cannot be verified from the APK; use an unobfuscated debug APK if possible. See slackhq/keeper for shrinker rules when testing against release builds.',
       docRef: 'docs/as-library.md',
     });
     results.push({

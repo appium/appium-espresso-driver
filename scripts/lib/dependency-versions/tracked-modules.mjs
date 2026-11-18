@@ -16,57 +16,6 @@ export const TRACKED_MODULES = [
       /androidx\.compose:compose-bom:([\d.]+)/gi,
     ],
   },
-  {
-    id: 'espresso',
-    label: 'Espresso',
-    testOnly: true,
-    toolsVersionKey: 'espressoVersion',
-    catalogKey: 'espresso',
-    gradleProperty: 'appiumEspressoVersion',
-    patterns: [
-      /\bespresso\s*=\s*["']([^"']+)["']/gi,
-      /androidx\.test\.espresso:espresso-[\w-]+:([\d.]+)/gi,
-      /espresso-core:([\d.]+)/gi,
-    ],
-  },
-  {
-    id: 'annotation',
-    label: 'AndroidX Annotation',
-    toolsVersionKey: 'annotationVersion',
-    catalogKey: 'annotation',
-    gradleProperty: 'appiumAnnotationVersion',
-    patterns: [/\bannotation\s*=\s*["']([^"']+)["']/gi, /androidx\.annotation:annotation:([\d.]+)/gi],
-  },
-  {
-    id: 'androidxTest',
-    label: 'AndroidX Test',
-    testOnly: true,
-    toolsVersionKey: null,
-    catalogKey: 'androidxTest',
-    gradleProperty: 'appiumAndroidxTestVersion',
-    patterns: [/androidxTest\s*=\s*["']([^"']+)["']/gi, /androidx\.test:(?:core|runner|rules|ext):[\w-]*:([\d.]+)/gi],
-  },
-  {
-    id: 'uiautomator',
-    label: 'UiAutomator',
-    testOnly: true,
-    toolsVersionKey: null,
-    catalogKey: 'uiautomator',
-    gradleProperty: 'appiumUiAutomatorVersion',
-    patterns: [/\buiautomator\s*=\s*["']([^"']+)["']/gi, /androidx\.test\.uiautomator:uiautomator:([\d.]+)/gi],
-  },
-  {
-    id: 'kotlin',
-    label: 'Kotlin',
-    toolsVersionKey: 'kotlin',
-    catalogKey: 'kotlin',
-    gradleProperty: 'appiumKotlin',
-    patterns: [
-      /\bkotlin\s*=\s*["']([^"']+)["']/gi,
-      /org\.jetbrains\.kotlin:[\w-]+:([\d.]+)/gi,
-      /mv=\{\s*(\d+)\s+(\d+)\s+(\d+)\s*\}/gi,
-    ],
-  },
 ];
 
 /**

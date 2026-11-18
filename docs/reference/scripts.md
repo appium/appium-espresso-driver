@@ -57,6 +57,10 @@ Analyses the provided application under test, identifies any potential automatio
 and suggests fragments for the [`appium:espressoBuildConfig`](./capabilities.md#espressobuildconfig)
 capability.
 
+The Espresso server moves its own libraries out of the way of the application's ones (see
+[Class Conflicts](../troubleshooting/class-conflicts.md)), so the script only compares the
+Jetpack Compose version, and checks the manifest, code shrinking and `compileSdk` preconditions.
+
 Available since driver version 8.6.0.
 
 ### Usage

@@ -23,8 +23,8 @@ export function formatDiagnosisReport(report) {
     lines.push('');
   }
 
-  lines.push('Dependency alignment (Espresso server vs AUT)');
-  lines.push('---------------------------------------------');
+  lines.push('Jetpack Compose alignment (Espresso server vs AUT)');
+  lines.push('-'.repeat(50));
   lines.push(formatDependencyReport(report.dependencyReport, {json: false, compact: true}));
   lines.push('');
 

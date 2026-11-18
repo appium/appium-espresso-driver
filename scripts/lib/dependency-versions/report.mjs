@@ -34,7 +34,7 @@ export function formatReport(report, opts = {}) {
   }
   const lines = [];
   if (!opts.compact) {
-    lines.push('Espresso dependency compatibility report');
+    lines.push('Espresso Compose compatibility report');
     lines.push('======================================');
     lines.push('');
   }
@@ -63,8 +63,7 @@ export function formatReport(report, opts = {}) {
     lines.push(`${mod.label} (${mod.id})`);
     lines.push(`  Server: ${mod.serverVersion ?? 'n/a'}`);
     if (mod.appVersions.length) {
-      const suffix = mod.testOnly ? '' : ` (using ${mod.appVersion} for comparison)`;
-      lines.push(`  App:    ${mod.appVersions.join(', ')}${suffix}`);
+      lines.push(`  App:    ${mod.appVersions.join(', ')} (using ${mod.appVersion} for comparison)`);
     } else {
       lines.push('  App:    not detected');
     }

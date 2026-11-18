@@ -46,18 +46,6 @@ export function buildComparisonReport(serverVersions, appVersions, context = {})
     const appCandidates = appVersions[mod.id] ?? [];
     const appVersion = appCandidates[0] ?? null;
 
-    if (mod.testOnly) {
-      modules.push({
-        ...mod,
-        serverVersion: serverVersion ?? null,
-        appVersions: appCandidates,
-        appVersion,
-        diff: appVersion ? 'present' : 'absent',
-        recommendation: buildTestOnlyRecommendation(mod, appCandidates),
-      });
-      continue;
-    }
-
     const diff = compareModuleVersions(serverVersion, appVersion);
     modules.push({
       ...mod,
@@ -78,34 +66,6 @@ export function buildComparisonReport(serverVersions, appVersions, context = {})
     modules,
     summary: summarizeReport(modules, {proguardLikely, minifyEnabled}),
   };
-}
-
-/**
- * @param {string[]} appVersions
- * @returns {string}
- */
-function formatDetectedVersions(appVersions) {
-  return appVersions.length ? appVersions.join(', ') : 'detected';
-}
-
-/**
- * @param {import('./types.mjs').TrackedModule} mod
- * @param {string[]} appVersions
- * @returns {import('./types.mjs').Recommendation}
- */
-function buildTestOnlyRecommendation(mod, appVersions) {
-  if (appVersions.length) {
-    const versions = formatDetectedVersions(appVersions);
-    return {
-      level: 'warning',
-      message:
-        `Detected ${mod.label} (${versions}) in the application under test. ` +
-        'The main app should not be built as an instrumented-test artifact and is not expected to ' +
-        'bundle Espresso, AndroidX Test, or UiAutomator dependencies; doing so ' +
-        'can cause classpath conflicts with the Espresso server.',
-    };
-  }
-  return {level: 'ok', message: 'Not detected in the app; no action needed.'};
 }
 
 /**
@@ -194,14 +154,10 @@ function buildVersionRecommendation(mod, diff, appVersion, serverVersion, ctx) {
  * @param {{proguardLikely: boolean, minifyEnabled: boolean | null}} ctx
  */
 function summarizeReport(modules, ctx) {
-  const testPresence = modules.filter((m) => m.testOnly && m.recommendation.level === 'warning');
-  const warnings = modules.filter((m) => !m.testOnly && m.recommendation.level === 'warning');
+  const warnings = modules.filter((m) => m.recommendation.level === 'warning');
   const suggestions = modules.filter((m) => m.recommendation.level === 'suggestion');
   if (ctx.proguardLikely) {
     return 'APK appears minified/obfuscated; dependency versions from the APK may be incomplete. Espresso server defaults are listed below.';
-  }
-  if (testPresence.length) {
-    return `${testPresence.length} test/instrumentation librar${testPresence.length === 1 ? 'y' : 'ies'} detected in the application under test — review warnings below.`;
   }
   if (warnings.length) {
     return `${warnings.length} module(s) have a large version mismatch — review warnings below.`;

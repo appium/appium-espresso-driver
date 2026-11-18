@@ -15,7 +15,6 @@
  * @property {string | null} toolsVersionKey
  * @property {string} catalogKey
  * @property {string} gradleProperty
- * @property {boolean} [testOnly] When true, only warn if detected in the AUT (no version comparison).
  * @property {RegExp[]} patterns
  */
 
