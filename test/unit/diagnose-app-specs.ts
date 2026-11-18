@@ -199,6 +199,25 @@ dependencies {
     assert.deepStrictEqual(report.mergedEspressoBuildConfig, {});
   });
 
+  it('runDiagnosis applies the Compose compileSdk requirement to a BOM based Compose app', async function () {
+    const report = await runDiagnosis(
+      {
+        kind: 'project',
+        path: '/fake',
+        versions: {compose: []},
+        proguardLikely: false,
+        minifyEnabled: false,
+        sources: [],
+        gradleCorpus:
+          'android.permission.INTERNET\ncompileSdk = 34\nimplementation(platform(libs.androidx.compose.bom))',
+        manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
+        apkHasInternetPermission: null,
+      },
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.strictEqual(report.checks.find((c) => c.id === 'compose-compile-sdk')?.status, 'fail');
+  });
+
   it('runDiagnosis still suggests turning Compose off when the project has none', async function () {
     const report = await runDiagnosis(
       {

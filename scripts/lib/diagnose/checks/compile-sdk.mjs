@@ -14,7 +14,9 @@ export function checkCompileSdk(appInput, serverDefaults, dependencyReport) {
   }
   const appCompileSdk = parseCompileSdkFromCorpus(appInput.gradleCorpus ?? '');
   const serverCompileSdk = serverDefaults.compileSdk ? parseInt(serverDefaults.compileSdk, 10) : null;
-  const composeVersion = dependencyReport.modules.find((m) => m.id === 'compose')?.appVersion;
+  const compose = dependencyReport.modules.find((m) => m.id === 'compose');
+  // An unresolved version (e.g. from a BOM) falls back to the one the server is built with
+  const composeVersion = compose?.appVersion ?? (dependencyReport.composeDetected ? compose?.serverVersion : null);
   const composeMinor = composeVersion ? semver.coerce(composeVersion)?.minor : null;
   const minComposeCompileSdk = composeMinor != null && composeMinor >= 11 ? 35 : null;
 

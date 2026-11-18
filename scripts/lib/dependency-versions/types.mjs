@@ -33,6 +33,7 @@
  * @typedef {Object} ComparisonReport
  * @property {boolean} proguardLikely
  * @property {boolean | null} minifyEnabled
+ * @property {boolean} composeDetected
  * @property {ModuleComparison[]} modules
  * @property {string} summary
  */

@@ -68,6 +68,7 @@ export function buildComparisonReport(serverVersions, appVersions, context = {})
   return {
     proguardLikely,
     minifyEnabled,
+    composeDetected,
     modules,
     summary: summarizeReport(modules, {proguardLikely, minifyEnabled}),
   };
