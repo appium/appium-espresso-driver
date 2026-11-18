@@ -25,15 +25,26 @@ export async function findGradleFiles(root, maxDepth = 6) {
 }
 
 /**
+ * Drops block, `//` and full-line `#` (TOML, properties) comments.
+ * @param {string} text
+ * @returns {string}
+ */
+export function stripComments(text) {
+  return text
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/(^|[^:])\/\/.*$/gm, '$1')
+    .replace(/^\s*#.*$/gm, '');
+}
+
+/**
  * Whether Gradle files (build scripts, version catalogs) show that the app uses Jetpack Compose,
  * whatever the way it is declared: the Compose compiler plugin, `buildFeatures`, a BOM or a catalog entry.
  * @param {string} text
  * @returns {boolean}
  */
 export function usesCompose(text) {
-  const code = text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
   return /\bcompose\s*=\s*true\b|kotlin\.plugin\.compose|androidx[.-]compose|\blibs\.[\w.]*compose|compose-?bom/i.test(
-    code,
+    stripComments(text),
   );
 }
 
@@ -50,7 +61,7 @@ export async function collectAppVersionsFromProject(projectRoot) {
     const text = await fs.readFile(filePath, 'utf8');
     const rel = path.relative(projectRoot, filePath);
     if (!rel.endsWith('libs.versions.toml')) {
-      collectVersionsFromGradleText(text, TRACKED_MODULES, found);
+      collectVersionsFromGradleText(stripComments(text), TRACKED_MODULES, found);
     }
     if (/\bisMinifyEnabled\s*=\s*true\b/.test(text) || /\bminifyEnabled\s+true\b/.test(text)) {
       minifyEnabled = true;

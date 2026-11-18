@@ -268,5 +268,18 @@ dependencies {
 
   it('usesCompose ignores commented-out declarations', function () {
     assert.ok(!usesCompose('// implementation(libs.androidx.compose.ui)\n/* compose = true */\nandroid {}'));
+    assert.ok(!usesCompose('[libraries]\n# androidx-compose-bom = { group = "androidx.compose" }'));
+  });
+
+  it('collectAppVersionsFromProject ignores commented-out Compose versions', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      '// implementation("androidx.compose.ui:ui-test:1.12.1")\ndependencies {}',
+      'utf8',
+    );
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, []);
+    await fs.rimraf(root);
   });
 });

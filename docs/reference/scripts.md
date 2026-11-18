@@ -58,8 +58,9 @@ and suggests fragments for the [`appium:espressoBuildConfig`](./capabilities.md#
 capability.
 
 The Espresso server moves its own libraries out of the way of the application's ones (see
-[Class Conflicts](../troubleshooting/class-conflicts.md)), so the script only compares the
-Jetpack Compose version, and checks the manifest, code shrinking and `compileSdk` preconditions.
+[`shadeServer`](./capabilities.md#shadeserver)), so the script only compares the Jetpack Compose
+version (and the Kotlin one, for Compose apps, as both stay shared with the application), and checks
+the manifest, code shrinking and `compileSdk` preconditions.
 
 Available since driver version 8.6.0.
 

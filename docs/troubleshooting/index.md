@@ -8,8 +8,8 @@ startup, and may have many different causes.
 
 It is generally recommended to use the [`diagnose-app`](../reference/scripts.md#diagnose-app) driver
 script to identify possible issues before starting a session. It checks manifest permissions,
-obfuscation, the Jetpack Compose version (the only library whose version still has to match the
-application's), and other static preconditions for precompile.
+obfuscation, the Jetpack Compose version (together with the Kotlin one for Compose apps, the only
+libraries whose versions still have to match the application's), and other static preconditions for precompile.
 Any problems cause the script to exit with a non-zero code.
 
 ## Jetpack Compose
