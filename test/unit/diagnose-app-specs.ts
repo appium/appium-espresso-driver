@@ -11,6 +11,7 @@ import {
   mapMetaInfVersionBaseToModule,
   mergeMetaInfEmbeddedVersions,
   parseVersionsToml,
+  usesCompose,
 } from '../../scripts/lib/dependency-versions/index.mjs';
 import {runDiagnosis} from '../../scripts/lib/diagnose/index.mjs';
 
@@ -164,5 +165,54 @@ dependencies {
       assert.ok(!ids.includes(id), `${id} should not be reported`);
     }
     assert.strictEqual(report.ready, true);
+  });
+
+  it('usesCompose recognizes the ways Compose is declared in Gradle files', function () {
+    assert.ok(usesCompose('buildFeatures {\n    compose = true\n}'));
+    assert.ok(usesCompose('alias(libs.plugins.kotlin.compose)'));
+    assert.ok(usesCompose('androidx-compose-bom = { group = "androidx.compose", name = "compose-bom" }'));
+    assert.ok(usesCompose('implementation(libs.androidx.compose.ui)'));
+    assert.ok(!usesCompose('implementation("androidx.core:core-ktx:1.15.0")\ncompileSdk = 35'));
+  });
+
+  it('runDiagnosis does not suggest turning Compose off for a BOM based Compose app', async function () {
+    const report = await runDiagnosis(
+      {
+        kind: 'project',
+        path: '/fake',
+        versions: {compose: []},
+        proguardLikely: false,
+        minifyEnabled: false,
+        sources: [],
+        gradleCorpus:
+          'android.permission.INTERNET\ncompileSdk = 35\nbuildFeatures { compose = true }\n' +
+          'implementation(platform(libs.androidx.compose.bom))\nimplementation(libs.androidx.compose.ui)',
+        manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
+        apkHasInternetPermission: null,
+      },
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    const compose = report.checks.find((c) => c.id === 'dependency-compose');
+    assert.strictEqual(compose?.status, 'pass');
+    assert.ok(compose?.message.includes('could not be read'));
+    assert.deepStrictEqual(report.mergedEspressoBuildConfig, {});
+  });
+
+  it('runDiagnosis still suggests turning Compose off when the project has none', async function () {
+    const report = await runDiagnosis(
+      {
+        kind: 'project',
+        path: '/fake',
+        versions: {compose: []},
+        proguardLikely: false,
+        minifyEnabled: false,
+        sources: [],
+        gradleCorpus: 'android.permission.INTERNET\ncompileSdk = 35\nimplementation("androidx.core:core-ktx:1.15.0")',
+        manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
+        apkHasInternetPermission: null,
+      },
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.deepStrictEqual(report.mergedEspressoBuildConfig, {composeSupport: false});
   });
 });

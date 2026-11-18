@@ -25,6 +25,18 @@ export async function findGradleFiles(root, maxDepth = 6) {
 }
 
 /**
+ * Whether Gradle files (build scripts, version catalogs) show that the app uses Jetpack Compose,
+ * whatever the way it is declared: the Compose compiler plugin, `buildFeatures`, a BOM or a catalog entry.
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function usesCompose(text) {
+  return /\bcompose\s*=\s*true\b|kotlin\.plugin\.compose|androidx[.-]compose|\blibs\.[\w.]*compose|compose-?bom/i.test(
+    text,
+  );
+}
+
+/**
  * @param {string} projectRoot
  * @returns {Promise<{versions: Record<string, string[]>, minifyEnabled: boolean | null, sources: string[]}>}
  */

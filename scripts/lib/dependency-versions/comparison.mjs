@@ -31,13 +31,14 @@ export function compareModuleVersions(serverVersion, appVersion) {
 /**
  * @param {Record<string, string>} serverVersions
  * @param {Record<string, string[]>} appVersions
- * @param {{proguardLikely?: boolean, minifyEnabled?: boolean | null, detectionSource?: 'apk' | 'project'}} context
+ * @param {{proguardLikely?: boolean, minifyEnabled?: boolean | null, detectionSource?: 'apk' | 'project', composeDetected?: boolean}} context
  * @returns {import('./types.mjs').ComparisonReport}
  */
 export function buildComparisonReport(serverVersions, appVersions, context = {}) {
   const proguardLikely = Boolean(context.proguardLikely);
   const minifyEnabled = context.minifyEnabled ?? null;
   const detectionSource = context.detectionSource ?? 'project';
+  const composeDetected = Boolean(context.composeDetected);
   /** @type {import('./types.mjs').ModuleComparison[]} */
   const modules = [];
 
@@ -56,6 +57,7 @@ export function buildComparisonReport(serverVersions, appVersions, context = {})
       recommendation: buildVersionRecommendation(mod, diff, appVersion, serverVersion, {
         proguardLikely,
         detectionSource,
+        composeDetected,
       }),
     });
   }
@@ -85,7 +87,7 @@ function toolsVersionsOverride(mod, appVersion) {
  * @param {import('./types.mjs').VersionDiffKind} diff
  * @param {string | null} appVersion
  * @param {string | undefined} serverVersion
- * @param {{proguardLikely: boolean, detectionSource: 'apk' | 'project'}} ctx
+ * @param {{proguardLikely: boolean, detectionSource: 'apk' | 'project', composeDetected: boolean}} ctx
  * @returns {import('./types.mjs').Recommendation}
  */
 function buildVersionRecommendation(mod, diff, appVersion, serverVersion, ctx) {
@@ -100,6 +102,14 @@ function buildVersionRecommendation(mod, diff, appVersion, serverVersion, ctx) {
     };
   }
   if (!appVersion) {
+    if (mod.id === 'compose' && ctx.detectionSource === 'project' && ctx.composeDetected) {
+      return {
+        level: 'info',
+        message:
+          'The app uses Jetpack Compose, but its version could not be read from the Gradle files (e.g. it comes from a BOM). ' +
+          `Set toolsVersions.${mod.toolsVersionKey} in espressoBuildConfig to the version the app resolves to if it differs from the server's.`,
+      };
+    }
     if (mod.id === 'compose' && ctx.detectionSource === 'project') {
       return {
         level: 'suggestion',
