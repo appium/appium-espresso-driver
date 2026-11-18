@@ -1,3 +1,9 @@
+## [10.3.0](https://github.com/appium/appium-espresso-driver/compare/v10.2.1...v10.3.0) (2026-11-18)
+
+### Features
+
+* shade the Espresso server dependencies ([#1258](https://github.com/appium/appium-espresso-driver/issues/1258)) ([dcd7cc4](https://github.com/appium/appium-espresso-driver/commit/dcd7cc4382d2a8a7e8c139fa28303d47f4a7d8aa))
+
 ## [10.2.1](https://github.com/appium/appium-espresso-driver/compare/v10.2.0...v10.2.1) (2026-11-16)
 
 ### Miscellaneous Chores
