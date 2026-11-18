@@ -160,35 +160,57 @@ internal fun growClosure(classes: Map<String, ByteArray>, closure: MutableSet<St
 }
 
 /**
- * A member that code calls or reads. [staticOrSuper] accesses (static members, `super` calls and constructors)
+ * A member that code calls or reads. [staticOrSuper] accesses (static members, `super` calls and `super(...)`)
  * are allowed for subclasses from another package; instance accesses are not, unless the receiver is `this`.
  */
 internal data class MemberRef(val owner: String, val name: String, val desc: String, val staticOrSuper: Boolean)
 
 /** Members that the code of [bytes] calls or reads, including method handles. */
 internal fun memberReferences(bytes: ByteArray, onRef: (MemberRef) -> Unit) {
-    val safeInsns = setOf(
-        Opcodes.INVOKESTATIC, Opcodes.GETSTATIC, Opcodes.PUTSTATIC, Opcodes.INVOKESPECIAL,
-    )
-    val safeHandles = setOf(
-        Opcodes.H_INVOKESTATIC, Opcodes.H_GETSTATIC, Opcodes.H_PUTSTATIC,
-        Opcodes.H_INVOKESPECIAL, Opcodes.H_NEWINVOKESPECIAL,
-    )
+    val staticInsns = setOf(Opcodes.INVOKESTATIC, Opcodes.GETSTATIC, Opcodes.PUTSTATIC)
+    val staticHandles = setOf(Opcodes.H_INVOKESTATIC, Opcodes.H_GETSTATIC, Opcodes.H_PUTSTATIC, Opcodes.H_INVOKESPECIAL)
     ClassReader(bytes).accept(
         object : ClassVisitor(Opcodes.ASM9) {
+            private var superName: String? = null
+
+            override fun visit(
+                version: Int, access: Int, name: String?, signature: String?, superName: String?,
+                interfaces: Array<out String>?,
+            ) {
+                this.superName = superName
+            }
+
             override fun visitMethod(
                 access: Int, name: String?, descriptor: String?, signature: String?, exceptions: Array<out String>?,
             ): MethodVisitor = object : MethodVisitor(Opcodes.ASM9) {
+                private val instantiated = HashSet<String>()
+                private val isConstructor = name == "<init>"
+
+                override fun visitTypeInsn(opcode: Int, type: String) {
+                    if (opcode == Opcodes.NEW) {
+                        instantiated.add(type)
+                    }
+                }
+
                 override fun visitMethodInsn(
                     opcode: Int, owner: String, name: String, descriptor: String, isInterface: Boolean,
-                ) = onRef(MemberRef(owner, name, descriptor, opcode in safeInsns))
+                ) {
+                    val staticOrSuper = when {
+                        opcode in staticInsns -> true
+                        opcode != Opcodes.INVOKESPECIAL -> false
+                        // `super(...)` is told from `new Base(...)` by the owner and the absence of NEW
+                        name == "<init>" -> isConstructor && owner == superName && owner !in instantiated
+                        else -> true
+                    }
+                    onRef(MemberRef(owner, name, descriptor, staticOrSuper))
+                }
 
                 override fun visitFieldInsn(opcode: Int, owner: String, name: String, descriptor: String) =
-                    onRef(MemberRef(owner, name, descriptor, opcode in safeInsns))
+                    onRef(MemberRef(owner, name, descriptor, opcode in staticInsns))
 
                 override fun visitInvokeDynamicInsn(name: String, descriptor: String, handle: Handle, vararg args: Any) {
                     (listOf(handle) + args).filterIsInstance<Handle>()
-                        .forEach { onRef(MemberRef(it.owner, it.name, it.desc, it.tag in safeHandles)) }
+                        .forEach { onRef(MemberRef(it.owner, it.name, it.desc, it.tag in staticHandles)) }
                 }
             }
         },
@@ -212,20 +234,16 @@ internal fun shareNonPublicDependents(
     val readers = HashMap<String, ClassReader>()
     fun reader(name: String) = readers.getOrPut(name) { ClassReader(classes.getValue(name)) }
     val isPublic = { name: String -> reader(name).access and Opcodes.ACC_PUBLIC != 0 }
-    // Package-private and protected members declared by the class or inherited from the bundled superclasses
-    val restricted = HashMap<String, Map<String, Boolean>>()
-    fun restrictedMembers(owner: String): Map<String, Boolean> = restricted.getOrPut(owner) {
-        val result = HashMap<String, Boolean>()
+    // Members visible through the class, with the class that declares them and their access flags
+    class Declared(val owner: String, val access: Int)
+    val declaredMembers = HashMap<String, Map<String, Declared>>()
+    fun membersOf(owner: String): Map<String, Declared> = declaredMembers.getOrPut(owner) {
+        val result = HashMap<String, Declared>()
         var current: String? = owner
         while (current != null && current in classes) {
             val node = ClassNode().also { reader(current!!).accept(it, ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG) }
-            val declared = node.methods.map { Triple(it.name, it.desc, it.access) } +
-                node.fields.map { Triple(it.name, it.desc, it.access) }
-            declared
-                .filter { (_, _, access) -> access and (Opcodes.ACC_PUBLIC or Opcodes.ACC_PRIVATE) == 0 }
-                .forEach { (name, desc, access) ->
-                    result.putIfAbsent(name + desc, access and Opcodes.ACC_PROTECTED != 0)
-                }
+            (node.methods.map { Triple(it.name, it.desc, it.access) } + node.fields.map { Triple(it.name, it.desc, it.access) })
+                .forEach { (name, desc, access) -> result.putIfAbsent(name + desc, Declared(current!!, access)) }
             current = node.superName
         }
         result
@@ -251,9 +269,16 @@ internal fun shareNonPublicDependents(
             val memberRefs = members.getOrPut(name) {
                 HashSet<MemberRef>().also { set -> memberReferences(classes.getValue(name)) { set.add(it) } }
             }
+            // The symbolic owner may be a subclass of the class that declares the member
             val usesRestrictedMember = memberRefs.any { (owner, memberName, desc, staticOrSuper) ->
-                owner in closure && restrictedMembers(owner)[memberName + desc]
-                    ?.let { protected -> !protected || !staticOrSuper || !isSubclass(name, owner) } == true
+                val declared = membersOf(owner)[memberName + desc]
+                when {
+                    declared == null || declared.owner !in closure -> false
+                    declared.access and (Opcodes.ACC_PUBLIC or Opcodes.ACC_PRIVATE) != 0 -> false
+                    declared.access and Opcodes.ACC_PROTECTED == 0 -> true
+                    // Protected: a subclass may use it statically or on `this`
+                    else -> !isSubclass(name, declared.owner) || !(staticOrSuper || isSubclass(owner, name))
+                }
             }
             if (usesRestrictedMember || refs.any { it in nonPublic }) {
                 growClosure(classes, closure, listOf(name))

@@ -114,6 +114,66 @@ class RelocationTest {
         assertEquals(setOf("sample/Base", "sample/Sub"), share(classes, listOf("sample/Base")))
     }
 
+    private fun ClassWriter.constructor(access: Int, body: org.objectweb.asm.MethodVisitor.() -> Unit) {
+        visitMethod(access, "<init>", "()V", null, null).apply {
+            visitCode()
+            body()
+            visitInsn(Opcodes.RETURN)
+            visitMaxs(2, 1)
+            visitEnd()
+        }
+    }
+
+    private fun baseWithProtectedConstructor() = clazz("sample/Base") {
+        constructor(Opcodes.ACC_PROTECTED) {
+            visitVarInsn(Opcodes.ALOAD, 0)
+            visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false)
+        }
+    }
+
+    @Test
+    fun sharesSubclassesThatConstructSeparateInstancesWithProtectedConstructors() {
+        val classes = mapOf(
+            "sample/Base" to baseWithProtectedConstructor(),
+            "sample/Sub" to clazz("sample/Sub", "sample/Base") {
+                staticMethod("run", Opcodes.ACC_PUBLIC) {
+                    visitTypeInsn(Opcodes.NEW, "sample/Base")
+                    visitInsn(Opcodes.DUP)
+                    visitMethodInsn(Opcodes.INVOKESPECIAL, "sample/Base", "<init>", "()V", false)
+                    visitInsn(Opcodes.POP)
+                }
+            },
+        )
+        assertEquals(setOf("sample/Base", "sample/Sub"), share(classes, listOf("sample/Base")))
+    }
+
+    @Test
+    fun keepsSubclassesCallingSuperConstructorRelocated() {
+        val classes = mapOf(
+            "sample/Base" to baseWithProtectedConstructor(),
+            "sample/Sub" to clazz("sample/Sub", "sample/Base") {
+                constructor(Opcodes.ACC_PUBLIC) {
+                    visitVarInsn(Opcodes.ALOAD, 0)
+                    visitMethodInsn(Opcodes.INVOKESPECIAL, "sample/Base", "<init>", "()V", false)
+                }
+            },
+        )
+        assertEquals(setOf("sample/Base"), share(classes, listOf("sample/Base")))
+    }
+
+    @Test
+    fun resolvesInheritedMembersReferencedThroughSubclass() {
+        val classes = mapOf(
+            "sample/Base" to clazz("sample/Base") { staticMethod("touch", 0) },
+            "sample/Sub" to clazz("sample/Sub", "sample/Base") {
+                staticMethod("run", Opcodes.ACC_PUBLIC) {
+                    visitMethodInsn(Opcodes.INVOKESTATIC, "sample/Sub", "touch", "()V", false)
+                }
+            },
+        )
+        assertEquals(setOf("sample/Base", "sample/Sub"), share(classes, listOf("sample/Base")))
+    }
+
     @Test
     fun sharesDependentsOfNonPublicSharedClasses() {
         val classes = mapOf(
