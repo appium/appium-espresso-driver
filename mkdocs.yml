@@ -65,4 +65,5 @@ nav:
       - troubleshooting/index.md
       - troubleshooting/compose.md
       - troubleshooting/startup.md
+      - troubleshooting/class-conflicts.md
   - contributing.md

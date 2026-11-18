@@ -90,6 +90,49 @@ describe('server-builder', function () {
     });
   });
 
+  describe('shadeServer', function () {
+    const expectedCmd = system.isWindows() ? 'gradlew.bat' : '/path/to/project/gradlew';
+
+    it('should pass appiumShadeServer=false when shadeServer is false', function () {
+      const serverBuilder = new ServerBuilder(log, {
+        buildConfiguration: {shadeServer: false},
+        serverPath: '/path/to/project',
+      });
+      assert.deepStrictEqual((serverBuilder as any).getCommand(), {
+        cmd: expectedCmd,
+        args: ['-PappiumShadeServer=false', 'app:assembleAndroidTest'],
+      });
+    });
+
+    it('should pass the user dependencies as shared coordinates without versions', function () {
+      const serverBuilder = new ServerBuilder(log, {
+        buildConfiguration: {
+          additionalAppDependencies: ['androidx.core:core:1.2.0', 'com.google.code.gson:gson:2.8.0@jar'],
+          additionalAndroidTestDependencies: ['androidx.core:core:1.2.0', 'org.junit:junit'],
+        },
+        serverPath: '/path/to/project',
+      });
+      assert.deepStrictEqual((serverBuilder as any).getCommand(), {
+        cmd: expectedCmd,
+        args: [
+          '-PappiumSharedDependencies=androidx.core:core,com.google.code.gson:gson,org.junit:junit',
+          'app:assembleAndroidTest',
+        ],
+      });
+    });
+
+    it('should not pass shared coordinates when shading is disabled', function () {
+      const serverBuilder = new ServerBuilder(log, {
+        buildConfiguration: {shadeServer: false, additionalAppDependencies: ['androidx.core:core:1.2.0']},
+        serverPath: '/path/to/project',
+      });
+      assert.deepStrictEqual((serverBuilder as any).getCommand().args, [
+        '-PappiumShadeServer=false',
+        'app:assembleAndroidTest',
+      ]);
+    });
+  });
+
   describe('setGradleWrapperVersion', function () {
     const serverPath = 'server';
     it('should set correct URL in gradle.properties', function () {

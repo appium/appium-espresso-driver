@@ -50,6 +50,12 @@ export interface EspressoBuildConfiguration {
    * Defaults to true when omitted.
    */
   composeSupport?: boolean;
+  /**
+   * When false, the classes bundled with the Espresso server are not moved to a private package,
+   * so they shadow the same classes of the application under test.
+   * Defaults to true when omitted.
+   */
+  shadeServer?: boolean;
   additionalAppDependencies?: string[];
   additionalAndroidTestDependencies?: string[];
 }
@@ -72,6 +78,7 @@ export class ServerBuilder {
   private readonly additionalAppDependencies: string[] = [];
   private readonly additionalAndroidTestDependencies: string[] = [];
   private readonly composeSupport: boolean;
+  private readonly shadeServer: boolean;
 
   constructor(log: AppiumLogger, args: ServerBuilderOptions) {
     this.log = log;
@@ -80,6 +87,7 @@ export class ServerBuilder {
 
     const buildConfiguration = args.buildConfiguration || {};
     this.composeSupport = buildConfiguration.composeSupport !== false;
+    this.shadeServer = buildConfiguration.shadeServer !== false;
 
     const versionConfiguration = buildConfiguration.toolsVersions || {};
     this.serverVersions = {} as Partial<Record<(typeof VERSION_KEYS)[number], string>>;
@@ -148,9 +156,30 @@ export class ServerBuilder {
         args.push(composeArg);
       }
     }
+    if (!this.shadeServer) {
+      const shadeArg = buildProperty('appiumShadeServer', 'false');
+      if (shadeArg) {
+        args.push(shadeArg);
+      }
+    } else {
+      // The classes of these dependencies are not relocated, so they keep working as they do without shading
+      const sharedArg = buildProperty('appiumSharedDependencies', this.getSharedDependencyCoordinates().join(','));
+      if (sharedArg) {
+        args.push(sharedArg);
+      }
+    }
     args.push('app:assembleAndroidTest');
 
     return {cmd, args};
+  }
+
+  /** `group:module` of the user declared dependencies, without versions */
+  private getSharedDependencyCoordinates(): string[] {
+    const coordinates = DEPENDENCY_PROP_NAMES.flatMap((propName) => this[propName])
+      .map((dep) => dep.trim().match(/^([\w.-]+):([\w.-]+)/))
+      .filter((match): match is RegExpMatchArray => match !== null)
+      .map((match) => `${match[1]}:${match[2]}`);
+    return [...new Set(coordinates)];
   }
 
   private async setGradleWrapperVersion(version: string): Promise<void> {

@@ -33,6 +33,9 @@ For general driver issues (signatures, `forceEspressoRebuild`, ProGuard), see
 
 ## Matching Compose Versions
 
+Compose is the only library whose version still has to match the one of the AUT: the Espresso server
+moves its other libraries to a private package (see [Class Conflicts](./class-conflicts.md)).
+
 The Espresso server only explicitly declares the `androidx-compose-ui-test` and
 `androidx-compose-ui-test-junit4` libraries; those artifacts pull in Compose runtime classes that
 must be compatible with the AUT's Compose UI. There are a few ways to try and match these

@@ -24,6 +24,8 @@ import com.google.gson.annotations.JsonAdapter
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidArgumentException
 import io.appium.espressoserver.lib.handlers.exceptions.InvalidSelectorException
 import io.appium.espressoserver.lib.helpers.GsonParserHelpers
+import io.appium.espressoserver.lib.helpers.forNameApp
+import io.appium.espressoserver.lib.helpers.forNameShaded
 import io.appium.espressoserver.lib.helpers.ReflectionUtils.invokeStaticMethod
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
@@ -57,11 +59,12 @@ data class HamcrestMatcher(
                         className = className.take(className.length - CLASS_SUFFIX.length)
                     }
 
+                    // Arguments are types of the app under test, so its classes take precedence
                     try {
-                        Class.forName(className)
+                        forNameApp(className)
                     } catch (e: ClassNotFoundException) {
                         try {
-                            Class.forName("java.lang.${className}")
+                            forNameApp("java.lang.${className}")
                         } catch (e: ClassNotFoundException) {
                             it
                         }
@@ -121,13 +124,13 @@ data class HamcrestMatcher(
                     val className = requireValidString("class", it)
                     // Try fully casting class as fully qualified name
                     try {
-                        return@let Class.forName(className).kotlin
+                        return@let forNameShaded(className).kotlin
                     } catch (cnfe: ClassNotFoundException) { }
                     // If above didn't work, try prepending 'androidx.test.espresso.matcher' package name
                     try {
                         val qualifiedClassName = "androidx.test.espresso.matcher.${className}"
-                        return@let Class.forName(qualifiedClassName).kotlin
-                    } catch (cnfe: ClassCastException) {
+                        return@let forNameShaded(qualifiedClassName).kotlin
+                    } catch (cnfe: ClassNotFoundException) {
                         throw JsonParseException("No such class found '${className}'")
                     }
                 }

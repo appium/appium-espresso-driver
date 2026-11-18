@@ -21,6 +21,12 @@ For handling issues when testing Jetpack Compose apps (or hybrid View + Compose 
 For issues arising on session startup in non-Compose apps, refer to the
 [Session Startup Troubleshooting guide](./startup.md).
 
+## Class Conflicts
+
+The Espresso server moves its bundled libraries to a private package so they do not conflict with the
+ones of the application under test. For the related errors and settings, refer to the
+[Class Conflicts guide](./class-conflicts.md).
+
 ## Apps Without Compose
 
 By default, the driver builds the Espresso server with Jetpack Compose dependencies included. This
@@ -29,7 +35,8 @@ may cause problems if the application under test has no Compose dependencies.
 In such cases, it may help to exclude the Compose dependencies in the Espresso server. This can be
 done by setting the [`composeSupport`](../reference/capabilities.md#composesupport) property of the
 [`appium:espressoBuildConfig`](../reference/capabilities.md#espressobuildconfig) capability to
-`false`.
+`false`. This also moves the Kotlin standard library and the other libraries that would otherwise be
+shared with the application, see [Class Conflicts](./class-conflicts.md).
 
 While in a session without Compose dependencies, make sure to avoid using the
 [`driver`](../reference/settings.md#driver) setting, and leave it at its default `espresso` value.
