@@ -14,7 +14,7 @@ import {
   parseVersionsToml,
   usesCompose,
 } from '../../scripts/lib/dependency-versions/index.mjs';
-import {runDiagnosis} from '../../scripts/lib/diagnose/index.mjs';
+import {collectAppInputFromProject, runDiagnosis} from '../../scripts/lib/diagnose/index.mjs';
 
 describe('diagnose-app', function () {
   it('parseVersionsToml', function () {
@@ -171,7 +171,7 @@ dependencies {
   it('usesCompose recognizes the ways Compose is declared in Gradle files', function () {
     assert.ok(usesCompose('buildFeatures {\n    compose = true\n}'));
     assert.ok(usesCompose('alias(libs.plugins.kotlin.compose)'));
-    assert.ok(usesCompose('androidx-compose-bom = { group = "androidx.compose", name = "compose-bom" }'));
+    assert.ok(!usesCompose('plugins {\n  alias(libs.plugins.kotlin.compose) apply false\n}'));
     assert.ok(usesCompose('implementation(libs.androidx.compose.ui)'));
     assert.ok(!usesCompose('implementation("androidx.core:core-ktx:1.15.0")\ncompileSdk = 35'));
   });
@@ -199,7 +199,7 @@ dependencies {
     assert.deepStrictEqual(report.mergedEspressoBuildConfig, {});
   });
 
-  it('runDiagnosis applies the Compose compileSdk requirement to a BOM based Compose app', async function () {
+  it('runDiagnosis checks the server compileSdk for a BOM based Compose app', async function () {
     const report = await runDiagnosis(
       {
         kind: 'project',
@@ -214,6 +214,29 @@ dependencies {
         apkHasInternetPermission: null,
       },
       {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.strictEqual(
+      report.checks.find((c) => c.id === 'compose-compile-sdk'),
+      undefined,
+    );
+    assert.strictEqual(report.ready, true);
+  });
+
+  it('runDiagnosis fails a BOM based Compose app when the server compileSdk is too low', async function () {
+    const report = await runDiagnosis(
+      {
+        kind: 'project',
+        path: '/fake',
+        versions: {compose: []},
+        proguardLikely: false,
+        minifyEnabled: false,
+        sources: [],
+        gradleCorpus:
+          'android.permission.INTERNET\ncompileSdk = 34\nimplementation(platform(libs.androidx.compose.bom))',
+        manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
+        apkHasInternetPermission: null,
+      },
+      {driverVersion: '10.3.0', compileSdk: '34', minSdk: '26', versions: {compose: '1.12.1'}},
     );
     assert.strictEqual(report.checks.find((c) => c.id === 'compose-compile-sdk')?.status, 'fail');
   });
@@ -282,6 +305,23 @@ dependencies {
     const {versions} = await collectAppVersionsFromProject(root);
     assert.deepStrictEqual(versions.compose, []);
     assert.ok(usesCompose('implementation(platform("androidx.compose:compose-bom:2024.09.00"))'));
+    await fs.rimraf(root);
+  });
+
+  it('does not take an unused catalog entry or a root-only plugin for Compose usage', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      '[libraries]\nandroidx-compose-bom = { group = "androidx.compose", name = "compose-bom" }\n',
+      'utf8',
+    );
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      'plugins { alias(libs.plugins.kotlin.compose) apply false }\ncompileSdk = 34',
+      'utf8',
+    );
+    const input = await collectAppInputFromProject(root);
+    assert.ok(!usesCompose(input.gradleCorpus ?? ''));
     await fs.rimraf(root);
   });
 

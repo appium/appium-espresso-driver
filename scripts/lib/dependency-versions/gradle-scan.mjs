@@ -38,13 +38,15 @@ export function stripComments(text) {
 
 /**
  * Whether Gradle files (build scripts, version catalogs) show that the app uses Jetpack Compose,
- * whatever the way it is declared: the Compose compiler plugin, `buildFeatures`, a BOM or a catalog entry.
+ * whatever the way it is declared: the Compose compiler plugin, `buildFeatures`, a BOM or a catalog reference.
  * @param {string} text
  * @returns {boolean}
  */
 export function usesCompose(text) {
+  // `apply false` only declares the plugin for subprojects (usually in the root script)
+  const code = stripComments(text).replace(/^.*\bapply\s+false\b.*$/gm, '');
   return /\bcompose\s*=\s*true\b|kotlin\.plugin\.compose|androidx[.-]compose|\blibs\.[\w.]*compose|compose-?bom/i.test(
-    stripComments(text),
+    code,
   );
 }
 
