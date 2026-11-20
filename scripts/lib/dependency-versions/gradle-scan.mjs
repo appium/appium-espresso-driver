@@ -6,6 +6,7 @@ import {findFiles} from '../find-files.mjs';
 import {TRACKED_MODULES, createEmptyVersionSets} from './tracked-modules.mjs';
 import {
   normalizeVersion,
+  parseCatalogAccessors,
   parseVersionsToml,
   versionFromPatternMatch,
   versionSetsToSortedRecords,
@@ -51,6 +52,15 @@ export function usesCompose(text) {
 }
 
 /**
+ * @param {string} text
+ * @param {string} accessor
+ * @returns {boolean}
+ */
+function isReferenced(text, accessor) {
+  return new RegExp(`${accessor.replace(/\./g, '\\.')}(?!\\w)`).test(text);
+}
+
+/**
  * @param {string} projectRoot
  * @returns {Promise<{versions: Record<string, string[]>, minifyEnabled: boolean | null, sources: string[]}>}
  */
@@ -59,13 +69,13 @@ export async function collectAppVersionsFromProject(projectRoot) {
   const found = createEmptyVersionSets();
   let minifyEnabled = null;
   let scriptsText = '';
-  /** @type {Record<string, string>} */
-  const catalogVersions = {};
+  /** @type {string[]} */
+  const catalogTexts = [];
 
   for (const filePath of gradleFiles) {
     const text = await fs.readFile(filePath, 'utf8');
     if (filePath.endsWith('libs.versions.toml')) {
-      Object.assign(catalogVersions, parseVersionsToml(text));
+      catalogTexts.push(text);
     } else {
       scriptsText += `${stripComments(text)}\n`;
       collectVersionsFromGradleText(stripComments(text), TRACKED_MODULES, found);
@@ -80,12 +90,15 @@ export async function collectAppVersionsFromProject(projectRoot) {
     }
   }
 
-  // A catalog version of an unused Compose library says nothing about the app
-  const composeUsed = usesCompose(scriptsText);
-  for (const mod of TRACKED_MODULES) {
-    const normalized = normalizeVersion(catalogVersions[mod.catalogKey]);
-    if (normalized && (mod.id !== 'compose' || composeUsed)) {
-      found[mod.id].add(normalized);
+  // A catalog version counts only if the build scripts consume it; every catalog is kept as a candidate
+  for (const catalogText of catalogTexts) {
+    const catalogVersions = parseVersionsToml(catalogText);
+    const accessors = parseCatalogAccessors(catalogText);
+    for (const mod of TRACKED_MODULES) {
+      const normalized = normalizeVersion(catalogVersions[mod.catalogKey]);
+      if (normalized && (accessors[mod.catalogKey] ?? []).some((acc) => isReferenced(scriptsText, acc))) {
+        found[mod.id].add(normalized);
+      }
     }
   }
 

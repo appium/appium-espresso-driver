@@ -41,6 +41,40 @@ export function parseVersionsToml(text) {
 }
 
 /**
+ * Maps each `[versions]` key of a version catalog to the accessors (`libs.x.y`) through which
+ * the catalog exposes it: the version itself and the libraries/plugins that reference it.
+ * @param {string} text
+ * @returns {Record<string, string[]>}
+ */
+export function parseCatalogAccessors(text) {
+  const prefixes = {versions: 'libs.versions', libraries: 'libs', plugins: 'libs.plugins'};
+  const dotted = (/** @type {string} */ name) => name.replace(/[-_]/g, '.');
+  /** @type {Record<string, string[]>} */
+  const accessors = {};
+  /** @type {string | null} */
+  let section = null;
+  for (const line of text.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    const header = trimmed.match(/^\[(\w+)\]$/);
+    if (header) {
+      section = header[1];
+      continue;
+    }
+    const entry = trimmed.match(/^([A-Za-z0-9_.-]+)\s*=\s*(.*)$/);
+    if (!entry || trimmed.startsWith('#') || !section || !(section in prefixes)) {
+      continue;
+    }
+    const prefix = prefixes[/** @type {keyof typeof prefixes} */ (section)];
+    const accessor = `${prefix}.${dotted(entry[1])}`;
+    const key = section === 'versions' ? entry[1] : entry[2].match(/version\.ref\s*=\s*["']([^"']+)["']/)?.[1];
+    if (key) {
+      (accessors[key] ??= []).push(accessor);
+    }
+  }
+  return accessors;
+}
+
+/**
  * @param {string | undefined} raw
  * @returns {string | null}
  */

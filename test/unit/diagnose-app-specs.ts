@@ -344,12 +344,53 @@ dependencies {
     await fs.rimraf(root);
   });
 
-  it('uses a Compose catalog version when the build scripts consume Compose', async function () {
+  it('uses a Compose catalog version when a consumed library references it', async function () {
     const root = await tempDir.openDir();
-    await fs.writeFile(path.join(root, 'libs.versions.toml'), '[versions]\ncomposeUiTest = "1.12.1"\n', 'utf8');
-    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.androidx.compose.ui)', 'utf8');
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      '[versions]\ncomposeUiTest = "1.12.1"\n[libraries]\nandroidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" }\n',
+      'utf8',
+    );
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.androidx.compose.ui.test)', 'utf8');
     const {versions} = await collectAppVersionsFromProject(root);
     assert.deepStrictEqual(versions.compose, ['1.12.1']);
+    await fs.rimraf(root);
+  });
+
+  it('leaves the Compose version unresolved for a BOM app with an unused catalog version', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      '[versions]\ncomposeUiTest = "1.12.1"\n[libraries]\nandroidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version = "2024.09.00" }\n',
+      'utf8',
+    );
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      'compileSdk = 34\nimplementation(platform(libs.androidx.compose.bom))',
+      'utf8',
+    );
+    const input = await collectAppInputFromProject(root);
+    assert.deepStrictEqual(input.versions.compose, []);
+    const report = await runDiagnosis(
+      {...input, manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />']},
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.strictEqual(report.dependencyReport.composeDetected, true);
+    assert.strictEqual(report.ready, true);
+    await fs.rimraf(root);
+  });
+
+  it('keeps the Kotlin versions of every catalog the build scripts consume', async function () {
+    const root = await tempDir.openDir();
+    const catalog = (version: string) =>
+      `[versions]\nkotlin = "${version}"\n[plugins]\nkotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }\n`;
+    await fs.mkdir(path.join(root, 'gradle'), {recursive: true});
+    await fs.mkdir(path.join(root, 'build-logic', 'gradle'), {recursive: true});
+    await fs.writeFile(path.join(root, 'gradle', 'libs.versions.toml'), catalog('2.4.20'), 'utf8');
+    await fs.writeFile(path.join(root, 'build-logic', 'gradle', 'libs.versions.toml'), catalog('1.9.0'), 'utf8');
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'plugins { alias(libs.plugins.kotlin.android) }', 'utf8');
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.kotlin, ['2.4.20', '1.9.0']);
     await fs.rimraf(root);
   });
 
