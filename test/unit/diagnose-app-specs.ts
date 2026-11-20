@@ -357,6 +357,38 @@ dependencies {
     await fs.rimraf(root);
   });
 
+  it('reads multiline and table style catalog entries', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      [
+        '[versions]',
+        'composeUiTest = "1.12.1"',
+        'kotlin = "2.4.20"',
+        '[libraries]',
+        'androidx-compose-ui-test = {',
+        '  group = "androidx.compose.ui",',
+        '  name = "ui-test",',
+        '  version.ref = "composeUiTest",',
+        '}',
+        '[plugins.kotlin-android]',
+        'id = "org.jetbrains.kotlin.android"',
+        'version.ref = "kotlin"',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      'plugins { alias(libs.plugins.kotlin.android) }\nimplementation(libs.androidx.compose.ui.test)',
+      'utf8',
+    );
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, ['1.12.1']);
+    assert.deepStrictEqual(versions.kotlin, ['2.4.20']);
+    await fs.rimraf(root);
+  });
+
   it('leaves the Compose version unresolved for a BOM app with an unused catalog version', async function () {
     const root = await tempDir.openDir();
     await fs.writeFile(

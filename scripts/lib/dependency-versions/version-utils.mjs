@@ -49,27 +49,73 @@ export function parseVersionsToml(text) {
 export function parseCatalogAccessors(text) {
   const prefixes = {versions: 'libs.versions', libraries: 'libs', plugins: 'libs.plugins'};
   const dotted = (/** @type {string} */ name) => name.replace(/[-_]/g, '.');
+  const braceDelta = (/** @type {string} */ line) =>
+    (line.match(/\{/g)?.length ?? 0) - (line.match(/\}/g)?.length ?? 0);
   /** @type {Record<string, string[]>} */
   const accessors = {};
-  /** @type {string | null} */
-  let section = null;
+  /** @typedef {{section: string, alias: string, body: string}} CatalogEntry */
+  /** @type {CatalogEntry | null} */
+  let current = null;
+  let section = '';
+  let depth = 0;
+
+  const add = (/** @type {CatalogEntry} */ entry) => {
+    if (!(entry.section in prefixes)) {
+      return;
+    }
+    const prefix = prefixes[/** @type {keyof typeof prefixes} */ (entry.section)];
+    const key =
+      entry.section === 'versions' ? entry.alias : entry.body.match(/version\.ref\s*=\s*["']([^"']+)["']/)?.[1];
+    if (key) {
+      (accessors[key] ??= []).push(`${prefix}.${dotted(entry.alias)}`);
+    }
+  };
+
   for (const line of text.split(/\r?\n/)) {
     const trimmed = line.trim();
-    const header = trimmed.match(/^\[(\w+)\]$/);
+    if (!trimmed || trimmed.startsWith('#')) {
+      continue;
+    }
+    if (depth > 0 && current) {
+      // continuation of a multiline inline table
+      current.body += ` ${trimmed}`;
+      depth += braceDelta(trimmed);
+      if (depth <= 0) {
+        add(current);
+        current = null;
+        depth = 0;
+      }
+      continue;
+    }
+    // `[libraries.alias]` tables carry the entry's keys on the following lines
+    const header = trimmed.match(/^\[(\w+)(?:\.([\w.-]+))?\]$/);
     if (header) {
+      if (current) {
+        add(current);
+      }
       section = header[1];
+      current = header[2] ? {section, alias: header[2], body: ''} : null;
       continue;
     }
-    const entry = trimmed.match(/^([A-Za-z0-9_.-]+)\s*=\s*(.*)$/);
-    if (!entry || trimmed.startsWith('#') || !section || !(section in prefixes)) {
+    const kv = trimmed.match(/^([A-Za-z0-9_.-]+)\s*=\s*(.*)$/);
+    if (!kv) {
       continue;
     }
-    const prefix = prefixes[/** @type {keyof typeof prefixes} */ (section)];
-    const accessor = `${prefix}.${dotted(entry[1])}`;
-    const key = section === 'versions' ? entry[1] : entry[2].match(/version\.ref\s*=\s*["']([^"']+)["']/)?.[1];
-    if (key) {
-      (accessors[key] ??= []).push(accessor);
+    if (current) {
+      current.body += ` ${trimmed}`;
+      continue;
     }
+    const entry = {section, alias: kv[1], body: kv[2]};
+    depth = braceDelta(kv[2]);
+    if (depth > 0) {
+      current = entry;
+    } else {
+      depth = 0;
+      add(entry);
+    }
+  }
+  if (current) {
+    add(current);
   }
   return accessors;
 }
