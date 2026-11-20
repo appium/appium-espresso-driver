@@ -58,11 +58,16 @@ export async function collectAppVersionsFromProject(projectRoot) {
   const gradleFiles = await findGradleFiles(projectRoot);
   const found = createEmptyVersionSets();
   let minifyEnabled = null;
+  let scriptsText = '';
+  /** @type {Record<string, string>} */
+  const catalogVersions = {};
 
   for (const filePath of gradleFiles) {
     const text = await fs.readFile(filePath, 'utf8');
-    const rel = path.relative(projectRoot, filePath);
-    if (!rel.endsWith('libs.versions.toml')) {
+    if (filePath.endsWith('libs.versions.toml')) {
+      Object.assign(catalogVersions, parseVersionsToml(text));
+    } else {
+      scriptsText += `${stripComments(text)}\n`;
       collectVersionsFromGradleText(stripComments(text), TRACKED_MODULES, found);
     }
     if (/\bisMinifyEnabled\s*=\s*true\b/.test(text) || /\bminifyEnabled\s+true\b/.test(text)) {
@@ -73,17 +78,14 @@ export async function collectAppVersionsFromProject(projectRoot) {
         minifyEnabled = false;
       }
     }
-    if (rel.endsWith('libs.versions.toml')) {
-      const tomlVersions = parseVersionsToml(text);
-      for (const mod of TRACKED_MODULES) {
-        const v = tomlVersions[mod.catalogKey];
-        if (v) {
-          const normalized = normalizeVersion(v);
-          if (normalized) {
-            found[mod.id].add(normalized);
-          }
-        }
-      }
+  }
+
+  // A catalog version of an unused Compose library says nothing about the app
+  const composeUsed = usesCompose(scriptsText);
+  for (const mod of TRACKED_MODULES) {
+    const normalized = normalizeVersion(catalogVersions[mod.catalogKey]);
+    if (normalized && (mod.id !== 'compose' || composeUsed)) {
+      found[mod.id].add(normalized);
     }
   }
 

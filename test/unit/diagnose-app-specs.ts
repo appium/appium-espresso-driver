@@ -325,6 +325,34 @@ dependencies {
     await fs.rimraf(root);
   });
 
+  it('ignores an unused Compose catalog version for a Views-only app', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(path.join(root, 'libs.versions.toml'), '[versions]\ncomposeUiTest = "1.12.1"\n', 'utf8');
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      'compileSdk = 34\nimplementation("androidx.core:core-ktx:1.15.0")',
+      'utf8',
+    );
+    const input = await collectAppInputFromProject(root);
+    assert.deepStrictEqual(input.versions.compose, []);
+    const report = await runDiagnosis(
+      {...input, manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />']},
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.strictEqual(report.dependencyReport.composeDetected, false);
+    assert.strictEqual(report.ready, true);
+    await fs.rimraf(root);
+  });
+
+  it('uses a Compose catalog version when the build scripts consume Compose', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(path.join(root, 'libs.versions.toml'), '[versions]\ncomposeUiTest = "1.12.1"\n', 'utf8');
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.androidx.compose.ui)', 'utf8');
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, ['1.12.1']);
+    await fs.rimraf(root);
+  });
+
   it('usesCompose ignores commented-out declarations', function () {
     assert.ok(!usesCompose('// implementation(libs.androidx.compose.ui)\n/* compose = true */\nandroid {}'));
     assert.ok(!usesCompose('[libraries]\n# androidx-compose-bom = { group = "androidx.compose" }'));
