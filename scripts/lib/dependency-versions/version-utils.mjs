@@ -49,8 +49,30 @@ export function parseVersionsToml(text) {
 export function parseCatalogAccessors(text) {
   const prefixes = {versions: 'libs.versions', libraries: 'libs', plugins: 'libs.plugins', bundles: 'libs.bundles'};
   const dotted = (/** @type {string} */ name) => name.replace(/[-_]/g, '.');
-  const delta = (/** @type {string} */ line) =>
-    (line.match(/[{[]/g)?.length ?? 0) - (line.match(/[}\]]/g)?.length ?? 0);
+  /** Drops the trailing comment and counts the open brackets, both outside of strings. */
+  const scanLine = (/** @type {string} */ line) => {
+    let quote = '';
+    let delta = 0;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (quote) {
+        if (ch === '\\' && quote === '"') {
+          i++;
+        } else if (ch === quote) {
+          quote = '';
+        }
+      } else if (ch === '"' || ch === "'") {
+        quote = ch;
+      } else if (ch === '#') {
+        return {code: line.slice(0, i), delta};
+      } else if (ch === '{' || ch === '[') {
+        delta++;
+      } else if (ch === '}' || ch === ']') {
+        delta--;
+      }
+    }
+    return {code: line, delta};
+  };
   /** @typedef {{section: string, alias: string, body: string}} CatalogEntry */
   /** @type {CatalogEntry[]} */
   const entries = [];
@@ -68,15 +90,15 @@ export function parseCatalogAccessors(text) {
   };
 
   for (const rawLine of text.split(/\r?\n/)) {
-    // drop trailing comments (only those without quotes after them, to keep `#` inside strings intact)
-    const trimmed = rawLine.replace(/(^|\s)#[^"']*$/, '').trim();
+    const {code, delta: lineDelta} = scanLine(rawLine);
+    const trimmed = code.trim();
     if (!trimmed) {
       continue;
     }
     if (depth > 0 && current) {
       // continuation of a multiline inline table or array
       current.body += ` ${trimmed}`;
-      depth += delta(trimmed);
+      depth += lineDelta;
       if (depth <= 0) {
         finish();
       }
@@ -99,7 +121,7 @@ export function parseCatalogAccessors(text) {
       continue;
     }
     current = {section, alias: kv[1], body: kv[2]};
-    depth = delta(kv[2]);
+    depth = scanLine(kv[2]).delta;
     if (depth <= 0) {
       finish();
     }

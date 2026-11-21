@@ -58,7 +58,7 @@ export function usesCompose(text) {
  */
 function isReferenced(text, accessor) {
   // the exact accessor, optionally followed by a provider method (`libs.ui` is not `libs.ui.core`)
-  const methods = 'get|asProvider|orNull|getOrElse|map|flatMap|zip';
+  const methods = 'get|getOrNull|getOrElse|asProvider|orNull|map|flatMap|zip|isPresent';
   return new RegExp(`(?<![\\w.])${accessor.replace(/\./g, '\\.')}(?!\\w)(?!\\.(?!(?:${methods})\\b)\\w)`).test(text);
 }
 

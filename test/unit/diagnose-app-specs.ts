@@ -485,6 +485,40 @@ dependencies {
     await fs.rimraf(root);
   });
 
+  it('ignores brackets and quotes inside TOML strings and comments', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      [
+        '[versions]',
+        'other = "[1.0,2.0)"',
+        'composeUiTest = "1.12.1" # it\'s [pinned',
+        "[libraries] # app's libraries",
+        'ui = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" } # {',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.ui)', 'utf8');
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, ['1.12.1']);
+    await fs.rimraf(root);
+  });
+
+  it('recognizes provider calls on a catalog accessor but not longer accessors', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      '[versions]\ncomposeUiTest = "1.12.1"\n[libraries]\nui = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" }\n',
+      'utf8',
+    );
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.ui.getOrNull()!!)', 'utf8');
+    assert.deepStrictEqual((await collectAppVersionsFromProject(root)).versions.compose, ['1.12.1']);
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.ui.core)', 'utf8');
+    assert.deepStrictEqual((await collectAppVersionsFromProject(root)).versions.compose, []);
+    await fs.rimraf(root);
+  });
+
   it('follows catalog bundles to the versions of their libraries', async function () {
     const root = await tempDir.openDir();
     await fs.writeFile(
