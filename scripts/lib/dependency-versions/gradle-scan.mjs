@@ -57,7 +57,19 @@ export function usesCompose(text) {
  * @returns {boolean}
  */
 function isReferenced(text, accessor) {
-  return new RegExp(`${accessor.replace(/\./g, '\\.')}(?!\\w)`).test(text);
+  // the exact accessor, optionally followed by a provider method (`libs.ui` is not `libs.ui.core`)
+  const methods = 'get|asProvider|orNull|getOrElse|map|flatMap|zip';
+  return new RegExp(`(?<![\\w.])${accessor.replace(/\./g, '\\.')}(?!\\w)(?!\\.(?!(?:${methods})\\b)\\w)`).test(text);
+}
+
+/**
+ * The directory of the Gradle build a version catalog belongs to.
+ * @param {string} catalogPath
+ * @returns {string}
+ */
+function catalogBuildRoot(catalogPath) {
+  const dir = path.dirname(catalogPath);
+  return path.basename(dir) === 'gradle' ? path.dirname(dir) : dir;
 }
 
 /**
@@ -68,16 +80,17 @@ export async function collectAppVersionsFromProject(projectRoot) {
   const gradleFiles = await findGradleFiles(projectRoot);
   const found = createEmptyVersionSets();
   let minifyEnabled = null;
-  let scriptsText = '';
-  /** @type {string[]} */
-  const catalogTexts = [];
+  /** @type {{root: string, text: string}[]} */
+  const catalogs = [];
+  /** @type {{dir: string, text: string}[]} */
+  const scripts = [];
 
   for (const filePath of gradleFiles) {
     const text = await fs.readFile(filePath, 'utf8');
     if (filePath.endsWith('libs.versions.toml')) {
-      catalogTexts.push(text);
+      catalogs.push({root: catalogBuildRoot(filePath), text});
     } else {
-      scriptsText += `${stripComments(text)}\n`;
+      scripts.push({dir: path.dirname(filePath), text: stripComments(text)});
       collectVersionsFromGradleText(stripComments(text), TRACKED_MODULES, found);
     }
     if (/\bisMinifyEnabled\s*=\s*true\b/.test(text) || /\bminifyEnabled\s+true\b/.test(text)) {
@@ -90,13 +103,22 @@ export async function collectAppVersionsFromProject(projectRoot) {
     }
   }
 
-  // A catalog version counts only if the build scripts consume it; every catalog is kept as a candidate
-  for (const catalogText of catalogTexts) {
+  // A catalog version counts only if a script of the build owning the catalog consumes it
+  const roots = catalogs.map((c) => c.root);
+  const ownerOf = (/** @type {string} */ dir) =>
+    roots
+      .filter((root) => dir === root || dir.startsWith(root + path.sep))
+      .reduce((best, root) => (root.length > best.length ? root : best), '');
+  for (const {root, text: catalogText} of catalogs) {
+    const ownScripts = scripts
+      .filter((s) => ownerOf(s.dir) === root)
+      .map((s) => s.text)
+      .join('\n');
     const catalogVersions = parseVersionsToml(catalogText);
     const accessors = parseCatalogAccessors(catalogText);
     for (const mod of TRACKED_MODULES) {
       const normalized = normalizeVersion(catalogVersions[mod.catalogKey]);
-      if (normalized && (accessors[mod.catalogKey] ?? []).some((acc) => isReferenced(scriptsText, acc))) {
+      if (normalized && (accessors[mod.catalogKey] ?? []).some((acc) => isReferenced(ownScripts, acc))) {
         found[mod.id].add(normalized);
       }
     }

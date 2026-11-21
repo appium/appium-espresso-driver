@@ -412,17 +412,103 @@ dependencies {
     await fs.rimraf(root);
   });
 
-  it('keeps the Kotlin versions of every catalog the build scripts consume', async function () {
-    const root = await tempDir.openDir();
+  describe('catalogs of nested builds', function () {
     const catalog = (version: string) =>
       `[versions]\nkotlin = "${version}"\n[plugins]\nkotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }\n`;
-    await fs.mkdir(path.join(root, 'gradle'), {recursive: true});
-    await fs.mkdir(path.join(root, 'build-logic', 'gradle'), {recursive: true});
-    await fs.writeFile(path.join(root, 'gradle', 'libs.versions.toml'), catalog('2.4.20'), 'utf8');
-    await fs.writeFile(path.join(root, 'build-logic', 'gradle', 'libs.versions.toml'), catalog('1.9.0'), 'utf8');
-    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'plugins { alias(libs.plugins.kotlin.android) }', 'utf8');
+    const script = 'plugins { alias(libs.plugins.kotlin.android) }';
+
+    async function setup(buildLogicScript: boolean) {
+      const root = await tempDir.openDir();
+      await fs.mkdir(path.join(root, 'gradle'), {recursive: true});
+      await fs.mkdir(path.join(root, 'build-logic', 'gradle'), {recursive: true});
+      await fs.writeFile(path.join(root, 'gradle', 'libs.versions.toml'), catalog('1.9.0'), 'utf8');
+      await fs.writeFile(path.join(root, 'build-logic', 'gradle', 'libs.versions.toml'), catalog('2.4.20'), 'utf8');
+      await fs.writeFile(path.join(root, 'build.gradle.kts'), script, 'utf8');
+      if (buildLogicScript) {
+        await fs.writeFile(path.join(root, 'build-logic', 'build.gradle.kts'), script, 'utf8');
+      }
+      return root;
+    }
+
+    it('matches a script reference only to the catalog of its own build', async function () {
+      const root = await setup(false);
+      const {versions} = await collectAppVersionsFromProject(root);
+      assert.deepStrictEqual(versions.kotlin, ['1.9.0']);
+      await fs.rimraf(root);
+    });
+
+    it('keeps the versions of every catalog consumed by its own build', async function () {
+      const root = await setup(true);
+      const {versions} = await collectAppVersionsFromProject(root);
+      assert.deepStrictEqual([...versions.kotlin].sort(), ['1.9.0', '2.4.20']);
+      await fs.rimraf(root);
+    });
+  });
+
+  it('does not take libs.ui for libs.ui.core when resolving catalog versions', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      [
+        '[versions]',
+        'composeUiTest = "1.12.1"',
+        'core = "1.15.0"',
+        '[libraries]',
+        'ui = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" }',
+        'ui-core = { group = "androidx.core", name = "core", version.ref = "core" }',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'compileSdk = 34\nimplementation(libs.ui.core)', 'utf8');
+    const input = await collectAppInputFromProject(root);
+    assert.deepStrictEqual(input.versions.compose, []);
+    const report = await runDiagnosis(
+      {...input, manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />']},
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.strictEqual(report.dependencyReport.composeDetected, false);
+    assert.strictEqual(report.ready, true);
+    await fs.rimraf(root);
+  });
+
+  it('accepts trailing comments on catalog section headers', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      '[versions] # versions\ncomposeUiTest = "1.12.1"\n[libraries] # dependencies\nui = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" }\n',
+      'utf8',
+    );
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.ui)', 'utf8');
     const {versions} = await collectAppVersionsFromProject(root);
-    assert.deepStrictEqual(versions.kotlin, ['2.4.20', '1.9.0']);
+    assert.deepStrictEqual(versions.compose, ['1.12.1']);
+    await fs.rimraf(root);
+  });
+
+  it('follows catalog bundles to the versions of their libraries', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      [
+        '[versions]',
+        'composeUiTest = "1.12.1"',
+        '[libraries]',
+        'ui = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" }',
+        '[bundles]',
+        'components = [',
+        '  "ui",',
+        ']',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      'buildFeatures { compose = true }\nimplementation(libs.bundles.components)',
+      'utf8',
+    );
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, ['1.12.1']);
     await fs.rimraf(root);
   });
 

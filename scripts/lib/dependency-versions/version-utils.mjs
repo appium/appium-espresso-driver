@@ -21,11 +21,11 @@ export function parseVersionsToml(text) {
   let inVersionsSection = false;
   for (const line of text.split(/\r?\n/)) {
     const trimmed = line.trim();
-    if (trimmed === '[versions]') {
+    if (/^\[versions\]\s*(#.*)?$/.test(trimmed)) {
       inVersionsSection = true;
       continue;
     }
-    if (trimmed.startsWith('[') && trimmed !== '[versions]') {
+    if (trimmed.startsWith('[')) {
       inVersionsSection = false;
       continue;
     }
@@ -47,52 +47,45 @@ export function parseVersionsToml(text) {
  * @returns {Record<string, string[]>}
  */
 export function parseCatalogAccessors(text) {
-  const prefixes = {versions: 'libs.versions', libraries: 'libs', plugins: 'libs.plugins'};
+  const prefixes = {versions: 'libs.versions', libraries: 'libs', plugins: 'libs.plugins', bundles: 'libs.bundles'};
   const dotted = (/** @type {string} */ name) => name.replace(/[-_]/g, '.');
-  const braceDelta = (/** @type {string} */ line) =>
-    (line.match(/\{/g)?.length ?? 0) - (line.match(/\}/g)?.length ?? 0);
-  /** @type {Record<string, string[]>} */
-  const accessors = {};
+  const delta = (/** @type {string} */ line) =>
+    (line.match(/[{[]/g)?.length ?? 0) - (line.match(/[}\]]/g)?.length ?? 0);
   /** @typedef {{section: string, alias: string, body: string}} CatalogEntry */
+  /** @type {CatalogEntry[]} */
+  const entries = [];
   /** @type {CatalogEntry | null} */
   let current = null;
   let section = '';
   let depth = 0;
 
-  const add = (/** @type {CatalogEntry} */ entry) => {
-    if (!(entry.section in prefixes)) {
-      return;
+  const finish = () => {
+    if (current) {
+      entries.push(current);
+      current = null;
     }
-    const prefix = prefixes[/** @type {keyof typeof prefixes} */ (entry.section)];
-    const key =
-      entry.section === 'versions' ? entry.alias : entry.body.match(/version\.ref\s*=\s*["']([^"']+)["']/)?.[1];
-    if (key) {
-      (accessors[key] ??= []).push(`${prefix}.${dotted(entry.alias)}`);
-    }
+    depth = 0;
   };
 
-  for (const line of text.split(/\r?\n/)) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) {
+  for (const rawLine of text.split(/\r?\n/)) {
+    // drop trailing comments (only those without quotes after them, to keep `#` inside strings intact)
+    const trimmed = rawLine.replace(/(^|\s)#[^"']*$/, '').trim();
+    if (!trimmed) {
       continue;
     }
     if (depth > 0 && current) {
-      // continuation of a multiline inline table
+      // continuation of a multiline inline table or array
       current.body += ` ${trimmed}`;
-      depth += braceDelta(trimmed);
+      depth += delta(trimmed);
       if (depth <= 0) {
-        add(current);
-        current = null;
-        depth = 0;
+        finish();
       }
       continue;
     }
     // `[libraries.alias]` tables carry the entry's keys on the following lines
     const header = trimmed.match(/^\[(\w+)(?:\.([\w.-]+))?\]$/);
     if (header) {
-      if (current) {
-        add(current);
-      }
+      finish();
       section = header[1];
       current = header[2] ? {section, alias: header[2], body: ''} : null;
       continue;
@@ -105,17 +98,44 @@ export function parseCatalogAccessors(text) {
       current.body += ` ${trimmed}`;
       continue;
     }
-    const entry = {section, alias: kv[1], body: kv[2]};
-    depth = braceDelta(kv[2]);
-    if (depth > 0) {
-      current = entry;
-    } else {
-      depth = 0;
-      add(entry);
+    current = {section, alias: kv[1], body: kv[2]};
+    depth = delta(kv[2]);
+    if (depth <= 0) {
+      finish();
     }
   }
-  if (current) {
-    add(current);
+  finish();
+
+  const versionRef = (/** @type {CatalogEntry} */ entry) =>
+    entry.body.match(/version\.ref\s*=\s*["']([^"']+)["']/)?.[1];
+  /** @type {Record<string, string[]>} */
+  const accessors = {};
+  /** @type {Record<string, string>} */
+  const libraryRefs = {};
+  const add = (/** @type {string | undefined} */ key, /** @type {CatalogEntry} */ entry) => {
+    if (key) {
+      (accessors[key] ??= []).push(
+        `${prefixes[/** @type {keyof typeof prefixes} */ (entry.section)]}.${dotted(entry.alias)}`,
+      );
+    }
+  };
+  for (const entry of entries) {
+    if (entry.section === 'versions') {
+      add(entry.alias, entry);
+    } else if (entry.section === 'libraries' || entry.section === 'plugins') {
+      const ref = versionRef(entry);
+      add(ref, entry);
+      if (ref && entry.section === 'libraries') {
+        libraryRefs[entry.alias] = ref;
+      }
+    }
+  }
+  // a bundle exposes the versions of its member libraries
+  for (const entry of entries.filter((e) => e.section === 'bundles')) {
+    const members = [...entry.body.matchAll(/["']([^"']+)["']/g)].map((m) => m[1]);
+    for (const key of new Set(members.map((alias) => libraryRefs[alias]))) {
+      add(key, entry);
+    }
   }
   return accessors;
 }
