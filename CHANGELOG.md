@@ -1,3 +1,13 @@
+## [10.4.0](https://github.com/appium/appium-espresso-driver/compare/v10.3.0...v10.4.0) (2026-11-21)
+
+### Features
+
+* add handling for new rotation/orientation/context routes ([#1263](https://github.com/appium/appium-espresso-driver/issues/1263)) ([c1845f2](https://github.com/appium/appium-espresso-driver/commit/c1845f226aec0d1f803f82b1ae5d4a9d8c6c552a))
+
+### Code Refactoring
+
+* simplify diagnose-app now that the server is shaded ([#1260](https://github.com/appium/appium-espresso-driver/issues/1260)) ([9b02e13](https://github.com/appium/appium-espresso-driver/commit/9b02e133ee6eaed95a7a1426fae206370af667e3))
+
 ## [10.3.0](https://github.com/appium/appium-espresso-driver/compare/v10.2.1...v10.3.0) (2026-11-18)
 
 ### Features
