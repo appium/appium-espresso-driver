@@ -13,6 +13,7 @@ import * as contextCmds from './commands/context.js';
 import * as elementCmds from './commands/element.js';
 import * as idlingResourcesCmds from './commands/idling-resources.js';
 import * as miscCmds from './commands/misc.js';
+import * as orientationCmds from './commands/orientation.js';
 import * as screenshotCmds from './commands/screenshot.js';
 import * as serverCmds from './commands/server/index.js';
 import type {EspressoRunner} from './commands/server/index.js';
@@ -469,10 +470,6 @@ Object.assign(EspressoDriver.prototype, {
 
   // misc
   mobilePressKey: miscCmds.mobilePressKey,
-  getOrientation: miscCmds.getOrientation,
-  setOrientation: miscCmds.setOrientation,
-  getRotation: miscCmds.getRotation,
-  setRotation: miscCmds.setRotation,
   mobileGetDeviceInfo: miscCmds.mobileGetDeviceInfo,
   mobileIsToastVisible: miscCmds.mobileIsToastVisible,
   getDisplayDensity: miscCmds.getDisplayDensity,
@@ -481,6 +478,12 @@ Object.assign(EspressoDriver.prototype, {
   mobileUiautomatorPageSource: miscCmds.mobileUiautomatorPageSource,
   updateSettings: miscCmds.updateSettings,
   getSettings: miscCmds.getSettings,
+
+  // orientation
+  getOrientation: orientationCmds.getOrientation,
+  setOrientation: orientationCmds.setOrientation,
+  getRotation: orientationCmds.getRotation,
+  setRotation: orientationCmds.setRotation,
 
   // screenshot
   getScreenshot: screenshotCmds.getScreenshot,
