@@ -13,6 +13,7 @@ import * as contextCmds from './commands/context.js';
 import * as elementCmds from './commands/element.js';
 import * as idlingResourcesCmds from './commands/idling-resources.js';
 import * as miscCmds from './commands/misc.js';
+import * as orientationCmds from './commands/orientation.js';
 import * as screenshotCmds from './commands/screenshot.js';
 import * as serverCmds from './commands/server/index.js';
 import type {EspressoRunner} from './commands/server/index.js';
@@ -32,10 +33,14 @@ const NO_PROXY: RouteMatcher[] = [
   ['GET', new RegExp('^/session/(?!.*/)')],
   ['GET', new RegExp('^/session/[^/]+/appium/capabilities')],
   ['GET', new RegExp('^/session/[^/]+/appium/commands')],
+  ['GET', new RegExp('^/session/[^/]+/appium/context')],
+  ['GET', new RegExp('^/session/[^/]+/appium/contexts')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/current_activity')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/current_package')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/display_density')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/is_keyboard_shown')],
+  ['GET', new RegExp('^/session/[^/]+/appium/device/orientation')],
+  ['GET', new RegExp('^/session/[^/]+/appium/device/rotation')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/system_bars')],
   ['GET', new RegExp('^/session/[^/]+/appium/device/system_time')],
   ['GET', new RegExp('^/session/[^/]+/appium/extensions')],
@@ -52,6 +57,7 @@ const NO_PROXY: RouteMatcher[] = [
   ['POST', new RegExp('^/session/[^/]+/appium/app/reset')],
   ['POST', new RegExp('^/session/[^/]+/appium/app/strings')],
   ['POST', new RegExp('^/session/[^/]+/appium/compare_images')],
+  ['POST', new RegExp('^/session/[^/]+/appium/context')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/activate_app')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/app_installed')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/app_state')],
@@ -60,10 +66,12 @@ const NO_PROXY: RouteMatcher[] = [
   ['POST', new RegExp('^/session/[^/]+/appium/device/install_app')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/is_locked')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/lock')],
+  ['POST', new RegExp('^/session/[^/]+/appium/device/orientation')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/pull_file')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/pull_folder')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/push_file')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/remove_app')],
+  ['POST', new RegExp('^/session/[^/]+/appium/device/rotation')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/start_activity')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/terminate_app')],
   ['POST', new RegExp('^/session/[^/]+/appium/device/unlock')],
@@ -470,6 +478,12 @@ Object.assign(EspressoDriver.prototype, {
   mobileUiautomatorPageSource: miscCmds.mobileUiautomatorPageSource,
   updateSettings: miscCmds.updateSettings,
   getSettings: miscCmds.getSettings,
+
+  // orientation
+  getOrientation: orientationCmds.getOrientation,
+  setOrientation: orientationCmds.setOrientation,
+  getRotation: orientationCmds.getRotation,
+  setRotation: orientationCmds.setRotation,
 
   // screenshot
   getScreenshot: screenshotCmds.getScreenshot,
