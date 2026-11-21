@@ -8,13 +8,13 @@ import {
   buildComparisonReport,
   collectAppVersionsFromProject,
   compareModuleVersions,
-  extractMainAppDependencyScopes,
   mapMetaInfVersionBaseToModule,
   mergeMetaInfEmbeddedVersions,
   parseKotlinMetadataVersionsFromDexdump,
   parseVersionsToml,
+  usesCompose,
 } from '../../scripts/lib/dependency-versions/index.mjs';
-import {runDiagnosis} from '../../scripts/lib/diagnose/index.mjs';
+import {collectAppInputFromProject, runDiagnosis} from '../../scripts/lib/diagnose/index.mjs';
 
 describe('diagnose-app', function () {
   it('parseVersionsToml', function () {
@@ -83,43 +83,11 @@ espresso = "3.7.0"
     assert.strictEqual(report.ready, true);
   });
 
-  it('runDiagnosis passes aligned kotlin versions without test libraries', async function () {
-    const report = await runDiagnosis(
-      {
-        kind: 'project',
-        path: '/fake',
-        versions: {kotlin: ['2.0.0']},
-        proguardLikely: false,
-        minifyEnabled: false,
-        sources: [],
-        gradleCorpus: 'android.permission.INTERNET\ncompileSdk = 35\nkotlin = "2.0.0"',
-        manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
-        apkHasInternetPermission: null,
-      },
-      {
-        driverVersion: '8.5.6',
-        compileSdk: '35',
-        minSdk: '26',
-        versions: {kotlin: '2.0.0', espresso: '3.7.0'},
-      },
-    );
-    const kotlinDep = report.checks.find((c) => c.id === 'dependency-kotlin');
-    assert.strictEqual(kotlinDep?.status, 'pass');
-    assert.strictEqual(report.ready, true);
-  });
-
   it('mapMetaInfVersionBaseToModule maps Compose artifacts', function () {
     assert.strictEqual(mapMetaInfVersionBaseToModule('androidx.compose.ui_ui'), 'compose');
     assert.strictEqual(mapMetaInfVersionBaseToModule('androidx.compose.ui_ui-test'), 'compose');
     assert.strictEqual(mapMetaInfVersionBaseToModule('androidx.annotation_annotation-experimental'), null);
-    assert.strictEqual(mapMetaInfVersionBaseToModule('androidx.test.espresso.espresso-core'), 'espresso');
-  });
-
-  it('parseKotlinMetadataVersionsFromDexdump reads @Metadata mv', function () {
-    const versions = parseKotlinMetadataVersionsFromDexdump(
-      'VISIBILITY_RUNTIME Lkotlin/Metadata; k=3 mv={ 2 3 0 } xi=48',
-    );
-    assert.deepStrictEqual(versions, ['2.3.0']);
+    assert.strictEqual(mapMetaInfVersionBaseToModule('androidx.test.espresso.espresso-core'), null);
   });
 
   it('mergeMetaInfEmbeddedVersions reads AGP META-INF version files', async function () {
@@ -147,35 +115,7 @@ espresso = "3.7.0"
     });
   });
 
-  it('buildComparisonReport suggests toolsVersions on minor kotlin drift', function () {
-    const depReport = buildComparisonReport(
-      {kotlin: '2.1.0'},
-      {kotlin: ['2.0.0']},
-      {proguardLikely: false, minifyEnabled: false},
-    );
-    const kotlin = depReport.modules.find((m) => m.id === 'kotlin');
-    assert.strictEqual(kotlin?.diff, 'minor');
-    assert.deepStrictEqual(kotlin?.recommendation.espressoBuildConfig, {
-      toolsVersions: {kotlin: '2.0.0'},
-    });
-  });
-
-  it('extractMainAppDependencyScopes drops androidTest configuration lines', function () {
-    const mainOnly = extractMainAppDependencyScopes(`
-dependencies {
-    implementation("androidx.core:core:1.15.0")
-    androidTestImplementation("androidx.compose.ui:ui-test:1.11.2")
-    androidTestImplementation(
-        "androidx.test.espresso:espresso-core:3.7.0",
-    )
-}
-`);
-    assert.ok(mainOnly.includes('androidx.core:core:1.15.0'));
-    assert.ok(!mainOnly.includes('ui-test'));
-    assert.ok(!mainOnly.includes('espresso-core'));
-  });
-
-  it('collectAppVersionsFromProject ignores test-only modules in androidTest configurations', async function () {
+  it('collectAppVersionsFromProject ignores libraries that are not shared with the app', async function () {
     const root = await tempDir.openDir();
     const appDir = path.join(root, 'app');
     await fs.mkdir(path.join(appDir, 'src', 'main'), {recursive: true});
@@ -190,44 +130,436 @@ dependencies {
 `,
       'utf8',
     );
-    await fs.mkdir(path.join(root, 'gradle'), {recursive: true});
-    await fs.writeFile(
-      path.join(root, 'gradle', 'libs.versions.toml'),
-      `
-[versions]
-composeUiTest = "1.11.2"
-espresso = "3.7.0"
-`,
-      'utf8',
-    );
     const {versions} = await collectAppVersionsFromProject(root);
     assert.deepStrictEqual(versions.compose, ['1.11.2']);
-    assert.deepStrictEqual(versions.espresso ?? [], []);
+    assert.deepStrictEqual(Object.keys(versions).sort(), ['compose', 'kotlin']);
     await fs.rimraf(root);
   });
 
-  it('collectAppVersionsFromProject detects test deps in implementation', async function () {
+  it('runDiagnosis does not check the libraries that the shaded server no longer shares', async function () {
+    const report = await runDiagnosis(
+      {
+        kind: 'project',
+        path: '/fake',
+        versions: {},
+        proguardLikely: false,
+        minifyEnabled: false,
+        sources: [],
+        gradleCorpus:
+          'android.permission.INTERNET\ncompileSdk = 35\nimplementation("androidx.test.espresso:espresso-core:3.6.1")\n' +
+          'implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")\nimplementation("com.android.support:appcompat-v7:28.0.0")',
+        manifestPaths: [
+          '<uses-permission android:name="android.permission.INTERNET" /><provider android:name="androidx.startup.InitializationProvider" />',
+        ],
+        apkHasInternetPermission: null,
+      },
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.11.2'}},
+    );
+    const ids = report.checks.map((c) => c.id);
+    for (const id of [
+      'dependency-espresso',
+      'dependency-kotlin',
+      'lifecycle-extensions',
+      'androidx-migration',
+      'startup-provider',
+    ]) {
+      assert.ok(!ids.includes(id), `${id} should not be reported`);
+    }
+    assert.strictEqual(report.ready, true);
+  });
+
+  it('usesCompose recognizes the ways Compose is declared in Gradle files', function () {
+    assert.ok(usesCompose('buildFeatures {\n    compose = true\n}'));
+    assert.ok(usesCompose('alias(libs.plugins.kotlin.compose)'));
+    assert.ok(!usesCompose('plugins {\n  alias(libs.plugins.kotlin.compose) apply false\n}'));
+    assert.ok(usesCompose('implementation(libs.androidx.compose.ui)'));
+    assert.ok(!usesCompose('implementation("androidx.core:core-ktx:1.15.0")\ncompileSdk = 35'));
+  });
+
+  it('runDiagnosis does not suggest turning Compose off for a BOM based Compose app', async function () {
+    const report = await runDiagnosis(
+      {
+        kind: 'project',
+        path: '/fake',
+        versions: {compose: []},
+        proguardLikely: false,
+        minifyEnabled: false,
+        sources: [],
+        gradleCorpus:
+          'android.permission.INTERNET\ncompileSdk = 35\nbuildFeatures { compose = true }\n' +
+          'implementation(platform(libs.androidx.compose.bom))\nimplementation(libs.androidx.compose.ui)',
+        manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
+        apkHasInternetPermission: null,
+      },
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    const compose = report.checks.find((c) => c.id === 'dependency-compose');
+    assert.strictEqual(compose?.status, 'pass');
+    assert.ok(compose?.message.includes('could not be read'));
+    assert.deepStrictEqual(report.mergedEspressoBuildConfig, {});
+  });
+
+  it('runDiagnosis checks the server compileSdk for a BOM based Compose app', async function () {
+    const report = await runDiagnosis(
+      {
+        kind: 'project',
+        path: '/fake',
+        versions: {compose: []},
+        proguardLikely: false,
+        minifyEnabled: false,
+        sources: [],
+        gradleCorpus:
+          'android.permission.INTERNET\ncompileSdk = 34\nimplementation(platform(libs.androidx.compose.bom))',
+        manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
+        apkHasInternetPermission: null,
+      },
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.strictEqual(
+      report.checks.find((c) => c.id === 'compose-compile-sdk'),
+      undefined,
+    );
+    assert.strictEqual(report.ready, true);
+  });
+
+  it('runDiagnosis fails a BOM based Compose app when the server compileSdk is too low', async function () {
+    const report = await runDiagnosis(
+      {
+        kind: 'project',
+        path: '/fake',
+        versions: {compose: []},
+        proguardLikely: false,
+        minifyEnabled: false,
+        sources: [],
+        gradleCorpus:
+          'android.permission.INTERNET\ncompileSdk = 34\nimplementation(platform(libs.androidx.compose.bom))',
+        manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
+        apkHasInternetPermission: null,
+      },
+      {driverVersion: '10.3.0', compileSdk: '34', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.strictEqual(report.checks.find((c) => c.id === 'compose-compile-sdk')?.status, 'fail');
+  });
+
+  it('runDiagnosis still suggests turning Compose off when the project has none', async function () {
+    const report = await runDiagnosis(
+      {
+        kind: 'project',
+        path: '/fake',
+        versions: {compose: []},
+        proguardLikely: false,
+        minifyEnabled: false,
+        sources: [],
+        gradleCorpus: 'android.permission.INTERNET\ncompileSdk = 35\nimplementation("androidx.core:core-ktx:1.15.0")',
+        manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
+        apkHasInternetPermission: null,
+      },
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.deepStrictEqual(report.mergedEspressoBuildConfig, {composeSupport: false});
+  });
+
+  it('parseKotlinMetadataVersionsFromDexdump reads @Metadata mv', function () {
+    const versions = parseKotlinMetadataVersionsFromDexdump(
+      'VISIBILITY_RUNTIME Lkotlin/Metadata; k=3 mv={ 2 3 0 } xi=48',
+    );
+    assert.deepStrictEqual(versions, ['2.3.0']);
+  });
+
+  it('buildComparisonReport compares Kotlin only for Compose apps', function () {
+    const kotlinDrift = (composeDetected: boolean) =>
+      buildComparisonReport(
+        {kotlin: '2.1.0'},
+        {kotlin: ['2.0.0']},
+        {proguardLikely: false, minifyEnabled: false, composeDetected},
+      ).modules.find((m) => m.id === 'kotlin');
+    assert.deepStrictEqual(kotlinDrift(true)?.recommendation.espressoBuildConfig, {toolsVersions: {kotlin: '2.0.0'}});
+    assert.strictEqual(kotlinDrift(false), undefined);
+  });
+
+  it('runDiagnosis reports Kotlin drift of a Compose app', async function () {
+    const report = await runDiagnosis(
+      {
+        kind: 'project',
+        path: '/fake',
+        versions: {compose: ['1.12.1'], kotlin: ['2.0.0']},
+        proguardLikely: false,
+        minifyEnabled: false,
+        sources: [],
+        gradleCorpus: 'android.permission.INTERNET\ncompileSdk = 35\nandroidx.compose.ui:ui-test:1.12.1',
+        manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />'],
+        apkHasInternetPermission: null,
+      },
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1', kotlin: '2.4.20'}},
+    );
+    assert.strictEqual(report.checks.find((c) => c.id === 'dependency-kotlin')?.status, 'warn');
+  });
+
+  it('does not take a literal Compose BOM version for the Compose version', async function () {
     const root = await tempDir.openDir();
     await fs.writeFile(
       path.join(root, 'build.gradle.kts'),
-      `dependencies { implementation("androidx.test.espresso:espresso-core:3.6.1") }`,
+      'dependencies { implementation(platform("androidx.compose:compose-bom:2024.09.00")) }',
       'utf8',
     );
     const {versions} = await collectAppVersionsFromProject(root);
-    assert.deepStrictEqual(versions.espresso, ['3.6.1']);
+    assert.deepStrictEqual(versions.compose, []);
+    assert.ok(usesCompose('implementation(platform("androidx.compose:compose-bom:2024.09.00"))'));
     await fs.rimraf(root);
   });
 
-  it('buildComparisonReport warns when test libraries are detected', function () {
-    const depReport = buildComparisonReport(
-      {espresso: '3.7.0'},
-      {espresso: ['3.6.1']},
-      {proguardLikely: false, minifyEnabled: false, detectionSource: 'project'},
+  it('does not take an unused catalog entry or a root-only plugin for Compose usage', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      '[libraries]\nandroidx-compose-bom = { group = "androidx.compose", name = "compose-bom" }\n',
+      'utf8',
     );
-    const espresso = depReport.modules.find((m) => m.id === 'espresso');
-    assert.strictEqual(espresso?.diff, 'present');
-    assert.strictEqual(espresso?.recommendation.level, 'warning');
-    assert.ok(espresso?.recommendation.message.includes('instrumented-test'));
-    assert.strictEqual(espresso?.recommendation.espressoBuildConfig, undefined);
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      'plugins { alias(libs.plugins.kotlin.compose) apply false }\ncompileSdk = 34',
+      'utf8',
+    );
+    const input = await collectAppInputFromProject(root);
+    assert.ok(!usesCompose(input.gradleCorpus ?? ''));
+    await fs.rimraf(root);
+  });
+
+  it('ignores an unused Compose catalog version for a Views-only app', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(path.join(root, 'libs.versions.toml'), '[versions]\ncomposeUiTest = "1.12.1"\n', 'utf8');
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      'compileSdk = 34\nimplementation("androidx.core:core-ktx:1.15.0")',
+      'utf8',
+    );
+    const input = await collectAppInputFromProject(root);
+    assert.deepStrictEqual(input.versions.compose, []);
+    const report = await runDiagnosis(
+      {...input, manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />']},
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.strictEqual(report.dependencyReport.composeDetected, false);
+    assert.strictEqual(report.ready, true);
+    await fs.rimraf(root);
+  });
+
+  it('uses a Compose catalog version when a consumed library references it', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      '[versions]\ncomposeUiTest = "1.12.1"\n[libraries]\nandroidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" }\n',
+      'utf8',
+    );
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.androidx.compose.ui.test)', 'utf8');
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, ['1.12.1']);
+    await fs.rimraf(root);
+  });
+
+  it('reads multiline and table style catalog entries', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      [
+        '[versions]',
+        'composeUiTest = "1.12.1"',
+        'kotlin = "2.4.20"',
+        '[libraries]',
+        'androidx-compose-ui-test = {',
+        '  group = "androidx.compose.ui",',
+        '  name = "ui-test",',
+        '  version.ref = "composeUiTest",',
+        '}',
+        '[plugins.kotlin-android]',
+        'id = "org.jetbrains.kotlin.android"',
+        'version.ref = "kotlin"',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      'plugins { alias(libs.plugins.kotlin.android) }\nimplementation(libs.androidx.compose.ui.test)',
+      'utf8',
+    );
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, ['1.12.1']);
+    assert.deepStrictEqual(versions.kotlin, ['2.4.20']);
+    await fs.rimraf(root);
+  });
+
+  it('leaves the Compose version unresolved for a BOM app with an unused catalog version', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      '[versions]\ncomposeUiTest = "1.12.1"\n[libraries]\nandroidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version = "2024.09.00" }\n',
+      'utf8',
+    );
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      'compileSdk = 34\nimplementation(platform(libs.androidx.compose.bom))',
+      'utf8',
+    );
+    const input = await collectAppInputFromProject(root);
+    assert.deepStrictEqual(input.versions.compose, []);
+    const report = await runDiagnosis(
+      {...input, manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />']},
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.strictEqual(report.dependencyReport.composeDetected, true);
+    assert.strictEqual(report.ready, true);
+    await fs.rimraf(root);
+  });
+
+  describe('catalogs of nested builds', function () {
+    const catalog = (version: string) =>
+      `[versions]\nkotlin = "${version}"\n[plugins]\nkotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }\n`;
+    const script = 'plugins { alias(libs.plugins.kotlin.android) }';
+
+    async function setup(buildLogicScript: boolean) {
+      const root = await tempDir.openDir();
+      await fs.mkdir(path.join(root, 'gradle'), {recursive: true});
+      await fs.mkdir(path.join(root, 'build-logic', 'gradle'), {recursive: true});
+      await fs.writeFile(path.join(root, 'gradle', 'libs.versions.toml'), catalog('1.9.0'), 'utf8');
+      await fs.writeFile(path.join(root, 'build-logic', 'gradle', 'libs.versions.toml'), catalog('2.4.20'), 'utf8');
+      await fs.writeFile(path.join(root, 'build.gradle.kts'), script, 'utf8');
+      if (buildLogicScript) {
+        await fs.writeFile(path.join(root, 'build-logic', 'build.gradle.kts'), script, 'utf8');
+      }
+      return root;
+    }
+
+    it('matches a script reference only to the catalog of its own build', async function () {
+      const root = await setup(false);
+      const {versions} = await collectAppVersionsFromProject(root);
+      assert.deepStrictEqual(versions.kotlin, ['1.9.0']);
+      await fs.rimraf(root);
+    });
+
+    it('keeps the versions of every catalog consumed by its own build', async function () {
+      const root = await setup(true);
+      const {versions} = await collectAppVersionsFromProject(root);
+      assert.deepStrictEqual([...versions.kotlin].sort(), ['1.9.0', '2.4.20']);
+      await fs.rimraf(root);
+    });
+  });
+
+  it('does not take libs.ui for libs.ui.core when resolving catalog versions', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      [
+        '[versions]',
+        'composeUiTest = "1.12.1"',
+        'core = "1.15.0"',
+        '[libraries]',
+        'ui = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" }',
+        'ui-core = { group = "androidx.core", name = "core", version.ref = "core" }',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'compileSdk = 34\nimplementation(libs.ui.core)', 'utf8');
+    const input = await collectAppInputFromProject(root);
+    assert.deepStrictEqual(input.versions.compose, []);
+    const report = await runDiagnosis(
+      {...input, manifestPaths: ['<uses-permission android:name="android.permission.INTERNET" />']},
+      {driverVersion: '10.3.0', compileSdk: '35', minSdk: '26', versions: {compose: '1.12.1'}},
+    );
+    assert.strictEqual(report.dependencyReport.composeDetected, false);
+    assert.strictEqual(report.ready, true);
+    await fs.rimraf(root);
+  });
+
+  it('accepts trailing comments on catalog section headers', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      '[versions] # versions\ncomposeUiTest = "1.12.1"\n[libraries] # dependencies\nui = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" }\n',
+      'utf8',
+    );
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.ui)', 'utf8');
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, ['1.12.1']);
+    await fs.rimraf(root);
+  });
+
+  it('ignores brackets and quotes inside TOML strings and comments', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      [
+        '[versions]',
+        'other = "[1.0,2.0)"',
+        'composeUiTest = "1.12.1" # it\'s [pinned',
+        "[libraries] # app's libraries",
+        'ui = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" } # {',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.ui)', 'utf8');
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, ['1.12.1']);
+    await fs.rimraf(root);
+  });
+
+  it('recognizes provider calls on a catalog accessor but not longer accessors', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      '[versions]\ncomposeUiTest = "1.12.1"\n[libraries]\nui = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" }\n',
+      'utf8',
+    );
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.ui.getOrNull()!!)', 'utf8');
+    assert.deepStrictEqual((await collectAppVersionsFromProject(root)).versions.compose, ['1.12.1']);
+    await fs.writeFile(path.join(root, 'build.gradle.kts'), 'implementation(libs.ui.core)', 'utf8');
+    assert.deepStrictEqual((await collectAppVersionsFromProject(root)).versions.compose, []);
+    await fs.rimraf(root);
+  });
+
+  it('follows catalog bundles to the versions of their libraries', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'libs.versions.toml'),
+      [
+        '[versions]',
+        'composeUiTest = "1.12.1"',
+        '[libraries]',
+        'ui = { group = "androidx.compose.ui", name = "ui-test", version.ref = "composeUiTest" }',
+        '[bundles]',
+        'components = [',
+        '  "ui",',
+        ']',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      'buildFeatures { compose = true }\nimplementation(libs.bundles.components)',
+      'utf8',
+    );
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, ['1.12.1']);
+    await fs.rimraf(root);
+  });
+
+  it('usesCompose ignores commented-out declarations', function () {
+    assert.ok(!usesCompose('// implementation(libs.androidx.compose.ui)\n/* compose = true */\nandroid {}'));
+    assert.ok(!usesCompose('[libraries]\n# androidx-compose-bom = { group = "androidx.compose" }'));
+  });
+
+  it('collectAppVersionsFromProject ignores commented-out Compose versions', async function () {
+    const root = await tempDir.openDir();
+    await fs.writeFile(
+      path.join(root, 'build.gradle.kts'),
+      '// implementation("androidx.compose.ui:ui-test:1.12.1")\ndependencies {}',
+      'utf8',
+    );
+    const {versions} = await collectAppVersionsFromProject(root);
+    assert.deepStrictEqual(versions.compose, []);
+    await fs.rimraf(root);
   });
 });

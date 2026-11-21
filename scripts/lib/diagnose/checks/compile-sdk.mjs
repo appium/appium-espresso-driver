@@ -14,7 +14,11 @@ export function checkCompileSdk(appInput, serverDefaults, dependencyReport) {
   }
   const appCompileSdk = parseCompileSdkFromCorpus(appInput.gradleCorpus ?? '');
   const serverCompileSdk = serverDefaults.compileSdk ? parseInt(serverDefaults.compileSdk, 10) : null;
-  const composeVersion = dependencyReport.modules.find((m) => m.id === 'compose')?.appVersion;
+  const compose = dependencyReport.modules.find((m) => m.id === 'compose');
+  // An unresolved version (e.g. from a BOM) means the server's Compose, built with the server's compileSdk
+  const resolved = Boolean(compose?.appVersion);
+  const composeVersion = compose?.appVersion ?? (dependencyReport.composeDetected ? compose?.serverVersion : null);
+  const checkedCompileSdk = resolved ? appCompileSdk : serverCompileSdk;
   const composeMinor = composeVersion ? semver.coerce(composeVersion)?.minor : null;
   const minComposeCompileSdk = composeMinor != null && composeMinor >= 11 ? 35 : null;
 
@@ -38,7 +42,7 @@ export function checkCompileSdk(appInput, serverDefaults, dependencyReport) {
     });
   }
 
-  if (minComposeCompileSdk && appCompileSdk && appCompileSdk < minComposeCompileSdk) {
+  if (minComposeCompileSdk && checkedCompileSdk && checkedCompileSdk < minComposeCompileSdk) {
     checks.push({
       id: 'compose-compile-sdk',
       title: 'Compose compileSdk requirement',

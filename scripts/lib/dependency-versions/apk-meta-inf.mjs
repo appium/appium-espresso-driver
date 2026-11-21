@@ -8,19 +8,6 @@ import {normalizeVersion} from './version-utils.mjs';
 const META_INF_VERSION_MODULE_RULES = [
   {moduleId: 'compose', matches: (base) => base.startsWith('androidx.compose.')},
   {moduleId: 'kotlin', matches: (base) => base.startsWith('org.jetbrains.kotlin_')},
-  {moduleId: 'espresso', matches: (base) => base.startsWith('androidx.test.espresso')},
-  {
-    moduleId: 'annotation',
-    matches: (base) => base.startsWith('androidx.annotation_annotation') && !base.includes('experimental'),
-  },
-  {moduleId: 'uiautomator', matches: (base) => base.startsWith('androidx.test.uiautomator')},
-  {
-    moduleId: 'androidxTest',
-    matches: (base) =>
-      base.startsWith('androidx.test.') &&
-      !base.startsWith('androidx.test.espresso') &&
-      !base.startsWith('androidx.test.uiautomator'),
-  },
 ];
 
 /**

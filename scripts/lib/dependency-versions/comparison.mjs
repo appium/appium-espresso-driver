@@ -31,32 +31,24 @@ export function compareModuleVersions(serverVersion, appVersion) {
 /**
  * @param {Record<string, string>} serverVersions
  * @param {Record<string, string[]>} appVersions
- * @param {{proguardLikely?: boolean, minifyEnabled?: boolean | null, detectionSource?: 'apk' | 'project'}} context
+ * @param {{proguardLikely?: boolean, minifyEnabled?: boolean | null, detectionSource?: 'apk' | 'project', composeDetected?: boolean}} context
  * @returns {import('./types.mjs').ComparisonReport}
  */
 export function buildComparisonReport(serverVersions, appVersions, context = {}) {
   const proguardLikely = Boolean(context.proguardLikely);
   const minifyEnabled = context.minifyEnabled ?? null;
   const detectionSource = context.detectionSource ?? 'project';
+  const composeDetected = Boolean(context.composeDetected);
   /** @type {import('./types.mjs').ModuleComparison[]} */
   const modules = [];
 
   for (const mod of TRACKED_MODULES) {
+    if (mod.onlyWithCompose && !composeDetected) {
+      continue;
+    }
     const serverVersion = serverVersions[mod.id];
     const appCandidates = appVersions[mod.id] ?? [];
     const appVersion = appCandidates[0] ?? null;
-
-    if (mod.testOnly) {
-      modules.push({
-        ...mod,
-        serverVersion: serverVersion ?? null,
-        appVersions: appCandidates,
-        appVersion,
-        diff: appVersion ? 'present' : 'absent',
-        recommendation: buildTestOnlyRecommendation(mod, appCandidates),
-      });
-      continue;
-    }
 
     const diff = compareModuleVersions(serverVersion, appVersion);
     modules.push({
@@ -68,6 +60,7 @@ export function buildComparisonReport(serverVersions, appVersions, context = {})
       recommendation: buildVersionRecommendation(mod, diff, appVersion, serverVersion, {
         proguardLikely,
         detectionSource,
+        composeDetected,
       }),
     });
   }
@@ -75,37 +68,10 @@ export function buildComparisonReport(serverVersions, appVersions, context = {})
   return {
     proguardLikely,
     minifyEnabled,
+    composeDetected,
     modules,
     summary: summarizeReport(modules, {proguardLikely, minifyEnabled}),
   };
-}
-
-/**
- * @param {string[]} appVersions
- * @returns {string}
- */
-function formatDetectedVersions(appVersions) {
-  return appVersions.length ? appVersions.join(', ') : 'detected';
-}
-
-/**
- * @param {import('./types.mjs').TrackedModule} mod
- * @param {string[]} appVersions
- * @returns {import('./types.mjs').Recommendation}
- */
-function buildTestOnlyRecommendation(mod, appVersions) {
-  if (appVersions.length) {
-    const versions = formatDetectedVersions(appVersions);
-    return {
-      level: 'warning',
-      message:
-        `Detected ${mod.label} (${versions}) in the application under test. ` +
-        'The main app should not be built as an instrumented-test artifact and is not expected to ' +
-        'bundle Espresso, AndroidX Test, or UiAutomator dependencies; doing so ' +
-        'can cause classpath conflicts with the Espresso server.',
-    };
-  }
-  return {level: 'ok', message: 'Not detected in the app; no action needed.'};
 }
 
 /**
@@ -125,7 +91,7 @@ function toolsVersionsOverride(mod, appVersion) {
  * @param {import('./types.mjs').VersionDiffKind} diff
  * @param {string | null} appVersion
  * @param {string | undefined} serverVersion
- * @param {{proguardLikely: boolean, detectionSource: 'apk' | 'project'}} ctx
+ * @param {{proguardLikely: boolean, detectionSource: 'apk' | 'project', composeDetected: boolean}} ctx
  * @returns {import('./types.mjs').Recommendation}
  */
 function buildVersionRecommendation(mod, diff, appVersion, serverVersion, ctx) {
@@ -140,6 +106,14 @@ function buildVersionRecommendation(mod, diff, appVersion, serverVersion, ctx) {
     };
   }
   if (!appVersion) {
+    if (mod.id === 'compose' && ctx.detectionSource === 'project' && ctx.composeDetected) {
+      return {
+        level: 'info',
+        message:
+          'The app uses Jetpack Compose, but its version could not be read from the Gradle files (e.g. it comes from a BOM). ' +
+          `Set toolsVersions.${mod.toolsVersionKey} in espressoBuildConfig to the version the app resolves to if it differs from the server's.`,
+      };
+    }
     if (mod.id === 'compose' && ctx.detectionSource === 'project') {
       return {
         level: 'suggestion',
@@ -194,14 +168,10 @@ function buildVersionRecommendation(mod, diff, appVersion, serverVersion, ctx) {
  * @param {{proguardLikely: boolean, minifyEnabled: boolean | null}} ctx
  */
 function summarizeReport(modules, ctx) {
-  const testPresence = modules.filter((m) => m.testOnly && m.recommendation.level === 'warning');
-  const warnings = modules.filter((m) => !m.testOnly && m.recommendation.level === 'warning');
+  const warnings = modules.filter((m) => m.recommendation.level === 'warning');
   const suggestions = modules.filter((m) => m.recommendation.level === 'suggestion');
   if (ctx.proguardLikely) {
     return 'APK appears minified/obfuscated; dependency versions from the APK may be incomplete. Espresso server defaults are listed below.';
-  }
-  if (testPresence.length) {
-    return `${testPresence.length} test/instrumentation librar${testPresence.length === 1 ? 'y' : 'ies'} detected in the application under test — review warnings below.`;
   }
   if (warnings.length) {
     return `${warnings.length} module(s) have a large version mismatch — review warnings below.`;

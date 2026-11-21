@@ -1,10 +1,7 @@
-import {buildComparisonReport} from '../dependency-versions/index.mjs';
+import {buildComparisonReport, usesCompose} from '../dependency-versions/index.mjs';
 import {
-  checkAndroidX,
   checkCompileSdk,
-  checkInitializationProvider,
   checkInternetPermission,
-  checkLifecycleExtensionsPin,
   checkObfuscation,
   checkPrecompileInputKind,
   mapDependencyChecks,
@@ -22,6 +19,7 @@ export async function runDiagnosis(appInput, serverDefaults) {
     proguardLikely: appInput.proguardLikely,
     minifyEnabled: appInput.minifyEnabled,
     detectionSource: appInput.kind === 'apk' ? 'apk' : 'project',
+    composeDetected: usesCompose(appInput.gradleCorpus ?? '') || (appInput.versions.compose ?? []).length > 0,
   });
 
   /** @type {import('./types.mjs').DiagnosticCheck[]} */
@@ -30,10 +28,7 @@ export async function runDiagnosis(appInput, serverDefaults) {
   checks.push(checkPrecompileInputKind(appInput));
   checks.push(...(await checkInternetPermission(appInput)));
   checks.push(...checkObfuscation(appInput, serverDefaults));
-  checks.push(...checkAndroidX(appInput));
-  checks.push(...checkInitializationProvider(appInput));
   checks.push(...checkCompileSdk(appInput, serverDefaults, dependencyReport));
-  checks.push(...checkLifecycleExtensionsPin(appInput));
   checks.push(...mapDependencyChecks(dependencyReport, appInput));
 
   const failCount = checks.filter((c) => c.status === 'fail').length;

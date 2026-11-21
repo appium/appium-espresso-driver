@@ -38,7 +38,10 @@ export async function loadEspressoServerDefaults(espressoServerRoot, driverRoot)
  */
 export async function collectAppInputFromProject(projectRoot) {
   const {versions, minifyEnabled, sources} = await collectAppVersionsFromProject(projectRoot);
-  const gradleFiles = sources.map((rel) => path.join(projectRoot, rel));
+  // Version catalogs only declare libraries; usage is judged from the build scripts
+  const gradleFiles = sources
+    .filter((rel) => !rel.endsWith('libs.versions.toml'))
+    .map((rel) => path.join(projectRoot, rel));
   const gradleCorpus = (await Promise.all(gradleFiles.map((f) => fs.readFile(f, 'utf8').catch(() => '')))).join('\n');
   const manifestTexts = await findManifestTexts(projectRoot);
 

@@ -15,7 +15,7 @@
  * @property {string | null} toolsVersionKey
  * @property {string} catalogKey
  * @property {string} gradleProperty
- * @property {boolean} [testOnly] When true, only warn if detected in the AUT (no version comparison).
+ * @property {boolean} [onlyWithCompose] When true, the module is compared only if the app uses Compose.
  * @property {RegExp[]} patterns
  */
 
@@ -33,6 +33,7 @@
  * @typedef {Object} ComparisonReport
  * @property {boolean} proguardLikely
  * @property {boolean | null} minifyEnabled
+ * @property {boolean} composeDetected
  * @property {ModuleComparison[]} modules
  * @property {string} summary
  */
