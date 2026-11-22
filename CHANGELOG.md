@@ -1,3 +1,15 @@
+## [11.0.0](https://github.com/appium/appium-espresso-driver/compare/v10.4.0...v11.0.0) (2026-11-22)
+
+### ⚠ BREAKING CHANGES
+
+* ChromeDriver and Microsoft Edge WebDriver executables are verified against a
+SHA-256 allowlist before they are run. Custom or unlisted executables are rejected unless the
+chromedriver_allow_any_executable server feature is enabled.
+
+### Features
+
+* bump appium-android-driver and appium-chromedriver with ChromeDriver executable verification ([#1264](https://github.com/appium/appium-espresso-driver/issues/1264)) ([8a76690](https://github.com/appium/appium-espresso-driver/commit/8a76690a0c0a62879de5d74696f440727497b3e9))
+
 ## [10.4.0](https://github.com/appium/appium-espresso-driver/compare/v10.3.0...v10.4.0) (2026-11-21)
 
 ### Features
