@@ -65,7 +65,7 @@ is considered an insecure feature, and requires explicit enablement on the serve
 name:
 
 ```sh
-appium server --allow-insecure chromedriver_autodownload
+appium server --allow-insecure espresso:chromedriver_autodownload
 ```
 
 Once this feature is enabled, no additional configuration is required on the client side.
@@ -133,7 +133,7 @@ checksums, can only be used if the server explicitly allows it using the
 feature:
 
 ```sh
-appium server --allow-insecure chromedriver_allow_any_executable
+appium server --allow-insecure espresso:chromedriver_allow_any_executable
 ```
 
 !!! warning
