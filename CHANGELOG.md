@@ -1,3 +1,9 @@
+## [11.0.1](https://github.com/appium/appium-espresso-driver/compare/v11.0.0...v11.0.1) (2026-11-25)
+
+### Miscellaneous Chores
+
+* replace commander with util.parseArgs ([#1265](https://github.com/appium/appium-espresso-driver/issues/1265)) ([0f64a6d](https://github.com/appium/appium-espresso-driver/commit/0f64a6d74ee828a87b916ef4b14a9f45ab260410))
+
 ## [11.0.0](https://github.com/appium/appium-espresso-driver/compare/v10.4.0...v11.0.0) (2026-11-22)
 
 ### ⚠ BREAKING CHANGES
