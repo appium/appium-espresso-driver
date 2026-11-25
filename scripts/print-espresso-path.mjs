@@ -1,7 +1,14 @@
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-import {Command} from 'commander';
+import {parseCliArgs} from './lib/cli.mjs';
+
+const USAGE = `Usage: appium driver run espresso print-espresso-path
+
+Print the Espresso server path
+
+Options:
+  -h, --help  Show this help`;
 
 /**
  * @returns {void}
@@ -11,16 +18,5 @@ function printEspressoServerPath() {
   console.log(dstPath); // eslint-disable-line no-console
 }
 
-async function main() {
-  const program = new Command();
-  program
-    .name('appium driver run espresso print-espresso-path')
-    .description('Print the Espresso server path')
-    .action(() => {
-      printEspressoServerPath();
-    });
-
-  await program.parseAsync(process.argv);
-}
-
-await main();
+parseCliArgs(USAGE);
+printEspressoServerPath();

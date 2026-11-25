@@ -4,8 +4,8 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 import {logger} from 'appium/support.js';
-import {Command} from 'commander';
 
+import {failWithUsage, parseCliArgs} from './lib/cli.mjs';
 import {
   collectAppInputFromApk,
   collectAppInputFromProject,
@@ -13,6 +13,14 @@ import {
   loadEspressoServerDefaults,
   runDiagnosis,
 } from './lib/diagnose/index.mjs';
+
+const USAGE = `Usage: appium driver run espresso diagnose-app --app <path>
+
+Diagnose whether an Android app is ready to embed a precompiled Espresso server
+
+Options:
+  --app <path>  Gradle project root of the AUT, or path to a built .apk (debug APK recommended) (required)
+  -h, --help    Show this help`;
 
 const LOG = logger.getLogger('EspressoDiagnose');
 
@@ -49,31 +57,26 @@ async function resolveAppInput(inputPath) {
 }
 
 async function main() {
-  const program = new Command();
-  program
-    .name('appium driver run espresso diagnose-app')
-    .description('Diagnose whether an Android app is ready to embed a precompiled Espresso server')
-    .requiredOption('--app <path>', 'Gradle project root of the AUT, or path to a built .apk (debug APK recommended)')
-    .action(async (options) => {
-      const [appInput, serverDefaults] = await Promise.all([
-        resolveAppInput(options.app),
-        loadEspressoServerDefaults(ESPRESSO_SERVER_ROOT, ROOT_DIR),
-      ]);
-      const report = await runDiagnosis(appInput, serverDefaults);
+  const {values} = parseCliArgs(USAGE, {app: {type: 'string'}});
+  if (values.app === undefined) {
+    failWithUsage(USAGE, `required option '--app <path>' not specified`);
+  }
+  const [appInput, serverDefaults] = await Promise.all([
+    resolveAppInput(values.app),
+    loadEspressoServerDefaults(ESPRESSO_SERVER_ROOT, ROOT_DIR),
+  ]);
+  const report = await runDiagnosis(appInput, serverDefaults);
 
-      LOG.info(`App: ${appInput.kind} at ${appInput.path}`);
-      LOG.info(`Driver: appium-espresso-driver@${serverDefaults.driverVersion}`);
-      if (appInput.sources?.length) {
-        LOG.info(`Scanned: ${appInput.sources.slice(0, 8).join(', ')}${appInput.sources.length > 8 ? '…' : ''}`);
-      }
-      LOG.info('');
-      LOG.info(formatDiagnosisReport(report));
-      if (!report.ready) {
-        process.exitCode = 1;
-      }
-    });
-
-  await program.parseAsync(process.argv);
+  LOG.info(`App: ${appInput.kind} at ${appInput.path}`);
+  LOG.info(`Driver: appium-espresso-driver@${serverDefaults.driverVersion}`);
+  if (appInput.sources?.length) {
+    LOG.info(`Scanned: ${appInput.sources.slice(0, 8).join(', ')}${appInput.sources.length > 8 ? '…' : ''}`);
+  }
+  LOG.info('');
+  LOG.info(formatDiagnosisReport(report));
+  if (!report.ready) {
+    process.exitCode = 1;
+  }
 }
 
 await main();

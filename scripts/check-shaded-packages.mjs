@@ -6,8 +6,20 @@
 import path from 'node:path';
 
 import {logger} from 'appium/support.js';
-import {Command} from 'commander';
 import {exec} from 'teen_process';
+
+import {failWithUsage, parseCliArgs} from './lib/cli.mjs';
+
+const USAGE = `Usage: check-shaded-packages [options] <apk>
+
+Check that the Espresso server APK defines only the packages that are allowed to keep their names
+
+Arguments:
+  apk         Path to the Espresso server test APK
+
+Options:
+  --compose   The APK is built with Compose support, so Compose and its dependencies are shared
+  -h, --help  Show this help`;
 
 const LOG = logger.getLogger('CheckShadedPackages');
 
@@ -92,15 +104,11 @@ async function checkShadedPackages(apk, options) {
 }
 
 async function main() {
-  const program = new Command();
-  program
-    .name('check-shaded-packages')
-    .description('Check that the Espresso server APK defines only the packages that are allowed to keep their names')
-    .argument('<apk>', 'Path to the Espresso server test APK')
-    .option('--compose', 'The APK is built with Compose support, so Compose and its dependencies are shared')
-    .action(checkShadedPackages);
-
-  await program.parseAsync(process.argv);
+  const {values, positionals} = parseCliArgs(USAGE, {compose: {type: 'boolean'}}, true);
+  if (positionals.length !== 1) {
+    failWithUsage(USAGE, positionals.length ? 'too many arguments' : `missing required argument 'apk'`);
+  }
+  await checkShadedPackages(positionals[0], {compose: values.compose});
 }
 
 await main();
