@@ -2,7 +2,18 @@ import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 
 import {logger, fs} from 'appium/support.js';
-import {Command} from 'commander';
+
+import {parseCliArgs} from './lib/cli.mjs';
+
+const USAGE = `Usage: appium driver run espresso build-espresso [options]
+
+Build the Espresso server APK
+
+Options:
+  --show-gradle-log            Show Gradle logs during build
+  --test-app-package <package> App package to target for test server build
+  --build-config <path>        Absolute path to a JSON build configuration file
+  -h, --help                   Show this help`;
 
 const LOG = logger.getLogger('EspressoBuild');
 
@@ -73,7 +84,7 @@ async function buildEspressoServer(options) {
 }
 
 /**
- * @param {BuildOptions} options
+ * @param {Pick<BuildOptions, 'showGradleLog'>} options
  * @returns {boolean}
  */
 function isGradleLogEnabled(options) {
@@ -82,22 +93,16 @@ function isGradleLogEnabled(options) {
 }
 
 async function main() {
-  const program = new Command();
-  program
-    .name('appium driver run espresso build-espresso')
-    .description('Build the Espresso server APK')
-    .option('--show-gradle-log', 'Show Gradle logs during build')
-    .option('--test-app-package <package>', 'App package to target for test server build')
-    .option('--build-config <path>', 'Absolute path to a JSON build configuration file')
-    .action(async (options) => {
-      await buildEspressoServer({
-        showGradleLog: isGradleLogEnabled(options),
-        testAppPackage: options.testAppPackage ?? process.env.TEST_APP_PACKAGE,
-        buildConfig: options.buildConfig ?? process.env.ESPRESSO_BUILD_CONFIG,
-      });
-    });
-
-  await program.parseAsync(process.argv);
+  const {values} = parseCliArgs(USAGE, {
+    'show-gradle-log': {type: 'boolean'},
+    'test-app-package': {type: 'string'},
+    'build-config': {type: 'string'},
+  });
+  await buildEspressoServer({
+    showGradleLog: isGradleLogEnabled({showGradleLog: values['show-gradle-log']}),
+    testAppPackage: values['test-app-package'] ?? process.env.TEST_APP_PACKAGE,
+    buildConfig: values['build-config'] ?? process.env.ESPRESSO_BUILD_CONFIG,
+  });
 }
 
 await main();

@@ -89,7 +89,6 @@
     "appium-android-driver": "^16.0.0",
     "asyncbox": "^7.0.0",
     "axios": "^1.18.0",
-    "commander": "^15.1.0",
     "io.appium.settings": "^9.2.0",
     "semver": "^7.6.2",
     "teen_process": "^5.0.0"

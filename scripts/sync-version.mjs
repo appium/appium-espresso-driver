@@ -2,8 +2,17 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 import {logger, fs} from 'appium/support.js';
-import {Command} from 'commander';
 import semver from 'semver';
+
+import {failWithUsage, parseCliArgs} from './lib/cli.mjs';
+
+const USAGE = `Usage: node ./scripts/sync-version.mjs --package-version <version>
+
+Sync package version into Espresso server module source
+
+Options:
+  --package-version <version>  Package version to synchronize (required)
+  -h, --help                   Show this help`;
 
 const LOG = logger.getLogger('VersionSync');
 
@@ -40,21 +49,18 @@ async function syncModuleVersion(packageVersion) {
 }
 
 async function main() {
-  const program = new Command();
-  program
-    .name('node ./scripts/sync-version.mjs')
-    .description('Sync package version into Espresso server module source')
-    .requiredOption('--package-version <version>', 'Package version to synchronize', (value) => {
-      if (!semver.valid(value)) {
-        throw new Error(`Invalid version specified '${value}'. The value must be a valid semver string like '1.2.3'`);
-      }
-      return value;
-    })
-    .action(async (options) => {
-      await syncModuleVersion(options.packageVersion);
-    });
-
-  await program.parseAsync(process.argv);
+  const {values} = parseCliArgs(USAGE, {'package-version': {type: 'string'}});
+  const version = values['package-version'];
+  if (version === undefined) {
+    failWithUsage(USAGE, `required option '--package-version <version>' not specified`);
+  }
+  if (!semver.valid(version)) {
+    failWithUsage(
+      USAGE,
+      `Invalid version specified '${version}'. The value must be a valid semver string like '1.2.3'`,
+    );
+  }
+  await syncModuleVersion(version);
 }
 
 await main();
