@@ -1,3 +1,9 @@
+## [11.0.2](https://github.com/appium/appium-espresso-driver/compare/v11.0.1...v11.0.2) (2026-11-27)
+
+### Miscellaneous Chores
+
+* bump @appium/types to v3 ([#1266](https://github.com/appium/appium-espresso-driver/issues/1266)) ([a67afbe](https://github.com/appium/appium-espresso-driver/commit/a67afbe3b95f889113d6bc7c50b132f2d571f72b))
+
 ## [11.0.1](https://github.com/appium/appium-espresso-driver/compare/v11.0.0...v11.0.1) (2026-11-25)
 
 ### Miscellaneous Chores
